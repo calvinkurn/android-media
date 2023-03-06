@@ -10,16 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_bundle_preorder"
+        <include
+            android:id="@+id/shop_info_header_layout"
+            layout="@layout/shop_info_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:textColor="@color/Unify_N700_68"
-            app:layout_constraintEnd_toStartOf="@+id/rv_bundle_items"
-            app:layout_constraintStart_toEndOf="@+id/rv_bundle_items"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_bundle_items"
@@ -28,8 +27,8 @@
             android:clipToPadding="false"
             android:paddingBottom="16dp"
             app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="@+id/du_bottom"
-            app:layout_constraintTop_toBottomOf="@+id/tv_bundle_preorder"
+            app:layout_constraintBottom_toBottomOf="@id/du_bottom"
+            app:layout_constraintTop_toBottomOf="@id/shop_info_header_layout"
             app:layout_constraintVertical_bias="0.0"
             tools:layout_editor_absoluteX="0dp" />
 

@@ -43,7 +43,7 @@ class AffiliateHomeUserDataVH(
         adapter.resetList()
         adapter.addMoreData(element?.data)
         itemView.findViewById<Typography>(R.id.head).apply {
-            setText(if (element?.affiliateShopAdpEnabled == true) R.string.link_dengan_performa else R.string.affiliate_promoted_products)
+            setText(R.string.link_dengan_performa)
         }
     }
 }

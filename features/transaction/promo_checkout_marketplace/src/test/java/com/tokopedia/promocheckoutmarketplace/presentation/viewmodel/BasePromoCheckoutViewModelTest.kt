@@ -34,8 +34,13 @@ abstract class BasePromoCheckoutViewModelTest {
     fun setUp() {
         dispatcher = Dispatchers.Unconfined
         viewModel = PromoCheckoutViewModel(
-                dispatcher, getCouponListRecommendationUseCase, validateUseUseCase,
-                clearCacheAutoApplyUseCase, getPromoSuggestionUseCase, uiModelMapper, analytics
+            dispatcher,
+            getCouponListRecommendationUseCase,
+            validateUseUseCase,
+            clearCacheAutoApplyUseCase,
+            getPromoSuggestionUseCase,
+            uiModelMapper,
+            analytics
         )
 
         every { analytics.eventViewAvailablePromoListEligiblePromo(any(), any()) } just Runs
@@ -43,5 +48,4 @@ abstract class BasePromoCheckoutViewModelTest {
 
         viewModel.initFragmentUiModel(PAGE_CART, "Error Message")
     }
-
 }

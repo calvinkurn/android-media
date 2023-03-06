@@ -8,7 +8,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
  */
 interface VideoScalingManager {
 
-    fun onBottomInsetsShown(bottomMostBounds: Int, videoPlayer: PlayVideoPlayerUiModel, videoOrientation: VideoOrientation)
+    fun onBottomInsetsShown(destHeight: Int, videoPlayer: PlayVideoPlayerUiModel, videoOrientation: VideoOrientation)
 
     fun onBottomInsetsHidden(videoPlayer: PlayVideoPlayerUiModel)
 
