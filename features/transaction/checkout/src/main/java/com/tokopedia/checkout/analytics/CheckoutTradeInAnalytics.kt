@@ -54,47 +54,53 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
 
     // Trade In
     fun eventViewCheckoutPageTradeIn() {
-        sendGeneralEvent(EventName.VIEW_TRADEIN,
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.VIEW_CHECKOUYT_PAGE_TRADE_IN
+        sendGeneralEvent(
+            EventName.VIEW_TRADEIN,
+            EventCategory.COURIER_SELECTION_TRADE_IN,
+            EventAction.VIEW_CHECKOUYT_PAGE_TRADE_IN
         )
     }
 
     fun eventClickKurirTradeIn(label: String?) {
-        sendEventCategoryActionLabel(CLICK_TRADEIN,
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.CLICK_KURIR_TRADE_IN,
-                label
+        sendEventCategoryActionLabel(
+            CLICK_TRADEIN,
+            EventCategory.COURIER_SELECTION_TRADE_IN,
+            EventAction.CLICK_KURIR_TRADE_IN,
+            label
         )
     }
 
     fun eventClickBayarTradeInFailed() {
-        sendGeneralEvent(CLICK_TRADEIN,
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.CLICK_BAYAR,
-                EventLabel.FAILED
+        sendGeneralEvent(
+            CLICK_TRADEIN,
+            EventCategory.COURIER_SELECTION_TRADE_IN,
+            EventAction.CLICK_BAYAR,
+            EventLabel.FAILED
         )
     }
 
     fun eventClickBayarCourierNotComplete() {
-        sendGeneralEvent(CLICK_TRADEIN,
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.CLICK_BAYAR,
-                EventLabel.COURIER_NOT_COMPLETE
+        sendGeneralEvent(
+            CLICK_TRADEIN,
+            EventCategory.COURIER_SELECTION_TRADE_IN,
+            EventAction.CLICK_BAYAR,
+            EventLabel.COURIER_NOT_COMPLETE
         )
     }
 
     fun eventClickJemputTab() {
-        sendGeneralEvent(EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_JEMPUT_TAB
+        sendGeneralEvent(
+            EventName.CLICK_COURIER,
+            EventCategory.COURIER_SELECTION,
+            EventAction.CLICK_JEMPUT_TAB
         )
     }
 
     fun eventClickDropOffTab() {
-        sendGeneralEvent(EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_DROP_OFF_TAB
+        sendGeneralEvent(
+            EventName.CLICK_COURIER,
+            EventCategory.COURIER_SELECTION,
+            EventAction.CLICK_DROP_OFF_TAB
         )
     }
 
@@ -132,10 +138,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 29, 40
     fun eventTradeInClickBackButton(isDropOff: Boolean) {
         val gtmData = getGtmData(
-                CLICK_TRADEIN,
-                EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
-                EVENT_ACTION_CLICK_BACK_BUTTON,
-                ""
+            CLICK_TRADEIN,
+            EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
+            EVENT_ACTION_CLICK_BACK_BUTTON,
+            ""
         )
 
         sendTradeInCheckoutTracker(isDropOff, gtmData)
@@ -144,10 +150,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 30, 41
     fun eventTradeInClickInformation(isDropOff: Boolean) {
         val gtmData = getGtmData(
-                CLICK_TRADEIN,
-                EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
-                EVENT_ACTION_CLICK_INFORMATION,
-                EVENT_LABEL_OPSI_PENUKARAN
+            CLICK_TRADEIN,
+            EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
+            EVENT_ACTION_CLICK_INFORMATION,
+            EVENT_LABEL_OPSI_PENUKARAN
         )
 
         sendTradeInCheckoutTracker(isDropOff, gtmData)
@@ -156,10 +162,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 31
     fun eventTradeInClickTukarDiIndomaret() {
         val gtmData = getGtmData(
-                CLICK_TRADEIN,
-                EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
-                EVENT_ACTION_CLICK_TUKAR_DI_INDOMARET,
-                EVENT_LABEL_INDOMARET
+            CLICK_TRADEIN,
+            EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
+            EVENT_ACTION_CLICK_TUKAR_DI_INDOMARET,
+            EVENT_LABEL_INDOMARET
         )
 
         sendTradeInCheckoutTracker(false, gtmData)
@@ -168,10 +174,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 32
     fun eventTradeInClickChangeAddress() {
         val gtmData = getGtmData(
-                CLICK_TRADEIN,
-                EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
-                EVENT_ACTION_CLICK_CHANGE_ADDRESS,
-                ""
+            CLICK_TRADEIN,
+            EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
+            EVENT_ACTION_CLICK_CHANGE_ADDRESS,
+            ""
         )
 
         sendTradeInCheckoutTracker(false, gtmData)
@@ -180,10 +186,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 33, 45
     fun eventTradeInClickCourierOption(isDropOff: Boolean) {
         val gtmData = getGtmData(
-                CLICK_TRADEIN,
-                EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
-                EVENT_ACTION_CLICK_COURIER_OPTION,
-                ""
+            CLICK_TRADEIN,
+            EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
+            EVENT_ACTION_CLICK_COURIER_OPTION,
+            ""
         )
 
         sendTradeInCheckoutTracker(isDropOff, gtmData)
@@ -192,10 +198,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 34, 46
     fun eventTradeInClickDonationOption(isDropOff: Boolean, tick: Boolean) {
         val gtmData = getGtmData(
-                CLICK_TRADEIN,
-                EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
-                if (tick) EVENT_ACTION_TICK_DONATION_OPTION else EVENT_ACTION_UNTICK_DONATION_OPTION,
-                ""
+            CLICK_TRADEIN,
+            EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
+            if (tick) EVENT_ACTION_TICK_DONATION_OPTION else EVENT_ACTION_UNTICK_DONATION_OPTION,
+            ""
         )
 
         sendTradeInCheckoutTracker(isDropOff, gtmData)
@@ -204,10 +210,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 35, 47
     fun eventTradeInClickEgoldOption(isDropOff: Boolean, tick: Boolean) {
         val gtmData = getGtmData(
-                CLICK_TRADEIN,
-                EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
-                if (tick) EVENT_ACTION_TICK_GOLD_SAVING else EVENT_ACTION_UNTICK_GOLD_SAVING,
-                ""
+            CLICK_TRADEIN,
+            EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
+            if (tick) EVENT_ACTION_TICK_GOLD_SAVING else EVENT_ACTION_UNTICK_GOLD_SAVING,
+            ""
         )
 
         sendTradeInCheckoutTracker(isDropOff, gtmData)
@@ -216,10 +222,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 36, 48
     fun eventTradeInClickPromo(isDropOff: Boolean) {
         val gtmData = getGtmData(
-                CLICK_TRADEIN,
-                EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
-                EVENT_ACTION_CLICK_PROMO,
-                ""
+            CLICK_TRADEIN,
+            EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
+            EVENT_ACTION_CLICK_PROMO,
+            ""
         )
 
         sendTradeInCheckoutTracker(isDropOff, gtmData)
@@ -228,10 +234,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 38
     fun eventTradeInClickCourierGetOutOfCoverageError(isDropOff: Boolean) {
         val gtmData = getGtmData(
-                CLICK_TRADEIN,
-                EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
-                EVENT_ACTION_ERROR,
-                EVENT_LABEL_OUT_OF_COVERAGE
+            CLICK_TRADEIN,
+            EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
+            EVENT_ACTION_ERROR,
+            EVENT_LABEL_OUT_OF_COVERAGE
         )
 
         sendTradeInCheckoutTracker(isDropOff, gtmData)
@@ -240,10 +246,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 42
     fun eventTradeInClickTukarDiAlamatmu() {
         val gtmData = getGtmData(
-                CLICK_TRADEIN,
-                EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
-                EVENT_ACTION_CLICK_TUKAR_DI_ALAMATMU,
-                ""
+            CLICK_TRADEIN,
+            EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
+            EVENT_ACTION_CLICK_TUKAR_DI_ALAMATMU,
+            ""
         )
 
         sendTradeInCheckoutTracker(true, gtmData)
@@ -252,10 +258,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 43
     fun eventTradeInClickPilihIndomaret() {
         val gtmData = getGtmData(
-                CLICK_TRADEIN,
-                EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
-                EVENT_ACTION_CLICK_PILIH_INDOMARET,
-                EVENT_LABEL_INDOMARET
+            CLICK_TRADEIN,
+            EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
+            EVENT_ACTION_CLICK_PILIH_INDOMARET,
+            EVENT_LABEL_INDOMARET
         )
 
         sendTradeInCheckoutTracker(true, gtmData)
@@ -265,5 +271,4 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     // 37, 49 : EE
     // 44 Double
     // 50 Invalid UI
-
 }

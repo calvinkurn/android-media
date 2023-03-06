@@ -8,4 +8,5 @@ interface FeedPlusContainerListener {
     fun shrinkFab()
 
     fun onChildRefresh()
+    fun updateVideoTabSelectedChipValue(chipValue: String)
 }

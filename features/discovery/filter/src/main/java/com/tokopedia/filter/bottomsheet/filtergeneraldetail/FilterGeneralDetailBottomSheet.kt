@@ -45,16 +45,19 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         filterGeneralDetailAdapter.setOptionList(it)
     }
 
+    private var enableResetButton = true
+
     private var binding: FilterGeneralDetailBottomSheetBinding? = null
 
     fun show(
         fragmentManager: FragmentManager,
         filter: Filter, callback: Callback,
-        buttonApplyFilterDetailText: String? = null) {
+        buttonApplyFilterDetailText: String? = null,enableResetButton:Boolean = true) {
             this.filter = filter.copyParcelable()
             this.originalSelectedOptionList.addAll(filter.getSelectedOptions())
             this.callback = callback
             this.buttonApplyFilterDetailText = buttonApplyFilterDetailText
+            this.enableResetButton = enableResetButton
 
             show(fragmentManager, FILTER_GENERAL_DETAIL_BOTTOM_SHEET_TAG)
     }
@@ -89,7 +92,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun initButtonReset() {
-        if (filter.hasActiveOptions()) {
+        if (filter.hasActiveOptions() && enableResetButton) {
             setAction(getString(R.string.filter_button_reset_text), this::onResetFilter)
         }
         else {
@@ -145,7 +148,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun setActionResetVisibility(isVisible: Boolean) {
-        bottomSheetAction.shouldShowWithAction(isVisible) {
+        bottomSheetAction.shouldShowWithAction(isVisible && enableResetButton) {
             bottomSheetAction.text = getString(R.string.filter_button_reset_text)
             bottomSheetAction.setOnClickListener(this::onResetFilter)
         }
@@ -255,6 +258,8 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         notifyAdapterChanges(option, position)
 
         applyFilterViewInteractions(getButtonResetVisibility(isChecked))
+
+        callback?.onOptionClick(option,isChecked,position)
     }
 
     private fun processOptionClick(option: Option, isChecked: Boolean) {
@@ -283,5 +288,6 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
     interface Callback {
         fun onApplyButtonClicked(optionList: List<Option>?)
+        fun onOptionClick(option: Option, isChecked: Boolean, position: Int){}
     }
 }

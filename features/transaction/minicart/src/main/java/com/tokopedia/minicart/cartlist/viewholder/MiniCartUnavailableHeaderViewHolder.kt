@@ -6,9 +6,11 @@ import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
 import com.tokopedia.minicart.databinding.ItemMiniCartUnavailableHeaderBinding
 
-class MiniCartUnavailableHeaderViewHolder(private val viewBinding: ItemMiniCartUnavailableHeaderBinding,
-                                          private val listener: MiniCartListActionListener)
-    : AbstractViewHolder<MiniCartUnavailableHeaderUiModel>(viewBinding.root) {
+class MiniCartUnavailableHeaderViewHolder(
+    private val viewBinding: ItemMiniCartUnavailableHeaderBinding,
+    private val listener: MiniCartListActionListener
+) :
+    AbstractViewHolder<MiniCartUnavailableHeaderUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_unavailable_header
@@ -17,12 +19,11 @@ class MiniCartUnavailableHeaderViewHolder(private val viewBinding: ItemMiniCartU
     override fun bind(element: MiniCartUnavailableHeaderUiModel) {
         with(viewBinding) {
             val message = textDisabledItemCount.context?.getString(R.string.mini_cart_title_unavailable_header, element.unavailableItemCount)
-                    ?: ""
+                ?: ""
             textDisabledItemCount.text = message
             textDelete.setOnClickListener {
                 listener.onBulkDeleteUnavailableItems()
             }
         }
     }
-
 }

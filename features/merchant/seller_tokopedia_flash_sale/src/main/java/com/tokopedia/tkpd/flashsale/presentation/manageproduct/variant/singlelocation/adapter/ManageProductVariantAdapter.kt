@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailVariantItemBinding
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailVariantMultilocItemBinding
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.viewHolder.VariantMultilocViewHolder
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.viewHolder.VariantViewHolder

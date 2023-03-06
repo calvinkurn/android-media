@@ -118,6 +118,7 @@ object AccountConstants {
             const val LABEL_INSTANT_BUY = "Beli Langsung"
             const val LABEL_ACCOUNT_SECURITY = "Keamanan Akun"
             const val LABEL_NOTIFICATION = "Notifikasi"
+            const val LABEL_PRIVACY_ACCOUNT = "Privasi Akun"
             const val LABEL_APP_SETTING = "Pengaturan Applikasi"
             const val LABEL_ENABLE = "enable"
             const val LABEL_DISABLE = "disable"
