@@ -82,8 +82,8 @@
     <include
         android:id="@+id/view_share_experience"
         layout="@layout/view_share_experience"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
         android:layout_marginBottom="@dimen/content_common_space_16"
         app:layout_constraintBottom_toTopOf="@+id/view_kebab_menu"
         app:layout_constraintEnd_toEndOf="@+id/view_kebab_menu"
@@ -92,8 +92,8 @@
     <include
         android:id="@+id/view_kebab_menu"
         layout="@layout/view_kebab_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
         android:layout_marginBottom="@dimen/content_common_space_16"
         app:layout_constraintBottom_toTopOf="@id/view_product_see_more"
         app:layout_constraintEnd_toEndOf="@+id/view_product_see_more"
