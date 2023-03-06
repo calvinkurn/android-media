@@ -2561,4 +2561,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
+
+    @Test
+    fun `check product review gallery applink`() {
+        val deepLink = ApplinkConst.PRODUCT_REVIEW_GALLERY
+        val expectedDeepLink = ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY
+        assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+    }
 }
