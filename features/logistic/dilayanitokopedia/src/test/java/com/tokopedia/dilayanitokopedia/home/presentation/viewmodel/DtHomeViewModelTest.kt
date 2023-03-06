@@ -12,6 +12,7 @@ import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeAnchorTabRespons
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetAnchorTabUseCase
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetLayoutDataUseCase
+import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
@@ -35,8 +36,12 @@ class DtHomeViewModelTest {
 
     private val getLayoutDataUseCase = mockk<GetLayoutDataUseCase>(relaxed = true)
     private val getHomeAnchorTabUseCase = mockk<GetAnchorTabUseCase>(relaxed = true)
+
     private val homeLayoutListObserver =
         mockk<Observer<Result<HomeLayoutListUiModel>>>(relaxed = true)
+
+    private val homeAnchorListObserver =
+        mockk<Observer<Result<List<AnchorTabUiModel>>>>(relaxed = true)
 
     lateinit var viewModel: DtHomeViewModel
 
@@ -50,13 +55,14 @@ class DtHomeViewModelTest {
             CoroutineTestDispatchersProvider
         )
         viewModel.homeLayoutList.observeForever(homeLayoutListObserver)
+        viewModel.anchorTabState.observeForever(homeAnchorListObserver)
     }
 
     @Test
     fun `verify get home layout and get anchor tab menu success with same group id is correctly`() {
         // Inject
         val groupId = "1"
-        val feParam = "${KEY_ANCHOR_IDENTIFIER}=${KEYWOARD_CHANNEL_GROUP_ID}${groupId}"
+        val feParam = "$KEY_ANCHOR_IDENTIFIER=${KEYWOARD_CHANNEL_GROUP_ID}$groupId"
         val mockMenuResponse = spyk(
             GetHomeAnchorTabResponse.GetHomeIconV2(
                 icons = arrayListOf(
@@ -93,16 +99,49 @@ class DtHomeViewModelTest {
         // Then
         Assert.assertNotNull(viewModel.isLastWidgetIsRecommendationForYou())
         Assert.assertTrue(viewModel.isLastWidgetIsRecommendationForYou() ?: false)
-        Assert.assertNotNull(viewModel.getAnchorTabByVisitablePosition(0))
         Assert.assertNotNull(viewModel.getPositionUsingGroupId(groupId))
         Assert.assertFalse(viewModel.isOnLoading)
+    }
+
+    /**
+     *
+     * buat test sendiri si anchor tab
+     * getAnchorTabMenu
+     *
+     */
+
+    @Test
+    fun `verify get anchor tab list`() {
+        // Inject
+        val groupId = "1"
+        val feParam = "$KEY_ANCHOR_IDENTIFIER=${KEYWOARD_CHANNEL_GROUP_ID}$groupId"
+        val mockMenuResponse = spyk(
+            GetHomeAnchorTabResponse.GetHomeIconV2(
+                icons = arrayListOf(spyk(GetHomeAnchorTabResponse.GetHomeIconV2.Icon(feParam = feParam)))
+            )
+        )
+        val data = listOf(AnchorTabUiModel("0", "", "", groupId))
+
+        // Given
+        coEvery {
+            getHomeAnchorTabUseCase.execute(any())
+        } returns mockMenuResponse
+
+        // When
+        viewModel.getAnchorTabMenu(mockk())
+
+        // Then
+
+        verify {
+            homeAnchorListObserver.onChanged(Success(data))
+        }
     }
 
     @Test
     fun `verify get home layout and get anchor tab menu success but different group id is correctly`() {
         // Inject
         val groupId = "1"
-        val feParam = "${KEY_ANCHOR_IDENTIFIER}=${KEYWOARD_CHANNEL_GROUP_ID}${groupId}"
+        val feParam = "$KEY_ANCHOR_IDENTIFIER=${KEYWOARD_CHANNEL_GROUP_ID}$groupId"
         val mockMenuResponse = spyk(
             GetHomeAnchorTabResponse.GetHomeIconV2(
                 icons = arrayListOf(
