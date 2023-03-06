@@ -46,7 +46,6 @@ import com.tokopedia.shop.settings.common.util.ShopTypeDef
 import com.tokopedia.shop.settings.common.util.dateFormatToBeReadable
 import com.tokopedia.shop.settings.common.util.getNavigationResult
 import com.tokopedia.shop.settings.common.util.removeNavigationResult
-import com.tokopedia.shop.settings.common.view.bottomsheet.MenuBottomSheet
 import com.tokopedia.shop.settings.databinding.FragmentShopSettingsInfoBinding
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -80,7 +79,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<FragmentShopSettingsInfoBinding>()
 
     private var shopBasicDataModel: ShopBasicDataModel? = null
-    private var bottomSheet: MenuBottomSheet? = null
     private var snackbar: Snackbar? = null
     private var shopId: String = "0" // 67726 for testing
 
