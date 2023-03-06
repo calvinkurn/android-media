@@ -6,7 +6,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.animation.PathInterpolatorCompat
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
@@ -19,7 +23,10 @@ import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
 import com.tokopedia.home_component.viewholders.adapter.BannerRevampChannelAdapter
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -91,18 +98,20 @@ class BannerRevampViewHolder(
 
     private fun setScrollListener() {
         binding?.rvBannerRevamp?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (isFromDrag && kotlin.math.abs(dx) == Int.ONE) {
+                    val currentPagePosition = if (dx > Int.ZERO) layoutManager.findLastVisibleItemPosition() % totalBanner else layoutManager.findFirstVisibleItemPosition() % totalBanner
+                    currentPosition = currentPagePosition
+                    if (currentPagePosition != RecyclerView.NO_POSITION) {
+                        binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
+                        isFromDrag = false
+                    }
+                }
+            }
+
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 when (newState) {
-                    RecyclerView.SCROLL_STATE_IDLE -> {
-                        if (isFromDrag) {
-                            val currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-                            currentPosition = currentPagePosition
-                            if (currentPagePosition != RecyclerView.NO_POSITION) {
-                                binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
-                                isFromDrag = false
-                            }
-                        }
-                    }
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
                         isFromDrag = true
                     }
