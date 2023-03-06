@@ -61,7 +61,7 @@
     <string name="editor_add_logo_last_uploaded">Logo Terakhir</string>
     <string name="editor_add_logo_profile">Foto Profil Tokomu</string>
 
-    <!-- Bottomsheet text -->
+    <!-- Add Logo Bottomsheet text -->
     <string name="add_logo_tips_list"><Data><![CDATA[ <ul><li>Ukuran min. <b>500x500 pixel</b> dan maks. <b>10 MB</b>.</li><li>Format gambar <b>.png</b>. untuk logo transparan dan format lainnya <b>.jpg</b>, <b>.jpeg</b>.</li><li>Gambar yang ditambahkan di sini tidak akan menjadi foto profil tokomu.</li></ul> ]]></Data></string>
     <string name="add_logo_tips_more">Buat lihat tips ini lagi, klik %i% di menu depan ya.</string>
     <string name="add_logo_tips_more_format">%i%</string>
@@ -73,4 +73,8 @@
     <string name="add_text_save_template">Jadikan Template</string>
     <string name="add_text_free_text">Teks Bebas</string>
     <string name="add_text_single_background_text">Latar Teks</string>
+
+    <!-- Add Text Bottomsheet text -->
+    <string name="add_text_tips_carousel_item_1">Yuk, buat produkmu lebih menarik dengan tambahin nama produknya!</string>
+    <string name="add_text_tips_carousel_item_2">Atau, kamu bisa tambahin keunggulan produk sesuai keinginanmu. Yuk, cobain!</string>
 </resources>

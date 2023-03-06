@@ -44,6 +44,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.ui.widget.EditorAddTextTipsBottomSheet
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.data.Properties
@@ -1224,6 +1225,10 @@ class DetailEditorFragment @Inject constructor(
     fun showAddLogoUploadTips(isUpload: Boolean = true) {
         addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, BOTTOM_SHEET_TAG)
         isAddLogoTipsShowed = true
+    }
+
+    fun showAddTextTips() {
+        EditorAddTextTipsBottomSheet().show(childFragmentManager, bottomSheetTag)
     }
 
     private fun showAddLogoPicker() {
