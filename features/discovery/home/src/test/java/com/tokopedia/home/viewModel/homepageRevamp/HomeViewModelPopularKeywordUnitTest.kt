@@ -63,7 +63,6 @@ class HomeViewModelPopularKeywordUnitTest {
 
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homePopularKeywordUseCase = homePopularKeywordUseCase)
-        homeViewModel.initFlow()
         homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         homePopularKeywordUseCase.givenOnPopularKeywordReturn(refreshCount, popular, resultSuccessPopularKeyword)

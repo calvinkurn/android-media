@@ -65,7 +65,6 @@ class HomeViewModelMissionWidgetUnitTest {
         )
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homeMissionWidgetUseCase = homeMissionWidgetUseCase)
-        homeViewModel.initFlow()
         homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         val isContainsMissionWidgetFailed =
