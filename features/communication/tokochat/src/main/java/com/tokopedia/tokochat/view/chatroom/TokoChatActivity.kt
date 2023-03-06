@@ -33,7 +33,7 @@ import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
  * note: Do not hardcode applink.
  * use variables provided in [com.tokopedia.applink.ApplinkConst]
  */
-class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
+open class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
 
     override fun setupFragmentFactory() {
         supportFragmentManager.fragmentFactory = TokoChatFragmentFactory()
@@ -74,7 +74,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
         }
     }
 
-    private fun getFragmentBundle(): Bundle {
+    protected open fun getFragmentBundle(): Bundle {
         val source = intent.data?.getQueryParameter(ApplinkConst.TokoChat.PARAM_SOURCE) ?: ""
         val gojekOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK) ?: ""
         val tkpdOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_TKPD) ?: ""

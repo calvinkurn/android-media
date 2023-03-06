@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view
 
 import androidx.fragment.app.Fragment
+import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
@@ -24,13 +25,13 @@ interface ActionListener {
 
     fun onShopItemCheckChanged(index: Int, checked: Boolean)
 
-    fun onCartBoAffordabilityClicked(cartShopHolderData: CartShopHolderData)
+    fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData)
 
-    fun onCartBoAffordabilityRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData)
+    fun onCartShopGroupTickerRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData)
 
-    fun onViewCartBoAffordabilityTicker(cartShopHolderData: CartShopHolderData)
+    fun onViewCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
 
-    fun checkBoAffordability(cartShopHolderData: CartShopHolderData)
+    fun checkCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
 
     fun onCartDataEnableToCheckout()
 
@@ -68,7 +69,7 @@ interface ActionListener {
 
     fun onButtonAddToCartClicked(productModel: Any)
 
-    fun onDeleteAllDisabledProduct();
+    fun onDeleteAllDisabledProduct()
 
     fun onSeeErrorProductsClicked()
 
@@ -96,7 +97,15 @@ interface ActionListener {
 
     fun onClickAddOnCart(productId: String, addOnId: String)
 
+    fun onClickEpharmacyInfoCart(
+        enablerLabel: String,
+        shopId: String,
+        productUiModelList: MutableList<CartItemHolderData>
+    )
+
     fun addOnImpression(productId: String)
 
     fun onViewFreeShippingPlusBadge()
+
+    fun showCartBundlingBottomSheet(data: CartBundlingBottomSheetData)
 }

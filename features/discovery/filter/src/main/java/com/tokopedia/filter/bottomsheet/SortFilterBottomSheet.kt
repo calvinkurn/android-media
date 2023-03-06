@@ -361,12 +361,18 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private fun setActionResetVisibility(isVisible: Boolean) {
         bottomSheetAction.post {
-            bottomSheetAction.shouldShowWithAction(isVisible) {
-                bottomSheetAction.text = getString(R.string.filter_button_reset_text)
-                bottomSheetAction.setOnClickListener {
-                    sortFilterBottomSheetViewModel?.resetSortAndFilter()
-                }
+            bottomSheetAction.shouldShowWithAction(isVisible, ::configureButtonReset)
+        }
+    }
+
+    private fun configureButtonReset() {
+        try {
+            bottomSheetAction.text = getString(R.string.filter_button_reset_text)
+            bottomSheetAction.setOnClickListener {
+                sortFilterBottomSheetViewModel?.resetSortAndFilter()
             }
+        } catch (throwable: Throwable) {
+
         }
     }
 

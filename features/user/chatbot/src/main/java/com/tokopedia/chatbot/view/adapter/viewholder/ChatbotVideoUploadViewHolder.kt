@@ -198,7 +198,7 @@ class ChatbotVideoUploadViewHolder(
     override fun setHeaderDate(element: BaseChatUiModel) {
         if (date == null) return
         val time = element.replyTime?.let {
-            ChatBotTimeConverter.getDateIndicatorTime(
+            ChatBotTimeConverter.settingDateIndicatorTimeAtLeastToday(
                 it,
                 itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date),
                 itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date)

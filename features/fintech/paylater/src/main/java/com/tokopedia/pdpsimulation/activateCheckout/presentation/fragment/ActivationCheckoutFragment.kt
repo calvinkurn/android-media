@@ -183,7 +183,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.getOptimizedCheckoutDetail(
             payLaterActivationViewModel.selectedProductId,
             payLaterActivationViewModel.price * quantity,
-            payLaterActivationViewModel.selectedGatewayCode
+            payLaterActivationViewModel.selectedGatewayCode,
+            payLaterActivationViewModel.shopId.orEmpty(),
         )
     }
 
@@ -555,18 +556,20 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun sendCTAClickEvent() {
         payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
             sendAnalyticEvent(
                 PdpSimulationEvent.ClickCTACheckoutPage(
                     payLaterActivationViewModel.selectedProductId,
-                    checkoutData.userState ?: "",
+                    checkoutData.userState.orEmpty(),
                     checkoutData.gateway_name.orEmpty(),
-                    checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
-                    checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.monthly_installment.orEmpty(),
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.tenure.toString(),
                     quantity.toString(),
                     checkoutData.userAmount ?: "",
-                    payLaterActivationViewModel.variantName
+                    payLaterActivationViewModel.variantName,
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.promoName.orEmpty()
                 )
             )
         }
@@ -604,7 +607,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 productId = payLaterActivationViewModel.selectedProductId,
                 pageSource = VariantPageSource.BNPL_PAGESOURCE,
                 isTokoNow = false,
-                shopId = payLaterActivationViewModel.shopId ?: "",
+                shopId = payLaterActivationViewModel.shopId.orEmpty(),
                 saveAfterClose = false
             ) { data, code ->
                 startActivityForResult(data, code)
@@ -728,7 +731,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         payLaterActivationViewModel.getOptimizedCheckoutDetail(
             payLaterActivationViewModel.selectedProductId,
             payLaterActivationViewModel.price * quantity,
-            payLaterActivationViewModel.selectedGatewayCode
+            payLaterActivationViewModel.selectedGatewayCode,
+            payLaterActivationViewModel.shopId.orEmpty(),
         )
     }
 
@@ -755,20 +759,23 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         return isDisabledPartner
     }
 
+    @SuppressLint("PII Data Exposure")
     override fun selectedTenure(
         tenureSelectedModel: TenureSelectedModel,
-        newPositionToSelect: Int
+        newPositionToSelect: Int,
+        promoName: String,
     ) {
         tenureSelectedModel.installmentDetails?.let {
             installmentModel = it
         }
         amountToPay.text = tenureSelectedModel.priceText.orEmpty()
         paymentDuration.text = "x${tenureSelectedModel.tenure.orEmpty()}"
-        sendTenureSelectedAnalytics(newPositionToSelect)
+        sendTenureSelectedAnalytics(newPositionToSelect, promoName)
         updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
     }
 
-    private fun sendTenureSelectedAnalytics(newPositionToSelect: Int) {
+    @SuppressLint("PII Data Exposure")
+    private fun sendTenureSelectedAnalytics(newPositionToSelect: Int, promoName: String) {
         payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
             sendAnalyticEvent(
                 PdpSimulationEvent.ClickTenureEvent(
@@ -776,7 +783,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     checkoutData.userState ?: "",
                     payLaterActivationViewModel.price.toString(),
                     checkoutData.tenureDetail[newPositionToSelect].tenure.toString(),
-                    checkoutData.gateway_name ?: ""
+                    checkoutData.gateway_name.orEmpty(),
+                    promoName
                 )
             )
         }

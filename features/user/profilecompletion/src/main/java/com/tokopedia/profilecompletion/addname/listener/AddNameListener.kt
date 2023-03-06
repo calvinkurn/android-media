@@ -10,13 +10,13 @@ import com.tokopedia.sessioncommon.data.register.RegisterInfo
 interface AddNameListener {
 
     interface View : CustomerView {
-	fun showLoading()
-	fun onErrorRegister(throwable: Throwable)
-	fun onSuccessRegister(registerInfo: RegisterInfo)
+        fun showLoading()
+        fun onErrorRegister(throwable: Throwable)
+        fun onSuccessRegister(registerInfo: RegisterInfo)
     }
 
     interface Presenter : CustomerPresenter<View> {
-	fun registerPhoneNumberAndName(name: String, phoneNumber: String)
+        fun registerPhoneNumberAndName(name: String, phoneNumber: String)
 
     }
 }

@@ -16,13 +16,13 @@ class ViewToViewProductViewHolder(
 
     fun bind(data: ViewToViewDataModel) {
         itemView.addOnImpressionListener(data.recommendationItem) {
-            listener.onProductImpressed(data, bindingAdapterPosition)
+            listener.onProductImpressed(data, bindingAdapterPosition, className)
         }
         val binding = binding ?: return
         with(binding.root) {
             setProductModel(data.productModel)
             setOnClickListener {
-                listener.onProductClicked(data, bindingAdapterPosition)
+                listener.onProductClicked(data, bindingAdapterPosition, className)
             }
             setAddToCartOnClickListener {
                 listener.onAddToCartClicked(data, bindingAdapterPosition)
@@ -37,5 +37,6 @@ class ViewToViewProductViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_view_to_view
+        private const val className = "com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewProductViewHolder"
     }
 }

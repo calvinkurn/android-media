@@ -51,6 +51,7 @@ const val GQL_GET_WIDGET_DETAIL_V2 =
               footnote_icon_dark
             }
           }
+          promo_name
         }
       }
     }

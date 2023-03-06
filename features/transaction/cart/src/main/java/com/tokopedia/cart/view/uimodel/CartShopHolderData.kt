@@ -40,15 +40,17 @@ data class CartShopHolderData(
     var latitude: String = "",
     var longitude: String = "",
     var boMetadata: BoMetadata = BoMetadata(),
-    var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData(),
+    var cartShopGroupTicker: CartShopGroupTickerData = CartShopGroupTickerData(),
     var addOnText: String = "",
     var addOnImgUrl: String = "",
     var addOnId: String = "",
+    var addOnType: Int = 0,
     var warehouseId: Long = 0,
     var isPo: Boolean = false,
     var poDuration: String = "",
     var boCode: String = "",
     var coachmarkPlus: CartShopCoachmarkPlusData = CartShopCoachmarkPlusData(),
+    var enablerLabel: String = ""
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
@@ -94,39 +96,57 @@ data class CartShopHolderData(
             latitude = this.latitude,
             longitude = this.longitude,
             boMetadata = this.boMetadata,
-            boAffordability = this.boAffordability,
+            cartShopGroupTicker = this.cartShopGroupTicker,
             addOnText = this.addOnText,
             addOnImgUrl = this.addOnImgUrl,
             addOnId = this.addOnId,
             warehouseId = this.warehouseId,
             isPo = this.isPo,
             poDuration = this.poDuration,
-            boCode = this.boCode,
+            boCode = this.boCode
         )
     }
 
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
+
+        const val ADD_ON_GIFTING = 1
+        const val ADD_ON_EPHARMACY = 2
     }
 }
 
-class CartShopBoAffordabilityData(
-    var enable: Boolean = true,
-    var state: CartShopBoAffordabilityState = CartShopBoAffordabilityState.FIRST_LOAD,
+data class CartShopGroupTickerData(
+    var enableBoAffordability: Boolean = false,
+    var enableCartAggregator: Boolean = false,
+    var enableBundleCrossSell: Boolean = false,
+    var state: CartShopGroupTickerState = CartShopGroupTickerState.FIRST_LOAD,
     var tickerText: String = "",
     var errorText: String = "",
+    var leftIcon: String = "",
+    var leftIconDark: String = "",
+    var rightIcon: String = "",
+    var rightIconDark: String = "",
+    var applink: String = "",
+    var action: String = "",
+    var cartBundlingBottomSheetData: CartBundlingBottomSheetData = CartBundlingBottomSheetData(),
 
     // list of cartIds for tracker
     var cartIds: String = "",
-    var hasSeenTicker: Boolean = false,
-)
+    var hasSeenTicker: Boolean = false
+) {
+
+    companion object {
+        const val ACTION_REDIRECT_PAGE = "redirect_page"
+        const val ACTION_OPEN_BOTTOM_SHEET_BUNDLING = "open_bottomsheet_bundling"
+    }
+}
 
 class CartShopCoachmarkPlusData(
     val isShown: Boolean = false,
     val title: String = "",
-    val content: String = "",
+    val content: String = ""
 )
 
-enum class CartShopBoAffordabilityState {
+enum class CartShopGroupTickerState {
     FIRST_LOAD, LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD, EMPTY
 }

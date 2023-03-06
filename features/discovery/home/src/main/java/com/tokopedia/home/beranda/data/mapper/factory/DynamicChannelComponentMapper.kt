@@ -139,7 +139,8 @@ object DynamicChannelComponentMapper {
                             imageUrl = badge.imageUrl
                         )
                     },
-                    expiredTime = it.expiredTime
+                    expiredTime = it.expiredTime,
+                    categoryBreadcrumbs = it.categoryBreadcrumbs
                 )
             }
         )

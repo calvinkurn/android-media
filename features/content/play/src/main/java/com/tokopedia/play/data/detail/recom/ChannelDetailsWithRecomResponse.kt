@@ -180,6 +180,9 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("pop_up")
         val popupConfig: PopupConfig = PopupConfig(),
+
+        @SerializedName("explore_widget")
+        val exploreWidgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
     )
 
     data class FreezeData(
@@ -270,6 +273,17 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("image_url")
         val imageUrl: String = "",
+    )
+
+    data class ExploreWidgetConfig(
+        @SerializedName("group")
+        val group: String = "",
+
+        @SerializedName("source_id")
+        val sourceId: String = "",
+
+        @SerializedName("source_type")
+        val sourceType: String = "",
     )
 
     data class ArchivedData(
