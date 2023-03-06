@@ -3,14 +3,12 @@ package com.tokopedia.catalog_library.model.datamodel
 import android.os.Bundle
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactory
 import com.tokopedia.catalog_library.model.raw.CatalogRelevantResponse
-import com.tokopedia.kotlin.model.ImpressHolder
 
 data class CatalogRelevantDataModel(
     val name: String = "",
     val type: String = "",
     val relevantDataList: CatalogRelevantResponse.Catalogs
 ) : BaseCatalogLibraryDataModel {
-    val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun type() = type
 
