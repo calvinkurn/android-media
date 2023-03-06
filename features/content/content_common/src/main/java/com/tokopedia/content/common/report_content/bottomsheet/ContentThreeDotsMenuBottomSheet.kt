@@ -14,6 +14,7 @@ import com.tokopedia.content.common.report_content.viewholder.FeedMenuViewHolder
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -39,6 +40,10 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
             override fun onClick(item: FeedMenuItem) {
                 if (item.type != FeedMenuIdentifier.LAPORKAN) {
                     dismiss()
+                } else {
+                    showHeader = true
+                    bottomSheetHeader.visible()
+                    setTitle(getString(R.string.feed_report_comment))
                 }
 
                 mListener?.onMenuItemClick(item, "")
@@ -67,12 +72,12 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupBottomSheet() {
+        setTitle(String.EMPTY)
         _binding = BottomSheetFeedThreeDotsMenuBinding.inflate(
             LayoutInflater.from(requireContext())
         )
+        showCloseIcon = true
         setChild(binding.root)
-        clearClose(true)
-        clearHeader(true)
     }
     fun showReportLayoutWhenLaporkanClicked() {
         binding.let {
@@ -197,6 +202,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
     private fun setupView() {
         binding.rvFeedMenu.adapter = adapter
         adapter.updateData(mFeedMenuItemList)
+        bottomSheetClose.visible()
     }
 
     fun setListener(listener: Listener?) {
