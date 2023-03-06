@@ -1,0 +1,85 @@
+{
+  "data": [
+    {
+      "title": "Tampilkan Atasan Wanita dengan ukuran:",
+      "type": "type",
+      "header_title": "Agar produk tetap segar sampai tujuan",
+      "header_subtitle": "Bisa pakai rekomendasi pengiriman cepat berikut, lho.",
+      "layout": "filter",
+      "position": 0,
+      "options": [
+        {
+          "text": "S",
+          "img": "",
+          "url": "",
+          "color": "",
+          "applink": "",
+          "component_id": "03.20.01.00",
+          "filters": {
+            "title": "",
+            "key": "variants",
+            "name": "S",
+            "value": "24"
+          }
+        },
+        {
+          "text": "M",
+          "img": "",
+          "url": "",
+          "color": "",
+          "applink": "",
+          "component_id": "03.20.02.00",
+          "filters": {
+            "title": "",
+            "key": "variants",
+            "name": "M",
+            "value": "25"
+          }
+        },
+        {
+          "text": "L",
+          "img": "",
+          "url": "",
+          "color": "",
+          "applink": "",
+          "component_id": "03.20.03.00",
+          "filters": {
+            "title": "",
+            "key": "variants",
+            "name": "L",
+            "value": "26"
+          }
+        },
+        {
+          "text": "XL",
+          "img": "",
+          "url": "",
+          "color": "",
+          "applink": "",
+          "component_id": "03.20.04.00",
+          "filters": {
+            "title": "",
+            "key": "variants",
+            "name": "XL",
+            "value": "27"
+          }
+        },
+        {
+          "text": "XXL",
+          "img": "",
+          "url": "",
+          "color": "",
+          "applink": "",
+          "component_id": "03.20.05.00",
+          "filters": {
+            "title": "",
+            "key": "variants",
+            "name": "XXL",
+            "value": "28"
+          }
+        }
+      ],
+      "tracking_option": "3"
+    }
+  ]
+}

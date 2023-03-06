@@ -15,18 +15,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.internal_review.common.InternalReviewUtils
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -38,9 +42,11 @@ import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracki
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.data.SellerHomeSharedPref
 import com.tokopedia.sellerhome.databinding.FragmentMenuSettingBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.adapter.MenuSettingAdapter
@@ -76,6 +82,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val EXTRA_SCREEN_SHOOT_TRIGGER = "extra_screen_shoot_trigger"
         private const val EXTRA_TOASTER_MESSAGE = "extra_toaster_message"
         private const val EXTRA_SHOW_SETTING_BOTTOM_SHEET = "extra_show_settings"
+        private const val PERSONA_MENU_COACH_MARK = "persona_menu_coach_mark"
 
         private const val LOGOUT_ALIAS = "logout"
         private const val REQ_CODE_GLOBAL_FEEDBACK = 8043
@@ -93,6 +100,9 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var sharedPref: SellerHomeSharedPref
 
     @DrawableRes
     private val logoutIconDrawable = R.drawable.sah_qc_launcher2
@@ -117,6 +127,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private var binding by autoClearedNullable<FragmentMenuSettingBinding>()
+    private var personaCoachMark: CoachMark2? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -261,6 +272,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             }
         }
     }
+
     private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
         if (isEligibleMultiloc is Success) {
             menuSettingAdapter?.showShopSetting(isEligibleMultiloc.data)
@@ -268,7 +280,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun setupView() {
-        binding?.recyclerView?.layoutManager = LinearLayoutManager(context)
+        val menuLayoutManager by getMenuLayoutManager()
+        binding?.recyclerView?.layoutManager = menuLayoutManager
         menuSettingAdapter?.populateInitialMenus(userSession.isShopOwner)
         if (userSession.isShopOwner) {
             menuSettingViewModel.getShopLocEligible(userSession.shopId.toLong())
@@ -280,6 +293,68 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         setupLogoutView()
         setupExtraSettingView()
         startShopActiveService()
+        showPersonaCoachMark(menuLayoutManager)
+    }
+
+    private fun getMenuLayoutManager(): Lazy<LinearLayoutManager> {
+        return lazy {
+            object : LinearLayoutManager(context) {
+                override fun scrollVerticallyBy(
+                    dy: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?
+                ): Int {
+                    return try {
+                        showPersonaCoachMark(this)
+                        super.scrollVerticallyBy(dy, recycler, state)
+                    } catch (@Suppress("SwallowedException") e: IndexOutOfBoundsException) {
+                        Int.ZERO
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showPersonaCoachMark(lm: LinearLayoutManager) {
+        binding?.recyclerView?.post {
+            context?.let { ctx ->
+                val menuTitle = ctx.getString(R.string.setting_seller_persona)
+                val personaMenuIndex = adapter.data.indexOfFirst {
+                    (it as? MenuItemUiModel)?.title == menuTitle
+                }
+
+                val eligibleCoachMark = sharedPref.getBoolean(PERSONA_MENU_COACH_MARK, true)
+                if (personaMenuIndex != RecyclerView.NO_POSITION && eligibleCoachMark) {
+                    val firstVisibleIndex = lm.findFirstCompletelyVisibleItemPosition()
+                    val lastVisibleIndex = lm.findLastCompletelyVisibleItemPosition()
+
+                    if (personaCoachMark == null) {
+                        personaCoachMark = CoachMark2(ctx).apply {
+                            onDismissListener = {
+                                sharedPref.putBoolean(PERSONA_MENU_COACH_MARK, false)
+                            }
+                        }
+                    }
+
+                    if (personaMenuIndex in firstVisibleIndex..lastVisibleIndex) {
+                        lm.getChildAt(personaMenuIndex)?.let { anchor ->
+                            personaCoachMark?.showCoachMark(getCoachMarkItem(anchor))
+                        }
+                    } else {
+                        personaCoachMark?.dismissCoachMark()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getCoachMarkItem(anchor: View): ArrayList<CoachMark2Item> {
+        return arrayListOf(
+            CoachMark2Item(
+                anchorView = anchor,
+                title = String.EMPTY,
+                description = getString(R.string.menu_setting_persona_coach_mack),
+                position = CoachMark2.POSITION_BOTTOM
+            )
+        )
     }
 
     private fun setupLogoutView() {
