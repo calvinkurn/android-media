@@ -395,7 +395,7 @@ class TokoNowHomeViewModel @Inject constructor(
         @TokoNowLayoutType type: String
     ) {
         val miniCartItem = getMiniCartItem(productId)
-        val cartQuantity = miniCartItem?.quantity.orZero()
+        val cartQuantity = miniCartItem?.quantity
         if (cartQuantity == quantity) return
 
         when {
