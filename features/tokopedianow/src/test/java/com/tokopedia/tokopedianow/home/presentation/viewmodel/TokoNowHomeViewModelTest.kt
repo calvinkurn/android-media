@@ -4281,7 +4281,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         //refetch catalog list
         val slugs = slugText.split(";")
-        viewModel.getCatalogCouponList(slugs)
+        viewModel.getCatalogCouponList(widgetId, slugs)
 
         //prepare model for expectedResult
         val data = createLayoutListUiModel(
@@ -4346,7 +4346,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         //refetch catalog list
         val slugs = slugText.split(";")
-        viewModel.getCatalogCouponList(slugs)
+        viewModel.getCatalogCouponList(widgetId, slugs)
 
         //prepare model for expectedResult
         val data = createLayoutListUiModel(
@@ -4369,6 +4369,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when redeeming coupon and user has logged in then receiving success result`() {
         //create dummy data
         val userLoggedIn = true
+        val widgetId = "1212"
         val catalogId = "2222"
 
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = userLoggedIn)
@@ -4377,7 +4378,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onRedeemCoupon_thenReturn(createRedeemCoupon())
 
         //redeem the coupon
-        viewModel.claimCoupon(catalogId)
+        viewModel.claimCoupon(widgetId, catalogId)
 
         //verify use case and the result
         verifyRedeemCouponUseCaseCalled()
@@ -4389,6 +4390,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when redeeming coupon and user has not logged in then receiving login code`() {
         //create dummy data
         val userLoggedIn = false
+        val widgetId = "1212"
         val catalogId = "2222"
 
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = userLoggedIn)
@@ -4396,7 +4398,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onRedeemCoupon_thenReturn(createRedeemCoupon())
 
         //redeem the coupon
-        viewModel.claimCoupon(catalogId)
+        viewModel.claimCoupon(widgetId, catalogId)
 
         //verify the result
         viewModel.couponClaimed
@@ -4407,6 +4409,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when redeeming coupon then receiving error result`() {
         //create dummy data
         val userLoggedIn = true
+        val widgetId = "1212"
         val catalogId = "2222"
 
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = userLoggedIn)
@@ -4414,7 +4417,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onRedeemCoupon_thenReturn(Exception())
 
         //redeem the coupon
-        viewModel.claimCoupon(catalogId)
+        viewModel.claimCoupon(widgetId, catalogId)
 
         //verify the result
         assertTrue(viewModel.couponClaimed.value is Fail)
