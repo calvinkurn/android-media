@@ -177,7 +177,7 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
             card?.cardType = CardUnify.TYPE_BORDER_ACTIVE
         } else {
             card?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-            card?.cardType = CardUnify.TYPE_BORDER_DISABLED
+            card?.cardType = CardUnify.TYPE_CLEAR
         }
     }
 
