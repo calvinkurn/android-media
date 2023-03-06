@@ -162,14 +162,13 @@ open class HomeRevampViewModel @Inject constructor(
     var isFirstLoad = true
 
     private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
-        return homeUseCase.get().getHomeDataFlow(HomeRollenceController.rollenceAtfValue).flowOn(homeDispatcher.get().io)
+        return homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
     }
 
     var getHomeDataJob: Job? = null
 
     init {
         _isRequestNetworkLiveData.value = Event(true)
-        HomeRollenceController.fetchAtfRollenceValue()
         initFlow()
         injectCouponTimeBased()
         homeRateLimit.reset(HOME_LIMITER_KEY)

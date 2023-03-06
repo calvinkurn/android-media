@@ -582,6 +582,7 @@ open class HomeRevampFragment :
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
+        HomeRollenceController.fetchAtfRollenceValue()
 
         // show nav toolbar
         navToolbar?.visibility = View.VISIBLE
@@ -636,9 +637,7 @@ open class HomeRevampFragment :
             refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
         }
 
-        if (!HomeRollenceController.isUsingAtf2Variant()) {
-            stickyLoginView = view.findViewById(R.id.sticky_login_text)
-        }
+        stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
             scrollToRecommendList = requireArguments().getBoolean(SCROLL_RECOMMEND_LIST)
