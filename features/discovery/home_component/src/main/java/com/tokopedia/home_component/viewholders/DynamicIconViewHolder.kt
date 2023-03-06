@@ -43,7 +43,6 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         val LAYOUT = R.layout.home_component_dynamic_icon
         const val SCROLLABLE_ITEM = 5
         const val SCROLLABLE_ITEM_MACRO = 6
-        const val SCROLLABLE_ITEM_REVAMP = 4
         const val SCROLLABLE_ITEM_MACRO_REVAMP = 4
         private const val MARGIN_TOP_MACRO = 6
         private const val MARGIN_BOTTOM_MACRO = 4
@@ -160,10 +159,8 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
 
     private fun setRecyclerView(icons: List<DynamicIconComponent.DynamicIcon>) {
         val isScrollItem =
-            icons.size > if (isRevamp && isUsingMacroInteraction) {
+            icons.size > if (isRevamp) {
                 SCROLLABLE_ITEM_MACRO_REVAMP
-            } else if (isRevamp) {
-                SCROLLABLE_ITEM_REVAMP
             } else if (isUsingMacroInteraction) {
                 SCROLLABLE_ITEM_MACRO
             } else {
@@ -258,7 +255,6 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         companion object {
             @LayoutRes
             val LAYOUT = R.layout.home_component_dynamic_icon_item
-            val LAYOUT_REVAMP = R.layout.home_component_dynamic_icon_revamp_item
             private const val ONE_LINE = 1
             private const val TWO_LINES = 2
         }
