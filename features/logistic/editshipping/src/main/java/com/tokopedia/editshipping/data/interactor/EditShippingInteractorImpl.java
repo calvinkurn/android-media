@@ -19,6 +19,7 @@ import com.tokopedia.editshipping.domain.model.openshopshipping.OpenShopData;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -359,7 +360,7 @@ public class EditShippingInteractorImpl implements EditShippingRetrofitInteracto
         String[] pairs = query != null ? query.split("&") : new String[0];
         for (String pair : pairs) {
             int idx = pair.indexOf("=");
-            queryPairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+            queryPairs.put(URLDecoder.decode(pair.substring(0, idx), StandardCharsets.UTF_8), URLDecoder.decode(pair.substring(idx + 1), StandardCharsets.UTF_8));
         }
         return queryPairs;
     }

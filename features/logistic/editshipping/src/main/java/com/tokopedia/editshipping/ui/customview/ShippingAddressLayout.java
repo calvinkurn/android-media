@@ -49,14 +49,14 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
 
     @Override
     protected void bindView(View view) {
-        addressArea = (EditText) view.findViewById(R.id.address_text_field);
+        addressArea = view.findViewById(R.id.address_text_field);
 
-        chooseLocation = (EditText) view.findViewById(R.id.value_location);
+        chooseLocation = view.findViewById(R.id.value_location);
 
-        phoneNumber = (Typography) view.findViewById(R.id.shop_phone_number);
-        phoneNumberTitle = (Typography) view.findViewById(R.id.shop_phone_number_title);
+        phoneNumber = view.findViewById(R.id.shop_phone_number);
+        phoneNumberTitle = view.findViewById(R.id.shop_phone_number_title);
 
-        phoneNumberButton = (Typography) view.findViewById(R.id.change_phone_number_button);
+        phoneNumberButton = view.findViewById(R.id.change_phone_number_button);
 
         chooseLocation.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,11 +1,12 @@
 package com.tokopedia.editshipping.util
 
+import java.util.*
 import kotlin.math.min
 
 object ShopEditAddressUtils {
 
     fun normalize(address: String): String {
-        var newAddress = address.toLowerCase()
+        var newAddress = address.lowercase(Locale.getDefault())
         newAddress = Regex("[^\\w\\s&]").replace(newAddress, " ")
         val regex =
             """(jalan|jln|jl|blok|kavling|kav|nomor|no|nmr|kecamatan|kec|kabupaten|kab|kota|unknown|unnamed|location|[0-9])""".toRegex()
@@ -54,13 +55,14 @@ object ShopEditAddressUtils {
         return cost[lhsLength - 1]
     }
 
-
     private fun minLenSentence(addr1: String, addr2: String): Int {
         val _addr1 = addr1.split(' ')
         val _addr2 = addr2.split(' ')
 
         return if (_addr1.size <= _addr2.size) {
             _addr1.size
-        } else _addr2.size
+        } else {
+            _addr2.size
+        }
     }
 }

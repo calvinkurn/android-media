@@ -41,14 +41,14 @@ public class CourierView extends EditShippingCourierView<Courier,
 
     @Override
     protected void bindView(View view) {
-        courierNamePlaceHolder = (LinearLayout) view.findViewById(R.id.courier_name_placeholder);
-        courierNameText = (Typography) view.findViewById(R.id.name);
-        courierImageHolder = (ImageView) view.findViewById(R.id.img_courier);
-        shipmentSettings = (LinearLayout) view.findViewById(R.id.shipping_settings);
+        courierNamePlaceHolder = view.findViewById(R.id.courier_name_placeholder);
+        courierNameText = view.findViewById(R.id.name);
+        courierImageHolder = view.findViewById(R.id.img_courier);
+        shipmentSettings = view.findViewById(R.id.shipping_settings);
 
-        packageView = (PackageView) view.findViewById(R.id.children_layout);
-        packageViewHolder = (LinearLayout) view.findViewById(R.id.package_view_holder);
-        courierUnavailableWarning = (Typography) view.findViewById(R.id.courier_unavailable_warning);
+        packageView = view.findViewById(R.id.children_layout);
+        packageViewHolder = view.findViewById(R.id.package_view_holder);
+        courierUnavailableWarning = view.findViewById(R.id.courier_unavailable_warning);
 
     }
 

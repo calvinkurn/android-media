@@ -110,9 +110,9 @@ public class EditShippingWebViewDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_shipping_web_view, container, false);
-        webView = (TkpdWebView) view.findViewById(R.id.additional_option_dialog);
-        Typography editButton = (Typography) view.findViewById(R.id.edit_option_button);
-        Typography closeButton = (Typography) view.findViewById(R.id.close_option_button);
+        webView = view.findViewById(R.id.additional_option_dialog);
+        Typography editButton = view.findViewById(R.id.edit_option_button);
+        Typography closeButton = view.findViewById(R.id.close_option_button);
         courierIndex = getArguments().getInt(COURIER_INDEX_KEY);
         webView.setWebViewClient(new AdditionalOptionsWebViewClient());
         webView.setWebChromeClient(new WebChromeClient());

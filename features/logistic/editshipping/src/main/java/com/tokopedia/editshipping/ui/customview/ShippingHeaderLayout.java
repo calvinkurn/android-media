@@ -52,9 +52,9 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
 
     @Override
     protected void bindView(View view) {
-        zipCode = (AutoCompleteTextView) view.findViewById(R.id.postal_code);
-        shopCity = (EditText) view.findViewById(R.id.text_edit_shipping_city);
-        postalTextInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout_postal_code);
+        zipCode = view.findViewById(R.id.postal_code);
+        shopCity = view.findViewById(R.id.text_edit_shipping_city);
+        postalTextInputLayout = view.findViewById(R.id.text_input_layout_postal_code);
         zipCode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

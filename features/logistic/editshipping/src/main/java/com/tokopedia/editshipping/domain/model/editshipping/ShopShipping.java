@@ -111,7 +111,7 @@ public class ShopShipping implements Parcelable{
 
     protected ShopShipping(Parcel in) {
         cityId = in.readByte() == 0x00 ? null : in.readLong();
-        shippingId = (Object) in.readValue(Object.class.getClassLoader());
+        shippingId = in.readValue(Object.class.getClassLoader());
         cityName = in.readString();
         addrStreet = in.readString();
         provinceName = in.readString();

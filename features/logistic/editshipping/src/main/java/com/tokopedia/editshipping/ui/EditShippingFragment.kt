@@ -163,9 +163,9 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         fragmentShipingMainLayout =
             mainView.findViewById<View>(R.id.fragment_shipping_main_layout) as LinearLayout
         fragmentShippingHeader =
-            mainView.findViewById<View>(R.id.fragment_shipping_header) as com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
+            mainView.findViewById<View>(R.id.fragment_shipping_header) as ShippingHeaderLayout
         addressLayout =
-            mainView.findViewById<View>(R.id.shipping_address_layout) as com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
+            mainView.findViewById<View>(R.id.shipping_address_layout) as ShippingAddressLayout
         submitButtonCreateShop =
             mainView.findViewById<View>(R.id.submit_button_create_shop) as TextView
         scrollView = mainView.findViewById(R.id.main_scroll)
@@ -485,8 +485,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     override fun openGeoLocation() {
         val locationPass = LocationPass()
-        if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty() ?: false &&
-            editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty() ?: false
+        if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty() == true &&
+            editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty() == true
         ) {
             locationPass.latitude = editShippingPresenter?.shopInformation?.shopLatitude
             locationPass.longitude = editShippingPresenter?.shopInformation?.shopLongitude

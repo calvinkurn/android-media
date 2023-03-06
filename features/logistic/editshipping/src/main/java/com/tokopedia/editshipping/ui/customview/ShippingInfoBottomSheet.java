@@ -18,8 +18,8 @@ public class ShippingInfoBottomSheet {
         BottomSheetDialog dialog = new BottomSheetDialog(activity);
         dialog.setContentView(R.layout.shipping_info_bottom_sheet);
 
-        courierInformation = (Typography) dialog.findViewById(R.id.courier_information);
-        serviceNameTextView =(Typography) dialog.findViewById(R.id.courier_name_service);
+        courierInformation = dialog.findViewById(R.id.courier_information);
+        serviceNameTextView = dialog.findViewById(R.id.courier_name_service);
 
         courierInformation.setText(information);
         serviceNameTextView.setText(serviceName);

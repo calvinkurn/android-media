@@ -58,9 +58,9 @@ class ShippingEditorDetailsAdapter :
     }
 
     private inner class NoResultViewHolder(itemView: View) :
-        ShippingEditorDetailsAdapter.BaseViewHolder<ShipperDetailVisitable>(itemView) {
+        BaseViewHolder<ShipperDetailVisitable>(itemView) {
         override fun bind(item: ShipperDetailVisitable, position: Int) {
-            //no-op
+            // no-op
         }
     }
 
@@ -78,5 +78,4 @@ class ShippingEditorDetailsAdapter :
             }
         }
     }
-
 }

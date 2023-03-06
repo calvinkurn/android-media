@@ -41,7 +41,7 @@ public class PackageView extends EditShippingCourierView<Courier,
 
     @Override
     protected void bindView(View view) {
-        checkBoxHolder = (LinearLayout) view.findViewById(R.id.checkbox_holder);
+        checkBoxHolder = view.findViewById(R.id.checkbox_holder);
     }
 
     @Override
