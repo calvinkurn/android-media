@@ -177,15 +177,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
             it.vpFeedTabItemsContainer.adapter = adapter
             it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                    OnPageChangeCallback() {
-                    override fun onPageScrolled(
-                        position: Int,
-                        positionOffset: Float,
-                        positionOffsetPixels: Int
-                    ) {
-                        onChangeTab(position)
-                    }
-                })
+                OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    onChangeTab(position)
+                }
+            })
 
             var firstTabData: FeedDataModel? = null
             var secondTabData: FeedDataModel? = null
@@ -289,7 +289,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun onNavigateToLive() {
-        Toast.makeText(context, "Navigate to Live", Toast.LENGTH_SHORT).show()
+        context?.let {
+            RouteManager.route(it, getString(R.string.feed_applink_live_room))
+        }
     }
 
     private fun onNavigateToProfile() {

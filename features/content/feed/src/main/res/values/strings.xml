@@ -84,6 +84,7 @@ dari Feed.</string>
     <string name="feed_report">Laporkan</string>
     <string name="feed_clear_mode">Mode Nonton</string>
     <string name="feed_report_login_success_toaster_text">Kamu berhasil masuk sebagai Dianthi.</string>
+    <string name="feed_applink_live_room">tokopedia://play/channel_recom?source_type=LIVE</string>
 
 
 </resources>
