@@ -138,6 +138,10 @@ class FaceFilterSetupFragment @Inject constructor(
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         val bottomSheetHeight = bottomSheet.height
                         viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetShown(bottomSheetHeight))
+
+                        viewModel.selectedFaceFilter?.let {
+                            setupFaceFilterSlider(it)
+                        }
                     }
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
@@ -161,12 +165,6 @@ class FaceFilterSetupFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when(event) {
-                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
-                        val fullPageHeight = binding.root.height
-                        val bottomSheetHeight = event.bottomSheetHeight
-
-                        showSliderFaceFilter(bottomSheetHeight, fullPageHeight)
-                    }
                     is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
                         hideFaceSetupBottomSheet()
                         hideSliderFaceFilter()
@@ -180,23 +178,31 @@ class FaceFilterSetupFragment @Inject constructor(
         prev: List<FaceFilterUiModel>?,
         curr: List<FaceFilterUiModel>,
     ) {
-        if(prev == curr || binding.sliderFaceFilter.visibility != View.VISIBLE) return
+        if(prev == curr) return
 
         val prevSelectedFaceFilter = prev?.firstOrNull { it.isSelected }
         val selectedFaceFilter = curr.firstOrNull { it.isSelected } ?: return
 
         if(prevSelectedFaceFilter == selectedFaceFilter) return
 
-        binding.sliderFaceFilter.updateValue((selectedFaceFilter.value * 100).toInt(), null)
+        setupFaceFilterSlider(selectedFaceFilter)
     }
 
-    private fun showSliderFaceFilter(bottomSheetHeight: Int, fullPageHeight: Int) {
-        binding.sliderFaceFilter.doOnApplyWindowInsets { v, insets, _, margin ->
-            val targetY = fullPageHeight - v.height - bottomSheetHeight.toFloat() - offset16
+    private fun setupFaceFilterSlider(selectedFaceFilter: FaceFilterUiModel) {
+        binding.sliderFaceFilter.updateValue((selectedFaceFilter.value * PERCENTAGE_MULTIPLIER).toInt(), null)
+        showSliderFaceFilter()
+    }
 
-            binding.sliderFaceFilter.y = targetY
-            binding.sliderFaceFilter.show()
-        }
+    private fun showSliderFaceFilter() {
+        if(binding.sliderFaceFilter.visibility == View.VISIBLE) return
+
+        val sliderHeight = binding.sliderFaceFilter.height
+        val fullPageHeight = binding.root.height
+        val bottomSheetHeight = binding.bottomSheet.height
+        val targetY = (fullPageHeight - sliderHeight - bottomSheetHeight - offset16).toFloat()
+
+        binding.sliderFaceFilter.y = targetY
+        binding.sliderFaceFilter.show()
     }
 
     private fun hideSliderFaceFilter() {
@@ -216,6 +222,7 @@ class FaceFilterSetupFragment @Inject constructor(
         private const val SLIDER_MIN_VALUE = 0
         private const val SLIDER_MAX_VALUE = 100
         private const val SLIDER_STEP_SIZE = 10
+        private const val PERCENTAGE_MULTIPLIER = 100
 
         const val TAG = "FaceFilterSetupFragment"
 

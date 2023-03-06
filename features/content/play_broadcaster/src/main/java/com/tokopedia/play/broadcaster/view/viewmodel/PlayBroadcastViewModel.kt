@@ -266,6 +266,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             return title is PlayTitleUiModel.HasTitle && title.title.isNotEmpty()
         }
 
+    val selectedFaceFilter: FaceFilterUiModel?
+        get() = _faceFilter.value.firstOrNull { it.isSelected }
+
     private val _channelUiState = _configInfo
         .filterNotNull()
         .map {
