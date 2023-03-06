@@ -922,6 +922,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             val job = async {
                                 try {
                                     val bannerParam = Bundle().apply {
+                                        putString(
+                                            HomeDynamicChannelsRepository.PARAMS,
+                                            atfData.param
+                                        )
                                         this.putString(
                                             HomePageBannerRepository.BANNER_LOCATION_PARAM,
                                             homeChooseAddressRepository.getRemoteData()

@@ -9,6 +9,8 @@ internal object QueryHomeBannerV2 {
     const val HOME_BANNER_QUERY_NAME = "HomeBannerV2Query"
     const val HOME_BANNER_QUERY: String = "query getHomeBannerV2(\$page: String, \$location: String, \$interval: String) {\n" +
         "  getHomeBannerV2(page: \$page, location: \$location, interval: \$interval) {\n" +
+//    const val HOME_BANNER_QUERY: String = "query getHomeBannerV2(\$page: String, \$location: String, \$interval: String, \$param: String) {\n" +
+//        "  getHomeBannerV2(page: \$page, location: \$location, interval: \$interval, param: \$param) {\n" +
         "    banners {\n" +
         "      id\n" +
         "      url\n" +
