@@ -1,5 +1,6 @@
 package com.tokopedia.profilecompletion.profileinfo.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -8,7 +9,7 @@ import com.tokopedia.profilecompletion.profileinfo.data.UserFinancialAssetsData
 import javax.inject.Inject
 
 class UserFinancialAssetsUseCase @Inject constructor(
-    private val graphqlRepository: GraphqlRepository,
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Unit, UserFinancialAssetsData>(dispatcher.io) {
     override fun graphqlQuery(): String =

@@ -1,10 +1,9 @@
 package com.tokopedia.tkpd.flashsale.domain.entity
 
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import kotlinx.parcelize.Parcelize
 
 data class ReservedProduct(
     val products: List<Product>,

@@ -62,6 +62,7 @@ public interface ApplinkConst {
     String POST_ATC = "tokopedia://post-atc/{productId}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
+    String PRODUCT_REVIEW_GALLERY = "tokopedia://product/{id}/review/gallery";
     String PRODUCT_AR = "tokopedia://productar/{product_id}";
     String ADD_PATH = "add";
     String AFFILIATE_UNIQUE_ID = "aff_unique_id";
@@ -125,7 +126,6 @@ public interface ApplinkConst {
     String WISHLIST = "tokopedia://wishlist";
     String NEW_WISHLIST = "tokopedia://new-wishlist";
     String WISHLIST_COLLECTION_DETAIL = "tokopedia://wishlist/collection/{collection_id}";
-    String RECENT_VIEW = "tokopedia://recentlyviewed";
     String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
     String ADD_PHONE = "tokopedia://add-phone";
@@ -237,6 +237,8 @@ public interface ApplinkConst {
     String OMS_ORDER_DETAIL = "tokopedia://order/";
     String MARKETPLACE_ORDER = "tokopedia://marketplace/order";
     String BUYER_ORDER_EXTENSION = "tokopedia://marketplace/buyer-order-extension";
+
+    String BUYER_PARTIAL_ORDER_FULFILLMENT = "tokopedia://marketplace/buyer-partial-order-fulfillment";
     String BELANJA_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
