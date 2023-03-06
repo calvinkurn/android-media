@@ -278,7 +278,6 @@ class HomeViewModelPlayCarouselTest {
             userSessionInterface = getUserSession,
             homePlayUseCase = getPlayUseCase
         )
-        homeViewModel.initFlow()
         homeViewModel.getPlayWidgetWhenShouldRefresh()
 
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
