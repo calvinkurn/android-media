@@ -20,6 +20,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/bottomsheetunify_overlay"
+        android:paddingBottom="24dp"
         app:layout_constraintBottom_toBottomOf="@id/view_feed_tab_indicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,12 +44,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="28dp"
         android:text="@string/feed_for_you_label"
         android:textColor="@color/Unify_NN0"
-        app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
+        app:layout_constraintBottom_toBottomOf="@id/btn_feed_live"
         app:layout_constraintStart_toEndOf="@id/btn_feed_create_post"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btn_feed_live"
         app:typographyType="display_1"
         app:typographyWeight="bold" />
 
@@ -57,12 +57,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="28dp"
         android:text="@string/feed_following_label"
         android:textColor="@color/Unify_NN0"
-        app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
+        app:layout_constraintBottom_toBottomOf="@id/btn_feed_live"
         app:layout_constraintStart_toEndOf="@id/ty_feed_first_tab"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btn_feed_live"
         app:typographyType="display_1"
         app:typographyWeight="bold" />
 
@@ -85,7 +84,6 @@
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="VIDEO"
-        app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
         app:layout_constraintEnd_toStartOf="@id/feed_user_profile_image"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -109,11 +107,11 @@
         android:layout_height="28dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_user_profile_default"
-        app:unify_image_type="circle" />
+        app:unify_image_type="circle"
+        tools:visibility="gone" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
