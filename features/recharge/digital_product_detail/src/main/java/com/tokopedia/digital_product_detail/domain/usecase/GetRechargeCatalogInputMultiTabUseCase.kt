@@ -112,6 +112,13 @@ class GetRechargeCatalogInputMultiTabUseCase @Inject constructor(
                   value
                 }
               }
+              otherComponents {
+                data_collections {
+                  id
+                  key
+                  value
+                }
+              }
             }
           }
         }

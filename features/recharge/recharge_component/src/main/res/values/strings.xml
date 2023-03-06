@@ -9,4 +9,6 @@
     <string name="client_number_prefix_error">Hmm, nggak ketemu provider-nya. Cek lagi, ya.</string>
     <string name="client_number_cta_primary">Lanjut</string>
     <string name="out_of_stock_label_denom_digital">Stok Habis</string>
+    <string name="omni_widget_title">Cek penawaran spesial lainnya</string>
+    <string name="omni_widget_desc">Kamu akan diarahkan ke halaman Telkomsel untuk pilih paket.</string>
 </resources>
