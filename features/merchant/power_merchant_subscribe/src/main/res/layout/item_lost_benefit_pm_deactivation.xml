@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLostBenefitPmDeactivationTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
+        tools:text="@string/pm_discount_shop_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icLostBenefitPmDeactivation"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLostBenefitPmDeactivationDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        app:typographyType="display_3"
+        android:textColor="@color/Unify_NN600"
+        tools:text="@string/pm_discount_shop_desc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLostBenefitPmDeactivationTitle"
+        app:layout_constraintStart_toStartOf="@id/tvLostBenefitPmDeactivationTitle"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/icLostBenefitPmDeactivation"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:unify_image_corner_radius="0"
+        app:layout_constraintTop_toTopOf="@id/tvLostBenefitPmDeactivationTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvLostBenefitPmDeactivationDesc"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

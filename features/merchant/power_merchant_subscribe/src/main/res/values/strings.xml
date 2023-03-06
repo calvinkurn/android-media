@@ -3,12 +3,11 @@
     <string name="label_back">Kembali</string>
     <string name="label_send_answer">Berhenti Jadi Power Merchant</string>
 
-    <string name="pm_bottom_sheet_expired_label"><![CDATA[Setelah menyelesaikan pengajuan, status Power Merchant kamu akan berhenti pada <b>%1$s WIB</b>]]></string>
     <string name="pm_title_activity">Power Merchant</string>
     <string name="pm_membership_detail_title_activity">Detail Keanggotaan</string>
     <string name="pm_label_bottom_sheet_cancel_header">Yakin mau berhenti jadi Power Merchant?</string>
-    <string name="pm_label_bottom_sheet_cancel_button">Ajukan Penghentian</string>
-    <string name="pm_label_bottom_sheet_cancel_desc">Tokomu akan kehilangan semua keuntungan eksklusif Power Merchant, yaitu:</string>
+    <string name="pm_label_bottom_sheet_cancel_button">Lanjut ke Pengajuan</string>
+    <string name="pm_label_bottom_sheet_cancel_desc">Tokomu akan kehilangan Power Badge dan berbagai keuntungan eksklusif, seperti:</string>
     <string name="pm_label_cancellation_questionnaire_intro_title">Sebelum berhenti, bantu tingkatkan layanan Power Merchant, yuk!</string>
 
     <string name="power_merchant_register_now">Gabung Sekarang</string>
@@ -118,13 +117,9 @@
     <string name="pm_pro_general_benefit_1">Badge PM PRO untuk menambah kepercayaan</string>
     <string name="pm_pro_general_benefit_2">Kuota penggunaan fitur lebih banyak</string>
     <string name="pm_pro_general_benefit_3">Akses eksklusif ke semua fitur promosi</string>
-    <string name="pm_be_selected_shop_by_buyer">Menjadi toko pilihan pembeli</string>
-    <string name="pm_get_extra_topads_credit">Dapat tambahan kredit TopAds</string>
-    <string name="pm_get_free_shipping_benefit">Punya layanan Bebas Ongkir</string>
-    <string name="pm_get_excellent_feature">Fitur-fitur unggulan lainnya</string>
 
-    <string name="pm_deactivation_bottom_sheet_message">Regular Merchant dengan jumlah transaksi di atas <b>100</b> transaksi akan dikenakan biaya layanan berdasarkan kategori produk.</string>
-    <string name="pm_pm_deactivation_be_rm_tnc">Agar pengajuanmu terkirim, lanjut beri masukan dulu, ya.</string>
+    <string name="pm_deactivation_bottom_sheet_message">*Berdasarkan data di bulan Desember 2022 - Januari 2023.</string>
+    <string name="pm_pm_deactivation_be_rm_tnc">Agar pengajuan terkirim, Lanjut ke Pengajuan dan beri masukan.</string>
     <string name="pm_stop_pm">Berhenti dari PM</string>
     <string name="pm_regular_merchant">Regular Merchant</string>
     <string name="pm_option_become_regular_merchant_description"><![CDATA[Berjualan di Tokopedia dengan biaya layanan <b>%1$s</b>]]></string>
@@ -213,4 +208,17 @@
     <string name="pm_fallback_page_title">Perbarui app ke versi terbaru, ya.</string>
     <string name="pm_fallback_page_description">Untuk bisa masuk ke halaman Power Merchant dan bergabung ke program ini, Seller App harus dalam versi terbaru.</string>
     <string name="pm_upgrade_seller_app">Perbarui Seller App</string>
+    <string name="pm_flash_sale_shop_title">Flash Sale Toko</string>
+    <string name="pm_flash_sale_shop_desc">Buat campaign sendiri untuk menarik pembeli</string>
+    <string name="pm_discount_shop_title">Diskon Toko</string>
+    <string name="pm_discount_shop_desc">Kasih harga spesial untuk produk di tokomu</string>
+    <string name="pm_smart_reply_title">Smart Reply</string>
+    <string name="pm_smart_reply_desc">Praktis jawab pertanyaan secara otomatis</string>
+    <string name="pm_topads_title">Bonus Kredit TopAds</string>
+    <string name="pm_topads_desc">Jangkau lebih banyak pembeli dengan beriklan</string>
+    <string name="pm_broadcast_chat_title">Broadcast Chat</string>
+    <string name="pm_broadcast_chat_desc">Akses dan bonus kuota untuk kirim chat sekaligus</string>
+    <string name="pm_tokopedia_play_title">Tokopedia Play</string>
+    <string name="pm_tokopedia_play_desc">Berjualan dan berinteraksi live dengan pembeli</string>
+
 </resources>
