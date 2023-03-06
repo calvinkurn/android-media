@@ -51,7 +51,7 @@ class TopadsAutoBidSwitchPartialLayout(
             it.setOnTouchListener { view, motionEvent ->
                 tracker?.autoBidSwitchClicked(it.isChecked)
                 if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                    context.showBidStateChangeConfirmationDialog(isBidAutomatic, {
+                    context.showBidStateChangeConfirmation(isBidAutomatic, {
                         if(isBidAutomatic)
                             tracker?.bidChangeToManualLanjuktanClicked()
                         else
