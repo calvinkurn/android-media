@@ -9,7 +9,6 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseList
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroFaceFilterSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
@@ -121,11 +120,6 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(FaceFilterSetupFragment::class)
     abstract fun getFaceFilterSetupFragment(bottomSheet: FaceFilterSetupFragment) : Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayBroFaceFilterSetupBottomSheet::class)
-    abstract fun getPlayBroFaceFilterSetupBottomSheet(bottomSheet: PlayBroFaceFilterSetupBottomSheet) : Fragment
 
     @Binds
     @IntoMap
