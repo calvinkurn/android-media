@@ -16,7 +16,7 @@ data class BannerRevampDataModel(
         val cardInteraction: Boolean = false,
         val enableDotsAndInfiniteScroll: Boolean = false,
         val scrollTransitionDuration: Long = 5000L
-): ImpressHolder(), HomeComponentVisitable{
+) : ImpressHolder(), HomeComponentVisitable{
     override fun visitableId(): String? {
         return channelModel?.id
     }

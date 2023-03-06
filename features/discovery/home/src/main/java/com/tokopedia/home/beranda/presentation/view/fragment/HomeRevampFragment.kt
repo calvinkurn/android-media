@@ -1,3 +1,4 @@
+
 package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.annotation.SuppressLint
@@ -102,7 +103,17 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.helper.*
+import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
+import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
+import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread
+import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
+import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.runAutoRefreshJob
+import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.setSubscriptionCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.stopAutoRefreshJob
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetComponentCallback
@@ -181,7 +192,10 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.remoteconfig.*
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar

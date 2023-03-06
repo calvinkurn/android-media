@@ -17,7 +17,6 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="9dp"
             android:contentDescription="@string/sticky_icon"
-            android:src="@drawable/ic_tokopedia_login_widget"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
