@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.error
+package com.tokopedia.product.detail.postatc.view.component.error
 
 import com.tokopedia.product.detail.databinding.ItemPostAtcErrorBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcListener

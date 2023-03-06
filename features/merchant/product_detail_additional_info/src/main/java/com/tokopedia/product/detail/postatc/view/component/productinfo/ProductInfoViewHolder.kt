@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.productinfo
+package com.tokopedia.product.detail.postatc.view.component.productinfo
 
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.databinding.ItemProductInfoBinding

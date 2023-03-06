@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.loading
+package com.tokopedia.product.detail.postatc.view.component.loading
 
 import com.tokopedia.product.detail.databinding.ItemPostAtcLoadingBinding
 import com.tokopedia.product.detail.postatc.base.PostAtcViewHolder

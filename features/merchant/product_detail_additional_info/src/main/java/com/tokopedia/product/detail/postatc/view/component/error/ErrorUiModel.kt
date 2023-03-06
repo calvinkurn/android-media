@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.error
+package com.tokopedia.product.detail.postatc.view.component.error
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
@@ -11,4 +11,5 @@ data class ErrorUiModel(
 ) : PostAtcUiModel {
     override val id = hashCode()
     override fun equalsWith(newItem: PostAtcUiModel) = id == newItem.id
+    override fun newInstance(): PostAtcUiModel = copy()
 }

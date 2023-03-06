@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.productinfo
+package com.tokopedia.product.detail.postatc.view.component.productinfo
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
@@ -22,4 +22,5 @@ data class ProductInfoUiModel(
             buttonText == newItem.buttonText &&
             cartId == newItem.cartId
     }
+    override fun newInstance(): PostAtcUiModel = copy()
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.recommendation
+package com.tokopedia.product.detail.postatc.view.component.recommendation
 
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.databinding.ItemRecommendationBinding
@@ -12,12 +12,11 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 class RecommendationViewHolder(
     private val binding: ItemRecommendationBinding,
     private val listener: PostAtcListener
-) : PostAtcViewHolder<RecommendationUiModel>(binding.root), RecomCarouselWidgetBasicListener, RecommendationCarouselTokonowListener {
-
-    private var id: Int? = null
+) : PostAtcViewHolder<RecommendationUiModel>(binding.root),
+    RecomCarouselWidgetBasicListener,
+    RecommendationCarouselTokonowListener {
 
     override fun bind(element: RecommendationUiModel) {
-        id = element.id
         binding.apply {
             val widget = element.widget
 
@@ -27,21 +26,18 @@ class RecommendationViewHolder(
                     tokonowListener = this@RecommendationViewHolder
                 )
                 listener.fetchRecommendation(element.name, element.id)
-            } else if (widget.recommendationItemList.isNotEmpty()) {
+            } else {
                 postAtcRecommCarousel.bind(
                     carouselData = RecommendationCarouselData(
                         recommendationData = widget,
                         state = RecommendationCarouselData.STATE_READY
                     ),
-                    adapterPosition = 0,
                     basicListener = this@RecommendationViewHolder,
                     tokonowListener = this@RecommendationViewHolder
                 )
                 root.addOnImpressionListener(element.impressHolder) {
                     listener.impressComponent(getComponentTrackData(element))
                 }
-            } else {
-                listener.removeComponent(element.id)
             }
         }
     }
@@ -56,17 +52,32 @@ class RecommendationViewHolder(
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {
     }
 
-    override fun onRecomProductCardImpressed(data: RecommendationCarouselData, recomItem: RecommendationItem, itemPosition: Int, adapterPosition: Int) {
+    override fun onRecomProductCardImpressed(
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
+    ) {
     }
 
-    override fun onRecomProductCardClicked(data: RecommendationCarouselData, recomItem: RecommendationItem, applink: String, itemPosition: Int, adapterPosition: Int) {
+    override fun onRecomProductCardClicked(
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        applink: String,
+        itemPosition: Int,
+        adapterPosition: Int
+    ) {
         listener.goToProduct(recomItem.productId.toString())
     }
 
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) {
     }
 
-    override fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int) {
+    override fun onRecomBannerClicked(
+        data: RecommendationCarouselData,
+        applink: String,
+        adapterPosition: Int
+    ) {
     }
 
     override fun onChannelWidgetEmpty() {
@@ -78,9 +89,18 @@ class RecommendationViewHolder(
     override fun onShowError(pageName: String, e: Throwable) {
     }
 
-    override fun onRecomProductCardAddToCartNonVariant(data: RecommendationCarouselData, recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
+    override fun onRecomProductCardAddToCartNonVariant(
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        adapterPosition: Int,
+        quantity: Int
+    ) {
     }
 
-    override fun onRecomProductCardAddVariantClick(data: RecommendationCarouselData, recomItem: RecommendationItem, adapterPosition: Int) {
+    override fun onRecomProductCardAddVariantClick(
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        adapterPosition: Int
+    ) {
     }
 }

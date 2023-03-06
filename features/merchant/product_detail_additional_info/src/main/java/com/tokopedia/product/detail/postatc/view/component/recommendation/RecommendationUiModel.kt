@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.recommendation
+package com.tokopedia.product.detail.postatc.view.component.recommendation
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
@@ -15,4 +15,5 @@ data class RecommendationUiModel(
         return newItem is RecommendationUiModel &&
             widget == newItem.widget
     }
+    override fun newInstance(): PostAtcUiModel = copy()
 }

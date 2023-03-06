@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.productinfo
+package com.tokopedia.product.detail.postatc.view.component.productinfo
 
 import android.view.View
 import android.view.ViewGroup

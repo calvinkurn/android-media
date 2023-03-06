@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.query
+package com.tokopedia.product.detail.postatc.data.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 

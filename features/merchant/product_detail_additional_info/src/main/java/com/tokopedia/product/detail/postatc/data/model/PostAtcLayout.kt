@@ -1,9 +1,8 @@
-package com.tokopedia.product.detail.postatc.model
+package com.tokopedia.product.detail.postatc.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
-import com.tokopedia.product.detail.postatc.model.PostAtcComponentData as Data
+import com.tokopedia.product.detail.postatc.data.model.PostAtcComponentData as Data
 
 data class PostAtcLayout(
     @SerializedName("name")

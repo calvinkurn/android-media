@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.postatc.component.loading
+package com.tokopedia.product.detail.postatc.view.component.loading
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
@@ -10,4 +10,5 @@ data class LoadingUiModel(
 ) : PostAtcUiModel {
     override val id = hashCode()
     override fun equalsWith(newItem: PostAtcUiModel) = id == newItem.id
+    override fun newInstance(): PostAtcUiModel = copy()
 }
