@@ -76,7 +76,7 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
     }
 
     private fun notifyItemRangeChangeAll() {
-        notifyItemRangeChanged(0, itemCount - 1)
+        notifyItemRangeChanged(0, itemCount)
     }
 
     inner class DtAnchorTabViewHolder(
