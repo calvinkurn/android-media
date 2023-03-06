@@ -1,50 +1,33 @@
 package com.tokopedia.feedplus.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.data.FeedXHomeEntity
-import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.feedplus.domain.mapper.MapperFeedHome
+import com.tokopedia.feedplus.presentation.model.FeedModel
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 23/02/23
  */
-@GqlQuery(FeedXHomeUseCase.QUERY_NAME, FeedXHomeUseCase.QUERY)
 class FeedXHomeUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<FeedXHomeEntity.Response>(graphqlRepository) {
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<Map<String, Any>, FeedModel>(dispatcher.io) {
 
-    init {
-        setTypeClass(FeedXHomeEntity.Response::class.java)
-        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setGraphqlQuery(FeedXHomeQuery())
+    override suspend fun execute(params: Map<String, Any>): FeedModel {
+        val response =
+            graphqlRepository.request<Map<String, Any>, FeedXHomeEntity.Response>(
+                graphqlQuery(),
+                params
+            )
+        return MapperFeedHome.transform(response.feedXHome)
     }
 
-    fun createParams(source: String, cursor: String, limit: Int = 0, detailId: String = "") {
-        val params = mutableMapOf(
-            PARAMS_SOURCE to source,
-            PARAMS_CURSOR to cursor,
-            PARAMS_LIMIT to limit
-        )
-        if (detailId.isNotEmpty()) {
-            params[PARAMS_SOURCE_ID] = detailId
-        }
-
-        setRequestParams(mapOf(PARAMS_REQUEST to params))
-    }
-
-    companion object {
-        private const val PARAMS_REQUEST = "req"
-
-        private const val PARAMS_SOURCE = "source"
-        private const val PARAMS_SOURCE_ID = "sourceID"
-        private const val PARAMS_CURSOR = "cursor"
-        private const val PARAMS_LIMIT = "limit"
-
-        const val QUERY_NAME = "FeedXHomeQuery"
-        const val QUERY = """
+    override fun graphqlQuery(): String = """
             query feedXHome(${'$'}req: FeedXHomeRequest!) {
               feedXHome(req:${'$'}req) {
                 items {
@@ -387,6 +370,32 @@ class FeedXHomeUseCase @Inject constructor(
               shopName
               mods
             }
-        """
+        """.trimIndent()
+
+    fun createParams(
+        source: String,
+        cursor: String,
+        limit: Int = 0,
+        detailId: String = ""
+    ): Map<String, Any> {
+        val params = mutableMapOf(
+            PARAMS_SOURCE to source,
+            PARAMS_CURSOR to cursor,
+            PARAMS_LIMIT to limit
+        )
+        if (detailId.isNotEmpty()) {
+            params[PARAMS_SOURCE_ID] = detailId
+        }
+
+        return mapOf(PARAMS_REQUEST to params)
+    }
+
+    companion object {
+        private const val PARAMS_REQUEST = "req"
+
+        private const val PARAMS_SOURCE = "source"
+        private const val PARAMS_SOURCE_ID = "sourceID"
+        private const val PARAMS_CURSOR = "cursor"
+        private const val PARAMS_LIMIT = "limit"
     }
 }

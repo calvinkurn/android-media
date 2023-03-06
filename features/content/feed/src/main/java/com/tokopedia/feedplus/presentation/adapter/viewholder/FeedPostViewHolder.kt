@@ -103,11 +103,7 @@ class FeedPostViewHolder(
                 binding.productTagButton.root.hide()
             }
             PRODUCT_COUNT_ONE -> {
-                binding.productTagView.tvTagProduct.text =
-                    itemView.context.getString(
-                        R.string.feeds_tag_product_name_text,
-                        productData.firstOrNull()?.name
-                    )
+                binding.productTagView.tvTagProduct.text = productData.firstOrNull()?.name
                 binding.productTagButton.tvPlayProductCount.text = numberOfTaggedProducts.toString()
             }
             else -> {

@@ -2,14 +2,13 @@ package com.tokopedia.feedplus.presentation.fragment
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -92,6 +91,17 @@ class FeedFragment :
 
     private lateinit var feedMenuSheet: ContentThreeDotsMenuBottomSheet
 
+    private val reportPostLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK && ::feedMenuSheet.isInitialized) {
+                feedMenuSheet.showReportLayoutWhenLaporkanClicked()
+                feedMenuSheet.showToasterOnLoginSuccessFollow(
+                    getString(feedR.string.feed_report_login_success_toaster_text),
+                    Toaster.TYPE_NORMAL
+                )
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -125,51 +135,7 @@ class FeedFragment :
         observeClearViewData()
         observePostData()
         observeAddToCart()
-    }
-
-    private fun observeAddToCart() {
-        feedPostViewModel.atcRespData.observe(
-            viewLifecycleOwner
-        ) {
-            when (it) {
-                is FeedResult.Success -> {
-                    productBottomSheet?.showToastWithAction(
-                        getString(feedR.string.feeds_add_to_cart_success_text),
-                        Toaster.TYPE_NORMAL,
-                        getString(feedR.string.feeds_add_to_cart_toaster_action_text)
-                    ) {
-                        moveToAddToCartPage()
-                    }
-                }
-                is FeedResult.Failure -> {
-                    val errorMessage =
-                        it.error.message
-                    if (errorMessage != null) {
-                        productBottomSheet?.showToasterOnBottomSheetOnSuccessFollow(
-                            errorMessage,
-                            Toaster.TYPE_ERROR
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
-        feedMainViewModel.run {
-            reportResponse.observe(lifecycleOwner) {
-                when (it) {
-                    is Success -> {
-                        if (::feedMenuSheet.isInitialized) {
-                            feedMenuSheet.setFinalView()
-                        }
-                    }
-                    is Fail -> Toast.makeText(context, "Laporkan fail", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
+        observeReport()
     }
 
     override fun onDestroyView() {
@@ -189,28 +155,6 @@ class FeedFragment :
     }
 
     override fun getScreenName(): String = "Feed Fragment"
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (data == null) {
-            return
-        }
-
-        when (requestCode) {
-            REQUEST_REPORT_POST_LOGIN -> if (resultCode == Activity.RESULT_OK) {
-                if (::feedMenuSheet.isInitialized) {
-                    feedMenuSheet.showReportLayoutWhenLaporkanClicked()
-                    feedMenuSheet.showToasterOnLoginSuccessFollow(
-                        getString(feedR.string.feed_report_login_success_toaster_text),
-                        Toaster.TYPE_NORMAL
-                    )
-                }
-            }
-            else -> {
-            }
-        }
-    }
 
     override fun onMenuClicked(model: FeedCardImageContentModel) {
         activity?.let {
@@ -250,6 +194,189 @@ class FeedFragment :
 
     override fun inClearViewMode(): Boolean = isInClearViewMode
 
+    override fun onSharePostClicked(model: FeedCardImageContentModel) {
+        activity?.let {
+            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder()
+                .setId(model.id)
+                .setName(
+                    String.format(
+                        getString(feedR.string.feed_share_title),
+                        model.author.name
+                    )
+                )
+                .setDescription(
+                    String.format(
+                        getString(feedR.string.feed_share_desc_text),
+                        model.author.name
+                    )
+                )
+                .setDesktopUrl(model.weblink)
+                .setType(LinkerData.FEED_TYPE)
+                .setImgUri(model.media.firstOrNull()?.mediaUrl ?: "")
+                .setDeepLink(model.applink)
+                .setUri(model.weblink)
+
+            shareData = shareDataBuilder.build()
+            showUniversalShareBottomSheet(getFeedShareDataModel(model))
+        }
+    }
+
+    override fun onProductTagItemClicked(model: FeedCardImageContentModel) {
+        openProductTagBottomSheet(model)
+    }
+
+    override fun onProductTagViewClicked(model: FeedCardImageContentModel) {
+        val numberOfTaggedProducts = model.totalProducts
+        val productData =
+            if (model.isTypeProductHighlight) model.products else model.tags
+
+        if (numberOfTaggedProducts == 1) {
+            val appLink = productData.firstOrNull()?.applink
+            if (appLink?.isNotEmpty() == true) {
+                activity?.let {
+                    RouteManager.route(it, appLink)
+                }
+            }
+        } else {
+            openProductTagBottomSheet(model)
+        }
+    }
+
+    override fun onBottomSheetThreeDotsClicked(
+        item: ProductPostTagModelNew,
+        context: Context,
+        shopId: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTaggedProductCardImpressed(
+        activityId: String,
+        postTagItemList: List<FeedXProduct>,
+        type: String,
+        shopId: String,
+        isFollowed: Boolean,
+        mediaType: String,
+        hasVoucher: Boolean,
+        authorType: String
+    ) {
+        // To be used for analytics
+    }
+
+    override fun onTaggedProductCardClicked(
+        positionInFeed: Int,
+        redirectUrl: String,
+        postTagItem: FeedXProduct,
+        itemPosition: Int,
+        mediaType: String
+    ) {
+        RouteManager.route(requireContext(), redirectUrl)
+    }
+
+    override fun onAddToCartButtonClicked(item: ProductPostTagModelNew) {
+        feedPostViewModel.addToCart(
+            productId = item.product.id,
+            productName = item.product.name,
+            price = item.price,
+            shopId = item.shopId
+        )
+    }
+
+    override fun onAddToWishlistButtonClicked(item: ProductPostTagModelNew, rowNumber: Int) {
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        dissmisByGreyArea = false
+        universalShareBottomSheet?.dismiss()
+
+        val linkerShareData = DataMapper().getLinkerShareData(shareData)
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                0,
+                linkerShareData,
+                object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                        context?.let {
+                            val shareString =
+                                if (shareData?.description?.contains("%s") == true) {
+                                    shareData?.description?.let { it1 ->
+                                        String.format(
+                                            it1,
+                                            linkerShareData?.shareUri ?: ""
+                                        )
+                                    }
+                                } else {
+                                    shareData?.description + "\n" + linkerShareData?.shareUri
+                                }
+
+                            if (shareString != null) {
+                                SharingUtil.executeShareIntent(
+                                    shareModel,
+                                    linkerShareData,
+                                    activity,
+                                    view,
+                                    shareString
+                                )
+                            }
+
+                            universalShareBottomSheet?.dismiss()
+                        }
+                    }
+
+                    override fun onError(linkerError: LinkerError?) {
+                        // Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
+                    }
+                }
+            )
+        )
+    }
+
+    override fun onCloseOptionClicked() {
+        dissmisByGreyArea = false
+    }
+
+    private fun observeAddToCart() {
+        feedPostViewModel.atcRespData.observe(
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is FeedResult.Success -> {
+                    productBottomSheet?.showToastWithAction(
+                        getString(feedR.string.feeds_add_to_cart_success_text),
+                        Toaster.TYPE_NORMAL,
+                        getString(feedR.string.feeds_add_to_cart_toaster_action_text)
+                    ) {
+                        moveToAddToCartPage()
+                    }
+                }
+                is FeedResult.Failure -> {
+                    val errorMessage =
+                        it.error.message
+                    if (errorMessage != null) {
+                        productBottomSheet?.showToasterOnBottomSheetOnSuccessFollow(
+                            errorMessage,
+                            Toaster.TYPE_ERROR
+                        )
+                    }
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun observeReport() {
+        feedMainViewModel.reportResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (::feedMenuSheet.isInitialized) {
+                        feedMenuSheet.setFinalView()
+                    }
+                }
+                is Fail -> Toast.makeText(context, "Laporkan fail", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun initView() {
         binding?.let {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -260,12 +387,10 @@ class FeedFragment :
             it.rvFeedPost.adapter = adapter
             it.rvFeedPost.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    layoutManager?.let { lm ->
-                        adapter?.let { mAdapter ->
-                            if (newState == RecyclerView.SCROLL_STATE_IDLE && lm.findLastVisibleItemPosition() >= (mAdapter.itemCount - MINIMUM_ENDLESS_CALL)) {
-                                feedPostViewModel.fetchFeedPosts()
-                            }
-                        }
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE &&
+                        layoutManager!!.findLastVisibleItemPosition() >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL)
+                    ) {
+                        feedPostViewModel.fetchFeedPosts()
                     }
                 }
             })
@@ -291,36 +416,9 @@ class FeedFragment :
     }
 
     private fun onGoToLogin() {
-        if (activity != null) {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            requireActivity().startActivityForResult(intent, REQUEST_REPORT_POST_LOGIN)
-        }
-    }
-
-    override fun onSharePostClicked(model: FeedCardImageContentModel) {
         activity?.let {
-            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder()
-                .setId(model.id)
-                .setName(
-                    String.format(
-                        getString(feedR.string.feed_share_title),
-                        model.author.name
-                    )
-                )
-                .setDescription(
-                    String.format(
-                        getString(feedR.string.feed_share_desc_text),
-                        model.author.name
-                    )
-                )
-                .setDesktopUrl(model.weblink)
-                .setType(LinkerData.FEED_TYPE)
-                .setImgUri(model.media.firstOrNull()?.mediaUrl ?: "")
-                .setDeepLink(model.applink)
-                .setUri(model.weblink)
-
-            shareData = shareDataBuilder.build()
-            showUniversalShareBottomSheet(getFeedShareDataModel(model))
+            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+            reportPostLoginResult.launch(intent)
         }
     }
 
@@ -402,40 +500,6 @@ class FeedFragment :
         return items
     }
 
-    companion object {
-        private const val ARGUMENT_DATA = "ARGUMENT_DATA"
-        const val REQUEST_REPORT_POST_LOGIN = 1201
-
-        private const val MINIMUM_ENDLESS_CALL = 1
-
-        fun createFeedFragment(data: FeedDataModel): FeedFragment = FeedFragment().also {
-            it.arguments = Bundle().apply {
-                putParcelable(ARGUMENT_DATA, data)
-            }
-        }
-    }
-
-    override fun onProductTagItemClicked(model: FeedCardImageContentModel) {
-        openProductTagBottomSheet(model)
-    }
-
-    override fun onProductTagViewClicked(model: FeedCardImageContentModel) {
-        val numberOfTaggedProducts = model.totalProducts
-        val productData =
-            if (model.isTypeProductHighlight) model.products else model.tags
-
-        if (numberOfTaggedProducts == 1) {
-            val appLink = productData.firstOrNull()?.applink
-            if (appLink?.isNotEmpty() == true) {
-                activity?.let {
-                    RouteManager.route(it, appLink)
-                }
-            }
-        } else {
-            openProductTagBottomSheet(model)
-        }
-    }
-
     private fun openProductTagBottomSheet(feedXCard: FeedCardImageContentModel) {
         productBottomSheet = ProductItemInfoBottomSheet()
         productBottomSheet?.show(
@@ -456,100 +520,19 @@ class FeedFragment :
         )
     }
 
-    override fun onBottomSheetThreeDotsClicked(
-        item: ProductPostTagModelNew,
-        context: Context,
-        shopId: String
-    ) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onTaggedProductCardImpressed(
-        activityId: String,
-        postTagItemList: List<FeedXProduct>,
-        type: String,
-        shopId: String,
-        isFollowed: Boolean,
-        mediaType: String,
-        hasVoucher: Boolean,
-        authorType: String
-    ) {
-        // To be used for analytics
-    }
-
-    override fun onTaggedProductCardClicked(
-        positionInFeed: Int,
-        redirectUrl: String,
-        postTagItem: FeedXProduct,
-        itemPosition: Int,
-        mediaType: String
-    ) {
-        RouteManager.route(requireContext(), redirectUrl)
-    }
-
-    override fun onAddToCartButtonClicked(item: ProductPostTagModelNew) {
-        feedPostViewModel.addToCart(
-            productId = item.product.id,
-            productName = item.product.name,
-            price = item.price,
-            shopId = item.shopId
-        )
-    }
-
-    override fun onAddToWishlistButtonClicked(item: ProductPostTagModelNew, rowNumber: Int) {
-    }
-
     private fun moveToAddToCartPage() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
-    override fun onShareOptionClicked(shareModel: ShareModel) {
-        dissmisByGreyArea = false
-        universalShareBottomSheet?.dismiss()
+    companion object {
+        private const val ARGUMENT_DATA = "ARGUMENT_DATA"
 
-        val linkerShareData = DataMapper().getLinkerShareData(shareData)
-        LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(
-                0,
-                linkerShareData,
-                object : ShareCallback {
-                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        context?.let {
-                            val shareString =
-                                if (shareData?.description?.contains("%s") == true) {
-                                    shareData?.description?.let { it1 ->
-                                        String.format(
-                                            it1,
-                                            linkerShareData?.shareUri ?: ""
-                                        )
-                                    }
-                                } else {
-                                    shareData?.description + "\n" + linkerShareData?.shareUri
-                                }
+        private const val MINIMUM_ENDLESS_CALL = 1
 
-                            if (shareString != null) {
-                                SharingUtil.executeShareIntent(
-                                    shareModel,
-                                    linkerShareData,
-                                    activity,
-                                    view,
-                                    shareString
-                                )
-                            }
-
-                            universalShareBottomSheet?.dismiss()
-                        }
-                    }
-
-                    override fun onError(linkerError: LinkerError?) {
-                        // Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
-                    }
-                }
-            )
-        )
-    }
-
-    override fun onCloseOptionClicked() {
-        dissmisByGreyArea = false
+        fun createFeedFragment(data: FeedDataModel): FeedFragment = FeedFragment().also {
+            it.arguments = Bundle().apply {
+                putParcelable(ARGUMENT_DATA, data)
+            }
+        }
     }
 }

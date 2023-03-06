@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
-import com.tokopedia.feedplus.domain.mapper.MapperFeedHome
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -16,7 +15,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -41,22 +39,20 @@ class FeedPostViewModel @Inject constructor(
 
     fun fetchFeedPosts() {
         launchCatchError(dispatchers.main, block = {
-            val response = withContext(dispatchers.io) {
-                val cursor = feedHome.value?.let {
-                    if (it is Success) {
-                        it.data.pagination.cursor
-                    } else {
-                        ""
-                    }
-                } ?: ""
-
+            val cursor = feedHome.value?.let {
+                if (it is Success) {
+                    it.data.pagination.cursor
+                } else {
+                    ""
+                }
+            } ?: ""
+            val response = feedXHomeUseCase(
                 feedXHomeUseCase.createParams(
                     source,
                     cursor
                 )
-                val result = feedXHomeUseCase.executeOnBackground()
-                MapperFeedHome.transform(result.feedXHome)
-            }
+            )
+
             _feedHome.value = Success(response)
         }) {
             _feedHome.value = Fail(it)
