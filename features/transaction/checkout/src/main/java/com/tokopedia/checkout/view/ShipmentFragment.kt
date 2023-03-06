@@ -3491,7 +3491,7 @@ class ShipmentFragment :
         val validateUsePromoRevampUiModel = shipmentPresenter.validateUsePromoRevampUiModel
         if (validateUsePromoRevampUiModel != null) {
             if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
-                validateUsePromoRevampUiModel.promoUiModel.codes.clear()
+                validateUsePromoRevampUiModel.promoUiModel.codes = listOf()
             }
             val deletedVoucherOrder = ArrayList<PromoCheckoutVoucherOrdersItemUiModel>()
             val voucherOrderUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels.toMutableList()
