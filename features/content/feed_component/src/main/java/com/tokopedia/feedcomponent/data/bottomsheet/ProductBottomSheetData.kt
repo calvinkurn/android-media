@@ -3,7 +3,7 @@ package com.tokopedia.feedcomponent.data.bottomsheet
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 
 data class ProductBottomSheetData(
-    val products: List<FeedXProduct> = mutableListOf(),
+    val products: List<FeedXProduct> = emptyList(),
     val postId: String = "",
     val shopId: String = "",
     val postType: String = "",

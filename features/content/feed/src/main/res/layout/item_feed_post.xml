@@ -27,14 +27,14 @@
 
     <include
         android:id="@+id/product_tag_view"
+        layout="@layout/feed_product_tag_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        layout="@layout/feed_product_tag_view"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/layout_author_info"
-        tools:visibility="visible"/>
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
 
     <include
@@ -78,7 +78,7 @@
         app:layout_constraintBottom_toTopOf="@id/comment_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:unify_image_type="circle"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/comment_button"
@@ -94,7 +94,7 @@
         app:layout_constraintBottom_toTopOf="@id/share_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:unify_image_type="circle"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/share_button"
@@ -110,7 +110,7 @@
         app:layout_constraintBottom_toTopOf="@id/menu_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:unify_image_type="circle"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/menu_button"
@@ -126,20 +126,20 @@
         app:layout_constraintBottom_toTopOf="@id/product_tag_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:unify_image_type="circle"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/product_tag_button"
+        layout="@layout/view_product_see_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
         android:layout_marginEnd="12dp"
-        layout="@layout/view_product_see_more"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toTopOf="@id/btn_disable_clear_mode"
-        tools:visibility="visible"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_disable_clear_mode"

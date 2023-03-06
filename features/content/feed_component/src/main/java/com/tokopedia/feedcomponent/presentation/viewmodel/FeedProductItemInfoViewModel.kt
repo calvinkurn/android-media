@@ -73,12 +73,12 @@ class FeedProductItemInfoViewModel @Inject constructor(
                 _feedProductsResponse.value =
                     FeedXProductResult.LoadingState(isLoading = true, loadingMore = true)
             }
-            feedXGetActivityProductsUseCase.setRequestParams(
+
+            val response = feedXGetActivityProductsUseCase(
                 feedXGetActivityProductsUseCase.getFeedDetailParam(
                     activityId, cursor
                 )
             )
-            val response = feedXGetActivityProductsUseCase.executeOnBackground()
             handleDataForFeedDetail(response.data, page)
         }, onError =
         {
