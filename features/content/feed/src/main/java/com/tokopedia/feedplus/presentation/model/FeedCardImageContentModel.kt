@@ -17,6 +17,7 @@ data class FeedCardImageContentModel(
     val cta: FeedCardCtaModel,
     val ribbonImageUrl: String,
     val applink: String,
+    val weblink: String,
     val applinkProductList: String,
     val actionButtonLabel: String,
     val products: List<FeedCardProductModel>,

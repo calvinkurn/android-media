@@ -64,6 +64,9 @@ class FeedPostViewHolder(
                 menuButton.setOnClickListener { _ ->
                     listener.onMenuClicked(it)
                 }
+                shareButton.setOnClickListener {
+                    listener.onSharePostClicked(element)
+                }
 
                 btnDisableClearMode.setOnClickListener {
                     if (listener.inClearViewMode()) {
@@ -76,9 +79,44 @@ class FeedPostViewHolder(
                 } else {
                     hideClearView()
                 }
+                productTagButton.root.setOnClickListener {
+                    listener.onProductTagItemClicked(element)
+                }
+                productTagView.root.setOnClickListener {
+                    listener.onProductTagViewClicked(element)
+                }
+                setUpProductTagButtonText(feedCardModel = element)
 
                 root.setOnClickListener {
                 }
+            }
+        }
+    }
+
+    private fun setUpProductTagButtonText(feedCardModel: FeedCardImageContentModel) {
+        val productData =
+            if (feedCardModel.isTypeProductHighlight) feedCardModel.products else feedCardModel.tags
+
+        when (val numberOfTaggedProducts = feedCardModel.totalProducts) {
+            PRODUCT_COUNT_ZERO -> {
+                binding.productTagView.root.hide()
+                binding.productTagButton.root.hide()
+            }
+            PRODUCT_COUNT_ONE -> {
+                binding.productTagView.tvTagProduct.text =
+                    itemView.context.getString(
+                        R.string.feeds_tag_product_name_text,
+                        productData.firstOrNull()?.name
+                    )
+                binding.productTagButton.tvPlayProductCount.text = numberOfTaggedProducts.toString()
+            }
+            else -> {
+                binding.productTagView.tvTagProduct.text =
+                    itemView.context.getString(
+                        R.string.feeds_tag_product_text,
+                        numberOfTaggedProducts
+                    )
+                binding.productTagButton.tvPlayProductCount.text = numberOfTaggedProducts.toString()
             }
         }
     }
@@ -109,8 +147,8 @@ class FeedPostViewHolder(
             commentButton.hide()
             menuButton.hide()
             shareButton.hide()
-            productTagButton.hide()
-
+            productTagButton.root.hide()
+            productTagView.root.hide()
             btnDisableClearMode.show()
         }
     }
@@ -123,13 +161,16 @@ class FeedPostViewHolder(
             commentButton.show()
             menuButton.show()
             shareButton.show()
-            productTagButton.show()
-
+            productTagButton.root.show()
+            productTagView.root.show()
             btnDisableClearMode.hide()
         }
     }
 
     companion object {
+        const val PRODUCT_COUNT_ZERO = 0
+        const val PRODUCT_COUNT_ONE = 1
+
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post
     }
