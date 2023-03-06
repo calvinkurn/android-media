@@ -71,7 +71,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             viewModel.setSource(source.orEmpty())
 
             // please, make sure project id already set in viewModel
-            viewModel.getProjectInfo(viewModel.projectId.toInt())
+            viewModel.getProjectInfo(viewModel.projectId)
         }
     }
 

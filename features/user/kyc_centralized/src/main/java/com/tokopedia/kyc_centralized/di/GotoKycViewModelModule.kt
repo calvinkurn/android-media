@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentViewModel
 import dagger.Binds
@@ -29,6 +30,11 @@ abstract class GotoKycViewModelModule {
     @IntoMap
     @ViewModelKey(OnboardProgressiveViewModel::class)
     abstract fun onboardProgressiveViewModel(viewModel: OnboardProgressiveViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BridgingAccountLinkingViewModel::class)
+    abstract fun bridgingAccountLinkingViewModel(viewModel: BridgingAccountLinkingViewModel): ViewModel
 
     @Binds
     @ActivityScope

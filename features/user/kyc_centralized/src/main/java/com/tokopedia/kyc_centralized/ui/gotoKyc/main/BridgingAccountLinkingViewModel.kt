@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.ui.gotoKyc.transparent
+package com.tokopedia.kyc_centralized.ui.gotoKyc.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,19 +9,17 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoUseCase
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveUseCase
 import javax.inject.Inject
 
-class GotoKycTransparentViewModel @Inject constructor(
+class BridgingAccountLinkingViewModel @Inject constructor(
     private val projectInfoUseCase: ProjectInfoUseCase,
     private val checkEligibilityUseCase: CheckEligibilityUseCase,
+    private val registerProgressiveUseCase: RegisterProgressiveUseCase,
     dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.main)  {
-
-    var projectId = ""
-        private set
-
-    var source = ""
-        private set
+) : BaseViewModel(dispatcher.main) {
 
     private val _projectInfo = MutableLiveData<ProjectInfoResult>()
     val projectInfo: LiveData<ProjectInfoResult> get() = _projectInfo
@@ -29,13 +27,8 @@ class GotoKycTransparentViewModel @Inject constructor(
     private val _checkEligibility = MutableLiveData<CheckEligibilityResult>()
     val checkEligibility: LiveData<CheckEligibilityResult> get() = _checkEligibility
 
-    fun setProjectId(projectId: String) {
-        this.projectId = projectId
-    }
-
-    fun setSource(source: String) {
-        this.source = source
-    }
+    private val _registerProgressive = MutableLiveData<RegisterProgressiveResult>()
+    val registerProgressive : LiveData<RegisterProgressiveResult> get() = _registerProgressive
 
     fun getProjectInfo(projectId: String) {
         launchCatchError(
@@ -55,6 +48,18 @@ class GotoKycTransparentViewModel @Inject constructor(
                 _checkEligibility.value = CheckEligibilityResult.Failed(it)
             }
         )
+    }
+
+    fun registerProgressiveUseCase(projectId: String) {
+        _registerProgressive.value = RegisterProgressiveResult.Loading()
+
+        val parameter = RegisterProgressiveParam(projectID = projectId)
+        launchCatchError(block = {
+            val response = registerProgressiveUseCase(parameter)
+            _registerProgressive.value = response
+        }, onError = {
+            _registerProgressive.value = RegisterProgressiveResult.Failed(it)
+        })
     }
 
 }
