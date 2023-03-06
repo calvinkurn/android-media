@@ -47,26 +47,16 @@ class BannerRevampViewHolder(
     private var currentPosition: Int = 0
     private var isFromDrag = false
 
-    init {
-        itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewDetachedFromWindow(p0: View) {
-            }
-
-            override fun onViewAttachedToWindow(p0: View) {
-            }
-        })
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(element: BannerRevampDataModel) {
         try {
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
-            channelModel?.let { it ->
+            channelModel?.let { channel ->
                 this.isCache = element.isCache
                 try {
-                    val banners = it.convertToBannerItemModel()
+                    val banners = channel.convertToBannerItemModel()
                     totalBanner = banners.size
                     binding?.bannerIndicator?.setBannerIndicators(banners.size)
                     binding?.bannerIndicator?.setBannerListener(object : BannerIndicatorListener {
@@ -75,15 +65,16 @@ class BannerRevampViewHolder(
                         }
 
                         override fun getCurrentPosition(position: Int) {
+                            // no-op
                         }
                     })
                     initBanner(banners)
                 } catch (_: NumberFormatException) {
-
+                    // no-op
                 }
             }
         } catch (_: Exception) {
-
+            // no-op
         }
     }
 
@@ -128,7 +119,7 @@ class BannerRevampViewHolder(
     private fun scrollTo(position: Int) {
         val resources = itemView.context.resources
         val width = resources.displayMetrics.widthPixels
-        val paddings = 2 * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
+        val paddings = MULTIPLY_NO_BOUNCE_BANNER * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
         if (position == Int.ZERO) {
             binding?.rvBannerRevamp?.smoothScrollToPosition(position)
         } else {
@@ -160,7 +151,7 @@ class BannerRevampViewHolder(
 
         binding?.rvBannerRevamp?.layoutManager = getLayoutManager()
         val adapter = BannerRevampChannelAdapter(list, this)
-        val halfIntegerSize = Integer.MAX_VALUE / 2
+        val halfIntegerSize = Integer.MAX_VALUE / DIVIDE_HALF_BANNER
         binding?.rvBannerRevamp?.layoutManager?.scrollToPosition(halfIntegerSize - halfIntegerSize % totalBanner)
         binding?.rvBannerRevamp?.adapter = adapter
     }
@@ -169,7 +160,7 @@ class BannerRevampViewHolder(
         channelModel?.let { channel ->
             val realPosition = position % channel.channelGrids.size
             channel.selectGridInPosition(realPosition) {
-                if (bannerListener?.isMainViewVisible() == true && !isCache && !bannerListener.isBannerImpressed(it.id) && position != -1) {
+                if (bannerListener?.isMainViewVisible() == true && !isCache && !bannerListener.isBannerImpressed(it.id) && position != RecyclerView.NO_POSITION) {
                     bannerListener.onPromoScrolled(channel, it, realPosition)
                 }
             }
@@ -187,7 +178,6 @@ class BannerRevampViewHolder(
 
     override fun onLongPress() {
         binding?.bannerIndicator?.pauseAnimation()
-        // no-op
     }
 
     override fun onRelease() {
@@ -203,7 +193,7 @@ class BannerRevampViewHolder(
     }
 
     private fun ChannelModel.selectGridInPosition(position: Int, action: (ChannelGrid) -> Unit = {}) {
-        if (position != -1 && this.channelGrids.size > position) {
+        if (position != RecyclerView.NO_POSITION && this.channelGrids.size > position) {
             action.invoke(this.channelGrids[position])
         }
     }
@@ -214,6 +204,8 @@ class BannerRevampViewHolder(
         val autoScrollInterpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
         val manualScrollInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
         const val FLING_DURATION = 600
+        private const val DIVIDE_HALF_BANNER = 2
+        private const val MULTIPLY_NO_BOUNCE_BANNER = 2
     }
 
     class CubicBezierSnapHelper(private val context: Context) : PagerSnapHelper() {

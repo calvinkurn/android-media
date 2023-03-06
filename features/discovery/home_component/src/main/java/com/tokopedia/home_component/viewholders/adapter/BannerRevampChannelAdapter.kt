@@ -34,7 +34,6 @@ class BannerRevampChannelAdapter(
 class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerItemListener) : RecyclerView.ViewHolder(itemView) {
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: BannerItemModel) {
-//        itemView.findViewById<ImageUnify>(R.id.image_banner_revamp).setImageUrl("https://media.istockphoto.com/id/1250331164/id/vektor/latar-belakang-abstrak-titik-setengah-dan-garis-melengkung.jpg?s=612x612&w=0&k=20&c=pNeGGoBuXNNPnoHb624nJR2xi0wOIB_18Ib91rsIKZE=")
         itemView.findViewById<ImageUnify>(R.id.image_banner_revamp).setImageUrl(item.url)
         itemView.setOnTouchListener { _, motionEvent ->
             when (motionEvent.action) {
