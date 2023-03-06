@@ -155,7 +155,7 @@ class ShipmentViewHolder(
         val boBadge = rates.boBadge
         val freeOngkirImageUrl = boBadge.imageUrl
         pdpShipmentIcon.showIfWithBlock(
-            !rates.hasUsedBenefit && !element.isFullfillment && freeOngkirImageUrl.isNotEmpty()
+            !rates.hasUsedBenefit && freeOngkirImageUrl.isNotEmpty()
         ) {
             setImageUrl(freeOngkirImageUrl)
 
