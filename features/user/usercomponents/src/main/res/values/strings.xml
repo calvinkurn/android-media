@@ -25,10 +25,4 @@
     <!--EXPLICIT PROFILE-->
     <string name="explicit_failed_title">Konten gagal ditampilkan</string>
     <string name="explicit_failed_subtitle">Klik ikon di samping buat coba lagi.</string>
-
-    <!--  LOGIN WIDGET  -->
-    <string name="login_widget_login">Login</string>
-    <string name="login_widget_title">Hi, %s</string>
-    <string name="login_widget_topper">Topper</string>
-    <string name="login_widget_subtitle">Masuk untuk menikmati semua fitur</string>
 </resources>
