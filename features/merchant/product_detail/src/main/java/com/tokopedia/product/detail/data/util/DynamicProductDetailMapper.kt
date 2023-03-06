@@ -69,6 +69,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
@@ -281,6 +282,11 @@ object DynamicProductDetailMapper {
                     if (customInfoTitle != null) {
                         listOfComponent.add(customInfoTitle)
                     }
+                }
+                ProductDetailConstant.SHOP_REVIEW -> {
+                    listOfComponent.add(
+                        ProductShopReviewDataModel(type = component.type, name = component.componentName)
+                    )
                 }
             }
         }
@@ -588,7 +594,12 @@ object DynamicProductDetailMapper {
             addressID = localData.address_id.checkIfNumber("address_id"),
             postalCode = localData.postal_code.checkIfNumber("postal_code"),
             latlon = latlong,
-            cityId = localData.city_id.checkIfNumber("city_id")
+            cityId = localData.city_id.checkIfNumber("city_id"),
+            /**
+             * Address Name use to determine we should show "Dikirim ke" when tokonow or no
+             * This validation should be came from backend
+             */
+            addressName = localData.label
         )
     }
 

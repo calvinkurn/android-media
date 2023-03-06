@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
@@ -118,9 +119,9 @@ class UploadPrescriptionFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun initArguments() {
-        orderId = arguments?.getLong(EXTRA_ORDER_ID_LONG)  ?: 0L
-        checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID_STRING,"") ?: ""
-        entryPoint = arguments?.getString(EXTRA_ENTRY_POINT_STRING,"") ?: ""
+        orderId = arguments?.getLong(EXTRA_ORDER_ID_LONG) ?: 0L
+        checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID_STRING, "") ?: ""
+        entryPoint = arguments?.getString(EXTRA_ENTRY_POINT_STRING, "") ?: ""
         source = arguments?.getString(EXTRA_SOURCE_STRING, ENTRY_POINT_CHECKOUT.lowercase()) ?: (ENTRY_POINT_CHECKOUT.lowercase())
     }
 
@@ -154,8 +155,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun getData() {
         ePharmacyLoader?.show()
-        if(checkoutId.isNotBlank()) {
-            uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId,source)
+        if (checkoutId.isNotBlank()) {
+            uploadPrescriptionViewModel.getEPharmacyCheckoutDetail(checkoutId, source)
         } else if (orderId != DEFAULT_ZERO_VALUE) {
             uploadPrescriptionViewModel.getEPharmacyOrderDetail(orderId)
         }
@@ -375,7 +376,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment(), EPharmacyListener {
                 }
             }
             putStringArrayListExtra(EPHARMACY_PRESCRIPTION_IDS, prescriptionIds)
-            activity?.setResult(EPHARMACY_REQUEST_CODE, this)
+            activity?.setResult(EPHARMACY_UPLOAD_REQUEST_CODE, this)
             activity?.finish()
         }
     }
