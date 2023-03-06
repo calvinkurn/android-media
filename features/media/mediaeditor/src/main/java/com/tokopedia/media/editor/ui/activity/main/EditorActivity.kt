@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.system.ErrnoException
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -18,13 +17,9 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.*
-import com.tokopedia.media.editor.utils.isGranted
 import com.tokopedia.picker.common.*
-import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
 import com.tokopedia.picker.common.cache.EditorCacheManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
-import java.io.FileNotFoundException
-import java.io.IOException
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
@@ -167,32 +162,16 @@ class EditorActivity : BaseEditorActivity() {
             }
 
             exception?.let {
-                when (it) {
-                    is FileNotFoundException -> {
-                        Toast.makeText(this, "Saved file not found", Toast.LENGTH_LONG).show()
-                        newRelicLog(
-                            mapOf(
-                                FILE_NOT_FOUND_FIELD to "${it.message}"
-                            )
-                        )
-                    }
-                    is ErrnoException, is IOException -> {
-                        Toast.makeText(this, "Storage not enough", Toast.LENGTH_LONG).show()
-                        newRelicLog(
-                            mapOf(
-                                STORAGE_FULL_FIELD to "${it.message}"
-                            )
-                        )
-                    }
-                    else -> {
-                        Toast.makeText(this, "Terjadi kesalahan", Toast.LENGTH_LONG).show()
-                        newRelicLog(
-                            mapOf(
-                                OTHER_FAILED_SAVE_FIELD to "${it.message}"
-                            )
-                        )
-                    }
-                }
+                Toast.makeText(
+                    this,
+                    resources.getString(editorR.string.editor_activity_general_error),
+                    Toast.LENGTH_LONG
+                ).show()
+                newRelicLog(
+                    mapOf(
+                        FAILED_SAVE_FIELD to "${it.message}"
+                    )
+                )
             }
 
             finish()
