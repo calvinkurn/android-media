@@ -188,5 +188,9 @@ data class BoBadge(
 
     @SerializedName("isUsingPadding")
     @Expose
-    val isUsingPadding: Boolean = true
+    val isUsingPadding: Boolean = true,
+
+    @SerializedName("imageHeight")
+    @Expose
+    val imageHeight: Int = 0
 )

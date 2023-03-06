@@ -1,18 +1,16 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.graphics.Paint
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.getCurrencyFormatted
@@ -25,9 +23,7 @@ import com.tokopedia.product.detail.databinding.ViewShipmentBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.renderHtmlBold
-import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -165,6 +161,13 @@ class ShipmentViewHolder(
 
             if (boBadge.isUsingPadding) {
                 updatePadding(right = 16.toPx())
+            }
+
+            val imageHeight = boBadge.imageHeight
+            if (imageHeight > 0) {
+                updateLayoutParams {
+                    height = imageHeight.toPx()
+                }
             }
         }
         if (element.isFullfillment) {
