@@ -1,10 +1,12 @@
 package com.tokopedia.feedplus.presentation.uiview
 
+import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.appcompat.widget.AppCompatTextView
@@ -28,14 +30,14 @@ class FeedCaptionView(private val textView: AppCompatTextView) {
     fun showLess() {
         textView.maxLines = MAX_LINES_COLLAPSED
         isCollapsed = true
-        textView.requestLayout()
+        textView.invalidate()
         handleEllipsize()
     }
 
     fun showFull() {
         textView.maxLines = MAX_LINES_EXPANDED
         isCollapsed = false
-        textView.requestLayout()
+        textView.invalidate()
         handleEllipsize()
     }
 
@@ -56,6 +58,7 @@ class FeedCaptionView(private val textView: AppCompatTextView) {
             }
         }
 
+        spanText.setSpan(StyleSpan(Typeface.BOLD), 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(clickableSpan, 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         return spanText
     }
