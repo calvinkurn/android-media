@@ -65,7 +65,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
-    implementation projectOrAar(rootProject.ext.features.dilayanitokopedia)
     implementation projectOrAar(rootProject.ext.features.nps)
     implementation projectOrAar(rootProject.ext.features.withdraw)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)

@@ -2,7 +2,7 @@ package com.tokopedia.dilayanitokopedia.home.presentation.viewholder.foryou
 
 import android.view.View
 import com.tokopedia.dilayanitokopedia.R
-import com.tokopedia.dilayanitokopedia.databinding.HomeRecommedationHeadlineAdsLayoutBinding
+import com.tokopedia.dilayanitokopedia.databinding.DtHomeRecommedationHeadlineAdsLayoutBinding
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationHeadlineTopAdsDataModel
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -16,10 +16,10 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HomeRecommendationHeadlineTopAdsViewHolder(view: View, private val topAdsBannerClickListener: TopAdsBannerClickListener) :
     SmartAbstractViewHolder<HomeRecommendationHeadlineTopAdsDataModel>(view) {
     companion object {
-        val LAYOUT = R.layout.home_recommedation_headline_ads_layout
+        val LAYOUT = R.layout.dt_home_recommedation_headline_ads_layout
     }
 
-    private var binding: HomeRecommedationHeadlineAdsLayoutBinding? by viewBinding()
+    private var binding: DtHomeRecommedationHeadlineAdsLayoutBinding? by viewBinding()
 
     override fun bind(element: HomeRecommendationHeadlineTopAdsDataModel, listener: SmartListener) {
         binding?.headlineAds?.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
