@@ -345,15 +345,30 @@ open class DiscoveryFragment :
             oldToolbar.visibility = View.GONE
             navToolbar.setOnBackButtonClickListener(disableDefaultGtmTracker = true, backButtonClickListener = ::handleBackPress)
         }
-        if(arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME){
+        if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
             navToolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
             navToolbar.setIcon(
-//                Todo:// Add handling for Message or notification tracker??
                 IconBuilder()
-                    .addIcon(IconList.ID_MESSAGE){}
-                    .addIcon(IconList.ID_NOTIFICATION){}
-                    .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
-                    .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
+                    .addIcon(
+                        IconList.ID_MESSAGE,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },
+                        disableDefaultGtmTracker = false
+                    )
+                    .addIcon(
+                        IconList.ID_NOTIFICATION,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.NOTIF) },
+                        disableDefaultGtmTracker = false
+                    )
+                    .addIcon(
+                        iconId = IconList.ID_CART,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
+                        disableDefaultGtmTracker = true
+                    )
+                    .addIcon(
+                        iconId = IconList.ID_NAV_GLOBAL,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                        disableDefaultGtmTracker = true
+                    )
             )
         }
         bottomNav = view.findViewById(R.id.bottomNav)
@@ -500,9 +515,9 @@ open class DiscoveryFragment :
                 }
             }
         )
-        if(arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME){
+        if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
             activity?.let {
-                    navToolbar.setupToolbarWithStatusBar(it)
+                navToolbar.setupToolbarWithStatusBar(it)
             }
         }
 
@@ -1073,7 +1088,7 @@ open class DiscoveryFragment :
     }
 
     private fun handleShare(data: PageInfo?) {
-        if(arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME){
+        if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
             navToolbar.updateNotification()
             return
         }
@@ -1086,9 +1101,22 @@ open class DiscoveryFragment :
             } else {
                 navToolbar.setIcon(
                     IconBuilder()
-                        .addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleShareClick(data) }, disableDefaultGtmTracker = true)
-                        .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
-                        .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
+                        .addIcon(
+                            iconId = IconList.ID_SHARE,
+                            disableRouteManager = true,
+                            onClick = { handleShareClick(data) },
+                            disableDefaultGtmTracker = true
+                        )
+                        .addIcon(
+                            iconId = IconList.ID_CART,
+                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
+                            disableDefaultGtmTracker = true
+                        )
+                        .addIcon(
+                            iconId = IconList.ID_NAV_GLOBAL,
+                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                            disableDefaultGtmTracker = true
+                        )
                 )
                 navToolbar.updateNotification()
             }

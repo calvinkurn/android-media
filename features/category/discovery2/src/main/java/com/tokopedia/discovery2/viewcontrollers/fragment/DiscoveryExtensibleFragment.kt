@@ -17,7 +17,7 @@ import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 class DiscoveryExtensibleFragment : DiscoveryFragment() {
-    lateinit var tempViewModel: DiscoveryViewModel
+    private var tempViewModel: DiscoveryViewModel? = null
 
     @JvmField
     @Inject
@@ -49,7 +49,7 @@ class DiscoveryExtensibleFragment : DiscoveryFragment() {
         return false
     }
 
-//Todo::
+    //Todo::
     fun injectionComponent() {
 //        After you inject this fragment
 //        How should we handle pageLoadTimeInterface.
@@ -57,7 +57,10 @@ class DiscoveryExtensibleFragment : DiscoveryFragment() {
     }
 
     override fun injectDiscoveryViewModel() {
-        discoveryViewModel = tempViewModel
+        discoveryViewModel = tempViewModel ?: run {
+            initInjector()
+            tempViewModel!!
+        }
     }
 
     override fun initInjector() {
@@ -68,8 +71,13 @@ class DiscoveryExtensibleFragment : DiscoveryFragment() {
                 .build().also {
                     it.inject(this)
                 }
-            tempViewModel = ViewModelProvider(activity, viewModelFactory)[DiscoveryViewModel::class.java]
-            activity.lifecycle.addObserver(BaseLifeCycleObserver(tempViewModel))
+            tempViewModel = ViewModelProvider(
+                activity,
+                viewModelFactory
+            )[DiscoveryViewModel::class.java].apply {
+                activity.lifecycle.addObserver(BaseLifeCycleObserver(this))
+            }
+
         }
     }
 

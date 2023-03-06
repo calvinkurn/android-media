@@ -56,7 +56,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             isParentUnifyTab = false
             tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
             tabsHolder.tabLayout.removeAllTabs()
-            if(tabsViewModel.isFromCategory())
+            if (tabsViewModel.isFromCategory())
                 tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
             var selectedPosition = 0
@@ -212,7 +212,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel.reInitTabTargetComponents()
         tabsViewModel.reInitTabComponentData()
         tabsViewModel.fetchDynamicTabData()
-        (fragment.activity )?.let {
+        (fragment.activity)?.let {
             if (tabsViewModel.isFromCategory()) {
                 RouteManager.route(itemView.context, appLink)
                 it.finish()

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -484,8 +485,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     putAll(getMapOfQueryParameter(uri))
                     put(CATEGORY_ID, getCategoryId(get(CATEGORY_ID)))
                 }
-            } catch (E: Exception) {
-
+            } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
         return mutableMapOf(
