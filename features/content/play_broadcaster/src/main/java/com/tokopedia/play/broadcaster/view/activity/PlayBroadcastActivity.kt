@@ -335,7 +335,7 @@ class PlayBroadcastActivity : BaseActivity(),
                     }
                     is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
                         broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
-                        supportFragmentManager.popBackStackImmediate()
+                        supportFragmentManager.popBackStack()
                     }
                     else -> {}
                 }
