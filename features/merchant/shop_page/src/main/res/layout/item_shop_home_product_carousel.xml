@@ -8,14 +8,24 @@
     android:clipToPadding="false"
     android:clipChildren="false"
     android:layout_marginTop="12dp"
-    android:layout_marginBottom="16dp">
+    android:layout_marginBottom="10dp"
+    android:paddingLeft="-12dp"
+    android:paddingRight="-12dp">
 
     <include
         android:id="@+id/etalase_header_container"
         layout="@layout/partial_item_new_shop_carousel_title"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="8dp" />
 
     <com.tokopedia.carouselproductcard.CarouselProductCardView
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:clipToPadding="false"
+        android:clipChildren="false"
         android:id="@+id/recyclerViewCarousel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,6 +33,8 @@
         app:useDefaultItemDecorator="false" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:id="@+id/recyclerViewCarouselSingleOrDoubleProductCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
