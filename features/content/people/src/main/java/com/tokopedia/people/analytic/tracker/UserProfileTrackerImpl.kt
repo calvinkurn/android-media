@@ -97,6 +97,7 @@ class UserProfileTrackerImpl @Inject constructor(
         map[SCREEN_NAME] = "/$FEED_USER_PROFILE - ${isLiveOrNotLive(live)}"
         map[SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
         map[USER_ID] = userId
+        map[KEY_TRACKER_ID] = "24604"
 
         analyticTracker.sendGeneralEvent(map)
     }
@@ -113,7 +114,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24605",
             )
         )
     }
@@ -130,7 +132,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24606",
             )
         )
     }
@@ -147,7 +150,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24607",
             )
         )
     }
@@ -164,7 +168,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24608",
             )
         )
     }
@@ -181,7 +186,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24609",
             )
         )
     }
@@ -198,7 +204,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24610",
             )
         )
     }
@@ -215,7 +222,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24611",
             )
         )
     }
@@ -232,7 +240,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24612"
             )
         )
     }
@@ -249,7 +258,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24613",
             )
         )
     }
@@ -266,7 +276,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24614",
             )
         )
     }
@@ -299,7 +310,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24615",
             )
         )
     }
@@ -337,7 +349,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24616",
             )
         )
     }
@@ -354,7 +367,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24617",
             )
         )
     }
@@ -387,7 +401,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24619",
             )
         )
     }
@@ -425,11 +440,382 @@ class UserProfileTrackerImpl @Inject constructor(
                 CURRENT_SITE to currentSite,
                 SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24620",
             )
         )
     }
 
+    override fun openFollowersTab(userId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[EVENT] = EVENT_OPEN_SCREEN
+        map[SCREEN_NAME] = "/$FEED_USER_PROFILE_FOLLOWER_TAB"
+        map[IS_LOGGED_IN_STATUS] = "${userSession.isLoggedIn.not()}"
+        map[USER_ID] = userId
+        map[BUSINESS_UNIT] = CONTENT
+        map[CURRENT_SITE] = currentSite
+        map[KEY_TRACKER_ID] = "24621"
+        analyticTracker.sendGeneralEvent(map)
+    }
+
+    override fun clickUserFollowers(userId: String, self: Boolean) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWER_TAB,
+                action = CLICK_USER,
+                label = "$userId - ${isSelfOrVisitor(self)}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24622",
+            )
+        )
+    }
+
+    override fun clickFollowFromFollowers(userId: String, self: Boolean) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWER_TAB,
+                action = CLICK_FOLLOW,
+                label = "$userId - ${isSelfOrVisitor(self)}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24623",
+            )
+        )
+    }
+
+    override fun clickUnfollowFromFollowers(userId: String, self: Boolean) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWER_TAB,
+                action = CLICK_UNFOLLOW,
+                label = "$userId - ${isSelfOrVisitor(self)}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24638",
+            )
+        )
+    }
+
+    override fun openFollowingTab(userId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[EVENT] = EVENT_OPEN_SCREEN
+        map[SCREEN_NAME] = "/$FEED_USER_PROFILE_FOLLOWING_TAB"
+        map[IS_LOGGED_IN_STATUS] = "${userSession.isLoggedIn.not()}"
+        map[USER_ID] = userId
+        map[BUSINESS_UNIT] = CONTENT
+        map[CURRENT_SITE] = currentSite
+        map[KEY_TRACKER_ID] = "24639"
+        analyticTracker.sendGeneralEvent(map)
+    }
+
+    override fun clickUserFollowing(userId: String, self: Boolean) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWING_TAB,
+                action = CLICK_USER,
+                label = "$userId - ${isSelfOrVisitor(self)}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24640",
+            )
+        )
+    }
+
+    override fun clickFollowFromFollowing(userId: String, self: Boolean) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWING_TAB,
+                action = CLICK_FOLLOW,
+                label = "$userId - ${isSelfOrVisitor(self)}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24641",
+            )
+        )
+    }
+
+    override fun clickUnfollowFromFollowing(userId: String, self: Boolean) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_FEED,
+                category = FEED_USER_PROFILE_FOLLOWING_TAB,
+                action = CLICK_UNFOLLOW,
+                label = "$userId - ${isSelfOrVisitor(self)}"
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "24642",
+            )
+        )
+    }
+
+    override fun impressionProfileCompletionPrompt(userId: String) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_VIEW_HOME_PAGE,
+                category = FEED_USER_PROFILE,
+                action = IMPRESSION_PROFILE_COMPLETION_PROMPT,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "26372",
+            )
+        )
+    }
+
+    override fun clickProfileCompletionPrompt(userId: String) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE,
+                action = CLICK_PROFILE_COMPLETION_PROMPT,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "26373",
+            )
+        )
+    }
+
+    override fun impressionProfileRecommendation(
+        userId: String,
+        shops: ShopRecomUiModelItem,
+        postPosition: Int
+    ) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = PROMO_VIEW,
+                category = FEED_USER_PROFILE,
+                action = IMPRESSION_PROFILE_RECOMMENDATIONS_CAROUSEL,
+                label = getShopRecomEventLabel(userId, shops)
+            ),
+            hashMapOf(
+                ECOMMERCE to hashMapOf(
+                    PROMO_VIEW to hashMapOf(
+                        PROMOTIONS to listOf(
+                            convertToPromotion(
+                                shops.id.toString(),
+                                shops.logoImageURL,
+                                postPosition,
+                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
+                            )
+                        )
+                    )
+                )
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "26374",
+            )
+        )
+    }
+
+    override fun clickProfileRecommendation(
+        userId: String,
+        item: ShopRecomUiModelItem,
+        imageUrl: String,
+        postPosition: Int
+    ) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = PROMO_CLICK,
+                category = FEED_USER_PROFILE,
+                action = CLICK_PROFILE_RECOMMENDATION,
+                label = getShopRecomEventLabel(userId, item)
+            ),
+            hashMapOf(
+                ECOMMERCE to hashMapOf(
+                    PROMO_CLICK to hashMapOf(
+                        PROMOTIONS to listOf(
+                            convertToPromotion(
+                                item.id.toString(),
+                                imageUrl,
+                                postPosition,
+                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
+                            )
+                        )
+                    )
+                )
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "26375",
+            )
+        )
+    }
+
+    override fun clickFollowProfileRecommendation(userId: String, item: ShopRecomUiModelItem) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_CONTENT,
+                category = FEED_USER_PROFILE,
+                action = CLICK_FOLLOW_PROFILE_RECOMMENDATION,
+                label = getShopRecomEventLabel(userId, item)
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "26376",
+            )
+        )
+    }
+
+    override fun clickCreatePost(userId: String) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE,
+                action = CLICK_CREATE_POST,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "26377",
+            )
+        )
+    }
+
+    override fun impressionOnBoardingBottomSheetWithUsername(userId: String) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_VIEW_HOME_PAGE,
+                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
+                action = IMPRESSION_ONBOARDING_BOTTOMSHEET_WITH_USERNAME,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "26378",
+            )
+        )
+    }
+
+    override fun clickLanjutOnBoardingBottomSheetWithUsername(userId: String) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
+                action = CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITH_USERNAME,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "26379",
+            )
+        )
+    }
+
+    override fun impressionOnBoardingBottomSheetWithoutUsername(userId: String) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_VIEW_HOME_PAGE,
+                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
+                action = IMPRESSION_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "26380",
+            )
+        )
+    }
+
+    override fun clickLanjutOnBoardingBottomSheetWithoutUsername(userId: String) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
+                action = CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "26381",
+            )
+        )
+    }
+
+    override fun clickEditProfileButtonInOwnProfile(userId: String) {
+        trackingQueue.putEETracking(
+            EventModel(
+                event = EVENT_CLICK_HOME_PAGE,
+                category = FEED_USER_PROFILE,
+                action = CLICK_EDIT_PROFILE_BUTTON_IN_OWN_PROFILE,
+                label = userId
+            ),
+            hashMapOf(
+                CURRENT_SITE to currentSite,
+                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId,
+                BUSINESS_UNIT to CONTENT,
+                KEY_TRACKER_ID to "33771",
+            )
+        )
+    }
+
+    /**
+     * other
+     */
     override fun clickShareButton(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
@@ -556,357 +942,6 @@ class UserProfileTrackerImpl @Inject constructor(
                 category = FEED_USER_PROFILE,
                 action = CLICK_ACCESS_MEDIA,
                 label = "$allow - $userId - ${isSelfOrVisitor(self)}"
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun openFollowersTab(userId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_OPEN_SCREEN
-        map[SCREEN_NAME] = "/$FEED_USER_PROFILE_FOLLOWER_TAB"
-        map[IS_LOGGED_IN_STATUS] = "${userSession.isLoggedIn.not()}"
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
-    }
-
-    override fun clickUserFollowers(userId: String, self: Boolean) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_FEED,
-                category = FEED_USER_PROFILE_FOLLOWER_TAB,
-                action = CLICK_USER,
-                label = "$userId - ${isSelfOrVisitor(self)}"
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun clickFollowFromFollowers(userId: String, self: Boolean) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_FEED,
-                category = FEED_USER_PROFILE_FOLLOWER_TAB,
-                action = CLICK_FOLLOW,
-                label = "$userId - ${isSelfOrVisitor(self)}"
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun clickUnfollowFromFollowers(userId: String, self: Boolean) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_FEED,
-                category = FEED_USER_PROFILE_FOLLOWER_TAB,
-                action = CLICK_UNFOLLOW,
-                label = "$userId - ${isSelfOrVisitor(self)}"
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun openFollowingTab(userId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[EVENT] = EVENT_OPEN_SCREEN
-        map[SCREEN_NAME] = "/$FEED_USER_PROFILE_FOLLOWING_TAB"
-        map[IS_LOGGED_IN_STATUS] = "${userSession.isLoggedIn.not()}"
-        map[USER_ID] = userId
-        map[BUSINESS_UNIT] = CONTENT
-        map[CURRENT_SITE] = currentSite
-        analyticTracker.sendGeneralEvent(map)
-    }
-
-    override fun clickUserFollowing(userId: String, self: Boolean) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_FEED,
-                category = FEED_USER_PROFILE_FOLLOWING_TAB,
-                action = CLICK_USER,
-                label = "$userId - ${isSelfOrVisitor(self)}"
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun clickFollowFromFollowing(userId: String, self: Boolean) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_FEED,
-                category = FEED_USER_PROFILE_FOLLOWING_TAB,
-                action = CLICK_FOLLOW,
-                label = "$userId - ${isSelfOrVisitor(self)}"
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun clickUnfollowFromFollowing(userId: String, self: Boolean) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_FEED,
-                category = FEED_USER_PROFILE_FOLLOWING_TAB,
-                action = CLICK_UNFOLLOW,
-                label = "$userId - ${isSelfOrVisitor(self)}"
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun impressionProfileCompletionPrompt(userId: String) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_VIEW_HOME_PAGE,
-                category = FEED_USER_PROFILE,
-                action = IMPRESSION_PROFILE_COMPLETION_PROMPT,
-                label = userId
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun clickProfileCompletionPrompt(userId: String) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_HOME_PAGE,
-                category = FEED_USER_PROFILE,
-                action = CLICK_PROFILE_COMPLETION_PROMPT,
-                label = userId
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun impressionProfileRecommendation(
-        userId: String,
-        shops: ShopRecomUiModelItem,
-        postPosition: Int
-    ) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = PROMO_VIEW,
-                category = FEED_USER_PROFILE,
-                action = IMPRESSION_PROFILE_RECOMMENDATIONS_CAROUSEL,
-                label = getShopRecomEventLabel(userId, shops)
-            ),
-            hashMapOf(
-                ECOMMERCE to hashMapOf(
-                    PROMO_VIEW to hashMapOf(
-                        PROMOTIONS to listOf(
-                            convertToPromotion(
-                                shops.id.toString(),
-                                shops.logoImageURL,
-                                postPosition,
-                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
-                            )
-                        )
-                    )
-                )
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT,
-                KEY_TRACKER_ID to "26374"
-            )
-        )
-    }
-
-    override fun clickProfileRecommendation(
-        userId: String,
-        item: ShopRecomUiModelItem,
-        imageUrl: String,
-        postPosition: Int
-    ) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = PROMO_CLICK,
-                category = FEED_USER_PROFILE,
-                action = CLICK_PROFILE_RECOMMENDATION,
-                label = getShopRecomEventLabel(userId, item)
-            ),
-            hashMapOf(
-                ECOMMERCE to hashMapOf(
-                    PROMO_CLICK to hashMapOf(
-                        PROMOTIONS to listOf(
-                            convertToPromotion(
-                                item.id.toString(),
-                                imageUrl,
-                                postPosition,
-                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
-                            )
-                        )
-                    )
-                )
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT,
-                KEY_TRACKER_ID to "26375"
-            )
-        )
-    }
-
-    override fun clickFollowProfileRecommendation(userId: String, item: ShopRecomUiModelItem) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_CONTENT,
-                category = FEED_USER_PROFILE,
-                action = CLICK_FOLLOW_PROFILE_RECOMMENDATION,
-                label = getShopRecomEventLabel(userId, item)
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT,
-                KEY_TRACKER_ID to "26376"
-            )
-        )
-    }
-
-    override fun clickCreatePost(userId: String) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_HOME_PAGE,
-                category = FEED_USER_PROFILE,
-                action = CLICK_CREATE_POST,
-                label = userId
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun impressionOnBoardingBottomSheetWithUsername(userId: String) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_VIEW_HOME_PAGE,
-                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
-                action = IMPRESSION_ONBOARDING_BOTTOMSHEET_WITH_USERNAME,
-                label = userId
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun clickLanjutOnBoardingBottomSheetWithUsername(userId: String) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_HOME_PAGE,
-                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
-                action = CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITH_USERNAME,
-                label = userId
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun impressionOnBoardingBottomSheetWithoutUsername(userId: String) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_VIEW_HOME_PAGE,
-                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
-                action = IMPRESSION_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME,
-                label = userId
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun clickLanjutOnBoardingBottomSheetWithoutUsername(userId: String) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_HOME_PAGE,
-                category = FEED_USER_PROFILE_ONBOARDING_BOTTOMSHEET,
-                action = CLICK_LANJUT_ONBOARDING_BOTTOMSHEET_WITHOUT_USERNAME,
-                label = userId
-            ),
-            hashMapOf(
-                CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                USER_ID to userId,
-                BUSINESS_UNIT to CONTENT
-            )
-        )
-    }
-
-    override fun clickEditProfileButtonInOwnProfile(userId: String) {
-        trackingQueue.putEETracking(
-            EventModel(
-                event = EVENT_CLICK_HOME_PAGE,
-                category = FEED_USER_PROFILE,
-                action = CLICK_EDIT_PROFILE_BUTTON_IN_OWN_PROFILE,
-                label = userId
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
