@@ -15,6 +15,13 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 
 object AtcVariantMapper {
 
+    private const val VARIANT_LEVEL_ONE_MAP_SIZE = 1
+    private const val VARIANT_LEVEL_TWO_MAP_SIZE = 2
+
+    private const val VARIANT_LEVEL_INITIALIZE = -1
+    private const val VARIANT_LEVEL_ONE_SELECTED = 0
+    private const val VARIANT_LEVEL_TWO_SELECTED = 1
+
     /**
      * Determine wether variant is select fully or not
      * fully means select 2 of 2 variant / 1 of 1 variant
@@ -54,7 +61,7 @@ object AtcVariantMapper {
     fun processVariant(
         variantData: ProductVariant?,
         mapOfSelectedVariant: MutableMap<String, String>? = mutableMapOf(),
-        level: Int = 0,
+        level: Int = VARIANT_LEVEL_INITIALIZE,
         isNew: Boolean = true
     ): List<VariantCategory>? = if (isNew) {
         processVariantNew(variantData, mapOfSelectedVariant, level)
@@ -128,7 +135,7 @@ object AtcVariantMapper {
             selectedOptionIds
         }
 
-        val optionList = variant.options.map { option ->
+        val optionList = variant.options.mapIndexed { index, option ->
             var currentState = VariantConstant.STATE_EMPTY
             var stock = 0
             var isFlashSale = false
@@ -137,8 +144,10 @@ object AtcVariantMapper {
                     // This Function is Fired When User Already Select All Of The Variant
                     var isOneOfChildBuyable = false
                     if (level == 0) { // itteration at variants level 0
-                        isOneOfChildBuyable = variantData.isOneOfTheChildBuyablePartial(selectedOptionIds.first())
-                        isFlashSale = variantData.isSelectedChildHasFlashSale(selectedOptionIds[level])
+                        isOneOfChildBuyable =
+                            variantData.isOneOfTheChildBuyablePartial(selectedOptionIds.first())
+                        isFlashSale =
+                            variantData.isSelectedChildHasFlashSale(selectedOptionIds[level])
                     } else {
                         isOneOfChildBuyable = variantData.isOneOfTheChildBuyable(selectedOptionIds)
                         isFlashSale = isSelectedProductFlashSale
@@ -190,7 +199,7 @@ object AtcVariantMapper {
                 }
             }
 
-            return@map VariantOptionWithAttribute(
+            return@mapIndexed VariantOptionWithAttribute(
                 variantName = option.value.orEmpty(),
                 variantId = option.id.orEmpty(),
                 image100 = option.picture?.url100.orEmpty(),
@@ -199,7 +208,7 @@ object AtcVariantMapper {
                 currentState = currentState,
                 stock = stock,
                 hasCustomImages = hasCustomImage,
-                level = level,
+                level = index,
                 variantOptionIdentifier = variant.identifier.orEmpty(),
                 variantCategoryKey = variant.pv.toString(),
                 flashSale = isFlashSale
@@ -239,13 +248,13 @@ object AtcVariantMapper {
     private fun processVariantNew(
         variantData: ProductVariant?,
         selectedVariant: MutableMap<String, String>? = mutableMapOf(),
-        level: Int = -1
+        level: Int
     ): List<VariantCategory>? {
         val variants = variantData ?: return null
         if (variantData.variants.isEmpty()) return null
         val variantSize = variants.variants.size
 
-        return if (variantSize == 1 && level == 0) { // one level and level one selected
+        return if (variantSize == VARIANT_LEVEL_ONE_MAP_SIZE) {
             processVariantOneLevel(variantData = variantData, selectedVariant = selectedVariant)
         } else {
             processVariantTwoLevel(variantData = variantData, selectedVariant = selectedVariant)
@@ -253,6 +262,67 @@ object AtcVariantMapper {
     }
 
     private fun processVariantOneLevel(
+        variantData: ProductVariant?,
+        selectedVariant: MutableMap<String, String>? = mutableMapOf()
+    ): List<VariantCategory>? {
+        val variants = variantData ?: return null
+        val variant = variants.variants.firstOrNull() ?: return null
+        val variantSelected = selectedVariant?.values?.toList()
+        val hasCustomImages = variant.options.all {
+            it.picture?.url100?.isNotEmpty() == true
+        }
+        // loop each variant options in the variant for checking to their children
+        val uiVariantOptions = variant.options.map { option ->
+            // default state is stock empty
+            var state = VariantConstant.STATE_EMPTY
+            var isFlashSale = false
+            var stock = 0
+
+            // check each variant options to children
+            // set state, flash sale and stock
+            for (child in variants.children) {
+                if (option.id == child.optionIds.firstOrNull()) {
+                    isFlashSale = child.isFlashSale
+                    stock = child.stock?.stock.orZero()
+                    state = if (child.optionIds == variantSelected) {
+                        if (child.isBuyable) { // selected and can to buy
+                            VariantConstant.STATE_SELECTED
+                        } else { // selected and can not to buy
+                            VariantConstant.STATE_SELECTED_EMPTY
+                        }
+                    } else if (child.isBuyable) { // un-selected and can to buy
+                        VariantConstant.STATE_UNSELECTED
+                    } else { // un-selected and can not to buy because stock is empty
+                        VariantConstant.STATE_EMPTY
+                    }
+                    break
+                }
+            }
+
+            VariantOptionWithAttribute.create(
+                variantOption = option,
+                variant = variant,
+                state = state,
+                stock = stock,
+                hasCustomImages = hasCustomImages,
+                isFlashSale = isFlashSale,
+                level = VARIANT_LEVEL_ONE_SELECTED
+            )
+        }
+
+        // create variant ui model
+        val variantCategory = VariantCategory(
+            name = variant.name.orEmpty(),
+            identifier = variant.identifier.orEmpty(),
+            variantGuideline = if (variant.isSizeIdentifier && variantData.sizeChart.isNotEmpty()) variantData.sizeChart else "",
+            isLeaf = true,
+            hasCustomImage = hasCustomImages,
+            variantOptions = uiVariantOptions
+        )
+        return listOf(variantCategory)
+    }
+
+    private fun processVariantTwoLevel(
         variantData: ProductVariant?,
         selectedVariant: MutableMap<String, String>? = mutableMapOf()
     ): List<VariantCategory>? {
@@ -273,7 +343,7 @@ object AtcVariantMapper {
                 // check each variant options to children
                 // set state, flash sale and stock
                 for (child in variants.children) {
-                    if (option.id == child.optionIds.firstOrNull()) {
+                    if (option.id in child.optionIds) {
                         isFlashSale = child.isFlashSale
                         stock = child.stock?.stock.orZero()
                         state = if (child.optionIds == variantSelected) {
@@ -299,7 +369,7 @@ object AtcVariantMapper {
                     stock = stock,
                     hasCustomImages = hasCustomImages,
                     isFlashSale = isFlashSale,
-                    level = 0
+                    level = 1
                 )
             }
 
@@ -315,9 +385,4 @@ object AtcVariantMapper {
         }
         return uiVariants
     }
-
-    private fun processVariantTwoLevel(
-        variantData: ProductVariant?,
-        selectedVariant: MutableMap<String, String>? = mutableMapOf()
-    ): List<VariantCategory>? = null
 }

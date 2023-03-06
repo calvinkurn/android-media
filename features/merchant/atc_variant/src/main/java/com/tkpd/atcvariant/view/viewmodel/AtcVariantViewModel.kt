@@ -143,7 +143,7 @@ class AtcVariantViewModel @Inject constructor(
                 variantLevel
             )
             Timber.tag("variant_logic")
-                .d((System.currentTimeMillis() - last).toString())
+                .d("%s : %s", (System.currentTimeMillis() - last).toString(), Thread.currentThread())
 
             val selectedVariantChild = getVariantData()?.getChildByOptionId(
                 selectedVariantIds?.values?.toList()
