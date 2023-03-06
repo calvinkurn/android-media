@@ -38,7 +38,9 @@ class FaceFilterSetupFragment @Inject constructor(
     private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
 ) : TkpdBaseV4Fragment() {
 
-    override fun getScreenName(): String = TAG
+    override fun getScreenName(): String {
+        return "FaceFilterSetupFragment"
+    }
 
     private var _binding: FragmentFaceFilterSetupBinding? = null
     private val binding: FragmentFaceFilterSetupBinding
