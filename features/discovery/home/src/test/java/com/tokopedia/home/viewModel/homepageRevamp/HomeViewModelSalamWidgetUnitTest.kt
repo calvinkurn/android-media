@@ -108,7 +108,6 @@ class HomeViewModelSalamWidgetUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeSalamRecommendationUseCase = getHomeSalamRecommendationUseCase
         )
-        homeViewModel.initFlow()
         homeViewModel.declineSalamItem(mapOf())
         Assert.assertTrue(homeViewModel.homeDataModel.list.size == 1)
     }

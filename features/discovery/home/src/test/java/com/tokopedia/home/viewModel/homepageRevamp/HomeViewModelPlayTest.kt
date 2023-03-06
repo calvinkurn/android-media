@@ -37,7 +37,6 @@ class HomeViewModelPlayTest {
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.initFlow()
         homeViewModel.updateBannerTotalView(mockChannelId, mockTotalView)
         homeViewModel.homeDataModel.findWidget<PlayCardDataModel>(
             predicate = { it?.channel?.id == mockChannelId },
@@ -63,7 +62,6 @@ class HomeViewModelPlayTest {
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.initFlow()
         homeViewModel.updateBannerTotalView(mockChannelId, mockTotalView)
         homeViewModel.homeDataModel.findWidget<PlayCardDataModel>(
             predicate = { it?.channel?.id == mockChannelId },
@@ -91,7 +89,6 @@ class HomeViewModelPlayTest {
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.initFlow()
         homeViewModel.updateBannerTotalView(mockChannelId, mockTotalView)
         homeViewModel.homeDataModel.findWidget<PlayCardDataModel>(
             predicate = { it?.channel?.id == mockInitialChannelId },
@@ -119,7 +116,6 @@ class HomeViewModelPlayTest {
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.initFlow()
         homeViewModel.updateBannerTotalView(mockChannelId, mockTotalView)
         homeViewModel.homeDataModel.findWidget<PlayCardDataModel>(
             predicate = { it?.channel?.id == mockInitialChannelId },

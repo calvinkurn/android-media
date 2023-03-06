@@ -138,7 +138,6 @@ class HomeViewModelPlayCarouselTest {
             userSessionInterface = getUserSession,
             homePlayUseCase = getPlayUseCase
         )
-        homeViewModel.initFlow()
         homeViewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, mockReminderType)
         homeViewModel.playWidgetReminderObservable.observeOnce {
             Assert.assertTrue(it.status == Result.Status.SUCCESS)
@@ -177,7 +176,6 @@ class HomeViewModelPlayCarouselTest {
             userSessionInterface = getUserSession,
             homePlayUseCase = getPlayUseCase
         )
-        homeViewModel.initFlow()
         homeViewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, mockReminderType)
         homeViewModel.playWidgetReminderObservable.observeOnce {
             Assert.assertTrue(it.status == Result.Status.ERROR)
@@ -215,7 +213,6 @@ class HomeViewModelPlayCarouselTest {
             userSessionInterface = getUserSession,
             homePlayUseCase = getPlayUseCase
         )
-        homeViewModel.initFlow()
         homeViewModel.updatePlayWidgetTotalView(mockChannelId, mockTotalView)
 
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(
@@ -249,7 +246,6 @@ class HomeViewModelPlayCarouselTest {
             userSessionInterface = getUserSession,
             homePlayUseCase = getPlayUseCase
         )
-        homeViewModel.initFlow()
         homeViewModel.updatePlayWidgetReminder(mockChannelId, true)
 
         homeViewModel.homeDataModel.findWidget<CarouselPlayWidgetDataModel>(

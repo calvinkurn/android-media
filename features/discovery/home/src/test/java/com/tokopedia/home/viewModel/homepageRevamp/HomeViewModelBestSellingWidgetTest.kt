@@ -50,7 +50,6 @@ class HomeViewModelBestSellingWidgetTest {
             getHomeUseCase = getHomeUseCase,
             homeRecommendationUseCase = getHomeRecommendationUseCase
         )
-        homeViewModel.initFlow()
         homeViewModel.getRecommendationWidget(
             filterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(),
             bestSellerDataModel = mockInitialBestSellerDataModel,
@@ -75,7 +74,6 @@ class HomeViewModelBestSellingWidgetTest {
             getHomeUseCase = getHomeUseCase,
             homeRecommendationUseCase = getHomeRecommendationUseCase
         )
-        homeViewModel.initFlow()
         homeViewModel.getRecommendationWidget(
             filterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(),
             bestSellerDataModel = mockInitialBestSellerDataModel,

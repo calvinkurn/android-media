@@ -28,7 +28,6 @@ class HomeViewModelQuestWidgetTest {
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.initFlow()
         homeViewModel.deleteQuestWidget()
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.any { it is QuestWidgetModel } == false)
     }

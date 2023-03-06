@@ -47,7 +47,6 @@ class HomeViewModelRechargeBUWidgetUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeRechargeBuWidgetUseCase = getHomeRechargeBuUseCase
         )
-        homeViewModel.initFlow()
         homeViewModel.getRechargeBUWidget(WidgetSource.FINANCE)
         homeViewModel.homeDataModel.findWidget<RechargeBUWidgetDataModel>(
             actionOnFound = { model, index ->

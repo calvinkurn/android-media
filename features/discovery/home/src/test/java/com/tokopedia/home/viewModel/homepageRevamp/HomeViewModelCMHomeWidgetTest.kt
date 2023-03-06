@@ -44,7 +44,6 @@ class HomeViewModelCMHomeWidgetTest {
         )
         coEvery { getUserSession.isLoggedIn } returns false
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, userSessionInterface = getUserSession)
-        homeViewModel.initFlow()
 
         // CMHomeWidget must be visible
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } != null)

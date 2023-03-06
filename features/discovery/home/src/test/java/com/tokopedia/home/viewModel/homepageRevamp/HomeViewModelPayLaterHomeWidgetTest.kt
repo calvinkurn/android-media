@@ -41,7 +41,6 @@ class HomeViewModelPayLaterHomeWidgetTest {
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.initFlow()
 
         // PayLaterWidget must be visible
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is HomePayLaterWidgetDataModel } != null)
