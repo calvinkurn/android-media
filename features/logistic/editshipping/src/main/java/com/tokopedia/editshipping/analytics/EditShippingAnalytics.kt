@@ -20,14 +20,6 @@ object EditShippingAnalytics {
         return TrackApp.getInstance().gtm
     }
 
-    private fun sendEventCategoryAction(
-        event: String,
-        eventCategory: String,
-        eventAction: String
-    ) {
-        sendEventCategoryActionLabel(event, eventCategory, eventAction, "")
-    }
-
     private fun sendEventCategoryActionLabel(
         event: String,
         eventCategory: String,

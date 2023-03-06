@@ -51,7 +51,6 @@ class ShopEditAddressViewModel @Inject constructor(
     val checkCouriers: LiveData<ShopEditAddressState<ShopLocCheckCouriers>>
         get() = _checkCouriers
 
-
     fun getAutoCompleteList(keyword: String) {
         viewModelScope.launch(onErrorAutoComplete) {
             val autoComplete = repo.getAutoComplete(keyword, "")
@@ -81,9 +80,15 @@ class ShopEditAddressViewModel @Inject constructor(
     }
 
     fun saveEditShopLocation(
-        shopId: Long, warehouseId: Long, warehouseName: String,
-        districtId: Long, latLon: String, email: String,
-        addressDetail: String, postalCode: String, phone: String
+        shopId: Long,
+        warehouseId: Long,
+        warehouseName: String,
+        districtId: Long,
+        latLon: String,
+        email: String,
+        addressDetail: String,
+        postalCode: String,
+        phone: String
     ) {
         _saveEditShop.value = ShopEditAddressState.Loading
         viewModelScope.launch(onErrorSaveEditShopLocation) {
@@ -102,7 +107,6 @@ class ShopEditAddressViewModel @Inject constructor(
                 ShopEditAddressState.Success(saveEditLocation.shopLocUpdateWarehouse)
         }
     }
-
 
     fun checkCouriersAvailability(shopId: Long, districtId: Long) {
         _checkCouriers.value = ShopEditAddressState.Loading
