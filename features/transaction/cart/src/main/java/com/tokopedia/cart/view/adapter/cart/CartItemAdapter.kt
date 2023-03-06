@@ -1,19 +1,12 @@
 package com.tokopedia.cart.view.adapter.cart
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.viewholder.CartItemViewHolder
-import com.tokopedia.cart.view.viewholder.CartItemViewHolder.Companion.TYPE_VIEW_ITEM_CART
-import com.tokopedia.cart.view.viewholder.CartItemViewHolder.ViewHolderListener
 
-class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ViewHolderListener {
+class CartItemAdapter/*(private val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ViewHolderListener*/ {
 
-    private val cartItemHolderDataList: MutableList<CartItemHolderData> = mutableListOf()
+    /*private val cartItemHolderDataList: MutableList<CartItemHolderData> = mutableListOf()
 
     override fun getItemViewType(position: Int): Int {
         return TYPE_VIEW_ITEM_CART
@@ -67,7 +60,7 @@ class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView
     override fun onNeedToRefreshAllShop() {
         actionListener.onNeedToRefreshMultipleShop()
         actionListener.onNeedToRecalculate()
-    }
+    }*/
 
     interface ActionListener {
         fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData)

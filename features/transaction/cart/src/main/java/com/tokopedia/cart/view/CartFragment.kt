@@ -2539,13 +2539,13 @@ class CartFragment :
     private fun scrollToLastAddedProductShop() {
         val cartId: String = getCartId()
         if (cartId.isNotBlank()) {
-            var hasTokoNowProduct = false
+            var hasProducts = false
             loop@ for (shop in cartAdapter.allShopGroupDataList) {
-                hasTokoNowProduct = true
+                hasProducts = true
                 break@loop
             }
 
-            if (hasTokoNowProduct) {
+            if (hasProducts) {
                 val shopIndex = cartAdapter.getCartShopHolderIndexByCartId(cartId)
                 if (shopIndex != RecyclerView.NO_POSITION) {
                     val offset =
@@ -3908,7 +3908,7 @@ class CartFragment :
 
         val allShopGroupDataList = cartAdapter.allShopGroupDataList
 
-        // Check if cart list has more than 1 shop, and it's a toko now
+        // Check if cart list has exactly 1 shop, and it's a toko now
         if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].isTokoNow) {
             allShopGroupDataList[0].let {
                 it.isCollapsible = false

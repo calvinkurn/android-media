@@ -65,10 +65,9 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import rx.subscriptions.CompositeSubscription
-import javax.inject.Inject
 import kotlin.math.min
 
-class CartAdapter @Inject constructor(
+class CartAdapter constructor(
     private val actionListener: ActionListener,
     private val cartItemActionListener: CartItemAdapter.ActionListener,
     private val tickerAnnouncementActionListener: TickerAnnouncementActionListener,

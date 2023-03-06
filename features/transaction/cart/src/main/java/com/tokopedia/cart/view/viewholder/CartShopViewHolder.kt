@@ -1,10 +1,8 @@
 package com.tokopedia.cart.view.viewholder
 
 import android.view.View
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
@@ -162,20 +160,20 @@ class CartShopViewHolder(
         }
     }
 
-    private fun renderExpandedCartItems(cartShopHolderData: CartShopHolderData) {
-        val cartItemAdapter = CartItemAdapter(cartItemAdapterListener)
-        cartItemAdapter.addDataList(cartShopHolderData.productUiModelList)
-        val linearLayoutManager = LinearLayoutManager(binding.rvCartItem.context)
-        binding.rvCartItem.layoutManager = linearLayoutManager
-        binding.rvCartItem.adapter = cartItemAdapter
-        (binding.rvCartItem.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-        val itemDecorationCount = binding.rvCartItem.itemDecorationCount
-        if (itemDecorationCount > 0) {
-            binding.rvCartItem.removeItemDecorationAt(0)
-        }
-        binding.rvCartItem.layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
-        binding.rvCartItem.requestLayout()
-    }
+//    private fun renderExpandedCartItems(cartShopHolderData: CartShopHolderData) {
+//        val cartItemAdapter = CartItemAdapter(cartItemAdapterListener)
+//        cartItemAdapter.addDataList(cartShopHolderData.productUiModelList)
+//        val linearLayoutManager = LinearLayoutManager(binding.rvCartItem.context)
+//        binding.rvCartItem.layoutManager = linearLayoutManager
+//        binding.rvCartItem.adapter = cartItemAdapter
+//        (binding.rvCartItem.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+//        val itemDecorationCount = binding.rvCartItem.itemDecorationCount
+//        if (itemDecorationCount > 0) {
+//            binding.rvCartItem.removeItemDecorationAt(0)
+//        }
+//        binding.rvCartItem.layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+//        binding.rvCartItem.requestLayout()
+//    }
 
     private fun renderCollapsedCartItems(cartShopHolderData: CartShopHolderData) {
         // remove item with the same bundleGroupId or productId value

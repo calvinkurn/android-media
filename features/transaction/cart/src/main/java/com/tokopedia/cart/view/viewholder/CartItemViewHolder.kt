@@ -1,7 +1,6 @@
 package com.tokopedia.cart.view.viewholder
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Paint
 import android.text.Editable
 import android.text.InputType
@@ -52,7 +51,7 @@ class CartItemViewHolder constructor(
     private var actionListener: CartItemAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private var context: Context? = null
+//    private var context: Context? = null
     private var viewHolderListener: ViewHolderListener? = null
 
     private var dataSize: Int = 0
@@ -62,7 +61,7 @@ class CartItemViewHolder constructor(
     private var qtyTextWatcher: TextWatcher? = null
 
     init {
-        context = itemView.context
+//        context = itemView.context
         setNoteTouchListener()
     }
 
@@ -80,7 +79,7 @@ class CartItemViewHolder constructor(
     }
 
     fun clear() {
-        context = null
+//        context = null
         actionListener = null
         viewHolderListener = null
         delayChangeCheckboxState?.cancel()

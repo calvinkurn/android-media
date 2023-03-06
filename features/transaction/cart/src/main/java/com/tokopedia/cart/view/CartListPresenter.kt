@@ -487,7 +487,7 @@ class CartListPresenter @Inject constructor(
         var checklistCondition = ITEM_CHECKED_ALL_WITHOUT_CHANGES
         val cartShopHolderDataList = view?.getAllShopDataList()
 
-        if (cartShopHolderDataList?.size ?: 0 == 1) {
+        if ((cartShopHolderDataList?.size ?: 0) == 1) {
             cartShopHolderDataList?.get(0)?.productUiModelList?.let {
                 for (cartItemHolderData in it) {
                     if (!cartItemHolderData.isSelected) {
@@ -496,7 +496,7 @@ class CartListPresenter @Inject constructor(
                     }
                 }
             }
-        } else if (cartShopHolderDataList?.size ?: 0 > 1) {
+        } else if ((cartShopHolderDataList?.size ?: 0) > 1) {
             var allSelectedItemShopCount = 0
             var selectPartialShopAndItem = false
             cartShopHolderDataList?.let {
