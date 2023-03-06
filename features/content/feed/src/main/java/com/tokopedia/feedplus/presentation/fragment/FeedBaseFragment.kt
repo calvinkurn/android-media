@@ -14,7 +14,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
-import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
