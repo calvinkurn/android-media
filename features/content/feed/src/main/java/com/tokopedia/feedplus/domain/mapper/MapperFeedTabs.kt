@@ -1,6 +1,8 @@
 package com.tokopedia.feedplus.domain.mapper
 
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.feedplus.data.FeedXHeader
+import com.tokopedia.feedplus.oldFeed.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.iconunify.IconUnify
 
@@ -15,7 +17,9 @@ object MapperFeedTabs {
                 profileApplink = header.data.userProfile.applink,
                 profileWeblink = header.data.userProfile.weblink,
                 profilePhotoUrl = header.data.userProfile.image,
-                showMyProfile = header.data.userProfile.isShown
+                showMyProfile = header.data.userProfile.isShown,
+                isLoggedIn = false,
+                whiteListDomain = WhitelistDomain.Empty,
             ),
             data = header.data.tab.items.map {
                 FeedDataModel(
@@ -53,6 +57,47 @@ object MapperFeedTabs {
                 }.toList()
             )
         }
+
+    fun transform(
+        header: FeedXHeader,
+        whiteList: GetCheckWhitelistResponse,
+        isLoggedIn: Boolean,
+    ): FeedTabsModel {
+        return FeedTabsModel(
+            meta = MetaModel(
+                selectedIndex = 0,
+                profileApplink = header.data.userProfile.applink,
+                profileWeblink = header.data.userProfile.weblink,
+                profilePhotoUrl = header.data.userProfile.image,
+                showMyProfile = header.data.userProfile.isShown,
+                isLoggedIn = isLoggedIn,
+                whiteListDomain = getWhitelistDomain(whiteList),
+            ),
+            data = header.data.tab.items.map {
+                FeedDataModel(
+                    title = it.title,
+                    key = it.key,
+                    type = it.type,
+                    position = it.position,
+                    isActive = it.isActive
+                )
+            }
+        )
+    }
+
+    private fun getWhitelistDomain(query: GetCheckWhitelistResponse): WhitelistDomain {
+        return WhitelistDomain(
+            error = query.whitelist.error,
+            url = query.whitelist.url,
+            isWhitelist = query.whitelist.isWhitelist,
+            title = query.whitelist.title,
+            desc = query.whitelist.description,
+            titleIdentifier = query.whitelist.titleIdentifier,
+            postSuccessMessage = query.whitelist.postSuccessMessage,
+            image = query.whitelist.imageUrl,
+            authors = query.whitelist.authors
+        )
+    }
 
     private fun getDefaultDrawableForCreationOption(type: CreateContentType): Int =
         when (type) {

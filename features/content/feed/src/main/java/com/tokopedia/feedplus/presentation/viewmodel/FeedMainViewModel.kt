@@ -2,22 +2,31 @@ package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListUseCase
+import com.tokopedia.feedplus.data.FeedXHeader
 import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
 import com.tokopedia.feedplus.domain.usecase.FeedXHeaderUseCase
+import com.tokopedia.feedplus.oldFeed.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.presentation.model.ContentCreationItem
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
+import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -26,8 +35,11 @@ import javax.inject.Inject
 class FeedMainViewModel @Inject constructor(
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
-    private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.io) {
+    private val getWhiteListUseCase: GetWhiteListUseCase,
+    private val dispatchers: CoroutineDispatchers,
+    private val onboardingPreferences: OnboardingPreferences,
+    private val userSession: UserSessionInterface,
+) : ViewModel(), OnboardingPreferences by onboardingPreferences {
 
     private val _feedTabs = MutableLiveData<Result<FeedTabsModel>>()
     private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
@@ -40,9 +52,46 @@ class FeedMainViewModel @Inject constructor(
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
 
+    fun fetchData() {
+        viewModelScope.launch {
+            val header = async { getFeedHeader() }
+            val whiteList = async { getWhiteList() }
+
+            val feedTabs = MapperFeedTabs.transform(
+                header.await(),
+                whiteList.await(),
+                userSession.isLoggedIn,
+            )
+
+            _feedTabs.value = Success(feedTabs)
+        }
+    }
+
+    fun checkLoginStatus() {
+        _feedTabs.value = when (val result = _feedTabs.value) {
+            is Success -> result.copy(
+                data = result.data.copy(
+                    meta = result.data.meta.login(userSession.isLoggedIn)
+                )
+            )
+            else -> result
+        }
+    }
+
+    private suspend fun getWhiteList(): GetCheckWhitelistResponse {
+        if (!userSession.isLoggedIn) return GetCheckWhitelistResponse()
+        return getWhiteListUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
+    }
+
+    private suspend fun getFeedHeader(): FeedXHeader {
+        feedXHeaderUseCase.setRequestParams(
+            FeedXHeaderUseCase.createParam()
+        )
+        return feedXHeaderUseCase.executeOnBackground().feedXHeaderData
+    }
 
     fun fetchFeedTabs() {
-        launchCatchError(dispatchers.main, block = {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
             feedXHeaderUseCase.setRequestParams(
                 FeedXHeaderUseCase.createParam()
             )
@@ -69,7 +118,7 @@ class FeedMainViewModel @Inject constructor(
         _feedCreateContentBottomSheetData.value = Success(creatorList)
     }
     fun reportContent(feedReportRequestParamModel: FeedReportRequestParamModel) {
-        launchCatchError(dispatchers.io, block = {
+        viewModelScope.launchCatchError(dispatchers.io, block = {
             submitReportUseCase.setRequestParams(
                 FeedComplaintSubmitReportUseCase.createParam(
                     feedReportRequestParamModel
@@ -86,5 +135,21 @@ class FeedMainViewModel @Inject constructor(
         }
     }
 
-
+    private fun getWhitelistDomain(query: GetCheckWhitelistResponse?): WhitelistDomain {
+        return if (query == null) {
+            WhitelistDomain.Empty
+        } else {
+            WhitelistDomain(
+                error = query.whitelist.error,
+                url = query.whitelist.url,
+                isWhitelist = query.whitelist.isWhitelist,
+                title = query.whitelist.title,
+                desc = query.whitelist.description,
+                titleIdentifier = query.whitelist.titleIdentifier,
+                postSuccessMessage = query.whitelist.postSuccessMessage,
+                image = query.whitelist.imageUrl,
+                authors = query.whitelist.authors
+            )
+        }
+    }
 }

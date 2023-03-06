@@ -84,6 +84,9 @@ dari Feed.</string>
     <string name="feed_report">Laporkan</string>
     <string name="feed_clear_mode">Mode Nonton</string>
     <string name="feed_report_login_success_toaster_text">Kamu berhasil masuk sebagai Dianthi.</string>
-
+    <string name="feed_onboarding_create_content_title">Baru! Bisa buat video pendek 🥳</string>
+    <string name="feed_onboarding_create_content_subtitle">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
+    <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>
+    <string name="feed_onboarding_profile_entry_point_subtitle">Kamu juga bisa buat profil yang menarik dan bikin banyak orang penasaran dengan kontenmu.</string>
 
 </resources>

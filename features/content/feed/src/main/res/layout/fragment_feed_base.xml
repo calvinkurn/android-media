@@ -31,12 +31,14 @@
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="28dp"
+        android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="ADD_CIRCLE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone"/>
+        tools:visibility="visible"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/ty_feed_for_you_tab"
@@ -105,13 +107,15 @@
         android:id="@+id/feed_user_profile_image"
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_user_profile_default"
         app:unify_image_type="circle"
-        tools:visibility="visible"/>
+        tools:visibility="visible"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

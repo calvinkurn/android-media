@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -24,10 +25,13 @@ import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreati
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
+import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -38,7 +42,9 @@ import javax.inject.Inject
  */
 class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomSheet.Listener {
 
-    private var binding: FragmentFeedBaseBinding? = null
+    private var _binding: FragmentFeedBaseBinding? = null
+    private val binding get() = _binding!!
+
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
@@ -65,25 +71,20 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFeedBaseBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+        _binding = FragmentFeedBaseBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        feedMainViewModel.fetchFeedTabs()
+//        feedMainViewModel.fetchFeedTabs()
+        feedMainViewModel.fetchData()
         observeFeedTabData()
         observeCreateContentBottomSheetData()
     }
 
     private fun observeFeedTabData() {
-        feedMainViewModel.feedTabs.observe(
-            viewLifecycleOwner
-        ) {
+        feedMainViewModel.feedTabs.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> initView(it.data)
                 is Fail -> Toast.makeText(
@@ -113,21 +114,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun onResume() {
         super.onResume()
-        if (userSession.isLoggedIn) {
-            binding?.let {
-                it.btnFeedCreatePost.visible()
-                it.feedUserProfileImage.visible()
-            }
-        } else {
-            binding?.let {
-                it.btnFeedCreatePost.gone()
-                it.feedUserProfileImage.gone()
-            }
-        }
+        feedMainViewModel.checkLoginStatus()
     }
 
     override fun onDestroyView() {
-        binding = null
+        _binding = null
         adapter = null
         super.onDestroyView()
     }
@@ -139,46 +130,62 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     override fun getScreenName(): String = "Feed Fragment"
 
     private fun initView(data: FeedTabsModel) {
-        binding?.let {
-            adapter = FeedPagerAdapter(requireActivity(), data.data)
+        adapter = FeedPagerAdapter(requireActivity(), data.data)
 
-            it.vpFeedTabItemsContainer.adapter = adapter
-            it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                    OnPageChangeCallback() {
-                    override fun onPageScrolled(
-                        position: Int,
-                        positionOffset: Float,
-                        positionOffsetPixels: Int
-                    ) {
-                        onChangeTab(position)
-                    }
-                })
-
-            it.tyFeedForYouTab.setOnClickListener { _ ->
-                it.vpFeedTabItemsContainer.setCurrentItem(TAB_FOR_YOU_INDEX, true)
+        binding.vpFeedTabItemsContainer.adapter = adapter
+        binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
+            OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                onChangeTab(position)
             }
+        })
 
-            it.tyFeedFollowingTab.setOnClickListener { _ ->
-                it.vpFeedTabItemsContainer.setCurrentItem(TAB_FOLLOWING_INDEX, true)
-            }
+        binding.btnFeedCreatePost.showWithCondition(data.meta.createContentAllowed)
+        binding.feedUserProfileImage.showWithCondition(data.meta.shouldShowProfile)
 
-            it.btnFeedCreatePost.setOnClickListener {
-                onCreatePostClicked()
-            }
+        val onboarding = ImmersiveFeedOnboarding.Builder(requireContext())
+            .setCreateContentView(
+                if (data.meta.createContentAllowed) binding.btnFeedCreatePost
+                else null
+            )
+            .setProfileEntryPointView(
+                if (data.meta.shouldShowProfile) binding.feedUserProfileImage
+                else null
+            )
+            .build()
 
-            it.btnFeedLive.setOnClickListener {
-                onNavigateToLive()
-            }
-            it.feedUserProfileImage.setImageUrl(data.meta.profilePhotoUrl)
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            onboarding.show()
+        }
 
-            it.feedUserProfileImage.setOnClickListener {
-                onNavigateToProfile()
-            }
+        binding.tyFeedForYouTab.setOnClickListener { _ ->
+            binding.vpFeedTabItemsContainer.setCurrentItem(TAB_FOR_YOU_INDEX, true)
+        }
+
+        binding.tyFeedFollowingTab.setOnClickListener { _ ->
+            binding.vpFeedTabItemsContainer.setCurrentItem(TAB_FOLLOWING_INDEX, true)
+        }
+
+        binding.btnFeedCreatePost.setOnClickListener {
+            onCreatePostClicked()
+        }
+
+        binding.btnFeedLive.setOnClickListener {
+            onNavigateToLive()
+        }
+        binding.feedUserProfileImage.setImageUrl(data.meta.profilePhotoUrl)
+
+        binding.feedUserProfileImage.setOnClickListener {
+            onNavigateToProfile()
         }
     }
 
     private fun onChangeTab(position: Int) {
-        binding?.let {
+        binding.let {
             val newTabView = if (position == 0) it.tyFeedForYouTab else it.tyFeedFollowingTab
 
             val newConstraintSet = ConstraintSet()
