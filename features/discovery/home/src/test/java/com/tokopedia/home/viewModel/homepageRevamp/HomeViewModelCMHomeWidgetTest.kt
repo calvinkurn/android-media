@@ -201,7 +201,6 @@ class HomeViewModelCMHomeWidgetTest {
             getHomeUseCase = getHomeUseCase,
             deleteCMHomeWidgetUseCase = deleteCMHomeWidgetUseCase
         )
-        homeViewModel.initFlow()
 
         homeViewModel.deleteCMHomeWidget()
         assert(homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is CMHomeWidgetDataModel } != null)
@@ -224,7 +223,6 @@ class HomeViewModelCMHomeWidgetTest {
             getHomeUseCase = getHomeUseCase,
             deleteCMHomeWidgetUseCase = deleteCMHomeWidgetUseCase
         )
-        homeViewModel.initFlow()
 
         coEvery { deleteCMHomeWidgetUseCase.deleteCMHomeWidgetData(any(), any(), any(), any()) } throws Exception()
 
