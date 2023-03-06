@@ -15,4 +15,5 @@ interface Receiver<T> {
     suspend fun awaitError(): Throwable
 
     fun ensureAllEventsConsumed()
+    suspend fun cancelAndIgnoreRemainingEvents()
 }

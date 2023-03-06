@@ -1,17 +1,11 @@
 package com.tokopedia.home_account.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.home_account.AccountConstants.Query.NEW_QUERY_BUYER_ACCOUNT_HOME
-import com.tokopedia.home_account.AccountErrorHandler
-import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.UserAccountDataModel
-import com.tokopedia.network.exception.MessageErrorException
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -21,32 +15,30 @@ import javax.inject.Inject
 
 open class HomeAccountUserUsecase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
-    dispatcher: CoroutineDispatcher,
-    private val rawQueries: Map<String, String>
-): CoroutineUseCase<Unit, UserAccountDataModel>(dispatcher) {
+    dispatcher: CoroutineDispatchers
+): CoroutineUseCase<Unit, UserAccountDataModel>(dispatcher.io) {
 
-    override fun graphqlQuery(): String {
-        return rawQueries[NEW_QUERY_BUYER_ACCOUNT_HOME] ?: ""
-    }
+    override fun graphqlQuery(): String =
+        """
+             query {
+               status
+               profile(skipCache: true) {
+                 name
+                 full_name
+                 completion
+                 user_id
+                 profilePicture
+                 phone_verified
+               }
+               openDebitSettings {
+                   data {
+                     redirectURL
+                   }
+                }
+             }
+        """.trimIndent()
 
     override suspend fun execute(params: Unit): UserAccountDataModel {
-        val rawQuery = rawQueries[NEW_QUERY_BUYER_ACCOUNT_HOME]
-        val gqlRequest = GraphqlRequest(rawQuery,
-                UserAccountDataModel::class.java, mapOf<String, Any>())
-        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
-        val errors = gqlResponse.getError(UserAccountDataModel::class.java)
-        if (!errors.isNullOrEmpty()) {
-            throw MessageErrorException(errors[0].message)
-        } else {
-            var data: UserAccountDataModel? = gqlResponse.getData(UserAccountDataModel::class.java)
-            if (data == null) {
-                val mapResponse = Utils.convertResponseToJson(gqlResponse)
-                data = UserAccountDataModel()
-                AccountErrorHandler.logDataNull("Account_DataUseCase",
-                        Throwable("Results : ${mapResponse[Utils.M_RESULT]} - Errors : ${mapResponse[Utils.M_ERRORS]}"))
-            }
-            return data
-        }
+        return graphqlRepository.request(graphqlQuery(), params)
     }
 }

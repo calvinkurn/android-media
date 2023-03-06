@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.CONSTANT_0
 import com.tokopedia.discovery2.CONSTANT_11
@@ -57,6 +58,7 @@ class DiscoveryViewModelTest {
     private lateinit var userSessionInterface: UserSessionInterface
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface
+    private lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     private lateinit var viewModel: DiscoveryViewModel
     private var context: Context = mockk()
@@ -78,6 +80,7 @@ class DiscoveryViewModelTest {
         userSessionInterface = mockk(relaxed = true)
         trackingQueue = mockk(relaxed = true)
         pageLoadTimePerformanceInterface = mockk(relaxed = true)
+        affiliateCookieHelper = mockk()
 
         viewModel = spyk(
             DiscoveryViewModel(
@@ -88,7 +91,8 @@ class DiscoveryViewModelTest {
                 deleteCartUseCase,
                 userSessionInterface,
                 trackingQueue,
-                pageLoadTimePerformanceInterface
+                pageLoadTimePerformanceInterface,
+                affiliateCookieHelper
             )
         )
 
@@ -202,6 +206,8 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.VARIANT_ID, "") } returns "m"
         every { bundle.getString(DiscoveryActivity.SHOP_ID, "") } returns "n"
         every { bundle.getString(DiscoveryActivity.QUERY_PARENT, "") } returns "o"
+        every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "q"
+        every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "r"
 
         val discoComponentQuery: MutableMap<String, String?> =
             mutableMapOf(DiscoveryActivity.CATEGORY_ID to "p")
@@ -222,7 +228,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.CAMPAIGN_ID to "l",
             DiscoveryActivity.VARIANT_ID to "m",
             DiscoveryActivity.SHOP_ID to "n",
-            DiscoveryActivity.QUERY_PARENT to "o"
+            DiscoveryActivity.QUERY_PARENT to "o",
+            DiscoveryActivity.AFFILIATE_UNIQUE_ID to "q",
+            DiscoveryActivity.CHANNEL to "r"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -253,7 +261,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.CAMPAIGN_ID to null,
             DiscoveryActivity.VARIANT_ID to null,
             DiscoveryActivity.SHOP_ID to null,
-            DiscoveryActivity.QUERY_PARENT to null
+            DiscoveryActivity.QUERY_PARENT to null,
+            DiscoveryActivity.AFFILIATE_UNIQUE_ID to null,
+            DiscoveryActivity.CHANNEL to null
         )
 
         viewModel.getQueryParameterMapFromBundle(null)
@@ -280,6 +290,8 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.VARIANT_ID, "") } returns "m"
         every { bundle.getString(DiscoveryActivity.SHOP_ID, "") } returns "n"
         every { bundle.getString(DiscoveryActivity.QUERY_PARENT, "") } returns "o"
+        every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "p"
+        every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "q"
 
         val map: MutableMap<String, String?> = mutableMapOf(
             DiscoveryActivity.SOURCE to "a",
@@ -296,7 +308,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.CAMPAIGN_ID to "l",
             DiscoveryActivity.VARIANT_ID to "m",
             DiscoveryActivity.SHOP_ID to "n",
-            DiscoveryActivity.QUERY_PARENT to "o"
+            DiscoveryActivity.QUERY_PARENT to "o",
+            DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
+            DiscoveryActivity.CHANNEL to "q"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -323,6 +337,8 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.VARIANT_ID, "") } returns "m"
         every { bundle.getString(DiscoveryActivity.SHOP_ID, "") } returns "n"
         every { bundle.getString(DiscoveryActivity.QUERY_PARENT, "") } returns "o"
+        every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "p"
+        every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "q"
         val map: MutableMap<String, String?> = mutableMapOf(
             DiscoveryActivity.SOURCE to "a",
             DiscoveryActivity.COMPONENT_ID to "b",
@@ -338,7 +354,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.CAMPAIGN_ID to "l",
             DiscoveryActivity.VARIANT_ID to "m",
             DiscoveryActivity.SHOP_ID to "n",
-            DiscoveryActivity.QUERY_PARENT to "o"
+            DiscoveryActivity.QUERY_PARENT to "o",
+            DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
+            DiscoveryActivity.CHANNEL to "q"
         )
         val discoComponentQuery: MutableMap<String, String?> = mutableMapOf()
         com.tokopedia.discovery2.datamapper.discoComponentQuery = discoComponentQuery
@@ -368,7 +386,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.CAMPAIGN_ID to null,
             DiscoveryActivity.VARIANT_ID to null,
             DiscoveryActivity.SHOP_ID to null,
-            DiscoveryActivity.QUERY_PARENT to null
+            DiscoveryActivity.QUERY_PARENT to null,
+            DiscoveryActivity.AFFILIATE_UNIQUE_ID to null,
+            DiscoveryActivity.CHANNEL to null
         )
 
         viewModel.getQueryParameterMapFromBundle(null)
@@ -451,6 +471,8 @@ class DiscoveryViewModelTest {
         every { uri.getQueryParameter(DiscoveryActivity.VARIANT_ID) } returns "m"
         every { uri.getQueryParameter(DiscoveryActivity.SHOP_ID) } returns "n"
         every { uri.query } returns "o"
+        every { uri.getQueryParameter(DiscoveryActivity.AFFILIATE_UNIQUE_ID) } returns "p"
+        every { uri.getQueryParameter(DiscoveryActivity.CHANNEL) } returns "q"
 
         val map: MutableMap<String, String?> = mutableMapOf(
             DiscoveryActivity.SOURCE to "a",
@@ -467,7 +489,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.CAMPAIGN_ID to "l",
             DiscoveryActivity.VARIANT_ID to "m",
             DiscoveryActivity.SHOP_ID to "n",
-            DiscoveryActivity.QUERY_PARENT to "o"
+            DiscoveryActivity.QUERY_PARENT to "o",
+            DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
+            DiscoveryActivity.CHANNEL to "q"
         )
 
         viewModel.getMapOfQueryParameter(uri)

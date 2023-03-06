@@ -3,6 +3,7 @@ package com.tokopedia.search.result.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.LAYOUT_FILTER
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_SIZE_PERSO
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
@@ -56,6 +57,9 @@ data class SearchProductModel(
     val backendFilters: String
         get() = searchProduct.backendFilters
 
+    val backendFiltersToggle: String
+        get() = searchProduct.backendFiltersToggle
+
     val keywordIntention: Int
         get() = searchProduct.data.keywordIntention
 
@@ -80,6 +84,9 @@ data class SearchProductModel(
 
         val backendFilters: String
             get() = data.backendFilters
+
+        val backendFiltersToggle: String
+            get() = data.backendFiltersToggle
 
         val errorMessage: String
             get() = header.errorMessage
@@ -146,6 +153,10 @@ data class SearchProductModel(
             @SerializedName("backendFilters")
             @Expose
             val backendFilters: String = "",
+
+            @SerializedName("backendFiltersToggle")
+            @Expose
+            val backendFiltersToggle: String = "",
 
             @SerializedName("redirection")
             @Expose
@@ -1025,15 +1036,29 @@ data class SearchProductModel(
         val data: List<InspirationWidgetData> = listOf()
     ) {
         fun asFilterList(): List<Filter> =
-            data
-                .filter { it.type == TYPE_SIZE_PERSO }
+            filterWidgetList()
                 .map { it.asFilter() }
+
+        fun filterWidgetList() =
+            data.filter { it.layout == LAYOUT_FILTER }
     }
 
     data class InspirationWidgetData (
         @SerializedName("title")
         @Expose
         val title: String = "",
+
+        @SerializedName("header_title")
+        @Expose
+        val headerTitle: String = "",
+
+        @SerializedName("header_subtitle")
+        @Expose
+        val headerSubtitle: String = "",
+
+        @SerializedName("layout")
+        @Expose
+        val layout: String = "",
 
         @SerializedName("type")
         @Expose
@@ -1090,6 +1115,8 @@ data class SearchProductModel(
             key = filters.key,
             value = filters.value,
             name = filters.name,
+            valMin = filters.valMin,
+            valMax = filters.valMax,
         )
     }
 
@@ -1105,6 +1132,14 @@ data class SearchProductModel(
         @SerializedName("value")
         @Expose
         val value: String = "",
+
+        @SerializedName("val_min")
+        @Expose
+        val valMin: String = "",
+
+        @SerializedName("val_max")
+        @Expose
+        val valMax: String = "",
     )
 
     data class Violation(

@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
@@ -15,6 +14,10 @@ import com.tokopedia.media.picker.common.data.repository.*
 import com.tokopedia.media.picker.data.loader.LoaderDataSource
 import com.tokopedia.media.picker.data.loader.LoaderDataSourceImpl
 import com.tokopedia.media.picker.data.repository.*
+import com.tokopedia.media.picker.data.repository.AlbumRepository
+import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
+import com.tokopedia.media.picker.data.repository.MediaRepository
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import dagger.Module
 import dagger.Provides
 
@@ -49,7 +52,7 @@ object TestPickerModule {
     @ActivityScope
     fun provideLoaderDataSource(
         @ApplicationContext context: Context,
-        cacheManager: ParamCacheManager
+        cacheManager: PickerCacheManager
     ) : LoaderDataSource {
         return LoaderDataSourceImpl(context, cacheManager)
     }

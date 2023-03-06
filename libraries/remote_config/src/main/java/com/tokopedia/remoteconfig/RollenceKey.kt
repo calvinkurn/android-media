@@ -14,9 +14,6 @@ object RollenceKey {
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
 
     // home component rollence section
-    const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
-    const val HOME_COMPONENT_LEGO24BANNER_OLD = "lego24_old"
-    const val HOME_COMPONENT_LEGO24BANNER_VARIANT = "lego24_new"
     const val HOME_COMPONENT_HPB_DURATION_EXP = "hpb_scroll_duration"
     const val HOME_COMPONENT_HPB_DURATION_CONTROL = "control_scroll_5s"
     const val HOME_COMPONENT_HPB_DURATION_VARIANT_4S = "scroll_4s"
@@ -24,6 +21,8 @@ object RollenceKey {
     const val HOME_COMPONENT_HPB_DOTS_INFINITE_EXP = "hpb_dots_infinite_2"
     const val HOME_COMPONENT_HPB_DOTS_INFINITE_CONTROL = "control_variant"
     const val HOME_COMPONENT_HPB_DOTS_INFINITE_VARIANT = "new_dots_scroll"
+    const val HOME_COMPONENT_DYNAMIC_ICON_EXP = "icon_animation"
+    const val HOME_COMPONENT_DYNAMIC_ICON_VARIANT = "exp_icon"
     // end of home component rollence section
 
     const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
@@ -46,8 +45,6 @@ object RollenceKey {
     // Purchase Platform
     const val CONTROL_VARIANT = "control_variant"
     const val EXPERIMENT_VARIANT = "experiment_variant"
-    const val WISHLIST_COLLECTION = "WL_collection_andro"
-    const val WISHLIST_COLLECTION_SHARING = "WL_sharing_andro"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
 
     // SRP Video Sneak Peek Autoplay
@@ -78,9 +75,4 @@ object RollenceKey {
 
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
-
-    object PdpToolbar {
-        const val key = "pdp_dyn_container"
-        const val transparent = "var_container"
-    }
 }

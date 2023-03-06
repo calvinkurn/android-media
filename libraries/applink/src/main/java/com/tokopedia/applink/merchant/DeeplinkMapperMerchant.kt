@@ -1,5 +1,6 @@
 package com.tokopedia.applink.merchant
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
@@ -9,6 +10,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 /**
  * Created by Rafli Syam on 2020-02-04.
@@ -386,6 +389,20 @@ object DeeplinkMapperMerchant {
         return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL, appLink) != null
     }
 
+    fun isSellerMvcIntroAppLink(deeplink: String): Boolean {
+        return ApplinkConst.SellerApp.SELLER_MVC_INTRO == deeplink
+    }
+
+    fun isSellerMvcCreate(deeplink: String): Boolean {
+        val uriAppLink = Uri.parse(deeplink)
+        return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_CREATE, uriAppLink) != null
+    }
+
+    fun isSellerMvcDetailAppLink(deeplink: String): Boolean {
+        val appLink = Uri.parse(deeplink)
+        return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_DETAIL, appLink) != null
+    }
+
     fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {
         val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_LIST, lastSegment)
@@ -418,6 +435,28 @@ object DeeplinkMapperMerchant {
         )
     }
 
+    fun getRegisteredNavigationForSellerMvcIntro(): String {
+        return ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
+    }
+
+    fun getRegisteredNavigationForSellerMvcCreate(deeplink: String): String {
+        val appLink = Uri.parse(deeplink)
+        val lastSegment = appLink.lastPathSegment.orEmpty()
+        return UriUtil.buildUri(
+            ApplinkConstInternalSellerapp.SELLER_MVC_CREATE,
+            lastSegment
+        )
+    }
+
+    fun getRegisteredNavigationForSellerMvcDetail(deeplink: String): String {
+        val appLink = Uri.parse(deeplink)
+        val lastSegment = appLink.lastPathSegment.orEmpty()
+        return UriUtil.buildUri(
+            ApplinkConstInternalSellerapp.SELLER_MVC_DETAIL,
+            lastSegment
+        )
+    }
+
     fun getRegisteredNavigationForCreateShowcase(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         if (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT) {
@@ -426,5 +465,31 @@ object DeeplinkMapperMerchant {
             }.build().toString()
         }
         return deeplink
+    }
+
+    fun getRegisteredNavigationForOldMvcSellerCreate(context: Context): String {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val isEnableNewSellerMvcRouting = remoteConfig.getBoolean(
+            RemoteConfigKey.ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC,
+            true
+        )
+        return if (isEnableNewSellerMvcRouting) {
+            ApplinkConstInternalSellerapp.SELLER_MVC_INTRO
+        } else {
+            ApplinkConstInternalSellerapp.CREATE_VOUCHER
+        }
+    }
+
+    fun getRegisteredNavigationForOldMvcSellerList(context: Context): String {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val isEnableNewSellerMvcRouting = remoteConfig.getBoolean(
+            RemoteConfigKey.ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC,
+            true
+        )
+        return if (isEnableNewSellerMvcRouting) {
+            ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
+        } else {
+            ApplinkConstInternalSellerapp.VOUCHER_LIST
+        }
     }
 }

@@ -168,7 +168,7 @@ class PlayShortsViewModel @Inject constructor(
 
             /** Account */
             is PlayShortsAction.ClickSwitchAccount -> handleClickSwitchAccount()
-            is PlayShortsAction.SwitchAccount -> handleSwitchAccount()
+            is PlayShortsAction.SwitchAccount -> handleSwitchAccount(action.isRefreshAccountList)
 
             /** Title Form */
             is PlayShortsAction.OpenTitleForm -> handleOpenTitleForm()
@@ -220,8 +220,13 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun handleSwitchAccount() {
+    private fun handleSwitchAccount(isRefreshAccountList: Boolean) {
         viewModelScope.launchCatchErrorWithLoader(block = {
+            if(isRefreshAccountList) {
+                val accountList = repo.getAccountList()
+                _accountList.update { accountList }
+            }
+
             val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
 
             setupConfigurationIfEligible(newSelectedAccount)
@@ -382,12 +387,14 @@ class PlayShortsViewModel @Inject constructor(
         val config = repo.getShortsConfiguration(account.id, account.type)
         _config.update { it.copy(tncList = config.tncList) }
 
-        if (account.isShop && (!account.enable || !config.shortsAllowed)) {
+        if (account.isUser && !account.hasAcceptTnc) {
+            emitEventUGCOnboarding(account.hasUsername)
+        } else if(config.isBanned) {
+            emitEventAccountBanned()
+        } else if (account.isShop && (!account.enable || !config.shortsAllowed)) {
             emitEventSellerNotEligible()
         } else if (account.isUser && !config.shortsAllowed) {
             emitEventAccountNotEligible()
-        } else if (account.isUser && !account.enable) {
-            emitEventUGCOnboarding(account.hasUsername)
         } else {
             val finalConfig = if (config.shortsId.isEmpty()) {
                 val shortsId = repo.createShorts(account.id, account.type)
@@ -406,6 +413,12 @@ class PlayShortsViewModel @Inject constructor(
         _titleForm.update { PlayShortsTitleFormUiState.Empty }
         _productSectionList.update { emptyList() }
         _coverForm.update { PlayShortsCoverFormUiState.Empty }
+    }
+
+    private fun emitEventAccountBanned() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.AccountBanned)
+        }
     }
 
     private fun emitEventSellerNotEligible() {

@@ -49,6 +49,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 }
 
 project.ext {
