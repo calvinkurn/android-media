@@ -13,14 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -31,6 +28,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.data.preference.WhitelabelInstanCoachMarkSharePref
+import com.tokopedia.editshipping.databinding.FragmentShippingEditorNewBinding
 import com.tokopedia.editshipping.di.shippingeditor.DaggerShippingEditorComponent
 import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.HeaderTickerModel
@@ -65,6 +63,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -85,14 +84,14 @@ class ShippingEditorFragment :
         ViewModelProvider(this, viewModelFactory).get(ShippingEditorViewModel::class.java)
     }
 
-    private var shippingEditorLayout: ConstraintLayout? = null
-    private var tickerShipperInfo: Ticker? = null
-    private var shipperListOnDemand: RecyclerView? = null
-    private var shipperListConventional: RecyclerView? = null
-    private var btnSaveShipper: UnifyButton? = null
-    private var tvDetailCourier: Typography? = null
-    private var tickerOnDemand: Ticker? = null
-    private var tickerHeader: Ticker? = null
+//    private var shippingEditorLayout: ConstraintLayout? = null
+//    private var tickerShipperInfo: Ticker? = null
+//    private var shipperListOnDemand: RecyclerView? = null
+//    private var shipperListConventional: RecyclerView? = null
+//    private var btnSaveShipper: UnifyButton? = null
+//    private var tvDetailCourier: Typography? = null
+//    private var tickerOnDemand: Ticker? = null
+//    private var tickerHeader: Ticker? = null
 
     private var bottomSheetShipperInfo: BottomSheetUnify? = null
     private var bottomSheetImageInfo: ImageUnify? = null
@@ -127,14 +126,15 @@ class ShippingEditorFragment :
     private var btnNonaktifkanValidationBO: UnifyButton? = null
     private var btnAktifkanValidateBO: UnifyButton? = null
 
-    private var swipeRefreshLayout: SwipeRefreshLayout? = null
-    private var scrollView: NestedScrollView? = null
-    private var globalErrorLayout: GlobalError? = null
+//    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+//    private var scrollView: NestedScrollView? = null
+//    private var globalErrorLayout: GlobalError? = null
 
     private var whitelabelCoachmark: CoachMark2? = null
 
     private var shippingEditorOnDemandAdapter = ShippingEditorItemAdapter(this, this)
     private var shippingEditorConventionalAdapter = ShippingEditorItemAdapter(this, this)
+    private var binding by autoClearedNullable<FragmentShippingEditorNewBinding>()
 
     override fun getScreenName(): String = ""
 
@@ -149,7 +149,8 @@ class ShippingEditorFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_shipping_editor_new, container, false)
+        binding = FragmentShippingEditorNewBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -172,27 +173,27 @@ class ShippingEditorFragment :
     }
 
     private fun initViews() {
-        shippingEditorLayout = view?.findViewById(R.id.shipping_editor_layout)
-        tickerShipperInfo = view?.findViewById(R.id.ticker_shipper_info)
-        shipperListOnDemand = view?.findViewById(R.id.rv_on_demand)
-        shipperListConventional = view?.findViewById(R.id.rv_conventional)
-        btnSaveShipper = view?.findViewById(R.id.btn_save_shipper)
-        globalErrorLayout = view?.findViewById(R.id.global_error)
-        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
-        tvDetailCourier = view?.findViewById(R.id.tv_detail_kurir)
-        tickerOnDemand = view?.findViewById(R.id.ticker_dijemput_kurir)
-        tickerHeader = view?.findViewById(R.id.ticker_header)
-        scrollView = view?.findViewById(R.id.sv_shipping_editor)
+//        shippingEditorLayout = view?.findViewById(R.id.shipping_editor_layout)
+//        tickerShipperInfo = view?.findViewById(R.id.ticker_shipper_info)
+//        shipperListOnDemand = view?.findViewById(R.id.rv_on_demand)
+//        shipperListConventional = view?.findViewById(R.id.rv_conventional)
+//        btnSaveShipper = view?.findViewById(R.id.btn_save_shipper)
+//        globalErrorLayout = view?.findViewById(R.id.global_error)
+//        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
+//        tvDetailCourier = view?.findViewById(R.id.tv_detail_kurir)
+//        tickerOnDemand = view?.findViewById(R.id.ticker_dijemput_kurir)
+//        tickerHeader = view?.findViewById(R.id.ticker_header)
+//        scrollView = view?.findViewById(R.id.sv_shipping_editor)
 
         renderTickerOnDemand()
         renderTextDetailCourier()
-        btnSaveShipper?.setOnClickListener { saveButtonShippingEditor() }
+        binding?.btnSaveShipper?.setOnClickListener { saveButtonShippingEditor() }
     }
 
     private fun renderTickerOnDemand() {
         SpannableString(getString(R.string.awb_otomatis_list))
-        tickerOnDemand?.setHtmlDescription(getString(R.string.ticker_dijemput_kurir_complete))
-        tickerOnDemand?.setDescriptionClickEvent(object : TickerCallback {
+        binding?.tickerDijemputKurir?.setHtmlDescription(getString(R.string.ticker_dijemput_kurir_complete))
+        binding?.tickerDijemputKurir?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 if (linkUrl == STATE_AWB_VALIDATION) {
                     bottomSheetShipperInfoType = 1
@@ -226,17 +227,17 @@ class ShippingEditorFragment :
             spannableString.length,
             Spannable.SPAN_INCLUSIVE_EXCLUSIVE
         )
-        tvDetailCourier?.text = spannableString
-        tvDetailCourier?.setOnClickListener {
+        binding?.tvDetailKurir?.text = spannableString
+        binding?.tvDetailKurir?.setOnClickListener {
             viewModel.getShipperDetail()
         }
     }
 
     private fun initAdapter() {
-        shipperListOnDemand?.adapter = shippingEditorOnDemandAdapter
-        shipperListConventional?.adapter = shippingEditorConventionalAdapter
-        shipperListOnDemand?.layoutManager = LinearLayoutManager(context)
-        shipperListConventional?.layoutManager = LinearLayoutManager(context)
+        binding?.rvOnDemand?.adapter = shippingEditorOnDemandAdapter
+        binding?.rvConventional?.adapter = shippingEditorConventionalAdapter
+        binding?.rvOnDemand?.layoutManager = LinearLayoutManager(context)
+        binding?.rvConventional?.layoutManager = LinearLayoutManager(context)
     }
 
     private fun initViewModel() {
@@ -246,7 +247,7 @@ class ShippingEditorFragment :
                 when (it) {
                     is ShippingEditorState.Success -> {
                         if (it.data.data.eligibilityState == 1) {
-                            swipeRefreshLayout?.isRefreshing = false
+                            binding?.swipeRefresh?.isRefreshing = false
                             fetchData()
                         } else {
                             activity?.finish()
@@ -257,14 +258,14 @@ class ShippingEditorFragment :
                     }
 
                     is ShippingEditorState.Fail -> {
-                        swipeRefreshLayout?.isRefreshing = false
+                        binding?.swipeRefresh?.isRefreshing = false
                         if (it.throwable != null) {
                             handleError(it.throwable)
                         }
                     }
 
                     else -> {
-                        swipeRefreshLayout?.isRefreshing = true
+                        binding?.swipeRefresh?.isRefreshing = true
                     }
                 }
             }
@@ -281,16 +282,16 @@ class ShippingEditorFragment :
                     }
 
                     is ShippingEditorState.Fail -> {
-                        swipeRefreshLayout?.isRefreshing = false
+                        binding?.swipeRefresh?.isRefreshing = false
                         if (it.throwable != null) {
                             handleError(it.throwable)
                         }
                     }
 
                     else -> {
-                        shippingEditorLayout?.gone()
-                        btnSaveShipper?.gone()
-                        swipeRefreshLayout?.isRefreshing = true
+                        binding?.shippingEditorLayout?.gone()
+                        binding?.btnSaveShipper?.gone()
+                        binding?.swipeRefresh?.isRefreshing = true
                     }
                 }
             }
@@ -301,10 +302,10 @@ class ShippingEditorFragment :
             Observer {
                 when (it) {
                     is ShippingEditorState.Success -> {
-                        swipeRefreshLayout?.isRefreshing = false
-                        shippingEditorLayout?.visible()
-                        btnSaveShipper?.visible()
-                        globalErrorLayout?.gone()
+                        binding?.swipeRefresh?.isRefreshing = false
+                        binding?.shippingEditorLayout?.visible()
+                        binding?.btnSaveShipper?.visible()
+                        binding?.globalError?.gone()
                         updateHeaderTickerData(it.data.headerTicker)
                     }
                 }
@@ -316,11 +317,11 @@ class ShippingEditorFragment :
             Observer {
                 when (it) {
                     is ShippingEditorState.Success -> {
-                        swipeRefreshLayout?.isRefreshing = false
+                        binding?.swipeRefresh?.isRefreshing = false
                         updateBottomsheetData(it.data)
                     }
-                    is ShippingEditorState.Fail -> swipeRefreshLayout?.isRefreshing = false
-                    else -> swipeRefreshLayout?.isRefreshing = true
+                    is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
+                    else -> binding?.swipeRefresh?.isRefreshing = true
                 }
             }
         )
@@ -330,11 +331,11 @@ class ShippingEditorFragment :
             Observer {
                 when (it) {
                     is ShippingEditorState.Success -> {
-                        swipeRefreshLayout?.isRefreshing = false
+                        binding?.swipeRefresh?.isRefreshing = false
                         validateSaveData(it.data)
                     }
-                    is ShippingEditorState.Fail -> swipeRefreshLayout?.isRefreshing = false
-                    else -> swipeRefreshLayout?.isRefreshing = true
+                    is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
+                    else -> binding?.swipeRefresh?.isRefreshing = true
                 }
             }
         )
@@ -344,11 +345,11 @@ class ShippingEditorFragment :
             Observer {
                 when (it) {
                     is ShippingEditorState.Success -> {
-                        swipeRefreshLayout?.isRefreshing = false
+                        binding?.swipeRefresh?.isRefreshing = false
                         fetchData()
                     }
-                    is ShippingEditorState.Fail -> swipeRefreshLayout?.isRefreshing = false
-                    else -> swipeRefreshLayout?.isRefreshing = true
+                    is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
+                    else -> binding?.swipeRefresh?.isRefreshing = true
                 }
             }
         )
@@ -382,7 +383,7 @@ class ShippingEditorFragment :
 
     private fun updateHeaderTickerData(data: HeaderTickerModel) {
         if (data.isActive) {
-            tickerHeader?.apply {
+            binding?.tickerHeader?.apply {
                 visibility = View.VISIBLE
                 tickerTitle = data.header
                 setHtmlDescription(data.body + getString(R.string.ticker_header_clicked))
@@ -400,7 +401,7 @@ class ShippingEditorFragment :
                 })
             }
         } else {
-            tickerHeader?.gone()
+            binding?.tickerHeader?.gone()
         }
     }
 
@@ -427,7 +428,7 @@ class ShippingEditorFragment :
                 )
             }
             val tickerPageAdapter = TickerPagerAdapter(context, messages)
-            tickerShipperInfo?.addPagerView(tickerPageAdapter, messages)
+            binding?.tickerShipperInfo?.addPagerView(tickerPageAdapter, messages)
             tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                     val appLink = itemData.toString()
@@ -438,9 +439,9 @@ class ShippingEditorFragment :
                     }
                 }
             })
-            tickerShipperInfo?.visible()
+            binding?.tickerShipperInfo?.visible()
         } else {
-            tickerShipperInfo?.gone()
+            binding?.tickerShipperInfo?.gone()
         }
     }
 
@@ -887,13 +888,13 @@ class ShippingEditorFragment :
     }
 
     private fun showGlobalError(type: Int) {
-        globalErrorLayout?.setType(type)
-        globalErrorLayout?.setActionClickListener {
+        binding?.globalError?.setType(type)
+        binding?.globalError?.setActionClickListener {
             fetchData()
         }
-        shippingEditorLayout?.gone()
-        btnSaveShipper?.gone()
-        globalErrorLayout?.visible()
+        binding?.shippingEditorLayout?.gone()
+        binding?.btnSaveShipper?.gone()
+        binding?.globalError?.visible()
     }
 
     override fun onShipperTickerClicked(data: ShipperModel) {
@@ -905,7 +906,7 @@ class ShippingEditorFragment :
     private fun getWhitelabelView(): View? {
         val whitelabelServiceIndex = shippingEditorOnDemandAdapter.getWhitelabelServicePosition()
         return if (whitelabelServiceIndex != RecyclerView.NO_POSITION) {
-            shipperListOnDemand?.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
+            binding?.rvOnDemand?.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
         } else {
             null
         }
@@ -914,7 +915,7 @@ class ShippingEditorFragment :
     private fun getNormalServiceView(): View? {
         val normalServiceIndex = shippingEditorOnDemandAdapter.getFirstNormalServicePosition()
         return if (normalServiceIndex != RecyclerView.NO_POSITION) {
-            shipperListOnDemand?.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
+            binding?.rvOnDemand?.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
         } else {
             null
         }
@@ -992,7 +993,7 @@ class ShippingEditorFragment :
         currentIndex: Int = 0
     ) {
         coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { rv ->
-            scrollView?.smoothScrollTo(0, rv.top)
+            binding?.svShippingEditor?.smoothScrollTo(0, rv.top)
             this.showCoachMark(coachMarkItems, null, currentIndex)
         }
     }
