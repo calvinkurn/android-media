@@ -56,7 +56,6 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NAME
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PLAY
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.POSITION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMOTIONS
-import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMO_CLICK
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.PROMO_VIEW
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SCREEN_NAME
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SESSION_IRIS
@@ -321,29 +320,13 @@ class UserProfileTrackerImpl @Inject constructor(
         self: Boolean,
         live: Boolean,
         activityId: String,
-        imageUrl: String,
-        videoPosition: Int
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = PROMO_CLICK,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_VIDEO,
                 label = "$activityId - $userId - ${isSelfOrVisitor(self)} - ${isLiveOrVod(live)}"
-            ),
-            hashMapOf(
-                ECOMMERCE to hashMapOf(
-                    PROMO_CLICK to hashMapOf(
-                        PROMOTIONS to listOf(
-                            convertToPromotion(
-                                activityId,
-                                imageUrl,
-                                videoPosition,
-                                "/$FEED_USER_PROFILE_VIDEO"
-                            )
-                        )
-                    )
-                )
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -411,30 +394,14 @@ class UserProfileTrackerImpl @Inject constructor(
         userId: String,
         self: Boolean,
         activityId: String,
-        imageUrl: String,
-        postPosition: Int,
         mediaType: String
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = PROMO_CLICK,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_POST,
                 label = "$activityId - $userId - ${isSelfOrVisitor(self)} - $mediaType"
-            ),
-            hashMapOf(
-                ECOMMERCE to hashMapOf(
-                    PROMO_CLICK to hashMapOf(
-                        PROMOTIONS to listOf(
-                            convertToPromotion(
-                                activityId,
-                                imageUrl,
-                                postPosition + 1,
-                                "/$FEED_USER_PROFILE_POST"
-                            )
-                        )
-                    )
-                )
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
@@ -653,29 +620,13 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickProfileRecommendation(
         userId: String,
         item: ShopRecomUiModelItem,
-        imageUrl: String,
-        postPosition: Int
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = PROMO_CLICK,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_PROFILE_RECOMMENDATION,
                 label = getShopRecomEventLabel(userId, item)
-            ),
-            hashMapOf(
-                ECOMMERCE to hashMapOf(
-                    PROMO_CLICK to hashMapOf(
-                        PROMOTIONS to listOf(
-                            convertToPromotion(
-                                item.id.toString(),
-                                imageUrl,
-                                postPosition,
-                                FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
-                            )
-                        )
-                    )
-                )
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,

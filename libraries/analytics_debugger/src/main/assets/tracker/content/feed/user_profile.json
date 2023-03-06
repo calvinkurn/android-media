@@ -142,20 +142,12 @@
       "trackerId": "24615"
     },
     {
-      "event": "select_content",
+      "event": "clickContent",
       "eventAction": "click - video",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .* - .* - .*",
       "businessUnit": "content",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
-      "promotions": [
-        {
-          "creative_name": ".*",
-          "creative_slot": "\\d+",
-          "item_id": ".*",
-          "item_name": "/feed user profile - video"
-        }
-      ],
       "sessionIris": ".*",
       "userId": ".*",
       "trackerId": "24616"
@@ -191,20 +183,12 @@
       "trackerId": "24619"
     },
     {
-      "event": "select_content",
+      "event": "clickContent",
       "eventAction": "click - post",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .* - .* - .*",
       "businessUnit": "content",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
-      "promotions": [
-        {
-          "creative_name": ".*",
-          "creative_slot": "\\d+",
-          "item_id": ".*",
-          "item_name": "/feed user profile - post"
-        }
-      ],
       "sessionIris": ".*",
       "userId": ".*",
       "trackerId": "24620"
@@ -337,20 +321,12 @@
       "trackerId": "26374"
     },
     {
-      "event": "select_content",
+      "event": "clickContent",
       "eventAction": "click - profile recommendations icon",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
       "businessUnit": "content",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
-      "promotions": [
-        {
-          "creative_name": ".*",
-          "creative_slot": "\\d+",
-          "item_id": ".*",
-          "item_name": "/feed user profile - profile recommendations carousel"
-        }
-      ],
       "sessionIris": ".*",
       "userId": ".*",
       "trackerId": "26375"
