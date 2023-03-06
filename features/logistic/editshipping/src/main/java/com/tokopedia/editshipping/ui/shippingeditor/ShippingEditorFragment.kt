@@ -12,7 +12,6 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -28,6 +27,8 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.data.preference.WhitelabelInstanCoachMarkSharePref
+import com.tokopedia.editshipping.databinding.BottomsheetCourierInactiveBinding
+import com.tokopedia.editshipping.databinding.BottomsheetShipperInfoBinding
 import com.tokopedia.editshipping.databinding.FragmentShippingEditorNewBinding
 import com.tokopedia.editshipping.di.shippingeditor.DaggerShippingEditorComponent
 import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
@@ -53,7 +54,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -94,10 +94,11 @@ class ShippingEditorFragment :
 //    private var tickerHeader: Ticker? = null
 
     private var bottomSheetShipperInfo: BottomSheetUnify? = null
-    private var bottomSheetImageInfo: ImageUnify? = null
-    private var bottomSheetInfoCourier: Typography? = null
-    private var bottomSheetInfoCourierDetail: Typography? = null
-    private var btnShipperBottomSheet: UnifyButton? = null
+
+//    private var bottomSheetImageInfo: ImageUnify? = null
+//    private var bottomSheetInfoCourier: Typography? = null
+//    private var bottomSheetInfoCourierDetail: Typography? = null
+//    private var btnShipperBottomSheet: UnifyButton? = null
     private var bottomSheetShipperInfoType: Int? = -1
 
     private var bottomSheetShipperDetailsRv: RecyclerView? = null
@@ -108,16 +109,17 @@ class ShippingEditorFragment :
     private var bottomSheetCourierInactive: BottomSheetUnify? = null
     private var bottomSheetBOValidation: BottomSheetUnify? = null
     private var bottomSheetFeatureInfo: BottomSheetUnify? = null
-    private var tvCourierInactive: Typography? = null
-    private var warehouseListRv: RecyclerView? = null
+
+//    private var tvCourierInactive: Typography? = null
+//    private var warehouseListRv: RecyclerView? = null
     private var bottomSheetCourierInactiveState: Int = 0
-    private var tickerChargeBoCourierInactive: Ticker? = null
-    private var btnVerticalLayout: LinearLayout? = null
-    private var btnHorizontalLayout: LinearLayout? = null
-    private var btnPrimaryVertical: UnifyButton? = null
-    private var btnPrimaryHorizontal: UnifyButton? = null
-    private var btnSecondaryVertical: UnifyButton? = null
-    private var btnSecondaryHorizontal: UnifyButton? = null
+//    private var tickerChargeBoCourierInactive: Ticker? = null
+//    private var btnVerticalLayout: LinearLayout? = null
+//    private var btnHorizontalLayout: LinearLayout? = null
+//    private var btnPrimaryVertical: UnifyButton? = null
+//    private var btnPrimaryHorizontal: UnifyButton? = null
+//    private var btnSecondaryVertical: UnifyButton? = null
+//    private var btnSecondaryHorizontal: UnifyButton? = null
 
     private var tickerValidateBO: Ticker? = null
     private var textPointOne: Typography? = null
@@ -474,14 +476,13 @@ class ShippingEditorFragment :
         shipperName: String
     ) {
         bottomSheetCourierInactive = BottomSheetUnify()
-        val viewBottomSheetWarehouseInactive =
-            View.inflate(ctx, R.layout.bottomsheet_courier_inactive, null)
+        val viewBottomSheetWarehouseInactive = BottomsheetCourierInactiveBinding.inflate(LayoutInflater.from(context), null, false)
         setupChildCourierInactive(viewBottomSheetWarehouseInactive, shipperName, data.size, null)
 
         bottomSheetCourierInactive?.apply {
             setTitle(ctx.getString(R.string.title_bottomsheet_courier_inactive, data.size))
             setCloseClickListener { dismiss() }
-            setChild(viewBottomSheetWarehouseInactive)
+            setChild(viewBottomSheetWarehouseInactive.root)
             setOnDismissListener { dismiss() }
         }
 
@@ -493,8 +494,7 @@ class ShippingEditorFragment :
     private fun openBottomSheetValidateCourierNotCovered(data: ValidateShippingEditorModel) {
         val uiContentModel = data.uiContent
         bottomSheetCourierInactive = BottomSheetUnify()
-        val viewBottomSheetWarehouseInactive =
-            View.inflate(context, R.layout.bottomsheet_courier_inactive, null)
+        val viewBottomSheetWarehouseInactive = BottomsheetCourierInactiveBinding.inflate(LayoutInflater.from(context), null, false)
         setupChildCourierInactive(
             viewBottomSheetWarehouseInactive,
             uiContentModel.headerLocation,
@@ -510,7 +510,7 @@ class ShippingEditorFragment :
 
         bottomSheetCourierInactive?.apply {
             setCloseClickListener { dismiss() }
-            setChild(viewBottomSheetWarehouseInactive)
+            setChild(viewBottomSheetWarehouseInactive.root)
             setOnDismissListener { dismiss() }
         }
 
@@ -599,75 +599,75 @@ class ShippingEditorFragment :
     }
 
     private fun setupChildCourierInactive(
-        child: View,
+        child: BottomsheetCourierInactiveBinding,
         header: String,
         courierCount: Int?,
         data: ValidateShippingEditorModel?
     ) {
-        tvCourierInactive = child.findViewById(R.id.tv_courier_inactive)
-        warehouseListRv = child.findViewById(R.id.rv_warehouse_inactive)
-        tickerChargeBoCourierInactive = child.findViewById(R.id.ticker_charge_bo)
-        btnVerticalLayout = child.findViewById(R.id.btn_vertical_layout)
-        btnPrimaryVertical = child.findViewById(R.id.btn_primary)
-        btnSecondaryVertical = child.findViewById(R.id.btn_secondary)
-        btnHorizontalLayout = child.findViewById(R.id.btn_horizonal_layout)
-        btnPrimaryHorizontal = child.findViewById(R.id.btn_primary_horizontal)
-        btnSecondaryHorizontal = child.findViewById(R.id.btn_secondary_horizonal)
+//        tvCourierInactive = child.findViewById(R.id.tv_courier_inactive)
+//        warehouseListRv = child.findViewById(R.id.rv_warehouse_inactive)
+//        tickerChargeBoCourierInactive = child.findViewById(R.id.ticker_charge_bo)
+//        btnVerticalLayout = child.findViewById(R.id.btn_vertical_layout)
+//        btnPrimaryVertical = child.findViewById(R.id.btn_primary)
+//        btnSecondaryVertical = child.findViewById(R.id.btn_secondary)
+//        btnHorizontalLayout = child.findViewById(R.id.btn_horizonal_layout)
+//        btnPrimaryHorizontal = child.findViewById(R.id.btn_primary_horizontal)
+//        btnSecondaryHorizontal = child.findViewById(R.id.btn_secondary_horizonal)
 
-        warehouseListRv?.apply {
+        child.rvWarehouseInactive.apply {
             layoutManager = LinearLayoutManager(this.context)
             adapter = bottomSheetCourierInactiveAdapter
         }
 
         when (bottomSheetCourierInactiveState) {
             BOTTOMSHEET_SHIPPER_WAREHOUSE_INACTIVE_STATE -> {
-                showBottomSheetShipperWarehouseInactive(header, courierCount)
+                showBottomSheetShipperWarehouseInactive(child, header, courierCount)
             }
             BOTTOMSHEET_HEADER_WAREHOUSE_INACTIVE_STATE -> {
-                showBottomSheetHeaderWarehouseInactive()
+                showBottomSheetHeaderWarehouseInactive(child)
             }
             BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE -> {
-                showBottomSheetValidateWarehouseInactive(data)
+                showBottomSheetValidateWarehouseInactive(child, data)
             }
             BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_BO_STATE -> {
-                showBottomSheetValidateWarehouseInactiveBO(courierCount, data)
+                showBottomSheetValidateWarehouseInactiveBO(child, courierCount, data)
             }
         }
     }
 
-    private fun showBottomSheetShipperWarehouseInactive(header: String, courierCount: Int?) {
-        tvCourierInactive?.text =
+    private fun showBottomSheetShipperWarehouseInactive(child: BottomsheetCourierInactiveBinding, header: String, courierCount: Int?) {
+        child.tvCourierInactive.text =
             getString(R.string.text_header_courier_not_covered, header, courierCount)
-        btnPrimaryVertical?.text = getString(R.string.button_understand)
-        btnPrimaryVertical?.setOnClickListener {
+        child.btnPrimary.text = getString(R.string.button_understand)
+        child.btnPrimary.setOnClickListener {
             bottomSheetCourierInactive?.dismiss()
         }
-        btnVerticalLayout?.visible()
-        btnSecondaryVertical?.gone()
-        btnHorizontalLayout?.gone()
-        tickerChargeBoCourierInactive?.gone()
+        child.btnVerticalLayout.visible()
+        child.btnSecondary.gone()
+        child.btnHorizonalLayout.gone()
+        child.tickerChargeBo.gone()
     }
 
-    private fun showBottomSheetHeaderWarehouseInactive() {
-        tvCourierInactive?.text = getString(R.string.text_header_courier_not_covered_all)
-        btnPrimaryVertical?.text = getString(R.string.button_understand)
-        btnPrimaryVertical?.setOnClickListener {
+    private fun showBottomSheetHeaderWarehouseInactive(child: BottomsheetCourierInactiveBinding) {
+        child.tvCourierInactive.text = getString(R.string.text_header_courier_not_covered_all)
+        child.btnPrimary.text = getString(R.string.button_understand)
+        child.btnPrimary.setOnClickListener {
             bottomSheetCourierInactive?.dismiss()
         }
-        btnVerticalLayout?.visible()
-        btnSecondaryVertical?.gone()
-        btnHorizontalLayout?.gone()
-        tickerChargeBoCourierInactive?.gone()
+        child.btnVerticalLayout.visible()
+        child.btnSecondary.gone()
+        child.btnHorizonalLayout.gone()
+        child.tickerChargeBo.gone()
     }
 
-    private fun showBottomSheetValidateWarehouseInactive(data: ValidateShippingEditorModel?) {
-        tvCourierInactive?.text = data?.uiContent?.headerLocation
-        btnPrimaryVertical?.text = getString(R.string.button_cancel_reset)
-        btnPrimaryVertical?.setOnClickListener {
+    private fun showBottomSheetValidateWarehouseInactive(child: BottomsheetCourierInactiveBinding, data: ValidateShippingEditorModel?) {
+        child.tvCourierInactive.text = data?.uiContent?.headerLocation
+        child.btnPrimary.text = getString(R.string.button_cancel_reset)
+        child.btnPrimary.setOnClickListener {
             bottomSheetCourierInactive?.dismiss()
         }
-        btnSecondaryVertical?.text = getString(R.string.button_save)
-        btnSecondaryVertical?.setOnClickListener {
+        child.btnSecondary.text = getString(R.string.button_save)
+        child.btnSecondary.setOnClickListener {
             viewModel.saveShippingData(
                 userSession.shopId.toLong(),
                 getListActivatedSpIds(
@@ -678,20 +678,21 @@ class ShippingEditorFragment :
             )
             bottomSheetCourierInactive?.dismiss()
         }
-        btnVerticalLayout?.visible()
-        btnSecondaryVertical?.visible()
-        btnHorizontalLayout?.gone()
-        tickerChargeBoCourierInactive?.gone()
+        child.btnVerticalLayout.visible()
+        child.btnSecondary.visible()
+        child.btnHorizonalLayout.gone()
+        child.tickerChargeBo.gone()
     }
 
     private fun showBottomSheetValidateWarehouseInactiveBO(
+        child: BottomsheetCourierInactiveBinding,
         courierCount: Int?,
         data: ValidateShippingEditorModel?
     ) {
-        tvCourierInactive?.text =
+        child.tvCourierInactive.text =
             getString(R.string.text_header_validate_courier_not_covered, courierCount)
-        btnPrimaryHorizontal?.text = getString(R.string.button_deactivate)
-        btnPrimaryHorizontal?.setOnClickListener {
+        child.btnPrimaryHorizontal.text = getString(R.string.button_deactivate)
+        child.btnPrimaryHorizontal.setOnClickListener {
             viewModel.saveShippingData(
                 userSession.shopId.toLong(),
                 getListActivatedSpIds(
@@ -702,11 +703,11 @@ class ShippingEditorFragment :
             )
             bottomSheetCourierInactive?.dismiss()
         }
-        btnSecondaryHorizontal?.text = getString(R.string.button_activate)
-        btnSecondaryHorizontal?.setOnClickListener {
+        child.btnSecondaryHorizonal.text = getString(R.string.button_activate)
+        child.btnSecondaryHorizonal.setOnClickListener {
             bottomSheetCourierInactive?.dismiss()
         }
-        tickerChargeBoCourierInactive?.apply {
+        child.tickerChargeBo.apply {
             tickerTitle = data?.uiContent?.ticker?.header
             setHtmlDescription(data?.uiContent?.ticker?.body + data?.uiContent?.ticker?.textLink)
             setDescriptionClickEvent(object : TickerCallback {
@@ -719,9 +720,9 @@ class ShippingEditorFragment :
                 }
             })
         }
-        btnVerticalLayout?.gone()
-        btnHorizontalLayout?.visible()
-        tickerChargeBoCourierInactive?.visible()
+        child.btnVerticalLayout.gone()
+        child.btnHorizonalLayout.visible()
+        child.tickerChargeBo.visible()
     }
 
     private fun goToWebView(url: String?) {
@@ -763,13 +764,12 @@ class ShippingEditorFragment :
 
     private fun openBottomSheetShipperInfo() {
         bottomSheetShipperInfo = BottomSheetUnify()
-        val viewBottomSheetShipperInfo =
-            View.inflate(context, R.layout.bottomsheet_shipper_info, null)
+        val viewBottomSheetShipperInfo = BottomsheetShipperInfoBinding.inflate(LayoutInflater.from(context), null, false)
         setupBottomSheetShipperInfoChild(viewBottomSheetShipperInfo)
 
         bottomSheetShipperInfo?.apply {
             setCloseClickListener { dismiss() }
-            setChild(viewBottomSheetShipperInfo)
+            setChild(viewBottomSheetShipperInfo.root)
             setOnDismissListener { dismiss() }
         }
 
@@ -778,32 +778,32 @@ class ShippingEditorFragment :
         }
     }
 
-    private fun setupBottomSheetShipperInfoChild(child: View) {
-        bottomSheetImageInfo = child.findViewById(R.id.img_info_courier)
-        bottomSheetInfoCourier = child.findViewById(R.id.tv_info_courier)
-        bottomSheetInfoCourierDetail = child.findViewById(R.id.tv_info_courier_detail)
-        btnShipperBottomSheet = child.findViewById(R.id.btn_close)
+    private fun setupBottomSheetShipperInfoChild(child: BottomsheetShipperInfoBinding) {
+//        bottomSheetImageInfo = child.findViewById(R.id.img_info_courier)
+//        bottomSheetInfoCourier = child.findViewById(R.id.tv_info_courier)
+//        bottomSheetInfoCourierDetail = child.findViewById(R.id.tv_info_courier_detail)
+//        btnShipperBottomSheet = child.findViewById(R.id.btn_close)
 
         if (bottomSheetShipperInfoType == BOTTOMSHEET_AWB_OTOMATIS_INFO) {
-            bottomSheetImageInfo?.setImageDrawable(
+            child.imgInfoCourier.setImageDrawable(
                 ContextCompat.getDrawable(
-                    child.context,
+                    child.root.context,
                     R.drawable.ic_awb_otomatis
                 )
             )
-            bottomSheetInfoCourier?.text = getString(R.string.awb_otomatis_title)
-            bottomSheetInfoCourierDetail?.text = getString(R.string.awb_otomatis_detail)
+            child.tvInfoCourier.text = getString(R.string.awb_otomatis_title)
+            child.tvInfoCourierDetail.text = getString(R.string.awb_otomatis_detail)
         } else {
-            bottomSheetImageInfo?.setImageDrawable(
+            child.imgInfoCourier.setImageDrawable(
                 ContextCompat.getDrawable(
-                    child.context,
+                    child.root.context,
                     R.drawable.ic_non_tunai
                 )
             )
-            bottomSheetInfoCourier?.text = getString(R.string.non_tunai_title)
-            bottomSheetInfoCourierDetail?.text = getString(R.string.non_tunai_detail)
+            child.tvInfoCourier.text = getString(R.string.non_tunai_title)
+            child.tvInfoCourierDetail.text = getString(R.string.non_tunai_detail)
         }
-        btnShipperBottomSheet?.setOnClickListener { bottomSheetShipperInfo?.dismiss() }
+        child.btnClose.setOnClickListener { bottomSheetShipperInfo?.dismiss() }
     }
 
     private fun saveButtonShippingEditor() {
