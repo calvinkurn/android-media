@@ -14,7 +14,8 @@
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/card_automatic"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -279,17 +280,18 @@
                 app:icon_name="CHECK"
                 app:layout_constraintEnd_toEndOf="@+id/icon_7"
                 app:layout_constraintStart_toStartOf="@+id/icon_7"
-                app:layout_constraintTop_toBottomOf="@+id/icon_7" />
+                app:layout_constraintTop_toTopOf="@+id/title_manual_4"
+                app:layout_constraintBottom_toBottomOf="@id/title_manual_4"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title_manual_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pengaturan_iklan_manual_4"
-                app:layout_constraintBottom_toBottomOf="@+id/icon_8"
                 app:layout_constraintStart_toEndOf="@+id/radiobtn_manual"
-                app:layout_constraintTop_toBottomOf="@+id/icon_7"
-                app:typographyType="paragraph_3" />
+                app:layout_constraintTop_toBottomOf="@+id/title_manual_3"
+                app:typographyType="paragraph_3"
+                android:layout_marginTop="8dp"/>
 
             <androidx.legacy.widget.Space
                 android:id="@+id/space_manual_2"
