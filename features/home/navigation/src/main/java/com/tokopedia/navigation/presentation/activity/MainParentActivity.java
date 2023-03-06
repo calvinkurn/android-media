@@ -206,6 +206,10 @@ public class MainParentActivity extends BaseActivity implements
     public static final String UOH_PAGE = "UohListFragment";
 
     public static final String WISHLIST_COLLECTION_PAGE = "WishlistCollectionFragment";
+    private static final String DISCOVERY_APPLINK = "discovery_applink";
+    private static final String DISCOVERY_APPLINK_TARGET = "tokopedia://discovery/serbu-official-store";
+    private static final String DISCOVERY_PAGE_SOURCE = "discovery_page_source";
+    private static final String DISCOVERY_END_POINT = "end_point";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -773,12 +777,14 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         if(!isOsExperiment) {
-            Bundle bundleOS = new Bundle();
-            bundleOS.putString(OfficialHomeContainerFragment.PARAM_ACTIVITY_OFFICIAL_STORE, OfficialHomeContainerFragment.PARAM_HOME);
-            if(getIntent().getExtras() != null) {
-                bundleOS.putAll(getIntent().getExtras());
+            Bundle bundleSosDisco = getIntent().getExtras();
+            if (bundleSosDisco == null) {
+                bundleSosDisco = new Bundle();
             }
-            fragmentList.add(OfficialHomeContainerFragment.newInstance(bundleOS));
+            bundleSosDisco.putString(DISCOVERY_APPLINK, DISCOVERY_APPLINK_TARGET);
+            bundleSosDisco.putString(DISCOVERY_PAGE_SOURCE, PARAM_HOME);
+            bundleSosDisco.putString("end_point", "serbu-official-store");
+            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.DISCOVERY_FRAGMENT, bundleSosDisco));
         }
 
         Bundle bundleWishlistCollection = getIntent().getExtras();
