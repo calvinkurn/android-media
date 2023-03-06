@@ -9,6 +9,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant.QUERY_PARAM_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.QUERY_PARAM_MODE
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * Created By @ilhamsuaib on 01/04/20
@@ -16,6 +17,7 @@ import com.tokopedia.config.GlobalConfig
 
 object DeepLinkMapperProductManage {
 
+    const val SLASH_CHAR = "/"
     const val QUERY_PARAM_FILTER = "filter"
     const val QUERY_PARAM_TAB = "tab"
     const val QUERY_PARAM_SEARCH = "search"
@@ -33,7 +35,13 @@ object DeepLinkMapperProductManage {
     private const val OTHER_ACTION_INDEX = 2
 
     fun getEditProductInternalAppLink(productId: String): String {
-        return UriUtil.buildUriAppendParams(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW, mapOf(QUERY_PARAM_ID to productId, QUERY_PARAM_MODE to ApplinkConstInternalMechant.MODE_EDIT_PRODUCT))
+        return UriUtil.buildUriAppendParams(
+            ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW,
+            mapOf(
+                QUERY_PARAM_ID to productId,
+                QUERY_PARAM_MODE to ApplinkConstInternalMechant.MODE_EDIT_PRODUCT
+            )
+        )
     }
 
     /**
@@ -48,7 +56,8 @@ object DeepLinkMapperProductManage {
             return applink
         }
         val filterId = uri.getQueryParameter(QUERY_PARAM_FILTER).orEmpty()
-        val shouldRedirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
+        val shouldRedirectToSellerApp =
+            uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         val tab = uri.getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp) {
@@ -64,18 +73,38 @@ object DeepLinkMapperProductManage {
                     param[QUERY_PARAM_TAB] = tab
                 }
             }
-            UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST, param)
+            UriUtil.buildUriAppendParam(
+                ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST,
+                param
+            )
         } else {
             when {
                 filterId.isNotBlank() -> {
                     val param = mapOf(QUERY_PARAM_FILTER to filterId)
-                    UriUtil.buildUriAppendParam(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST, param)
+                    UriUtil.buildUriAppendParam(
+                        ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST,
+                        param
+                    )
                 }
                 else -> {
                     ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
                 }
             }
         }
+    }
+
+    fun getStockReminderInternalAppLink(deepLink: String): String {
+        val productId = deepLink.substringBefore(SLASH_CHAR).toLongOrZero()
+        val informationUriString =
+            deepLink.substringAfter(SLASH_CHAR).substringBeforeLast(SLASH_CHAR)
+        val isVariant = informationUriString.substringAfterLast(SLASH_CHAR).toBoolean()
+        val productName = informationUriString.substringBeforeLast(SLASH_CHAR)
+        return UriUtil.buildUri(
+            ApplinkConstInternalMarketplace.STOCK_REMINDER,
+            productId.toString(),
+            productName,
+            isVariant.toString()
+        )
     }
 
     private fun Uri.getProductListOtherAction(): String? {

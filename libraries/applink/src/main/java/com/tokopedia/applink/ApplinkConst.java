@@ -1,5 +1,7 @@
 package com.tokopedia.applink;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author ricoharisin .
  * <p>
@@ -275,6 +277,8 @@ public interface ApplinkConst {
 
     String PRODUCT_MANAGE = "tokopedia://seller/product/manage";
     String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
+    String STOCK_REMINDER = "sellerapp://stock-reminder/{productId}/{productName}/{isVariant}";
+
     String PRODUCT_EDIT = "tokopedia://product/edit/{product_id}";
     String SELLER_TRANSACTION = "tokopedia://seller";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
@@ -579,6 +583,8 @@ public interface ApplinkConst {
         //{voucher_type} value -> shop, product
         String SELLER_MVC_CREATE = "sellerapp://seller-mvc/create/{voucher_type}";
         String SELLER_MVC_DETAIL = "sellerapp://seller-mvc/detail/{voucher_id}";
+
+        String STOCK_REMINDER = "sellerapp://stock-reminder/{productId}/{productName}/{isVariant}";
 
     }
 
