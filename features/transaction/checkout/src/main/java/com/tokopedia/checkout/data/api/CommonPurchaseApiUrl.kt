@@ -12,7 +12,5 @@ open class CommonPurchaseApiUrl {
         const val VERSION = "v2"
 
         const val PATH_CHECKOUT = "$BASE_PATH$VERSION/checkout"
-
     }
-
 }

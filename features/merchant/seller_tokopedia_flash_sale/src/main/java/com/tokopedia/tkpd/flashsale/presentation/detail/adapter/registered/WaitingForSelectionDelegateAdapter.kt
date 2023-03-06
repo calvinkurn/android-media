@@ -11,7 +11,10 @@ import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductWaitingForSelectionBinding
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus.*
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus.MULTI_VARIANT_MULTI_LOCATION
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus.MULTI_VARIANT_SINGLE_LOCATION
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus.SINGLE_VARIANT_MULTI_LOCATION
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus.SINGLE_VARIANT_SINGLE_LOCATION
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography

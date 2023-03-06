@@ -9,4 +9,4 @@ data class UpdateWishlistCollectionNameParams(
 
     @SerializedName("collectionName")
     var collectionName: String = ""
-): GqlParam
+) : GqlParam
