@@ -53,7 +53,7 @@ class UpdateDynamicDataPassingUseCase @Inject constructor(
                 .getSuccessData<UpdateDynamicDataResponse>()
         }
 
-        if (response?.updateDynamicData?.status == "OK" && response?.updateDynamicData?.data?.dynamicData?.isNotEmpty() == true) {
+        if (response?.updateDynamicData?.status == "OK") {
             return UpdateDynamicDataPassingUiModel(response?.updateDynamicData?.data?.dynamicData ?: "")
         } else {
             if (response?.updateDynamicData?.errorMessages?.isNotEmpty() == true) {
