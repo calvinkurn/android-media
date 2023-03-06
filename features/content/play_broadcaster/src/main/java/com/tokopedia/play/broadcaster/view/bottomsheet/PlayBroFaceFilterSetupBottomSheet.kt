@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -68,6 +69,10 @@ class PlayBroFaceFilterSetupBottomSheet @Inject constructor(
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 }
             })
+            bottomSheetWrapper.isClickable = true
+            bottomSheetWrapper.isEnabled = true
+//            frameDialogView.isClickable = false
+//            frameDialogView.isEnabled = false
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -90,6 +95,7 @@ class PlayBroFaceFilterSetupBottomSheet @Inject constructor(
         showCloseIcon = false
         showKnob = true
         isHideable = true
+        overlayClickDismiss = false
 
         setOnDismissListener {
             viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
@@ -102,7 +108,7 @@ class PlayBroFaceFilterSetupBottomSheet @Inject constructor(
             /** TODO: handle this */
         }
 
-        dialog?.window?.setDimAmount(0f)
+        dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 
         binding.viewPager.isUserInputEnabled = false
         binding.viewPager.adapter = pagerAdapter
