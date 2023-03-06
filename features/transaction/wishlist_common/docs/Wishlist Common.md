@@ -1,6 +1,6 @@
 ---
 labels:
-- add to wishlist
+- add_to_wishlist
 - Wishlist
 ---
 <!--left header table-->
