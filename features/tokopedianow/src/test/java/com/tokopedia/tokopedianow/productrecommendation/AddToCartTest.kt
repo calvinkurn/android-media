@@ -49,7 +49,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
         onAddToCart_thenReturn(response)
 
-        viewModel.addProductToCart(position, quantity, shopId, false)
+        viewModel.addProductToCart(position, quantity, shopId)
 
         viewModel.miniCartAdd.verifySuccessEquals(Success(response))
         viewModel.atcDataTracker.verifyValueEquals(expectedAddToCartDataTrackerModel)
@@ -67,7 +67,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
         onAddToCart_thenReturn(Throwable())
 
-        viewModel.addProductToCart(position, quantity, shopId, false)
+        viewModel.addProductToCart(position, quantity, shopId)
 
         viewModel.miniCartAdd.verifyErrorEquals(Fail(Throwable()))
     }
@@ -92,7 +92,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
         onUpdateItemCart_thenReturn(response)
 
-        viewModel.addProductToCart(position, quantity, shopId, false)
+        viewModel.addProductToCart(position, quantity, shopId)
 
         viewModel.miniCartUpdate.verifySuccessEquals(Success(response))
     }
@@ -112,7 +112,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
         onUpdateItemCart_thenReturn(Throwable())
 
-        viewModel.addProductToCart(position, quantity, shopId, false)
+        viewModel.addProductToCart(position, quantity, shopId)
 
         viewModel.miniCartUpdate.verifyErrorEquals(Fail(Throwable()))
     }
@@ -145,7 +145,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
         onRemoveItemCart_thenReturn(response)
 
-        viewModel.addProductToCart(position, quantity, shopId, false)
+        viewModel.addProductToCart(position, quantity, shopId)
 
         viewModel.miniCartRemove.verifySuccessEquals(Success(Pair(productId, response.data.message.joinToString(separator = ", "))))
     }
@@ -171,8 +171,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
         viewModel.addProductToCart(
             position = position,
             quantity = quantity,
-            shopId = shopId,
-            isVariant = false
+            shopId = shopId
         )
 
         viewModel.miniCartRemove.verifyErrorEquals(Fail(Throwable()))
@@ -194,8 +193,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
         viewModel.addProductToCart(
             position = position,
             quantity = quantity,
-            shopId = shopId,
-            isVariant = false
+            shopId = shopId
         )
 
         viewModel.miniCartAdd.verifyValueEquals(null)
@@ -217,8 +215,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
         viewModel.addProductToCart(
             position = position,
             quantity = quantity,
-            shopId = shopId,
-            isVariant = false
+            shopId = shopId
         )
 
         viewModel.miniCartAdd.verifyValueEquals(null)
@@ -240,8 +237,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
         viewModel.addProductToCart(
             position = position,
             quantity = quantity,
-            shopId = shopId,
-            isVariant = false
+            shopId = shopId
         )
 
         viewModel.miniCartAdd.verifyValueEquals(null)
@@ -270,7 +266,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
         onUpdateItemCart_thenReturn(response)
 
-        viewModel.addProductToCart(position, quantity, shopId, false)
+        viewModel.addProductToCart(position, quantity, shopId)
 
         viewModel.miniCartAdd.verifyValueEquals(null)
         viewModel.miniCartUpdate.verifyValueEquals(null)
@@ -298,7 +294,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
         onUpdateItemCart_thenReturn(response)
 
-        viewModel.addProductToCart(position, quantity, shopId, false)
+        viewModel.addProductToCart(position, quantity, shopId)
 
         viewModel.miniCartAdd.verifyValueEquals(null)
         viewModel.miniCartUpdate.verifyValueEquals(null)
@@ -319,7 +315,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
         onAddToCart_thenReturn(response)
 
-        viewModel.addProductToCart(position, quantity, shopId, false)
+        viewModel.addProductToCart(position, quantity, shopId)
 
         viewModel.miniCartAdd.verifyValueEquals(null)
         viewModel.miniCartUpdate.verifyValueEquals(null)

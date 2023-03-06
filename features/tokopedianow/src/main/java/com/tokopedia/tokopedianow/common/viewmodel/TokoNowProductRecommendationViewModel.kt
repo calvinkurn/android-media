@@ -256,14 +256,14 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     fun addProductToCart(
         position: Int,
         quantity: Int,
-        shopId: String,
-        isVariant: Boolean
+        shopId: String
     ) {
         if (productModels.size > position && productModels[position] is TokoNowProductCardCarouselItemUiModel) {
             val product = productModels[position] as TokoNowProductCardCarouselItemUiModel
             val miniCartItem = getMiniCartItem(product.productCardModel.productId)
             val cartQuantity = miniCartItem?.quantity
             val stock = product.productCardModel.availableStock
+            val isVariant = product.productCardModel.isVariant
             if (cartQuantity == quantity) return
 
             when {
