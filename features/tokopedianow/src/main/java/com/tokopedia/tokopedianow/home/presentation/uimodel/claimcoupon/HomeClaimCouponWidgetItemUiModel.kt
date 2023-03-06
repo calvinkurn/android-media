@@ -10,7 +10,10 @@ data class HomeClaimCouponWidgetItemUiModel(
     val imageUrlMobile: String,
     val ctaText: String,
     val isDouble: Boolean,
-    val appLink: String
+    val slugText: String,
+    val appLink: String,
+    val couponName: String,
+    val warehouseId: String
 ): HomeLayoutUiModel(id) {
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)

@@ -92,6 +92,7 @@ object TokoNowCommonAnalyticConstants {
         const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
         const val BUSINESS_UNIT_SHARING_EXPERIENCE = "sharingexperience"
         const val BUSINESS_UNIT_PLAY = "play"
+        const val BUSINESS_UNIT_GROCERIES = "Groceries"
         const val SCREEN_NAME_TOKONOW_OOC = "tokonow ooc - "
         const val PAGE_NAME_TOKOPEDIA_NOW = "tokopedia now"
         const val DEFAULT_NULL_VALUE = "null"

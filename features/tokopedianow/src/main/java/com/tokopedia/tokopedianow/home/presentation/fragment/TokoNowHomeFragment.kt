@@ -264,6 +264,7 @@ class TokoNowHomeFragment : Fragment(),
                 rtrAnalytics = rtrAnalytics,
                 productRecommendationBindOocListener = createProductRecomOocCallback(),
                 claimCouponWidgetItemListener = createClaimCouponWidgetItemCallback(),
+                claimCouponWidgetItemTracker = createClaimCouponWidgetItemCallback(),
                 claimCouponWidgetListener = createClaimCouponWidgetCallback()
             ),
             differ = HomeListDiffer()
@@ -1913,7 +1914,8 @@ class TokoNowHomeFragment : Fragment(),
     private fun createClaimCouponWidgetItemCallback(): ClaimCouponWidgetItemCallback {
         return ClaimCouponWidgetItemCallback(
             viewModel = viewModelTokoNow,
-            context = context
+            context = context,
+            analytics = analytics
         )
     }
 

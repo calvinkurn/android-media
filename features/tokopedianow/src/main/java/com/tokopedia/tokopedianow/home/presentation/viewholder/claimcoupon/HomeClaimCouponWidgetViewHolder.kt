@@ -25,6 +25,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HomeClaimCouponWidgetViewHolder(
     itemView: View,
     private val claimCouponWidgetItemListener: HomeClaimCouponWidgetItemViewHolder.HomeClaimCouponWidgetItemListener? = null,
+    private val claimCouponWidgetItemTracker: HomeClaimCouponWidgetItemViewHolder.HomeClaimCouponWidgetItemTracker? = null,
     private val claimCouponWidgetListener: HomeClaimCouponWidgetListener? = null
 ): AbstractViewHolder<HomeClaimCouponWidgetUiModel>(itemView) {
 
@@ -42,7 +43,8 @@ class HomeClaimCouponWidgetViewHolder(
     private val adapter by lazy {
         HomeAdapter(
             typeFactory = HomeAdapterTypeFactory(
-                claimCouponWidgetItemListener = claimCouponWidgetItemListener
+                claimCouponWidgetItemListener = claimCouponWidgetItemListener,
+                claimCouponWidgetItemTracker = claimCouponWidgetItemTracker
             ),
             differ = HomeListDiffer(),
         )

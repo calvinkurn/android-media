@@ -753,7 +753,7 @@ object HomeLayoutMapper {
             SHARING_REFERRAL -> mapSharingReferralUiModel(response, notLoadedState, warehouseId)
             MEDIUM_PLAY_WIDGET -> mapToMediumPlayWidget(response, notLoadedState)
             SMALL_PLAY_WIDGET -> mapToSmallPlayWidget(response, notLoadedState)
-            COUPON_CLAIM -> mapToClaimCouponWidgetUiModel(response, notLoadedState)
+            COUPON_CLAIM -> mapToClaimCouponWidgetUiModel(response, notLoadedState, warehouseId)
             // endregion
             else -> null
         }

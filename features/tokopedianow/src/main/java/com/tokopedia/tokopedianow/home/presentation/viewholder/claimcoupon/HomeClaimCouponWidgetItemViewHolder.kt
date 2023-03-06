@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
@@ -14,7 +15,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeClaimCouponWidgetItemViewHolder(
     itemView: View,
-    private val listener: HomeClaimCouponWidgetItemListener? = null
+    private val listener: HomeClaimCouponWidgetItemListener? = null,
+    private val tracker: HomeClaimCouponWidgetItemTracker? = null
 ) : AbstractViewHolder<HomeClaimCouponWidgetItemUiModel>(itemView) {
 
     companion object {
@@ -34,7 +36,24 @@ class HomeClaimCouponWidgetItemViewHolder(
             initImage(item)
             initButton(item)
             root.setOnClickListener {
-                listener?.onCouponWidgetClicked(item.appLink)
+                listener?.onClickCouponWidget(item.appLink)
+                tracker?.onClickCouponWidgetTracker(
+                    couponStatus = item.ctaText,
+                    position = layoutPosition,
+                    slugText = item.slugText,
+                    couponName = item.couponName,
+                    warehouseId = item.warehouseId
+                )
+            }
+            root.addOnImpressionListener(item) {
+                tracker?.onImpressCouponTracker(
+                    couponStatus = item.ctaText,
+                    position = layoutPosition,
+                    slugText = item.slugText,
+                    couponName = item.couponName,
+                    warehouseId = item.warehouseId,
+                    isDouble = item.isDouble
+                )
             }
         }
     }
@@ -69,17 +88,54 @@ class HomeClaimCouponWidgetItemViewHolder(
                 buttonVariant = UnifyButton.Variant.FILLED
             }
             setOnClickListener {
-                listener?.onClaimButtonClicked(
+                listener?.onClickClaimButton(
                     widgetId = item.widgetId,
                     catalogId = item.id
+                )
+                tracker?.onClickClaimButtonTracker(
+                    couponStatus = item.ctaText,
+                    position = layoutPosition,
+                    slugText = item.slugText,
+                    couponName = item.couponName,
+                    warehouseId = item.warehouseId
                 )
             }
         }
     }
 
     interface HomeClaimCouponWidgetItemListener {
-        fun onClaimButtonClicked(widgetId: String, catalogId: String)
-        fun onCouponWidgetClicked(appLink: String)
+        fun onClickClaimButton(
+            widgetId: String,
+            catalogId: String
+        )
+        fun onClickCouponWidget(
+            appLink: String
+        )
+    }
+
+    interface HomeClaimCouponWidgetItemTracker {
+        fun onImpressCouponTracker(
+            couponStatus: String,
+            position: Int,
+            slugText: String,
+            couponName: String,
+            warehouseId: String,
+            isDouble: Boolean
+        )
+        fun onClickCouponWidgetTracker(
+            couponStatus: String,
+            position: Int,
+            slugText: String,
+            couponName: String,
+            warehouseId: String
+        )
+        fun onClickClaimButtonTracker(
+            couponStatus: String,
+            position: Int,
+            slugText: String,
+            couponName: String,
+            warehouseId: String
+        )
     }
 
 }

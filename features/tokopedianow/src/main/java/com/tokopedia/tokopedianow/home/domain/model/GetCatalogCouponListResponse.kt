@@ -25,6 +25,8 @@ data class GetCatalogCouponListResponse(
             val slug: String = "",
             @SerializedName("smallImageUrlMobile")
             val smallImageUrlMobile: String = "",
+            @SerializedName("title")
+            val title: String = ""
         )
         data class ResultStatus(
             @SerializedName("code")

@@ -10,6 +10,8 @@ data class HomeClaimCouponWidgetUiModel(
     val claimCouponList: List<HomeClaimCouponWidgetItemUiModel>?,
     val isDouble: Boolean,
     val slugs: List<String>,
+    val slugText: String,
+    val warehouseId: String,
     @TokoNowLayoutState val state: Int
 ): HomeLayoutUiModel(id) {
     override fun type(typeFactory: HomeTypeFactory): Int {

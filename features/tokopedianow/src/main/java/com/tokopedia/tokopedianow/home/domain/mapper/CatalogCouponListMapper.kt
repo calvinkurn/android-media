@@ -14,7 +14,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClai
 internal object CatalogCouponListMapper {
     private const val RESPONSE_STYLE_PARAMS_COLUMNS = "columns"
     private const val RESPONSE_TYPE = "double"
-    fun mapToClaimCouponWidgetUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
+    fun mapToClaimCouponWidgetUiModel(response: HomeLayoutResponse, state: HomeLayoutItemState, warehouseId: String): HomeLayoutItemUiModel {
         val slugs = response.widgetParam.split(";")
 
         val categoryMenuUiModel = HomeClaimCouponWidgetUiModel(
@@ -23,7 +23,9 @@ internal object CatalogCouponListMapper {
             claimCouponList = listOf(),
             state = TokoNowLayoutState.LOADING,
             isDouble = response.styleParam.mapToQueryParamsMap()[RESPONSE_STYLE_PARAMS_COLUMNS] == RESPONSE_TYPE,
-            slugs = slugs
+            slugs = slugs,
+            slugText = response.widgetParam,
+            warehouseId = warehouseId
         )
         return HomeLayoutItemUiModel(categoryMenuUiModel, state)
     }
@@ -39,7 +41,10 @@ internal object CatalogCouponListMapper {
                 imageUrlMobile = coupon.imageUrlMobile,
                 ctaText = coupon.buttonStr,
                 isDouble = item.isDouble,
-                appLink = coupon.appLink
+                slugText = item.slugText,
+                appLink = coupon.appLink,
+                couponName = coupon.title,
+                warehouseId = item.warehouseId
             )
         }
     }
