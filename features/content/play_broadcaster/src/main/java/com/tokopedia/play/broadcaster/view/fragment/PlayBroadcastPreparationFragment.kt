@@ -11,12 +11,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.applink.RouteManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
@@ -32,6 +32,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
@@ -42,7 +43,9 @@ import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayBroadcastPreparationBannerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
@@ -51,6 +54,7 @@ import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
@@ -114,6 +118,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val binding get() = _binding!!
 
     /** Others */
+    private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
+        PlayBroadcastPreparationBannerAdapter()
+    }
     private val fragmentViewContainer = FragmentViewContainer()
 
     private var earlyLiveStreamDialog: DialogUnify? = null
@@ -387,10 +394,34 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
 
-        binding.bannerShorts.apply {
-            title = getString(R.string.play_bro_banner_shorts_title)
-            description = getString(R.string.play_bro_banner_shorts_description)
-            bannerIcon = IconUnify.SHORT_VIDEO
+        adapterBanner.setItems(listOf(
+            PlayBroadcastPreparationBannerModel(
+                title = getString(R.string.play_bro_banner_shorts_title),
+                description = getString(R.string.play_bro_banner_shorts_description),
+                icon = IconUnify.SHORT_VIDEO,
+            ),
+            PlayBroadcastPreparationBannerModel(
+                title = getString(R.string.play_bro_banner_shorts_title),
+                description = getString(R.string.play_bro_banner_shorts_description),
+                icon = IconUnify.NOTEBOOK,
+            ),
+            PlayBroadcastPreparationBannerModel(
+                title = getString(R.string.play_bro_banner_shorts_title),
+                description = getString(R.string.play_bro_banner_shorts_description),
+                icon = IconUnify.MODE_SCREEN,
+            ),
+            PlayBroadcastPreparationBannerModel(
+                title = getString(R.string.play_bro_banner_shorts_title),
+                description = getString(R.string.play_bro_banner_shorts_description),
+                icon = IconUnify.MICROPHONE,
+            ),
+        ))
+        binding.rvBannerPreparation.apply {
+            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            adapter = adapterBanner
+            if (itemDecorationCount == 0) addItemDecoration(
+                PlayBroadcastPreparationBannerItemDecoration(context)
+            )
         }
     }
 
@@ -450,14 +481,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 broadcaster.flip()
             }
 
-            bannerShorts.setOnClickListener {
-                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
-
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-
-                val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
-                startActivityForResult(intent, REQ_PLAY_SHORTS)
-            }
+//            bannerShorts.setOnClickListener {
+//                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
+//
+//                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+//
+//                val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
+//                startActivityForResult(intent, REQ_PLAY_SHORTS)
+//            }
         }
     }
 
@@ -512,14 +543,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             isShortsEntryPointCoachMarkShown = parentViewModel.isShortVideoAllowed && !coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
 
             if(isShortsEntryPointCoachMarkShown) {
-                add(
-                    CoachMark2Item(
-                        anchorView = binding.bannerShorts,
-                        title = getString(R.string.play_bro_banner_shorts_coachmark_title),
-                        description = getString(R.string.play_bro_banner_shorts_coachmark_description),
-                        position = CoachMark2.POSITION_BOTTOM,
-                    )
-                )
+//                add(
+//                    CoachMark2Item(
+//                        anchorView = binding.bannerShorts,
+//                        title = getString(R.string.play_bro_banner_shorts_coachmark_title),
+//                        description = getString(R.string.play_bro_banner_shorts_coachmark_description),
+//                        position = CoachMark2.POSITION_BOTTOM,
+//                    )
+//                )
                 coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
             }
 
@@ -803,11 +834,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if(prev?.shortVideoAllowed == curr.shortVideoAllowed) return
 
         if(curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
-            binding.bannerShorts.show()
+//            binding.bannerShorts.gone()
             analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
         }
         else {
-            binding.bannerShorts.gone()
+//            binding.bannerShorts.gone()
         }
     }
 

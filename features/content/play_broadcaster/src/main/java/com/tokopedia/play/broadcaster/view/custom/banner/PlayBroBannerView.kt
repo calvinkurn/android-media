@@ -2,22 +2,25 @@ package com.tokopedia.play.broadcaster.view.custom.banner
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
+import android.widget.FrameLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroBannerBinding
-import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created By : Jonathan Darwin on November 02, 2022
  */
-class PlayBroBannerView(
-    context: Context,
-    attrs: AttributeSet?
-) : CardUnify2(context, attrs) {
+class PlayBroBannerView : FrameLayout {
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     private val binding = ViewPlayBroBannerBinding.inflate(
         LayoutInflater.from(context),
