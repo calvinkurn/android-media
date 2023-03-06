@@ -1,6 +1,6 @@
 package com.tokopedia.digital_checkout.usecase
 
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
@@ -11,13 +11,13 @@ import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutFintechProduct
 import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutRequest
 import com.tokopedia.digital_checkout.data.response.checkout.RechargeCheckoutResponse
-import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.util.GqlParamDeserializer
 import javax.inject.Inject
 
 /**
@@ -28,8 +28,7 @@ import javax.inject.Inject
     DigitalCheckoutGqlUseCase.QUERY_RECHARGE_CHECKOUT
 )
 class DigitalCheckoutGqlUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository,
-    private val gson: Gson
+    graphqlRepository: GraphqlRepository
 ) :
     GraphqlUseCase<RechargeCheckoutResponse.Response>(graphqlRepository) {
 
@@ -43,6 +42,13 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
         requestCheckoutParams: DigitalCheckoutDataParameter,
         digitalIdentifierParams: RequestBodyIdentifier
     ) {
+        val builder = GsonBuilder().apply {
+            registerTypeAdapter(
+                object : TypeToken<HashMap<String, Any>>() {}.type,
+                GqlParamDeserializer()
+            )
+        }
+        val customGson = builder.create()
         val requestParams = RechargeCheckoutRequest(
             voucherCode = requestCheckoutParams.voucherCode,
             transactionAmount = requestCheckoutParams.transactionAmount.toLong(),
@@ -56,28 +62,22 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
             cartId = requestCheckoutParams.cartId,
             createSubscription = requestCheckoutParams.isSubscriptionChecked,
             fintechProducts = requestCheckoutParams.crossSellProducts.map {
-                var checkoutMetadata = gson.toJson(
-                    DigitalCheckoutMapper.mapFintechProductToCheckoutFintechProduct(it.value.product)
-                )
                 val checkoutType = object : TypeToken<HashMap<String, Any>>() {}.type
-                val checkoutMetadataJson = gson.fromJson<HashMap<String, Any>>(checkoutMetadata, checkoutType)
+                val checkoutMetadataMap = customGson.fromJson<HashMap<String, Any>>(it.value.product.crossSellMetadata, checkoutType)
 
                 if (it.value.isSubscription) {
-                    val additionalMetadata = gson.toJson(it.value.additionalMetadata)
+                    val additionalMetadata = customGson.toJson(it.value.additionalMetadata)
                     val additionalType = object : TypeToken<JsonElement>() {}.type
-                    val additionalMetadataJson = gson.fromJson<JsonElement>(additionalMetadata, additionalType)
+                    val additionalMetadataJson = customGson.fromJson<JsonElement>(additionalMetadata, additionalType)
 
-                    val jsonObject = gson.fromJson(additionalMetadataJson.asJsonPrimitive.asString, JsonObject::class.java)
+                    val jsonObject = customGson.fromJson(additionalMetadataJson.asJsonPrimitive.asString, JsonObject::class.java)
                     jsonObject.keySet().forEach { key ->
-                        checkoutMetadataJson[key] = jsonObject.get(key)
+                        checkoutMetadataMap[key] = jsonObject.get(key)
                     }
                 }
-
-                checkoutMetadataJson.remove(KEY_CROSS_SELL_METADATA)
-                checkoutMetadata = gson.toJson(checkoutMetadataJson)
                 RechargeCheckoutFintechProduct(
                     transactionType = it.value.product.transactionType,
-                    checkoutMetadata = checkoutMetadata
+                    checkoutMetadata = customGson.toJson(checkoutMetadataMap)
                 )
             }.toList(),
             instant = requestCheckoutParams.isInstantCheckout,

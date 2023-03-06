@@ -353,12 +353,13 @@ class DigitalCartViewModel @Inject constructor(
         isChecked: Boolean
     ) {
         val fintechProduct = digitalCrossSellData.product
-        if (requestCheckoutParam.crossSellProducts.containsKey(fintechProduct.tierId) && !isChecked) {
+        val uniqueKey = "${fintechProduct.transactionType}${fintechProduct.id}"
+        if (requestCheckoutParam.crossSellProducts.containsKey(uniqueKey) && !isChecked) {
             // remove
-            requestCheckoutParam.crossSellProducts.remove(fintechProduct.tierId)
-        } else if (!requestCheckoutParam.crossSellProducts.containsKey(fintechProduct.tierId) && isChecked) {
+            requestCheckoutParam.crossSellProducts.remove(uniqueKey)
+        } else if (!requestCheckoutParam.crossSellProducts.containsKey(uniqueKey) && isChecked) {
             // add
-            requestCheckoutParam.crossSellProducts[fintechProduct.tierId] = digitalCrossSellData
+            requestCheckoutParam.crossSellProducts[uniqueKey] = digitalCrossSellData
         }
     }
 
