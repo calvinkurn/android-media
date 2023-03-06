@@ -2876,7 +2876,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     newSellerJourneyHelper.showNewSellerDialog(
                         it,
                         sectionWidgetAnchor = getSectionView(),
-                        notificationAnchor = getNotificationView(),
+                        notificationAnchor = binding?.sahNotifAnchorView,
                         navigationAnchor = navigationView,
                         otherMenuAnchor = otherMenuView
                     )
@@ -2891,10 +2891,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             return recyclerView?.layoutManager?.findViewByPosition(firstSectionWidgetIndex)
         }
         return null
-    }
-
-    private fun getNotificationView(): View? {
-        return menu?.findItem(NOTIFICATION_MENU_ID)?.actionView
     }
 
     private fun showDownloadToaster(appLink: String) {
