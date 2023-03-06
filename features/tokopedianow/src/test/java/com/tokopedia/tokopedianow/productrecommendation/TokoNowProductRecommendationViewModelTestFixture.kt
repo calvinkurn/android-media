@@ -195,7 +195,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
         )
     }
 
-    protected fun mockMiniCartSimplifiedData(productId: String) {
+    protected fun mockMiniCartSimplifiedData(productId: String, quantity: Int = 0) {
         viewModel.mockPrivateField(
             name = privateFieldMiniCartSimplifiedData,
             value = MiniCartSimplifiedData(
@@ -205,7 +205,8 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
                             id = productId
                         ),
                         MiniCartItem.MiniCartItemProduct(
-                            productId = productId
+                            productId = productId,
+                            quantity = quantity
                         )
                     )
                 )
@@ -250,5 +251,4 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
         Assert.assertEquals(viewModel.isLogin, isLogin)
         Assert.assertEquals(viewModel.userId, userId)
     }
-
 }

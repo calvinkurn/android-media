@@ -143,10 +143,9 @@ open class BaseTokoNowViewModelTestFixture {
 
     protected fun verifyGetMiniCartUseCaseCalled() {
         coVerify { getMiniCartUseCase.executeOnBackground() }
-
     }
 
-    protected fun verifyGetMiniCartUseCaseNotCalled(){
+    protected fun verifyGetMiniCartUseCaseNotCalled() {
         coVerify(exactly = 0) { getMiniCartUseCase.execute(any(), any()) }
     }
 
@@ -154,11 +153,23 @@ open class BaseTokoNowViewModelTestFixture {
         verify(exactly = times) { addToCartUseCase.execute(any(), any()) }
     }
 
+    protected fun verifyAddToCartUseCaseNotCalled() {
+        verify(exactly = 0) { addToCartUseCase.execute(any(), any()) }
+    }
+
     protected fun verifyDeleteCartUseCaseCalled() {
         verify { deleteCartUseCase.execute(any(), any()) }
     }
 
+    protected fun verifyDeleteCartUseCaseNotCalled() {
+        verify(exactly = 0) { deleteCartUseCase.execute(any(), any()) }
+    }
+
     protected fun verifyUpdateCartUseCaseCalled() {
         verify { updateCartUseCase.execute(any(), any()) }
+    }
+
+    protected fun verifyUpdateCartUseCaseNotCalled() {
+        verify(exactly = 0) { updateCartUseCase.execute(any(), any()) }
     }
 }

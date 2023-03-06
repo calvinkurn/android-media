@@ -10,9 +10,9 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
@@ -53,7 +53,7 @@ import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
+class TokoNowRepurchaseViewModelTest : TokoNowRepurchaseViewModelTestFixture() {
     @Test
     fun `when tracking with setting screenName should give the same result`() {
         viewModel.trackOpeningScreen(REPURCHASE_TOKONOW)
@@ -326,7 +326,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 meta = GetRepurchaseProductMetaResponse(
                     page = 1,
                     hasNext = false,
-                    totalScan = 1,
+                    totalScan = 1
                 ),
                 products = listOf(RepurchaseProduct())
             )
@@ -350,7 +350,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 meta = GetRepurchaseProductMetaResponse(
                     page = 1,
                     hasNext = false,
-                    totalScan = 1,
+                    totalScan = 1
                 ),
                 products = listOf(RepurchaseProduct())
             )
@@ -375,7 +375,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 meta = GetRepurchaseProductMetaResponse(
                     page = 1,
                     hasNext = false,
-                    totalScan = 1,
+                    totalScan = 1
                 ),
                 products = listOf(RepurchaseProduct())
             )
@@ -440,7 +440,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = listOf(RepurchaseProduct(stock = 0))
         )
@@ -452,14 +452,16 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
         viewModel.getLayoutData()
         viewModel.getMiniCart(listOf("1"), "1")
 
-        val layoutList = listOf(createRepurchaseProductUiModel(
-            productCard = TokoNowProductCardViewUiModel(
-                isSimilarProductShown = true,
-                isWishlistShown = true,
-                needToShowQuantityEditor = true
-            ),
-            position = 1
-        ))
+        val layoutList = listOf(
+            createRepurchaseProductUiModel(
+                productCard = TokoNowProductCardViewUiModel(
+                    isSimilarProductShown = true,
+                    isWishlistShown = true,
+                    needToShowQuantityEditor = true
+                ),
+                position = 1
+            )
+        )
 
         val expectedResult = Success(
             RepurchaseLayoutUiModel(
@@ -591,7 +593,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 meta = GetRepurchaseProductMetaResponse(
                     page = 1,
                     hasNext = false,
-                    totalScan = 1,
+                    totalScan = 1
                 ),
                 products = listOf(RepurchaseProduct())
             )
@@ -626,13 +628,15 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = productId,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                )
+            )
         )
         val addToCartResponse = AddToCartDataModel()
 
@@ -663,13 +667,15 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = productId,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                )
+            )
         )
 
         onGetRepurchaseProductList_thenReturn(productListResponse)
@@ -696,17 +702,20 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = productId1,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ), RepurchaseProduct(
-                id = productId2,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = productId1,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                ),
+                RepurchaseProduct(
+                    id = productId2,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                )
+            )
         )
         val addToCartResponse = AddToCartDataModel()
 
@@ -723,7 +732,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 RepurchaseAddToCartTracker(
                     cartId = "",
                     quantity = quantity,
-                    data =  RepurchaseProductUiModel(
+                    data = RepurchaseProductUiModel(
                         shopId = "5",
                         category = "",
                         categoryId = "",
@@ -753,17 +762,20 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = productId1,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ), RepurchaseProduct(
-                id = productId2,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = productId1,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                ),
+                RepurchaseProduct(
+                    id = productId2,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                )
+            )
         )
         val addToCartResponse = AddToCartDataModel()
 
@@ -779,7 +791,6 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             .verifyValueEquals(null)
     }
 
-
     @Test
     fun `given quantity is 0 when onClickAddToCart should set miniCartRemove success`() {
         val warehouseId = "1"
@@ -792,13 +803,15 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = productId,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                )
+            )
         )
 
         val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1))
@@ -839,13 +852,15 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = productId,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                )
+            )
         )
 
         onGetUserLoggedIn_thenReturn(isLoggedIn = true)
@@ -876,13 +891,15 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = productId,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                )
+            )
         )
 
         val updateCartResponse = UpdateCartV2Data()
@@ -924,13 +941,15 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = productId,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                )
+            )
         )
 
         onGetUserLoggedIn_thenReturn(isLoggedIn = true)
@@ -961,13 +980,15 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = productId,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                )
+            )
         )
 
         val addToCartResponse = AddToCartDataModel()
@@ -989,34 +1010,131 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
     }
 
     @Test
+    fun `given mini cart item is null and quantity is 0 when onClickAddToCart should do nothing`() {
+        val productId = "1"
+        val quantity = 0
+        val shopId = "5"
+        val type = ""
+
+        val productListResponse = GetRepurchaseProductListResponse(
+            meta = GetRepurchaseProductMetaResponse(
+                page = 1,
+                hasNext = false,
+                totalScan = 1
+            ),
+            products = listOf(
+                RepurchaseProduct(
+                    id = productId,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                )
+            )
+        )
+
+        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
+        onGetRepurchaseProductList_thenReturn(productListResponse)
+
+        viewModel.getLayoutData()
+        viewModel.onClickAddToCart(productId, quantity, type, shopId, 0, false)
+
+        verifyAddToCartUseCaseNotCalled()
+        verifyUpdateCartUseCaseNotCalled()
+        verifyDeleteCartUseCaseNotCalled()
+
+        viewModel.miniCartUpdate
+            .verifyValueEquals(null)
+
+        viewModel.updateCartItem
+            .verifyValueEquals(null)
+
+        viewModel.removeCartItem
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `given mini cart item is NOT null & quantity same as cartQuantity when onClickAddToCart should do nothing`() {
+        val warehouseId = "1"
+        val productId = "1"
+        val quantity = 5
+        val cartQuantity = 5
+        val shopId = "5"
+        val type = ""
+
+        val productListResponse = GetRepurchaseProductListResponse(
+            meta = GetRepurchaseProductMetaResponse(
+                page = 1,
+                hasNext = false,
+                totalScan = 1
+            ),
+            products = listOf(
+                RepurchaseProduct(
+                    id = productId,
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = shopId)
+                )
+            )
+        )
+
+        val updateCartResponse = UpdateCartV2Data()
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = cartQuantity))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
+
+        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
+        onGetRepurchaseProductList_thenReturn(productListResponse)
+        onUpdateItemCart_thenReturn(updateCartResponse)
+        onGetMiniCart_thenReturn(miniCartResponse)
+
+        viewModel.getLayoutData()
+        viewModel.getMiniCart(listOf(shopId), warehouseId)
+        viewModel.onClickAddToCart(productId, quantity, type, shopId, 0, false)
+
+        verifyAddToCartUseCaseNotCalled()
+        verifyUpdateCartUseCaseNotCalled()
+        verifyDeleteCartUseCaseNotCalled()
+
+        viewModel.miniCartUpdate
+            .verifyValueEquals(null)
+
+        viewModel.updateCartItem
+            .verifyValueEquals(null)
+
+        viewModel.removeCartItem
+            .verifyValueEquals(null)
+    }
+
+    @Test
     fun `given product list response NOT empty when applyCategoryFilter should set getLayout success`() {
         val productListResponse = GetRepurchaseProductListResponse(
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = "1",
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = "1001")
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = "1",
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = "1001")
+                )
+            )
         )
 
         onGetRepurchaseProductList_thenReturn(productListResponse)
 
         viewModel.applyCategoryFilter(SelectedSortFilter())
 
-        val layoutList = listOf(createRepurchaseProductUiModel(
-            shopId = "1001",
-            productCard = TokoNowProductCardViewUiModel(
-                productId = "1",
-                isSimilarProductShown = true,
-                isWishlistShown = true,
-                needToShowQuantityEditor = true
-            ),
-            position = 1
-        ))
+        val layoutList = listOf(
+            createRepurchaseProductUiModel(
+                shopId = "1001",
+                productCard = TokoNowProductCardViewUiModel(
+                    productId = "1",
+                    isSimilarProductShown = true,
+                    isWishlistShown = true,
+                    needToShowQuantityEditor = true
+                ),
+                position = 1
+            )
+        )
 
         val expectedResult = Success(
             RepurchaseLayoutUiModel(
@@ -1037,7 +1155,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = listOf()
         )
@@ -1071,29 +1189,33 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = "1",
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = "1001")
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = "1",
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = "1001")
+                )
+            )
         )
 
         onGetRepurchaseProductList_thenReturn(productListResponse)
 
         viewModel.applyDateFilter(SelectedDateFilter())
 
-        val layoutList = listOf(createRepurchaseProductUiModel(
-            shopId = "1001",
-            productCard = TokoNowProductCardViewUiModel(
-                productId = "1",
-                isSimilarProductShown = true,
-                isWishlistShown = true,
-                needToShowQuantityEditor = true
-            ),
-            position = 1
-        ))
+        val layoutList = listOf(
+            createRepurchaseProductUiModel(
+                shopId = "1001",
+                productCard = TokoNowProductCardViewUiModel(
+                    productId = "1",
+                    isSimilarProductShown = true,
+                    isWishlistShown = true,
+                    needToShowQuantityEditor = true
+                ),
+                position = 1
+            )
+        )
 
         val expectedResult = Success(
             RepurchaseLayoutUiModel(
@@ -1114,7 +1236,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = listOf()
         )
@@ -1148,29 +1270,33 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = "1",
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = "1001")
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = "1",
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = "1001")
+                )
+            )
         )
 
         onGetRepurchaseProductList_thenReturn(productListResponse)
 
         viewModel.applySortFilter(0)
 
-        val layoutList = listOf(createRepurchaseProductUiModel(
-            shopId = "1001",
-            productCard = TokoNowProductCardViewUiModel(
-                productId = "1",
-                isSimilarProductShown = true,
-                isWishlistShown = true,
-                needToShowQuantityEditor = true
-            ),
-            position = 1
-        ))
+        val layoutList = listOf(
+            createRepurchaseProductUiModel(
+                shopId = "1001",
+                productCard = TokoNowProductCardViewUiModel(
+                    productId = "1",
+                    isSimilarProductShown = true,
+                    isWishlistShown = true,
+                    needToShowQuantityEditor = true
+                ),
+                position = 1
+            )
+        )
 
         val expectedResult = Success(
             RepurchaseLayoutUiModel(
@@ -1191,7 +1317,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = listOf()
         )
@@ -1231,15 +1357,16 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = "111",
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = "222")
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = "111",
+                    stock = 0,
+                    shop = RepurchaseProduct.Shop(id = "222")
+                )
+            )
         )
-
 
         onGetMiniCart_thenReturn(miniCartResponse)
         onGetUserLoggedIn_thenReturn(isLoggedIn = true)
@@ -1433,7 +1560,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = productList
         )
@@ -1457,7 +1584,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = hasNext,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = listOf(RepurchaseProduct(id = "1"))
         )
@@ -1470,7 +1597,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = hasNext,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = listOf(RepurchaseProduct(id = "2"))
         )
@@ -1500,10 +1627,12 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             )
         )
 
-        val expectedResult = Success(RepurchaseLayoutUiModel(
-            layoutList = layoutList,
-            state = TokoNowLayoutState.LOAD_MORE
-        ))
+        val expectedResult = Success(
+            RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                state = TokoNowLayoutState.LOAD_MORE
+            )
+        )
 
         verifyGetProductUseCaseCalled(times = 2)
 
@@ -1521,16 +1650,18 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = hasNext,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = listOf(RepurchaseProduct(id = "1"))
         )
 
-        val miniCartItems = mapOf(MiniCartItemKey("2") to MiniCartItem.MiniCartItemProduct(
-            productId = "2",
-            productParentId = "0",
-            quantity = quantity
-        ))
+        val miniCartItems = mapOf(
+            MiniCartItemKey("2") to MiniCartItem.MiniCartItemProduct(
+                productId = "2",
+                productParentId = "0",
+                quantity = quantity
+            )
+        )
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetMiniCart_thenReturn(miniCartResponse)
@@ -1544,14 +1675,16 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = hasNext,
-                totalScan = 1,
+                totalScan = 1
             ),
-            products = listOf(RepurchaseProduct(
-                id = "2",
-                stock = 10,
-                minOrder = 1,
-                maxOrder = 10
-            ))
+            products = listOf(
+                RepurchaseProduct(
+                    id = "2",
+                    stock = 10,
+                    minOrder = 1,
+                    maxOrder = 10
+                )
+            )
         )
 
         onGetRepurchaseProductList_thenReturn(loadMoreResponse)
@@ -1583,10 +1716,12 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             )
         )
 
-        val expectedResult = Success(RepurchaseLayoutUiModel(
-            layoutList = layoutList,
-            state = TokoNowLayoutState.LOAD_MORE
-        ))
+        val expectedResult = Success(
+            RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                state = TokoNowLayoutState.LOAD_MORE
+            )
+        )
 
         verifyGetProductUseCaseCalled(times = 2)
 
@@ -1604,7 +1739,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = hasNext,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = listOf(RepurchaseProduct(id = "1"))
         )
@@ -1631,7 +1766,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = hasNext,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = emptyList()
         )
@@ -1653,7 +1788,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = hasNext,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = emptyList()
         )
@@ -1675,7 +1810,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = hasNext,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = emptyList()
         )
@@ -1698,12 +1833,12 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
     }
 
     @Test
-    fun `given productListMeta null when loadMoreProduct should set loadMore success`()  {
+    fun `given productListMeta null when loadMoreProduct should set loadMore success`() {
         val productListResponse = GetRepurchaseProductListResponse(
             meta = GetRepurchaseProductMetaResponse(
                 page = 1,
                 hasNext = false,
-                totalScan = 1,
+                totalScan = 1
             ),
             products = listOf()
         )
@@ -1712,10 +1847,12 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         callPrivateLoadMoreProduct()
 
-        val expectedResult = Success(RepurchaseLayoutUiModel(
-            layoutList = emptyList(),
-            state = TokoNowLayoutState.LOAD_MORE
-        ))
+        val expectedResult = Success(
+            RepurchaseLayoutUiModel(
+                layoutList = emptyList(),
+                state = TokoNowLayoutState.LOAD_MORE
+            )
+        )
 
         verifyGetProductUseCaseCalled()
 

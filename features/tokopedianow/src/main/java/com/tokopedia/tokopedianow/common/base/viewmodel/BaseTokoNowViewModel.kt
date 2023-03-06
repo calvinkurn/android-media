@@ -12,7 +12,6 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -20,8 +19,8 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
-import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -38,7 +37,7 @@ open class BaseTokoNowViewModel(
     private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.io) {
+) : BaseViewModel(dispatchers.io) {
 
     companion object {
         private const val CHANGE_QUANTITY_DELAY = 500L
@@ -80,15 +79,17 @@ open class BaseTokoNowViewModel(
         changeQuantityJob?.cancel()
         launchWithDelay(block = {
             val miniCartItem = getMiniCartItem(productId)
+            val cartQuantity = miniCartItem?.quantity
+            if (cartQuantity == quantity) return@launchWithDelay
 
             when {
                 miniCartItem == null && quantity.isMoreThanZero() -> {
                     addItemToCart(productId, shopId, quantity, stock, isVariant)
                 }
-                miniCartItem != null && !quantity.isZero() -> {
+                miniCartItem != null && quantity.isMoreThanZero() -> {
                     updateCartItem(miniCartItem, quantity, stock, isVariant)
                 }
-                miniCartItem != null && quantity.isZero() -> {
+                miniCartItem != null -> {
                     val cartId = miniCartItem.cartId
                     deleteCartItem(productId, cartId)
                 }
@@ -133,7 +134,7 @@ open class BaseTokoNowViewModel(
     fun getMiniCart() {
         val shopId = getShopId()
 
-        if(shouldGetMiniCart(shopId)) {
+        if (shouldGetMiniCart(shopId)) {
             getMiniCartJob?.cancel()
             launchCatchError(block = {
                 val shopIds = listOf(shopId.toString())
@@ -172,7 +173,6 @@ open class BaseTokoNowViewModel(
                 affiliateChannel
             )
         }) {
-
         }
     }
 
@@ -189,7 +189,6 @@ open class BaseTokoNowViewModel(
         launchCatchError(block = {
             affiliateService.checkAtcAffiliateCookie(data)
         }) {
-
         }
     }
 
@@ -216,7 +215,7 @@ open class BaseTokoNowViewModel(
         )
         updateCartUseCase.setParams(
             updateCartRequestList = listOf(updateCartRequest),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         )
         updateCartUseCase.execute({
             val data = Triple(productId, it, quantity)

@@ -13,7 +13,6 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -32,8 +31,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewU
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -263,18 +262,18 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         if (productModels.size > position && productModels[position] is TokoNowProductCardCarouselItemUiModel) {
             val product = productModels[position] as TokoNowProductCardCarouselItemUiModel
             val miniCartItem = getMiniCartItem(product.productCardModel.productId)
+            val cartQuantity = miniCartItem?.quantity
             val stock = product.productCardModel.availableStock
+            if (cartQuantity == quantity) return
 
             when {
                 miniCartItem == null && quantity.isMoreThanZero() -> {
                     addItemToCart(position, shopId, quantity, product)
                 }
-                miniCartItem != null && !quantity.isZero() -> {
+                miniCartItem != null && quantity.isMoreThanZero() -> {
                     updateItemCart(miniCartItem, quantity, stock, isVariant)
                 }
-                miniCartItem != null && quantity.isZero() -> {
-                    removeItemCart(miniCartItem)
-                }
+                miniCartItem != null -> removeItemCart(miniCartItem)
             }
         }
     }
@@ -321,7 +320,6 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         launchCatchError(block = {
             affiliateService.checkAtcAffiliateCookie(data)
         }) {
-
         }
     }
 }

@@ -13,7 +13,6 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -39,10 +38,10 @@ import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
@@ -396,17 +395,17 @@ class TokoNowHomeViewModel @Inject constructor(
         @TokoNowLayoutType type: String
     ) {
         val miniCartItem = getMiniCartItem(productId)
+        val cartQuantity = miniCartItem?.quantity.orZero()
+        if (cartQuantity == quantity) return
 
         when {
             miniCartItem == null && quantity.isMoreThanZero() -> {
                 addItemToCart(channelId, productId, quantity, shopId, stock, isVariant, type)
             }
-            miniCartItem != null && !quantity.isZero() -> {
+            miniCartItem != null && quantity.isMoreThanZero() -> {
                 updateItemCart(miniCartItem, quantity, stock, isVariant, type)
             }
-            miniCartItem != null && quantity.isZero() -> {
-                removeItemCart(miniCartItem, type)
-            }
+            miniCartItem != null -> removeItemCart(miniCartItem, type)
         }
     }
 

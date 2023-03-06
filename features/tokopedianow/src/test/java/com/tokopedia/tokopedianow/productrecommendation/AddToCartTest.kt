@@ -15,7 +15,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import org.junit.Test
 
-class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
+class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `while adding product to cart, the request should be success`() {
@@ -87,7 +87,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         mockMiniCartSimplifiedData(productId)
 
         val response = UpdateCartV2Data(
-            error = listOf(message),
+            error = listOf(message)
         )
 
         onUpdateItemCart_thenReturn(response)
@@ -130,7 +130,10 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
 
         mockProductModels()
 
-        mockMiniCartSimplifiedData(productId)
+        mockMiniCartSimplifiedData(
+            productId = productId,
+            quantity = 2
+        )
 
         val response = RemoveFromCartData(
             errorMessage = listOf(message),
@@ -160,7 +163,10 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
 
         mockProductModels()
 
-        mockMiniCartSimplifiedData(productId)
+        mockMiniCartSimplifiedData(
+            productId = productId,
+            quantity = 2
+        )
 
         viewModel.addProductToCart(
             position = position,
@@ -243,4 +249,80 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
         viewModel.miniCartRemove.verifyValueEquals(null)
     }
 
+    @Test
+    fun `given new quantity same as cart quantity when update cart item should do nothing`() {
+        val position = 0
+        val quantity = 4
+        val cartQuantity = 4
+
+        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        val shopId = expectedProduct.shopId
+        val productId = expectedProduct.getProductId()
+
+        mockProductModels()
+
+        mockMiniCartSimplifiedData(
+            productId = productId,
+            quantity = cartQuantity
+        )
+
+        val response = UpdateCartV2Data()
+
+        onUpdateItemCart_thenReturn(response)
+
+        viewModel.addProductToCart(position, quantity, shopId, false)
+
+        viewModel.miniCartAdd.verifyValueEquals(null)
+        viewModel.miniCartUpdate.verifyValueEquals(null)
+        viewModel.miniCartRemove.verifyValueEquals(null)
+    }
+
+    @Test
+    fun `given new quantity is 0 when update cart item should do nothing`() {
+        val position = 0
+        val quantity = 0
+        val cartQuantity = 4
+
+        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        val shopId = expectedProduct.shopId
+        val productId = expectedProduct.getProductId()
+
+        mockProductModels()
+
+        mockMiniCartSimplifiedData(
+            productId = productId,
+            quantity = cartQuantity
+        )
+
+        val response = UpdateCartV2Data()
+
+        onUpdateItemCart_thenReturn(response)
+
+        viewModel.addProductToCart(position, quantity, shopId, false)
+
+        viewModel.miniCartAdd.verifyValueEquals(null)
+        viewModel.miniCartUpdate.verifyValueEquals(null)
+        viewModel.miniCartRemove.verifyValueEquals(null)
+    }
+
+    @Test
+    fun `given new quantity is 0 when add cart item should do nothing`() {
+        val position = 0
+        val quantity = 0
+
+        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+        val shopId = expectedProduct.shopId
+
+        mockProductModels()
+
+        val response = AddToCartDataModel()
+
+        onAddToCart_thenReturn(response)
+
+        viewModel.addProductToCart(position, quantity, shopId, false)
+
+        viewModel.miniCartAdd.verifyValueEquals(null)
+        viewModel.miniCartUpdate.verifyValueEquals(null)
+        viewModel.miniCartRemove.verifyValueEquals(null)
+    }
 }

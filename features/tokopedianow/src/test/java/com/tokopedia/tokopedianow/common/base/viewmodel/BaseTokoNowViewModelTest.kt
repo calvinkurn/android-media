@@ -17,7 +17,7 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
-    
+
     companion object {
         private const val CHANGE_QUANTITY_DELAY = 500L
     }
@@ -170,7 +170,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
             verifyUpdateCartUseCaseCalled()
 
             viewModel.updateCartItem
-                .verifySuccessEquals(Success(Triple(productId,updateCartResponse, quantity)))
+                .verifySuccessEquals(Success(Triple(productId, updateCartResponse, quantity)))
         }
     }
 
@@ -324,6 +324,48 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
     }
 
     @Test
+    fun `given new quantity same as mini cart quantity when onQuantityChanged should do nothing`() {
+        coroutineTestRule.runBlockingTest {
+            val productId = "5"
+            val newQuantity = 1
+            val miniCartQuantity = 1
+            val shopId = "5"
+            val stock = 0
+            val warehouseId = 3L
+
+            val miniCartItems = mapOf(
+                MiniCartItemKey("5") to MiniCartItem.MiniCartItemProduct(
+                    productId = "5",
+                    quantity = miniCartQuantity
+                )
+            )
+            val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
+
+            onGetShopId_thenReturn(shopId.toLong())
+            onGetWarehouseId_thenReturn(warehouseId)
+            onGetUserLoggedIn_thenReturn(isLoggedIn = true)
+            onGetMiniCart_thenReturn(miniCartResponse)
+
+            viewModel.getMiniCart()
+            viewModel.onQuantityChanged(productId, shopId, newQuantity, stock, false)
+            advanceTimeBy(CHANGE_QUANTITY_DELAY)
+
+            verifyAddToCartUseCaseNotCalled()
+            verifyUpdateCartUseCaseNotCalled()
+            verifyDeleteCartUseCaseNotCalled()
+
+            viewModel.addItemToCart
+                .verifyValueEquals(null)
+
+            viewModel.updateCartItem
+                .verifyValueEquals(null)
+
+            viewModel.removeCartItem
+                .verifyValueEquals(null)
+        }
+    }
+
+    @Test
     fun `when getMiniCart success should set miniCart value success`() {
         val shopId = 3L
         val warehouseId = 5L
@@ -368,6 +410,7 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
         viewModel.miniCart
             .verifySuccessEquals(Success(expectedMiniCartData))
     }
+
     @Test
     fun `given out of coverage false when getMiniCart success should set isShowMiniCartWidget true`() {
         val shopId = 3L
@@ -391,7 +434,6 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
         viewModel.miniCart
             .verifySuccessEquals(Success(expectedMiniCartData))
     }
-
 
     @Test
     fun `when getMiniCart twice should set miniCart value success`() {
