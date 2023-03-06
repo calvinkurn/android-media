@@ -46,7 +46,11 @@
     <fragment
         android:id="@+id/dobChallengeFragment"
         android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeFragment"
-        android:label="DobChallengeFragment" />
+        android:label="DobChallengeFragment" >
+        <argument
+            android:name="parameter"
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeParam"/>
+    </fragment>
     <fragment
         android:id="@+id/onboardBenefitFragment"
         android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.OnboardBenefitFragment"

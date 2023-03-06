@@ -30,6 +30,12 @@
         layout="@layout/item_goto_kyc_ktp_gopay"
         android:layout_marginTop="8dp"/>
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/goto_kyc_confirm_KTP_name"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_tokopedia_care"
         android:layout_width="match_parent"
