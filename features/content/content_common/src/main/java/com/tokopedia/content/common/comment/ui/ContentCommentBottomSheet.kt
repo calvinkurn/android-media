@@ -109,7 +109,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 if (p0 == null) return
                 binding.newComment.removeTextChangedListener(this)
 
-                if (p0.length >= MAX_CHAR) {
+                if (p0.length > MAX_CHAR) {
                     Toaster.showError(
                         requireView().rootView,
                         getString(R.string.content_comment_error_max),

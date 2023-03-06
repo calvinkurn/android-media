@@ -1,5 +1,6 @@
 package com.tokopedia.content.common.comment
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.comment.model.Comments
 import com.tokopedia.content.common.comment.model.PostComment
 import com.tokopedia.content.common.comment.uimodel.CommentType
@@ -41,13 +42,13 @@ class CommentUiModelMapper @Inject constructor() {
     )
 
     fun mapComment(comment: Comments.CommentData, parentId: String): CommentUiModel {
-        val username = comment.username.ifBlank { comment.firstName }
+        val username = if(comment.isShop) comment.fullName else  comment.username.ifBlank { comment.firstName }
         return CommentUiModel.Item(
             id = comment.id,
             username = username,
             photo = comment.photo,
             appLink = comment.linkDetail.appLink,
-            content = comment.comment.replace("\n", ""),
+            content = comment.comment,
             createdTime = convertTime(comment.createdTime),
             commentType = parentId.convertToCommentType,
             childCount = comment.repliesCountFmt,
@@ -65,7 +66,7 @@ class CommentUiModelMapper @Inject constructor() {
             username = username,
             photo = comment.userInfo.photo,
             appLink = comment.userInfo.linkDetail.appLink,
-            content = comment.comment.replace("^[\n\r]".toRegex(), ""),
+            content = MethodChecker.fromHtml(comment.comment).toString(),
             createdTime = convertTime(comment.createdTime),
             commentType = comment.parentId.convertToCommentType,
             childCount = "0",

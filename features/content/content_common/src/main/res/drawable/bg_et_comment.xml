@@ -5,6 +5,6 @@
     <padding
         android:left="@dimen/unify_space_16"
         android:right="@dimen/unify_space_8"
-        android:top="@dimen/unify_space_8" />
+        android:top="@dimen/content_common_space_12"/>
     <solid android:color="@color/Unify_NN50" />
 </shape>
