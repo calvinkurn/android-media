@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.discovery.common.State
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -35,8 +36,9 @@ class MPSFragment:
 
     private val viewModel: MPSViewModel? by viewModels { viewModelFactory }
     private var binding by autoClearedNullable<SearchMpsFragmentLayoutBinding>()
-
+    private val recycledViewPool = RecycledViewPool()
     private val mpsTypeFactory = MPSTypeFactoryImpl(
+        recycledViewPool = recycledViewPool,
         fragmentProvider = this,
         chooseAddressListener = this,
     )

@@ -5,44 +5,66 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class MPSModel(
-    @SerializedName("aceSearchShop")
+    @SerializedName("ace_search_shop_mps")
     @Expose
-    val aceSearchShop: AceSearchShop = AceSearchShop(),
+    val aceSearchShopMPS: AceSearchShopMPS = AceSearchShopMPS(),
 ) {
 
     val shopList
-        get() = aceSearchShop.shopList
+        get() = aceSearchShopMPS.shopList
 
-    data class AceSearchShop(
-        @SerializedName("shops")
+    data class AceSearchShopMPS(
+        @SerializedName("header")
+        @Expose
+        val header: Header = Header(),
+
+        @SerializedName("data")
         @Expose
         val shopList: List<Shop> = listOf(),
     ) {
 
+        data class Header(
+            @SerializedName("total_data")
+            @Expose
+            val totalData: Long = 0
+        )
+
         data class Shop(
-            @SerializedName("shop_id")
+            @SerializedName("id")
             @Expose
             val id: String = "0",
 
-            @SerializedName("shop_name")
+            @SerializedName("name")
             @Expose
             val name: String = "",
 
-            @SerializedName("shop_image")
-            @Expose
-            val image: String = "",
-
-            @SerializedName("shop_location")
+            @SerializedName("location")
             @Expose
             val location: String = "",
 
-            @SerializedName("shop_badge")
+            @SerializedName("applink")
             @Expose
-            val badge: Badge = Badge(),
+            val applink: String = "",
 
-            @SerializedName("button_title")
+            @SerializedName("image_url")
             @Expose
-            val buttonTitle: String = "",
+            val imageUrl: String = "",
+
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("tracking_option")
+            @Expose
+            val trackingOption: Int = 0,
+
+            @SerializedName("ticker")
+            @Expose
+            val ticker: Ticker = Ticker(),
+
+            @SerializedName("badges")
+            @Expose
+            val badgeList: List<Badge> = listOf(),
 
             @SerializedName("free_ongkir")
             @Expose
@@ -51,7 +73,21 @@ data class MPSModel(
             @SerializedName("products")
             @Expose
             val productList: List<Product> = listOf(),
+
+            @SerializedName("buttons")
+            @Expose
+            val buttonList: List<Button> = listOf(),
         ) {
+
+            data class Ticker(
+                @SerializedName("type")
+                @Expose
+                val type: String = "",
+
+                @SerializedName("message")
+                @Expose
+                val message: String = "",
+            )
 
             data class Badge(
                 @SerializedName("image_url")
@@ -73,6 +109,32 @@ data class MPSModel(
                 val isActive: Boolean = false,
             )
 
+            data class Button(
+                @SerializedName("name")
+                @Expose
+                val name: String = "",
+
+                @SerializedName("applink")
+                @Expose
+                val applink: String = "",
+
+                @SerializedName("text")
+                @Expose
+                val text: String = "",
+
+                @SerializedName("is_cta")
+                @Expose
+                val isCTA: Boolean = false,
+
+                @SerializedName("component_id")
+                @Expose
+                val componentId: String = "",
+
+                @SerializedName("tracking_option")
+                @Expose
+                val trackingOption: Int = 0,
+            )
+
             data class Product(
                 @SerializedName("id")
                 @Expose
@@ -86,13 +148,9 @@ data class MPSModel(
                 @Expose
                 val applink: String = "",
 
-                @SerializedName("original_price")
+                @SerializedName("image_url")
                 @Expose
-                val originalPrice: String = "",
-
-                @SerializedName("discount_percentage")
-                @Expose
-                val discountPercentage: String = "",
+                val imageUrl: String = "",
 
                 @SuppressLint("Invalid Data Type")
                 @SerializedName("price")
@@ -103,17 +161,45 @@ data class MPSModel(
                 @Expose
                 val priceFormat: String = "",
 
-                @SerializedName("image_url")
+                @SerializedName("original_price")
                 @Expose
-                val imageUrl: String = "",
+                val originalPrice: String = "",
+
+                @SerializedName("discount_percentage")
+                @Expose
+                val discountPercentage: String = "",
 
                 @SerializedName("rating_average")
                 @Expose
                 val ratingAverage: String = "",
 
+                @SerializedName("parent_id")
+                @Expose
+                val parentId: String = "",
+
+                @SerializedName("stock")
+                @Expose
+                val stock: Int = 0,
+
+                @SerializedName("min_order")
+                @Expose
+                val minOrder: Int = 0,
+
+                @SerializedName("component_id")
+                @Expose
+                val componentId: String = "",
+
+                @SerializedName("tracking_option")
+                @Expose
+                val trackingOption: Int = 0,
+
                 @SerializedName("label_groups")
                 @Expose
                 val labelGroupList: List<LabelGroup> = listOf(),
+
+                @SerializedName("buttons")
+                @Expose
+                val buttonList: List<Button> = listOf(),
             ) {
 
                 data class LabelGroup(

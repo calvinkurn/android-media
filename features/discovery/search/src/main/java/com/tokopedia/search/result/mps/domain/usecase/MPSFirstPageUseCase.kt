@@ -19,7 +19,7 @@ class MPSFirstPageUseCase(
         val graphqlResponse = executeOnBackground()
 
         MPSModel(
-            graphqlResponse.getData(MPSModel.AceSearchShop::class.java),
+            graphqlResponse.getData(MPSModel.AceSearchShopMPS::class.java),
         )
     }
 
@@ -29,19 +29,76 @@ class MPSFirstPageUseCase(
 
         return GraphqlRequest(
             MPSFirstPageQuery(),
-            MPSModel.AceSearchShop::class.java,
+            MPSModel.AceSearchShopMPS::class.java,
             requestParams.parameters
         )
     }
 
     companion object {
         private const val MPS_GQL_QUERY = """
-            query MPS(${'$'}params: String!) {
-                aceSearchShop(params: ${'$'}params) {
-                    shops {
-                        shop_id
-                    }
+            query MPSQuery(${'$'}params: String!) {
+              ace_search_shop_mps(params: ${'$'}params) {
+                header {
+                  total_data
                 }
+                data {
+                  id
+                  name
+                  location
+                  applink
+                  image_url
+                  component_id
+                  tracking_option
+                  ticker {
+                    type
+                    image_url
+                    message
+                  }
+                  badges {
+                    title
+                    image_url
+                    show
+                  }
+                  products {
+                    id
+                    name
+                    applink
+                    image_url
+                    price
+                    price_format
+                    original_price
+                    discount_percentage
+                    rating_average
+                    parent_id
+                    stock
+                    min_order
+                    component_id
+                    tracking_option
+                    label_groups {
+                      url
+                      type
+                      title
+                      position
+                    }
+                    buttons {
+                      name
+                      applink
+                      text
+                      is_cta
+                      component_id
+                      tracking_option
+                    }
+                  }
+                  buttons {
+                    name
+                    applink
+                    text
+                    is_cta
+                    component_id
+                    tracking_option
+                  }
+                }
+              }
             }
         """
     }

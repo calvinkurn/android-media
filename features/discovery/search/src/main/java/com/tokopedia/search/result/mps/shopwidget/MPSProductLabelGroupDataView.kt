@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.mps.shopwidget
 
-import com.tokopedia.search.result.mps.domain.model.MPSModel.AceSearchShop.Shop.Product.LabelGroup
+import com.tokopedia.search.result.mps.domain.model.MPSModel.AceSearchShopMPS.Shop.Product.LabelGroup
 
 data class MPSProductLabelGroupDataView(
     val position: String = "",

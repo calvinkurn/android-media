@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.mps.shopwidget
 
-import com.tokopedia.search.result.mps.domain.model.MPSModel.AceSearchShop.Shop.Badge
+import com.tokopedia.search.result.mps.domain.model.MPSModel.AceSearchShopMPS.Shop.Badge
 
 data class MPSShopBadgeDataView(
     val imageUrl: String = "",
