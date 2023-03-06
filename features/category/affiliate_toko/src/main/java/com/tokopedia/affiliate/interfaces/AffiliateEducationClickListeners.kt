@@ -5,6 +5,8 @@ import com.tokopedia.affiliate.model.response.AffiliateEducationCategoryResponse
 interface AffiliateEducationLearnClickInterface {
     fun onKamusClick()
     fun onBantuanClick()
+    fun onKebijakanPrivasiClick()
+
 }
 
 interface AffiliateEducationEventArticleClickInterface {

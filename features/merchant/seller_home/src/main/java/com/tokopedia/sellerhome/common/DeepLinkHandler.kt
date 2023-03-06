@@ -158,9 +158,11 @@ object DeepLinkHandler {
                     ).orEmpty()
                     val toasterCta = uri.getQueryParameter(SellerHomeApplinkConst.TOASTER_CTA)
                         .orEmpty()
+                    val isPersona = uri.getBooleanQueryParameter(SellerHomeApplinkConst.IS_PERSONA, false)
                     val sellerHomeData = SellerHomeDataUiModel(
                         toasterMessage = toasterMessage,
                         toasterCta = toasterCta,
+                        shouldShowPersonaBtmSheet = isPersona
                     )
                     callback(
                         PageFragment(
