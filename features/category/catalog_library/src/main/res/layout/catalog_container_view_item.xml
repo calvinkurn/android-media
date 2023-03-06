@@ -10,8 +10,7 @@
         android:id="@+id/catalog_special_header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="12dp">
+        android:orientation="horizontal">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/container_titile"
@@ -29,10 +28,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/catalog_lihat_semua"
-            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_weight="1"
             android:textColor="@color/Unify_GN500"
             app:typographyType="display_3"
+            android:gravity="end"
             app:typographyWeight="bold" />
     </LinearLayout>
 
@@ -41,8 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="24dp" />
+        android:layout_marginEnd="16dp" />
 
 </LinearLayout>

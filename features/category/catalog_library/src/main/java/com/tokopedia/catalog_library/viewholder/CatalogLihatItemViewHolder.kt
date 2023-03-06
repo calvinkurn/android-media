@@ -5,9 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
+import com.tokopedia.catalog_library.util.AnalyticsLihatSemuaPage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import kotlin.LazyThreadSafetyMode.NONE
 
 class CatalogLihatItemViewHolder(
@@ -15,6 +17,7 @@ class CatalogLihatItemViewHolder(
     private val catalogLibraryListener:
         CatalogLibraryListener
 ) : AbstractViewHolder<CatalogLihatItemDataModel>(view) {
+    var dataModel: CatalogLihatItemDataModel? = null
 
     private val lihatItemIcon: ImageUnify? by lazy(NONE) {
         itemView.findViewById(R.id.lihat_item_icon)
@@ -33,6 +36,7 @@ class CatalogLihatItemViewHolder(
     }
 
     override fun bind(element: CatalogLihatItemDataModel?) {
+        dataModel = element
         val childDataItem = element?.catalogLibraryChildDataListItem
         childDataItem?.categoryIconUrl?.let {
             lihatItemIcon?.loadImage(it)
@@ -41,14 +45,37 @@ class CatalogLihatItemViewHolder(
         lihatItemTitle?.setOnClickListener {
             it.setOnClickListener {
                 catalogLibraryListener.onCategoryItemClicked(
-                    childDataItem?.categoryIdentifier ?: ""
+                    childDataItem?.categoryId ?: ""
                 )
             }
         }
         lihatExpandedItemLayout?.background = view.context.getDrawable(R.drawable.squircle)
         lihatExpandedItemLayout?.setOnClickListener {
+            AnalyticsLihatSemuaPage.sendClickCategoryOnCategoryListEvent(
+                element?.rootCategoryName ?: "",
+                element?.rootCategoryId ?: "",
+                element?.catalogLibraryChildDataListItem?.categoryName ?: "",
+                element?.catalogLibraryChildDataListItem?.categoryId ?: "",
+                element?.isAsc ?: true,
+                UserSession(itemView.context).userId
+            )
             catalogLibraryListener.onCategoryItemClicked(
-                childDataItem?.categoryIdentifier ?: ""
+                childDataItem?.categoryId ?: ""
+            )
+        }
+    }
+
+    override fun onViewAttachedToWindow() {
+        dataModel?.let {
+            catalogLibraryListener.categoryListImpression(
+                it.rootCategoryName,
+                it.rootCategoryId,
+                it.catalogLibraryChildDataListItem.categoryName ?: "",
+                it.catalogLibraryChildDataListItem.categoryId ?: "",
+                it.isGrid,
+                it.isAsc,
+                layoutPosition + 1,
+                UserSession(itemView.context).userId
             )
         }
     }

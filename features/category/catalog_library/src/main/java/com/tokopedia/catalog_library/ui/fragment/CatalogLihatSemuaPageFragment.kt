@@ -19,6 +19,8 @@ import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
+import com.tokopedia.catalog_library.util.ActionKeys
+import com.tokopedia.catalog_library.util.AnalyticsLihatSemuaPage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageViewModel
@@ -26,9 +28,11 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -39,6 +43,8 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     private var sortAsc: ChipsUnify? = null
     private var sortDesc: ChipsUnify? = null
     private var globalError: GlobalError? = null
+    var viewStr = CatalogLibraryConstant.GRID_VIEW_STR
+    var order = CatalogLibraryConstant.ASCENDING_ORDER_STR
 
     companion object {
         const val DEFAULT_ASC_SORT_ORDER = "0"
@@ -47,6 +53,10 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             return CatalogLihatSemuaPageFragment()
         }
     }
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+    private val categoryTrackingSet = HashSet<String>()
 
     @JvmField
     @Inject
@@ -116,11 +126,23 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             sortAsc?.chipType = ChipsUnify.TYPE_SELECTED
             sortDesc?.chipType = ChipsUnify.TYPE_NORMAL
             lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
+
+            AnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
+                "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.DESCENDING_ORDER_STR}" +
+                    " - click sort: ${CatalogLibraryConstant.ASCENDING_ORDER_STR}",
+                UserSession(context).userId
+            )
         }
         sortDesc?.setOnClickListener {
             sortAsc?.chipType = ChipsUnify.TYPE_NORMAL
             sortDesc?.chipType = ChipsUnify.TYPE_SELECTED
             lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER)
+
+            AnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
+                "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.ASCENDING_ORDER_STR}" +
+                    " - click sort: ${CatalogLibraryConstant.DESCENDING_ORDER_STR}",
+                UserSession(context).userId
+            )
         }
         initHeaderTitle(view)
         setupRecyclerView(view)
@@ -201,5 +223,38 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             )
             updateUi()
         }
+    }
+
+    override fun categoryListImpression(
+        parentCategoryName: String,
+        parentCategoryId: String,
+        categoryName: String,
+        categoryId: String,
+        isGrid: Boolean,
+        isAsc: Boolean,
+        position: Int,
+        userId: String
+    ) {
+        val uniqueTrackingKey =
+            "${ActionKeys.IMPRESSION_ON_CATEGORY_LIST}-$parentCategoryId-$position"
+        if (!categoryTrackingSet.contains(uniqueTrackingKey)) {
+            AnalyticsLihatSemuaPage.sendImpressionOnCategoryListEvent(
+                trackingQueue,
+                parentCategoryName,
+                parentCategoryId,
+                categoryName,
+                categoryId,
+                isGrid,
+                isAsc,
+                position,
+                userId
+            )
+            categoryTrackingSet.add(uniqueTrackingKey)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
     }
 }

@@ -1,10 +1,12 @@
 package com.tokopedia.catalog_library.viewholder
 
 import android.view.View
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.internal.ViewUtils.dpToPx
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
@@ -16,7 +18,6 @@ import com.tokopedia.catalog_library.model.datamodel.CatalogContainerDataModel
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class CatalogContainerItemViewHolder(
@@ -52,7 +53,7 @@ class CatalogContainerItemViewHolder(
     }
 
     override fun bind(element: CatalogContainerDataModel) {
-        renderTitle(element.containerTitle)
+        renderTitle(element)
         renderLihat(element)
         renderRecyclerView(element)
     }
@@ -68,8 +69,18 @@ class CatalogContainerItemViewHolder(
         }
     }
 
-    private fun renderTitle(containerTitle: String) {
-        title.displayTextOrHide(containerTitle)
+    private fun renderTitle(element: CatalogContainerDataModel) {
+        title.displayTextOrHide(element.containerTitle)
+
+        val params = LinearLayout.LayoutParams(title.layoutParams)
+        params.setMargins(
+            dpToPx(title.context, element.marginForTitle.start).toInt(),
+            dpToPx(title.context, element.marginForTitle.top).toInt(),
+            dpToPx(title.context, element.marginForTitle.end).toInt(),
+            dpToPx(title.context, element.marginForTitle.bottom).toInt()
+        )
+        title.layoutParams = params
+        title.requestLayout()
     }
 
     private fun renderRecyclerView(element: CatalogContainerDataModel) {
@@ -82,5 +93,20 @@ class CatalogContainerItemViewHolder(
             adapter = containerAdapter
         }
         containerAdapter.submitList(element.dataList)
+
+        if (!element.isGrid) {
+            val params: LinearLayout.LayoutParams =
+                LinearLayout.LayoutParams(containerRV.layoutParams)
+            params.setMargins(
+                element.marginForTitle.start,
+                element.marginForTitle.top,
+                element.marginForTitle.end,
+                element.marginForTitle.bottom
+            )
+            containerRV.layoutParams = params
+            containerRV.requestLayout()
+        }
+
+
     }
 }

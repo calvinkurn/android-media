@@ -7,7 +7,11 @@ import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse
 data class CatalogLihatItemDataModel(
     val name: String = "",
     val type: String = "",
-    val catalogLibraryChildDataListItem: CatalogLibraryResponse.CategoryListLibraryPage.CategoryData.ChildCategoryList
+    val catalogLibraryChildDataListItem: CatalogLibraryResponse.CategoryListLibraryPage.CategoryData.ChildCategoryList,
+    val rootCategoryId: String,
+    val rootCategoryName: String,
+    val isGrid: Boolean,
+    val isAsc: Boolean
 ) : BaseCatalogLibraryDataModel {
 
     override fun type() = type

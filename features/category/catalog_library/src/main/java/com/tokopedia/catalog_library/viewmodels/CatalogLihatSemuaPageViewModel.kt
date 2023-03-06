@@ -18,11 +18,15 @@ class CatalogLihatSemuaPageViewModel @Inject constructor(private val catalogLibr
     ViewModel() {
 
     private val _catalogLihatLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
-    val catalogLihatLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> = _catalogLihatLiveData
+    val catalogLihatLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> =
+        _catalogLihatLiveData
 
     private val listOfComponents = mutableListOf<BaseCatalogLibraryDataModel>()
 
+    private var isAsc = true
+
     fun getLihatSemuaPageData(sortOrder: String) {
+        isAsc = sortOrder == "0"
         catalogLibraryUseCase.cancelJobs()
         catalogLibraryUseCase.getLibraryData(
             ::onAvailableLihatData,
@@ -49,8 +53,9 @@ class CatalogLihatSemuaPageViewModel @Inject constructor(private val catalogLibr
         data.categoryList.categoryDataList?.forEachIndexed { index, categoryData ->
             val lihatDataModel = CatalogLihatDataModel(
                 CatalogLibraryConstant.CATALOG_LIHAT_SEMUA,
-                "${ CatalogLibraryConstant.CATALOG_LIHAT_SEMUA}_$index",
-                categoryData
+                "${CatalogLibraryConstant.CATALOG_LIHAT_SEMUA}_$index",
+                categoryData,
+                isAsc
             )
             listOfComponents.add(lihatDataModel)
         }

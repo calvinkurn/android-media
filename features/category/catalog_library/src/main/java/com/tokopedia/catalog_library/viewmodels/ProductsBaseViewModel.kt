@@ -3,10 +3,7 @@ package com.tokopedia.catalog_library.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogContainerDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogProductDataModel
+import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
@@ -28,7 +25,7 @@ class ProductsBaseViewModel @Inject constructor(
         _shimmerLiveData
 
     fun getCatalogListData(
-        categoryIdentifier: String,
+        categoryId: String,
         sortType: Int,
         rows: Int,
         page: Int = 1
@@ -38,7 +35,7 @@ class ProductsBaseViewModel @Inject constructor(
         catalogProductsUseCase.getCatalogProductsData(
             ::onAvailableCatalogListData,
             ::onFailHomeData,
-            categoryIdentifier,
+            categoryId,
             sortType,
             rows,
             page
@@ -90,12 +87,22 @@ class ProductsBaseViewModel @Inject constructor(
         } else {
             "Semua katalog ${categoryName.lowercase()}"
         }
+        val source = if (categoryName == "") {
+            CatalogLibraryConstant.SOURCE_HOMEPAGE
+        } else {
+            CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE
+        }
         if (page == 1) {
             val productHeaderModel = CatalogContainerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 title,
-                null
+                null,
+                marginForTitle = if (categoryName == "") {
+                    Margin(36, 16, 0, 16)
+                } else {
+                    Margin(32, 16, 0, 16)
+                }
             )
             visitableList.add(productHeaderModel)
         }
@@ -104,7 +111,9 @@ class ProductsBaseViewModel @Inject constructor(
                 CatalogProductDataModel(
                     CatalogLibraryConstant.CATALOG_PRODUCT,
                     "${CatalogLibraryConstant.CATALOG_PRODUCT}_${product.id}",
-                    product
+                    product,
+                    source,
+                    categoryName
                 )
             )
         }

@@ -27,16 +27,26 @@ class CatalogLibraryAdapter(
     override fun getItemViewType(position: Int): Int {
         return if (position < 0 || position >= currentList.size) {
             HideViewHolder.LAYOUT
-        } else currentList[position]?.type(catalogHomepageAdapterFactory) ?: HideViewHolder.LAYOUT
+        } else {
+            currentList[position]?.type(catalogHomepageAdapterFactory) ?: HideViewHolder.LAYOUT
+        }
     }
 
     private fun onCreateViewItem(parent: ViewGroup, viewType: Int): View {
         return LayoutInflater.from(parent.context).inflate(viewType, parent, false)
     }
 
-    private fun bind(holder: AbstractViewHolder<BaseCatalogLibraryDataModel>, item: BaseCatalogLibraryDataModel) {
+    private fun bind(
+        holder: AbstractViewHolder<BaseCatalogLibraryDataModel>,
+        item: BaseCatalogLibraryDataModel
+    ) {
         holder.bind(item)
     }
 
     override fun getItemCount() = currentList.size
+
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<*>) {
+        super.onViewAttachedToWindow(holder)
+        holder.onViewAttachedToWindow()
+    }
 }

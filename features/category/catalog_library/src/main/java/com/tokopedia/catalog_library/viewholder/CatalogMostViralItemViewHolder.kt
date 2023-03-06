@@ -8,10 +8,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogMostViralDataModel
+import com.tokopedia.catalog_library.util.AnalyticsCategoryLandingPage
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 
 class CatalogMostViralItemViewHolder(
     val view: View,
@@ -43,7 +45,9 @@ class CatalogMostViralItemViewHolder(
     }
 
     override fun bind(element: CatalogMostViralDataModel?) {
-        element?.catalogMostViralData?.imageUrl?.let { iconUrl ->
+        val mostViralProduct = element?.catalogMostViralData
+
+        mostViralProduct?.imageUrl?.let { iconUrl ->
             mostViralImage.loadImage(iconUrl)
         }
         mostViralLayout.background =
@@ -52,7 +56,7 @@ class CatalogMostViralItemViewHolder(
                 R.drawable.background,
                 view.context.theme
             )
-        mostViralTitle.text = element?.catalogMostViralData?.name
+        mostViralTitle.text = mostViralProduct?.name
         mostViralIcon.apply {
             setImage(
                 newLightEnable = MethodChecker.getColor(
@@ -62,12 +66,27 @@ class CatalogMostViralItemViewHolder(
             )
         }
         mostViralLayout.setOnClickListener {
-            catalogLibraryListener.onProductCardClicked(element?.catalogMostViralData?.applink)
+            AnalyticsCategoryLandingPage.sendClickOnMostViralCatalogInCategoryEvent(
+                element?.categoryName ?: "",
+                mostViralProduct?.categoryID ?: "",
+                mostViralProduct?.name ?: "",
+                mostViralProduct?.id ?: "",
+                UserSession(itemView.context).userId
+            )
+            catalogLibraryListener.onProductCardClicked(mostViralProduct?.applink)
         }
 
         mostViralSubtitle.text = String.format(
             view.context.getString(R.string.most_viral_subtitle_common),
             element?.categoryName ?: ""
+        )
+
+        AnalyticsCategoryLandingPage.sendImpressionOnMostViralCatalogInCategoryEvent(
+            element?.categoryName ?: "",
+            mostViralProduct?.categoryID ?: "",
+            mostViralProduct?.name ?: "",
+            mostViralProduct?.id ?: "",
+            UserSession(itemView.context).userId
         )
     }
 }

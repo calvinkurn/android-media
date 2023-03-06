@@ -65,7 +65,8 @@ class CatalogHomepageViewModel @Inject constructor(
                 CatalogLibraryConstant.APP_LINK_KATEGORI,
                 true,
                 isGrid = true,
-                4
+                columnCount = 4,
+                marginForTitle = Margin(0, 52, 0, 16),
             )
         listOfComponents.add(specialDataModel)
 
@@ -93,7 +94,9 @@ class CatalogHomepageViewModel @Inject constructor(
                 CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
                 CatalogLibraryConstant.CATALOG_HOME_HEADING_RELEVANT,
                 getRelevantVisitableList(data.catalogGetRelevant.catalogsList),
-                RecyclerView.HORIZONTAL
+                RecyclerView.HORIZONTAL,
+                marginForTitle = Margin(48, 16, 0, 16),
+                marginForRV = Margin(12, 0, 0, 0)
             )
         listOfComponents.add(relevantDataModel)
 

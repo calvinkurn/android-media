@@ -15,6 +15,42 @@ interface EventKeys {
         const val SELECT_CONTENT = "select_content"
         const val CATEGORY_ID = "categoryId"
         const val CATALOG_ID = "catalogId"
+
+        const val BUSINESS_UNIT_VALUE = "Physical Goods"
+        const val CURRENT_SITE_VALUE = "tokopediamarketplace"
+
+        const val INDEX = "index"
+        const val ITEM_BRAND = "item_brand"
+        const val ITEM_CATEGORY = "item_category"
+        const val ITEM_ID = "item_id"
+        const val ITEM_NAME = "item_name"
+        const val ITEM_VARIANT = "item_variant"
+        const val PRICE = "price"
+
+        const val CREATIVE_SLOT = "creative_slot"
+        const val CREATIVE_NAME = "creative_name"
+        const val DIMENSION61 = "dimension61"
+
+        const val CREATIVE_NAME_SPECIAL_VALUE = "kategori spesial buatmu"
+        const val CREATIVE_NAME_RELEVANT_VALUE = "cek katalognya produk incaranmu"
+        const val CREATIVE_NAME_CATEGORY_LIST_VALUE = ""
+
+        const val KEY_EVENT = "event"
+        const val KEY_EVENT_CATEGORY = "eventCategory"
+        const val KEY_EVENT_ACTION = "eventAction"
+        const val KEY_EVENT_LABEL = "eventLabel"
+        const val KEY_USER_ID = "userId"
+
+        const val KEY_ECOMMERCE = "ecommerce"
+        const val KEY_BUSINESS_UNIT = "businessUnit"
+        const val KEY_CURRENT_SITE = "currentSite"
+
+        const val PROMO_VIEW = "promoView"
+        const val PRODUCT_VIEW = "productView"
+        const val PRODUCT_CLICK = "productClick"
+        const val CURRENCY_CODE = "currencyCode"
+        const val IDR = "IDR"
+        const val IMPRESSIONS = "impressions"
     }
 }
 
