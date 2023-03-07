@@ -19,7 +19,7 @@
 
         <include
             android:id="@+id/layout_shimmer_balance_widget_1"
-            layout="@layout/layout_item_shimmer_balance_widget"
+            layout="@layout/layout_item_shimmer_balance_widget_atf2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@id/divider_balance"
@@ -41,7 +41,7 @@
 
         <include
             android:id="@+id/layout_shimmer_balance_widget_2"
-            layout="@layout/layout_item_shimmer_balance_widget"
+            layout="@layout/layout_item_shimmer_balance_widget_atf2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"

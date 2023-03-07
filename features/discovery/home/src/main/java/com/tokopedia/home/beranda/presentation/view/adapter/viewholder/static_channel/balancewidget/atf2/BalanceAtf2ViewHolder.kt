@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
 
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -10,6 +10,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BaseBalanceViewHolder
 import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2Binding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -20,7 +21,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by frenzel
  */
-class BalanceAtf2ViewHolder(v: View) : BaseBalanceViewHolder(v) {
+class BalanceAtf2ViewHolder(v: View) : BaseBalanceViewHolder<BalanceDrawerItemModel>(v) {
     companion object {
         val LAYOUT = R.layout.item_balance_widget_atf2
         private const val TITLE_HEADER_WEBSITE = "Tokopedia"
@@ -109,17 +110,17 @@ class BalanceAtf2ViewHolder(v: View) : BaseBalanceViewHolder(v) {
         val balanceText = element.balanceTitleTextAttribute?.text ?: ""
         binding?.homeContainerBalance?.homeTvBalance?.text = balanceText
 
-        // load reserve balance
-        val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
-        binding?.homeContainerBalance?.homeTvReserveBalance?.text = reserveBalance
-        setFontReserveBalance(element)
+        // load subtitle
+        val subtitle = element.balanceSubTitleTextAttribute?.text ?: ""
+        binding?.homeContainerBalance?.homeTvReserveBalance?.text = subtitle
+        setFontSubtitle(element)
 
-        handleClickSuccess(element, reserveBalance)
+        handleClickSuccess(element, subtitle)
         binding?.shimmerItemBalanceWidget?.root?.gone()
         binding?.homeContainerBalance?.homeContainerBalance?.show()
     }
 
-    private fun setFontReserveBalance(element: BalanceDrawerItemModel) {
+    private fun setFontSubtitle(element: BalanceDrawerItemModel) {
         if (
             (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus) ||
             element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED

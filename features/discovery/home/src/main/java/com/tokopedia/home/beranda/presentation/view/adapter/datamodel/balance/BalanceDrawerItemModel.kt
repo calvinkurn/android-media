@@ -1,5 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceVisitable
+
 // simple logic :
 // title : check tag title, then check text title
 // description : check tag description, then check text description
@@ -20,10 +23,9 @@ data class BalanceDrawerItemModel(
     val trackingAttribute: String = "",
     var alternateBalanceDrawerItem: List<BalanceDrawerItemModel>? = null,
     var balanceCoachmark: BalanceCoachmark? = null,
-    val reserveBalance: String = "",
     val headerTitle: String = "",
     val isSubscriberGoToPlus: Boolean = false
-) {
+) : BalanceVisitable {
     companion object {
         const val TYPE_REWARDS = 4
 
@@ -37,5 +39,17 @@ data class BalanceDrawerItemModel(
         const val STATE_SUCCESS = 0
         const val STATE_LOADING = 1
         const val STATE_ERROR = 2
+    }
+
+    override fun areContentsTheSame(newItem: BalanceVisitable): Boolean {
+        return newItem is BalanceDrawerItemModel && newItem.state == this.state
+    }
+
+    override fun areItemsTheSame(newItem: BalanceVisitable): Boolean {
+        return newItem == this
+    }
+
+    override fun type(typeFactory: BalanceTypeFactory): Int {
+        return typeFactory.type(this)
     }
 }
