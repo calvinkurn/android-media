@@ -731,6 +731,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
                 primaryCTAListener = {
                     holidayBottomSheet?.dismiss()
+                    isHolidayBottomSheetShown = false
                 },
                 secondaryCTAListener = {}
         )?.show()
@@ -747,6 +748,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     holidayBottomSheet?.dismiss()
                     showLoader()
                     setShopHolidaySchedule(startDate, endDate)
+                    isHolidayBottomSheetShown = false
                 },
                 secondaryCTAListener = {}
         )?.show()
