@@ -105,6 +105,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         private const val SHARE_LINK_OG_IMAGE =
             "https://images.tokopedia.net/img/coCfvv/2023/2/17/d6123177-827e-4843-be61-efbbeea5a658.jpg"
         private const val SHARE_LINK_PAGE_NAME = "DilayaniTokopedia"
+
+        private const val SHARE_LINK_LINKER_TYPE = "Dilayani-tokopedia"
+        private const val SHARE_LINK_PAGE_ID = "home"
     }
 
     @Inject
@@ -347,9 +350,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun onClickShareButton() {
         updateShareHomeData(
-            pageIdConstituents = listOf("home"),
+            pageIdConstituents = listOf(SHARE_LINK_PAGE_ID),
             isScreenShot = false,
-            linkerType = "Dilayani-tokopedia"
+            linkerType = SHARE_LINK_LINKER_TYPE
         )
 
         shareClicked(shareHome)
@@ -856,9 +859,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     override fun screenShotTaken() {
         updateShareHomeData(
-            pageIdConstituents = listOf("home"),
-            isScreenShot = true,
-            linkerType = "Dilayani-tokopedia"
+            pageIdConstituents = listOf(SHARE_LINK_PAGE_ID),
+            isScreenShot = false,
+            linkerType = SHARE_LINK_LINKER_TYPE
         )
 
         showUniversalShareBottomSheet(shareHome)

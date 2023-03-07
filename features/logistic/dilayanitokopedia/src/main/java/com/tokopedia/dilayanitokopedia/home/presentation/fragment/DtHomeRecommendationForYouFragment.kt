@@ -72,9 +72,9 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         return inflater.inflate(R.layout.dt_home_recommendation_for_you_fragment, container, false)
     }
 
-    override fun onAttach(context: Context) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         initInjector()
-        super.onAttach(context)
     }
 
     private fun initInjector() {
