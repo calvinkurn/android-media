@@ -55,35 +55,6 @@ data class BroadcastScheduleConfigUiModel(
 data class BeautificationConfigUiModel(
     val license: String,
     val model: String,
-    val customFace: CustomFace,
-    val presets: List<Preset>,
-) : Parcelable {
-
-    @Parcelize
-    data class CustomFace(
-        val assetAndroid: String,
-        val menu: List<Menu>,
-    ) : Parcelable {
-
-        @Parcelize
-        data class Menu(
-            val name: String,
-            val minValue: Double,
-            val maxValue: Double,
-            val defaultValue: Double,
-            val value: Double,
-        ) : Parcelable
-    }
-
-    @Parcelize
-    data class Preset(
-        val name: String,
-        val active: Boolean,
-        val minValue: Double,
-        val maxValue: Double,
-        val defaultValue: Double,
-        val value: Double,
-        val urlIcon: String,
-        val assetLink: String,
-    ) : Parcelable
-}
+    val faceFilters: List<FaceFilterUiModel>,
+    val presets: List<FaceFilterUiModel>,
+) : Parcelable

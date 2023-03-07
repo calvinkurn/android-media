@@ -153,28 +153,30 @@ class PlayBroadcastUiMapper @Inject constructor(
             beautificationConfig = BeautificationConfigUiModel(
                 license = config.beautificationConfig.license,
                 model = config.beautificationConfig.model,
-                customFace = BeautificationConfigUiModel.CustomFace(
-                    assetAndroid = config.beautificationConfig.customFace.assetAndroid,
-                    menu = config.beautificationConfig.customFace.menu.map { menu ->
-                        BeautificationConfigUiModel.CustomFace.Menu(
-                            name = menu.name,
-                            minValue = menu.minValue,
-                            maxValue = menu.maxValue,
-                            defaultValue = menu.defaultValue,
-                            value = menu.value,
-                        )
-                    }
-                ),
+                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
+                    FaceFilterUiModel(
+                        name = menu.name,
+                        minValue = menu.minValue,
+                        maxValue = menu.maxValue,
+                        defaultValue = menu.defaultValue,
+                        value = menu.value,
+                        iconUrl = "", /** TODO: handle this */
+                        assetLink = config.beautificationConfig.customFace.assetAndroid,
+                        isSelected = false,
+                        assetStatus = FaceFilterUiModel.AssetStatus.Available, /** TODO: handle this */
+                    )
+                },
                 presets = config.beautificationConfig.presets.map { preset ->
-                    BeautificationConfigUiModel.Preset(
+                    FaceFilterUiModel(
                         name = preset.name,
-                        active = preset.active,
                         minValue = preset.minValue,
                         maxValue = preset.maxValue,
                         defaultValue = preset.defaultValue,
                         value = preset.value,
-                        urlIcon = preset.urlIcon,
+                        iconUrl = preset.urlIcon,
                         assetLink = preset.assetLink,
+                        isSelected = false,
+                        assetStatus = FaceFilterUiModel.AssetStatus.Available, /** TODO: handle this */
                     )
                 }
             )
