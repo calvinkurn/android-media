@@ -45,7 +45,7 @@ import javax.inject.Inject
 class FollowerListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val userProfileTracker: UserProfileTracker,
-    private val router: Router,
+    private val router: Router
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserFollowListener {
 
     companion object {
@@ -59,12 +59,12 @@ class FollowerListingFragment @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle,
+            bundle: Bundle
         ): FollowerListingFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerListingFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                FollowerListingFragment::class.java.name,
+                FollowerListingFragment::class.java.name
             ).apply {
                 arguments = bundle
             } as FollowerListingFragment
@@ -88,14 +88,14 @@ class FollowerListingFragment @Inject constructor(
         ProfileFollowersAdapter(
             viewModel,
             callback = this,
-            followListener = this,
+            followListener = this
         )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
         isLoggedIn = userSessionInterface.isLoggedIn
         return inflater.inflate(R.layout.up_fragment_psger_item, container, false)
@@ -158,14 +158,14 @@ class FollowerListingFragment @Inject constructor(
                                 updateFollowCount(it.data.total)
                             }
 
-                            mAdapter.onSuccess(it.data.followers, it.nextCursor)
+                            mAdapter.onSuccess(it.data.followers, it.data.nextCursor)
                         }
                         is ErrorMessage -> {
                             mAdapter.onError()
                         }
                     }
                 }
-            },
+            }
         )
 
     private fun addFollowersErrorObserver() =
@@ -225,7 +225,7 @@ class FollowerListingFragment @Inject constructor(
                         }
                     }
                 }
-            },
+            }
         )
 
     private fun observeFollowResult() {
@@ -272,10 +272,11 @@ class FollowerListingFragment @Inject constructor(
             data?.getStringExtra(UserProfileFragment.EXTRA_FOLLOW_UNFOLLOW_STATUS)?.let {
                 if (position != null && position != -1) {
                     if (position != -1) {
-                        if (it == UserProfileFragment.EXTRA_VALUE_IS_FOLLOWED)
+                        if (it == UserProfileFragment.EXTRA_VALUE_IS_FOLLOWED) {
                             mAdapter.updateFollowUnfollow(position, true)
-                        else
+                        } else {
                             mAdapter.updateFollowUnfollow(position, false)
+                        }
                     }
                 }
             }
@@ -292,10 +293,11 @@ class FollowerListingFragment @Inject constructor(
         val textDescription = view?.findViewById<TextView>(R.id.text_error_empty_desc)
 
         val currentUserId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID)
-        if (currentUserId == userSessionInterface.userId)
+        if (currentUserId == userSessionInterface.userId) {
             textTitle?.text = getString(com.tokopedia.people.R.string.up_empty_page_my_follower_title)
-        else
+        } else {
             textTitle?.text = getString(com.tokopedia.people.R.string.up_empty_page_follower_title)
+        }
         textDescription?.showWithCondition(currentUserId == userSessionInterface.userId)
         textDescription?.text = getString(com.tokopedia.people.R.string.up_empty_page_my_follower_desc)
     }
@@ -323,13 +325,13 @@ class FollowerListingFragment @Inject constructor(
         userProfileTracker.clickUserFollowers(model.id, model.isMySelf)
         val intent = router.getIntent(
             requireContext(),
-            model.appLink,
+            model.appLink
         ).apply {
             putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
         }
         startActivityForResult(
             intent,
-            UserProfileFragment.REQUEST_CODE_USER_PROFILE,
+            UserProfileFragment.REQUEST_CODE_USER_PROFILE
         )
     }
 
@@ -399,8 +401,9 @@ class FollowerListingFragment @Inject constructor(
     }
 
     private fun isInternetAvailable(isFollowed: Boolean): Boolean {
-        return if (requireContext().isInternetAvailable()) true
-        else {
+        return if (requireContext().isInternetAvailable()) {
+            true
+        } else {
             val errorMessage = if (isFollowed) {
                 getString(com.tokopedia.people.R.string.up_error_unfollow)
             } else {
