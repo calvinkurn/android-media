@@ -3,8 +3,8 @@ package com.tokopedia.product.detail.view.viewholder
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -157,12 +157,14 @@ class ShipmentViewHolder(
         val boBadge = rates.boBadge
         val freeOngkirImageUrl = boBadge.imageUrl
         pdpShipmentIcon.showIfWithBlock(freeOngkirImageUrl.isNotEmpty()) {
-            setImageUrl(freeOngkirImageUrl)
 
-            if (boBadge.isUsingPadding) {
-                updatePadding(right = SHIPMENT_ICON_PADDING.toPx())
+            if (!boBadge.isUsingPadding) {
+                updateLayoutParams<MarginLayoutParams> {
+                    this.marginEnd = 0
+                }
             }
 
+            setImageUrl(freeOngkirImageUrl)
             val imageHeight = boBadge.imageHeight
             if (imageHeight > 0) {
                 updateLayoutParams {

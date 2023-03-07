@@ -42,12 +42,12 @@
         android:id="@+id/pdp_shipment_icon"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
+        android:layout_marginEnd="16dp"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/pdp_shipment_title"
         app:unify_image_corner_radius="0"
-        tools:paddingEnd="16dp"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -94,13 +94,6 @@
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_tc_label"
         app:layout_constraintLeft_toRightOf="@id/pdp_shipment_tc_icon"
         app:typographyType="display_3" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/pdp_shipment_barrier_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="pdp_shipment_icon, pdp_shipment_tc_label" />
 
     <View
         android:id="@+id/pdp_shipment_line"
@@ -226,13 +219,6 @@
         app:typographyType="display_3"
         tools:text="Tidak ada kurir yang mendukung pengiriman barang ini ke alamatmu. Caring barang lain atau Ganti Alamat." />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/pdp_shipment_group_tc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="pdp_shipment_tc_label, pdp_shipment_tc_icon, pdp_shipment_tc_value"
-        tools:visibility="gone" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/pdp_shipment_guidelines_start"
         android:layout_width="wrap_content"
@@ -246,5 +232,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_end="16dp" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/pdp_shipment_group_tc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="pdp_shipment_tc_label, pdp_shipment_tc_icon, pdp_shipment_tc_value"
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/pdp_shipment_barrier_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="pdp_shipment_icon, pdp_shipment_tc_label" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
