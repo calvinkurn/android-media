@@ -10,30 +10,25 @@
 
 <!--toc-->
 ## Release Notes
-<details>
-    <summary>17 Feb (MA-3.210)</summary>
-    <code><a href="https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2146763827">OCC - GoPayLater Cicil 0% Promo</a></code>
-</details>
+<!--start expand:17 Feb (MA-3.210)-->
+[`OCC - GoPayLater Cicil 0% Promo`](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2146763827)
+<!--end expand-->
 
-<details>
-    <summary>6 Feb (MA-3.208)</summary>
-    <code><a href="https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2109181348">OCC - Dynamic Platform Fee</a></code>
-</details>
+<!--start expand:6 Feb (MA-3.208)-->
+[`OCC - Dynamic Platform Fee`](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2109181348)
+<!--end expand-->
 
-<details>
-    <summary>9 Jan (MA-3.204)</summary>
-    <code><a href="https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2104460915">Whitelabel Instan</a></code>
-</details>
+<!--start expand:9 Jan (MA-3.204)-->
+[`Whitelabel Instan`](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2104460915)
+<!--end expand-->
 
-<details>
-    <summary>11 Nov (MA-3.201)</summary>
-    <code><a href="https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2065990815">OCC - Epharmacy</a></code>
-</details>
+<!--start expand:11 Nov (MA-3.201)-->
+[`OCC - Epharmacy`](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2065990815)
+<!--end expand-->
 
-<details>
-    <summary>3 Oct (MA-3.195)</summary>
-    <code><a href="https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2003501967/Bebas+Ongkir+Unstack#OSP">Bebas Ongkir Unstack | OSP</a></code>
-</details>
+<!--start expand:3 Oct (MA-3.195)-->
+[`Bebas Ongkir Unstack | OSP`](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2003501967/Bebas+Ongkir+Unstack#OSP)
+<!--end expand-->
 
 ## Overview
 ![OCC page/OSP](res/overview_occ.png)
