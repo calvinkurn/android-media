@@ -230,7 +230,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _cover = getCurrentSetupDataStore().getSelectedCoverAsFlow()
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
-    private val _faceFilter = MutableStateFlow<List<FaceFilterUiModel>>(emptyList())
+    private val _beautificationConfig = MutableStateFlow(BeautificationConfigUiModel.Empty)
 
     var warningInfoType: WarningType = WarningType.UNKNOWN
     val tncList = mutableListOf<TermsAndConditionUiModel>()
@@ -267,7 +267,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
     val selectedFaceFilter: FaceFilterUiModel?
-        get() = _faceFilter.value.firstOrNull { it.isSelected }
+        get() = _beautificationConfig.value.selectedFaceFilter
+
+    val selectedPreset: FaceFilterUiModel?
+        get() = _beautificationConfig.value.selectedPreset
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -321,10 +324,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _title,
         _cover,
         _productSectionList,
-        _schedule
-    ) { menuList, title, cover, productSectionList, schedule ->
+        _schedule,
+        _beautificationConfig,
+    ) { menuList, title, cover, productSectionList, schedule, beautificationConfig, ->
         menuList.map {
-
             when (it.menu) {
                 DynamicPreparationMenu.Menu.Title -> {
                     it.copy(isChecked = isTitleMenuChecked)
@@ -349,8 +352,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     )
                 }
                 DynamicPreparationMenu.Menu.FaceFilter -> {
-                    /** TODO: handle isChecked */
                     it.copy(
+                        isChecked = beautificationConfig.isBeautificationApplied,
                         isEnabled = isTitleMenuChecked,
                     )
                 }
@@ -379,7 +382,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _menuListUiState,
         _title,
         _cover,
-        _faceFilter,
+        _beautificationConfig,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -397,7 +400,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         menuListUiState,
         title,
         cover,
-        faceFilter, ->
+        beautificationConfig, ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -416,7 +419,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             menuList = menuListUiState,
             title = title,
             cover = cover,
-            faceFilter = faceFilter,
+            beautificationConfig = beautificationConfig,
         )
     }.stateIn(
         viewModelScope,
@@ -457,21 +460,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _observableChatList.value = mutableListOf()
 
         setupPreparationMenu()
-
-        /** TODO: for mocking purpose, will delete this later */
-        _faceFilter.update {
-            listOf(
-                FaceFilterUiModel(name = "Tidak ada", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Halus", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tirus", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Cerah", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tak tau lah", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tak tau lah 2", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tak tau lah 3", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tak tau lah 4", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-                FaceFilterUiModel(name = "Tak tau lah 5", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
-            )
-        }
     }
 
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
@@ -545,8 +533,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             /** Beautification */
             is PlayBroadcastAction.FaceFilterBottomSheetShown -> handleFaceFilterBottomSheetShown(event.bottomSheetHeight)
             is PlayBroadcastAction.FaceFilterBottomSheetDismissed -> handleFaceFilterBottomSheetDismissed()
+
             is PlayBroadcastAction.SelectFaceFilterOption -> handleSelectFaceFilterOption(event.faceFilter)
             is PlayBroadcastAction.ChangeFaceFilterValue -> handleChangeFaceFilterValue(event.newValue)
+
+            is PlayBroadcastAction.SelectPresetOption -> handleSelectPresetOption(event.preset)
+            is PlayBroadcastAction.ChangePresetValue -> handleChangePresetValue(event.newValue)
         }
     }
 
@@ -591,6 +583,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val currConfigInfo = _configInfo.value
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
+            setBeautificationConfig(configUiModel.beautificationConfig)
             _configInfo.value = configUiModel
 
             if (!isAccountEligible(configUiModel, selectedAccount)) {
@@ -1676,22 +1669,59 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleSelectFaceFilterOption(faceFilter: FaceFilterUiModel) {
         viewModelScope.launch {
-            _faceFilter.update { faceFilters ->
-                faceFilters.map {
-                    it.copy(isSelected = it.name == faceFilter.name)
-                }
+            _beautificationConfig.update {
+                it.copy(
+                    faceFilters = it.faceFilters.map { item ->
+                        item.copy(isSelected = item.name == faceFilter.name)
+                    }
+                )
             }
         }
     }
 
     private fun handleChangeFaceFilterValue(newValue: Int) {
         viewModelScope.launch {
-            _faceFilter.update { faceFilters ->
-                faceFilters.map {
-                    if(it.isSelected) it.copy(value = (newValue / 100.toDouble()))
-                    else it
-                }
+            _beautificationConfig.update {
+                it.copy(
+                    faceFilters = it.faceFilters.map { faceFilter ->
+                        if(faceFilter.isSelected) faceFilter.copy(value = (newValue / 100.toDouble()))
+                        else faceFilter
+                    }
+                )
             }
+        }
+    }
+
+    private fun handleSelectPresetOption(preset: FaceFilterUiModel) {
+        viewModelScope.launch {
+            _beautificationConfig.update {
+                it.copy(
+                    presets = it.presets.map { item ->
+                        item.copy(isSelected = item.name == preset.name)
+                    }
+                )
+            }
+        }
+    }
+
+    private fun handleChangePresetValue(newValue: Int) {
+        viewModelScope.launch {
+            _beautificationConfig.update {
+                it.copy(
+                    presets = it.presets.map { preset ->
+                        if(preset.isSelected) preset.copy(value = (newValue / 100.toDouble()))
+                        else preset
+                    }
+                )
+            }
+        }
+    }
+
+    private fun setBeautificationConfig(beautificationConfig: BeautificationConfigUiModel) {
+        _beautificationConfig.value = beautificationConfig
+
+        if (!beautificationConfig.isUnknown) {
+            addPreparationMenu(DynamicPreparationMenu.createFaceFilter(isMandatory = false))
         }
     }
 
@@ -1922,16 +1952,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun setupPreparationMenu() {
         viewModelScope.launchCatchError(block = {
-            val menuList = listOf(
+            addPreparationMenu(
                 DynamicPreparationMenu.createTitle(isMandatory = true),
                 DynamicPreparationMenu.createCover(isMandatory = false),
                 DynamicPreparationMenu.createProduct(isMandatory = false),
                 DynamicPreparationMenu.createSchedule(isMandatory = false),
-                DynamicPreparationMenu.createFaceFilter(isMandatory = false),
             )
-
-            _menuList.update { menuList }
         }) { }
+    }
+
+    private fun addPreparationMenu(vararg newMenuList: DynamicPreparationMenu) {
+        _menuList.update {
+            _menuList.value.toMutableList().apply {
+                addAll(newMenuList)
+            }
+        }
     }
 
     companion object {

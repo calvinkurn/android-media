@@ -20,16 +20,21 @@ class FaceFilterPagerAdapter(
     override fun getItemCount(): Int = pageCount
 
     override fun createFragment(position: Int): Fragment {
-        /** TODO: handle this */
         return when(position) {
-            0 -> {
-                PlayBroMakeupTabFragment.getFragment(
+            PlayBroMakeupTabFragment.Companion.Type.FaceFilter.value -> {
+                PlayBroMakeupTabFragment.getFaceFilterFragment(
+                    fragmentManager,
+                    classLoader
+                )
+            }
+            PlayBroMakeupTabFragment.Companion.Type.Preset.value -> {
+                PlayBroMakeupTabFragment.getPresetFragment(
                     fragmentManager,
                     classLoader
                 )
             }
             else -> {
-                PlayBroMakeupTabFragment.getFragment(
+                PlayBroMakeupTabFragment.getUnknownFragment(
                     fragmentManager,
                     classLoader
                 )

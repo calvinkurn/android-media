@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroMakeupTabBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.itemdecoration.FaceFilterOptionItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.FaceFilterOptionViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.FaceFilterOptionAdapter
@@ -42,10 +43,17 @@ class PlayBroMakeupTabFragment @Inject constructor(
     private val adapter by lazyThreadSafetyNone {
         FaceFilterOptionAdapter(object : FaceFilterOptionViewHolder.Listener {
             override fun onClick(item: FaceFilterUiModel) {
-                viewModel.submitAction(PlayBroadcastAction.SelectFaceFilterOption(item))
+                when(type) {
+                    Type.FaceFilter -> viewModel.submitAction(PlayBroadcastAction.SelectFaceFilterOption(item))
+                    Type.Preset -> viewModel.submitAction(PlayBroadcastAction.SelectPresetOption(item))
+                    else -> {}
+                }
             }
         })
     }
+
+    private val type: Type
+        get() = Type.getByValue(arguments?.getInt(KEY_TYPE, Type.Unknown.value) ?: Type.Unknown.value)
 
     override fun getScreenName(): String = TAG
 
@@ -78,32 +86,77 @@ class PlayBroMakeupTabFragment @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                renderFaceFilterOptions(it.prevValue?.faceFilter, it.value.faceFilter)
+                renderBeautificationOption(it.prevValue?.beautificationConfig, it.value.beautificationConfig)
             }
         }
     }
 
-    private fun renderFaceFilterOptions(
-        prev: List<FaceFilterUiModel>?,
-        curr: List<FaceFilterUiModel>,
+    private fun renderBeautificationOption(
+        prev: BeautificationConfigUiModel?,
+        curr: BeautificationConfigUiModel,
     ) {
         if(prev == curr) return
 
-        adapter.setItemsAndAnimateChanges(curr)
+        when(type) {
+            Type.FaceFilter -> adapter.setItemsAndAnimateChanges(curr.faceFilters)
+            Type.Preset -> adapter.setItemsAndAnimateChanges(curr.presets)
+            else -> {}
+        }
     }
 
     companion object {
         private const val TAG = "PlayBroMakeupTabFragment"
+        private const val KEY_TYPE = "type"
 
-        fun getFragment(
+        fun getUnknownFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
+        ): PlayBroMakeupTabFragment{
+            return getFragment(fragmentManager, classLoader, Type.Unknown)
+        }
+
+        fun getFaceFilterFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader
+        ): PlayBroMakeupTabFragment{
+            return getFragment(fragmentManager, classLoader, Type.FaceFilter)
+        }
+
+        fun getPresetFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader
+        ): PlayBroMakeupTabFragment{
+            return getFragment(fragmentManager, classLoader, Type.Preset)
+        }
+
+        private fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            type: Type,
         ): PlayBroMakeupTabFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayBroMakeupTabFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 PlayBroMakeupTabFragment::class.java.name
-            ) as PlayBroMakeupTabFragment
+            ).apply {
+                arguments = Bundle().apply {
+                    putInt(KEY_TYPE, type.value)
+                }
+            } as PlayBroMakeupTabFragment
+        }
+
+        enum class Type(val value: Int) {
+            Unknown(-1),
+            FaceFilter(0),
+            Preset(1);
+
+            companion object {
+                fun getByValue(value: Int): Type {
+                    return values().firstOrNull {
+                        it.value == value
+                    } ?: Unknown
+                }
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.ui.model.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
@@ -42,7 +43,7 @@ data class PlayBroadcastUiState(
     val menuList: List<DynamicPreparationMenu>,
     val title: PlayTitleUiModel,
     val cover: PlayCoverUiModel,
-    val faceFilter: List<FaceFilterUiModel>,
+    val beautificationConfig: BeautificationConfigUiModel,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -71,7 +72,7 @@ data class PlayBroadcastUiState(
                 menuList = emptyList(),
                 title = PlayTitleUiModel.NoTitle,
                 cover = PlayCoverUiModel.empty(),
-                faceFilter = emptyList(),
+                beautificationConfig = BeautificationConfigUiModel.Empty,
             )
     }
 }

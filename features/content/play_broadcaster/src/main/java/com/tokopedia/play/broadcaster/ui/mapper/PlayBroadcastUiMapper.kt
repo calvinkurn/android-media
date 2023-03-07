@@ -153,32 +153,59 @@ class PlayBroadcastUiMapper @Inject constructor(
             beautificationConfig = BeautificationConfigUiModel(
                 license = config.beautificationConfig.license,
                 model = config.beautificationConfig.model,
-                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
+                /** TODO: mocking purpose */
+                faceFilters = List(5) {
                     FaceFilterUiModel(
-                        name = menu.name,
-                        minValue = menu.minValue,
-                        maxValue = menu.maxValue,
-                        defaultValue = menu.defaultValue,
-                        value = menu.value,
-                        iconUrl = "", /** TODO: handle this */
-                        assetLink = config.beautificationConfig.customFace.assetAndroid,
+                        name = "Custom Face $it",
+                        minValue = it * 0.1,
+                        maxValue = it * 0.1,
+                        defaultValue = it * 0.1,
+                        value = it * 0.1,
+                        iconUrl = "",
+                        assetLink = "asset link $it",
                         isSelected = false,
-                        assetStatus = FaceFilterUiModel.AssetStatus.Available, /** TODO: handle this */
+                        assetStatus = FaceFilterUiModel.AssetStatus.Available,
                     )
                 },
-                presets = config.beautificationConfig.presets.map { preset ->
+                presets = List(5) {
                     FaceFilterUiModel(
-                        name = preset.name,
-                        minValue = preset.minValue,
-                        maxValue = preset.maxValue,
-                        defaultValue = preset.defaultValue,
-                        value = preset.value,
-                        iconUrl = preset.urlIcon,
-                        assetLink = preset.assetLink,
+                        name = "Preset $it",
+                        minValue = it * 0.1,
+                        maxValue = it * 0.1,
+                        defaultValue = it * 0.1,
+                        value = it * 0.1,
+                        iconUrl = "",
+                        assetLink = "asset link $it",
                         isSelected = false,
-                        assetStatus = FaceFilterUiModel.AssetStatus.Available, /** TODO: handle this */
+                        assetStatus = FaceFilterUiModel.AssetStatus.Available,
                     )
                 }
+//                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
+//                    FaceFilterUiModel(
+//                        name = menu.name,
+//                        minValue = menu.minValue,
+//                        maxValue = menu.maxValue,
+//                        defaultValue = menu.defaultValue,
+//                        value = menu.value,
+//                        iconUrl = "", /** TODO: handle this */
+//                        assetLink = config.beautificationConfig.customFace.assetAndroid,
+//                        isSelected = false,
+//                        assetStatus = FaceFilterUiModel.AssetStatus.Available, /** TODO: handle this */
+//                    )
+//                },
+//                presets = config.beautificationConfig.presets.map { preset ->
+//                    FaceFilterUiModel(
+//                        name = preset.name,
+//                        minValue = preset.minValue,
+//                        maxValue = preset.maxValue,
+//                        defaultValue = preset.defaultValue,
+//                        value = preset.value,
+//                        iconUrl = preset.urlIcon,
+//                        assetLink = preset.assetLink,
+//                        isSelected = false,
+//                        assetStatus = FaceFilterUiModel.AssetStatus.Available, /** TODO: handle this */
+//                    )
+//                }
             )
         )
     }

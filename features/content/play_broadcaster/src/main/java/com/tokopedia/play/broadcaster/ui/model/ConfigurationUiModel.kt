@@ -57,4 +57,30 @@ data class BeautificationConfigUiModel(
     val model: String,
     val faceFilters: List<FaceFilterUiModel>,
     val presets: List<FaceFilterUiModel>,
-) : Parcelable
+) : Parcelable {
+
+    val isUnknown: Boolean
+        get() = this == Empty
+
+    val isBeautificationApplied: Boolean
+        get() = faceFilters.any { it.isChecked } || presets.any { it.isChecked }
+
+    val isBeautificationOptionSelected: Boolean
+        get() = selectedFaceFilter != null || presets != null
+
+    val selectedFaceFilter: FaceFilterUiModel?
+        get() = faceFilters.firstOrNull { it.isSelected }
+
+    val selectedPreset: FaceFilterUiModel?
+        get() = presets.firstOrNull { it.isSelected }
+
+    companion object {
+        val Empty: BeautificationConfigUiModel
+            get() = BeautificationConfigUiModel(
+                license = "",
+                model = "",
+                faceFilters = emptyList(),
+                presets = emptyList(),
+            )
+    }
+}
