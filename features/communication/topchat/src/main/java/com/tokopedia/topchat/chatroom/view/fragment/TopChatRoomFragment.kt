@@ -815,7 +815,7 @@ open class TopChatRoomFragment :
             getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
     }
 
-    fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
+    private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
         try {
             if (::viewModel.isInitialized) {
                 val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
