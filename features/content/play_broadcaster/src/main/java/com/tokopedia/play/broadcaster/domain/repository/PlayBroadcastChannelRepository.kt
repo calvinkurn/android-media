@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.play.broadcaster.ui.model.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
@@ -28,4 +29,10 @@ interface PlayBroadcastChannelRepository {
     ): BroadcastScheduleUiModel
 
     fun canSchedule(): Boolean
+
+    suspend fun saveBeautificationConfig(
+        authorId: String,
+        authorType: String,
+        beautificationConfig: BeautificationConfigUiModel,
+    ): Boolean
 }

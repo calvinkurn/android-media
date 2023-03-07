@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.ui.model
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.domain.model.Config
 import java.util.*
 
 /**
@@ -73,6 +74,35 @@ data class BeautificationConfigUiModel(
 
     val selectedPreset: FaceFilterUiModel?
         get() = presets.firstOrNull { it.isSelected }
+
+    fun convertToDTO() = Config.BeautificationConfig(
+        license = license,
+        model = model,
+        customFace = Config.BeautificationConfig.CustomFace(
+            assetAndroid = faceFilters.firstOrNull()?.assetLink.orEmpty(),
+            menu = faceFilters.map { faceFilter ->
+                Config.BeautificationConfig.CustomFace.Menu(
+                    name = faceFilter.name,
+                    minValue = faceFilter.minValue,
+                    maxValue = faceFilter.maxValue,
+                    defaultValue = faceFilter.defaultValue,
+                    value = faceFilter.value
+                )
+            }
+        ),
+        presets = presets.map { preset ->
+            Config.BeautificationConfig.Preset(
+                name = preset.name,
+                active = preset.isSelected,
+                minValue = preset.minValue,
+                maxValue = preset.maxValue,
+                defaultValue = preset.defaultValue,
+                value = preset.value,
+                urlIcon = preset.iconUrl,
+                assetLink = preset.assetLink,
+            )
+        }
+    )
 
     companion object {
         val Empty: BeautificationConfigUiModel

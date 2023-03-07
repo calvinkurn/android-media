@@ -10,8 +10,10 @@ import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautificationConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.config.GetBroadcastingConfigurationUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
+import com.tokopedia.play.broadcaster.ui.model.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
@@ -36,6 +38,7 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private val mapper: PlayBroadcastMapper,
     private val dispatchers: CoroutineDispatchers,
     private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
+    private val setBeautificationConfigUseCase: SetBeautificationConfigUseCase,
 ) : PlayBroadcastChannelRepository {
 
     override suspend fun getBroadcastingConfig(
@@ -123,6 +126,18 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
 
     override fun canSchedule(): Boolean {
         return remoteConfig.getBoolean(KEY_ENABLE_SCHEDULING, true)
+    }
+
+    override suspend fun saveBeautificationConfig(
+        authorId: String,
+        authorType: String,
+        beautificationConfig: BeautificationConfigUiModel
+    ): Boolean = withContext(dispatchers.io) {
+        setBeautificationConfigUseCase.execute(
+            authorId = authorId,
+            authorType = authorType,
+            beautificationConfig = beautificationConfig
+        ).wrapper.success
     }
 
     private suspend fun setSchedule(
