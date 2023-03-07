@@ -134,7 +134,7 @@ interface ICartListView : CustomerView {
         productModel: Any
     )
 
-    fun getAdsId(): String?
+    fun getAdsId(): String
 
     fun goToLite(url: String)
 

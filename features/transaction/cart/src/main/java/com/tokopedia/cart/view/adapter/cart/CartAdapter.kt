@@ -334,7 +334,7 @@ class CartAdapter constructor(
             }
             CartShopViewHolder.LAYOUT -> {
                 val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return CartShopViewHolder(binding, actionListener, cartItemActionListener, compositeSubscription, plusCoachMark)
+                return CartShopViewHolder(binding, actionListener, compositeSubscription, plusCoachMark)
             }
             CartItemViewHolder.TYPE_VIEW_ITEM_CART -> {
                 val binding = ItemCartProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)

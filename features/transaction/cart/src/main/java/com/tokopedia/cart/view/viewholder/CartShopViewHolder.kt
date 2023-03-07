@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemShopBinding
 import com.tokopedia.cart.view.ActionListener
-import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
@@ -17,7 +16,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -36,13 +34,9 @@ import kotlin.math.min
 class CartShopViewHolder(
     private val binding: ItemShopBinding,
     private val actionListener: ActionListener,
-    private val cartItemAdapterListener: CartItemAdapter.ActionListener,
     private val compositeSubscription: CompositeSubscription,
     private var plusCoachmark: CoachMark2?
 ) : RecyclerView.ViewHolder(binding.root) {
-
-    // variable to hold identifier
-    private var cartString: String = ""
 
     private val localCacheHandler: LocalCacheHandler by lazy {
         LocalCacheHandler(itemView.context, KEY_ONBOARDING_ICON_PIN)
@@ -58,7 +52,6 @@ class CartShopViewHolder(
         renderIconPin(cartShopHolderData)
         renderShopEnabler(cartShopHolderData)
         renderCartItems(cartShopHolderData)
-        renderAccordion(cartShopHolderData)
         renderCheckBox(cartShopHolderData)
         renderFulfillment(cartShopHolderData)
         renderPreOrder(cartShopHolderData)
@@ -66,9 +59,7 @@ class CartShopViewHolder(
         renderFreeShipping(cartShopHolderData)
         renderEstimatedTimeArrival(cartShopHolderData)
         renderMaximumWeight(cartShopHolderData)
-        renderCartShopGroupTicker(cartShopHolderData)
         renderAddOnInfo(cartShopHolderData)
-        cartString = cartShopHolderData.cartString
     }
 
     private fun renderIconPin(cartShopHolderData: CartShopHolderData) {
@@ -185,11 +176,6 @@ class CartShopViewHolder(
             }
             binding.rvCartItem.requestLayout()
         }
-    }
-
-    private fun renderAccordion(cartShopHolderData: CartShopHolderData) {
-        binding.layoutAccordion.gone()
-        binding.separatorAccordion.gone()
     }
 
     private fun renderCheckBox(cartShopHolderData: CartShopHolderData) {
@@ -406,38 +392,6 @@ class CartShopViewHolder(
         }
     }
 
-    private fun scrollToSelectedExpandedProduct(productIndex: Int) {
-        val position = adapterPosition
-        if (position != RecyclerView.NO_POSITION) {
-            binding.rvCartItem.post {
-                if (binding.tickerWarning.isVisible) {
-                    binding.tickerWarning.post {
-                        val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
-                            ?: 0
-                        val tickerHeight = binding.tickerWarning.height
-                        val totalOffset = calculateScrollOffset(productIndex, tickerHeight + paddingOffset)
-                        actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
-                    }
-                } else {
-                    val totalOffset = calculateScrollOffset(productIndex, 0)
-                    actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
-                }
-            }
-        }
-    }
-
-    private fun calculateScrollOffset(productIndex: Int, tickerHeight: Int): Int {
-        val child: View? = binding.rvCartItem.getChildAt(0)
-        val productHeight = child?.height ?: 0
-        val offset = productIndex * productHeight
-        val paddingOffset = SCROLL_PADDING_OFFSET.dpToPx(itemView.resources.displayMetrics)
-        return offset + paddingOffset + tickerHeight
-    }
-
-    private fun renderCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
-        binding.layoutCartShopTicker.gone()
-    }
-
     companion object {
         val LAYOUT = R.layout.item_shop
 
@@ -449,9 +403,5 @@ class CartShopViewHolder(
 
         private const val ITEM_DECORATION_PADDING_LEFT = 48
         private const val SHOP_HEADER_PADDING_10 = 10
-        private const val SCROLL_PADDING_OFFSET = 12
-
-        private const val CHEVRON_ROTATION_0 = 0f
-        private const val CHEVRON_ROTATION_180 = 180f
     }
 }

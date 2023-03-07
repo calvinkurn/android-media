@@ -4210,7 +4210,7 @@ class CartFragment :
         cartPageAnalytics.eventViewTickerProductContainTobacco()
     }
 
-    override fun getAdsId(): String? {
+    override fun getAdsId(): String {
         return DeviceInfo.getAdsId(requireContext())
     }
 
