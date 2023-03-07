@@ -426,6 +426,7 @@ class DigitalPDPDataPlanFragment :
                     hideGlobalErrorState()
                     hideEmptyState()
                     onShimmeringDenomFull()
+                    onShimmeringOmniWidget()
                     onLoadingAndFailMCCM()
                 }
             }
@@ -492,12 +493,17 @@ class DigitalPDPDataPlanFragment :
                 }?.let { collection ->
                     renderOmniChannel(collection.value)
                 }
+            } else {
+                binding?.rechargePdpPaketDataOmniWidget?.hide()
             }
         }
     }
 
     private fun renderOmniChannel(applink: String) {
-        binding?.rechargePdpPaketDataOmniWidget?.renderOmniWidget(this)
+        binding?.rechargePdpPaketDataOmniWidget?.run {
+            renderOmniWidget(this@DigitalPDPDataPlanFragment, applink)
+            show()
+        }
     }
 
     private fun getCatalogProductInputMultiTab(
@@ -769,6 +775,15 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
+    private fun onShimmeringOmniWidget() {
+        binding?.let {
+            it.rechargePdpPaketDataOmniWidget.run {
+                show()
+                renderShimmering()
+            }
+        }
+    }
+
     private fun onClearSelectedDenomFull(position: Int) {
         binding?.let {
             it.rechargePdpPaketDataDenomFullWidget.clearSelectedProduct(position)
@@ -938,6 +953,7 @@ class DigitalPDPDataPlanFragment :
                 rechargePdpPaketDataPromoWidget.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
+                rechargePdpPaketDataOmniWidget.hide()
                 globalErrorPaketData.hide()
                 rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
             }

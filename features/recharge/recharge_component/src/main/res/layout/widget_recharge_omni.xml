@@ -6,6 +6,8 @@
     android:paddingBottom="8dp"
     android:paddingLeft="12dp"
     android:paddingRight="12dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,6 +28,7 @@
             android:layout_height="wrap_content"
             android:text="@string/omni_widget_title"
             android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             app:layout_constraintVertical_chainStyle="packed"
@@ -41,6 +44,7 @@
             android:text="@string/omni_widget_desc"
             android:layout_marginTop="2dp"
             android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             app:typographyType="paragraph_3"
             app:layout_constraintTop_toBottomOf="@id/tg_omni_title"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -51,9 +55,15 @@
             android:id="@+id/icon_omni_chevron"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginStart="12dp"
+            app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+        <include
+            android:id="@+id/shimmering_omni"
+            layout="@layout/view_recharge_omni_shimmering" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

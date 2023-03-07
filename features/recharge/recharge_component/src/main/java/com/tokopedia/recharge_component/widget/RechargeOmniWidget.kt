@@ -3,6 +3,8 @@ package com.tokopedia.recharge_component.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.databinding.WidgetRechargeOmniBinding
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -14,12 +16,29 @@ class RechargeOmniWidget @JvmOverloads constructor(@NotNull context: Context, at
 
     private val binding = WidgetRechargeOmniBinding.inflate(LayoutInflater.from(context), this, true)
 
-    fun renderOmniWidget(applink: String) {
+    fun renderOmniWidget(listener: RechargeOmniWidgetListener, applink: String) {
         binding.run {
-            imgOmniIcon.loadImage(IMG_URL)
-            root.setOnClickListener {
-                listener.onClickOmniWidget(applink)
+            shimmeringOmni.root.hide()
+            if (applink.isNotEmpty()) {
+                imgOmniIcon.show()
+                iconOmniChevron.show()
+                tgOmniTitle.show()
+                tgOmniDesc.show()
+                imgOmniIcon.loadImage(IMG_URL)
+                root.setOnClickListener {
+                    listener.onClickOmniWidget(applink)
+                }
             }
+        }
+    }
+
+    fun renderShimmering() {
+        with(binding) {
+            imgOmniIcon.hide()
+            iconOmniChevron.hide()
+            tgOmniTitle.hide()
+            tgOmniDesc.hide()
+            shimmeringOmni.root.show()
         }
     }
 
