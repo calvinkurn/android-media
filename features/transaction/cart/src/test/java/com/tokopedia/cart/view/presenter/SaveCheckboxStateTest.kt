@@ -14,10 +14,10 @@ class SaveCheckboxStateTest : BaseCartTest() {
         // GIVEN
         val cartItemDataList = ArrayList<CartItemHolderData>().apply {
             add(
-                    CartItemHolderData(
-                            isSelected = true,
-                            cartId = "123"
-                    )
+                CartItemHolderData(
+                    isSelected = true,
+                    cartId = "123"
+                )
             )
         }
 
@@ -32,5 +32,4 @@ class SaveCheckboxStateTest : BaseCartTest() {
             setCartlistCheckboxStateUseCase.createObservable(any())
         }
     }
-
 }

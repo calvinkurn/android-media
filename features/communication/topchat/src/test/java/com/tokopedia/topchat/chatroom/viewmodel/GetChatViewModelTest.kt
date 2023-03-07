@@ -1,24 +1,26 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.Contact
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.verify
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class GetChatViewModelTest: BaseTopChatViewModelTest() {
+class GetChatViewModelTest : BaseTopChatViewModelTest() {
 
     override fun before() {
         super.before()
-        viewModel.roomMetaData = RoomMetaData()
+        viewModel.setRoomMetaData(RoomMetaData())
     }
 
     @Test
@@ -27,14 +29,14 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         viewModel.resetChatUseCase()
 
         // Then
-        verify(exactly = 1)  {
+        verify(exactly = 1) {
             getChatUseCase.reset()
         }
     }
 
     @Test
     fun check_setBeforeReplyTime() {
-        //Given
+        // Given
         val exCreateTime = "1234532"
 
         // When
@@ -49,6 +51,10 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun check_isInTheMiddleOfThePage() {
         // When
+        every {
+            getChatUseCase.isInTheMiddleOfThePage()
+        } returns MutableLiveData(true)
+
         viewModel.isInTheMiddleOfThePage()
 
         // Then
@@ -58,12 +64,24 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
     }
 
     @Test
+    fun should_give_correct_isInTheMiddleOfThePage_after_set() {
+        // Given
+        val dummyIsInTheMiddleOfThePage = true
+
+        // When
+        webSocketViewModel.isInTheMiddleOfThePage = dummyIsInTheMiddleOfThePage
+
+        // Then
+        assertEquals(dummyIsInTheMiddleOfThePage, webSocketViewModel.isInTheMiddleOfThePage)
+    }
+
+    @Test
     fun should_get_existing_chat_when_success_but_message_id_empty() {
         // When
         viewModel.getExistingChat("")
 
         // Then
-        Assert.assertEquals(
+        assertEquals(
             null,
             viewModel.existingChat.value
         )
@@ -83,7 +101,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         viewModel.getExistingChat(testMessageId, true)
 
         // Then
-        Assert.assertEquals(
+        assertEquals(
             expectedResult,
             (viewModel.existingChat.value?.first as Success).data
         )
@@ -103,7 +121,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         viewModel.getExistingChat(testMessageId)
 
         // Then
-        Assert.assertEquals(
+        assertEquals(
             expectedResult,
             (viewModel.existingChat.value?.first as Success).data
         )
@@ -111,7 +129,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
 
     @Test
     fun check_room_meta_data() {
-        //Given
+        // Given
         val expectedResponse = GetExistingChatPojo(
             chatReplies = ChatReplies(
                 contacts = arrayListOf(Contact(userId = testUserId))
@@ -124,13 +142,27 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
 
         // When
         viewModel.getExistingChat(testMessageId)
-        val metaData = viewModel.roomMetaData
+        val metaData = viewModel.roomMetaData.value
 
         // Then
-        Assert.assertEquals(
+        assertEquals(
             expectedMetaData,
             metaData
         )
+    }
+
+    @Test
+    fun should_give_correct_room_meta_data_after_set() {
+        // Given
+        val dummyRoomMetaData = RoomMetaData(
+            _msgId = testMessageId
+        )
+
+        // When
+        webSocketViewModel.roomMetaData = dummyRoomMetaData
+
+        // Then
+        assertEquals(webSocketViewModel.roomMetaData, dummyRoomMetaData)
     }
 
     @Test
@@ -144,7 +176,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         viewModel.getExistingChat(testMessageId)
 
         // Then
-        Assert.assertEquals(
+        assertEquals(
             expectedThrowable.message,
             (viewModel.existingChat.value?.first as Fail).throwable.message
         )
@@ -156,7 +188,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         viewModel.loadTopChat("")
 
         // Then
-        Assert.assertEquals(
+        assertEquals(
             null,
             viewModel.topChat.value
         )
@@ -176,7 +208,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         viewModel.loadTopChat(testMessageId)
 
         // Then
-        Assert.assertEquals(
+        assertEquals(
             expectedResult,
             (viewModel.topChat.value as Success).data
         )
@@ -193,7 +225,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         viewModel.loadTopChat(testMessageId)
 
         // Then
-        Assert.assertEquals(
+        assertEquals(
             expectedThrowable.message,
             (viewModel.topChat.value as Fail).throwable.message
         )
@@ -205,7 +237,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         viewModel.loadBottomChat("")
 
         // Then
-        Assert.assertEquals(
+        assertEquals(
             null,
             viewModel.bottomChat.value
         )
@@ -225,7 +257,7 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         viewModel.loadBottomChat(testMessageId)
 
         // Then
-        Assert.assertEquals(
+        assertEquals(
             expectedResult,
             (viewModel.bottomChat.value as Success).data
         )
@@ -242,9 +274,62 @@ class GetChatViewModelTest: BaseTopChatViewModelTest() {
         viewModel.loadBottomChat(testMessageId)
 
         // Then
-        Assert.assertEquals(
+        assertEquals(
             expectedThrowable.message,
             (viewModel.bottomChat.value as Fail).throwable.message
         )
+    }
+
+    @Test
+    fun should_do_nothing_when_set_message_id_but_room_message_id_null() {
+        // Given
+        viewModel.setRoomMetaData(null)
+
+        // When
+        viewModel.updateMessageId(testMessageId)
+
+        // Then
+        assertEquals(null, viewModel.roomMetaData.value)
+    }
+
+    @Test
+    fun should_give_correct_value_when_in_the_middle_of_page() {
+        // Given
+        every {
+            getChatUseCase.isInTheMiddleOfThePage()
+        } returns MutableLiveData(true)
+
+        // When
+        val result = viewModel.getMiddlePageLiveData().value
+
+        // Then
+        assertEquals(true, result)
+    }
+
+    @Test
+    fun should_give_false_value_when_get_in_the_middle_of_page_but_null() {
+        // Given
+        every {
+            getChatUseCase.isInTheMiddleOfThePage()
+        } returns MutableLiveData(null)
+
+        // When
+        val result = viewModel.isInTheMiddleOfThePage()
+
+        // Then
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun should_give_correct_value_when_set_user_location() {
+        // Given
+        val localCacheModel = LocalCacheModel(address_id = "123")
+        viewModel.initUserLocation(localCacheModel)
+
+        // When
+        val result = viewModel.userLocationInfo.value
+
+        // Then
+        assertEquals(localCacheModel.address_id, result?.address_id)
     }
 }

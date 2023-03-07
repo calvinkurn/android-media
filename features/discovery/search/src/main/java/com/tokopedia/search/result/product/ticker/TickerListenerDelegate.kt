@@ -8,7 +8,8 @@ import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.search.utils.addFilterOrigin
+import com.tokopedia.search.utils.manualFilterToggleMap
+import com.tokopedia.search.utils.originFilterMap
 import com.tokopedia.track.TrackApp
 
 class TickerListenerDelegate(
@@ -32,7 +33,8 @@ class TickerListenerDelegate(
     }
 
     private fun applyParamsFromTicker(tickerParams: HashMap<String?, String?>) {
-        val params = HashMap(filterController.getParameter().addFilterOrigin())
+        val queryParams = filterController.getParameter() + originFilterMap() + manualFilterToggleMap()
+        val params = HashMap(queryParams)
         params.putAll(tickerParams)
         parameterListener.refreshSearchParameter(params)
         parameterListener.reloadData()

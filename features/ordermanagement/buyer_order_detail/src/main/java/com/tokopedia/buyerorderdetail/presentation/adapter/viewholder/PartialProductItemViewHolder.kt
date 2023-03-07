@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -24,8 +25,13 @@ class PartialProductItemViewHolder(
     partialProductItemViewStub: View?,
     private val listener: ProductViewListener,
     private val navigator: BuyerOrderDetailNavigator,
-    private var element: ProductListUiModel.ProductUiModel
+    private var element: ProductListUiModel.ProductUiModel,
 ) : View.OnClickListener {
+
+    companion object {
+        const val CARD_ALPHA_NON_POF = 1f
+        const val CARD_ALPHA_POF = 0.5f
+    }
 
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
 
@@ -50,6 +56,7 @@ class PartialProductItemViewHolder(
 
     init {
         setupClickListeners()
+        setupCardProductAlpha()
         setupProductName(element.productName)
         setupProductQuantityAndPrice(element.quantity, element.priceText)
         setupProductNote(element.productNote)
@@ -80,6 +87,14 @@ class PartialProductItemViewHolder(
             setupInsurance(newItem.insurance)
         }
         container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+    }
+
+    private fun setupCardProductAlpha() {
+        container?.alpha = if (element.isPof) {
+             CARD_ALPHA_POF
+        } else {
+            CARD_ALPHA_NON_POF
+        }
     }
 
     private fun goToProductSnapshotPage() {
