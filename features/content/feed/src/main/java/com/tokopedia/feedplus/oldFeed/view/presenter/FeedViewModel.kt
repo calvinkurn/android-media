@@ -165,7 +165,11 @@ class FeedViewModel @Inject constructor(
     ) {
         viewModelScope.launchCatchError(block = {
             sendReportUseCase.setRequestParams(
-                SubmitReportContentUseCase.createParam(contentId = contentId, reasonType = reasonType, reasonMessage = reasonMessage)
+                SubmitReportContentUseCase.createParam(
+                    contentId = contentId,
+                    reasonType = reasonType,
+                    reasonMessage = reasonMessage
+                )
             )
             val response = withContext(baseDispatcher.io) {
                 sendReportUseCase.executeOnBackground()
@@ -189,7 +193,11 @@ class FeedViewModel @Inject constructor(
 
     fun trackVisitChannel(channelId: String, rowNumber: Int) {
         viewModelScope.launchCatchError(block = {
-            trackVisitChannelBroadcasterUseCase.setRequestParams(FeedBroadcastTrackerUseCase.createParams(channelId))
+            trackVisitChannelBroadcasterUseCase.setRequestParams(
+                FeedBroadcastTrackerUseCase.createParams(
+                    channelId
+                )
+            )
             val trackResponse = withContext(baseDispatcher.io) {
                 trackVisitChannelBroadcasterUseCase.executeOnBackground()
             }
@@ -395,8 +403,10 @@ class FeedViewModel @Inject constructor(
     fun doFavoriteShop(promotedShopViewModel: Data, adapterPosition: Int) {
         launchCatchError(block = {
             val response = withContext(baseDispatcher.io) {
-                shopFollowUseCase.executeOnBackground(
-                    shopId = promotedShopViewModel.shop.id
+                shopFollowUseCase(
+                    shopFollowUseCase.createParams(
+                        shopId = promotedShopViewModel.shop.id
+                    )
                 )
             }
             val result = shopRecomMapper.mapShopFollow(response)
@@ -412,7 +422,11 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doFollowKol(id: String, rowNumber: Int, isFollowedFromFollowRestrictionBottomSheet: Boolean = false) {
+    fun doFollowKol(
+        id: String,
+        rowNumber: Int,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean = false
+    ) {
         launchCatchError(block = {
             val response = withContext(baseDispatcher.io) {
                 doFollowUseCase.executeOnBackground(id)
@@ -455,7 +469,12 @@ class FeedViewModel @Inject constructor(
 
     fun doLikeKol(id: Long, rowNumber: Int) {
         viewModelScope.launchCatchError(block = {
-            likeKolPostUseCase.setRequestParams(SubmitLikeContentUseCase.createParam(contentId = id.toString(), action = SubmitLikeContentUseCase.ACTION_LIKE))
+            likeKolPostUseCase.setRequestParams(
+                SubmitLikeContentUseCase.createParam(
+                    contentId = id.toString(),
+                    action = SubmitLikeContentUseCase.ACTION_LIKE
+                )
+            )
             val isSuccess = withContext(baseDispatcher.io) {
                 likeKolPostUseCase.executeOnBackground().doLikeKolPost.data.success == SubmitLikeContentUseCase.SUCCESS
             }
@@ -472,7 +491,12 @@ class FeedViewModel @Inject constructor(
 
     fun doUnlikeKol(id: Long, rowNumber: Int) {
         viewModelScope.launchCatchError(block = {
-            likeKolPostUseCase.setRequestParams(SubmitLikeContentUseCase.createParam(contentId = id.toString(), action = SubmitLikeContentUseCase.ACTION_UNLIKE))
+            likeKolPostUseCase.setRequestParams(
+                SubmitLikeContentUseCase.createParam(
+                    contentId = id.toString(),
+                    action = SubmitLikeContentUseCase.ACTION_UNLIKE
+                )
+            )
             val isSuccess = withContext(baseDispatcher.io) {
                 likeKolPostUseCase.executeOnBackground().doLikeKolPost.data.success == SubmitLikeContentUseCase.SUCCESS
             }
@@ -528,7 +552,11 @@ class FeedViewModel @Inject constructor(
 
     fun doDeletePost(id: String, rowNumber: Int) {
         viewModelScope.launchCatchError(block = {
-            deletePostUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(contentId = id))
+            deletePostUseCase.setRequestParams(
+                SubmitActionContentUseCase.paramToDeleteContent(
+                    contentId = id
+                )
+            )
             val isSuccess = withContext(baseDispatcher.io) {
                 deletePostUseCase.executeOnBackground().content.success == SubmitPostData.SUCCESS
             }
@@ -572,6 +600,7 @@ class FeedViewModel @Inject constructor(
         ) {
         }
     }
+
     fun doToggleFavoriteShop(
         rowNumber: Int,
         adapterPosition: Int,
@@ -581,8 +610,10 @@ class FeedViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val response = withContext(baseDispatcher.io) {
-                shopFollowUseCase.executeOnBackground(
-                    shopId = shopId
+                shopFollowUseCase(
+                    shopFollowUseCase.createParams(
+                        shopId = shopId
+                    )
                 )
             }
             val result = shopRecomMapper.mapShopFollow(response)
@@ -684,8 +715,7 @@ class FeedViewModel @Inject constructor(
 
     private suspend fun getFeedDataResult(): DynamicFeedDomainModel {
         try {
-            return getDynamicFeedNewUseCase.
-            execute(
+            return getDynamicFeedNewUseCase.execute(
                 cursor = currentCursor,
                 screenName = SCREEN_NAME_UPDATE_TAB
             )
@@ -855,9 +885,11 @@ class FeedViewModel @Inject constructor(
 
                 val result = when (currentItem.type) {
                     FOLLOW_TYPE_SHOP -> {
-                        val request = shopFollowUseCase.executeOnBackground(
-                            shopId = currentItem.id.toString(),
-                            action = if (currentState == FOLLOW) UnFollow else Follow
+                        val request = shopFollowUseCase(
+                            shopFollowUseCase.createParams(
+                                shopId = currentItem.id.toString(),
+                                action = if (currentState == FOLLOW) UnFollow else Follow
+                            )
                         )
                         shopRecomMapper.mapShopFollow(request)
                     }

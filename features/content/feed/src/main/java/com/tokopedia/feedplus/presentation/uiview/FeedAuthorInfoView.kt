@@ -20,13 +20,21 @@ class FeedAuthorInfoView(private val binding: LayoutFeedAuthorInfoBinding) {
 
             tvFeedOwnerName.text = author.name
 
-            labelFeedLive.showWithCondition(isLive)
+            bindLiveLabel(isLive)
             bindFollow(showFollow)
         }
     }
 
     fun bindFollow(showFollow: Boolean) {
         binding.btnFeedFollow.showWithCondition(showFollow)
+    }
+
+    fun bindLiveLabel(isLive: Boolean) {
+        if (isLive) {
+            binding.labelFeedLive.show()
+        } else {
+            binding.labelFeedLive.hide()
+        }
     }
 
     fun showClearView() {
