@@ -944,7 +944,6 @@ class CartListPresenter @Inject constructor(
                     .subscribe(
                         AddCartToWishlistSubscriber(
                             it,
-                            this,
                             productId,
                             cartId,
                             isLastItem,
