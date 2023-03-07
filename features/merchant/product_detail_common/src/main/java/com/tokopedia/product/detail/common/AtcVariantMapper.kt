@@ -15,8 +15,8 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 
 object AtcVariantMapper {
 
-    private const val VARIANT_LEVEL_ONE_MAP_SIZE = 1
-    private const val VARIANT_LEVEL_TWO_MAP_SIZE = 2
+    private const val VARIANT_HAVE_ONE_LEVEL = 1
+    private const val VARIANT_HAVE_TWO_LEVEL = 2
 
     private const val VARIANT_LEVEL_INITIALIZE = -1
     private const val VARIANT_LEVEL_ONE_SELECTED = 0
@@ -64,7 +64,7 @@ object AtcVariantMapper {
         level: Int = VARIANT_LEVEL_INITIALIZE,
         isNew: Boolean = true
     ): List<VariantCategory>? = if (isNew) {
-        processVariantNew(variantData, mapOfSelectedVariant, VARIANT_LEVEL_ONE_SELECTED)
+        processVariantNew(variantData, mapOfSelectedVariant, level)
     } else {
         processVariantOld(variantData, mapOfSelectedVariant, level)
     }
@@ -253,8 +253,13 @@ object AtcVariantMapper {
         val variants = variantData ?: return null
         if (variantData.variants.isEmpty()) return null
         val variantSize = variants.variants.size
+        val selectedLevel = if (level == VARIANT_LEVEL_INITIALIZE) {
+            VARIANT_LEVEL_ONE_SELECTED
+        } else {
+            level
+        }
 
-        return if (variantSize == VARIANT_LEVEL_ONE_MAP_SIZE) {
+        return if (variantSize == VARIANT_HAVE_ONE_LEVEL) {
             processVariantOneLevel(
                 variantData = variantData,
                 selectedVariant = selectedVariant.orEmpty()
@@ -263,7 +268,7 @@ object AtcVariantMapper {
             processVariantTwoLevel(
                 variantData = variantData,
                 selectedVariant = selectedVariant.orEmpty(),
-                selectedLevel = level
+                selectedLevel = selectedLevel
             )
         }
     }
@@ -338,11 +343,11 @@ object AtcVariantMapper {
     ): List<VariantCategory>? = when (selectedLevel) {
         VARIANT_LEVEL_ONE_SELECTED -> processVariantTwoLevelWithOneLeveSelected(
             variantData = variantData,
-            mapOfSelectedVariant = selectedVariant.orEmpty()
+            mapOfSelectedVariant = selectedVariant
         )
         VARIANT_LEVEL_TWO_SELECTED -> processVariantTwoLevelWithTwoLeveSelected(
             variantData = variantData,
-            mapOfSelectedVariant = selectedVariant.orEmpty()
+            mapOfSelectedVariant = selectedVariant
         )
         else -> null
     }
@@ -364,7 +369,7 @@ object AtcVariantMapper {
 
             for (child in variantData.children) {
                 // if variant option in selected variant and child options ids equals selected variant
-                if (option.id in mapOfSelectedVariant && child.optionIds == mapOfSelectedVariant) {
+                if (option.id in selectedVariant && child.optionIds == selectedVariant) {
                     isFlashSale = child.isFlashSale
                     stock = child.stock?.stock.orZero()
                     state = if (child.isBuyable) { // selected and can to buy
@@ -407,10 +412,10 @@ object AtcVariantMapper {
             var isFlashSale = false
             var stock = 0
 
-            if (option.id in mapOfSelectedVariant) {
+            if (option.id in selectedVariant) {
                 for (child in variantData.children) {
                     // if variant option into variant selected and variant selected ids into child optionIds
-                    if (child.optionIds == mapOfSelectedVariant) {
+                    if (child.optionIds == selectedVariant) {
                         isFlashSale = child.isFlashSale
                         stock = child.stock?.stock.orZero()
                         state = if (child.isBuyable) { // selected and can to buy
@@ -494,7 +499,7 @@ object AtcVariantMapper {
 
             for (child in variantData.children) {
                 // if variant option in selected variant and child options ids equals selected variant
-                if (option.id in mapOfSelectedVariant && child.optionIds == mapOfSelectedVariant) {
+                if (option.id in selectedVariant && child.optionIds == selectedVariant) {
                     isFlashSale = child.isFlashSale
                     stock = child.stock?.stock.orZero()
                     state = if (child.isBuyable) { // selected and can to buy
@@ -537,10 +542,10 @@ object AtcVariantMapper {
             var isFlashSale = false
             var stock = 0
 
-            if (option.id in mapOfSelectedVariant) {
+            if (option.id in selectedVariant) {
                 for (child in variantData.children) {
                     // if variant option into variant selected and variant selected ids into child optionIds
-                    if (child.optionIds == mapOfSelectedVariant) {
+                    if (child.optionIds == selectedVariant) {
                         isFlashSale = child.isFlashSale
                         stock = child.stock?.stock.orZero()
                         state = if (child.isBuyable) { // selected and can to buy
