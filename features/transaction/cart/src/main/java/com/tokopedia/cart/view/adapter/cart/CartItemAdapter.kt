@@ -66,7 +66,8 @@ class CartItemAdapter/*(private val actionListener: ActionListener) : RecyclerVi
         fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData)
         fun onCartItemQuantityPlusButtonClicked()
         fun onCartItemQuantityMinusButtonClicked()
-        fun onCartItemQuantityReseted(position: Int, cartItemHolderData: CartItemHolderData)
+
+//        fun onCartItemQuantityReseted(position: Int, cartItemHolderData: CartItemHolderData)
         fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData)
         fun onCartItemQuantityInputFormClicked(qty: String)
         fun onCartItemLabelInputRemarkClicked()

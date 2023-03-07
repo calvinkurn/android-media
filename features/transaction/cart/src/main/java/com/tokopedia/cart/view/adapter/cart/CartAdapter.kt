@@ -86,7 +86,6 @@ class CartAdapter constructor(
     private var compositeSubscription = CompositeSubscription()
 
     private var shipmentSellerCashbackModel: ShipmentSellerCashbackModel? = null
-    private var cartEmptyHolderData: CartEmptyHolderData? = null
     private var cartLoadingHolderData: CartLoadingHolderData? = null
     private var cartWishlistAdapter: CartWishlistAdapter? = null
     private var cartRecentViewAdapter: CartRecentViewAdapter? = null
@@ -119,22 +118,6 @@ class CartAdapter constructor(
                 when (data) {
                     is CartShopHolderData -> {
                         if (!data.isError) {
-                            availableShopGroupList.add(data)
-                        }
-                    }
-                    hasReachAllShopItems(data) -> break@loop
-                }
-            }
-            return availableShopGroupList
-        }
-
-    val allUnavailableShopGroupDataList: List<CartShopHolderData>
-        get() {
-            val availableShopGroupList = mutableListOf<CartShopHolderData>()
-            loop@ for (data in cartDataList) {
-                when (data) {
-                    is CartShopHolderData -> {
-                        if (data.isError) {
                             availableShopGroupList.add(data)
                         }
                     }
@@ -302,21 +285,6 @@ class CartAdapter constructor(
             return cartItemDataList
         }
 
-    val allCartShopHolderData: List<CartShopHolderData>
-        get() {
-            val cartShopHolderDataList = mutableListOf<CartShopHolderData>()
-            loop@ for (data in cartDataList) {
-                when (data) {
-                    is CartShopHolderData -> {
-                        cartShopHolderDataList.add(data)
-                    }
-                    hasReachAllShopItems(data) -> break@loop
-                }
-            }
-
-            return cartShopHolderDataList
-        }
-
     val disabledItemHeaderPosition: Int
         get() {
             for (i in cartDataList.indices) {
@@ -455,11 +423,7 @@ class CartAdapter constructor(
             }
             CartShopViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartShopHolderData
-                if (data.isNeedToRefreshWeight) {
-                    (holder as CartShopViewHolder).bindUpdatedWeight(data)
-                } else {
-                    (holder as CartShopViewHolder).bindData(data)
-                }
+                (holder as CartShopViewHolder).bindData(data)
             }
             CartItemViewHolder.TYPE_VIEW_ITEM_CART -> {
                 val data = cartDataList[position] as CartItemHolderData
@@ -543,10 +507,6 @@ class CartAdapter constructor(
 
     fun addItem(any: Any) {
         cartDataList.add(any)
-    }
-
-    fun addItem(index: Int, any: Any) {
-        cartDataList.add(index, any)
     }
 
     fun addItems(anyList: List<Any>) {
@@ -715,7 +675,6 @@ class CartAdapter constructor(
     }
 
     fun setItemSelected(position: Int, cartItemHolderData: CartItemHolderData) {
-//        val cartShopHolderData = getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
         var updatedShopData: CartShopHolderData? = null
         var shopBottomIndex: Int? = null
         for ((id, data) in cartDataList.withIndex()) {
@@ -751,16 +710,6 @@ class CartAdapter constructor(
         }
         if (shopBottomIndex != null && updatedShopData != null) {
             cartDataList[shopBottomIndex] = CartShopBottomHolderData(updatedShopData)
-        }
-    }
-
-    fun resetQuantity(position: Int, cartItemHolderData: CartItemHolderData) {
-        val cartShopHolderData = getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
-        cartShopHolderData?.productUiModelList?.let {
-            if (position < it.size) {
-                it[position].quantity = 0
-                checkForShipmentForm()
-            }
         }
     }
 
@@ -916,14 +865,6 @@ class CartAdapter constructor(
         return cartItemHolderDataList
     }
 
-    fun getCartShopHolderDataByIndex(index: Int): CartShopHolderData? {
-        return if (cartDataList[index] is CartShopHolderData) {
-            cartDataList[index] as CartShopHolderData
-        } else {
-            null
-        }
-    }
-
     fun getCartShopBottomHolderDataFromIndex(shopBottomIndex: Int): CartShopBottomHolderData? {
         val bottomItem = cartDataList[shopBottomIndex]
         return if (bottomItem is CartShopBottomHolderData) {
@@ -941,16 +882,6 @@ class CartAdapter constructor(
         }
 
         return null
-    }
-
-    fun getCartShopHolderDataAndIndexByCartString(cartString: String): Pair<CartShopHolderData?, Int> {
-        loop@ for ((index, data) in cartDataList.withIndex()) {
-            if (data is CartShopHolderData && data.cartString == cartString) {
-                return Pair(data, index)
-            }
-        }
-
-        return Pair(null, RecyclerView.NO_POSITION)
     }
 
     fun getCartGroupHolderDataAndIndexByCartString(cartString: String): Pair<Int, List<Any>> {
@@ -1442,20 +1373,10 @@ class CartAdapter constructor(
         getData().forEachIndexed { index, data ->
             when (data) {
                 is CartShopHolderData -> {
-//                    var changeShopLevelCheckboxState = false
-//                    data.productUiModelList.forEach {
-//                        if (it.isSelected != cheked) {
-//                            it.isSelected = cheked
-//                            indices.add(index)
-//                            changeShopLevelCheckboxState = true
-//                        }
-//                    }
-
                     if (data.isAllSelected != cheked) {
                         data.isAllSelected = cheked
                         data.isPartialSelected = false
                         indices.add(index)
-//                        actionListener.checkCartShopGroupTicker(data)
                     }
                 }
                 is CartItemHolderData -> {

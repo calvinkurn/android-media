@@ -702,13 +702,6 @@ class CartFragment :
         }
     }
 
-    private fun routeToShopProductPage(shopId: String?) {
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.SHOP_PRODUCT, shopId)
-            startActivityForResult(intent, NAVIGATION_SHOP_PAGE)
-        }
-    }
-
     private fun routeToTokoNowHomePage() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalTokopediaNow.HOME)
@@ -1424,10 +1417,6 @@ class CartFragment :
 
     override fun onCartItemQuantityMinusButtonClicked() {
         cartPageAnalytics.eventClickAtcCartClickButtonMinus()
-    }
-
-    override fun onCartItemQuantityReseted(position: Int, cartItemHolderData: CartItemHolderData) {
-        cartAdapter.resetQuantity(position, cartItemHolderData)
     }
 
     override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
@@ -4588,11 +4577,6 @@ class CartFragment :
     }
 
     override fun updateCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
-//        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartShopHolderData.cartString)
-//        if (data != null) {
-//            data.isNeedToRefreshWeight = true
-//            onNeedToUpdateViewItem(index)
-//        }
         val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartShopHolderData.cartString)
         if (index >= 0) {
             onNeedToUpdateViewItem(index + groupData.lastIndex)
