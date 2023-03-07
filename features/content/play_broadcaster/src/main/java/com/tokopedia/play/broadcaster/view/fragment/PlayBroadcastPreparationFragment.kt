@@ -13,10 +13,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
@@ -29,7 +31,6 @@ import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -103,7 +104,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     FragmentWithDetachableView,
     PreparationMenuView.Listener,
     TitleFormView.Listener,
-    CoverFormView.Listener {
+    CoverFormView.Listener,
+    PlayBroadcastPreparationBannerAdapter.BannerListener {
 
     /** ViewModel */
     private val viewModel: PlayBroadcastPrepareViewModel by viewModels { viewModelFactory }
@@ -119,7 +121,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Others */
     private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
-        PlayBroadcastPreparationBannerAdapter()
+        PlayBroadcastPreparationBannerAdapter(this)
     }
     private val fragmentViewContainer = FragmentViewContainer()
 
@@ -394,28 +396,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
 
-        adapterBanner.setItems(listOf(
-            PlayBroadcastPreparationBannerModel(
-                title = getString(R.string.play_bro_banner_shorts_title),
-                description = getString(R.string.play_bro_banner_shorts_description),
-                icon = IconUnify.SHORT_VIDEO,
-            ),
-            PlayBroadcastPreparationBannerModel(
-                title = getString(R.string.play_bro_banner_shorts_title),
-                description = getString(R.string.play_bro_banner_shorts_description),
-                icon = IconUnify.NOTEBOOK,
-            ),
-            PlayBroadcastPreparationBannerModel(
-                title = getString(R.string.play_bro_banner_shorts_title),
-                description = getString(R.string.play_bro_banner_shorts_description),
-                icon = IconUnify.MODE_SCREEN,
-            ),
-            PlayBroadcastPreparationBannerModel(
-                title = getString(R.string.play_bro_banner_shorts_title),
-                description = getString(R.string.play_bro_banner_shorts_description),
-                icon = IconUnify.MICROPHONE,
-            ),
-        ))
         binding.rvBannerPreparation.apply {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
             adapter = adapterBanner
@@ -480,15 +460,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 analytic.clickSwitchCameraOnPreparation()
                 broadcaster.flip()
             }
-
-//            bannerShorts.setOnClickListener {
-//                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
-//
-//                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-//
-//                val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
-//                startActivityForResult(intent, REQ_PLAY_SHORTS)
-//            }
         }
     }
 
@@ -524,6 +495,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeUiState()
         observeUiEvent()
         observeViewEvent()
+        observeBannerPreparation()
     }
 
     private fun setupCoachMark() {
@@ -543,14 +515,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             isShortsEntryPointCoachMarkShown = parentViewModel.isShortVideoAllowed && !coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
 
             if(isShortsEntryPointCoachMarkShown) {
-//                add(
-//                    CoachMark2Item(
-//                        anchorView = binding.bannerShorts,
-//                        title = getString(R.string.play_bro_banner_shorts_coachmark_title),
-//                        description = getString(R.string.play_bro_banner_shorts_coachmark_description),
-//                        position = CoachMark2.POSITION_BOTTOM,
-//                    )
-//                )
+                add(
+                    CoachMark2Item(
+                        anchorView = binding.rvBannerPreparation,
+                        title = getString(R.string.play_bro_banner_shorts_coachmark_title),
+                        description = getString(R.string.play_bro_banner_shorts_coachmark_description),
+                        position = CoachMark2.POSITION_BOTTOM,
+                    )
+                )
                 coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
             }
 
@@ -753,6 +725,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         )
     }
 
+    private fun observeBannerPreparation() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            parentViewModel.observableBanner.collect { banner ->
+                if (banner.isNullOrEmpty()) return@collect
+                adapterBanner.setItems(banner)
+            }
+        }
+    }
+
+    override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
+        when (data.type) {
+            PlayBroadcastPreparationBannerModel.TYPE_SHORTS -> {
+                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
+                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+                val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
+                startActivityForResult(intent, REQ_PLAY_SHORTS)
+            }
+        }
+    }
+
     private fun renderAccountInfo(
         prevState: ContentAccountUiModel?,
         state: ContentAccountUiModel
@@ -831,14 +823,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         prev: PlayChannelUiState?,
         curr: PlayChannelUiState,
     ) {
-        if(prev?.shortVideoAllowed == curr.shortVideoAllowed) return
+        if (prev?.shortVideoAllowed == curr.shortVideoAllowed) return
 
-        if(curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
-//            binding.bannerShorts.gone()
+        if (curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
+            parentViewModel.submitAction(
+                PlayBroadcastAction.AddBannerPreparation(
+                    PlayBroadcastPreparationBannerModel.bannerShortsEntryPoint(requireContext())
+                )
+            )
+            parentViewModel.submitAction(
+                PlayBroadcastAction.AddBannerPreparation(
+                    PlayBroadcastPreparationBannerModel.bannerDashboard(requireContext())
+                )
+            )
             analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
-        }
-        else {
-//            binding.bannerShorts.gone()
+        } else {
+            parentViewModel.submitAction(
+                PlayBroadcastAction.RemoveBannerPreparation(
+                    PlayBroadcastPreparationBannerModel.bannerShortsEntryPoint(requireContext())
+                )
+            )
         }
     }
 

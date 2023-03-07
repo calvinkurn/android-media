@@ -4,11 +4,13 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.view.adapter.delegate.PlayBroadcastPreparationBannerAdapterDelegate
 
-class PlayBroadcastPreparationBannerAdapter : BaseDiffUtilAdapter<PlayBroadcastPreparationBannerModel>() {
+class PlayBroadcastPreparationBannerAdapter(
+    listener: BannerListener,
+) : BaseDiffUtilAdapter<PlayBroadcastPreparationBannerModel>() {
 
     init {
         delegatesManager
-            .addDelegate(PlayBroadcastPreparationBannerAdapterDelegate.BannerView())
+            .addDelegate(PlayBroadcastPreparationBannerAdapterDelegate.BannerView(listener))
     }
 
     override fun areItemsTheSame(
@@ -23,6 +25,10 @@ class PlayBroadcastPreparationBannerAdapter : BaseDiffUtilAdapter<PlayBroadcastP
         newItem: PlayBroadcastPreparationBannerModel
     ): Boolean {
         return oldItem == newItem
+    }
+
+    interface BannerListener {
+        fun onBannerClick(data: PlayBroadcastPreparationBannerModel)
     }
 
 }

@@ -2,14 +2,14 @@ package com.tokopedia.play.broadcaster.ui.action
 
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import java.util.*
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
-import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import java.util.*
 
 /**
  * Created by jegul on 12/10/21
@@ -69,4 +69,7 @@ sealed interface PlayBroadcastAction {
     data class ClickPinProduct(val product: ProductUiModel) : PlayBroadcastAction
 
     data class BroadcastStateChanged(val state: PlayBroadcasterState) : PlayBroadcastAction
+
+    data class AddBannerPreparation(val data: PlayBroadcastPreparationBannerModel): PlayBroadcastAction
+    data class RemoveBannerPreparation(val data: PlayBroadcastPreparationBannerModel): PlayBroadcastAction
 }
