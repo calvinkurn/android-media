@@ -246,7 +246,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         PdpSimulationEvent.OccImpressionEvent(
                             payLaterActivationViewModel.selectedProductId,
                             checkoutData.userState ?: "",
-                            checkoutData.gateway_name.orEmpty(),
+                            checkoutData.paymentGatewayCode.orEmpty(),
                             checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
                             checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                             quantity.toString(),
@@ -561,7 +561,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 PdpSimulationEvent.ClickCTACheckoutPage(
                     payLaterActivationViewModel.selectedProductId,
                     checkoutData.userState ?: "",
-                    checkoutData.gateway_name.orEmpty(),
+                    checkoutData.paymentGatewayCode.orEmpty(),
                     checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
                     checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                     quantity.toString(),
@@ -641,7 +641,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     PdpSimulationEvent.OccChangePartnerClicked(
                         payLaterActivationViewModel.selectedProductId,
                         checkoutData.userState ?: "",
-                        checkoutData.gateway_name.orEmpty(),
+                        checkoutData.paymentGatewayCode.orEmpty(),
                         checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
                         checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                         quantity.toString(),
@@ -663,7 +663,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     PdpSimulationEvent.OccChangeVariantClicked(
                         payLaterActivationViewModel.selectedProductId,
                         checkoutData.userState ?: "",
-                        checkoutData.gateway_name.orEmpty(),
+                        checkoutData.paymentGatewayCode.orEmpty(),
                         checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
                         checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                         quantity.toString(),
@@ -776,7 +776,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     checkoutData.userState ?: "",
                     payLaterActivationViewModel.price.toString(),
                     checkoutData.tenureDetail[newPositionToSelect].tenure.toString(),
-                    checkoutData.gateway_name ?: ""
+                    checkoutData.paymentGatewayCode ?: ""
                 )
             )
         }

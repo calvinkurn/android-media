@@ -145,7 +145,7 @@ object PayLaterHelper {
                 if (payLaterList[i] is Detail) {
                     allLinkingStatus.add((payLaterList[i] as Detail).linkingStatus.orEmpty())
                     allUserStatus.add((payLaterList[i] as Detail).userState.orEmpty())
-                    allPartnerName.add((payLaterList[i] as Detail).gatewayDetail?.name ?: "")
+                    allPartnerName.add((payLaterList[i] as Detail).gatewayDetail?.gatewayCode ?: "")
                 } else if (payLaterList[i] is SeeMoreOptionsUiModel) {
                     for (j in 0 until (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems.size) {
                         allLinkingStatus.add(
@@ -155,7 +155,7 @@ object PayLaterHelper {
                             (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].userState.orEmpty()
                         )
                         allPartnerName.add(
-                            (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].gatewayDetail?.name
+                            (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].gatewayDetail?.gatewayCode
                                 ?: ""
                         )
                     }

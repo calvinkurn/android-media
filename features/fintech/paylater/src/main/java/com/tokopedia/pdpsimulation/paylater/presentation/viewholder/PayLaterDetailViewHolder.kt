@@ -189,7 +189,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         PayLaterCtaClick().apply {
             tenureOption = detail.tenure ?: 0
             userStatus = detail.userState ?: ""
-            payLaterPartnerName = detail.gatewayDetail?.name ?: ""
+            payLaterPartnerName = detail.gatewayDetail?.gatewayCode ?: ""
             emiAmount = detail.installment_per_month_ceil.toString()
             limit = detail.limit ?: ""
             redirectLink = link
