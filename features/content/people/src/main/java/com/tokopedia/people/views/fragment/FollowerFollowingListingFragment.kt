@@ -98,7 +98,7 @@ class FollowerFollowingListingFragment @Inject constructor(
 
     var adapter: ProfileFollowUnfollowViewPagerAdapter? = null
     private fun initViewPager(viewPager: ViewPager?) {
-        adapter = ProfileFollowUnfollowViewPagerAdapter(requireFragmentManager())
+        adapter = ProfileFollowUnfollowViewPagerAdapter(childFragmentManager)
 
         arguments?.let {
             FollowerListingFragment.getFragment(
