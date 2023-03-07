@@ -1,12 +1,10 @@
 package com.tokopedia.feedplus.presentation.fragment
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -74,12 +72,10 @@ class FeedFragment :
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
-    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
 
     private var isInClearViewMode: Boolean = false
-    private var productBottomSheet: ProductItemInfoBottomSheet? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -90,14 +86,17 @@ class FeedFragment :
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
-    private lateinit var feedMenuSheet: ContentThreeDotsMenuBottomSheet
-
     private val reportPostLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK && ::feedMenuSheet.isInitialized) {
+            val feedMenuSheet =
+                childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
+            if (feedMenuSheet != null && userSession.isLoggedIn) {
                 feedMenuSheet.showReportLayoutWhenLaporkanClicked()
                 feedMenuSheet.showToasterOnLoginSuccessFollow(
-                    getString(feedR.string.feed_report_login_success_toaster_text),
+                    getString(
+                        feedR.string.feed_report_login_success_toaster_text,
+                        userSession.name
+                    ),
                     Toaster.TYPE_NORMAL
                 )
             }
@@ -142,14 +141,10 @@ class FeedFragment :
 
     override fun onDestroyView() {
         binding = null
-        productBottomSheet?.dismiss()
-        productBottomSheet?.onDestroy()
-        universalShareBottomSheet?.dismiss()
-        universalShareBottomSheet?.onDestroy()
+        (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)?.dismiss()
+        (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
+        (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
         super.onDestroyView()
-        if (::feedMenuSheet.isInitialized) {
-            feedMenuSheet.dismiss()
-        }
     }
 
     override fun initInjector() {
@@ -160,11 +155,15 @@ class FeedFragment :
 
     override fun onMenuClicked(model: FeedCardImageContentModel) {
         activity?.let {
-            feedMenuSheet =
-                ContentThreeDotsMenuBottomSheet.getFragment(childFragmentManager, it.classLoader)
+            val feedMenuSheet =
+                ContentThreeDotsMenuBottomSheet.getFragment(
+                    childFragmentManager,
+                    it.classLoader,
+                    TAG_FEED_MENU_BOTTOMSHEET
+                )
             feedMenuSheet.setListener(this)
             feedMenuSheet.setData(getMenuItemData(), model.id)
-            feedMenuSheet.show(it.supportFragmentManager)
+            feedMenuSheet.show(childFragmentManager, TAG_FEED_MENU_BOTTOMSHEET)
         }
     }
 
@@ -174,14 +173,12 @@ class FeedFragment :
                 if (!userSession.isLoggedIn) {
                     onGoToLogin()
                 } else {
-                    feedMenuSheet.showReportLayoutWhenLaporkanClicked()
-                    Toast.makeText(context, "Laporkan - onMenuItemClick", Toast.LENGTH_SHORT).show()
+                    (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.showReportLayoutWhenLaporkanClicked()
                 }
             }
 
             FeedMenuIdentifier.MODE_NONTON -> {
                 feedMainViewModel.toggleClearView(true)
-                Toast.makeText(context, "Mode Nonton", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -253,7 +250,7 @@ class FeedFragment :
         context: Context,
         shopId: String
     ) {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
     }
 
     override fun onTaggedProductCardImpressed(
@@ -293,6 +290,8 @@ class FeedFragment :
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
         dissmisByGreyArea = false
+        val universalShareBottomSheet =
+            (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)
         universalShareBottomSheet?.dismiss()
 
         val linkerShareData = DataMapper().getLinkerShareData(shareData)
@@ -345,6 +344,8 @@ class FeedFragment :
         feedPostViewModel.atcRespData.observe(
             viewLifecycleOwner
         ) {
+            val productBottomSheet =
+                (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)
             when (it) {
                 is FeedResult.Success -> {
                     productBottomSheet?.showToastWithAction(
@@ -374,11 +375,11 @@ class FeedFragment :
         feedMainViewModel.reportResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if (::feedMenuSheet.isInitialized) {
-                        feedMenuSheet.setFinalView()
+                    (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.apply {
+                        setFinalView()
                     }
                 }
-                is Fail -> Toast.makeText(context, "Laporkan fail", Toast.LENGTH_SHORT).show()
+                is Fail -> {}
             }
         }
     }
@@ -468,7 +469,7 @@ class FeedFragment :
     }
 
     private fun showUniversalShareBottomSheet(shareModel: FeedShareDataModel) {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+        val universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@FeedFragment)
             setUtmCampaignData(
                 pageName = FeedShareDataModel.PAGE,
@@ -482,16 +483,16 @@ class FeedFragment :
                 tnImage = shareModel.tnImage
             )
         }
-        universalShareBottomSheet?.setOnDismissListener {
+        universalShareBottomSheet.setOnDismissListener {
             if (dissmisByGreyArea) {
                 // TODO to be used for analytics
             } else {
                 dissmisByGreyArea = true
             }
         }
-        universalShareBottomSheet?.let {
+        universalShareBottomSheet.let {
             if (!it.isAdded) {
-                it.show(fragmentManager, this, null)
+                it.show(childFragmentManager, this, null)
             }
         }
     }
@@ -524,8 +525,8 @@ class FeedFragment :
     }
 
     private fun openProductTagBottomSheet(feedXCard: FeedCardImageContentModel) {
-        productBottomSheet = ProductItemInfoBottomSheet()
-        productBottomSheet?.show(
+        val productBottomSheet = ProductItemInfoBottomSheet()
+        productBottomSheet.show(
             childFragmentManager,
             this,
             ProductBottomSheetData(
@@ -539,7 +540,8 @@ class FeedFragment :
                 hasVoucher = feedXCard.hasVoucher,
                 authorType = feedXCard.author.type.toString()
             ),
-            viewModelFactory = viewModelFactory
+            viewModelFactory = viewModelFactory,
+            tag = TAG_FEED_PRODUCT_BOTTOMSHEET
         )
     }
 
@@ -551,6 +553,9 @@ class FeedFragment :
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
 
         private const val MINIMUM_ENDLESS_CALL = 1
+
+        private const val TAG_FEED_MENU_BOTTOMSHEET = "TAG_FEED_MENU_BOTTOMSHEET"
+        private const val TAG_FEED_PRODUCT_BOTTOMSHEET = "TAG_FEED_PRODUCT_BOTTOMSHEET"
 
         fun createFeedFragment(data: FeedDataModel): FeedFragment = FeedFragment().also {
             it.arguments = Bundle().apply {

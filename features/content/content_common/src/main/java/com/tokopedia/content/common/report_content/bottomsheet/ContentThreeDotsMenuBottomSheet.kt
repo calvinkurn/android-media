@@ -203,10 +203,6 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
         mListener = listener
     }
 
-    fun show(fragmentManager: FragmentManager) {
-        if (!isAdded) show(fragmentManager, TAG)
-    }
-
     fun setData(feedMenuItemList: List<FeedMenuItem>, contentId: String): ContentThreeDotsMenuBottomSheet {
         this.contentId = contentId
         mFeedMenuItemList.clear()
@@ -224,7 +220,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
         view?.rootView?.let {
             context?.resources?.let { resource ->
                 Toaster.toasterCustomBottomHeight =
-                    resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
+                    resource.getDimensionPixelSize(R.dimen.feed_bottomsheet_toaster_margin_bottom)
             }
             if (actionText?.isEmpty() == false) {
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type, actionText)
@@ -240,7 +236,6 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private const val TAG = "FeedAccountTypeBottomSheet"
         private const val SPAM = 1
         private const val ABUSE = 2
         private const val INAPPROPRIATE = 3
@@ -256,9 +251,10 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
 
         fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader
+            classLoader: ClassLoader,
+            tag: String
         ): ContentThreeDotsMenuBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ContentThreeDotsMenuBottomSheet
+            val oldInstance = fragmentManager.findFragmentByTag(tag) as? ContentThreeDotsMenuBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ContentThreeDotsMenuBottomSheet::class.java.name

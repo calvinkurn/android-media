@@ -233,7 +233,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                 onNavigateToProfile()
             }
 
-
             if (data.meta.showCreatePost) {
                 it.btnFeedCreatePost.show()
             } else {
