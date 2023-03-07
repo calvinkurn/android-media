@@ -1115,7 +1115,7 @@ class ChatbotPresenter @Inject constructor(
             val params = uploaderUseCase.createParams(
                 sourceId = ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD,
                 filePath = filePath,
-                withTranscode = false
+                withTranscode = true
             )
             val uploadMediaResult = uploaderUseCase(params).let {
                 when (it) {

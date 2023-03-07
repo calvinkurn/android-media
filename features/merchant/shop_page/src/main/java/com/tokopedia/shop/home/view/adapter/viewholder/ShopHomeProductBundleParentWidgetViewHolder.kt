@@ -1,7 +1,9 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
@@ -16,6 +18,7 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleLis
 import com.tokopedia.shop.databinding.ItemShopHomeProductBundleParentWidgetBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -30,6 +33,7 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_product_bundle_parent_widget
+        private const val BUNDLE_RV_MARGIN_TOP = 6f
     }
 
     private val viewBinding: ItemShopHomeProductBundleParentWidgetBinding? by viewBinding()
@@ -66,10 +70,26 @@ class ShopHomeProductBundleParentWidgetViewHolder(
             .setWidgetType(WidgetType.TYPE_1)
             .setPageSource(ShopPageConstant.SOURCE)
             .build()
+        setBundlingWidgetRvMarginTop()
         productBundleWidgetView?.setListener(this)
         productBundleWidgetView?.setTitleText(bundleWidgetTitle)
         productBundleWidgetView?.getBundleData(param)
         checkFestivity(element)
+    }
+
+    private fun setBundlingWidgetRvMarginTop() {
+        productBundleWidgetView?.findViewById<RecyclerView>(R.id.rv_bundles).apply {
+            val params = this?.layoutParams as? LinearLayout.LayoutParams
+            params?.setMargins(
+                params.leftMargin,
+                BUNDLE_RV_MARGIN_TOP.dpToPx().toInt(),
+                params.rightMargin,
+                params.bottomMargin
+            )
+            if(params != null){
+                this?.layoutParams = params
+            }
+        }
     }
 
     private fun checkFestivity(element: ShopHomeProductBundleListUiModel) {
