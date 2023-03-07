@@ -1,6 +1,5 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
@@ -159,9 +158,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         )
     }
 
-    override fun onAttach(context: Context) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         initInjector()
-        super.onAttach(context)
     }
 
     private fun initInjector() {
