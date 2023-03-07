@@ -23,6 +23,8 @@ import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogReques
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.fragment.NfcCheckBalanceFragment
 import com.tokopedia.common_electronic_money.util.CardUtils
+import com.tokopedia.common_electronic_money.util.KeyLogEmoney.LOG_TYPE
+import com.tokopedia.common_electronic_money.util.KeyLogEmoney.TAPCASH_TAG
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
@@ -378,16 +380,17 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         map.put(ISSUER_KEY, param.log.issueId.toString())
         map.put(CARD_NUMBER_KEY, param.log.cardNumber)
         map.put(RC_KEY, param.log.rc)
+        map.put(LOG_TYPE, TAPCASH_ERROR_LOGGER)
         ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
     }
 
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
         const val CLASS_NAME = "EmoneyCheckBalanceFragment"
-        private const val TAPCASH_TAG = "RECHARGE_TAPCASH"
         private const val ISSUER_KEY = "issuer_id"
         private const val CARD_NUMBER_KEY = "card_number"
         private const val RC_KEY = "rc"
+        private const val TAPCASH_ERROR_LOGGER = "TAPCASH_ERROR_LOGGER"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()

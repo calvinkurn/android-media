@@ -8,6 +8,8 @@ import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogRequest
 import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogResponse
 import com.tokopedia.common_electronic_money.domain.usecase.RechargeEmoneyInquiryLogUseCase
+import com.tokopedia.common_electronic_money.util.KeyLogEmoney.LOG_TYPE
+import com.tokopedia.common_electronic_money.util.KeyLogEmoney.TAPCASH_TAG
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.stringToByteArrayRadix
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
@@ -133,7 +135,10 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
             } else {
                 val firstError = errors.firstOrNull()
                 if (firstError?.extensions?.developerMessage?.contains(ERROR_GRPC) ?: false){
-                    ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "Error GRPC Tapcash"))
+                    val map = HashMap<String, String>()
+                    map.put(ERROR, ERROR_GRPC_MESSAGE)
+                    map.put(LOG_TYPE, TAPCASH_GRPC_LOGGER)
+                    ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
                 }
 
                 throw(MessageErrorException(firstError?.message))
@@ -385,8 +390,10 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         )
 
         const val URL_PATH = "graphql/recharge/rechargeUpdateBalanceEmoneyBniTapcash"
-        private const val TAPCASH_TAG = "RECHARGE_TAPCASH"
+        private const val TAPCASH_GRPC_LOGGER = "TAPCASH_GRPC_LOGGER"
         private const val ERROR_GRPC = "GRPC timeout"
+        private const val ERROR = "err"
+        private const val ERROR_GRPC_MESSAGE = "Error GRPC Tapcash"
 
         private const val ERROR_MESSAGE_APDU = "APDU Error: %s"
         private const val ERROR_MESSAGE_EXCEPTION = "Exception: %s"
