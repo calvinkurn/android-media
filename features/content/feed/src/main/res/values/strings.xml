@@ -99,5 +99,8 @@ dari Feed.</string>
 
     <string name="feed_post_sebagai">Post sebagai</string>
     <string name="feed_selengkapnya_label">Selengkapnya</string>
+    <string name="feed_label_no_content_title">Yaah, belum ada konten</string>
+    <string name="feed_label_no_content_subtitle">Cek konten menarik di Untuk Kamu. Siapa tahu ada kreator keren yang bisa kamu follow.</string>
+    <string name="feed_label_no_content_button">Lihat Konten Lainnya</string>
 
 </resources>

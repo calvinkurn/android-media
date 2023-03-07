@@ -33,6 +33,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
@@ -415,7 +416,11 @@ class FeedFragment :
         feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    adapter?.addElement(it.data.items)
+                    if (it.data.items.isEmpty()) {
+                        adapter?.addElement(FeedNoContentModel())
+                    } else {
+                        adapter?.addElement(it.data.items)
+                    }
                 }
                 is Fail -> {}
             }

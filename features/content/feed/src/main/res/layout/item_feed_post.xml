@@ -36,7 +36,6 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible" />
 
-
     <include
         android:id="@+id/layout_author_info"
         layout="@layout/layout_feed_author_info"
