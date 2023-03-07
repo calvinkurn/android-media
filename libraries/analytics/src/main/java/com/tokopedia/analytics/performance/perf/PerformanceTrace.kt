@@ -1,13 +1,10 @@
 package com.tokopedia.analytics.performance.perf
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnDrawListener
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.view.ViewTreeObserver.OnPreDrawListener
-import android.view.ViewTreeObserver.OnScrollChangedListener
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
@@ -18,7 +15,6 @@ class PerformanceTrace(val traceName: String) {
     companion object {
         const val TYPE_TTFL = "TTFL"
         const val TYPE_TTIL = "TTIL"
-        const val SCROLL_STATE_CHANGED_THRESHOLD = 3
         const val GLOBAL_LAYOUT_DEBOUNCE = 1000L
     }
     private var startCurrentTimeMillis = 0L
@@ -27,63 +23,49 @@ class PerformanceTrace(val traceName: String) {
     val sharedFlow = MutableSharedFlow<View>(1, 0, BufferOverflow.SUSPEND)
     var outputSharedFlow: SharedFlow<Unit> = MutableSharedFlow<Unit>(1, 0, BufferOverflow.SUSPEND)
 
-    val scrollChangedSharedFlow = MutableSharedFlow<View>(1, 0, BufferOverflow.SUSPEND)
-    var scrollChangedOutputSharedFlow: SharedFlow<Unit> = MutableSharedFlow<Unit>(1, 0, BufferOverflow.SUSPEND)
-
     init {
         startCurrentTimeMillis = System.currentTimeMillis()
     }
 
+    var performanceTraceJob: Job? = null
     fun init(
         v: View,
         scope: LifecycleCoroutineScope,
-        onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit
-
+        touchListenerActivity: TouchListenerActivity?,
+        onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit,
         ) {
-        scope.launch(Dispatchers.IO) {
+
+        performanceTraceJob = scope.launch(Dispatchers.IO) {
             PerformanceTraceDebugger.logTrace(
                 "Initialize performance trace for: $traceName"
             )
             val viewgroup = v as ViewGroup
             setTTFLInflateTrace(viewgroup, onLaunchTimeFinished)
             setTTILInflateTrace(v, viewgroup, onLaunchTimeFinished, scope)
-            setupScrollChangeListener(v, scope)
+            touchListenerActivity?.addListener { cancelPerformancetrace() }
         }
     }
 
-    private fun setupScrollChangeListener(
-        v: ViewGroup,
-        scope: LifecycleCoroutineScope
-    ) {
-        val onScrollChangeListener = onScrollChangeView(v)
-        var scrollChangedCount = 0
-        scrollChangedOutputSharedFlow = scrollChangedSharedFlow.map {
-            if (scrollChangedCount >= SCROLL_STATE_CHANGED_THRESHOLD) {
-                scope.cancel()
-                if (summaryModel.get().timeToInitialLayout != null) {
-                    PerformanceTraceDebugger.logTrace(
-                        "Performance trace finished."
-                    )
-                } else {
-                    PerformanceTraceDebugger.logTrace(
-                        "Performance trace cancelled due to scroll event"
-                    )
-                }
-                v.viewTreeObserver.removeOnScrollChangedListener(onScrollChangeListener)
-            }
-            scrollChangedCount += 1
-        }.shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
-        scrollChangedOutputSharedFlow.launchIn(scope)
-
-        v.viewTreeObserver.addOnScrollChangedListener(onScrollChangeListener)
+    fun cancelPerformancetrace() {
+        performanceTraceJob?.cancel()
+        if (summaryModel.get().timeToInitialLayout != null) {
+            PerformanceTraceDebugger.logTrace(
+                "Performance trace finished."
+            )
+        } else {
+            PerformanceTraceDebugger.logTrace(
+                "Performance trace cancelled due to scroll event"
+            )
+        }
     }
 
-    private fun setTTILInflateTrace(
+    private suspend fun setTTILInflateTrace(
         v: View,
         viewgroup: ViewGroup,
         onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit,
         scope: LifecycleCoroutineScope
     ) {
+        yield()
         val onGlobalLayoutTTIL = onGlobalLayoutTTIL(v)
         viewgroup.viewTreeObserver.addOnGlobalLayoutListener(onGlobalLayoutTTIL)
 
@@ -103,18 +85,14 @@ class PerformanceTrace(val traceName: String) {
         validateTTIL(perfModel)
     }
 
-    private fun onScrollChangeView(v: View) = OnScrollChangedListener {
-        scrollChangedSharedFlow.tryEmit(v)
-    }
-
-
-    private fun setTTFLInflateTrace(
+    private suspend fun setTTFLInflateTrace(
         viewgroup: ViewGroup,
         onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit
     ) {
         PerformanceTraceDebugger.logTrace(
             "Measuring TTFL: $traceName"
         )
+        yield()
         viewgroup.viewTreeObserver.addOnGlobalLayoutListener(
             object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {

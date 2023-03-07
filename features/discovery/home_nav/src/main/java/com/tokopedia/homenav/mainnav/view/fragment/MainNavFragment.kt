@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.perf.PerformanceTrace
 import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger
@@ -155,7 +156,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         PerformanceTraceDebugger.DEBUG = true
         performanceTrace.init(
             v = view.rootView,
-            scope = this.lifecycleScope
+            scope = this.lifecycleScope,
+            touchListenerActivity = activity as? BaseActivity
         ) { summaryModel, type, view ->
             activity?.takeScreenshot(type, view)
             if (type == PerformanceTrace.TYPE_TTIL) {
