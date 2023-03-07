@@ -20,7 +20,7 @@ data class FaceFilterUiModel(
 ) : Parcelable {
 
     val isChecked: Boolean
-        get() = value != defaultValue
+        get() = value != 0.0
 
     enum class AssetStatus {
         Available,
