@@ -1,6 +1,7 @@
 // Sort alphabetically by name
 includeDynamicFeatureIfEnabled("sellerapp")
 
+includeIfEnabled("features:merchant:seller_mvc_creation")
 includeIfEnabled("features:merchant:shop_discount")
 includeIfEnabled("features:category:tradein")
 includeIfEnabled("features:category:moneyin")
@@ -118,6 +119,7 @@ includeIfEnabled("features:merchant:seller_tokopedia_flash_sale")
 includeIfEnabled("features:merchant:seller_feedback")
 includeIfEnabled("features:merchant:campaign_list")
 includeIfEnabled("features:merchant:campaign_common")
+includeIfEnabled("features:merchant:seller_persona")
 
 includeIfEnabled("features:operational:contact_us")
 includeIfEnabled("features:operational:csat_rating")

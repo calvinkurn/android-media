@@ -7,11 +7,11 @@ import android.graphics.drawable.Drawable
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.data.model.*
-import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestStatus
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
@@ -24,7 +24,6 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.*
 import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
@@ -65,9 +64,6 @@ class NewShopPageViewModelTest {
     lateinit var shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>
 
     @RelaxedMockK
-    lateinit var getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>
-
-    @RelaxedMockK
     lateinit var newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>
 
     @RelaxedMockK
@@ -98,6 +94,9 @@ class NewShopPageViewModelTest {
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     @RelaxedMockK
+    lateinit var playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig
+
+    @RelaxedMockK
     lateinit var context: Context
 
     private val testCoroutineDispatcherProvider by lazy {
@@ -115,22 +114,22 @@ class NewShopPageViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         shopPageViewModel = NewShopPageViewModel(
-                userSessionInterface,
-                gqlGetShopInfoForHeaderUseCase,
-                getBroadcasterShopConfigUseCase,
-                gqlGetShopInfobUseCaseCoreAndAssets,
-                shopQuestGeneralTrackerUseCase,
-                getShopPageP1DataUseCase,
-                newGetShopPageP1DataUseCase,
-                getShopProductListUseCase,
-                shopModerateRequestStatusUseCase,
-                shopRequestUnmoderateUseCase,
-                getShopPageHeaderLayoutUseCase,
-                getFollowStatusUseCase,
-                updateFollowStatusUseCase,
-                gqlGetShopOperationalHourStatusUseCase,
-                sharedPreferences,
-                testCoroutineDispatcherProvider
+            userSessionInterface,
+            gqlGetShopInfoForHeaderUseCase,
+            getBroadcasterShopConfigUseCase,
+            gqlGetShopInfobUseCaseCoreAndAssets,
+            shopQuestGeneralTrackerUseCase,
+            newGetShopPageP1DataUseCase,
+            getShopProductListUseCase,
+            shopModerateRequestStatusUseCase,
+            shopRequestUnmoderateUseCase,
+            getShopPageHeaderLayoutUseCase,
+            getFollowStatusUseCase,
+            updateFollowStatusUseCase,
+            gqlGetShopOperationalHourStatusUseCase,
+            sharedPreferences,
+            testCoroutineDispatcherProvider,
+            playShortsEntryPointRemoteConfig
         )
     }
 
@@ -151,139 +150,6 @@ class NewShopPageViewModelTest {
         val shopNameMock = "mock shop"
         every { userSessionInterface.shopName } returns shopNameMock
         assertTrue(shopPageViewModel.ownerShopName == shopNameMock)
-    }
-
-    @Test
-    fun `check whether shopPageP1Data value is Success`() {
-        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
-            shopInfoHomeTypeData = ShopPageGetHomeType(
-                homeLayoutData = HomeLayoutData(
-                    widgetIdList = listOf(WidgetIdList())
-                )
-            )
-        )
-        coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
-        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
-            data = listOf(ShopProduct(), ShopProduct())
-        )
-        shopPageViewModel.getShopPageTabData(
-            SAMPLE_SHOP_ID,
-            "shop domain",
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
-            false,
-            addressWidgetData,
-            mockExtParam
-        )
-        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
-        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
-        assert(shopPageViewModel.productListData.data.size == 2)
-        assert(shopPageViewModel.homeWidgetLayoutData.widgetIdList.isNotEmpty())
-    }
-
-    @Test
-    fun `check whether shopPageP1Data value is Success when shopId same as user session shopId`() {
-        coEvery { userSessionInterface.shopId } returns SAMPLE_SHOP_ID
-        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
-            shopInfoHomeTypeData = ShopPageGetHomeType(
-                homeLayoutData = HomeLayoutData(
-                    widgetIdList = listOf(WidgetIdList())
-                )
-            )
-        )
-        coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
-        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
-            data = listOf(ShopProduct(), ShopProduct())
-        )
-        shopPageViewModel.getShopPageTabData(
-            SAMPLE_SHOP_ID,
-            "shop domain",
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
-            false,
-            addressWidgetData,
-            mockExtParam
-        )
-        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
-        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
-        assert(shopPageViewModel.productListData.data.size == 2)
-        assert(shopPageViewModel.homeWidgetLayoutData.widgetIdList.isNotEmpty())
-    }
-
-    @Test
-    fun `check whether shopPageP1Data value is Fail is mapper throw exception`() {
-        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
-            shopInfoHomeTypeData = ShopPageGetHomeType(
-                homeLayoutData = HomeLayoutData(
-                    widgetIdList = listOf(WidgetIdList())
-                )
-            )
-        )
-        coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
-        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
-            data = listOf(ShopProduct(), ShopProduct())
-        )
-        mockkObject(NewShopPageHeaderMapper)
-        every {
-            NewShopPageHeaderMapper.mapToShopPageP1HeaderData(any(), any(), any(), any(), any())
-        } throws Exception()
-        shopPageViewModel.getShopPageTabData(
-            SAMPLE_SHOP_ID,
-            "shop domain",
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
-            false,
-            addressWidgetData,
-            mockExtParam
-        )
-        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
-        assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
-    }
-
-    @Test
-    fun `check whether shopPageP1Data value is Fail`() {
-        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } throws Exception()
-        shopPageViewModel.getShopPageTabData(
-            SAMPLE_SHOP_ID,
-            "shop domain",
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
-            true,
-            addressWidgetData,
-            mockExtParam
-        )
-        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
-        assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
-    }
-
-    @Test
-    fun `check whether shopPageP1Data value is not null when shopId is 0 but shopDomain isn't empty`() {
-        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
-        shopPageViewModel.getShopPageTabData(
-            "0",
-            "domain",
-            1,
-            10,
-            ShopProductFilterParameter(),
-            "",
-            "",
-            true,
-            addressWidgetData,
-            mockExtParam
-        )
-        assertTrue(shopPageViewModel.shopPageP1Data.value != null)
     }
 
     @Test
@@ -314,6 +180,41 @@ class NewShopPageViewModelTest {
             false,
             addressWidgetData,
             mockExtParam
+        )
+        coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
+        assert(shopPageViewModel.productListData.data.size == 2)
+    }
+
+    @Test
+    fun `check whether new shopPageP1Data value is success when shopId same as user session shopId`() {
+        coEvery { userSessionInterface.shopId } returns SAMPLE_SHOP_ID
+        coEvery {
+            newGetShopPageP1DataUseCase.get().executeOnBackground()
+        } returns NewShopPageHeaderP1(
+            shopPageGetDynamicTabResponse = ShopPageGetDynamicTabResponse(
+                ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab(
+                    listOf(
+                        ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData()
+                    )
+                )
+            )
+        )
+        coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct(), ShopProduct())
+        )
+        shopPageViewModel.getNewShopPageTabData(
+            shopId = SAMPLE_SHOP_ID,
+            shopDomain = "shop domain",
+            page = 1,
+            itemPerPage = 10,
+            shopProductFilterParameter = ShopProductFilterParameter(),
+            keyword = "",
+            etalaseId = "",
+            isRefresh = false,
+            widgetUserAddressLocalData = addressWidgetData,
+            extParam = mockExtParam
         )
         coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
@@ -659,6 +560,44 @@ class NewShopPageViewModelTest {
     }
 
     @Test
+    fun `check whether shopSellerPLayWidgetData post success value and shortVideoAllowed is false and remoteConfig is false`() {
+        coEvery { playShortsEntryPointRemoteConfig.isShowEntryPoint() } returns false
+        val mockShopId = "123"
+        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        assert(shopSellerPLayWidgetData is Success)
+        assert((shopSellerPLayWidgetData as? Success)?.data?.shortVideoAllowed == false)
+    }
+
+    @Test
+    fun `check whether shopSellerPLayWidgetData post success value and shortVideoAllowed is true and remoteConfig is false`() {
+        coEvery { playShortsEntryPointRemoteConfig.isShowEntryPoint() } returns false
+        val mockShopId = "123"
+        every { userSessionInterface.shopId } returns mockShopId
+        coEvery {
+            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+        } returns Broadcaster.Config(shortVideoAllowed = true)
+        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        assert(shopSellerPLayWidgetData is Success)
+        assert((shopSellerPLayWidgetData as? Success)?.data?.shortVideoAllowed == false)
+    }
+
+    @Test
+    fun `check whether shopSellerPLayWidgetData post success value and shortVideoAllowed is true and remoteConfig is true`() {
+        coEvery { playShortsEntryPointRemoteConfig.isShowEntryPoint() } returns true
+        val mockShopId = "123"
+        every { userSessionInterface.shopId } returns mockShopId
+        coEvery {
+            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+        } returns Broadcaster.Config(shortVideoAllowed = true)
+        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        assert(shopSellerPLayWidgetData is Success)
+        assert((shopSellerPLayWidgetData as? Success)?.data?.shortVideoAllowed == true)
+    }
+
+    @Test
     fun `check whether shopPageTickerData and shopPageShopShareData post success value`() {
         val mockShopId = "123"
         val mockShopDomain = "mock domain"
@@ -763,7 +702,7 @@ class NewShopPageViewModelTest {
         val mockStockQty = 11
         val mockShopId = "5423"
         coEvery {
-            affiliateCookieHelper.initCookie(any(),any(),any())
+            affiliateCookieHelper.initCookie(any(), any(), any())
         } returns Unit
         shopPageViewModel.createAffiliateCookieShopAtcProduct(
             mockUUID,
@@ -774,7 +713,7 @@ class NewShopPageViewModelTest {
             mockStockQty,
             mockShopId
         )
-        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
     }
 
     @Test
@@ -786,7 +725,7 @@ class NewShopPageViewModelTest {
         val mockStockQty = 11
         val mockShopId = "5423"
         coEvery {
-            affiliateCookieHelper.initCookie(any(),any(),any())
+            affiliateCookieHelper.initCookie(any(), any(), any())
         } throws Exception()
         shopPageViewModel.createAffiliateCookieShopAtcProduct(
             mockUUID,
@@ -797,7 +736,7 @@ class NewShopPageViewModelTest {
             mockStockQty,
             mockShopId
         )
-        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
     }
 
     @Test

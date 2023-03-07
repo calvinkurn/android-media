@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.databinding.BottomsheetMultipleSelectionItemBinding
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
+import com.tokopedia.campaign.databinding.BottomsheetSingleSelectionItemBinding
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -159,5 +160,9 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
         val updatedItems = helper.refresh(items)
 
         multipleSelectionAdapter.submit(updatedItems)
+    }
+
+    fun getBottomsheetView(): BottomsheetMultipleSelectionItemBinding? {
+        return binding
     }
 }

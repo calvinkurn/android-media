@@ -4,15 +4,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
-import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
-import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_SCREEN_NAME_USER_PROFILE
-import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
-import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
-import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.GetFollowerListUseCase
@@ -42,18 +37,12 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val mapper: UserProfileUiMapper,
     private val shopRecomMapper: ShopRecomUiMapper,
-    private val profileMutationMapper: ProfileMutationMapper,
     private val userDetailsUseCase: UserDetailsUseCase,
     private val playVodUseCase: PlayPostContentUseCase,
-    private val doFollowUseCase: ProfileFollowUseCase,
-    private val doUnfollowUseCase: ProfileUnfollowedUseCase,
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
     private val getWhitelistNewUseCase: GetWhiteListNewUseCase,
     private val shopRecomUseCase: ShopRecomUseCase,
-    private val shopFollowUseCase: ShopFollowUseCase,
-    private val getFollowerListUseCase: GetFollowerListUseCase,
-    private val getFollowingListUseCase: GetFollowingListUseCase,
     private val getUserProfileTabUseCase: GetUserProfileTabUseCase,
     private val getUserProfileFeedPostsUseCase: GetUserProfileFeedPostsUseCase,
     private val postBlockUserUseCase: PostBlockUserUseCase
@@ -80,22 +69,6 @@ class UserProfileRepositoryImpl @Inject constructor(
             val result = getWhitelistNewUseCase.execute(WHITELIST_ENTRY_POINT)
 
             mapper.mapUserWhitelist(result)
-        }
-    }
-
-    override suspend fun followProfile(encryptedUserId: String): MutationUiModel {
-        return withContext(dispatcher.io) {
-            val result = doFollowUseCase.executeOnBackground(encryptedUserId)
-
-            profileMutationMapper.mapFollow(result)
-        }
-    }
-
-    override suspend fun unFollowProfile(encryptedUserId: String): MutationUiModel {
-        return withContext(dispatcher.io) {
-            val result = doUnfollowUseCase.executeOnBackground(encryptedUserId)
-
-            profileMutationMapper.mapUnfollow(result)
         }
     }
 
@@ -144,44 +117,6 @@ class UserProfileRepositoryImpl @Inject constructor(
 
             return@withContext shopRecomMapper.mapShopRecom(result, VAL_LIMIT)
         }
-
-    override suspend fun shopFollowUnfollow(
-        shopId: String,
-        action: ShopFollowAction
-    ): MutationUiModel = withContext(dispatcher.io) {
-        val result = shopFollowUseCase(
-            shopFollowUseCase.createParams(
-                shopId = shopId,
-                action = action
-            )
-        )
-
-        return@withContext shopRecomMapper.mapShopFollow(result)
-    }
-
-    override suspend fun getFollowerList(
-        username: String,
-        cursor: String,
-        limit: Int
-    ): ProfileFollowerListBase = withContext(dispatcher.io) {
-        return@withContext getFollowerListUseCase.executeOnBackground(
-            username = username,
-            cursor = cursor,
-            limit = limit
-        )
-    }
-
-    override suspend fun getFollowingList(
-        username: String,
-        cursor: String,
-        limit: Int
-    ): ProfileFollowingListBase = withContext(dispatcher.io) {
-        return@withContext getFollowingListUseCase.executeOnBackground(
-            username = username,
-            cursor = cursor,
-            limit = limit
-        )
-    }
 
     override suspend fun getUserProfileTab(userID: String): ProfileTabUiModel {
         return withContext(dispatcher.io) {

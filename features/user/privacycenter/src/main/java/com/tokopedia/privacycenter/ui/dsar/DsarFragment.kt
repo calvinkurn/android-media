@@ -82,6 +82,7 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
         viewModel.showMainLayout.observe(viewLifecycleOwner) {
             if (it) {
                 binding?.mainLayout?.visible()
+                renderProfileHeader()
             } else {
                 binding?.mainLayout?.gone()
             }
@@ -103,7 +104,7 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
             binding?.globarErrorDsar?.showWithCondition(it)
             if (it) {
                 binding?.globarErrorDsar?.setOnClickListener { _ ->
-                    viewModel.checkRequestStatus()
+                    viewModel.fetchInitialData()
                 }
             }
         }
@@ -134,7 +135,8 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
                 hideSummary()
             }
         }
-        viewModel.checkRequestStatus()
+
+        viewModel.fetchInitialData()
     }
 
     private fun renderSelectedDateLayout(transactionHistoryModel: TransactionHistoryModel) {
@@ -239,7 +241,6 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
     }
 
     private fun setupViews() {
-        renderProfileHeader()
         binding?.layoutOptions?.itemPersonalInfo?.apply {
             mainLayout.setOnClickListener {
                 it.isActivated = !it.isActivated
@@ -296,6 +297,7 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
                     DsarHistoryTransactionBottomSheet(requireActivity()) { item, isChecked, customDate ->
                         onItemRangeClicked(item, isChecked, customDate)
                     }
+                rangePickerBottomSheet?.setCloseClickListener { viewModel.onTransactionHistoryDeselected() }
             }
             rangePickerBottomSheet?.show(fragmentMgr = it)
         }

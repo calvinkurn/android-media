@@ -187,6 +187,7 @@ class ProductChooserIdGenerator {
             badge = "",
             type = ContentCommonUserType.TYPE_SHOP,
             hasUsername = true,
+            hasAcceptTnc = true,
             enable = true,
         )
 

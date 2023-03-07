@@ -1106,6 +1106,7 @@
       {
         "title": "Coba produk dengan kategori ini :",
         "type": "category",
+        "layout": "category",
         "position": 4,
         "options": [
           {
@@ -1127,6 +1128,7 @@
       {
         "title": "Coba filter dengan Cara Penutupan:",
         "type": "annotation",
+        "layout": "annotation",
         "position": 4,
         "options": [
           {
@@ -1148,6 +1150,7 @@
       {
         "title": "Coba tambahin kata kunci di pencarianmu:",
         "type": "guided",
+        "layout": "guided",
         "position": 8,
         "options": [
           {
@@ -1190,6 +1193,7 @@
       {
         "title": "Coba filter dengan Panjang Lengan:",
         "type": "annotation",
+        "layout": "annotation",
         "position": 10,
         "options": [
           {
@@ -1218,6 +1222,7 @@
       {
         "title": "Coba filter dengan Warna Produk:",
         "type": "annotation",
+        "layout": "annotation",
         "position": 16,
         "options": [
           {
@@ -1253,6 +1258,7 @@
       {
         "title": "Coba filter dengan pola motif:",
         "type": "annotation",
+        "layout": "annotation",
         "position": 20,
         "options": [
           {
