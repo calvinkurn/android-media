@@ -261,7 +261,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
         listener: Listener?,
         productBottomSheetData: ProductBottomSheetData,
         viewModelFactory: ViewModelProvider.Factory,
-        customMvcTracker: MvcTrackerImpl? = null
+        customMvcTracker: MvcTrackerImpl? = null,
+        tag: String = ""
     ) {
         this.listProducts = productBottomSheetData.products
         this.listener = listener
@@ -281,7 +282,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify(), FeedTaggedProductViewHold
         this.customMvcTracker = customMvcTracker
 
         dismissedByClosing = false
-        show(fragmentManager, "")
+        show(fragmentManager, tag)
     }
 
     fun changeWishlistIconOnWishlistSuccess(rowNumber: Int) {
