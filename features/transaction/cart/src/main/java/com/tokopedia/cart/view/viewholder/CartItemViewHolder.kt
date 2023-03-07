@@ -928,6 +928,7 @@ class CartItemViewHolder constructor(
             )
             textMoveToWishlist.setOnClickListener { }
         } else if (!data.isWishlisted && action.id == Action.ACTION_WISHLIST) {
+            textMoveToWishlist.text = action.message
             textMoveToWishlist.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
@@ -1066,8 +1067,6 @@ class CartItemViewHolder constructor(
 
         const val LABEL_CASHBACK = "cashback"
         const val LABEL_DISCOUNT = "label diskon"
-
-        private const val QUANTITY_REGEX = "[^0-9]"
 
         private const val DEBOUNCE_TIME = 500L
         private const val RESET_QTY_DEBOUNCE_TIME = 1000L

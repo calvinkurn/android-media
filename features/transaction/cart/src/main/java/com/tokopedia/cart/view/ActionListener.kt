@@ -5,6 +5,7 @@ import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -27,7 +28,7 @@ interface ActionListener {
 
     fun onCartShopGroupTickerClicked(cartShopHolderData: CartShopHolderData)
 
-    fun onCartShopGroupTickerRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData)
+    fun onCartShopGroupTickerRefreshClicked(index: Int, cartShopBottomHolderData: CartShopBottomHolderData)
 
     fun onViewCartShopGroupTicker(cartShopHolderData: CartShopHolderData)
 

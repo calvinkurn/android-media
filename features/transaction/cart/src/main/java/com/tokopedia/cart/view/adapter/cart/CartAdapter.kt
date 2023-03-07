@@ -827,19 +827,24 @@ class CartAdapter constructor(
     }
 
     fun notifyByProductId(productId: String, isWishlisted: Boolean) {
-        for (i in cartDataList.indices) {
+        outerloop@ for (i in cartDataList.indices) {
             val obj = cartDataList[i]
             if (obj is CartShopHolderData) {
                 val cartShopHolderData = cartDataList[i] as CartShopHolderData
-                cartShopHolderData.productUiModelList.let {
-                    for (cartItemHolderData in it) {
-                        if (cartItemHolderData.productId == productId) {
-                            cartItemHolderData.isWishlisted = isWishlisted
+                innerloop@ for (cartItemHolderData in cartShopHolderData.productUiModelList) {
+                    if (cartItemHolderData.productId == productId) {
+                        cartItemHolderData.isWishlisted = isWishlisted
+                        if (cartShopHolderData.isCollapsed) {
                             notifyItemChanged(i)
-                            break
+                            break@outerloop
                         }
+                        break@innerloop
                     }
                 }
+            } else if (obj is CartItemHolderData && obj.productId == productId) {
+                obj.isWishlisted = isWishlisted
+                notifyItemChanged(i)
+                break@outerloop
             }
         }
     }
@@ -917,18 +922,8 @@ class CartAdapter constructor(
         return RecyclerView.NO_POSITION
     }
 
-    fun getCartShopHolderIndexByCartString(cartString: String): Int {
-        loop@ for ((index, any) in cartDataList.withIndex()) {
-            if (any is CartShopHolderData && any.cartString == cartString) {
-                return index
-            }
-        }
-
-        return RecyclerView.NO_POSITION
-    }
-
     fun notifyWishlist(productId: String, isWishlist: Boolean) {
-        for (any in cartDataList) {
+        outerloop@ for (any in cartDataList) {
             if (any is CartWishlistHolderData) {
                 val wishlist = any.wishList
                 for (data in wishlist) {
@@ -937,10 +932,10 @@ class CartAdapter constructor(
                         cartWishlistAdapter?.let {
                             cartWishlistAdapter?.notifyItemChanged(wishlist.indexOf(data))
                         }
-                        break
+                        break@outerloop
                     }
                 }
-                break
+                break@outerloop
             }
         }
     }
@@ -983,7 +978,7 @@ class CartAdapter constructor(
     }
 
     fun notifyRecentView(productId: String, isWishlist: Boolean) {
-        for (any in cartDataList) {
+        outerloop@ for (any in cartDataList) {
             if (any is CartRecentViewHolderData) {
                 val recentViews = any.recentViewList
                 for (data in recentViews) {
@@ -992,10 +987,10 @@ class CartAdapter constructor(
                         cartRecentViewAdapter?.let {
                             cartRecentViewAdapter?.notifyItemChanged(recentViews.indexOf(data))
                         }
-                        break
+                        break@outerloop
                     }
                 }
-                break
+                break@outerloop
             }
         }
     }
@@ -1091,6 +1086,12 @@ class CartAdapter constructor(
                             }
                             toBeUpdatedIndices.add(index)
                         }
+                    }
+                }
+                data is CartItemHolderData -> {
+                    if (cartIds.contains(data.cartId)) {
+                        toBeRemovedItems.add(data)
+                        toBeRemovedIndices.add(index)
                     }
                 }
                 hasReachAllShopItems(data) -> break@loop

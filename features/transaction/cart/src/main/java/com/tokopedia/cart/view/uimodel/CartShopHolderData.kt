@@ -31,7 +31,6 @@ data class CartShopHolderData(
     var isCollapsible: Boolean = false,
     var isCollapsed: Boolean = false,
     var clickedCollapsedProductIndex: Int = -1,
-    var isNeedToRefreshWeight: Boolean = false,
     var isError: Boolean = false,
     var promoCodes: List<String> = emptyList(),
     var shopShipments: List<ShopShipment> = emptyList(),
@@ -87,7 +86,6 @@ data class CartShopHolderData(
             isCollapsible = this.isCollapsible,
             isCollapsed = this.isCollapsed,
             clickedCollapsedProductIndex = this.clickedCollapsedProductIndex,
-            isNeedToRefreshWeight = this.isNeedToRefreshWeight,
             isError = this.isError,
             promoCodes = this.promoCodes.toMutableList(),
             shopShipments = this.shopShipments.toMutableList(),
@@ -116,7 +114,7 @@ data class CartShopHolderData(
 }
 
 data class CartShopBottomHolderData(
-    val shopData: CartShopHolderData
+    var shopData: CartShopHolderData
 )
 
 data class CartShopGroupTickerData(

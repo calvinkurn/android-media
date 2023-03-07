@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
@@ -68,7 +67,6 @@ import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cart.view.bottomsheet.showSummaryTransactionBottomsheet
 import com.tokopedia.cart.view.compoundview.CartToolbar
 import com.tokopedia.cart.view.compoundview.CartToolbarListener
-import com.tokopedia.cart.view.compoundview.CartToolbarView
 import com.tokopedia.cart.view.compoundview.CartToolbarWithBackView
 import com.tokopedia.cart.view.decorator.CartItemDecoration
 import com.tokopedia.cart.view.di.DaggerCartComponent
@@ -264,7 +262,7 @@ class CartFragment :
     private var hasTriedToLoadRecentViewList: Boolean = false
     private var shouldReloadRecentViewList: Boolean = false
     private var hasTriedToLoadRecommendation: Boolean = false
-    private var isToolbarWithBackButton = true
+    private val isToolbarWithBackButton = true
     private var delayShowPromoButtonJob: Job? = null
     private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
@@ -882,8 +880,16 @@ class CartFragment :
         if (topItemPosition >= adapterData.size) return
 
         val firstVisibleItemData = adapterData[topItemPosition]
-        if (firstVisibleItemData is CartSelectAllHolderData || firstVisibleItemData is TickerAnnouncementHolderData || firstVisibleItemData is CartChooseAddressHolderData || firstVisibleItemData is CartItemTickerErrorHolderData || firstVisibleItemData is CartShopHolderData || firstVisibleItemData is CartItemHolderData || firstVisibleItemData is ShipmentSellerCashbackModel) {
-            if (!cartAdapter.allAvailableCartItemData.isEmpty()) {
+        if (firstVisibleItemData is CartSelectAllHolderData ||
+            firstVisibleItemData is TickerAnnouncementHolderData ||
+            firstVisibleItemData is CartChooseAddressHolderData ||
+            firstVisibleItemData is CartItemTickerErrorHolderData ||
+            firstVisibleItemData is CartShopHolderData ||
+            firstVisibleItemData is CartItemHolderData ||
+            firstVisibleItemData is CartShopBottomHolderData ||
+            firstVisibleItemData is ShipmentSellerCashbackModel
+        ) {
+            if (cartAdapter.allAvailableCartItemData.isNotEmpty()) {
                 if (binding?.topLayout?.root?.visibility == View.GONE) setTopLayoutVisibility(true)
             }
         } else {
@@ -995,23 +1001,13 @@ class CartFragment :
         activity?.let {
             val statusBarBackground = binding?.statusBarBg
 
-            val args = arguments?.getString(CartFragment::class.java.simpleName)
-            if (args?.isNotEmpty() == true) {
-                isToolbarWithBackButton = false
-            }
+//            val args = arguments?.getString(CartFragment::class.java.simpleName)
+//            if (args?.isNotEmpty() == true) {
+//                isToolbarWithBackButton = false
+//            }
 
             if (isToolbarWithBackButton) {
                 statusBarBackground?.hide()
-            } else {
-                when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                        statusBarBackground?.visibility = View.INVISIBLE
-                    }
-
-                    else -> {
-                        statusBarBackground?.show()
-                    }
-                }
             }
 
             binding?.navToolbar?.apply {
@@ -1034,8 +1030,6 @@ class CartFragment :
 
                 if (isToolbarWithBackButton) {
                     setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                } else {
-                    setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
                 }
             }
         }
@@ -1053,10 +1047,10 @@ class CartFragment :
     @SuppressLint("ObsoleteSdkInt")
     private fun initBasicToolbar(view: View) {
         activity?.let {
-            val args = arguments?.getString(CartFragment::class.java.simpleName)
-            if (args?.isNotEmpty() == true) {
-                isToolbarWithBackButton = false
-            }
+//            val args = arguments?.getString(CartFragment::class.java.simpleName)
+//            if (args?.isNotEmpty() == true) {
+//                isToolbarWithBackButton = false
+//            }
 
             val appbar = binding?.toolbarCart
             val statusBarBackground = binding?.statusBarBg
@@ -1065,17 +1059,6 @@ class CartFragment :
             if (isToolbarWithBackButton) {
                 toolbar = toolbarRemoveWithBackView() as CartToolbar
                 statusBarBackground?.hide()
-            } else {
-                toolbar = toolbarRemoveView() as CartToolbar
-                when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                        statusBarBackground?.visibility = View.INVISIBLE
-                    }
-
-                    else -> {
-                        statusBarBackground?.show()
-                    }
-                }
             }
             toolbar.let {
                 appbar?.addView(toolbar as View)
@@ -1087,16 +1070,6 @@ class CartFragment :
     private fun toolbarRemoveWithBackView(): CartToolbarWithBackView? {
         activity?.let {
             return CartToolbarWithBackView(it).apply {
-                listener = this@CartFragment
-            }
-        }
-
-        return null
-    }
-
-    private fun toolbarRemoveView(): CartToolbarView? {
-        activity?.let {
-            return CartToolbarView(it).apply {
                 listener = this@CartFragment
             }
         }
@@ -1568,7 +1541,7 @@ class CartFragment :
     }
 
     override fun impressionMultipleBundle(
-        selectedMultipleBundle: com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+        selectedMultipleBundle: BundleDetailUiModel
     ) {
         cartPageAnalytics.eventViewCartBundlingBottomSheetBundle(
             userSession.userId,
@@ -1594,13 +1567,6 @@ class CartFragment :
         cartAdapter.notifyRecentView(productId, false)
     }
 
-    private fun onSuccessAddWishlist(productId: String) {
-        showToastMessageGreen(getString(R.string.toast_message_add_wishlist_success))
-        cartAdapter.notifyByProductId(productId, true)
-        cartAdapter.notifyWishlist(productId, true)
-        cartAdapter.notifyRecentView(productId, true)
-    }
-
     private fun onSuccessAddWishlistV2(
         result: AddToWishlistV2Response.Data.WishlistAddV2,
         productId: String
@@ -1620,13 +1586,6 @@ class CartFragment :
         cartAdapter.notifyByProductId(productId, true)
         cartAdapter.notifyWishlist(productId, true)
         cartAdapter.notifyRecentView(productId, true)
-    }
-
-    private fun onSuccessRemoveWishlist(productId: String) {
-        showToastMessageGreen(getString(R.string.toast_message_remove_wishlist_success))
-        cartAdapter.notifyByProductId(productId, false)
-        cartAdapter.removeWishlist(productId)
-        cartAdapter.notifyRecentView(productId, false)
     }
 
     private fun onSuccessRemoveWishlistV2(
@@ -2250,12 +2209,11 @@ class CartFragment :
 
     override fun onCartShopGroupTickerRefreshClicked(
         index: Int,
-        cartShopHolderData: CartShopHolderData
+        cartShopBottomHolderData: CartShopBottomHolderData
     ) {
-        cartShopHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
-        cartShopHolderData.isNeedToRefreshWeight = true
+        cartShopBottomHolderData.shopData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
         onNeedToUpdateViewItem(index)
-        dPresenter.checkCartShopGroupTicker(cartShopHolderData)
+        dPresenter.checkCartShopGroupTicker(cartShopBottomHolderData.shopData)
     }
 
     override fun onViewCartShopGroupTicker(cartShopHolderData: CartShopHolderData) {
@@ -2442,12 +2400,10 @@ class CartFragment :
         if (index >= 0) {
             val shopHeaderData = groupData.first()
             if (shopHeaderData is CartShopHolderData) {
-                shopHeaderData.isNeedToRefreshWeight = true
                 onNeedToUpdateViewItem(index)
             }
             val shopBottomData = groupData.last()
             if (shopBottomData is CartShopBottomHolderData) {
-                shopBottomData.shopData.isNeedToRefreshWeight = true
                 checkCartShopGroupTicker(shopBottomData.shopData)
                 onNeedToUpdateViewItem(index + groupData.lastIndex)
             }
@@ -3568,9 +3524,8 @@ class CartFragment :
         } else {
             showToastMessageGreen(
                 message,
-                getString(R.string.toaster_cta_cancel),
-                View.OnClickListener { onUndoDeleteClicked(deletedCartIds) }
-            )
+                getString(R.string.toaster_cta_cancel)
+            ) { onUndoDeleteClicked(deletedCartIds) }
         }
 
         val needRefresh = removeAllItems || isFromEditBundle

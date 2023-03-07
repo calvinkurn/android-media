@@ -126,7 +126,7 @@ class CartShopBottomViewHolder(
                         cartShopTickerRightIcon.show()
                         layoutCartShopTicker.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50))
                         layoutCartShopTicker.setOnClickListener {
-                            actionListener.onCartShopGroupTickerRefreshClicked(adapterPosition, cartShopBottomHolderData.shopData)
+                            actionListener.onCartShopGroupTickerRefreshClicked(adapterPosition, cartShopBottomHolderData)
                         }
                         layoutCartShopTicker.show()
                     }
