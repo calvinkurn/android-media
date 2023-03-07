@@ -1,22 +1,23 @@
 package com.tokopedia.play.broadcaster.ui.viewholder
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.play.broadcaster.databinding.ViewPlayBroBannerBinding
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
-import com.tokopedia.play.broadcaster.view.custom.banner.PlayBroBannerView
 
 class PlayBroadcastPreparationBannerViewHolder(
-    private val view: PlayBroBannerView,
+    private val view: ViewPlayBroBannerBinding,
     private val listener: PlayBroadcastPreparationBannerAdapter.BannerListener,
-) : RecyclerView.ViewHolder(view) {
+) : RecyclerView.ViewHolder(view.root) {
 
     fun bindData(item: PlayBroadcastPreparationBannerModel) {
         view.apply {
-            title = item.title
-            description = item.description
-            bannerIcon = item.icon
-            setOnClickListener { listener.onBannerClick(item) }
+            tvTitle.text = item.title
+            tvDescription.text = item.description
+            icBanner.setImage(item.icon)
+            root.setOnClickListener { listener.onBannerClick(item) }
         }
     }
 
@@ -25,7 +26,11 @@ class PlayBroadcastPreparationBannerViewHolder(
             parent: ViewGroup,
             listener: PlayBroadcastPreparationBannerAdapter.BannerListener
         ) = PlayBroadcastPreparationBannerViewHolder(
-            PlayBroBannerView(parent.context),
+            ViewPlayBroBannerBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            ),
             listener,
         )
     }
