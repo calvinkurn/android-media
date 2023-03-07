@@ -61,6 +61,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
 /**
  * Created By : Muhammad Furqan on 01/02/23
  */
+@Suppress("DEPRECATION")
 class FeedFragment :
     BaseDaggerFragment(),
     FeedListener,
@@ -105,9 +106,9 @@ class FeedFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            data = it.getParcelable(ARGUMENT_DATA, FeedDataModel::class.java)
+            data = it.getParcelable(ARGUMENT_DATA)
         } ?: savedInstanceState?.let {
-            data = it.getParcelable(ARGUMENT_DATA, FeedDataModel::class.java)
+            data = it.getParcelable(ARGUMENT_DATA)
         }
     }
 
