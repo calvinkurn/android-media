@@ -48,6 +48,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private var adapter: FeedPagerAdapter? = null
 
+    private var liveApplink: String = ""
+    private var profileApplink: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
@@ -70,7 +73,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        feedMainViewModel.fetchFeedTabs()
 
         observeFeedTabData()
         observeCreateContentBottomSheetData()
@@ -158,17 +160,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun onResume() {
         super.onResume()
-        if (userSession.isLoggedIn) {
-            binding?.let {
-                it.btnFeedCreatePost.show()
-                it.feedUserProfileImage.show()
-            }
-        } else {
-            binding?.let {
-                it.btnFeedCreatePost.hide()
-                it.feedUserProfileImage.hide()
-            }
-        }
+        feedMainViewModel.fetchFeedTabs()
     }
 
     private fun initView(data: FeedTabsModel) {
@@ -177,15 +169,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
             it.vpFeedTabItemsContainer.adapter = adapter
             it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                    OnPageChangeCallback() {
-                    override fun onPageScrolled(
-                        position: Int,
-                        positionOffset: Float,
-                        positionOffsetPixels: Int
-                    ) {
-                        onChangeTab(position)
-                    }
-                })
+                OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    onChangeTab(position)
+                }
+            })
 
             var firstTabData: FeedDataModel? = null
             var secondTabData: FeedDataModel? = null
@@ -217,8 +209,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                 it.tyFeedSecondTab.hide()
             }
 
-            if (data.meta.showMyProfile && data.meta.profilePhotoUrl.isNotEmpty()) {
-                it.feedUserProfileImage.setImageUrl(data.meta.profilePhotoUrl)
+            if (data.meta.showMyProfile) {
+                if (data.meta.profilePhotoUrl.isNotEmpty())
+                    it.feedUserProfileImage.setImageUrl(data.meta.profilePhotoUrl)
                 it.feedUserProfileImage.setOnClickListener { _ ->
                     RouteManager.route(it.root.context, data.meta.profileApplink)
                 }
@@ -237,6 +230,18 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
             it.feedUserProfileImage.setOnClickListener {
                 onNavigateToProfile()
+            }
+
+            if (data.meta.showCreatePost) {
+                it.btnFeedCreatePost.show()
+            } else {
+                it.btnFeedCreatePost.hide()
+            }
+
+            if (data.meta.showLive) {
+                it.btnFeedLive.show()
+            } else {
+                it.btnFeedLive.hide()
             }
         }
     }
@@ -289,11 +294,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun onNavigateToLive() {
-        Toast.makeText(context, "Navigate to Live", Toast.LENGTH_SHORT).show()
+        context?.let {
+            RouteManager.route(it, liveApplink)
+        }
     }
 
     private fun onNavigateToProfile() {
-        Toast.makeText(context, "Navigate to Profile", Toast.LENGTH_SHORT).show()
+        context?.let {
+            RouteManager.route(it, profileApplink)
+        }
     }
 
     companion object {

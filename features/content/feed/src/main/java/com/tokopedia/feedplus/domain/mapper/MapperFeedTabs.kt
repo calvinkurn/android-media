@@ -21,18 +21,21 @@ object MapperFeedTabs {
                 profileApplink = header.data.userProfile.applink,
                 profileWeblink = header.data.userProfile.weblink,
                 profilePhotoUrl = header.data.userProfile.image,
-                showMyProfile = header.data.userProfile.isShown
+                showMyProfile = header.data.userProfile.isShown,
+                showCreatePost = header.data.creation.isActive,
+                showLive = header.data.live.isActive,
+                liveApplink = header.data.live.applink
             ),
-            data = header.data?.tab?.items?.sortedBy { it.position }
-                ?.filter { it.isActive ?: false }?.map {
-                FeedDataModel(
-                    title = it.title,
-                    key = it.key,
-                    type = it.type,
-                    position = it.position,
-                    isActive = it.isActive
-                )
-            }
+            data = header.data.tab.items.sortedBy { it.position }
+                .filter { it.isActive }.map {
+                    FeedDataModel(
+                        title = it.title,
+                        key = it.key,
+                        type = it.type,
+                        position = it.position,
+                        isActive = it.isActive
+                    )
+                }
         )
 
     fun getCreationBottomSheetData(header: FeedXHeader): List<ContentCreationItem> =
