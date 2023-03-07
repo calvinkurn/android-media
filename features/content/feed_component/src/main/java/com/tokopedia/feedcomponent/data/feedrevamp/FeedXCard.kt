@@ -118,7 +118,8 @@ data class FeedXCard(
 ) : ImpressHolder() {
 
     val isTypeProductHighlight: Boolean
-        get() = typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
+        get() = typename ==
+            TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
 
     val isTypeVOD: Boolean
         get() = typename == TYPE_FEED_X_CARD_VOD

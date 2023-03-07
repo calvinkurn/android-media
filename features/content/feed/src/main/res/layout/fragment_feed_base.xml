@@ -9,16 +9,16 @@
         android:id="@+id/vp_feed_tab_items_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/Unify_Static_Black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/black" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:layout_width="0dp"
         android:id="@+id/bg_overlay"
-        android:layout_height="80dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@color/bottomsheetunify_overlay"
         app:layout_constraintBottom_toBottomOf="@id/view_feed_tab_indicator"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,27 +41,29 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/ty_feed_for_you_tab"
+        android:id="@+id/ty_feed_first_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="28dp"
         android:text="@string/feed_for_you_label"
         android:textColor="@color/Unify_NN0"
+        app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
         app:layout_constraintStart_toEndOf="@id/btn_feed_create_post"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_1"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/ty_feed_following_tab"
+        android:id="@+id/ty_feed_second_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="28dp"
         android:text="@string/feed_following_label"
         android:textColor="@color/Unify_NN0"
-        app:layout_constraintStart_toEndOf="@id/ty_feed_for_you_tab"
+        app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
+        app:layout_constraintStart_toEndOf="@id/ty_feed_first_tab"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_1"
         app:typographyWeight="bold" />
@@ -72,19 +74,20 @@
         android:layout_height="2dp"
         android:layout_marginTop="6dp"
         android:background="@color/Unify_Static_White"
-        app:layout_constraintEnd_toEndOf="@id/ty_feed_for_you_tab"
-        app:layout_constraintStart_toStartOf="@id/ty_feed_for_you_tab"
-        app:layout_constraintTop_toBottomOf="@id/ty_feed_for_you_tab" />
+        app:layout_constraintEnd_toEndOf="@id/ty_feed_first_tab"
+        app:layout_constraintStart_toStartOf="@id/ty_feed_first_tab"
+        app:layout_constraintTop_toBottomOf="@id/ty_feed_first_tab" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_feed_live"
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:layout_marginEnd="12dp"
         android:layout_marginTop="28dp"
+        android:layout_marginEnd="12dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="VIDEO"
+        app:layout_constraintBottom_toBottomOf="@id/btn_feed_create_post"
         app:layout_constraintEnd_toStartOf="@id/feed_user_profile_image"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -93,7 +96,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/label_live_feed"
-        android:layout_marginTop="28dp"
         android:text="@string/feed_live_label"
         android:textAlignment="center"
         android:textColor="@color/Unify_NN0"

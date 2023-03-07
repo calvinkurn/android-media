@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.feedcomponent.presentation.utils.EndlessScrollRecycleListener
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
@@ -39,7 +40,7 @@ class FeedPlusAdapter(
     // used to determine dynamicPostViewHolder.setVideo
     var broadcastValueForDynamicPost = ""
 
-    private val endlessScrollListener = object : com.tokopedia.feedplus.oldFeed.view.util.EndlessScrollRecycleListener() {
+    private val endlessScrollListener = object : EndlessScrollRecycleListener() {
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
             if (isLoading)
                 return

@@ -13,7 +13,6 @@ import com.tokopedia.content.common.usecase.GetWhiteListUseCase
 import com.tokopedia.feedplus.data.FeedXHeader
 import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
 import com.tokopedia.feedplus.domain.usecase.FeedXHeaderUseCase
-import com.tokopedia.feedplus.oldFeed.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.presentation.model.ContentCreationItem
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreatorType
@@ -24,6 +23,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.withContext
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -41,14 +41,20 @@ class FeedMainViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
 ) : ViewModel(), OnboardingPreferences by onboardingPreferences {
 
+    private val _isInClearView = MutableLiveData<Boolean>(false)
+    val isInClearView: LiveData<Boolean>
+        get() = _isInClearView
+
     private val _feedTabs = MutableLiveData<Result<FeedTabsModel>>()
-    private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
     val feedTabs: LiveData<Result<FeedTabsModel>>
         get() = _feedTabs
+
+    private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
     val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
         get() = _reportResponse
 
-    private val _feedCreateContentBottomSheetData = MutableLiveData<Result<List<ContentCreationTypeItem>>>()
+    private val _feedCreateContentBottomSheetData =
+        MutableLiveData<Result<List<ContentCreationTypeItem>>>()
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
 
@@ -68,14 +74,14 @@ class FeedMainViewModel @Inject constructor(
     }
 
     fun checkLoginStatus() {
-        _feedTabs.value = when (val result = _feedTabs.value) {
-            is Success -> result.copy(
-                data = result.data.copy(
-                    meta = result.data.meta.login(userSession.isLoggedIn)
-                )
-            )
-            else -> result
-        }
+//        _feedTabs.value = when (val result = _feedTabs.value) {
+//            is Success -> result.copy(
+//                data = result.data.copy(
+//                    meta = result.data.meta.login(userSession.isLoggedIn)
+//                )
+//            )
+//            else -> result
+//        }
     }
 
     private suspend fun getWhiteList(): GetCheckWhitelistResponse {
@@ -92,11 +98,14 @@ class FeedMainViewModel @Inject constructor(
 
     fun fetchFeedTabs() {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            feedXHeaderUseCase.setRequestParams(
-                FeedXHeaderUseCase.createParam()
-            )
-            val response = feedXHeaderUseCase.executeOnBackground()
+            val response = withContext(dispatchers.io) {
+                feedXHeaderUseCase.setRequestParams(
+                    FeedXHeaderUseCase.createParam()
+                )
+                feedXHeaderUseCase.executeOnBackground()
+            }
             _feedTabs.value = Success(MapperFeedTabs.transform(response.feedXHeaderData))
+
             handleCreationData(
                 MapperFeedTabs.getCreationBottomSheetData(
                     response.feedXHeaderData
@@ -108,6 +117,30 @@ class FeedMainViewModel @Inject constructor(
         }
     }
 
+    fun reportContent(feedReportRequestParamModel: FeedReportRequestParamModel) {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val response = withContext(dispatchers.io) {
+                submitReportUseCase.setRequestParams(
+                    FeedComplaintSubmitReportUseCase.createParam(
+                        feedReportRequestParamModel
+                    )
+                )
+                submitReportUseCase.executeOnBackground()
+            }
+            if (response.data.success.not()) {
+                throw MessageErrorException("Error in Reporting")
+            } else {
+                _reportResponse.value = Success(response)
+            }
+        }) {
+            _reportResponse.value = Fail(it)
+        }
+    }
+
+    fun toggleClearView(clearView: Boolean) {
+        _isInClearView.value = clearView
+    }
+
     private fun handleCreationData(creationDataList: List<ContentCreationItem>) {
         val authorUserdataList = creationDataList.find { it.type == CreatorType.USER }?.items
         val authorShopDataList = creationDataList.find { it.type == CreatorType.SHOP }?.items
@@ -116,40 +149,5 @@ class FeedMainViewModel @Inject constructor(
             (authorUserdataList?.filter { it.isActive ?: false } ?: emptyList()) +
                 (authorShopDataList?.filter { it.isActive ?: false } ?: emptyList()).distinct()
         _feedCreateContentBottomSheetData.value = Success(creatorList)
-    }
-    fun reportContent(feedReportRequestParamModel: FeedReportRequestParamModel) {
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            submitReportUseCase.setRequestParams(
-                FeedComplaintSubmitReportUseCase.createParam(
-                    feedReportRequestParamModel
-                )
-            )
-            val response = submitReportUseCase.executeOnBackground()
-            if (response.data.success.not()) {
-                throw MessageErrorException("Error in Reporting")
-            } else {
-                _reportResponse.postValue(Success(response))
-            }
-        }) {
-            _reportResponse.postValue(Fail(it))
-        }
-    }
-
-    private fun getWhitelistDomain(query: GetCheckWhitelistResponse?): WhitelistDomain {
-        return if (query == null) {
-            WhitelistDomain.Empty
-        } else {
-            WhitelistDomain(
-                error = query.whitelist.error,
-                url = query.whitelist.url,
-                isWhitelist = query.whitelist.isWhitelist,
-                title = query.whitelist.title,
-                desc = query.whitelist.description,
-                titleIdentifier = query.whitelist.titleIdentifier,
-                postSuccessMessage = query.whitelist.postSuccessMessage,
-                image = query.whitelist.imageUrl,
-                authors = query.whitelist.authors
-            )
-        }
     }
 }
