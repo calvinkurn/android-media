@@ -45,6 +45,7 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        clearContentPadding = true
         val itemView = View.inflate(
             context,
             R.layout.bottom_sheet_power_merchant_deactivation, null
