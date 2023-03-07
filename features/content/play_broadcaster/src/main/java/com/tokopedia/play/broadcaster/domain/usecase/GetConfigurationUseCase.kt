@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_SHOP
@@ -10,6 +12,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterAuthorConfigResponse
+import com.tokopedia.play_common.util.device.PlayDeviceSpec
 import javax.inject.Inject
 
 /**
@@ -17,7 +20,9 @@ import javax.inject.Inject
  */
 @GqlQuery(GetConfigurationUseCase.QUERY_NAME, GetConfigurationUseCase.QUERY_BROADCASTER_GET_AUTHOR_CONFIG)
 class GetConfigurationUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
+    graphqlRepository: GraphqlRepository,
+    private val deviceSpec: PlayDeviceSpec,
+    private val gson: Gson,
 ) : GraphqlUseCase<GetBroadcasterAuthorConfigResponse>(graphqlRepository) {
 
     init {
@@ -34,7 +39,8 @@ class GetConfigurationUseCase @Inject constructor(
                 TYPE_SHOP -> VALUE_TYPE_ID_SHOP
                 else -> 0
             },
-            PARAMS_WITH_CHANNEL_STATE to VALUE_WITH_CHANNEL_STATE
+            PARAMS_WITH_CHANNEL_STATE to VALUE_WITH_CHANNEL_STATE,
+            PARAMS_DEVICE_SPECS to generateDeviceSpecJson()
         )
         setRequestParams(request)
     }
@@ -44,12 +50,48 @@ class GetConfigurationUseCase @Inject constructor(
         return executeOnBackground()
     }
 
+    private fun generateDeviceSpecJson(): String {
+        val deviceSpec = DeviceSpecModel(
+            deviceType = deviceSpec.deviceType,
+            androidSpecs = DeviceSpecModel.Info(
+                apiLevel = deviceSpec.api,
+                totalRam = deviceSpec.totalRam,
+                chipset = deviceSpec.chipset,
+                manufacturer = deviceSpec.manufacture,
+            )
+        )
+
+        return gson.toJson(deviceSpec)
+    }
+
+    data class DeviceSpecModel(
+        @SerializedName("device_type")
+        val deviceType: String,
+        @SerializedName("android_specs")
+        val androidSpecs: Info,
+    ) {
+        data class Info(
+            @SerializedName("api_level")
+            val apiLevel: Int,
+            @SerializedName("total_ram")
+            val totalRam: Long,
+            @SerializedName("chipset")
+            val chipset: String,
+            @SerializedName("manufacturer")
+            val manufacturer: String,
+        )
+    }
+
     companion object {
         private const val PARAMS_AUTHOR_ID = "authorID"
         private const val PARAMS_AUTHOR_TYPE = "authorType"
         private const val PARAMS_WITH_CHANNEL_STATE = "withChannelState"
+        private const val PARAMS_DEVICE_SPECS = "deviceSpecs"
+
         private const val VALUE_WITH_CHANNEL_STATE = true
+
         const val QUERY_NAME = "GetConfigurationUseCaseQuery"
+        /** TODO: dont forget to add PARAMS_DEVICE_SPECS in this QUERY */
         const val QUERY_BROADCASTER_GET_AUTHOR_CONFIG = """
             query BroadcasterGetAuthorConfig(
                 ${"$$PARAMS_AUTHOR_ID"}: Int64!, 

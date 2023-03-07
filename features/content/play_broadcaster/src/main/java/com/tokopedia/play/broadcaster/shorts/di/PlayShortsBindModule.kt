@@ -39,6 +39,8 @@ import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogC
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
+import com.tokopedia.play_common.util.device.PlayDeviceSpec
+import com.tokopedia.play_common.util.device.PlayDeviceSpecImpl
 import dagger.Binds
 import dagger.Module
 
@@ -181,4 +183,11 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindHydraConfigStore(configStore: HydraConfigStoreImpl): HydraConfigStore
+
+    /**
+     * Device SPec
+     */
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayDeviceSpec(playDeviceSpec: PlayDeviceSpecImpl): PlayDeviceSpec
 }
