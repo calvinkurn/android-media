@@ -39,7 +39,6 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -89,8 +88,7 @@ class RechargeCCFragment :
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
     RechargeCCClientNumberWidget.CreditCardActionListener,
-    RechargeCCBankListWidget.RechargeCCBankListListener
-{
+    RechargeCCBankListWidget.RechargeCCBankListListener {
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var rechargeSubmitCCViewModel: RechargeSubmitCCViewModel
     private lateinit var saveInstanceManager: SaveInstanceCacheManager
@@ -407,7 +405,8 @@ class RechargeCCFragment :
 
         RechargeCCPromoFragment.newInstance(
             RechargeCCMapper.mapRechargeCCPromoToTopupPromo(promos),
-            isShowTitle
+            isShowTitle,
+            getRechargeCCPromoItemListener()
         ).also {
             menuTab.add(TopupBillsTabItem(it, PROMO_LIST_LABEL))
         }
@@ -423,8 +422,19 @@ class RechargeCCFragment :
             for (item in menuTab) {
                 ccTabLayout.addNewTab(item.title)
             }
-            ccTabLayout.getUnifyTabLayout().addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            ccTabLayout.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
+                    if (tab.position == RECENT_TRANSACTION_POSITION) {
+                        creditCardAnalytics.sendClickLastTransactionTabEvent(
+                            rechargeCCViewModel.categoryName,
+                            rechargeCCViewModel.loyaltyStatus
+                        )
+                    } else if (tab.position == PROMO_LIST_POSITION) {
+                        creditCardAnalytics.sendClickPromoTabEvent(
+                            rechargeCCViewModel.categoryName,
+                            rechargeCCViewModel.loyaltyStatus
+                        )
+                    }
                     ccViewPager.setCurrentItem(tab.position, true)
                 }
 
@@ -470,8 +480,7 @@ class RechargeCCFragment :
         }
     }
 
-
-    private fun getRechargeCCRecentNumberListener() = object: TopupBillsRecentNumberListener {
+    private fun getRechargeCCRecentNumberListener() = object : TopupBillsRecentNumberListener {
         override fun onClickRecentNumber(
             topupBillsRecommendation: TopupBillsRecommendation,
             categoryId: String,
@@ -485,10 +494,26 @@ class RechargeCCFragment :
                 token = topupBillsRecommendation.token
                 dialogConfirmation()
             }
+            creditCardAnalytics.sendClickLastTransactionListEvent(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.loyaltyStatus,
+                position
+            )
         }
 
         override fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>) {
-            // TODO: tracker analytics
+            // do nothing
+        }
+    }
+
+    private fun getRechargeCCPromoItemListener() = object : RechargeCCPromoFragment.RechargeCCPromoItemListener {
+        override fun onCopiedPromoCode(promoId: String, voucherCode: String, position: Int) {
+            creditCardAnalytics.sendClickSalinPromoDigitalEvent(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.loyaltyStatus,
+                voucherCode,
+                position
+            )
         }
     }
 
@@ -925,6 +950,8 @@ class RechargeCCFragment :
         const val RECHARGE_CC_PAGE_PERFORMANCE = "dg_tagihan_cc_pdp"
         const val PROMO_LIST_LABEL = "Promo"
         const val RECENT_TRANSACTION_LABEL = "Transaksi Terakhir"
+        const val RECENT_TRANSACTION_POSITION = 0
+        const val PROMO_LIST_POSITION = 1
 
         const val REQUEST_CODE_CART = 1000
         const val REQUEST_CODE_LOGIN = 1001

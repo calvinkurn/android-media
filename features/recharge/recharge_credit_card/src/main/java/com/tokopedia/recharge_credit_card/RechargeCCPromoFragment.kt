@@ -15,18 +15,24 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
+import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.databinding.FragmentRechargeCcPromoBinding
 import com.tokopedia.recharge_credit_card.di.RechargeCCComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class RechargeCCPromoFragment: BaseDaggerFragment(), TopupBillsPromoListWidget.ActionListener {
+class RechargeCCPromoFragment(
+    private val listener: RechargeCCPromoItemListener
+) : BaseDaggerFragment(), TopupBillsPromoListWidget.ActionListener {
 
     private var binding by autoClearedNullable<FragmentRechargeCcPromoBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var creditCardAnalytics: CreditCardAnalytics
 
     private var promoList: ArrayList<TopupBillsPromo> = arrayListOf()
     private var showTitle = true
@@ -73,7 +79,7 @@ class RechargeCCPromoFragment: BaseDaggerFragment(), TopupBillsPromoListWidget.A
         }
     }
 
-    override fun onCopiedPromoCode(promoId: String, voucherCode: String) {
+    override fun onCopiedPromoCode(promoId: String, voucherCode: String, position: Int) {
         binding?.promoListWidget?.notifyPromoItemChanges(promoId)
         activity?.let {
             val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -90,11 +96,16 @@ class RechargeCCPromoFragment: BaseDaggerFragment(), TopupBillsPromoListWidget.A
                     Snackbar.LENGTH_LONG
                 ).show()
             }
+            listener.onCopiedPromoCode(promoId, voucherCode, position)
         }
     }
 
     override fun onTrackImpressionPromoList(topupBillsTrackPromoList: List<TopupBillsTrackPromo>) {
         // do nothing
+    }
+
+    interface RechargeCCPromoItemListener {
+        fun onCopiedPromoCode(promoId: String, voucherCode: String, position: Int)
     }
 
     companion object {
@@ -104,8 +115,12 @@ class RechargeCCPromoFragment: BaseDaggerFragment(), TopupBillsPromoListWidget.A
 
         const val CLIP_DATA_VOUCHER_CODE_DIGITAL = "digital_telco_clip_data_promo"
 
-        fun newInstance(promos: List<TopupBillsPromo>, showTitle: Boolean = true): RechargeCCPromoFragment {
-            val fragment = RechargeCCPromoFragment()
+        fun newInstance(
+            promos: List<TopupBillsPromo>,
+            showTitle: Boolean = true,
+            listener: RechargeCCPromoItemListener
+        ): RechargeCCPromoFragment {
+            val fragment = RechargeCCPromoFragment(listener)
             val bundle = Bundle().apply {
                 putParcelableArrayList(EXTRA_PARAM_PROMO, ArrayList(promos))
                 putBoolean(EXTRA_PARAM_SHOW_TITLE, showTitle)
