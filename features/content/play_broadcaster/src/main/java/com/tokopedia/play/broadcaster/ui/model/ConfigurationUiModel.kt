@@ -20,6 +20,7 @@ data class ConfigurationUiModel(
     val countDown: Long, // second
     val scheduleConfig: BroadcastScheduleConfigUiModel,
     val tnc: List<TermsAndConditionUiModel>,
+    val beautificationConfig: BeautificationConfigUiModel,
 ) : Parcelable
 
 @Parcelize
@@ -49,3 +50,40 @@ data class BroadcastScheduleConfigUiModel(
     val maximum: Date,
     val default: Date
 ) : Parcelable
+
+@Parcelize
+data class BeautificationConfigUiModel(
+    val license: String,
+    val model: String,
+    val customFace: CustomFace,
+    val presets: List<Preset>,
+) : Parcelable {
+
+    @Parcelize
+    data class CustomFace(
+        val assetAndroid: String,
+        val menu: List<Menu>,
+    ) : Parcelable {
+
+        @Parcelize
+        data class Menu(
+            val name: String,
+            val minValue: Double,
+            val maxValue: Double,
+            val defaultValue: Double,
+            val value: Double,
+        ) : Parcelable
+    }
+
+    @Parcelize
+    data class Preset(
+        val name: String,
+        val active: Boolean,
+        val minValue: Double,
+        val maxValue: Double,
+        val defaultValue: Double,
+        val value: Double,
+        val urlIcon: String,
+        val assetLink: String,
+    ) : Parcelable
+}

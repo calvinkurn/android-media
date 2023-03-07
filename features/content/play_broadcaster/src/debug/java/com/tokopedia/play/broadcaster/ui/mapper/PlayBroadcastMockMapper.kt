@@ -129,6 +129,34 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             tnc = listOf(
                 TermsAndConditionUiModel("Gak ada izin"),
                 TermsAndConditionUiModel("Gak ada izin sama sekali"),
+            ),
+            beautificationConfig = BeautificationConfigUiModel(
+                license = "license.bag",
+                model = "model.bag",
+                customFace = BeautificationConfigUiModel.CustomFace(
+                    assetAndroid = "asset_android.zip",
+                    menu = List(5) {
+                        BeautificationConfigUiModel.CustomFace.Menu(
+                            name = "Custom Face $it",
+                            minValue = it * 0.1,
+                            maxValue = it * 0.1,
+                            defaultValue = it * 0.1,
+                            value = it * 0.1,
+                        )
+                    }
+                ),
+                presets = List(5) {
+                    BeautificationConfigUiModel.Preset(
+                        name = "Preset $it",
+                        active = false,
+                        minValue = it * 0.1,
+                        maxValue = it * 0.1,
+                        defaultValue = it * 0.1,
+                        value = it * 0.1,
+                        urlIcon = "urlIcon $it",
+                        assetLink = "assetLink $it",
+                    )
+                }
             )
         )
     }

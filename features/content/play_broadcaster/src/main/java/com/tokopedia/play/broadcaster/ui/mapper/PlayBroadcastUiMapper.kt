@@ -150,6 +150,34 @@ class PlayBroadcastUiMapper @Inject constructor(
             tnc = config.tnc.map {
                 TermsAndConditionUiModel(desc = it.description)
             },
+            beautificationConfig = BeautificationConfigUiModel(
+                license = config.beautificationConfig.license,
+                model = config.beautificationConfig.model,
+                customFace = BeautificationConfigUiModel.CustomFace(
+                    assetAndroid = config.beautificationConfig.customFace.assetAndroid,
+                    menu = config.beautificationConfig.customFace.menu.map { menu ->
+                        BeautificationConfigUiModel.CustomFace.Menu(
+                            name = menu.name,
+                            minValue = menu.minValue,
+                            maxValue = menu.maxValue,
+                            defaultValue = menu.defaultValue,
+                            value = menu.value,
+                        )
+                    }
+                ),
+                presets = config.beautificationConfig.presets.map { preset ->
+                    BeautificationConfigUiModel.Preset(
+                        name = preset.name,
+                        active = preset.active,
+                        minValue = preset.minValue,
+                        maxValue = preset.maxValue,
+                        defaultValue = preset.defaultValue,
+                        value = preset.value,
+                        urlIcon = preset.urlIcon,
+                        assetLink = preset.assetLink,
+                    )
+                }
+            )
         )
     }
 
