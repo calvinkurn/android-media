@@ -46,8 +46,13 @@ data class CartGeneralPromoListBusinessData(
     @SerializedName("message")
     val message: String = String.EMPTY,
     @SerializedName("custom_response")
-    val customResponse: CartGeneralBusinessDataCustomResponse = CartGeneralBusinessDataCustomResponse()
-)
+    val nullableCustomResponse: CartGeneralBusinessDataCustomResponse? = CartGeneralBusinessDataCustomResponse()
+) {
+
+    val customResponse: CartGeneralBusinessDataCustomResponse
+        get() = nullableCustomResponse ?: CartGeneralBusinessDataCustomResponse()
+
+}
 
 data class CartGeneralBusinessDataCustomResponse(
     @SerializedName("title")

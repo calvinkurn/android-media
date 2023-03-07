@@ -137,7 +137,7 @@ data class CartListBusinessBreakdown(
     @SerializedName("business_id")
     val businessId: String = String.EMPTY,
     @SerializedName("custom_response")
-    val customResponse: CartListBusinessBreakdownCustomResponse = CartListBusinessBreakdownCustomResponse(),
+    val nullableCustomResponse: CartListBusinessBreakdownCustomResponse? = CartListBusinessBreakdownCustomResponse(),
     @SerializedName("total_bill")
     val totalBill: Double = 0.0,
     @SerializedName("total_bill_fmt")
@@ -146,7 +146,12 @@ data class CartListBusinessBreakdown(
     val product: CartListBusinessBreakdownProduct = CartListBusinessBreakdownProduct(),
     @SerializedName("add_ons")
     val addOns: List<CartListBusinessBreakdownAddOns> = listOf()
-)
+) {
+
+    val customResponse: CartListBusinessBreakdownCustomResponse
+        get() = nullableCustomResponse ?: CartListBusinessBreakdownCustomResponse()
+
+}
 
 data class CartListBusinessBreakdownCustomResponse(
     @SerializedName("hide_summary")
@@ -174,8 +179,13 @@ data class CartListBusinessBreakdownAddOns(
     @SerializedName("price_fmt")
     val priceFmt: String = String.EMPTY,
     @SerializedName("custom_response")
-    val customResponse: CartListAddOnsCustomResponse = CartListAddOnsCustomResponse()
-)
+    val nullableCustomResponse: CartListAddOnsCustomResponse? = CartListAddOnsCustomResponse()
+) {
+
+    val customResponse: CartListAddOnsCustomResponse
+        get() = nullableCustomResponse ?: CartListAddOnsCustomResponse()
+
+}
 
 data class CartListAddOnsCustomResponse(
     @SerializedName("info")
@@ -208,7 +218,7 @@ data class CartListBusinessData(
     @SerializedName("additional_grouping")
     val additionalGrouping: CartListBusinessDataAdditionalGrouping = CartListBusinessDataAdditionalGrouping(),
     @SerializedName("custom_response")
-    val customResponse: CartListBusinessDataCustomResponse = CartListBusinessDataCustomResponse(),
+    val nullableCustomResponse: CartListBusinessDataCustomResponse? = CartListBusinessDataCustomResponse(),
     @SerializedName("cart_groups")
     val cartGroups: List<CartListBusinessDataCartGroup>? = listOf()
 ) {
@@ -216,6 +226,9 @@ data class CartListBusinessData(
     companion object {
         private const val POPUP_TYPE_PROMO = "promo"
     }
+
+    val customResponse: CartListBusinessDataCustomResponse
+        get() = nullableCustomResponse ?: CartListBusinessDataCustomResponse()
 
     fun isPromoPopupType(): Boolean = customResponse.popupMessageType == POPUP_TYPE_PROMO
 
@@ -363,8 +376,13 @@ data class CartListBusinessDataBottomSheet(
     @SerializedName("terms_and_condition")
     val termsAndCondition: String = String.EMPTY,
     @SerializedName("buttons")
-    val buttons: List<CartListBusinessDataBottomSheetButton> = listOf()
-): Parcelable
+    val nullableButtons: List<CartListBusinessDataBottomSheetButton>? = listOf()
+): Parcelable {
+
+    val buttons: List<CartListBusinessDataBottomSheetButton>
+        get() = nullableButtons ?: listOf()
+
+}
 
 @Parcelize
 data class CartListBusinessDataBottomSheetButton(
@@ -494,12 +512,17 @@ data class CartListCartGroupCart(
     @SerializedName("metadata")
     val metadata: CartListCartMetadata = CartListCartMetadata(),
     @SerializedName("custom_response")
-    val customResponse: CartListCartGroupCartCustomResponse = CartListCartGroupCartCustomResponse(),
+    val nullableCustomResponse: CartListCartGroupCartCustomResponse? = CartListCartGroupCartCustomResponse(),
     @SerializedName("price")
     val price: Double = 0.0,
     @SerializedName("price_fmt")
     val priceFmt: String = String.EMPTY
-)
+) {
+
+    val customResponse: CartListCartGroupCartCustomResponse
+        get() = nullableCustomResponse ?: CartListCartGroupCartCustomResponse()
+
+}
 
 data class CartListCartMetadata(
     @SerializedName("notes")
