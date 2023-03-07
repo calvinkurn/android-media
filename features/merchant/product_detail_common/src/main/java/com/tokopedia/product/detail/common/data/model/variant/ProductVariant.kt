@@ -123,6 +123,10 @@ data class ProductVariant(
             null
         }
 
+    fun getVariantGuideline(
+        sizeIdentifier: Boolean
+    ): String = if (sizeIdentifier && sizeChart.isNotEmpty()) sizeChart else ""
+
     fun autoSelectedOptionIds(): List<String> {
         val listOfOptionAutoSelectedId = children.filter {
             it.isBuyable
