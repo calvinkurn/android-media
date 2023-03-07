@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.utils.RemoteConfig
 import com.tokopedia.reviewcommon.R
 import com.tokopedia.reviewcommon.databinding.WidgetReviewMediaVideoThumbnailBinding
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
@@ -28,13 +29,15 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         true
     )
     private val listener: ViewListeners = ViewListeners()
-    private val reviewVideoPlayer = ReviewVideoPlayer(
-        context = context,
-        minBufferDuration = 50,
-        maxBufferDuration = 50,
-        minPlaybackStartBuffer = 50,
-        minPlaybackResumeBuffer = 50
-    )
+    private val reviewVideoPlayer by lazy {
+        ReviewVideoPlayer(
+            context = context,
+            minBufferDuration = 50,
+            maxBufferDuration = 50,
+            minPlaybackStartBuffer = 50,
+            minPlaybackResumeBuffer = 50
+        )
+    }
     private var uiState: ReviewMediaVideoThumbnailUiState? = null
 
     init {
@@ -48,7 +51,9 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        reviewVideoPlayer.cleanupVideoPlayer()
+        if (!RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
+            reviewVideoPlayer.cleanupVideoPlayer()
+        }
     }
 
     override fun onReviewVideoPlayerIsPlaying() {
@@ -88,6 +93,36 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     }
 
     private fun WidgetReviewMediaVideoThumbnailBinding.setupVideoThumbnail(
+        uiState: ReviewMediaVideoThumbnailUiState
+    ) {
+        if (RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
+            setupVideoThumbnailWithGlide(uiState)
+            playerViewReviewMediaVideoThumbnail.gone()
+            ivReviewMediaVideoThumbnail.show()
+        } else {
+            setupVideoThumbnailWithExoPlayer(uiState)
+            playerViewReviewMediaVideoThumbnail.show()
+            ivReviewMediaVideoThumbnail.gone()
+        }
+    }
+
+    private fun WidgetReviewMediaVideoThumbnailBinding.setupVideoThumbnailWithGlide(
+        uiState: ReviewMediaVideoThumbnailUiState
+    ) {
+        binding.loaderReviewMediaVideoThumbnail.show()
+        binding.ivReviewMediaVideoThumbnail.loadImage(uiState.url) {
+            listener(onSuccess = { _, _ ->
+                onReviewVideoPlayerIsPaused()
+            }, onError = {
+                onReviewVideoPlayerError("")
+            })
+        }
+        icReviewMediaVideoThumbnailPlayButton.showWithCondition(
+            uiState is ReviewMediaVideoThumbnailUiState.Showing && uiState.playable
+        )
+    }
+
+    private fun WidgetReviewMediaVideoThumbnailBinding.setupVideoThumbnailWithExoPlayer(
         uiState: ReviewMediaVideoThumbnailUiState
     ) {
         binding.loaderReviewMediaVideoThumbnail.show()

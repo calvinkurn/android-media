@@ -1,6 +1,7 @@
 package com.tokopedia.media.loader.module
 
 import android.content.Context
+import android.graphics.Bitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.Registry
@@ -11,6 +12,8 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.media.loader.modelloader.M3U8ModelLoaderFactory
+import com.tokopedia.media.loader.utils.RemoteConfig
 import okhttp3.OkHttpClient
 import java.io.InputStream
 
@@ -35,6 +38,9 @@ class LoaderGlideModule: AppGlideModule() {
         }
         val okHttpLoaderFactory = OkHttpUrlLoader.Factory(okHttpClient.build())
         registry.replace(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
+        if (RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
+            registry.prepend(String::class.java, Bitmap::class.java, M3U8ModelLoaderFactory())
+        }
     }
 
     override fun isManifestParsingEnabled(): Boolean {

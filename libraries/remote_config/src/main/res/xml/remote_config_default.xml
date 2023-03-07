@@ -654,4 +654,8 @@
         <key>android_robust_tester</key>
         <value></value>
     </entry>
+    <entry>
+        <key>android_enable_m3u8_thumbnail_loader</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>
