@@ -2,6 +2,9 @@ package com.tokopedia.sellerorder.requestpickup.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +16,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -40,6 +42,7 @@ import com.tokopedia.sellerorder.requestpickup.util.DateMapper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
@@ -208,6 +211,8 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         binding?.run {
             shopAddress.text = confirmReqPickupResponse.dataSuccess.pickupLocation.address
             shopPhone.text = confirmReqPickupResponse.dataSuccess.pickupLocation.phone
+            setInvoiceNumber(confirmReqPickupResponse.dataSuccess.detail.invoice)
+
             if (confirmReqPickupResponse.dataSuccess.detail.listShippers.isNotEmpty()) {
                 val shipper = confirmReqPickupResponse.dataSuccess.detail.listShippers[0]
                 ivCourier.loadImageWithoutPlaceholder(shipper.courierImg)
@@ -225,6 +230,8 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 } else {
                     tvCourierNotes.text = getString(R.string.courier_option_schedule, confirmReqPickupResponse.dataSuccess.detail.orchestraPartner)
                 }
+
+
             }
 
             if (confirmReqPickupResponse.dataSuccess.notes.listNotes.isNotEmpty()) {
@@ -384,6 +391,23 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         currSchedulePickupKey = scheduleTime.key
         binding?.tvSchedule?.text = "${scheduleTime.day}, $formattedTime"
         currSchedulePickupTime = "${scheduleTime.day}, $formattedTime"
+    }
+
+    private fun setInvoiceNumber(invoiceNumber: String) {
+        if (invoiceNumber.isNotEmpty()) {
+            binding?.tvInvoiceNumber?.text = invoiceNumber
+            binding?.maskTriggerInvoiceNumber?.setOnClickListener {
+                onTextCopied(getString(R.string.invoice_label), invoiceNumber)
+            }
+        } else {
+            binding?.btnCopyInvoiceNumber?.visibility = View.GONE
+        }
+    }
+
+    private fun onTextCopied(label: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
+        Toaster.build(requireView(), getString(R.string.success_invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
     }
 
 }

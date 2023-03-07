@@ -1,95 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/general_info_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="16dp"
-    tools:ignore="RtlSymmetry">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/info_separator"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_pdp_general_info_desc" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ViewStub
+        android:id="@+id/vs_general_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingTop="16dp"
-        android:paddingRight="16dp">
+        android:layout="@layout/item_dynamic_info_content" />
 
-        <ImageView
-            android:id="@+id/pdp_icon"
-            android:layout_width="24dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/pdp_info_title"
-            app:layout_constraintEnd_toStartOf="@+id/pdp_info_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
-            tools:src="@drawable/ic_product_fintech_qr_normal_24"
-            tools:visibility="visible"
-            android:contentDescription="pdp_icon" />
-
-        <ImageView
-            android:id="@+id/pdp_arrow_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/pdp_general_info_desc_detail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
-            app:srcCompat="@drawable/ic_arrow_right_info"
-            tools:visibility="visible"
-            android:contentDescription="pdp_arrow_right" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/pdp_info_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
-            app:layout_constraintStart_toEndOf="@+id/pdp_icon"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_1"
-            app:typographyWeight="bold"
-            tools:text="Varian Produk"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/pdp_info_desc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="@dimen/unify_space_8"
-            android:lineSpacingExtra="@dimen/pdp_dp_3"
-            android:textColor="@color/Unify_N700_68"
-            app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
-            app:typographyType="display_2"
-            tools:text="@string/ktp_protection" />
-
-        <include
-            android:id="@+id/pdp_general_info_desc_detail"
-            layout="@layout/item_protection_partner_info_detail"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pdp_info_desc" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</LinearLayout>
+</FrameLayout>

@@ -10,14 +10,13 @@ class WishlistV2EmptyStateViewHolder(private val binding: WishlistV2EmptyStateIt
 
     fun bind(item: WishlistV2TypeLayoutData) {
         if (item.dataObject is WishlistV2EmptyStateData) {
-            binding.wishlistV2EmptyState.setImageUrl(itemView.context.getString(item.dataObject.img))
-            binding.wishlistV2EmptyState.setTitle(itemView.context.getString(item.dataObject.title))
             binding.wishlistV2EmptyState.apply {
+                setImageUrl(itemView.context.getString(item.dataObject.img))
+                setTitle(itemView.context.getString(item.dataObject.title))
                 setDescription(itemView.context.getString(item.dataObject.desc))
                 setPrimaryCTAText(itemView.context.getString(item.dataObject.btnText))
                 setPrimaryCTAClickListener { actionListener?.onResetFilter() }
             }
-
         }
     }
 }

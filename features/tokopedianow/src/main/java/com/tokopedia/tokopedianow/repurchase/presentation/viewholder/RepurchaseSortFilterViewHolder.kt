@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.repurchase.presentation.viewholder
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -112,8 +112,7 @@ class RepurchaseSortFilterViewHolder(
                 com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
             )
         }
-        val gridLayoutParams = binding?.sortFilter?.layoutParams
-            as? StaggeredGridLayoutManager.LayoutParams
+        val gridLayoutParams = binding?.sortFilter?.layoutParams as? GridLayoutManager.LayoutParams
         gridLayoutParams?.marginStart = marginStart
         binding?.sortFilter?.layoutParams = gridLayoutParams
     }

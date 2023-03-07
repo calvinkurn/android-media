@@ -1,8 +1,9 @@
 package com.tokopedia.searchbar.navigation_component.domain
 
 object QueryNotification {
+    private const val PARAM_INPUT = "input"
     val query: String = "" +
-            "query Notification {\n" +
+            "query Notification($$PARAM_INPUT: NotificationRequest) {\n" +
             "                  status\n" +
             "                  userShopInfo {\n" +
             "                    info {\n" +
@@ -10,7 +11,7 @@ object QueryNotification {
             "                    }\n" +
             "                  }\n" +
             "\n" +
-            "                  notifications(){\n" +
+            "                  notifications($PARAM_INPUT: $$PARAM_INPUT){\n" +
             "                  \ttotal_cart\n" +
             "                    inbox {\n" +
             "                      talk\n" +

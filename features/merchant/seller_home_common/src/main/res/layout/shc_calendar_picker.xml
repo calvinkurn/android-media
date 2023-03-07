@@ -17,14 +17,14 @@
             android:id="@+id/edtStcStartDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
             android:layout_weight="1" />
 
         <com.tokopedia.sellerhomecommon.presentation.view.customview.DateTextFieldView
             android:id="@+id/edtStcEndDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
             android:layout_weight="1" />
     </LinearLayout>
 
@@ -34,7 +34,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/tickerStcCalendarPicker"
         android:layout_below="@+id/containerStcSelectedDate"
-        android:layout_marginTop="@dimen/layout_lvl2" />
+        android:layout_marginTop="16dp" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/tickerStcCalendarPicker"

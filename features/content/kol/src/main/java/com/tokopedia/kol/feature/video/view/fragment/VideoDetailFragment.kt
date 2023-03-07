@@ -30,17 +30,17 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.getCallingIntent
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kol.common.util.resize
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.videoplayer.utils.Video
 import kotlinx.android.synthetic.main.layout_single_video_fragment.*
 import javax.inject.Inject
 
@@ -128,7 +128,7 @@ class VideoDetailFragment :
         mediaPlayer?.let { player ->
             activity?.let { it ->
                 //video player resize
-                val videoSize = Video.resize(it, player.videoWidth, player.videoHeight)
+                val videoSize = resize(it, player.videoWidth, player.videoHeight)
                 videoView.setSize(videoSize.videoWidth, videoSize.videoHeight)
                 videoView.holder.setFixedSize(videoSize.videoWidth, videoSize.videoHeight)
 
@@ -157,7 +157,7 @@ class VideoDetailFragment :
                         if (::dynamicPostViewModel.isInitialized)
                             calculateTotalComment(
                                 it.getIntExtra(
-                                    KolCommentFragment.ARGS_TOTAL_COMMENT,
+                                    COMMENT_ARGS_TOTAL_COMMENT,
                                     0
                                 )
                             )
@@ -270,7 +270,7 @@ class VideoDetailFragment :
                 MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
                     Toast.makeText(
                         requireContext(),
-                        getString(com.tokopedia.videoplayer.R.string.error_unknown),
+                        getString(R.string.kol_error_unknown),
                         Toast.LENGTH_SHORT
                     ).show()
                     activity?.finish()
@@ -321,7 +321,7 @@ class VideoDetailFragment :
     private fun onLikeSectionClicked(): View.OnClickListener {
         return View.OnClickListener {
             if (userSession.isLoggedIn) {
-                presenter.likeKol(id.toInt(), 0, this)
+                presenter.likeKol(id.toLongOrZero(), 0, this)
             } else {
                 goToLogin()
             }
@@ -339,7 +339,7 @@ class VideoDetailFragment :
                 if (callSource == PARAM_FEED) {
                     val intent = getCallingIntent(
                         requireContext(),
-                        id.toInt(),
+                        id.toIntOrZero(),
                         0,
                         authorId,
                         isFollowed,
@@ -349,10 +349,13 @@ class VideoDetailFragment :
 
                 } else {
                     startActivityForResult(
-                        KolCommentActivity.getCallingIntent(
+                        KolCommentNewActivity.getCallingIntent(
                             requireActivity(),
-                            id.toInt(),
-                            0
+                            id.toIntOrZero(),
+                            0,
+                            authorId,
+                            isFollowed,
+                            postType
                         ), INTENT_COMMENT
                     )
                 }
@@ -444,7 +447,7 @@ class VideoDetailFragment :
                         String.format(
                             "%s",
                             desc?.replace("%s", feedXCard.author.name),
-                        ), feedXCard.author.name + " `post"
+                        ), feedXCard.author.name + " post"
                     )
                 }
             shareText.setOnClickListener {
@@ -452,7 +455,7 @@ class VideoDetailFragment :
                         String.format(
                                 "%s",
                                 desc?.replace("%s", feedXCard.author.name),
-                        ), feedXCard.author.name + " `post"
+                        ), feedXCard.author.name + " post"
                 )
             }
 

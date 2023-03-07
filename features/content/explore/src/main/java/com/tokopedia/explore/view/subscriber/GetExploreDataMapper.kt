@@ -8,8 +8,8 @@ import com.tokopedia.explore.view.type.ExploreCardType
 import com.tokopedia.explore.view.type.ExploreCardType.Companion.getCardTypeByString
 import com.tokopedia.explore.view.uimodel.ExploreCategoryViewModel
 import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import java.util.*
 
 /**
@@ -31,7 +31,7 @@ object GetExploreDataMapper {
     private fun convertToKolPostViewModel(postKol: PostKol, pos: Int): ExploreImageViewModel {
         val content = getContent(postKol)
         return ExploreImageViewModel(
-                postKol.id.toIntOrZero(),
+                postKol.id,
                 postKol.userName,
                 getImageUrl(content),
                 pos,
@@ -66,16 +66,16 @@ object GetExploreDataMapper {
 
     private fun convertToCategoryViewModel(category: Category): ExploreCategoryViewModel {
         return ExploreCategoryViewModel(
-                category.id.toIntOrZero(),
+                category.id.toLongOrZero(),
                 category.name
         )
     }
 
-    private fun convertToTrackingViewModel(trackingList: List<Tracking>): List<TrackingViewModel> {
-        val trackingViewModelList: MutableList<TrackingViewModel> = ArrayList()
+    private fun convertToTrackingViewModel(trackingList: List<Tracking>): List<TrackingModel> {
+        val trackingModelList: MutableList<TrackingModel> = ArrayList()
         for ((clickURL, viewURL, type, source, viewType, recomID) in trackingList) {
-            trackingViewModelList.add(
-                    TrackingViewModel(
+            trackingModelList.add(
+                    TrackingModel(
                             clickURL,
                             viewURL,
                             type,
@@ -85,7 +85,7 @@ object GetExploreDataMapper {
                     )
             )
         }
-        return trackingViewModelList
+        return trackingModelList
     }
 
 }

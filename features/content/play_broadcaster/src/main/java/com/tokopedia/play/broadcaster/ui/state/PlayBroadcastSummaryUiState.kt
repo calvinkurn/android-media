@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.state
 
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
@@ -21,11 +22,12 @@ data class ChannelSummaryUiState(
     val date: String,
     val duration: String,
     val isEligiblePostVideo: Boolean,
+    val author: ContentAccountUiModel,
 ) {
     fun isEmpty() = title.isEmpty() && coverUrl.isEmpty() && date.isEmpty() && duration.isEmpty() && !isEligiblePostVideo
 
     companion object {
-        fun empty() = ChannelSummaryUiState("", "", "", "", false)
+        fun empty() = ChannelSummaryUiState("", "", "", "", false, ContentAccountUiModel.Empty)
     }
 }
 

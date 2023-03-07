@@ -1,0 +1,224 @@
+{
+  "data": {
+    "orderFilterSom": {
+      "status_list": [
+        {
+          "order_status_id": [
+            220
+          ],
+          "key": "new_order",
+          "order_status": "Pesanan Baru",
+          "order_status_amount": 2,
+          "is_checked": false,
+          "child_status": []
+        },
+        {
+          "order_status_id": [
+            400,
+            520
+          ],
+          "key": "confirm_shipping",
+          "order_status": "Siap Dikirim",
+          "order_status_amount": 39,
+          "is_checked": false,
+          "child_status": []
+        },
+        {
+          "order_status_id": [
+            450,
+            500,
+            501,
+            530,
+            540,
+            550,
+            600
+          ],
+          "key": "in_shipping",
+          "order_status": "Dalam Pengiriman",
+          "order_status_amount": 15,
+          "is_checked": false,
+          "child_status": [
+            {
+              "id": [
+                450
+              ],
+              "key": "waiting_pickup",
+              "text": "Menunggu Pick-Up",
+              "amount": 12,
+              "is_checked": false
+            },
+            {
+              "id": [
+                500
+              ],
+              "key": "shipped",
+              "text": "Sedang Dikirim",
+              "amount": 0,
+              "is_checked": false
+            },
+            {
+              "id": [
+                501
+              ],
+              "key": "waiting_awb_status",
+              "text": "Menunggu Status Resi",
+              "amount": 3,
+              "is_checked": false
+            },
+            {
+              "id": [
+                530
+              ],
+              "key": "awb_changed",
+              "text": "Resi Diubah",
+              "amount": 0,
+              "is_checked": false
+            },
+            {
+              "id": [
+                540
+              ],
+              "key": "ready_to_collect",
+              "text": "Menunggu Pengambilan",
+              "amount": 0,
+              "is_checked": false
+            },
+            {
+              "id": [
+                550
+              ],
+              "key": "order_returned",
+              "text": "Produk Dikembalikan",
+              "amount": 0,
+              "is_checked": false
+            },
+            {
+              "id": [
+                600
+              ],
+              "key": "delivered",
+              "text": "Pesanan Tiba",
+              "amount": 0,
+              "is_checked": false
+            }
+          ]
+        },
+        {
+          "order_status_id": [
+            601
+          ],
+          "key": "complaint",
+          "order_status": "Dikomplain",
+          "order_status_amount": 3,
+          "is_checked": false,
+          "child_status": []
+        },
+        {
+          "order_status_id": [
+            690,
+            691,
+            695,
+            698,
+            699,
+            700,
+            701
+          ],
+          "key": "done",
+          "order_status": "Pesanan Selesai",
+          "order_status_amount": 0,
+          "is_checked": false,
+          "child_status": []
+        },
+        {
+          "order_status_id": [
+            0,
+            4,
+            6,
+            10,
+            11,
+            15
+          ],
+          "key": "order_canceled",
+          "order_status": "Dibatalkan",
+          "order_status_amount": 0,
+          "is_checked": false,
+          "child_status": [
+            {
+              "id": [
+                15
+              ],
+              "key": "buyer_instant_cancel",
+              "text": "Dibatalkan Pembeli",
+              "amount": 0,
+              "is_checked": false
+            },
+            {
+              "id": [
+                10
+              ],
+              "key": "seller_reject",
+              "text": "Dibatalkan Penjual",
+              "amount": 0,
+              "is_checked": false
+            },
+            {
+              "id": [
+                0,
+                4,
+                6,
+                11
+              ],
+              "key": "system_reject",
+              "text": "Dibatalkan Sistem",
+              "amount": 0,
+              "is_checked": false
+            }
+          ]
+        }
+      ]
+    },
+    "orderTypeList": [
+      {
+        "id": 2,
+        "key": "same_day",
+        "name": "Sameday Delivery"
+      },
+      {
+        "id": 9,
+        "key": "next_day",
+        "name": "Nextday Delivery"
+      },
+      {
+        "id": 3,
+        "key": "pickup_delivery",
+        "name": "Request Pickup"
+      },
+      {
+        "id": 1,
+        "key": "pre_order",
+        "name": "Pre Order"
+      },
+      {
+        "id": 10,
+        "key": "request_cancel",
+        "name": "Pengajuan Pembatalan"
+      },
+      {
+        "id": 8,
+        "key": "cod",
+        "name": "Bayar di Tempat"
+      },
+      {
+        "id": 11,
+        "key": "dilayani_tokopedia",
+        "name": "Dilayani Tokopedia"
+      },
+      {
+        "id": 12,
+        "key": "non_dilayani_tokopedia",
+        "name": "Non-Dilayani Tokopedia"
+      }
+    ],
+    "status": "OK"
+  }
+}

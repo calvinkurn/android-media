@@ -3,12 +3,11 @@ package com.tokopedia.notifications.data
 import android.app.Application
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.notifications.PushController
+import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.data.model.Amplification
 import com.tokopedia.notifications.data.model.AmplificationNotifier
 import com.tokopedia.notifications.domain.AmplificationUseCase
-import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.utils.NextFetchCacheManager
 import com.tokopedia.user.session.UserSession
@@ -75,7 +74,7 @@ object AmplificationDataSource {
     private fun pushData(application: Application, amplification: Amplification) {
         if (amplification.pushData.isNotEmpty()) {
             amplification.pushData.forEach {
-                PushController(application).handleNotificationAmplification(it)
+                CMPushNotificationManager.instance.handleNotificationJsonPayload(it, true)
             }
         }
     }
@@ -83,7 +82,7 @@ object AmplificationDataSource {
     private fun inAppData(amplification: Amplification) {
         if (amplification.inAppData.isNotEmpty()) {
             amplification.inAppData.forEach {
-                CMInAppManager.getInstance().handleCMInAppAmplificationData(it)
+                CMPushNotificationManager.instance.handleInAppJsonPayload(it, true)
             }
         }
     }

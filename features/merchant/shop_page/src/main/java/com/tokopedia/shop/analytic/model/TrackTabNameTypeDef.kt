@@ -1,7 +1,5 @@
 package com.tokopedia.shop.analytic.model
 
-import androidx.annotation.StringDef
-import com.tokopedia.shop.analytic.model.TrackTabNameTypeDef
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 

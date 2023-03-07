@@ -3,6 +3,6 @@
     android:name="com.tokopedia.imagepicker_insta.fragment.ImagePickerInstaMainFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/imagepicker_insta_empty_bg">
+    android:background="@color/Unify_NN100">
 
 </fragment>

@@ -36,31 +36,34 @@ data class EventMetaDataCheckout(
         @SerializedName("quantity")
         @Expose
         val quantity: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Int = 0
+        val totalPrice: Long = 0
 )
 
 data class ItemMapCheckout(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("base_price")
         @Expose
-        val basePrice:Int = 0,
-        @SuppressLint("Invalid Data Type")
+        val basePrice: Long = 0,
         @SerializedName("category_id")
         @Expose
         val categoryId:Long = 0,
         @SerializedName("child_category_ids")
         @Expose
         val childCategoryIds:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("commission")
         @Expose
-        val commission: Int = 0,
+        val commission: Long = 0,
         @SerializedName("commission_type")
         @Expose
         val commissionType:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("currency_price")
         @Expose
-        val currencyPrice: Int = 0,
+        val currencyPrice: Long = 0,
         @SerializedName("description")
         @Expose
         val description:String = "",
@@ -73,11 +76,9 @@ data class ItemMapCheckout(
         @SerializedName("error")
         @Expose
         val error:String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("flag_id")
         @Expose
         val flagId:Long = 0,
-        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
         val id:Long = 0,
@@ -120,7 +121,7 @@ data class ItemMapCheckout(
         @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
-        val price: Int = 0,
+        val price: Long = 0,
         @SerializedName("product_app_url")
         @Expose
         val productAppUrl:String = "",
@@ -162,9 +163,10 @@ data class ItemMapCheckout(
         @SerializedName("start_time")
         @Expose
         val startTime:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Int = 0,
+        val totalPrice: Long = 0,
         @SerializedName("product_web_url")
         @Expose
         val productWebUrl:String = "",

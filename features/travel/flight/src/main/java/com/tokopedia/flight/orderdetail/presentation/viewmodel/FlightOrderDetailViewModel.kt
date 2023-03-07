@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery
+import com.tokopedia.common.travel.data.QueryTravelCrossSelling
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
 import com.tokopedia.flight.cancellation.data.FlightCancellationResponseEntity
@@ -32,14 +32,15 @@ import javax.inject.Inject
 /**
  * @author by furqan on 19/10/2020
  */
-class FlightOrderDetailViewModel @Inject constructor(private val userSession: UserSessionInterface,
-                                                     private val orderDetailUseCase: FlightOrderDetailUseCase,
-                                                     private val getInvoiceEticketUseCase: FlightOrderDetailGetInvoiceEticketUseCase,
-                                                     private val crossSellUseCase: TravelCrossSellingUseCase,
-                                                     private val orderDetailCancellationMapper: FlightOrderDetailCancellationMapper,
-                                                     private val flightAnalytics: FlightAnalytics,
-                                                     private val dispatcherProvider: CoroutineDispatchers)
-    : BaseViewModel(dispatcherProvider.io) {
+class FlightOrderDetailViewModel @Inject constructor(
+    private val userSession: UserSessionInterface,
+    private val orderDetailUseCase: FlightOrderDetailUseCase,
+    private val getInvoiceEticketUseCase: FlightOrderDetailGetInvoiceEticketUseCase,
+    private val crossSellUseCase: TravelCrossSellingUseCase,
+    private val orderDetailCancellationMapper: FlightOrderDetailCancellationMapper,
+    private val flightAnalytics: FlightAnalytics,
+    private val dispatcherProvider: CoroutineDispatchers
+) : BaseViewModel(dispatcherProvider.io) {
 
     var orderId: String = ""
 
@@ -107,7 +108,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
 
     fun fetchCrossSellData() {
         launch(dispatcherProvider.main) {
-            mutableCrossSell.postValue(crossSellUseCase.execute(TravelCrossSellingGQLQuery.QUERY_CROSS_SELLING,
+            mutableCrossSell.postValue(crossSellUseCase.execute(QueryTravelCrossSelling(),
                     orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT))
         }
     }

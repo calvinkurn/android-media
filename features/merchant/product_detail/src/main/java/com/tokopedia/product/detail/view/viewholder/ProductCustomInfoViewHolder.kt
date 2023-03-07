@@ -1,99 +1,136 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import android.view.ViewGroup.LayoutParams
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicCustomInfoBinding
+import com.tokopedia.product.detail.databinding.ItemDynamicInfoContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 /**
  * Created by Yehezkiel on 13/08/20
+ * ViewHolder is used to display information whose data source is from p1
+ * component-type: custom_info
+ * component-name:
+ *     - palugada_hampers
+ *     - info_donation
+ *     - restricted_categories
+ *     - tokonow_usp
+ *     - palugada
+ *     - obat_keras
+ *     - pet_disclaimer
+ *     - imei
  */
-class ProductCustomInfoViewHolder(val view: View,
-                                  private val listener: DynamicProductDetailListener)
-    : AbstractViewHolder<ProductCustomInfoDataModel>(view) {
+class ProductCustomInfoViewHolder(
+    val view: View,
+    private val listener: DynamicProductDetailListener
+) : ProductDetailPageViewHolder<ProductCustomInfoDataModel>(view) {
 
     companion object {
+
         val LAYOUT = R.layout.item_dynamic_custom_info
     }
 
     private val binding = ItemDynamicCustomInfoBinding.bind(view)
+    private val contentBinding by lazyThreadSafetyNone {
+        ItemDynamicInfoContentBinding.bind(binding.vsCustomInfo.inflate())
+    }
 
-    override fun bind(element: ProductCustomInfoDataModel) {
-        if (element.title.isEmpty() && element.icon.isEmpty()) {
-            binding.customDesc.setMargin(0, 0, 8.toPx(), 0)
+    override fun bind(element: ProductCustomInfoDataModel) = with(binding) {
+        if (element.shouldRenderContent) {
+            root.setLayoutHeight(LayoutParams.WRAP_CONTENT)
+            contentBinding.renderContent(element = element)
         } else {
-            binding.customDesc.setMargin(0, 4.toPx(), 8.toPx(), 0)
-            impressComponent(element)
-        }
-
-        renderSeparator(element.separator)
-        renderTitle(element.title, element.icon)
-        renderDescription(element.description)
-        renderLabel(element.getLabelTypeByColor(), element.labelValue)
-        setupApplink(element.applink, element.title, getComponentTrackData(element))
-    }
-
-    private fun renderLabel(labelColor: Int, labelValue: String) {
-        binding.labelCustomInfo.run {
-            setLabel(labelValue)
-            setLabelType(labelColor)
-            showWithCondition(labelValue.isNotEmpty())
+            root.setLayoutHeight(0)
         }
     }
 
-    private fun impressComponent(element: ProductCustomInfoDataModel) {
-        val componentTrack = getComponentTrackData(element)
-        itemView.addOnImpressionListener(element.impressHolder) {
+    /**
+     * show or not [ProductCustomInfoViewHolder] view
+     */
+    private fun ItemDynamicInfoContentBinding.renderContent(element: ProductCustomInfoDataModel) {
+        impressComponent(element = element)
+
+        setWidgetContent(element = element)
+
+        setupAppLink(element = element)
+    }
+
+
+    private fun ItemDynamicInfoContentBinding.impressComponent(element: ProductCustomInfoDataModel) {
+        root.addOnImpressionListener(holder = element.impressHolder) {
+            val componentTrack = getComponentTrackData(element)
             listener.onImpressComponent(componentTrack)
-            listener.showCustomInfoCoachMark(element.name, binding.customImage)
         }
     }
 
-    private fun renderSeparator(separator: String) = with(binding) {
-        topSeparator.showWithCondition(separator == ProductCustomInfoDataModel.SEPARATOR_BOTH || separator == ProductCustomInfoDataModel.SEPARATOR_TOP)
-        bottomSeparator.showWithCondition(separator == ProductCustomInfoDataModel.SEPARATOR_BOTH || separator == ProductCustomInfoDataModel.SEPARATOR_BOTTOM)
-    }
-
-    private fun setupApplink(applink: String, title: String, componentTrackData: ComponentTrackDataModel) = with(binding) {
-        if (applink.isNotEmpty()) {
-            customLabelCheck.show()
-            view.setOnClickListener {
-                listener.onBbiInfoClick(applink, title, componentTrackData)
+    /**
+     * show label `see` and set event click if appLink is not empty
+     */
+    private fun ItemDynamicInfoContentBinding.setupAppLink(element: ProductCustomInfoDataModel) {
+        infoSeeMore.showIfWithBlock(predicate = element.applink.isNotBlank()) {
+            setOnClickListener {
+                listener.onBbiInfoClick(
+                    url = element.applink,
+                    title = element.title,
+                    componentTrackDataModel = getComponentTrackData(element = element)
+                )
             }
-        } else {
-            customLabelCheck.hide()
-            view.setOnClickListener {}
         }
     }
 
-    private fun renderDescription(description: String) = with(binding) {
-        customDesc.shouldShowWithAction(description.isNotEmpty()) {
-            customDesc.text = HtmlLinkHelper(view.context, description).spannedString
+    /**
+     * render widget content with condition
+     */
+    private fun ItemDynamicInfoContentBinding.setWidgetContent(element: ProductCustomInfoDataModel) {
+        renderHeader(element = element)
+
+        renderDescription(element = element)
+
+        renderLabel(element = element)
+
+        renderSeparator(element = element)
+    }
+
+    private fun ItemDynamicInfoContentBinding.renderHeader(element: ProductCustomInfoDataModel) {
+        val isDarkModel = root.context.isDarkMode()
+        val iconUrl = element.getIconUrl(isDarkModel = isDarkModel)
+
+        infoImage.showIfWithBlock(predicate = iconUrl.isNotBlank()) { loadIcon(iconUrl) }
+        infoTitle.showIfWithBlock(predicate = element.title.isNotEmpty()) { text = element.title }
+        infoHeaderContainer.showWithCondition(
+            shouldShow = infoImage.isVisible || infoTitle.isVisible
+        )
+    }
+
+    private fun ItemDynamicInfoContentBinding.renderDescription(element: ProductCustomInfoDataModel) {
+        infoDescription.showIfWithBlock(predicate = element.description.isNotEmpty()) {
+            text = element.description.parseAsHtmlLink(
+                context = root.context,
+                replaceNewLine = false
+            )
         }
     }
 
-    private fun renderTitle(title: String, icon: String) = with(binding) {
-        customImage.shouldShowWithAction(icon.isNotEmpty()) {
-            customImage.loadIcon(icon)
-        }
-        customTitle.shouldShowWithAction(title.isNotEmpty()) {
-            customTitle.text = title
-        }
+    private fun ItemDynamicInfoContentBinding.renderSeparator(element: ProductCustomInfoDataModel) {
+        infoTopSeparator.showWithCondition(shouldShow = element.shouldTopSeparatorShowing)
+        infoBottomSeparator.showWithCondition(shouldShow = element.shouldBottomSeparatorShowing)
     }
 
-    private fun getComponentTrackData(element: ProductCustomInfoDataModel?) = ComponentTrackDataModel(element?.type
-            ?: "", element?.name ?: "", adapterPosition + 1)
-
+    private fun ItemDynamicInfoContentBinding.renderLabel(element: ProductCustomInfoDataModel) {
+        infoLabel.showIfWithBlock(predicate = element.labelValue.isNotEmpty()) {
+            setLabel(element.labelValue)
+            setLabelType(element.getLabelTypeByColor())
+        }
+    }
 }

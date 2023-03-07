@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import java.util.*
@@ -12,18 +13,22 @@ class ProductDataResponse(
         @SerializedName("cart_id")
         val cartId: String = "",
         @SerializedName("product_id")
-        @SuppressLint("Invalid Data Type")
-        val productId: Long = 0,
+        val productId: String = "",
         @SerializedName("parent_id")
         val parentId: String = "",
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("product_price")
-        val productPrice: Long = 0,
+        val productPrice: Double = 0.0,
         @SerializedName("category_id")
         val categoryId: String = "",
         @SerializedName("category")
         val category: String = "",
+        @SerializedName("last_level_category")
+        val lastLevelCategory: String = "",
+        @SerializedName("category_identifier")
+        val categoryIdentifier: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("wholesale_price")
         val wholesalePrice: List<WholesalePrice> = ArrayList(),
         @SerializedName("product_weight")
@@ -51,20 +56,21 @@ class ProductDataResponse(
         @SerializedName("campaign_id")
         val campaignId: String = "",
         @SerializedName("product_original_price")
-        val productOriginalPrice: Long = 0,
+        val productOriginalPrice: Double = 0.0,
         @SerializedName("initial_price")
-        val initialPrice: Long = 0,
+        val initialPrice: Double = 0.0,
         @SerializedName("slash_price_label")
         val slashPriceLabel: String = "",
         @SerializedName("product_finsurance")
         val productFinsurance: Int = 0,
         @SerializedName("warehouse_id")
-        @SuppressLint("Invalid Data Type")
-        val warehouseId: Long = 0,
+        val warehouseId: String = "",
         @SerializedName("free_shipping")
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
         val freeShippingExtra: FreeShipping = FreeShipping(),
+        @SerializedName("free_shipping_general")
+        val freeShippingGeneral: FreeShippingGeneral = FreeShippingGeneral(),
         @SerializedName("product_preorder")
         val productPreorder: ProductPreorderResponse = ProductPreorderResponse(),
         @SerializedName("product_tracker_data")
@@ -80,7 +86,9 @@ class ProductDataResponse(
         @SerializedName("product_information")
         val productInformation: List<String> = emptyList(),
         @SerializedName("add_ons")
-        val addOns: AddOnsResponse = AddOnsResponse()
+        val addOns: AddOnsResponse = AddOnsResponse(),
+        @SerializedName("ethical_drug")
+        val ethicalDrug: EthicalDrugResponse = EthicalDrugResponse()
 )
 
 class ProductImage(

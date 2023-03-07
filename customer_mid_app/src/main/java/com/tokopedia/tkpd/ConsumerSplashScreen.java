@@ -12,24 +12,20 @@ import androidx.annotation.NonNull;
 
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.app.common.SplashScreen;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.installreferral.InstallReferrerInterface;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.linker.LinkerManager;
-import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -45,18 +41,11 @@ import java.util.Map;
 
 public class ConsumerSplashScreen extends SplashScreen {
 
-    public static final String WARM_TRACE = "gl_warm_start";
-    public static final String SPLASH_TRACE = "gl_splash_screen";
     public static final String GOOGLE_ANALYTICS_DEFERRED_DEEPLINK_PREFERENCE = "google.analytics.deferred.deeplink.prefs";
     public static final String GOOGLE_DDL_DEEPLINK_KEY = "deeplink";
     public static final String TYPE_KEY = "type";
     public static final String GOOGLE_DDL_KEY = "GOOGLE_DDL";
     public static final String SPLASH_SCREEN_TYPE = "splash_screen";
-
-
-    private PerformanceMonitoring warmTrace;
-    private PerformanceMonitoring splashTrace;
-    private boolean isApkTempered;
 
     private SharedPreferences preferences;
     private SharedPreferences.OnSharedPreferenceChangeListener deepLinkListener;
@@ -146,7 +135,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             if (LinkerManager.getInstance().isFirstAppOpen(getApplicationContext())) {
                 installReferral.setInstallReferrerInterface(getInstallReferrerInterface());
             }
-            installReferral.initilizeInstallReferral(this);
+            installReferral.initilizeInstallReferral(this.getApplicationContext());
         }
     }
 
@@ -161,7 +150,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
                 syncFcmToken();
                 registerPushNotif();
-                return checkApkTempered();
+                return true;
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(chkTmprApkWeave,
@@ -185,31 +174,8 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
     }
 
-    @NotNull
-    private Boolean checkApkTempered() {
-        isApkTempered = false;
-        try {
-            getResources().getDrawable(R.drawable.launch_screen);
-        } catch (Exception e) {
-            isApkTempered = true;
-            runOnUiThread(() -> setTheme(R.style.Theme_Tokopedia3_PlainGreen));
-        }
-        checkExecTemperedFlow();
-        return true;
-    }
-
-    private void checkExecTemperedFlow() {
-        if (isApkTempered) {
-            startActivity(new Intent(this, FallbackActivity.class));
-            finish();
-        }
-    }
-
     @Override
     public void finishSplashScreen() {
-        if (isApkTempered) {
-            return;
-        }
 
         Intent homeIntent = new Intent(this, MainParentActivity.class);
         boolean needClearTask = getIntent() == null || !getIntent().hasExtra("branch");
@@ -225,37 +191,4 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
     }
 
-    private void startWarmStart() {
-        warmTrace = PerformanceMonitoring.start(WARM_TRACE);
-    }
-
-    private void finishWarmStart() {
-        warmTrace.stopTrace();
-    }
-
-    private void startSplashTrace() {
-        splashTrace = PerformanceMonitoring.start(SPLASH_TRACE);
-    }
-
-    private void finishSplashTrace() {
-        splashTrace.stopTrace();
-    }
-
-    @Override
-    protected RemoteConfig.Listener getRemoteConfigListener() {
-        return new RemoteConfig.Listener() {
-            @Override
-            public void onComplete(RemoteConfig remoteConfig) {
-                LogManager logManager = LogManager.instance;
-                if (logManager != null) {
-                    logManager.refreshConfig();
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        };
-    }
 }

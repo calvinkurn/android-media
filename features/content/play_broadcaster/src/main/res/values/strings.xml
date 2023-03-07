@@ -1,26 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="play_auto_share_title">Otomatis dibagikan ke:</string>
-    <string name="play_begin_setup">Mulai Persiapannya</string>
-    <string name="play_your_followers">Followers \nAnda</string>
-    <string name="play_start_streaming">Mulai Live Streaming</string>
 
-    <string name="play_etalase_picker_title">Pilih Produk</string>
-    <string name="play_etalase_picker_info">Pilih produk terbaik di tokomu untuk dijadikan konten yang membuat penonton tertarik membeli.</string>
     <string name="play_etalase_search_hint">Cari di toko %s</string>
-    <string name="play_etalase_product_amount">%d Produk</string>
-    <string name="play_etalase_detail_header">%s (%d)</string>
 
-    <string name="play_product_stock_amount">Stok: %s</string>
     <string name="play_product_not_found_title">Oops, produk nggak ditemukan</string>
     <string name="play_product_not_found_desc">Coba kata kunci lain untuk menemukan produk yang kamu inginkan</string>
 
     <string name="play_product_etalase_empty_title">Yaah, etalase produkmu masih kosong</string>
     <string name="play_product_etalase_empty_desc">Ayo tambah produk dulu supaya bisa ditampilkan di etalase ini</string>
-
-    <string name="play_action_bar_prepare_title">Buat Live Streaming</string>
-    <string name="play_action_bar_prepare_final_title">Ayo cek lagi info di bawah\n ini sebelum mulai!</string>
-    <string name="play_action_bar_end">Akhiri</string>
 
     <string name="play_permit_title">Aktifkan kamera &amp; mikrofon</string>
     <string name="play_permit_description">Untuk memulai live streaming, berikan akses kamera &amp; mikrofon di HP kamu.</string>
@@ -30,7 +17,6 @@
 
     <string name="play_next">Lanjutkan</string>
     <string name="play_ok">Oke</string>
-    <string name="play_cancel">Cancel</string>
     <string name="play_change">Ganti</string>
     <string name="play_yes">Ya</string>
     <string name="play_no">Tidak</string>
@@ -39,8 +25,6 @@
     <string name="play_broadcast_end">Akhiri</string>
     <string name="play_batal">Batal</string>
     <string name="play_bro_next_action">Lanjut</string>
-
-    <string name="play_selected_products">Produk Dipilih (%d)</string>
 
     <string name="play_prepare_broadcast_create_promo_title">Buat Promo</string>
     <string name="play_prepare_broadcast_edit_promo_title">Ubah Promo</string>
@@ -62,7 +46,6 @@
     <string name="play_prepare_cover_title_title">Tambah Cover</string>
     <string name="play_prepare_cover_title_header_description">Tambahkan cover yang kreatif yang bisa bikin calon penonton live streaming tokomu jadi penasaran!</string>
     <string name="play_prepare_cover_title_default_title_label">Judul live streaming</string>
-    <string name="play_prepare_cover_title_default_title_placeholder">Contoh: Sneakers Pria Diskon 50\%%</string>
     <string name="play_prepare_cover_choose_from_gallery">Pilih dari galeri foto</string>
     <string name="play_prepare_cover_title_add_cover_label">Tambah Cover</string>
     <string name="play_prepare_cover_title_change_cover_label">Ganti Cover</string>
@@ -79,11 +62,8 @@
 
     <string name="play_label_save">Simpan</string>
 
-    <string name="play_broadcast_edit_title_title">Judul Live Streaming</string>
-
     <string name="play_live_broadcast_stat_info_default">0</string>
     <string name="play_live_broadcast_time_default">00:00</string>
-    <string name="play_live_broadcast_time_left">Sisa %d menit</string>
     <string name="play_live_broadcast_remaining_duration_format">%1$02d:%2$02d</string>
     <string name="play_live_broadcast_remaining_duration_format_with_hour">%1$02d:%2$02d:%3$02d</string>
     <string name="play_live_broadcast_dialog_end_title">Eh, kamu mau ke mana?</string>
@@ -101,16 +81,15 @@
     <string name="play_loader_live_paused">Live streaming berhenti sementara.</string>
 
     <string name="play_live_broadcast_network_recover">Yay, koneksi internetmu kembali terhubung!</string>
-    <string name="play_live_broadcast_network_poor">Koneksi internetmu melambat, nih.</string>
     <string name="play_live_broadcast_connect_fail">Oops, gagal menyambungkan siaran.</string>
     <string name="play_broadcaster_default_error">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="play_live_broadcast_network_loss_desc">Segera sambungkan ke koneksi yang stabil, atau akhiri siarannya.</string>
+    <string name="play_live_broadcast_unrecoverable_error">Layanan live streaming terganggu, tutup halaman dan klik mulai kembali.</string>
     <string name="play_live_broadcast_network_loss">Yaah, koneksimu putus</string>
 
     <string name="play_summary_title">Laporan Live</string>
     <string name="play_summary_button_post_video">Posting Video</string>
     <string name="play_summary_button_post_video_now">Posting Video Sekarang</string>
-    <string name="play_summary_button_delete_video">Hapus Video</string>
     <string name="play_summary_total_game_participant"><![CDATA[Peserta Game <font color=#03AC0E>Lihat Detail</font></b>]]></string>
     <string name="play_summary_total_view">Penonton</string>
     <string name="play_summary_total_likes">Menyukai</string>
@@ -121,24 +100,6 @@
     <string name="play_summary_new_followers">Followers Baru</string>
     <string name="play_summary_error_desc">Yuk, coba lagi untuk menampilkan laporannya.</string>
     <string name="play_summary_error_title">Laporanmu gagal ditampilkan</string>
-    <string name="play_summary_delete_dialog_title">Yakin ingin hapus video?</string>
-    <string name="play_summary_delete_dialog_message">Live streaming tidak akan\njadi video di Halaman Toko\njika kamu ingin menghapusnya.</string>
-    <string name="play_summary_delete_dialog_action_delete">Hapus</string>
-    <string name="play_summary_delete_dialog_action_back">Kembali</string>
-
-    <string name="play_terms_condition_full">Dengan menekan tombol %s, saya menyetujui %s live streaming.</string>
-    <string name="play_terms_condition">Syarat &amp; Ketentuan</string>
-
-    <string name="play_cover_title_label">Judul live streaming</string>
-    <string name="play_product_live_title">Produk Ditampilkan (%d)</string>
-    <string name="play_before_live_selected_product">%d Produk Dipilih</string>
-
-    <string name="play_choose_over">Pilih ulang</string>
-
-    <plurals name="play_followers_count">
-        <item quantity="one">%d \nFollower</item>
-        <item quantity="other">%d \nFollowers</item>
-    </plurals>
 
     <string name="play_dialog_unsupported_device_title">Perangkat tidak mendukung\n layanan live streaming</string>
     <string name="play_dialog_unsupported_device_desc">Layanan live streaming tidak didukung pada perangkat Anda.</string>
@@ -151,8 +112,6 @@
 
     <string name="mock_super_long_text">Aku bergabung loh wau kok gabung keren abis wooo allala gabung terus dong</string>
 
-    <string name="mock_report_live_duration">00:00</string>
-
     <!--Schedule-->
     <string name="play_broadcast_add_schedule_info">Atur Jadwal Siaran</string>
     <string name="play_broadcast_schedule_set_info">Jadwal Siaran</string>
@@ -163,9 +122,6 @@
     <string name="play_broadcast_cancel_streaming_action">Batal</string>
     <string name="play_broadcast_early_streaming_dialog_title">Mulai siarannya sekarang?</string>
     <string name="play_broadcast_early_streaming_dialog_desc">Jadwal yang sudah diatur akan pindah menjadi sekarang.</string>
-    <string name="play_broadcast_delete_schedule_action">Hapus</string>
-    <string name="play_broadcast_delete_schedule_dialog_title">Yakin mau hapus jadwal?</string>
-    <string name="play_broadcast_delete_schedule_dialog_desc">Jika dihapus, maka pengingat siaran untuk calon penontonmu batal dikirimkan.</string>
     <string name="play_broadcast_schedule_deleted">Jadwal Live berhasil dihapus</string>
     <string name="play_bro_schedule_info">Kamu bisa tentukan jadwal kalau kamu belum mau Live sekarang. Jadi bisa siap-siap, deh.</string>
     <string name="play_bro_schedule_delete">Hapus Jadwal</string>
@@ -173,21 +129,16 @@
     <string name="album">Album</string>
 
     <string name="play_interactive_create_game">Buat Game Hadiah</string>
-    <string name="play_interactive_time_picker_title">Atur waktu mulai</string>
     <string name="play_interactive_time_picker_apply"><![CDATA[Terapkan & Mulai]]></string>
     <string name="play_interactive_setup_start_in">Dimulai dalam:</string>
     <string name="play_interactive_live_end_in">Berakhir dalam:</string>
     <string name="play_interactive_live">Game sedang dimulai</string>
-    <string name="play_interactive_selected_duration_format">%1$02d menit %2$02d detik</string>
     <string name="play_interactive_minute">%d Menit </string>
     <string name="play_interactive_second">%d Detik</string>
 
     <string name="play_interactive_broadcast_onboarding_subtitle">Ajak penonton main game, yuk!</string>
 
-    <string name="play_interactive_broadcast_not_allowed">Oops, siarannya sebentar lagi akan habis.</string>
     <string name="play_interactive_broadcast_create_fail">Oops, ada gangguan yang perlu kami bereskan. Balik lagi nanti, ya</string>
-
-    <string name="play_interactive_leaderboard_default">0</string>
 
     <!--Terms and Condition-->
     <string name="play_bro_tnc_title">Yaah, kamu belum bisa Live</string>
@@ -210,11 +161,7 @@
     <!-- Action Bar Live -->
     <string name="play_bro_mock_room_title">Review Aksesoris Sepeda</string>
 
-    <!-- Error -->
-    <string name="play_bro_error_network_problem">Segera sambungkan ke koneksi yang stabil untuk memilai siarannya</string>
-
     <!-- Product Tag -->
-    <string name="play_bro_product_tag_stock_amount">Stok %s</string>
     <string name="play_bro_product_tag_stock_empty">Stok Habis</string>
     <string name="play_bro_product_tag_no_price">Rp -</string>
     <string name="play_bro_product_discount_template">%d%%</string>
@@ -230,6 +177,7 @@
     <string name="play_bro_title_form_instruction">Buat judul yang kreatif dan bisa bikin calon penonton penasaran!</string>
 
     <string name="play_bro_cover_form_instruction">Pilih cover yang keren &amp; menarik perhatian, ya!</string>
+    <string name="play_bro_title_empty_error">Tulis judul kalau mau bikin Live atau jadwal baru, ya!</string>
     <string name="play_bro_cover_empty_error">Kamu perlu upload cover dulu, ya.</string>
 
     <!--Campaign & Etalase-->
@@ -298,4 +246,24 @@
     <!-- leaderboard bottomsheet -->
     <string name="play_bro_finished_bottomsheet_option_right_empty">Gak ada yang pilih jawaban ini</string>
     <string name="play_bro_finished_bottomsheet_option_empty">Yaah, nggak ada yang ikutan quiz ini</string>
+
+    <!-- switch account -->
+    <string name="play_bro_switch_account_title_shop_dialog">Yakin mau ganti ke profil tokomu?</string>
+    <string name="play_bro_switch_account_title_buyer_dialog">Yakin mau ganti ke profil pembeli?</string>
+    <string name="play_bro_switch_account_description_shop_dialog">Persiapan akan tersimpan di profil ini. Kamu mungkin ulang prosesnya di profile toko.</string>
+    <string name="play_bro_switch_account_description_buyer_dialog">Persiapan akan tersimpan di profil ini. Kamu mungkin ulang prosesnya di profile pembeli.</string>
+    <string name="play_bro_switch_account_primary_cta_dialog">Batal</string>
+    <string name="play_bro_switch_account_secondary_cta_shop_dialog">Ganti ke Profil Toko</string>
+    <string name="play_bro_switch_account_secondary_cta_buyer_dialog">Ganti ke Profil Pembeli</string>
+
+    <!-- Pin Product -->
+    <string name="play_bro_pin">Pin</string>
+    <string name="play_bro_unpin">Lepas</string>
+    <string name="play_bro_pinned_product_info">Pin Dipasang</string>
+    <string name="play_bro_pinned_coachmark_desc">Pasang pin di produk agar penonton tahu\nkalau lagi kamu membahasnya.</string>
+    <string name="play_bro_pin_product_failed">Tunggu 5 detik untuk pin produk ya</string>
+    <string name="play_bro_custom_error_handler_msg">%s. Kode Error: (%s)</string>
+
+    <!-- Product Picker UGC -->
+    <string name="play_bro_max_selected_product_reached">Kamu udah pilih %d produk.</string>
 </resources>

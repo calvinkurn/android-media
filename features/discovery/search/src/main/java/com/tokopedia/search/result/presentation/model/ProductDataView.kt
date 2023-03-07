@@ -2,9 +2,13 @@ package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.product.banner.BannerDataView
+import com.tokopedia.search.result.product.broadmatch.RelatedDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -15,7 +19,6 @@ class ProductDataView {
     var autocompleteApplink: String? = null
     var responseCode: String? = null
     var keywordProcess: String? = null
-    var errorMessage: String? = null
     var tickerModel: TickerDataView? = null
     var suggestionModel: SuggestionDataView? = null
     var totalData = 0
@@ -34,6 +37,7 @@ class ProductDataView {
     var pageComponentId = ""
     var violation: ViolationDataView? = null
     var backendFilters: String = ""
+    var keywordIntention: Int = SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
 
     fun isAdvancedNegativeKeywordSearch(): Boolean {
         if (keywordProcess.isNullOrEmpty()) return false

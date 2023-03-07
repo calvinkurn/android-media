@@ -1,8 +1,5 @@
 package com.tokopedia.play.broadcaster.analytic.interactive
 
-import com.tokopedia.play_common.model.ui.LeadeboardType
-
-
 /**
  * Created by mzennis on 22/07/21.
  */
@@ -48,10 +45,6 @@ interface PlayBroadcastInteractiveAnalytic {
 
     fun onClickContinueQuiz(channelId: String, channelTitle: String)
 
-    fun onClickQuizGift(channelId: String, channelTitle: String)
-
-    fun onClickCloseQuizGift(channelId: String, channelTitle: String)
-
     fun onClickStartQuiz(channelId: String, channelTitle: String)
 
     fun onClickBackQuizDuration(channelId: String, channelTitle: String)
@@ -91,7 +84,8 @@ interface PlayBroadcastInteractiveAnalytic {
         channelTitle: String,
         interactiveId: String,
         interactiveTitle: String,
-        reward: String)
+        reward: String
+    )
 
     fun onImpressQuizChoiceDetail(
         channelId: String,

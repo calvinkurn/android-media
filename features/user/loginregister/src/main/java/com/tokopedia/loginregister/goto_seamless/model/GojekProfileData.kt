@@ -14,5 +14,7 @@ data class GojekProfileData (
     @SerializedName("phone")
     val phone: String = "",
     @SerializedName("authCode")
-    var authCode: String = ""
+    var authCode: String = "",
+    @Transient
+    var tokopediaName: String = ""
 )

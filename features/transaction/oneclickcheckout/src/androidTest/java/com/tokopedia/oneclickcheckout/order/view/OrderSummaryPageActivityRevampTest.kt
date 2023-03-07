@@ -21,6 +21,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_INSURANCE_RE
 import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
@@ -110,8 +111,15 @@ class OrderSummaryPageActivityRevampTest {
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp15.000",
                         insurancePrice = "Rp0",
-                        paymentFee = "Rp1.000",
-                        totalPrice = "Rp116.000"
+                        totalPrice = "Rp116.000",
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1000.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -304,8 +312,15 @@ class OrderSummaryPageActivityRevampTest {
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp15.000",
                         insurancePrice = "Rp1.000",
-                        paymentFee = "Rp1.000",
-                        totalPrice = "Rp117.000"
+                        totalPrice = "Rp117.000",
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1000.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -320,8 +335,15 @@ class OrderSummaryPageActivityRevampTest {
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp15.000",
                         insurancePrice = null,
-                        paymentFee = "Rp1.000",
-                        totalPrice = "Rp116.000"
+                        totalPrice = "Rp116.000",
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1000.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -366,8 +388,15 @@ class OrderSummaryPageActivityRevampTest {
                         shippingPrice = "Rp0",
                         isBbo = true,
                         insurancePrice = "Rp0",
-                        paymentFee = "Rp1.000",
-                        totalPrice = "Rp101.000"
+                        totalPrice = "Rp101.000",
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1000.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -412,11 +441,20 @@ class OrderSummaryPageActivityRevampTest {
                         shippingPrice = "Rp0",
                         isBbo = true,
                         insurancePrice = "Rp0",
-                        paymentFee = "Rp1.000",
-                        totalPrice = "Rp101.000"
+                        totalPrice = "Rp101.000",
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1000.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
+
+            promoInterceptor.customValidateUseResponsePath = null
 
             clickChangeCourierRevamp {
                 chooseCourierWithText("Next Day (1 hari)")
@@ -441,8 +479,15 @@ class OrderSummaryPageActivityRevampTest {
                         shippingPrice = "Rp38.000",
                         isBbo = false,
                         insurancePrice = "Rp0",
-                        paymentFee = "Rp1.000",
-                        totalPrice = "Rp139.000"
+                        totalPrice = "Rp139.000",
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1000.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -495,7 +540,6 @@ class OrderSummaryPageActivityRevampTest {
         cartInterceptor.customGetOccCartThrowable = IOException()
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             assertGlobalErrorVisible()
@@ -564,8 +608,15 @@ class OrderSummaryPageActivityRevampTest {
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp38.000",
                         insurancePrice = "Rp0",
-                        paymentFee = "Rp1.000",
-                        totalPrice = "Rp139.000"
+                        totalPrice = "Rp139.000",
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1000.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }

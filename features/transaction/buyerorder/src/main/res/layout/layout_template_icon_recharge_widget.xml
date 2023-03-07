@@ -7,16 +7,16 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:layout_width="@dimen/dp_52"
-        android:layout_height="@dimen/dp_52"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_squircle" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_margin="4dp"
         android:layout_gravity="center"
         tools:ignore="VectorDrawableCompat" />

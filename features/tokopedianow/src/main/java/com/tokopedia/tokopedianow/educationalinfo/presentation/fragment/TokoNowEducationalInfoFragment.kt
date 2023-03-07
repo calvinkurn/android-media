@@ -83,7 +83,7 @@ class TokoNowEducationalInfoFragment: Fragment() {
         EducationalInfoBottomSheetCallback(
             analytics = analytics,
             channelId = channelId,
-            state = state
+            state = state?.lowercase()
         )
     }
 

@@ -8,7 +8,7 @@
         android:id="@+id/emptyStatePenalty"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
         app:unifyEmptyStateType="page"
         app:unifyEmptyStateOrientation="vertical"
         app:unifyEmptyStateTitle="@string/title_empty_state_penalty"

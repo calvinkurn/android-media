@@ -9,5 +9,9 @@ data class HomeReferralDataModel(
     val userStatus: String = "",
     val maxReward: String = "",
     val isSender: Boolean = false,
-    val isEligible: Boolean
+    val isEligible: Boolean,
+    val type: String = "",
+    val applink: String = "",
+    val url: String = "",
+    val textButton: String = ""
 )

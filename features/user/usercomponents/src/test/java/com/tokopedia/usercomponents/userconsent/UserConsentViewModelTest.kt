@@ -3,11 +3,13 @@ package com.tokopedia.usercomponents.userconsent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
-import com.tokopedia.usercomponents.userconsent.common.UserConsentStateResult
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionResponse
-import com.tokopedia.usercomponents.userconsent.domain.GetConsentCollectionUseCase
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionResponse
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
+import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.SubmitConsentUseCase
 import com.tokopedia.usercomponents.userconsent.ui.UserConsentViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -26,7 +28,8 @@ class UserConsentViewModelTest {
     private var viewModel: UserConsentViewModel? = null
 
     private var getConsentCollectionUseCase = mockk<GetConsentCollectionUseCase>(relaxed = true)
-    private var observerUserConsentCollection = mockk<Observer<UserConsentStateResult<UserConsentCollectionDataModel>>>(relaxed = true)
+    private var submitConsentUseCase = mockk<SubmitConsentUseCase>(relaxed = true)
+    private var observerUserConsentCollection = mockk<Observer<UserComponentsStateResult<UserConsentCollectionDataModel>>>(relaxed = true)
 
     private var mockCollectionParam = ConsentCollectionParam(
         collectionId = "6d45e8ce-d46d-4f0e-bf0c-a93f82f75e36",
@@ -37,7 +40,7 @@ class UserConsentViewModelTest {
 
     @Before
     fun setup() {
-        viewModel = UserConsentViewModel(getConsentCollectionUseCase, dispatcherProviderTest)
+        viewModel = UserConsentViewModel(getConsentCollectionUseCase, submitConsentUseCase, dispatcherProviderTest)
         viewModel?.consentCollection?.observeForever(observerUserConsentCollection)
     }
 
@@ -70,14 +73,14 @@ class UserConsentViewModelTest {
 
         coVerify {
             observerUserConsentCollection.onChanged(
-                UserConsentStateResult.Success(mockResponse.data)
+                UserComponentsStateResult.Success(mockResponse.data)
             )
         }
 
         val result = viewModel?.consentCollection?.value
-        assert(result is UserConsentStateResult.Success)
+        assert(result is UserComponentsStateResult.Success)
 
-        (result as UserConsentStateResult.Success).apply {
+        (result as UserComponentsStateResult.Success).apply {
             assert(result.data?.success == true)
             assert(result.data?.collectionPoints?.isNotEmpty() == true)
         }
@@ -101,7 +104,7 @@ class UserConsentViewModelTest {
         viewModel?.getConsentCollection(mockCollectionParam)
 
         val result = viewModel?.consentCollection?.value
-        assert(result is UserConsentStateResult.Fail)
+        assert(result is UserComponentsStateResult.Fail)
     }
 
     @Test
@@ -120,8 +123,8 @@ class UserConsentViewModelTest {
         viewModel?.getConsentCollection(mockCollectionParam)
 
         val result = viewModel?.consentCollection?.value
-        assert(result is UserConsentStateResult.Fail)
-        assert((result as UserConsentStateResult.Fail).error.message?.contains(UserConsentViewModel.GENERAL_ERROR) == true)
+        assert(result is UserComponentsStateResult.Fail)
+        assert((result as UserComponentsStateResult.Fail).error.message?.contains(UserConsentViewModel.GENERAL_ERROR) == true)
     }
 
     @Test
@@ -133,7 +136,32 @@ class UserConsentViewModelTest {
         viewModel?.getConsentCollection(mockCollectionParam)
 
         val result = viewModel?.consentCollection?.value
-        assert(result is UserConsentStateResult.Fail)
+        assert(result is UserComponentsStateResult.Fail)
+    }
+
+    @Test
+    fun `submit consent then then make sure function only called once`() {
+        val parameter = ConsentSubmissionParam()
+
+        viewModel?.submitConsent(parameter)
+
+        coVerify(exactly = 1) {
+            submitConsentUseCase(parameter)
+        }
+    }
+
+    @Test
+    fun `submit consent then then failed`() {
+        val parameter = ConsentSubmissionParam()
+
+        coEvery {
+            submitConsentUseCase(parameter)
+        } throws mockThrowable
+        viewModel?.submitConsent(parameter)
+
+        coVerify(exactly = 1) {
+            submitConsentUseCase(parameter)
+        }
     }
 
 }

@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common_digital.atc.DigitalAddToCartUseCase
+import com.tokopedia.common_digital.atc.DigitalAddToCartRestUseCase
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
@@ -70,7 +70,7 @@ class DigitalCommonModule {
     @DigitalCommonScope
     @Provides
     fun provideDigitalAtcUseCase(@DigitalAddToCartQualifier restRepository: RestRepository)
-            : DigitalAddToCartUseCase = DigitalAddToCartUseCase(restRepository)
+            : DigitalAddToCartRestUseCase = DigitalAddToCartRestUseCase(restRepository)
 
     @Provides
     @DigitalCommonScope

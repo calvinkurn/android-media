@@ -54,6 +54,7 @@ const val GET_OCC_CART_PAGE_CREDIT_CARD_ERROR_REVAMP_RESPONSE_PATH = "cart/get_o
 const val GET_OCC_CART_PAGE_CREDIT_CARD_MIN_AMOUNT_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_min_amount_revamp_response.json"
 
 const val GET_OCC_CART_PAGE_CREDIT_CARD_AFPB_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_afpb_response.json"
+const val GET_OCC_CART_PAGE_CREDIT_CARD_AFPB_PAYMENT_FEE_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_afpb_payment_fee_response.json"
 
 const val GET_OCC_CART_PAGE_DEBIT_CARD_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_debit_card_revamp_response.json"
 
@@ -108,6 +109,9 @@ const val GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_NEAR_OVERWEIGHT_RESPONSE_PATH 
 
 const val GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH = "cart/get_occ_cart_page_gocicil_default_response.json"
 const val GET_OCC_CART_PAGE_GOCICIL_LIMITED_WALLET_AMOUNT_RESPONSE_PATH = "cart/get_occ_cart_page_gocicil_limited_wallet_amount_response.json"
+const val GET_OCC_CART_PAGE_GOCICIL_PAYMENT_FEE_RESPONSE_PATH = "cart/get_occ_cart_page_gocicil_payment_fee_response.json"
+
+const val GET_OCC_CART_PAGE_EPHARMACY_PRODUCT_RESPONSE_PATH = "cart/get_occ_cart_page_epharmacy_product_response.json"
 
 const val UPDATE_CART_OCC_SUCCESS_RESPONSE_PATH = "cart/update_cart_occ_success_response.json"
 const val UPDATE_CART_OCC_DIALOG_PROMPT_RESPONSE_PATH = "cart/update_cart_occ_dialog_prompt_response.json"

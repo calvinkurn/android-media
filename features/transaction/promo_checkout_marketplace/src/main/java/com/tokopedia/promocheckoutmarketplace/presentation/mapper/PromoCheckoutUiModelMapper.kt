@@ -1,7 +1,29 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.mapper
 
-import com.tokopedia.promocheckoutmarketplace.data.response.*
-import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.promocheckoutmarketplace.data.response.BenefitDetail
+import com.tokopedia.promocheckoutmarketplace.data.response.BottomSheet
+import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
+import com.tokopedia.promocheckoutmarketplace.data.response.Coupon
+import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendation
+import com.tokopedia.promocheckoutmarketplace.data.response.CouponSection
+import com.tokopedia.promocheckoutmarketplace.data.response.ErrorPage
+import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
+import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
+import com.tokopedia.promocheckoutmarketplace.data.response.SectionTab
+import com.tokopedia.promocheckoutmarketplace.data.response.SubSection
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.BoInfoBottomSheetUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEligibilityHeaderUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoErrorStateUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoInputUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListHeaderUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionItemUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
 import javax.inject.Inject
@@ -86,6 +108,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     title = couponSubSection.title
                     subTitle = couponSubSection.subTitle
                     iconUnify = couponSubSection.iconUnify
+                    iconUrl = couponSubSection.iconUrl
                     identifierId = headerIdentifierId
                     tabId = if (isHeaderEnabled) {
                         couponSubSection.id
@@ -118,7 +141,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 uiData = PromoListItemUiModel.UiData().apply {
                     promoId = couponItem.promoId
                     uniqueId = couponItem.uniqueId
-                    shopId = couponItem.shopId.toInt()
+                    shopId = couponItem.shopId.toIntOrZero()
                     title = couponItem.title
                     benefitAmount = couponItem.benefitAmount
                     parentIdentifierId = headerIdentifierId
@@ -127,6 +150,8 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     currencyDetailStr = couponItem.currencyDetailStr
                     coachMark = couponItem.coachMark
                     clashingInfos = couponItem.clashingInfos
+                    boClashingInfos = couponItem.boClashingInfos
+                    boAdditionalData = couponItem.additionalBoData
                     val tmpCurrentClashingPromoList = ArrayList<String>()
                     var tmpClashingIconUrl = ""
                     val tmpErrorMessage = StringBuilder()
@@ -166,12 +191,14 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
                     isParentEnabled = couponSubSection.isEnabled
+                    isPreSelected = couponItem.isSelected
                     isSelected = couponItem.isSelected
                     isAttempted = couponItem.isAttempted
                     isCausingOtherPromoClash = false
                     isHighlighted = couponItem.isHighlighted
                     val lastPromo = couponSubSection.coupons.lastOrNull()
                     isLastPromoItem = lastPromo != null && (lastPromo.code == couponItem.code || lastPromo.groupId == couponItem.groupId)
+                    isBebasOngkir = couponItem.isBebasOngkir
                 }
         )
         promoItem.uiState.isDisabled = !promoItem.uiState.isParentEnabled || promoItem.uiData.errorMessage.isNotBlank()
@@ -240,6 +267,23 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     isInitialization = true
                     selectedTabPosition = 0
                 }
+        )
+    }
+
+    fun mapBoInfoBottomSheetUiModel(bottomSheet: BottomSheet): BoInfoBottomSheetUiModel {
+        return BoInfoBottomSheetUiModel(
+            uiData = BoInfoBottomSheetUiModel.UiData(
+                title = bottomSheet.title,
+                contentTitle = bottomSheet.contentTitle,
+                contentDescription = bottomSheet.contentDescription,
+                imageUrl = bottomSheet.imageUrl,
+                buttonText = bottomSheet.buttonText,
+            ),
+            uiState = BoInfoBottomSheetUiModel.UiState(
+                isVisible = bottomSheet.title.isNotBlank() && bottomSheet.contentTitle.isNotBlank() &&
+                        bottomSheet.contentDescription.isNotBlank() && bottomSheet.imageUrl.isNotBlank() &&
+                        bottomSheet.buttonText.isNotBlank()
+            )
         )
     }
 }

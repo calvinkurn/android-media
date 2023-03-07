@@ -39,7 +39,12 @@ import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTrackingConstants.EVENT_ACTION_CREATE_NEW_QUESTION
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTrackingConstants.EVENT_ACTION_SEND_QUESTION_AT_EMPTY_TALK
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
-import com.tokopedia.talk.feature.reading.data.model.*
+import com.tokopedia.talk.feature.reading.data.model.SortOption
+import com.tokopedia.talk.feature.reading.data.model.TalkGoToReply
+import com.tokopedia.talk.feature.reading.data.model.TalkGoToWrite
+import com.tokopedia.talk.feature.reading.data.model.TalkLastAction
+import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
+import com.tokopedia.talk.feature.reading.data.model.ViewState
 import com.tokopedia.talk.feature.reading.di.DaggerTalkReadingComponent
 import com.tokopedia.talk.feature.reading.di.TalkReadingComponent
 import com.tokopedia.talk.feature.reading.presentation.adapter.TalkReadingAdapter
@@ -53,12 +58,13 @@ import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBot
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
+open class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         TalkReadingAdapterTypeFactory>(), HasComponent<TalkReadingComponent>,
         OnFinishedSelectSortListener, OnCategoryModifiedListener,
         ThreadListener, TalkPerformanceMonitoringContract {
@@ -70,7 +76,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
         const val LOGIN_ACTIVITY_REQUEST_CODE = 204
-        const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty_state.png"
+        const val TALK_READING_EMPTY_IMAGE_URL = "https://images.tokopedia.net/android/others/talk_reading_empty_state.png"
 
         @JvmStatic
         fun createNewInstance(productId: String, shopId: String, isVariantSelected: Boolean, availableVariants: String): TalkReadingFragment =
@@ -299,7 +305,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun showPageEmpty() {
         talkReadingFragmentBinding?.pageEmpty?.readingEmptyError?.loadImage(TALK_READING_EMPTY_IMAGE_URL)
-        talkReadingFragmentBinding?.addFloatingActionButton?.hide()
+        talkReadingFragmentBinding?.addFloatingActionButton?.circleMainMenu?.hide()
         talkReadingFragmentBinding?.pageEmpty?.root?.show()
         talkReadingFragmentBinding?.pageEmpty?.readingEmptyAskButton?.setOnClickListener {
             if(viewModel.isUserLoggedIn()) {
@@ -312,7 +318,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun showPageError() {
-        talkReadingFragmentBinding?.addFloatingActionButton?.hide()
+        talkReadingFragmentBinding?.addFloatingActionButton?.circleMainMenu?.hide()
         talkReadingFragmentBinding?.pageError?.root?.show()
         talkReadingFragmentBinding?.pageError?.readingImageError?.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         talkReadingFragmentBinding?.pageError?.talkConnectionErrorRetryButton?.setOnClickListener {
@@ -418,7 +424,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     } else {
                         talkReadingFragmentBinding?.talkReadingRecyclerView?.show()
                         talkReadingFragmentBinding?.pageEmpty?.root?.hide()
-                        talkReadingFragmentBinding?.addFloatingActionButton?.show()
+                        talkReadingFragmentBinding?.addFloatingActionButton?.circleMainMenu?.show()
                     }
                     talkReadingFragmentBinding?.pageLoading?.root?.hide()
                     hideLoading()
@@ -558,14 +564,19 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun initFab() {
-        talkReadingFragmentBinding?.addFloatingActionButton?.setOnClickListener {
-            if(viewModel.isUserLoggedIn()) {
-                goToWriteActivity(EVENT_ACTION_CREATE_NEW_QUESTION)
-            } else {
-                updateLastAction(TalkGoToWrite)
-                goToLoginActivity()
+        talkReadingFragmentBinding?.addFloatingActionButton?.apply {
+            type = FloatingButtonUnify.BASIC
+            color = FloatingButtonUnify.COLOR_GREEN
+            circleMainMenu.setOnClickListener {
+                if(viewModel.isUserLoggedIn()) {
+                    goToWriteActivity(EVENT_ACTION_CREATE_NEW_QUESTION)
+                } else {
+                    updateLastAction(TalkGoToWrite)
+                    goToLoginActivity()
+                }
             }
         }
+        talkReadingFragmentBinding?.addFloatingActionButton?.addItem(ArrayList())
     }
 
     private fun unselectCategories() {

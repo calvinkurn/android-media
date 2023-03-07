@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.hoteldetail.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.hotel.hoteldetail.data.entity.HotelNearbyLandmark
@@ -16,7 +17,7 @@ import javax.inject.Inject
  */
 class GetHotelNearbyLandMark @Inject constructor(val graphqlRepository: GraphqlRepository):
         GraphqlUseCase<HotelNearbyLandmark.Response>(graphqlRepository) {
-    suspend fun execute(rawQuery: String, param: HotelNearbyLandmarkParam): Result<HotelNearbyLandmark> {
+    suspend fun execute(rawQuery: GqlQueryInterface, param: HotelNearbyLandmarkParam): Result<HotelNearbyLandmark> {
         return try {
             this.setTypeClass(HotelNearbyLandmark.Response::class.java)
             this.setGraphqlQuery(rawQuery)

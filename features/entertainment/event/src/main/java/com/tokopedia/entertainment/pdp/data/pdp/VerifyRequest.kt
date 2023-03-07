@@ -48,9 +48,10 @@ data class MetaData(
         @SerializedName("category_name")
         @Expose
         var categoryName : String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
-        var totalPrice : Int = 0,
+        var totalPrice : Long = 0,
         @SerializedName("quantity")
         @Expose
         var quantity : Int = 0,
@@ -93,13 +94,14 @@ data class ItemMap(
         @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
-        var price : Int = 0,
+        var price : Long = 0,
         @SerializedName("quantity")
         @Expose
         var quantity : Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
-        var totalPrice: Int= 0,
+        var totalPrice: Long = 0,
         @SerializedName("location_name")
         @Expose
         var locationName : String = "",

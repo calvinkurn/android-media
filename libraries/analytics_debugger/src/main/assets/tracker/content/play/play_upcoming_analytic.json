@@ -31,6 +31,87 @@
       "currentSite": ".*",
       "userId": ".*",
       "businessUnit": "play"
+    },
+    {
+      "event": "viewTopAdsIris",
+      "eventAction": "impression - cover image",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickTopAds",
+      "eventAction": "tap - live room",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickTopAds",
+      "eventAction": "click - follow button",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "viewTopAdsIris",
+      "eventAction": "impression - follow button",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickTopAds",
+      "eventAction": "click - batalkan pengingat",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickTopAds",
+      "eventAction": "click - tampilkan sedikit button",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickTopAds",
+      "eventAction": "click - lihat semua button",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "viewTopAdsIris",
+      "eventAction": "impression - description",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "viewTopAdsIris",
+      "eventAction": "impression - share button",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     }
   ]
 }

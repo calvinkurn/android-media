@@ -6,12 +6,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingInvoiceOrderNumberBinding
+import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel
 
 class InvoiceOrderNumberViewHolder(
     view: View,
     private val listener: Listener
-) : BaseOrderTrackingViewHolder<InvoiceOrderNumberUiModel>(view) {
+) : CustomPayloadViewHolder<InvoiceOrderNumberUiModel>(view) {
 
     companion object {
         @LayoutRes

@@ -10,7 +10,7 @@ import com.tokopedia.shop.R
  * Created by rizqiaryansa on 06/03/20.
  */
 
-class ShopHomeLoadingShimmerViewHolder(view: View): AbstractViewHolder<LoadingModel>(view) {
+class ShopHomeLoadingShimmerViewHolder(view: View) : AbstractViewHolder<LoadingModel>(view) {
 
     companion object {
         @LayoutRes

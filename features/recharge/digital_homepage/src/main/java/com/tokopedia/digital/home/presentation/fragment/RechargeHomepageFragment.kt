@@ -7,7 +7,12 @@ import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowInsets
+import android.view.WindowManager
+import android.view.WindowMetrics
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -40,12 +45,11 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminder
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
-import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -73,7 +77,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     private lateinit var localCacheHandler: LocalCacheHandler
 
     private var searchBarTransitionRange = 0
-
+    private var searchBarType: String = ""
     private var platformId: Int = 0
     private var enablePersonalize: Boolean = false
     private var sliceOpenApp: Boolean = false
@@ -116,14 +120,13 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             sliceOpenApp = it.getBoolean(RECHARGE_HOME_PAGE_EXTRA, false)
         }
 
-        searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(resources.displayMetrics)
+        context?.let {
+            searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(it.resources.displayMetrics)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (platformId != RechargeHomepageViewModel.ALL_CATEGORY_PLATFORM_ID)
-            hideStatusBar()
 
         binding.digitalHomepageToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
 
@@ -153,26 +156,19 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun setupRecyclerView() {
-        if (platformId == RechargeHomepageViewModel.ALL_CATEGORY_PLATFORM_ID) {
-            val layoutParams =
-                binding.swipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.topToTop = ConstraintSet.UNSET
-            layoutParams.topToBottom = binding.digitalHomepageToolbar.id
-            binding.swipeRefreshLayout.layoutParams = layoutParams
-            binding.swipeRefreshLayout.requestLayout()
-        }
-
         binding.recyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
         while (binding.recyclerView.itemDecorationCount > 0) binding.recyclerView.removeItemDecorationAt(
             0
         )
-        binding.recyclerView.addItemDecoration(
-            RechargeHomeSectionDecoration(
-                SECTION_SPACING_DP.dpToPx(resources.displayMetrics)
+        context?.let {
+            binding.recyclerView.addItemDecoration(
+                RechargeHomeSectionDecoration(
+                    SECTION_SPACING_DP.dpToPx(it.resources.displayMetrics)
+                )
             )
-        )
+        }
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -181,31 +177,30 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun setupTopRecyclerview() {
+        val layoutParams =
+            binding.swipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.topToTop = ConstraintSet.UNSET
+        layoutParams.topToBottom = binding.digitalHomepageToolbar.id
+        binding.swipeRefreshLayout.layoutParams = layoutParams
+        binding.swipeRefreshLayout.requestLayout()
+    }
+
     private fun hideStatusBar() {
 
-        binding.digitalHomepageContainer.fitsSystemWindows = false
-        binding.digitalHomepageContainer.requestApplyInsets()
+        binding.digitalHomepageContainer.apply {
+            fitsSystemWindows = false
+            requestApplyInsets()
+        }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            var flags = binding.digitalHomepageContainer.systemUiVisibility
-            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            binding.digitalHomepageContainer.systemUiVisibility = flags
-            context?.run {
-                activity?.window?.statusBarColor =
-                    androidx.core.content.ContextCompat.getColor(
-                        this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
-                    )
+        activity?.window?.let { window ->
+            if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT..Build.VERSION_CODES.KITKAT_WATCH) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             }
-        }
 
-        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT..Build.VERSION_CODES.KITKAT_WATCH) {
-            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            activity?.window?.statusBarColor = Color.TRANSPARENT
+            window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = Color.TRANSPARENT
         }
     }
 
@@ -218,31 +213,36 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             offsetAlpha = 0f
         }
 
-        val searchBarContainer =
-            binding.digitalHomepageSearchView.findViewById<LinearLayout>(R.id.search_input_view_container)
-        if (offsetAlpha >= OFFSET_ALPHA || platformId == RechargeHomepageViewModel.ALL_CATEGORY_PLATFORM_ID) {
+        if (offsetAlpha >= OFFSET_ALPHA || searchBarType == SEARCH_BAR_TYPE_SOLID) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            binding.digitalHomepageToolbar.toOnScrolledMode()
-            context?.run {
-
-                binding.digitalHomepageOrderList.setColorFilter(
-                    ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N200),
-                    PorterDuff.Mode.MULTIPLY
-                )
-                searchBarContainer.background =
-                    MethodChecker.getDrawable(
-                        this,
-                        R.drawable.bg_digital_homepage_search_view_background_gray
-                    )
-            }
+            setSearchBarContainerColor(SEARCH_BAR_TYPE_SOLID)
         } else {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-            binding.digitalHomepageToolbar.toInitialMode()
-            binding.digitalHomepageOrderList.clearColorFilter()
-            context?.run {
+            setSearchBarContainerColor(SEARCH_BAR_TYPE_TRANSPARENT)
+        }
+    }
+
+    private fun setSearchBarContainerColor(searchBarType: String) {
+        val searchBarContainer = binding.digitalHomepageSearchView
+            .findViewById<LinearLayout>(R.id.search_input_view_container)
+
+        context?.let { ctx ->
+            if (searchBarType == SEARCH_BAR_TYPE_SOLID) {
+                binding.digitalHomepageToolbar.toOnScrolledMode()
+                binding.digitalHomepageOrderList.setColorFilter(
+                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N200),
+                    PorterDuff.Mode.MULTIPLY
+                )
+                searchBarContainer.background = MethodChecker.getDrawable(
+                    ctx,
+                    R.drawable.bg_digital_homepage_search_view_background_gray
+                )
+            } else {
+                binding.digitalHomepageToolbar.toInitialMode()
+                binding.digitalHomepageOrderList.clearColorFilter()
                 searchBarContainer.background =
                     MethodChecker.getDrawable(
-                        this,
+                        ctx,
                         R.drawable.bg_digital_homepage_search_view_background
                     )
             }
@@ -308,7 +308,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             viewModel.getRechargeHomepageSections(
                 viewModel.createRechargeHomepageSectionsParams(
                     platformId,
-                    listOf(sectionID.toIntOrZero()),
+                    listOf(sectionID.toIntSafely()),
                     enablePersonalize
                 )
             )
@@ -374,7 +374,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             if (toggleTracking && section != null && section.items.isNotEmpty()) {
                 viewModel.triggerRechargeSectionAction(
                     viewModel.createRechargeHomepageSectionActionParams(
-                        sectionID.toIntOrZero(),
+                        sectionID.toIntSafely(),
                         "ActionClose",
                         section.objectId,
                         section.items.first().objectId
@@ -395,7 +395,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                 with(section) {
                     viewModel.triggerRechargeSectionAction(
                         viewModel.createRechargeHomepageSectionActionParams(
-                            id.toIntOrZero(),
+                            id.toIntSafely(),
                             "ActionClose",
                             objectId,
                             items.first().objectId
@@ -519,10 +519,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             RechargeHomepageSectionMapper.mapHomepageSections(sections, tickerList, platformId)
         val homeComponentIDs: List<Int> =
             mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
-                homeComponent.visitableId()?.toInt()
+                homeComponent.visitableId()?.toIntSafely()
             }
         homeComponentsData =
-            sections.filter { section -> section.id.toIntOrZero() in homeComponentIDs }
+            sections.filter { section -> section.id.toIntSafely() in homeComponentIDs }
         adapter.renderList(mappedData)
     }
 
@@ -542,6 +542,19 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         binding.digitalHomepageOrderList.setOnClickListener {
             rechargeHomepageAnalytics.eventClickOrderList()
             RouteManager.route(activity, rechargeHomepageSectionSkeleton.searchBarAppLink)
+        }
+        searchBarType = rechargeHomepageSectionSkeleton.searchBarType
+        setStatusBar()
+        setSearchBarContainerColor(searchBarType)
+    }
+
+    private fun setStatusBar(){
+        hideStatusBar()
+        if (searchBarType != SEARCH_BAR_TYPE_SOLID){
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        } else {
+            setupTopRecyclerview()
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
     }
 
@@ -563,6 +576,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         const val EXTRA_PLATFORM_ID = "platform_id"
         const val EXTRA_ENABLE_PERSONALIZE = "personalize"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
+        const val SEARCH_BAR_TYPE_SOLID = "solid"
+        const val SEARCH_BAR_TYPE_TRANSPARENT = "transparent"
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16

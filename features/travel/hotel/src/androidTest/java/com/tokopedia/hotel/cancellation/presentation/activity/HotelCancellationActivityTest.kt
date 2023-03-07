@@ -16,19 +16,17 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.presentation.activity.mock.HotelCancellationMockResponseConfig
 import com.tokopedia.hotel.cancellation.presentation.adapter.HotelCancellationReasonAdapter
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
-import org.junit.After
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -40,14 +38,12 @@ import org.junit.Test
 class HotelCancellationActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
     var activityRule: IntentsTestRule<HotelCancellationActivity> = object : IntentsTestRule<HotelCancellationActivity>(HotelCancellationActivity::class.java) {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse(HotelCancellationMockResponseConfig())
         }
 
@@ -56,13 +52,16 @@ class HotelCancellationActivityTest {
         }
     }
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     @Test
     fun cancellationMainFlowTest() {
         viewStepOneCancellation()
         selectCancellationReason()
         clickOnDoneButton()
 
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_HOTEL_CANCELLATION),
+        Assert.assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_HOTEL_CANCELLATION),
                 hasAllSuccess())
     }
 
@@ -95,7 +94,7 @@ class HotelCancellationActivityTest {
     }
 
     private fun withTagStringValue(tagStringValue: String): Matcher<View> {
-        return withTagValue(Matchers.`is`(tagStringValue))
+        return withTagValue(CoreMatchers.`is`(tagStringValue))
     }
 
     private fun forceClick(): ViewAction? {
@@ -113,11 +112,6 @@ class HotelCancellationActivityTest {
                 uiController.loopMainThreadUntilIdle()
             }
         }
-    }
-
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     companion object {

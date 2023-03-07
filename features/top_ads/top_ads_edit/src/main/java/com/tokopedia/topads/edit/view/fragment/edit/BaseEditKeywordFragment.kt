@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.common.CustomViewPager
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.analytics.TopAdsGroupDetailTrackerImpl
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.GroupEditInput
@@ -44,6 +45,7 @@ import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import javax.inject.Inject
 
 private const val CLICK_KATA_KUNCI_POSITIF = "click - kata kunci positif"
 private const val CLICK_KATA_KUNCI_NEGATIF = "click - kata kunci negatif"
@@ -54,6 +56,7 @@ private const val OTOMATIS_LEARN_MORE_LINK = "https://seller.tokopedia.com/edu/t
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
+    val isBidAutomatic : Boolean get() = autoBidSwitch?.isBidAutomatic ?: false
     private var autoBidSwitch: TopadsAutoBidSwitchPartialLayout? = null
     private var keywordGroup: LinearLayout? = null
     private var autoBidTicker: Ticker? = null
@@ -66,6 +69,11 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     private var isAutoBid: Boolean = false
     private var positivekeywordsAll: ArrayList<KeySharedModel>? = arrayListOf()
     private var negativekeywordsAll: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+
+
+    @set: Inject
+    var trackerImpl: TopAdsGroupDetailTrackerImpl?= null
+
     private val sharedViewModel by lazy {
         ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
     }
@@ -145,6 +153,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         }
 
         autoBidSwitch?.let {
+            it.tracker = trackerImpl
             it.onCheckBoxStateChanged = { isAutoBid ->
                 handleAutoBidState(isAutoBid)
             }

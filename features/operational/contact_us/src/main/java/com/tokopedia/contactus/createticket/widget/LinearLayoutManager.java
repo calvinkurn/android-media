@@ -22,12 +22,14 @@ package com.tokopedia.contactus.createticket.widget;
  * Email: se.solovyev@gmail.com
  * Site:  http://se.solovyev.org
  */
+
 import android.content.Context;
 import android.graphics.Rect;
-import androidx.core.view.ViewCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.user.session.BuildConfig;
 

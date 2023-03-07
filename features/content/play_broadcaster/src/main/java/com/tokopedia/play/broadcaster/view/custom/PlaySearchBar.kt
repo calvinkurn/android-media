@@ -203,7 +203,7 @@ class PlaySearchBar : ConstraintLayout {
             clearBtnVisibility = source?.readInt() ?: View.GONE
         }
 
-        override fun writeToParcel(out: Parcel?, flags: Int) {
+        override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)
             out?.writeInt(cancelBtnVisibility)
             out?.writeInt(clearBtnVisibility)

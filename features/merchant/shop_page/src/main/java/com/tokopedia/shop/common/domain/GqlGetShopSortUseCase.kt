@@ -1,8 +1,5 @@
 package com.tokopedia.shop.common.domain
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
-import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -14,7 +11,7 @@ import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
 import javax.inject.Inject
 
 class GqlGetShopSortUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
+    private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<List<ShopProductSort>>(graphqlRepository) {
 
     private val GQL_QUERY: String = """
@@ -30,7 +27,7 @@ class GqlGetShopSortUseCase @Inject constructor(
                 }
               }
             }
-        """.trimIndent()
+    """.trimIndent()
 
     override suspend fun executeOnBackground(): List<ShopProductSort> {
         val request = GraphqlRequest(GQL_QUERY, GqlShopSortProductResponse::class.java)

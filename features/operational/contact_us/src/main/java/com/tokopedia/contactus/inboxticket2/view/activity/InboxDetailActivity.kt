@@ -40,12 +40,17 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.HelpFullBottomSheet.Cl
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
-import com.tokopedia.imagepicker.common.*
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -59,36 +64,36 @@ const val TICKET_STATUS_CLOSED = "closed"
 
 class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAdapter.OnSelectImageClick, View.OnClickListener, CloseServicePrioritiesBottomSheet, CloseSHelpFullBottomSheet, CloseComplainBottomSheetListner, InboxDetailListener {
 
-    private lateinit var rvMessageList: RecyclerView
-    private lateinit var rvSelectedImages: RecyclerView
-    private lateinit var ivUploadImg: ImageView
-    private lateinit var ivSendButton: ImageView
-    private lateinit var edMessage: EditText
-    private lateinit var sendProgress: View
-    private lateinit var viewHelpRate: View
-    private lateinit var textToolbar: View
-    private lateinit var viewLinkBottom: View
-    private lateinit var editText: CustomEditText
-    private lateinit var searchView: View
-    private lateinit var ivPrevious: View
-    private lateinit var ivNext: View
-    private lateinit var totalRes: TextView
-    private lateinit var currentRes: TextView
-    private lateinit var btnInactive1: ImageView
-    private lateinit var btnInactive2: ImageView
-    private lateinit var btnInactive3: ImageView
-    private lateinit var btnInactive4: ImageView
-    private lateinit var btnInactive5: ImageView
-    private lateinit var txtHyper: TextView
-    private lateinit var noTicketFound: View
-    private lateinit var tvNoTicket: TextView
-    private lateinit var tvOkButton: TextView
-    private lateinit var rootView: ConstraintLayout
-    private lateinit var viewReplyButton: View
-    private lateinit var tvReplyButton: TextView
-    private lateinit var imageUploadAdapter: ImageUploadAdapter
-    private lateinit var detailAdapter: InboxDetailAdapter
-    private lateinit var layoutManager: LinearLayoutManager
+    private var rvMessageList: RecyclerView? = null
+    private var rvSelectedImages: RecyclerView? = null
+    private var ivUploadImg: ImageView? = null
+    private var ivSendButton: ImageView? = null
+    private var edMessage: EditText? = null
+    private var sendProgress: View? = null
+    private var viewHelpRate: View? = null
+    private var textToolbar: View? = null
+    private var viewLinkBottom: View? = null
+    private var editText: CustomEditText? = null
+    private var searchView: View? = null
+    private var ivPrevious: View? = null
+    private var ivNext: View? = null
+    private var totalRes: TextView? = null
+    private var currentRes: TextView? = null
+    private var btnInactive1: ImageView? = null
+    private var btnInactive2: ImageView? = null
+    private var btnInactive3: ImageView? = null
+    private var btnInactive4: ImageView? = null
+    private var btnInactive5: ImageView? = null
+    private var txtHyper: TextView? = null
+    private var noTicketFound: View? = null
+    private var tvNoTicket: TextView? = null
+    private var tvOkButton: TextView? = null
+    private var rootView: ConstraintLayout? = null
+    private var viewReplyButton: View? = null
+    private var tvReplyButton: TextView? = null
+    private var imageUploadAdapter: ImageUploadAdapter? = null
+    private var detailAdapter: InboxDetailAdapter? = null
+    private var layoutManager: LinearLayoutManager? = null
     private var mCommentID: String? = null
     private var isCustomReason = false
     private var helpFullBottomSheet: HelpFullBottomSheet? = null
@@ -109,11 +114,11 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         commentsItems.addAll(ticketDetail.comments?: mutableListOf())
 
         iscloseAllow = ticketDetail.isAllowClose
-        edMessage.text.clear()
+        edMessage?.text?.clear()
         setSubmitButtonEnabled(false)
-        viewHelpRate.hide()
-        textToolbar.show()
-        if (!commentsItems.isNullOrEmpty()){
+        viewHelpRate?.hide()
+        textToolbar?.show()
+        if (!commentsItems.isEmpty()){
             updateUiBasedOnStatus(ticketDetail)
             setHeaderPriorityLabel()
             detailAdapter = InboxDetailAdapter(this,
@@ -123,11 +128,11 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                     this,
                     (mPresenter as? InboxDetailContract.Presenter)?.getUserId() ?: "",
                     (mPresenter as? InboxDetailContract.Presenter)?.getTicketId() ?: "")
-            rvMessageList.adapter = detailAdapter
-            rvMessageList.show()
-            scrollTo(detailAdapter.itemCount - 1)
+            rvMessageList?.adapter = detailAdapter
+            rvMessageList?.show()
+            scrollTo(detailAdapter?.itemCount?.minus(1) ?: 0)
         }else{
-            rvMessageList.hide()
+            rvMessageList?.hide()
         }
     }
 
@@ -138,10 +143,10 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     private fun updateUiBasedOnStatus(ticketDetail: Tickets) {
         when (commentsItems[0].ticketStatus) {
             TICKET_STATUS_IN_PROCESS -> {
-                rvMessageList.setPadding(0, 0, 0,
+                rvMessageList?.setPadding(0, 0, 0,
                         resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
                 if (ROLE_TYPE_AGENT.equals(commentsItems[commentsItems.size - 1].createdBy?.role, ignoreCase = true) && "".equals(commentsItems[commentsItems.size - 1].rating, ignoreCase = true)) {
-                    viewReplyButton.show()
+                    viewReplyButton?.show()
                     mCommentID = commentsItems[commentsItems.size - 1].id
                 }
                 if (ticketDetail.isShowRating) {
@@ -160,25 +165,25 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     override fun updateAddComment(newItem: CommentsItem) {
-        edMessage.text.clear()
+        edMessage?.text?.clear()
         setSubmitButtonEnabled(false)
-        imageUploadAdapter.clearAll()
-        imageUploadAdapter.notifyDataSetChanged()
-        rvSelectedImages.hide()
-        rvMessageList.setPadding(0, 0, 0,
+        imageUploadAdapter?.clearAll()
+        imageUploadAdapter?.notifyItemChanged(imageUploadAdapter!!.itemCount - 1)
+        rvSelectedImages?.hide()
+        rvMessageList?.setPadding(0, 0, 0,
                 resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
-        detailAdapter.setNeedAttachment(false)
-        detailAdapter.addComment(newItem)
+        detailAdapter?.setNeedAttachment(false)
+        detailAdapter?.addComment(newItem)
     }
 
     override fun toggleSearch(visibility: Int) {
-        searchView.visibility = visibility
+        searchView?.visibility = visibility
         mMenu?.findItem(R.id.action_search)?.isVisible = visibility != View.VISIBLE
     }
 
     override fun updateDataSet() {}
     override fun clearSearch() {
-        editText.setText("")
+        editText?.setText("")
     }
 
     override fun getLayoutRes(): Int {
@@ -193,8 +198,8 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         findingViewsId()
         (mPresenter as InboxDetailContract.Presenter).getTicketDetails((mPresenter as InboxDetailContract.Presenter).getTicketId())
-        rvMessageList.layoutManager = layoutManager
-        editText.setListener((mPresenter as InboxDetailContract.Presenter).getSearchListener())
+        rvMessageList?.layoutManager = layoutManager
+        editText?.setListener((mPresenter as InboxDetailContract.Presenter).getSearchListener())
         settingClickListner()
     }
 
@@ -229,17 +234,17 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     private fun settingClickListner() {
-        btnInactive1.setOnClickListener(this)
-        btnInactive2.setOnClickListener(this)
-        btnInactive3.setOnClickListener(this)
-        btnInactive4.setOnClickListener(this)
-        btnInactive5.setOnClickListener(this)
-        ivUploadImg.setOnClickListener(this)
-        ivSendButton.setOnClickListener(this)
-        ivNext.setOnClickListener(this)
-        ivPrevious.setOnClickListener(this)
-        txtHyper.setOnClickListener(this)
-        tvReplyButton.setOnClickListener(this)
+        btnInactive1?.setOnClickListener(this)
+        btnInactive2?.setOnClickListener(this)
+        btnInactive3?.setOnClickListener(this)
+        btnInactive4?.setOnClickListener(this)
+        btnInactive5?.setOnClickListener(this)
+        ivUploadImg?.setOnClickListener(this)
+        ivSendButton?.setOnClickListener(this)
+        ivNext?.setOnClickListener(this)
+        ivPrevious?.setOnClickListener(this)
+        txtHyper?.setOnClickListener(this)
+        tvReplyButton?.setOnClickListener(this)
     }
 
     override fun getMenuRes(): Int {
@@ -261,18 +266,19 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         }
         super.onCreate(savedInstanceState)
         imageUploadAdapter = ImageUploadAdapter(this, this, onClickCross)
-        rvSelectedImages.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        rvSelectedImages.adapter = imageUploadAdapter
-        edMessage.addTextChangedListener((mPresenter as InboxDetailContract.Presenter).watcher())
+        rvSelectedImages?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rvSelectedImages?.adapter = imageUploadAdapter
+        edMessage?.addTextChangedListener((mPresenter as InboxDetailContract.Presenter).watcher())
     }
 
     private val onClickCross = {
-        rvSelectedImages.hide()
-        rvMessageList.setPadding(0, 0, 0, resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
+        rvSelectedImages?.hide()
+        rvMessageList?.setPadding(0, 0, 0, resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
+        Unit
     }
 
     private fun showImagePickerDialog() {
-        val builder = ImagePickerBuilder.getOriginalImageBuilder(this);
+        val builder = ImagePickerBuilder.getOriginalImageBuilder(this)
         val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
         intent.putParamPageSource(ImagePickerPageSource.INBOX_DETAIL_PAGE)
@@ -289,7 +295,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
             }
             val imagePath = imagePathList[0]
             if (!TextUtils.isEmpty(imagePath)) {
-                val position = imageUploadAdapter.itemCount
+                val position = imageUploadAdapter?.itemCount ?: 0
                 val image = ImageUpload()
                 image.position = position
                 image.imageId = "image" + UUID.randomUUID().toString()
@@ -321,19 +327,19 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     override fun showNoTicketView(messageError: List<String?>?) {
         hideProgressBar()
-        noTicketFound.show()
-        tvNoTicket.text = messageError?.getOrNull(0) ?: ""
-        tvOkButton.setOnClickListener { finish() }
+        noTicketFound?.show()
+        tvNoTicket?.text = messageError?.getOrNull(0) ?: ""
+        tvOkButton?.setOnClickListener { finish() }
     }
 
     override fun showErrorMessage(error: String?) {
-        Toaster.make(getRootView(), error
-                ?: "", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", View.OnClickListener { })
+        Toaster.build(getRootView(), error
+                ?: "", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "")
     }
 
     private fun sendMessage() {
         (mPresenter as InboxDetailContract.Presenter).sendMessage()
-        edMessage.setHint(R.string.contact_us_type_here)
+        edMessage?.setHint(R.string.contact_us_type_here)
         ContactUsTracking.sendGTMInboxTicket(this, InboxTicketTracking.Event.Event,
                 InboxTicketTracking.Category.EventCategoryInbox,
                 InboxTicketTracking.Action.EventClickReplyTicket,
@@ -367,90 +373,90 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     private fun scrollToResult(index: Int) {
         if (index != -1) {
-            layoutManager.scrollToPositionWithOffset(index, 0)
+            layoutManager?.scrollToPositionWithOffset(index, 0)
         }
     }
 
     override fun addImage(image: ImageUpload) {
-        if (rvSelectedImages.visibility != View.VISIBLE) {
-            rvSelectedImages.show()
-            rvMessageList.setPadding(0, 0, 0,
+        if (rvSelectedImages?.visibility != View.VISIBLE) {
+            rvSelectedImages?.show()
+            rvMessageList?.setPadding(0, 0, 0,
                     resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_expanded))
         }
-        imageUploadAdapter.addImage(image)
+        imageUploadAdapter?.addImage(image)
     }
 
     override fun showSendProgress() {
-        sendProgress.show()
-        ivSendButton.invisible()
+        sendProgress?.show()
+        ivSendButton?.invisible()
     }
 
     override fun hideSendProgress() {
-        sendProgress.hide()
-        ivSendButton.show()
+        sendProgress?.hide()
+        ivSendButton?.show()
     }
 
     override fun toggleTextToolbar(visibility: Int) {
         if (visibility == View.VISIBLE) {
-            viewHelpRate.hide()
-            rvMessageList.setPadding(0, 0, 0,
+            viewHelpRate?.hide()
+            rvMessageList?.setPadding(0, 0, 0,
                     resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
         } else {
-            viewHelpRate.show()
-            rvMessageList.setPadding(0, 0, 0,
+            viewHelpRate?.show()
+            rvMessageList?.setPadding(0, 0, 0,
                     resources.getDimensionPixelSize(R.dimen.help_rate_height))
         }
-        textToolbar.visibility = visibility
+        textToolbar?.visibility = visibility
     }
 
     override fun askCustomReason() {
-        ivUploadImg.hide()
-        rvSelectedImages.hide()
-        edMessage.text.clear()
+        ivUploadImg?.hide()
+        rvSelectedImages?.hide()
+        edMessage?.text?.clear()
         setSubmitButtonEnabled(false)
-        edMessage.setHint(R.string.contact_us_type_here)
-        viewHelpRate.hide()
-        textToolbar.show()
-        rvMessageList.setPadding(0, 0, 0,
+        edMessage?.setHint(R.string.contact_us_type_here)
+        viewHelpRate?.hide()
+        textToolbar?.show()
+        rvMessageList?.setPadding(0, 0, 0,
                 resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
         isCustomReason = true
     }
 
     override fun showIssueClosed() {
-        viewHelpRate.hide()
-        textToolbar.hide()
-        viewLinkBottom.show()
-        rvMessageList.setPadding(0, 0, 0,
+        viewHelpRate?.hide()
+        textToolbar?.hide()
+        viewLinkBottom?.show()
+        rvMessageList?.setPadding(0, 0, 0,
                 resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
     }
 
     override fun enterSearchMode(search: String, total: Int) {
-        textToolbar.hide()
-        viewHelpRate.hide()
-        viewLinkBottom.hide()
-        detailAdapter.enterSearchMode(search)
+        textToolbar?.hide()
+        viewHelpRate?.hide()
+        viewLinkBottom?.hide()
+        detailAdapter?.enterSearchMode(search)
         val placeHolder = "/%s"
         if (total <= 0) {
             if (total == 0) {
-                currentRes.text = "0"
-                totalRes.text = "/0"
+                currentRes?.text = "0"
+                totalRes?.text = "/0"
             } else {
-                currentRes.text = ""
-                totalRes.text = ""
+                currentRes?.text = ""
+                totalRes?.text = ""
             }
-            ivPrevious.isClickable = false
-            ivNext.isClickable = false
+            ivPrevious?.isClickable = false
+            ivNext?.isClickable = false
         } else {
-            totalRes.text = String.format(placeHolder, total.toString())
-            ivPrevious.isClickable = true
-            ivNext.isClickable = true
+            totalRes?.text = String.format(placeHolder, total.toString())
+            ivPrevious?.isClickable = true
+            ivNext?.isClickable = true
             onClickNextPrev(ivPrevious)
         }
-        rvMessageList.setPadding(0, 0, 0, 0)
+        rvMessageList?.setPadding(0, 0, 0, 0)
     }
 
     override fun exitSearchMode() {
-        if (::detailAdapter.isInitialized) detailAdapter.exitSearchMode()
+       detailAdapter?.exitSearchMode()
     }
 
     override fun showImagePreview(position: Int, imagesURL: ArrayList<String>) {
@@ -458,34 +464,39 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     override fun setCurrentRes(currentRes: Int) {
-        this.currentRes.text = currentRes.toString()
+        this.currentRes?.text = currentRes.toString()
     }
 
     override fun updateClosedStatus() {
-        if (!commentsItems.isNullOrEmpty()){
+        if (!commentsItems.isEmpty()){
             commentsItems[0].ticketStatus = TICKET_STATUS_CLOSED
-            detailAdapter.notifyItemChanged(0)
+            detailAdapter?.notifyItemChanged(0)
         }
     }
 
     override fun isSearchMode(): Boolean {
-        return searchView.visibility == View.VISIBLE
+        return searchView?.visibility == View.VISIBLE
     }
 
     override fun setSubmitButtonEnabled(enabled: Boolean) {
         isSendButtonEnabled = enabled
         if (enabled) {
-            ivSendButton.setColorFilter(ContextCompat.getColor(this, R.color.contact_us_green_nob))
+            ivSendButton?.setColorFilter(
+                ContextCompat.getColor(
+                    this,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
+            )
         } else {
-            ivSendButton.clearColorFilter()
+            ivSendButton?.clearColorFilter()
         }
     }
 
     override val imageList: List<ImageUpload>
-        get() = imageUploadAdapter.getUploadedImageList()
+        get() = imageUploadAdapter?.getUploadedImageList() ?: emptyList()
 
     override val userMessage: String
-        get() = edMessage.text.toString()
+        get() = edMessage?.text.toString()
 
 
     override val ticketID: String
@@ -503,14 +514,15 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                     override fun onCompleted() {}
                     override fun onError(e: Throwable) {}
                     override fun onNext(aLong: Long) {
-                        if ((rvMessageList.layoutManager as LinearLayoutManager?)?.findFirstCompletelyVisibleItemPosition() != position) scrollToResult(position)
+                        if ((rvMessageList?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() != position) scrollToResult(position)
                     }
                 })
     }
 
     override fun onBackPressed() {
-        if (imageUploadAdapter.itemCount > 1 || textToolbar.visibility == View.VISIBLE &&
-                edMessage.isFocused && edMessage.text.isNotEmpty() && supportFragmentManager.backStackEntryCount <= 0) {
+        if ((imageUploadAdapter?.itemCount ?: 0) > 1 || textToolbar?.visibility == View.VISIBLE &&
+            edMessage?.isFocused == true && edMessage?.text?.isNotEmpty() == true && supportFragmentManager.backStackEntryCount <= 0
+        ) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle(getString(R.string.inbox_title_dialog_wrong_scan))
             builder.setMessage(R.string.abandon_message_warning)
@@ -546,14 +558,14 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
             if (view.id == R.id.tv_reply_button) {
                 rating = commentsItems[commentsItems.size - 1].rating
                 if (rating != null && (rating == KEY_LIKED || rating == KEY_DIS_LIKED)) {
-                    viewReplyButton.hide()
-                    textToolbar.show()
+                    viewReplyButton?.hide()
+                    textToolbar?.show()
                 } else {
                     helpFullBottomSheet = HelpFullBottomSheet(this@InboxDetailActivity, this)
                     helpFullBottomSheet?.show(supportFragmentManager, "helpFullBottomSheet")
 
-                    viewReplyButton.hide()
-                    textToolbar.show()
+                    viewReplyButton?.hide()
+                    textToolbar?.show()
                 }
             }
         }
@@ -562,7 +574,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     override fun onClick(agreed: Boolean) {
         var item: CommentsItem? = null
         var commentPosition = 0
-        for (i in detailAdapter.itemCount - 1 downTo 0) {
+        for (i in (detailAdapter?.itemCount?.minus(1) ?: 0) downTo 0) {
             val item1 = commentsItems[i]
             if (item1.createdBy?.role == "agent") {
                 item = item1
@@ -571,7 +583,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
             }
         }
         if (agreed) {
-            viewReplyButton.hide()
+            viewReplyButton?.hide()
             (mPresenter as InboxDetailContract.Presenter).onClick(true, commentPosition, item?.id ?: "")
             helpFullBottomSheet?.dismiss()
 
@@ -583,13 +595,13 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                 closeComplainBottomSheet?.show(supportFragmentManager, "closeComplainBottomSheet")
 
             } else {
-                textToolbar.show()
+                textToolbar?.show()
             }
         } else {
             sendGTmEvent(InboxTicketTracking.Label.EventLabelTidak,
                     InboxTicketTracking.Action.EventRatingCsatOnSlider)
             (mPresenter as InboxDetailContract.Presenter).onClick(false, commentPosition, item?.id ?: "")
-            textToolbar.show()
+            textToolbar?.show()
             helpFullBottomSheet?.dismiss()
         }
     }
@@ -598,7 +610,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         val item = commentsItems[commentPosition]
         val rate = if (rating == INT_KEY_LIKED) KEY_LIKED else KEY_DIS_LIKED
         item.rating = rate
-        detailAdapter.notifyItemChanged(commentPosition, item)
+        detailAdapter?.notifyItemChanged(commentPosition, item)
     }
 
     override fun onClickComplain(agreed: Boolean) {
@@ -610,9 +622,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         } else {
             sendGTmEvent(InboxTicketTracking.Label.EventLabelBatal,
                     InboxTicketTracking.Action.EventClickCloseTicket)
-            viewReplyButton.hide()
-            viewHelpRate.hide()
-            textToolbar.show()
+            viewReplyButton?.hide()
+            viewHelpRate?.hide()
+            textToolbar?.show()
         }
     }
 
@@ -632,7 +644,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     override fun showMessage(message: String) {
         super.showMessage(message)
-        Toaster.make(rootView, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACKBAR_OK, View.OnClickListener {})
+        Toaster.build(getRootView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACKBAR_OK)
     }
 
     override fun onClickClose() {
@@ -641,23 +653,26 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     override fun setMessageMaxLengthReached() {
 
-        with(Toaster) {
-            make(
-                getRootView(),
-                getString(R.string.contact_us_maximum_length_error_text),
-                Snackbar.LENGTH_LONG,
-                TYPE_ERROR,
-                SNACKBAR_OK,
-                View.OnClickListener { })
-        }
-
+        Toaster.build(
+            getRootView(),
+            getString(R.string.contact_us_maximum_length_error_text),
+            Snackbar.LENGTH_LONG,
+            TYPE_ERROR,
+            SNACKBAR_OK
+        )
     }
 
     private fun sendMessage(isSendButtonEnabled: Boolean) {
         if (isSendButtonEnabled) {
             sendMessage()
         } else {
-            Toaster.make(getRootView(), this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, SNACKBAR_OK, View.OnClickListener { })
+            Toaster.build(
+                getRootView(),
+                this.getString(R.string.contact_us_minimum_length_error_text),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                SNACKBAR_OK
+            )
         }
     }
 

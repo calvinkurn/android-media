@@ -29,6 +29,7 @@ data class SomListOrderUiModel(
     val buyerName: String = "",
     val tickerInfo: TickerInfo = TickerInfo(),
     val buttons: List<Button> = emptyList(),
+    val orderPlusData: OrderPlusData? = null,
     val multiSelectEnabled: Boolean = false,
     var isChecked: Boolean = false,
     var searchParam: String,
@@ -56,5 +57,9 @@ data class SomListOrderUiModel(
         val type: String = "",
         val url: String = "",
         val popUp: PopUp = PopUp()
+    )
+
+    data class OrderPlusData(
+        val logoUrl: String? = null
     )
 }

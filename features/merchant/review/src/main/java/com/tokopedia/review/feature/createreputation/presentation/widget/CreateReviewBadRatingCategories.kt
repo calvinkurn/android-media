@@ -9,16 +9,17 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.databinding.WidgetCreateReviewBadRatingCategoriesBinding
 import com.tokopedia.review.feature.createreputation.presentation.adapter.CreateReviewBadRatingCategoryAdapter
 import com.tokopedia.review.feature.createreputation.presentation.adapter.typefactory.CreateReviewBadRatingCategoriesTypeFactory
-import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewItemAnimator
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewBadRatingCategoryUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBadRatingCategoriesUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewBadRatingCategoryViewHolder
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewBadRatingCategories @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewBadRatingCategoriesBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewBadRatingCategoriesBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val SPAN_COUNT = 2
@@ -26,7 +27,6 @@ class CreateReviewBadRatingCategories @JvmOverloads constructor(
 
     private val badRatingCategoryListener = BadRatingCategoryListener()
     private val layoutManager = GridLayoutManager(context, SPAN_COUNT, RecyclerView.VERTICAL, false)
-    private val itemAnimator = CreateReviewItemAnimator()
     private val typeFactory = CreateReviewBadRatingCategoriesTypeFactory(badRatingCategoryListener)
     private val adapter = CreateReviewBadRatingCategoryAdapter(typeFactory)
 
@@ -38,7 +38,6 @@ class CreateReviewBadRatingCategories @JvmOverloads constructor(
 
     init {
         binding.rvBadRatingCategories.layoutManager = layoutManager
-        binding.rvBadRatingCategories.itemAnimator = itemAnimator
         binding.rvBadRatingCategories.adapter = adapter
     }
 
@@ -46,17 +45,21 @@ class CreateReviewBadRatingCategories @JvmOverloads constructor(
         adapter.updateItems(badRatingCategories)
     }
 
-    fun updateUi(uiState: CreateReviewBadRatingCategoriesUiState) {
+    fun updateUi(uiState: CreateReviewBadRatingCategoriesUiState, continuation: Continuation<Unit>) {
         when (uiState) {
             is CreateReviewBadRatingCategoriesUiState.Loading -> {
-                // noop
+                continuation.resume(Unit)
             }
             is CreateReviewBadRatingCategoriesUiState.Showing -> {
                 showBadRatingCategories(uiState.badRatingCategories)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewBadRatingCategoriesUiState.Hidden -> {
-                animateHide()
+                animateHide(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }

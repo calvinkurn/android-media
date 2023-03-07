@@ -5,6 +5,7 @@ import com.tokopedia.gamification.pdp.domain.GAMI_PRODUCT_RECOM_WIDGET_QUERY
 import com.tokopedia.gamification.pdp.domain.Mapper
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,7 +27,7 @@ class GamingRecommendationProductUseCase @Inject constructor(context: Context,
         rp.putString(SHOP_ID, if (useEmptyShopId) "" else shopId)
         rp.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)
         if (userSession.isLoggedIn) {
-            rp.putInt(USER_ID, userSession.userId.toInt())
+            rp.putInt(USER_ID, userSession.userId.toIntOrZero())
         } else {
             rp.putInt(USER_ID, 0)
         }

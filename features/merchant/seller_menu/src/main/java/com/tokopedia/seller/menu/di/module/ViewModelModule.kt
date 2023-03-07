@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
 import com.tokopedia.seller.menu.presentation.viewmodel.AdminRoleAuthorizeViewModel
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
+import com.tokopedia.seller.menu.presentation.viewmodel.SellerSettingViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -27,4 +28,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AdminRoleAuthorizeViewModel::class)
     internal abstract fun provideAdminRoleAuthorizeViewModel(adminRoleAuthorizeViewModel: AdminRoleAuthorizeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SellerSettingViewModel::class)
+    internal abstract fun provideSellerSettingViewModel(viewModel: SellerSettingViewModel): ViewModel
 }

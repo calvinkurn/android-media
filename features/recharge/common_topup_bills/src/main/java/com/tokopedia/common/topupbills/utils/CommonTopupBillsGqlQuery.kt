@@ -101,8 +101,8 @@ object CommonTopupBillsGqlQuery {
     """.trimIndent()
 
     val catalogMenuDetail = """
-        query catalogMenuDetail(${'$'}menuID: Int!){
-          rechargeCatalogMenuDetail(menuID:${'$'}menuID, platformID: $RECHARGE_PARAM_ANDROID_DEVICE_ID) {
+        query catalogMenuDetail(${'$'}menuID: Int!, ${'$'}platformID: Int!){
+          rechargeCatalogMenuDetail(menuID:${'$'}menuID, platformID: ${'$'}platformID) {
             catalog {
               id
               name
@@ -158,6 +158,7 @@ object CommonTopupBillsGqlQuery {
               app_link
             }
             express_checkout
+            menu_label
           }
         }
     """.trimIndent()
@@ -282,6 +283,7 @@ object CommonTopupBillsGqlQuery {
               subtitle
               mediaURL
               token
+              clientNumberHash
               trackingData {
                 clientNumber
                 lastOrderDate

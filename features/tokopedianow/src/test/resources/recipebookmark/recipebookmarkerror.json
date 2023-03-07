@@ -1,0 +1,18 @@
+{
+  "TokonowGetRecipeBookmarks": {
+    "header": {
+      "success": false,
+      "processTime": 0.07301409,
+      "message": "Your request has been processed successfully",
+      "statusCode": "321"
+    },
+    "metadata": {
+      "hasNext": false,
+      "total": 0
+    },
+    "data": {
+      "userID": "9101599",
+      "recipes": []
+    }
+  }
+}

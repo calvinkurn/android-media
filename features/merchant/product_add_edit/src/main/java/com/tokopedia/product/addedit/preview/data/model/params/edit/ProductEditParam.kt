@@ -2,7 +2,6 @@ package com.tokopedia.product.addedit.preview.data.model.params.edit
 
 import android.annotation.SuppressLint
 import android.os.Parcelable
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import kotlinx.parcelize.Parcelize

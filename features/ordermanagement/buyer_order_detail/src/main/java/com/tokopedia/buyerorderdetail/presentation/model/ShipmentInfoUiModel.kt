@@ -7,14 +7,14 @@ import com.tokopedia.buyerorderdetail.presentation.coachmark.DriverTippingCoachM
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class ShipmentInfoUiModel(
-        val awbInfoUiModel: AwbInfoUiModel,
-        val courierDriverInfoUiModel: CourierDriverInfoUiModel,
-        val driverTippingInfoUiModel: DriverTippingInfoUiModel,
-        val courierInfoUiModel: CourierInfoUiModel,
-        val dropShipperInfoUiModel: CopyableKeyValueUiModel,
-        val headerUiModel: PlainHeaderUiModel,
-        val receiverAddressInfoUiModel: CopyableKeyValueUiModel,
-        val ticker: TickerUiModel
+    val awbInfoUiModel: AwbInfoUiModel,
+    val courierDriverInfoUiModel: CourierDriverInfoUiModel,
+    val driverTippingInfoUiModel: DriverTippingInfoUiModel,
+    val courierInfoUiModel: CourierInfoUiModel,
+    val dropShipperInfoUiModel: SimpleCopyableKeyValueUiModel,
+    val headerUiModel: PlainHeaderUiModel,
+    val receiverAddressInfoUiModel: SimpleCopyableKeyValueUiModel,
+    val ticker: TickerUiModel
 ) {
 
     data class AwbInfoUiModel(
@@ -24,7 +24,7 @@ data class ShipmentInfoUiModel(
         override val copyableText: String,
         override val label: StringRes,
         override val copyLabel: StringRes
-    ) : CopyableKeyValueUiModel() {
+    ) : BaseCopyableKeyValueUiModel() {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }
@@ -35,12 +35,13 @@ data class ShipmentInfoUiModel(
     }
 
     data class CourierInfoUiModel(
-            val arrivalEstimation: String,
-            val courierNameAndProductName: String,
-            val isFreeShipping: Boolean,
-            val boBadgeUrl: String,
-            val etaChanged: Boolean,
-            val etaUserInfo: String
+        val arrivalEstimation: String,
+        val courierNameAndProductName: String,
+        val isFreeShipping: Boolean,
+        val boBadgeUrl: String,
+        val etaChanged: Boolean,
+        val etaUserInfo: String,
+        val pod: Pod?
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -53,13 +54,18 @@ data class ShipmentInfoUiModel(
         override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
             return null
         }
+
+        data class Pod(
+            val podPictureUrl: String,
+            val podLabel: String,
+            val podCtaText: String,
+            val podCtaUrl: String,
+            val accessToken: String
+        )
     }
 
     data class CourierDriverInfoUiModel(
-            val name: String,
-            val phoneNumber: String,
-            val photoUrl: String,
-            val plateNumber: String
+        val name: String, val phoneNumber: String, val photoUrl: String, val plateNumber: String
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -75,10 +81,8 @@ data class ShipmentInfoUiModel(
     }
 
     data class DriverTippingInfoUiModel(
-        val imageUrl: String,
-        val title: String,
-        val description: String
-    ): BaseVisitableUiModel {
+        val imageUrl: String, val title: String, val description: String
+    ) : BaseVisitableUiModel {
         override fun shouldShow(context: Context?): Boolean {
             return imageUrl.isNotBlank() && title.isNotBlank() && description.isNotBlank()
         }

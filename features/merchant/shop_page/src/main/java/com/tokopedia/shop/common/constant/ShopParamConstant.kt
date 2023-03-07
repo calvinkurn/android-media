@@ -5,6 +5,7 @@ package com.tokopedia.shop.common.constant
  */
 object ShopParamConstant {
     const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
+    const val EXTRA_SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN"
     const val EXTRA_SHOP_REF = "EXTRA_SHOP_REF"
     const val EXTRA_ATTRIBUTION = "EXTRA_ATTRIBUTION"
     const val EXTRA_PRODUCT_KEYWORD = "EXTRA_PRODUCT_KEYWORD"

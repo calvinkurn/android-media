@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ProgressBarUnify
+        android:id="@+id/ongoing_progress_bar_product_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_progress_bar_value="75"
+        app:unify_progress_bar_track_color="color_gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/stock_text_product_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ongoing_progress_bar_product_detail"
+        app:typographyType="body_3"
+        tools:text="Tersedia"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

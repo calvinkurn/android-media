@@ -2,11 +2,14 @@ package com.tokopedia.tokofood.feature.merchant.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,15 +18,19 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.TokofoodExt
 import com.tokopedia.tokofood.common.util.TokofoodExt.copyParcelable
+import com.tokopedia.tokofood.common.util.TokofoodExt.setupEditText
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentOrderCustomizationLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
@@ -116,10 +123,10 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     private var productUiModel: ProductUiModel? = null
     private var source: String = String.EMPTY
 
-    override fun getFragmentToolbar(): Toolbar? = null
+    override fun getFragmentToolbar(): Toolbar? = binding?.toolbarOrderCustomization
 
-    override fun getFragmentTitle(): String {
-        return ""
+    override fun getFragmentTitle(): String? {
+        return productUiModel?.name
     }
 
     override fun onAttachActivity(context: Context?) {
@@ -159,6 +166,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBackgroundColor()
         setDataFromCacheManagerOrArguments()
         observeUpdateCart()
 
@@ -199,26 +207,27 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             }
 
             // setup quantity editor
+            binding?.qeuProductQtyEditor?.setupEditText()
+            binding?.qeuProductQtyEditor?.maxValue = TokofoodExt.MAXIMUM_QUANTITY
             binding?.qeuProductQtyEditor?.setAddClickListener {
                 val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
                 val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
-                val subTotalPrice = viewModel.calculateSubtotalPrice(
-                    baseProductPrice = viewModel.baseProductPrice,
-                    quantity = quantity,
-                    addOnUiModels = addOnUiModels ?: listOf()
-                )
-                binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
+                updateSubtotalPriceLabel(addOnUiModels, quantity)
             }
             binding?.qeuProductQtyEditor?.setSubstractListener {
                 val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
                 val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
-                val subTotalPrice = viewModel.calculateSubtotalPrice(
-                    baseProductPrice = viewModel.baseProductPrice,
-                    quantity = quantity,
-                    addOnUiModels = addOnUiModels ?: listOf()
-                )
-                binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
+                updateSubtotalPriceLabel(addOnUiModels, quantity)
             }
+            binding?.qeuProductQtyEditor?.editText?.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
+                    val quantity = binding?.qeuProductQtyEditor?.getValue().orZero()
+                    updateSubtotalPriceLabel(addOnUiModels, quantity)
+                }
+                override fun afterTextChanged(p0: Editable?) {}
+            })
 
             // setup atc button click listener
             binding?.atcButton?.setOnClickListener {
@@ -274,14 +283,23 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         }
     }
 
+    private fun setupBackgroundColor() {
+        activity?.let {
+            it.window.decorView.setBackgroundColor(
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            )
+        }
+    }
+
     private fun setupHeaderToolbar(foodName: String) {
         activity?.let {
             (it as? AppCompatActivity)?.apply {
-                supportActionBar?.hide()
-                setSupportActionBar(binding?.toolbarOrderCustomization)
                 binding?.toolbarOrderCustomization?.run {
                     title = foodName
                     subtitle = it.getString(com.tokopedia.tokofood.R.string.text_header_order_custom)
+                    setNavigationOnClickListener {
+                        onBackPressed()
+                    }
                 }
             }
         }
@@ -362,6 +380,15 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         }
     }
 
+    private fun updateSubtotalPriceLabel(addOnUiModels: List<AddOnUiModel?>?, quantity: Int) {
+        val subTotalPrice = viewModel.calculateSubtotalPrice(
+                baseProductPrice = viewModel.baseProductPrice,
+                quantity = quantity,
+                addOnUiModels = addOnUiModels ?: listOf()
+        )
+        binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
+    }
+
     override fun onAddOnSelected(
         isSelected: Boolean,
         addOnPrice: Double,
@@ -383,7 +410,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     }
 
     override fun onButtonCtaClickListener(appLink: String) {
-        var applicationLink = ApplinkConstInternalGlobal.ADD_PHONE
+        var applicationLink = ApplinkConstInternalUserPlatform.ADD_PHONE
         if (appLink.isNotEmpty()) applicationLink = appLink
         context?.run {
             TokofoodRouteManager.routePrioritizeInternal(this, applicationLink)

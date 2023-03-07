@@ -42,7 +42,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:gravity="center"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN1000"
             app:layout_constraintBottom_toTopOf="@id/card_subtitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

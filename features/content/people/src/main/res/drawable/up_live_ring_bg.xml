@@ -5,6 +5,6 @@
     android:thickness="@dimen/unify_space_2"
     android:useLevel="false">
 
-    <solid android:color="@color/up_live_bg" />
+    <solid android:color="@color/Unify_RN600" />
 
 </shape>

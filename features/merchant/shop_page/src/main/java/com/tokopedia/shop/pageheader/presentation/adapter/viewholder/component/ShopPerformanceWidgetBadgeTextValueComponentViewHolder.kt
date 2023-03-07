@@ -20,24 +20,24 @@ import com.tokopedia.unifyprinciples.Typography.Companion.HEADING_1
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
-        itemView: View,
-        private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
-        private val listener: Listener
-): AbstractViewHolder<ShopHeaderBadgeTextValueComponentUiModel>(itemView) {
+    itemView: View,
+    private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+    private val listener: Listener
+) : AbstractViewHolder<ShopHeaderBadgeTextValueComponentUiModel>(itemView) {
 
-    companion object{
+    companion object {
         val LAYOUT = R.layout.layout_shop_performance_widget_badge_text_value_component
     }
 
-    interface Listener{
+    interface Listener {
         fun onShopPerformanceWidgetBadgeTextValueItemClicked(
-                componentModel: ShopHeaderBadgeTextValueComponentUiModel,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopHeaderBadgeTextValueComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
         )
 
         fun onImpressionShopPerformanceWidgetBadgeTextValueItem(
-                componentModel: ShopHeaderBadgeTextValueComponentUiModel,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopHeaderBadgeTextValueComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
         )
     }
 
@@ -57,10 +57,10 @@ class ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
                 setType(DISPLAY_2)
         }
         imageViewFirstLine?.apply {
-            if(imageUrlFirstLine.isNotEmpty()){
+            if (imageUrlFirstLine.isNotEmpty()) {
                 show()
                 loadImage(imageUrlFirstLine)
-            }else{
+            } else {
                 hide()
             }
         }
@@ -71,16 +71,15 @@ class ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
         }
         itemView.setOnClickListener {
             listener.onShopPerformanceWidgetBadgeTextValueItemClicked(
-                    model,
-                    shopHeaderWidgetUiModel
+                model,
+                shopHeaderWidgetUiModel
             )
         }
-        itemView.addOnImpressionListener(model){
+        itemView.addOnImpressionListener(model) {
             listener.onImpressionShopPerformanceWidgetBadgeTextValueItem(
-                    model,
-                    shopHeaderWidgetUiModel
+                model,
+                shopHeaderWidgetUiModel
             )
         }
     }
-
 }

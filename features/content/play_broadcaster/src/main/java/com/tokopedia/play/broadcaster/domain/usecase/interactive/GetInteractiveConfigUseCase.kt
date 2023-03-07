@@ -35,7 +35,6 @@ class GetInteractiveConfigUseCase @Inject constructor(
               maxTitleLength
               maxChoicesCount
               minChoicesCount
-              maxRewardLength
               maxChoiceLength
               quizDurationsInSeconds
             }

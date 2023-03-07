@@ -65,7 +65,7 @@ private const val SEARCH_PRODUCT_DEFAULT_FILTER_JSON =
                       {
                         "name": "Power Merchant",
                         "key": "goldmerchant",
-                        "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                        "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
                         "Description": "",
                         "value": "true",
                         "inputType": "checkbox",
@@ -80,7 +80,7 @@ private const val SEARCH_PRODUCT_DEFAULT_FILTER_JSON =
                       {
                         "name": "Official Store",
                         "key": "official",
-                        "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                        "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
                         "Description": "",
                         "value": "true",
                         "inputType": "checkbox",
@@ -311,7 +311,7 @@ private const val SEARCH_PRODUCT_DEFAULT_QUICK_FILTER_JSON =
                 {
                     "name": "Official Store",
                     "key": "official",
-                    "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                    "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
                     "value": "true",
                     "inputType": "checkbox",
                     "totalData": "",
@@ -361,7 +361,7 @@ private const val SEARCH_PRODUCT_DEFAULT_QUICK_FILTER_JSON =
                 {
                     "name": "Power Merchant",
                     "key": "goldmerchant",
-                    "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                    "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
                     "value": "true",
                     "inputType": "checkbox",
                     "totalData": "",
@@ -395,7 +395,7 @@ private const val SEARCH_SHOP_DEFAULT_QUICK_FILTER_JSON =
             {
                 "name": "Official Store",
                 "key": "official",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
                 "value": "true",
                 "inputType": "checkbox",
                 "totalData": "",
@@ -420,7 +420,7 @@ private const val SEARCH_SHOP_DEFAULT_QUICK_FILTER_JSON =
             {
                 "name": "Power Merchant",
                 "key": "goldmerchant",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
                 "value": "true",
                 "inputType": "checkbox",
                 "totalData": "",

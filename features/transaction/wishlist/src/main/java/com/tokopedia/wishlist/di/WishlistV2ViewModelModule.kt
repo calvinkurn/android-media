@@ -23,5 +23,5 @@ abstract class WishlistV2ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(WishlistV2ViewModel::class)
-    internal abstract fun uohListViewModel(viewModel: WishlistV2ViewModel): ViewModel
+    internal abstract fun wishlistV2ViewModel(viewModel: WishlistV2ViewModel): ViewModel
 }

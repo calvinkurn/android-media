@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.product.videowidget
 
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.video_widget.carousel.VideoCarouselDataView
 
 object VideoCarouselDataViewMapper {

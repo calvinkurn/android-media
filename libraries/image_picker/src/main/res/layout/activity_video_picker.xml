@@ -81,7 +81,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_100"
+            android:layout_height="100dp"
             android:background="@drawable/bg_dark_shadow_270"
             android:layout_alignParentBottom="true"/>
 
@@ -89,8 +89,8 @@
             android:id="@+id/btnDeleteVideo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_32"
-            android:textSize="@dimen/sp_16"
+            android:layout_margin="32dp"
+            android:textSize="16sp"
             android:background="@null"
             android:text="@string/vidpick_btn_delete"
             android:textAllCaps="false"

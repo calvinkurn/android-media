@@ -16,7 +16,14 @@ object HomeTagHelper {
     fun getTokopointsBalanceWidgetTag(context: Context): String {
         return String.format(
             context.getString(R.string.tag_balance_widget),
-            BalanceDrawerItemModel.TYPE_COUPON.toString()
+            BalanceDrawerItemModel.TYPE_REWARDS.toString()
+        )
+    }
+
+    fun getSubscriptionBalanceWidgetTag(context: Context): String {
+        return String.format(
+            context.getString(R.string.tag_balance_widget),
+            BalanceDrawerItemModel.TYPE_SUBSCRIPTION.toString()
         )
     }
 

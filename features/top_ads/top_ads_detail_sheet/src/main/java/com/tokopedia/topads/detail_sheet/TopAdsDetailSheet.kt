@@ -94,7 +94,8 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         viewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
             currentAutoAdsStatus = it.status
             if (category == TYPE_AUTO || isInProgress()) {
-                if ((adId.isNotEmpty() && adId.toInt() > 0 && adType == AD_TYPE_PRODUCT) || isInProgress()) {
+                if ((adId.isNotEmpty() && (adId.toIntOrNull() ?: 0) > 0 && adType == AD_TYPE_PRODUCT) || isInProgress()
+                ) {
                     editAd?.text = getString(R.string.topads_detail_sheet_auto)
                 } else {
                     editAd?.text = getString(R.string.topads_detail_sheet_dashboard)
@@ -192,7 +193,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
                 }
 
             } else if (category == TYPE_AUTO) {
-                if (adId.toInt() > 0 && adType == AD_TYPE_PRODUCT) {
+                if ((adId.toIntOrNull() ?: 0) > 0 && adType == AD_TYPE_PRODUCT) {
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
                         CLICK_ATUR_IKLAN,
                         PRODUCT_ADVERTISED)
@@ -232,7 +233,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
                         CLICK_LIHAT_DASHBOARD_TOPADS,
                         GROUP_USER_ADS)
                 }
-            } else if (category == TYPE_AUTO && adId.toInt() > 0) {
+            } else if (category == TYPE_AUTO && (adId.toIntOrNull() ?: 0) > 0) {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
                     CLICK_LIHAT_DASHBOARD_TOPADS,
                     PRODUCT_ADVERTISED)
@@ -261,7 +262,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
             btnSwitch?.isChecked = it?.status == STATUS_ACTIVE || it?.status == STATUS_TIDAK_TAMPIL
             txtBudget?.text = String.format(getString(R.string.topads_detail_budget), it?.priceBid)
         }
-        viewModel.getGroupProductData(groupId.toInt(), ::onSuccessProductInfo)
+        viewModel.getGroupProductData(groupId, ::onSuccessProductInfo)
         if (groupId == SINGLE_AD && category != TYPE_AUTO) {
             singleAd?.visibility = View.VISIBLE
             txtBudget?.visibility = View.GONE

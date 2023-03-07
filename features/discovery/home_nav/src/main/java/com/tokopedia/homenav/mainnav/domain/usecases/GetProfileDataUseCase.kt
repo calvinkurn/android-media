@@ -14,6 +14,9 @@ import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -28,7 +31,8 @@ class GetProfileDataUseCase @Inject constructor(
     private val getShopInfoUseCase: GetShopInfoUseCase,
     private val getWalletEligibilityUseCase: GetWalletEligibilityUseCase,
     private val getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase,
-    private val getAffiliateUserUseCase: GetAffiliateUserUseCase
+    private val getAffiliateUserUseCase: GetAffiliateUserUseCase,
+    private val getTokopediaPlusUseCase: TokopediaPlusUseCase
 ) : UseCase<AccountHeaderDataModel>() {
 
 
@@ -52,6 +56,8 @@ class GetProfileDataUseCase @Inject constructor(
             var isShopDataError: Boolean = false
             var isGetTokopointError: Boolean = false
             var isAffiliateError: Boolean = false
+            var tokopediaPlusData: TokopediaPlusParam? = null
+            var tokopediaPlusError: Throwable? = null
 
             val getUserInfoCall = async {
                 getUserInfoUseCase.executeOnBackground()
@@ -122,6 +128,16 @@ class GetProfileDataUseCase @Inject constructor(
                 isAffiliateError = true
             }
 
+            tokopediaPlusData = try {
+                val result = getTokopediaPlusUseCase.invoke(mapOf(
+                    TokopediaPlusUseCase.PARAM_SOURCE to TokopediaPlusCons.SOURCE_GLOBAL_MENU
+                )).tokopediaPlus
+                TokopediaPlusParam(TokopediaPlusCons.SOURCE_GLOBAL_MENU, result)
+            } catch (e: Exception) {
+                tokopediaPlusError = e
+                null
+            }
+
             accountHeaderMapper.mapToHeaderModel(
                 userInfoData,
                 tokopoint,
@@ -137,7 +153,9 @@ class GetProfileDataUseCase @Inject constructor(
                 isSaldoError = isSaldoError,
                 isShopDataError = isShopDataError,
                 isGetTokopointsError = isGetTokopointError,
-                isAffiliateError = isAffiliateError
+                isAffiliateError = isAffiliateError,
+                tokopediaPlusParam = tokopediaPlusData,
+                tokopediaPlusError = tokopediaPlusError
             )
         }
     }

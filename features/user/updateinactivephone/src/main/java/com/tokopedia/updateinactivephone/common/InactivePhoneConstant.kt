@@ -18,6 +18,9 @@ object InactivePhoneConstant {
     const val REQUEST_CAPTURE_ID_CARD = 100
     const val REQUEST_CAPTURE_SELFIE = 200
 
+    const val SQCP_OTP_TYPE = 169
+    const val REQUEST_SQCP_OTP_VERIFICATION = 101
+
     const val PARAM_USER_DETAIL_DATA = "userData"
     const val PARAM_USER_DATA = "userDataModel"
     const val PARAM_FILE_TO_UPLOAD = "fileToUpload"

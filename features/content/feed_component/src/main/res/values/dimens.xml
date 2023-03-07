@@ -2,6 +2,7 @@
 <resources>
     <dimen name="feed_recommendation_width">220dp</dimen>
     <integer name="feed_component_int_3">3</integer>
+    <dimen name="feed_component_dp_1">1dp</dimen>
     <dimen name="feed_component_dp_4">4dp</dimen>
     <dimen name="feed_component_dp_8">8dp</dimen>
     <dimen name="feed_component_dp_6">6dp</dimen>
@@ -10,8 +11,11 @@
     <dimen name="feed_component_dp_14">14dp</dimen>
     <dimen name="feed_component_dp_200">200dp</dimen>
     <dimen name="feed_component_dp_3">3dp</dimen>
+    <dimen name="feed_component_dp_50">50dp</dimen>
     <dimen name="video_tab_slot_margin_dp_12">12dp</dimen>
     <dimen name="video_tab_slot_margin_top_dp_4">4dp</dimen>
-
     <dimen name="feed_component_dp_7">7dp</dimen>
+    <dimen name="feed_shop_recom_item_stroke">0.8dp</dimen>
+    <dimen name="feed_bottomsheet_toaster_margin_bottom">48dp</dimen>
+    <dimen name="feed_shop_recom_shimmer_height">160dp</dimen>
 </resources>

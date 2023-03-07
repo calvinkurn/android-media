@@ -12,8 +12,8 @@
         android:textAllCaps="true"
         app:typographyWeight="bold"
         app:typographyType="body_3"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:textColor="@color/Unify_N700_68"/>
@@ -26,8 +26,8 @@
         android:background="?selectableItemBackground"
         app:typographyWeight="bold"
         app:typographyType="body_3"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:textColor="@color/Unify_G500"/>

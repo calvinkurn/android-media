@@ -36,10 +36,10 @@ enum class VoucherTargetCardType(@DrawableRes val iconDrawableRes: Int,
 }
 
 object VoucherDisplay {
-    const val PUBLIC_SHOP = "https://ecs7.tokopedia.net/android/others/cashback_public_voucher_shop.png"
-    const val PUBLIC_PRODUCT = "https://ecs7.tokopedia.net/android/others/cashback_public_voucher_product.png"
-    const val PUBLIC_CART = "https://ecs7.tokopedia.net/android/merchant/others/mvc_image_public_cart.png"
-    const val PRIVATE_SOCMED = "https://ecs7.tokopedia.net/android/merchant/others/mvc_image_private_socmed.png"
-    const val PRIVATE_CHAT = "https://ecs7.tokopedia.net/android/merchant/others/mvc_image_private_chat.png"
-    const val PRIVATE_DOWNLOAD = "https://ecs7.tokopedia.net/android/merchant/others/mvc_image_private_download.png"
+    const val PUBLIC_SHOP = "https://images.tokopedia.net/android/others/cashback_public_voucher_shop.png"
+    const val PUBLIC_PRODUCT = "https://images.tokopedia.net/android/others/cashback_public_voucher_product.png"
+    const val PUBLIC_CART = "https://images.tokopedia.net/android/merchant/others/mvc_image_public_cart.png"
+    const val PRIVATE_SOCMED = "https://images.tokopedia.net/android/merchant/others/mvc_image_private_socmed.png"
+    const val PRIVATE_CHAT = "https://images.tokopedia.net/android/merchant/others/mvc_image_private_chat.png"
+    const val PRIVATE_DOWNLOAD = "https://images.tokopedia.net/android/merchant/others/mvc_image_private_download.png"
 }

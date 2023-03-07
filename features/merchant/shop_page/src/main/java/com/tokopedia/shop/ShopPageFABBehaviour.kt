@@ -1,38 +1,36 @@
 package com.tokopedia.shop
 
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.ViewCompat
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.animation.Animator
-
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
 
 class ShopPageFABBehaviour(context: Context, attrs: AttributeSet) : CoordinatorLayout.Behavior<View>() {
 
-    companion object{
+    companion object {
         private const val ANIMATION_DURATION = 250L
     }
 
     private var isAnimate = false
     private val animationListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(p0: Animator?) {
+        override fun onAnimationRepeat(p0: Animator) {
             isAnimate = true
         }
 
-        override fun onAnimationEnd(p0: Animator?) {
+        override fun onAnimationEnd(p0: Animator) {
             isAnimate = false
         }
 
-        override fun onAnimationCancel(p0: Animator?) {
+        override fun onAnimationCancel(p0: Animator) {
             isAnimate = false
         }
 
-        override fun onAnimationStart(p0: Animator?) {
+        override fun onAnimationStart(p0: Animator) {
             isAnimate = true
         }
-
     }
 
     override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: View, target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int) {
@@ -43,7 +41,6 @@ class ShopPageFABBehaviour(context: Context, attrs: AttributeSet) : CoordinatorL
                 val bottomMargin = layoutParams.bottomMargin
                 child.animate().setListener(animationListener).setDuration(ANIMATION_DURATION).translationY((child.height + bottomMargin).toFloat()).setInterpolator(LinearInterpolator()).start()
             }
-
         } else if (dyConsumed < 0) {
             if (!isAnimate) {
                 child.animate().setListener(animationListener).setDuration(ANIMATION_DURATION).translationY(0f).setInterpolator(LinearInterpolator()).start()
@@ -55,4 +52,3 @@ class ShopPageFABBehaviour(context: Context, attrs: AttributeSet) : CoordinatorL
         return axes == ViewCompat.SCROLL_AXIS_VERTICAL
     }
 }
-

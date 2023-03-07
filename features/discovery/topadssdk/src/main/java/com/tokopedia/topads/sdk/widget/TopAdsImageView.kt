@@ -3,39 +3,36 @@ package com.tokopedia.topads.sdk.widget
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
+import java.lang.ref.WeakReference
+import javax.inject.Inject
 
 class TopAdsImageView : AppCompatImageView {
 
-    companion object {
-        private var noOfObject = 0
-    }
-
-    private lateinit var topAdsImageViewViewModel: TopAdsImageViewViewModel
     private var topAdsImageViewClickListener: TopAdsImageViewClickListener? = null
     private var topAdsImageViewImpressionListener: TopAdsImageViewImpressionListener? = null
     private var topAdsImageVieWApiResponseListener: TopAdsImageVieWApiResponseListener? = null
@@ -45,6 +42,18 @@ class TopAdsImageView : AppCompatImageView {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    @JvmField @Inject
+    var viewModelFactory: ViewModelProvider.Factory? = null
+
+    private val topAdsImageViewViewModel by lazy {
+        val vm = viewModelFactory?.let {
+            ViewModelProvider(context as AppCompatActivity,
+                it
+            ).get(TopAdsImageViewViewModel::class.java)
+        }
+        WeakReference(vm)
+    }
 
     /**
      * Use this function to get callback when user click on view
@@ -74,9 +83,9 @@ class TopAdsImageView : AppCompatImageView {
      * */
     fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "", productID: String = "", page:String = "") {
         initViewModel()
-        val queryParams = topAdsImageViewViewModel.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID, page)
-        topAdsImageViewViewModel.getImageData(queryParams)
-        topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
+        val queryParams = topAdsImageViewViewModel.get()?.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID, page)
+        queryParams?.let { topAdsImageViewViewModel.get()?.getImageData(it) }
+        topAdsImageViewViewModel.get()?.getResponse()?.observe(context as LifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
@@ -93,17 +102,11 @@ class TopAdsImageView : AppCompatImageView {
 
 
     private fun initViewModel() {
-        val activity: FragmentActivity by lazy {
-            try {
-                context as FragmentActivity
-            } catch (exception: ClassCastException) {
-                throw ClassCastException("Please ensure that the provided Context is a valid FragmentActivity")
-            }
-        }
-        topAdsImageViewViewModel = ViewModelProviders
-                .of(activity)
-                .get((TopAdsImageViewViewModel::class.java.canonicalName
-                        ?: "") + noOfObject++, TopAdsImageViewViewModel::class.java)
+        val application = context.applicationContext as BaseMainApplication
+        val component = DaggerTopAdsComponent.builder()
+            .baseAppComponent(application.baseAppComponent)
+            .build()
+        component.inject(this)
     }
 
     /**

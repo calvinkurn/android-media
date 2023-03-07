@@ -25,7 +25,8 @@ const val BUNDLE_COUPON_PREVIEW_DATA = "bundleCouponPreviewData"
 const val BUNDLE_COUPON_CREATE_DATA = "bundleCouponCreateData"
 const val BUNDLE_CREATE_SCREEN_TYPE = "bundle_create_screen_type"
 const val BUNDLE_REFRESH = "bundle_refresh"
-const val REQUEST_CODE_REFRESH = 1
+const val REQUEST_CODE_REFRESH_PROGRAM_LIST = 1
+const val REQUEST_CODE_REFRESH_HOME = 2
 const val BUNDLE_IS_SHOW_BS = "bundle_is_show_bs"
 const val BUNDLE_PROGRAM_ACTION = "bundle_program_action"
 
@@ -33,6 +34,7 @@ const val ACTION_CREATE = "create"
 const val ACTION_DETAIL = "detail"
 const val ACTION_EXTEND = "extend"
 const val ACTION_EDIT = "edit"
+const val ACTION_DUPLICATE = "duplicate"
 const val ACTION_CANCEL = "cancel"
 
 const val DRAFT = 1
@@ -71,12 +73,15 @@ const val ADD_QUOTA = "addQuota"
 
 const val LOADING_TEXT = "<b>Makan pepaya minum jus durian</b>" + "<br>" +
         "Tunggu ya, program lagi disiapkan!"
-const val TM_SUMMARY_DIALOG_TITLE = "<b>Tunggu Sebentar, ya</b>" + "<br>" +
+const val TM_SUMMARY_DIALOG_TITLE_START_TEXT = "Tunggu Sebentar, ya\n"
+const val TM_SUMMARY_DIALOG_TITLE = "Tunggu Sebentar, ya\n"  +
 "Kami sedang membuat kuponmu"
 
 const val ERROR_CREATING_TITLE = "Ada gangguan di rumah Toped"
+const val ERROR_CREATING_TITLE_NO_INTERNET= "Koneksi internetmu terganggu!"
 const val ERROR_CREATING_TITLE_RETRY= "Yaah, pengaturan TokoMember  gagal disimpan"
 const val ERROR_CREATING_DESC = "Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti."
+const val ERROR_CREATING_DESC_NO_INTERNET = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu"
 const val ERROR_CREATING_CTA = "Ubah Tanggal"
 const val ERROR_CREATING_CTA_RETRY = "Ke Dashboard TokoMember"
 
@@ -84,13 +89,15 @@ const val COUPON_CASHBACK = "cashback"
 const val COUPON_CASHBACK_PREVIEW = "Cashback"
 const val COUPON_SHIPPING = "shipping"
 const val COUPON_SHIPPING_PREVIEW = "Gratis Ongkir"
+const val COUPON_DISCOUNT_PREVIEW = "Discount"
+
 
 const val CASHBACK_IDR = "idr"
 const val CASHBACK_PERCENTAGE = "percent"
 
 const val PROGRAM_AUTO_DATE = ""
 
-const val COUPON_TERMS_CONDITION = "Dengan klik Buat Kupon, kamu menyetujui \n"+
+const val COUPON_TERMS_CONDITION = "Dengan klik Buat Kupon, kamu menyetujui\n"+
         "syarat & ketentuan TokoMember."
 const val TERMS = "syarat"
 const val TERNS_AND_CONDITION = "syarat & ketentuan"
@@ -192,8 +199,8 @@ const val THURSDAY = "Kam"
 const val FRIDAY = "Jum"
 const val SATURDAY = "Sab"
 
-const val MAX_CASHBACK_LABEL = "Maks. Cashback"
-const val MAX_GRATIS_LABEL = "Maks. Potongan"
+const val MAX_CASHBACK_LABEL = "Maks. cashback"
+const val MAX_GRATIS_LABEL = "Maks. potongan"
 const val MAX_QUOTA_LABEL = "Maks. 10.000"
 const val MIN_QUOTA_LABEL = "Min. 50 kuota"
 const val MAX_PERCENTAGE_LABEL = "Maks. 100%"
@@ -204,3 +211,19 @@ const val MIN_TRANSACTION_OVERFLOW = "Harus kurang dari min. transaksi."
 const val MIN_DISCOUNT_LABEL = "Min. Rp10.000"
 const val MAX_DISCOUNT_LABEL = "Maks. Rp99.999.99"
 const val MAX_DISCOUNT_OVERFLOW = "Harus kurang dari min. transaksi."
+
+const val COUPON_STATE_EMPTY_LABEL = "Kuota Habis"
+const val COUPON_STATE_ACTIVE_LABEL = "Kupon Aktif"
+const val COUPON_STATE_NOT_STARTED_LABEL = "Belum Aktif"
+const val COUPON_STATE_ENDED_LABEL = "Berakhir"
+const val COUPON_STATE_DELETED_LABEL = "Dihapus"
+const val COUPON_STATE_PROCESSING_LABEL = "Pengolahan"
+
+const val TOKOMEMBER_SCREEN = "tokomember screen"
+const val PATH_TOKOMEMBER_PROGRAM_LIST = "program-list"
+const val PATH_TOKOMEMBER_COUPON_LIST = "coupon-list"
+const val PATH_TOKOMEMBER_PROGRAM_CREATION = "program-creation"
+const val PATH_TOKOMEMBER_COUPON_CREATION = "coupon-creation"
+const val PATH_TOKOMEMBER_PROGRAM_EXTENSION = "program-extension"
+const val PATH_TOKOMEMBER_COUPON_DETAIL = "coupon-detail"
+

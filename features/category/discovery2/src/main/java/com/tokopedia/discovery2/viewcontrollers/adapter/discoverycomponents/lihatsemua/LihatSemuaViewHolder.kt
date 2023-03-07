@@ -29,7 +29,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import java.net.URLDecoder
 import java.util.*
@@ -233,14 +232,20 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     }
 
     private fun sendGtmEvent(componentsItem: ComponentsItem) {
-        if (componentsItem.name == ComponentNames.ProductCardCarousel.componentName) {
-            onLihatSemuaClickListener?.onProductCardHeaderClick(componentsItem)
-        }else if(componentsItem.name == ComponentNames.MerchantVoucherCarousel.componentName){
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackMerchantVoucherLihatSemuaClick(componentsItem.data?.firstOrNull())
-        }
-        else {
-            componentsItem.data?.first()?.let {
-                onLihatSemuaClickListener?.onLihatSemuaClick(it)
+        when (componentsItem.name) {
+            ComponentNames.ProductCardCarousel.componentName -> {
+                onLihatSemuaClickListener?.onProductCardHeaderClick(componentsItem)
+            }
+            ComponentNames.MerchantVoucherCarousel.componentName -> {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackMerchantVoucherLihatSemuaClick(componentsItem.data?.firstOrNull())
+            }
+            ComponentNames.CLPFeaturedProducts.componentName -> {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPromoLihat(componentsItem)
+            }
+            else -> {
+                componentsItem.data?.first()?.let {
+                    onLihatSemuaClickListener?.onLihatSemuaClick(it)
+                }
             }
         }
     }

@@ -203,7 +203,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
             }
         )
         bundle.putParcelableArrayList(Items.KEY, items)
-        getTracker().sendEnhanceEcommerceEvent(Event.PRODUCT_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     fun clickOnWishlistViewAll() {
@@ -254,7 +254,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
             }
         )
         bundle.putParcelableArrayList(Promotion.KEY, promotions)
-        getTracker().sendEnhanceEcommerceEvent(Event.PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     fun clickOnFavoriteShopViewAll() {
@@ -329,7 +329,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
             )
         )
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
-        return Pair(Ecommerce.PROMO_CLICK, bundle)
+        return Pair(Event.SELECT_CONTENT, bundle)
     }
 
     fun getClickReviewCard(position: Int, userId: String, element: NavReviewOrder) : Pair<String, Bundle> {
@@ -369,7 +369,7 @@ object TrackingTransactionSection: BaseTrackerConst() {
             )
         )
         bundle.putParcelableArrayList(Promotion.KEY, arrayListOf(promotion))
-        return Pair(Ecommerce.PROMO_CLICK, bundle)
+        return Pair(Event.SELECT_CONTENT, bundle)
     }
 
     fun getClickViewAllTransaction() : Pair<String, Bundle> {

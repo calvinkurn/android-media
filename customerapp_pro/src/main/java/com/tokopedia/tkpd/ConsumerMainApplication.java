@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -41,15 +42,13 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         String version = versions.getFirst();
         String suffixVersion = versions.getSecond();
 
-        if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
-            GlobalConfig.VERSION_NAME = version;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
+        if (TextUtils.isEmpty(suffixVersion)) {
+            GlobalConfig.VERSION_NAME = versionName();
         } else {
-            GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+            GlobalConfig.VERSION_NAME = version;
+            GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
         }
-        com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = BuildConfig.VERSION_NAME;// save raw version name
+        GlobalConfig.RAW_VERSION_NAME = versionName();
     }
 
     @NonNull

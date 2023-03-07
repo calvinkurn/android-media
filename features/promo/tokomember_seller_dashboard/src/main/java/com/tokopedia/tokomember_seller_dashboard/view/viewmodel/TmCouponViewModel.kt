@@ -8,10 +8,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.TmCouponQuotaUpdateUseca
 import com.tokopedia.tokomember_seller_dashboard.domain.TmCouponUpdateStatusUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TmCouponUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponInitialUsecase
-import com.tokopedia.tokomember_seller_dashboard.model.TmCouponInitialResponse
-import com.tokopedia.tokomember_seller_dashboard.model.TmCouponListResponse
-import com.tokopedia.tokomember_seller_dashboard.model.TmCouponUpdateResponse
-import com.tokopedia.tokomember_seller_dashboard.model.TmUpdateCouponQuotaDataExt
+import com.tokopedia.tokomember_seller_dashboard.model.*
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -39,15 +36,44 @@ class TmCouponViewModel @Inject constructor(
     val tmCouponQuotaUpdateLiveData: LiveData<TokoLiveDataResult<TmUpdateCouponQuotaDataExt>> =
         _tmCouponQuotaUpdateLiveData
 
-    fun getCouponList(voucherStatus: String, voucherType: Int?){
+    private val _tmCouponListStateLiveData = MutableLiveData<Int>()
+    val tmCouponListStateLiveData: LiveData<Int> = _tmCouponListStateLiveData
+
+    val couponList:MutableList<CouponItem> = mutableListOf()
+
+    fun refreshListState(state: Int){
+        _tmCouponListStateLiveData.postValue(state)
+    }
+
+    fun getInitialCouponList(voucherStatus: String, voucherType: Int?, page: Int = 1, perPage: Int = 10){
+        if(couponListLiveData.value == null || couponList.isEmpty()){
+            getCouponList(voucherStatus, voucherType, page, perPage)
+        }
+    }
+
+    fun getCouponList(voucherStatus: String, voucherType: Int?, page: Int = 1, perPage: Int = 10){
         tmCouponUsecase.cancelJobs()
-        _couponListLiveData.postValue(TokoLiveDataResult.loading())
+        if(page>1){
+            addLoader()
+            _couponListLiveData.postValue(TokoLiveDataResult.infiniteLoading())
+        }
+        else {
+            _couponListLiveData.postValue(TokoLiveDataResult.loading())
+        }
+        if(page==1){
+            couponList.clear()
+        }
         tmCouponUsecase.getCouponList({
+            removeLoader()
+            it.merchantPromotionGetMVList?.data?.vouchers?.forEach { it1 ->
+                it1?.let { it2 -> couponList.add(CouponItem(it2)) }
+            }
             _couponListLiveData.postValue(TokoLiveDataResult.success(it))
         },
             {
+                removeLoader()
                 _couponListLiveData.postValue(TokoLiveDataResult.error(it))
-            }, voucherStatus, voucherType)
+            }, voucherStatus, voucherType, page, perPage)
     }
 
     fun getInitialCouponData(action: String, couponType: String){
@@ -78,6 +104,16 @@ class TmCouponViewModel @Inject constructor(
         }, {
             _tmCouponQuotaUpdateLiveData.postValue(TokoLiveDataResult.error(it))
         }, quota, voucherId, token)
+    }
+
+    private fun addLoader(){
+        couponList.add(CouponItem(VouchersItem(), LayoutType.LOADER))
+    }
+
+    private fun removeLoader() {
+        if(couponList.isNotEmpty() && couponList.last().layout == LayoutType.LOADER) {
+            couponList.removeLast()
+        }
     }
 
 }

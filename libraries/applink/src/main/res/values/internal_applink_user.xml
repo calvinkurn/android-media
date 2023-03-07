@@ -1,25 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources tools:ignore="UnusedResources"
+    xmlns:tools="http://schemas.android.com/tools">
     <string name="host_user" translatable="false">user</string>
-  
+
+    <!--Home Account-->
+    <string name="path_payment_setting" translatable="false">/payment-setting</string>
+    <string name="path_account_setting" translatable="false">/account-setting</string>
+    <string name="path_image_quality_setting" translatable="false">/media-quality-setting</string>
+    <string name="path_new_home_account">/new-home-account</string>
+    <string name="path_funds_and_investment">/funds-and-investment</string>
+    <string name="path_link_account_webview">/link-account-webview</string>
+    <string name="path_link_account">/link-account</string>
+    <string name="path_explicit_profile">/explicit-profile</string>
+    <string name="path_privacy_account">/privacy-account</string>
+    <string name="path_consent_withdrawal">/consent/withdrawal</string>
+    <string name="path_dsar">/dsar</string>
+    <string name="path_dsar_add_email">/dsar/add-email</string>
+
+    <!--Profile Completion-->
+    <string name="path_add_name_register">/add-name-register</string>
+    <string name="path_change_gender">/change-gender</string>
+    <string name="path_add_email">/add-email</string>
+    <string name="path_add_phone">/add-phone</string>
+    <string name="path_new_add_phone">/new-add-phone</string>
+    <string name="path_add_bod">/add-bod</string>
+    <string name="path_add_pin">/add-pin</string>
+    <string name="path_add_pin_from_2fa">/add-pin-from-2fa</string>
+    <string name="path_change_name">/change-name</string>
+    <string name="path_profile_completion">/profile-completion</string>
+    <string name="path_profile_info">/setting-profile</string>
+    <string name="path_change_pin">/change-pin</string>
+    <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
+    <string name="path_add_pin_complete">/add-pin-complete</string>
+    <string name="path_edit_profile_info">/edit-profile-info</string>
+
+    <!--Manage Name-->
+    <string name="path_manage_name">/manage-name</string>
+
+    <!--Manage Password-->
+    <string name="path_has_password">/has-password</string>
+    <string name="path_add_password">/add-password</string>
+    <string name="path_forgot_password">/forgot-password</string>
+
     <string name="applink_profile_completion_title">Data Diri</string>
     <string name="applink_setting_bank_title">Rekening Bank</string>
     <string name="applink_change_password">Ubah Kata Sandi</string>
     <string name="applink_change_phone_number">Change Phone Number</string>
     <string name="applink_instant_loan_title">Pinjaman Online</string>
     <string name="applink_digital_deals_title">digital_deals</string>
-    <string name="applink_liveness_detection">Liveness Detection</string>
     <string name="applink_fingerprint">Sidik Jari</string>
+
+    <!--Title for DF Privacy Center-->
+    <string name="title_privacy_center">Privacy Center</string>
 
     <string name="applink_notif_troubleshooter">Push Notif Troubleshooter</string>
     <string name="applink_choose_account_fingerprint">/choose-account-fingerprint</string>
+    <string name="applink_choose_account">/choose-account</string>
+
     <string name="applink_account_setting_fingerprint">/biometric-setting</string>
     <string name="applink_account_verify_fingerprint">/verify-fingerprint</string>
     <string name="applink_account_register_fingerprint">/register-fingerprint</string>
-    <string name="applink_link_account">/link-account</string>
-    <string name="applink_privacy_account">/privacy-account</string>
-    <string name="applink_explicit_profile">/explicit-profile</string>
-    <string name="applink_link_account_webview">/link-account-webview</string>
     <string name="applink_account_link_acc_reminder">/link-acc-reminder</string>
     <string name="applink_account_biometric_offering">/biometric-offering</string>
     <string name="applink_goto_seamless_login">/goto-seamless-login</string>
@@ -31,6 +71,54 @@
 
     <string name="applink_global_sharing">/sharing</string>
 
-    <string name="applink_new_profile_info">/profile-info</string>
+    <string name="applink_profile_info">/setting-profile</string>
+
+    // OTP
+    <string name="applink_cotp">/cotp</string>
+    <string name="applink_qr_login">/qr-login</string>
+    <string name="applink_qr_login_result">/qr-login-result</string>
+
+    <string name="applink_otp_push_notif_receiver">/otp-push-notif-receiver</string>
+    <string name="applink_otp_push_notif_setting">/otp-push-notif-setting</string>
+
+    //Login
+    <string name="applink_login">/login</string>
+    <string name="applink_login_seamless">/login-seamless</string>
+
+    <string name="applink_term_privacy">/term-privacy/.*\</string>
+
+    <string name="applink_landing_shop_creation">/landing-shop-creation</string>
+    <string name="applink_phone_shop_creation">/phone-shop-creation</string>
+    <string name="applink_name_shop_creation">/name-shop-creation</string>
+
+    <!--Privacy Center-->
+    <string name="path_privacy_center">/privacy-center</string>
+    <string name="path_account_linking_webview">/account-linking-webview</string>
+
+    //Register
+    <string name="applink_init_register">/init-register</string>
+    <string name="applink_email_register">/email-register</string>
+
+    <!--Redefine Register-->
+    <string name="path_redefine_register_email">/redefine-register-email</string>
+
+    <!--Notif Troubleshooter-->
+    <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
+
+    <!--Telephony Masking-->
+    <string name="path_telephony_masking">/telephony-masking</string>
+
+    <!-- KYC & LIVENESS -->
+    <string name="applink_liveness_detection">Liveness Detection</string>
+
+    <string name="path_user_identification_info">/user-identification-info</string>
+    <string name="path_user_identification_form">/user-identification-form</string>
+    <string name="path_user_identification_only">/user-identification-only</string>
+    <string name="path_liveness_detection">/liveness-detection</string>
+
+    <!--Privacy Center-->
+    <string name="path_search_history">/search-history</string>
+    <string name="path_new_consent_withdrawal">/consent/withdrawal/new</string>
+    <string name="path_sharing_wishlist">/sharing-wishlist</string>
 
 </resources>

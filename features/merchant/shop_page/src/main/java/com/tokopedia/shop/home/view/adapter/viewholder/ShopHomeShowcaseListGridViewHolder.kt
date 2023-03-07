@@ -20,8 +20,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  * author by Rafli Syam on 09/08/2021
  */
 class ShopHomeShowcaseListGridViewHolder(
-        itemView: View,
-        private val itemWidgetListener: ShopHomeShowcaseListWidgetListener
+    itemView: View,
+    private val itemWidgetListener: ShopHomeShowcaseListWidgetListener
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -41,9 +41,9 @@ class ShopHomeShowcaseListGridViewHolder(
     }
 
     fun bind(
-            element: ShopHomeShowcaseListItemUiModel,
-            shopHomeShowcaseListSliderUiModel: ShopHomeShowcaseListSliderUiModel,
-            parentPosition: Int
+        element: ShopHomeShowcaseListItemUiModel,
+        shopHomeShowcaseListSliderUiModel: ShopHomeShowcaseListSliderUiModel,
+        parentPosition: Int
     ) {
         // try catch to avoid crash ImageUnify on loading image with Glide
         try {
@@ -52,7 +52,7 @@ class ShopHomeShowcaseListGridViewHolder(
             }
         } catch (e: Throwable) {
         }
-        
+
         if (element.isShowEtalaseName) {
             showcaseItemName?.visible()
             showcaseItemName?.text = element.name
@@ -65,10 +65,10 @@ class ShopHomeShowcaseListGridViewHolder(
         }
         itemView.setOnClickListener {
             itemWidgetListener.onShowcaseListWidgetItemClicked(
-                    shopHomeShowcaseListSliderUiModel,
-                    element,
-                    adapterPosition,
-                    parentPosition
+                shopHomeShowcaseListSliderUiModel,
+                element,
+                adapterPosition,
+                parentPosition
             )
         }
     }

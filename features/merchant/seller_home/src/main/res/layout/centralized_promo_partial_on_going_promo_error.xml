@@ -5,27 +5,16 @@
     android:id="@+id/layoutCentralizedPromoOnGoingPromoError"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/layout_lvl2">
+    android:padding="16dp">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvCentralizedPromoOnGoingTitleError"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/spacing_lvl2"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        tools:text="Iklan dan Promosimu" />
+
 
     <com.tokopedia.unifycomponents.LocalLoad
         android:id="@+id/localLoadOnGoingPromo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/centralized_promo_dimen_minus_2dp"
-        android:layout_marginLeft="@dimen/centralized_promo_dimen_minus_4dp"
-        android:layout_marginTop="@dimen/sah_dimen_12dp"
-        app:layout_constraintTop_toBottomOf="@id/tvCentralizedPromoOnGoingTitleError" />
+        android:layout_marginStart="-2dp"
+        android:layout_marginLeft="-4dp"
+        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

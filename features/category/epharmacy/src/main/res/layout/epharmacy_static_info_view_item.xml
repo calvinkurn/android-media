@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="@dimen/unify_space_12"
+    android:layout_marginBottom="@dimen/spacing_lvl1">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ketentuan_title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        android:text="@string/epharmacy_ketentuan_foto_resep"
+        />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/sample_image"
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="@dimen/dp_150"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/ketentuan_title_text"
+        app:completeUrl="https://images.tokopedia.net/img/TXXXxB/2022/7/14/0c4e3e54-1d7a-4720-9f81-d0927b1d43a8.png"
+        app:imageDpiSupportType="singleDpi"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/instruction_tv_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl6"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintStart_toEndOf="@id/sample_image"
+        app:layout_constraintTop_toTopOf="@id/sample_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/instruction_tv_2"
+        android:text="@string/epharmacy_upload_instruction_1"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="small"
+        />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iconUnify1"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_width="@dimen/unify_space_8"
+        android:layout_height="@dimen/unify_space_8"
+        app:srcCompat="@drawable/epharmacy_circle_active"
+        app:layout_constraintTop_toTopOf="@id/instruction_tv_1"
+        app:layout_constraintBottom_toBottomOf="@id/instruction_tv_1"
+        app:layout_constraintStart_toEndOf="@id/sample_image"
+        app:layout_goneMarginStart="@dimen/spacing_lvl4"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/instruction_tv_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl6"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintStart_toEndOf="@id/sample_image"
+        app:layout_constraintTop_toBottomOf="@id/instruction_tv_1"
+        app:layout_constraintBottom_toTopOf="@id/instruction_tv_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/epharmacy_upload_instruction_2"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="small"
+        />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iconUnify2"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_width="@dimen/unify_space_8"
+        android:layout_height="@dimen/unify_space_8"
+        app:srcCompat="@drawable/epharmacy_circle_active"
+        app:layout_constraintTop_toTopOf="@id/instruction_tv_2"
+        app:layout_constraintBottom_toBottomOf="@id/instruction_tv_2"
+        app:layout_constraintStart_toEndOf="@id/sample_image"
+        app:layout_goneMarginStart="@dimen/spacing_lvl4"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/instruction_tv_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl6"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintStart_toEndOf="@id/sample_image"
+        app:layout_constraintTop_toBottomOf="@id/instruction_tv_2"
+        app:layout_constraintBottom_toBottomOf="@id/sample_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/epharmacy_upload_instruction_3"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="small"
+        />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iconUnify3"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_width="@dimen/unify_space_8"
+        android:layout_height="@dimen/unify_space_8"
+        app:srcCompat="@drawable/epharmacy_circle_active"
+        app:layout_constraintTop_toTopOf="@id/instruction_tv_3"
+        app:layout_constraintBottom_toBottomOf="@id/instruction_tv_3"
+        app:layout_constraintStart_toEndOf="@id/sample_image"
+        app:layout_goneMarginStart="@dimen/spacing_lvl4"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

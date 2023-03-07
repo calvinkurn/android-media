@@ -48,6 +48,7 @@ import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingBuSection
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
@@ -63,6 +64,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
 import java.util.*
 import javax.inject.Inject
 
@@ -174,7 +177,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        observeCategoryListData()
         viewModel.mainNavLiveData.observe(viewLifecycleOwner, Observer {
             populateAdapterData(it)
         })
@@ -289,7 +291,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH
 
     private fun validateHomeWishlistPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
-        homeNavMenuDataModel.id == ID_WISHLIST_MENU && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
+        homeNavMenuDataModel.id == ID_WISHLIST_MENU &&
+            (
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION ||
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
+            )
 
     private fun hitClickTrackingBasedOnId(homeNavMenuDataModel: HomeNavMenuDataModel) {
         when(homeNavMenuDataModel.id) {
@@ -363,17 +369,27 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         return null
     }
 
-    private fun observeCategoryListData(){
-        onRefresh()
-        viewModel.businessListLiveData.observe(viewLifecycleOwner, Observer {
-            if(it is Fail){
+    private fun initAdapter() {
+        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), object : TokopediaPlusListener {
+            override fun isShown(
+                isShown: Boolean,
+                pageSource: String,
+                tokopediaPlusDataModel: TokopediaPlusDataModel
+            ) {
 
             }
-        })
-    }
 
-    private fun initAdapter() {
-        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
+            override fun onClick(
+                pageSource: String,
+                tokopediaPlusDataModel: TokopediaPlusDataModel
+            ) {
+                TrackingProfileSection.onClickTokopediaPlus(tokopediaPlusDataModel.isSubscriber)
+            }
+
+            override fun onRetry() {
+                viewModel.refreshTokopediaPlusData()
+            }
+        })
         adapter = MainNavListAdapter(mainNavFactory)
 
         activity?.let {
@@ -389,6 +405,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun populateAdapterData(data: MainNavigationDataModel) {
         setupViewPerformanceMonitoring(data)
         adapter.submitList(data.dataList)
+
         if (data.dataList.size > 1 && !mainNavDataFetched) {
             viewModel.getMainNavData(true)
             mainNavDataFetched = true

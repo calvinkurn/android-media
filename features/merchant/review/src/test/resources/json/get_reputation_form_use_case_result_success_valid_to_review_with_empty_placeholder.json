@@ -1,0 +1,37 @@
+{
+  "data": {
+    "productrevGetFormV2": {
+      "reputationIDStr": "910390101",
+      "orderID": "1195866520",
+      "validToReview": true,
+      "keywords": [],
+      "placeholder": "",
+      "productData": {
+        "productIDStr": "626102761",
+        "productName": "Pr0duct T3st1n6 3m4s 1m1t4s1 2",
+        "productPageURL": "https://www.tokopedia.com/ulalashops123/pr0duct-t3st1n6-3m4s-1m1t4s1-2",
+        "productImageURL": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/9/77816542/77816542_a007b16e-6b50-4562-b0b7-38eb3043de1c_678_678",
+        "productStatus": 1,
+        "productVariant": {
+          "variantID": 0,
+          "variantName": ""
+        }
+      },
+      "shopData": {
+        "shopIDStr": "6996572",
+        "shopOpen": true,
+        "shopName": "ulalashops&#39;123"
+      },
+      "userData": {
+        "userID": 171175776,
+        "userName": "Andira",
+        "userStatus": 1
+      },
+      "reputationData": {
+        "score": 0,
+        "locked": true,
+        "filled": false
+      }
+    }
+  }
+}

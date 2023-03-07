@@ -1,0 +1,17 @@
+{
+  "data": {
+    "id": 204385,
+    "category_id": 15,
+    "product_id": 28603,
+    "user_id": 17211378,
+    "rating": 0,
+    "is_liked": true,
+    "feedback": "",
+    "status": 0,
+    "created_at": "0001-01-01T00:00:00Z",
+    "updated_at": "0001-01-01T00:00:00Z"
+  },
+  "status": "OK",
+  "config": null,
+  "server_process_time": "7.818224ms"
+}

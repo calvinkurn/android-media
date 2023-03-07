@@ -19,9 +19,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * author by Rafli Syam on 05/08/2021
  */
-class ShopHomeShowcaseListSliderSmallViewHolder (
-        itemView: View,
-        private val itemWidgetListener: ShopHomeShowcaseListWidgetListener
+class ShopHomeShowcaseListSliderSmallViewHolder(
+    itemView: View,
+    private val itemWidgetListener: ShopHomeShowcaseListWidgetListener
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -41,9 +41,9 @@ class ShopHomeShowcaseListSliderSmallViewHolder (
     }
 
     fun bind(
-            element: ShopHomeShowcaseListItemUiModel,
-            shopHomeShowcaseListSliderUiModel: ShopHomeShowcaseListSliderUiModel,
-            parentPosition: Int
+        element: ShopHomeShowcaseListItemUiModel,
+        shopHomeShowcaseListSliderUiModel: ShopHomeShowcaseListSliderUiModel,
+        parentPosition: Int
     ) {
         // try catch to avoid crash ImageUnify on loading image with Glide
         try {
@@ -65,10 +65,10 @@ class ShopHomeShowcaseListSliderSmallViewHolder (
         }
         itemView.setOnClickListener {
             itemWidgetListener.onShowcaseListWidgetItemClicked(
-                    shopHomeShowcaseListSliderUiModel,
-                    element,
-                    adapterPosition,
-                    parentPosition
+                shopHomeShowcaseListSliderUiModel,
+                element,
+                adapterPosition,
+                parentPosition
             )
         }
     }

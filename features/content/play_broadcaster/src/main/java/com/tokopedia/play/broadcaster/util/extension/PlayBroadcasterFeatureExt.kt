@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestListener
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.network.R as networkR
@@ -88,15 +89,18 @@ internal fun View.showToaster(
         actionLabel: String = "",
         actionListener: View.OnClickListener = View.OnClickListener { },
         bottomMargin: Int? = null
-) {
+) : Snackbar {
     if (actionLabel.isNotEmpty()) Toaster.toasterCustomCtaWidth = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
     if (bottomMargin != null) Toaster.toasterCustomBottomHeight = bottomMargin
-    Toaster.build(this,
+
+    return Toaster.build(this,
             text = message,
             duration = duration,
             type = type,
             actionText = actionLabel,
-            clickListener = actionListener).show()
+            clickListener = actionListener).apply {
+                show()
+            }
 }
 
 internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestListener<Drawable>) {

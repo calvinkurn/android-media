@@ -2,7 +2,6 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.os.Handler
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -11,9 +10,9 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE
+import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.databinding.ViewmodelSliderBannerBinding
 import com.tokopedia.shop.databinding.WidgetSliderBannerItemBinding
-import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
@@ -26,8 +25,8 @@ import java.util.*
  */
 
 class ShopHomeSliderBannerViewHolder(
-        view: View?,
-        private val listener: ShopHomeDisplayWidgetListener
+    view: View?,
+    private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), CarouselUnify.OnActiveIndexChangedListener {
 
     companion object {
@@ -51,18 +50,18 @@ class ShopHomeSliderBannerViewHolder(
             bannerData.data?.let {
                 img?.setOnClickListener {
                     onClickBannerItem(
-                            bannerData,
-                            bannerData.data[index],
-                            adapterPosition,
-                            index
+                        bannerData,
+                        bannerData.data[index],
+                        adapterPosition,
+                        index
                     )
                 }
             }
         }
         val performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE)
-        //avoid crash in ImageUnify when image url is returned as base64
+        // avoid crash in ImageUnify when image url is returned as base64
         try {
-            if(img?.context.isValidGlideContext()) {
+            if (img?.context.isValidGlideContext()) {
                 val ratio = bannerData?.let { getHeightRatio(it) } ?: 0f
                 img?.heightRatio = ratio
                 img?.setImageUrl(carouselItem.imageUrl, ratio)
@@ -82,7 +81,7 @@ class ShopHomeSliderBannerViewHolder(
             indicatorPosition = CarouselUnify.INDICATOR_BL
             infinite = true
             onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
-            indicatorWrapper.setPadding(indicatorWrapper.paddingLeft, 0 , indicatorWrapper.paddingRight, 0)
+            indicatorWrapper.setPadding(indicatorWrapper.paddingLeft, 0, indicatorWrapper.paddingRight, 0)
             indicatorWrapper.setMargin(0, 4.toPx(), 0, 0)
         }
     }
@@ -95,10 +94,10 @@ class ShopHomeSliderBannerViewHolder(
                         val item = listDisplayWidget[current]
                         if (!item.isInvoke) {
                             listener.onDisplayItemImpression(
-                                    shopHomeDisplayWidgetUiModel,
-                                    listDisplayWidget[current],
-                                    adapterPosition,
-                                    current
+                                shopHomeDisplayWidgetUiModel,
+                                listDisplayWidget[current],
+                                adapterPosition,
+                                current
                             )
                             item.invoke()
                         }
@@ -130,7 +129,7 @@ class ShopHomeSliderBannerViewHolder(
                 show()
             }
         }
-        bannerData?.let{
+        bannerData?.let {
             val widthRatio = getIndexRatio(it, 0).toString()
             val heightRatio = getIndexRatio(it, 1).toString()
             carouselShopPage?.apply {
@@ -152,17 +151,17 @@ class ShopHomeSliderBannerViewHolder(
     }
 
     private fun onClickBannerItem(
-            element: ShopHomeDisplayWidgetUiModel?,
-            displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem?,
-            adapterPosition: Int,
-            index: Int
+        element: ShopHomeDisplayWidgetUiModel?,
+        displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem?,
+        adapterPosition: Int,
+        index: Int
     ) {
         displayWidgetItem?.let {
             listener.onDisplayItemClicked(
-                    element,
-                    it,
-                    adapterPosition,
-                    index
+                element,
+                it,
+                adapterPosition,
+                index
             )
             it.invoke()
         }

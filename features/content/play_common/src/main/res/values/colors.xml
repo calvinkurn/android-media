@@ -40,6 +40,7 @@
     <color name="play_dms_discount_badge">#FFEAEF</color>
     <color name="play_dms_product_tag_stock_bg">#B331353B</color>
     <color name="play_dms_product_tag_empty_stock_bg">#6631353B</color>
+    <color name="play_dms_product_tag_oos_overlay">#802E3137</color>
 
     <!-- Game -->
     <color name="play_dms_quiz_header_title_hint">#80FFFFFF</color>

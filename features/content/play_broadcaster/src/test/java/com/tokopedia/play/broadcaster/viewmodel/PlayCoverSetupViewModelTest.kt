@@ -6,18 +6,13 @@ import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteV2UseCase
-import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockImageTransformer
 import com.tokopedia.play.broadcaster.testdouble.MockPlayCoverImageUtil
 import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
-import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
@@ -60,26 +55,28 @@ class PlayCoverSetupViewModelTest {
 
         coverDataStore = MockCoverDataStore(dispatcherProvider)
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
-        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
+        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
         interactiveDataStore = InteractiveDataStoreImpl()
         mockSetupDataStore = MockSetupDataStore(coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
 
         viewModel = PlayCoverSetupViewModel(
-                productList = emptyList(),
-                channelId = "",
-                hydraConfigStore = HydraConfigStoreImpl(
-                        channelConfigStore,
-                        ProductConfigStoreImpl(),
-                        titleConfigStore,
-                        BroadcastScheduleConfigStoreImpl()
-                ),
-                dispatcher = dispatcherProvider,
-                setupDataStore = mockSetupDataStore,
-                uploadImageUseCase = uploadImageUseCase,
-                getOriginalProductImageUseCase = getOriginalProductImageUseCase,
-                coverImageUtil = MockPlayCoverImageUtil(),
-                coverImageTransformer = MockImageTransformer()
+            productList = emptyList(),
+            channelId = "",
+            hydraConfigStore = HydraConfigStoreImpl(
+                channelConfigStore,
+                ProductConfigStoreImpl(),
+                titleConfigStore,
+                BroadcastScheduleConfigStoreImpl(),
+                AccountConfigStoreImpl(),
+            ),
+            dispatcher = dispatcherProvider,
+            setupDataStore = mockSetupDataStore,
+            uploadImageUseCase = uploadImageUseCase,
+            getOriginalProductImageUseCase = getOriginalProductImageUseCase,
+            coverImageUtil = MockPlayCoverImageUtil(),
+            coverImageTransformer = MockImageTransformer(),
+            authorId = "123",
         )
     }
 

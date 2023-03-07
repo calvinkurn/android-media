@@ -6,4 +6,5 @@
     <dimen name="smart_bills_icon_corner_size">12dp</dimen>
     <dimen name="smart_bills_divider_left_padding">84dp</dimen>
     <dimen name="smart_bills_image_height_tooltip">240dp</dimen>
+    <dimen name="smart_bills_view_separator">180dp</dimen>
 </resources>

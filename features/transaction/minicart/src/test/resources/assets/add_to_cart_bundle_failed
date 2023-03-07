@@ -1,0 +1,11 @@
+{
+    "error_message": "",
+            "status": "OK",
+            "data": {
+              "success": 0,
+              "messages": [
+                "Oops, pesananmu nggak bisa diproses. Silakan update aplikasi dulu untuk lanjut beli barang ini."
+              ],
+              "data": []
+            }
+}

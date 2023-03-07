@@ -2,16 +2,17 @@ package com.tokopedia.home_recom.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.domain.query.PrimaryProductQuery
+import com.tokopedia.home_recom.domain.query.PrimaryProductQueryV2
 import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcherImpl
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
@@ -19,8 +20,6 @@ import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
@@ -35,23 +34,14 @@ class HomeRecommendationModule {
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-
     @HomeRecommendationScope
     @Provides
     fun provideGraphqlUseCase(graphqlRepository: GraphqlRepository) =
-            com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>(graphqlRepository)
+        com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>(graphqlRepository)
 
     @HomeRecommendationScope
     @Provides
     fun provideDispatchers(): RecommendationDispatcher = RecommendationDispatcherImpl()
-
-    @Provides
-    @HomeRecommendationScope
-    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddWishListUseCase = AddWishListUseCase(context)
-
-    @Provides
-    @HomeRecommendationScope
-    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
 
     @Provides
     @HomeRecommendationScope
@@ -77,9 +67,19 @@ class HomeRecommendationModule {
     @Provides
     @HomeRecommendationScope
     fun provideGetPrimaryProductUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetPrimaryProductUseCase {
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_primary_product)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PrimaryProductEntity>(graphqlRepository)
-        useCase.setGraphqlQuery(query)
+        val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
+        useCase.setGraphqlQuery(
+            if (remoteConfig.getBoolean(
+                    RemoteConfigKey.RECOM_USE_GQL_FED_QUERY,
+                    true
+                )
+            ) {
+                PrimaryProductQueryV2()
+            } else {
+                PrimaryProductQuery()
+            }
+        )
         return GetPrimaryProductUseCase(context, useCase)
     }
 

@@ -61,6 +61,7 @@ class GetCardDataUseCase(
                   error
                   errorMsg
                   showWidget
+                  badgeImageUrl
                 }
               }
             }

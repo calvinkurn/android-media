@@ -8,6 +8,7 @@ class AddEditProductDetailConstants {
         const val MAX_SUGGESTION_NAME = 5
         const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"
         const val REQUEST_CODE_IMAGE = 0
+        const val REQUEST_CODE_IMAGE_IMPROVEMENT = 10
         const val REQUEST_CODE_CATEGORY = 1
         const val REQUEST_CODE_SHOP_LOCATION = 2
         const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 3
@@ -30,17 +31,10 @@ class AddEditProductDetailConstants {
         const val MAX_MIN_ORDER_QUANTITY = 10000
         const val MIN_MIN_ORDER_QUANTITY = 1
         const val MIN_PREORDER_DURATION = 1
+        const val MAX_WHOLESALE_QUANTITY = 10000
         const val MAX_PREORDER_DAYS = 90
         const val MAX_PREORDER_WEEKS = 13
         const val MAX_SPECIFICATION_COUNTER = 5
-        const val PARAM_SET_CASHBACK_VALUE = "cashback"
-        const val PARAM_SET_CASHBACK_PRODUCT_PRICE = "price"
-        const val PARAM_SET_CASHBACK_PRODUCT_NAME = "product_name"
-        const val SET_CASHBACK_REQUEST_CODE = 3333
-        const val SET_CASHBACK_CACHE_MANAGER_KEY = "set_cashback_cache_id"
-        const val SET_CASHBACK_RESULT = "set_cashback_result"
-        const val EXTRA_CASHBACK_SHOP_ID = "extra_shop_id"
-        const val EXTRA_CASHBACK_IS_DRAFTING = "extra_is_drafting"
         const val EXTRA_RESULT_STATUS = "extra_result_status"
         // request key for set fragment result
         const val REQUEST_KEY_ADD_MODE = "request_key_add_mode"

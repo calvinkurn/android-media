@@ -25,8 +25,6 @@ class ChatAttachmentUseCaseStub @Inject constructor(
 
     private val broadcastCampaignLabelPath = "chat_attachment_banner_label.json"
 
-    private val sellerSrwPromptPath =
-        "seller/success_get_chat_attachment_srw_reply_prompt.json"
     private val defaultChatAttachmentResponsePath =
         "success_get_chat_attachments.json"
     private val shippingLocationPath =
@@ -35,6 +33,8 @@ class ChatAttachmentUseCaseStub @Inject constructor(
         "buyer/chat_attachment_upcoming_campaign.json"
     private val productBundlingPath =
         "product_bundling/success_get_chat_attachment_bundling.json"
+    private val tickerReminderAttachmentPath =
+        "ticker_reminder/success_get_chat_attachment_ticker_reminder.json"
 
     val chatAttachmentNoVariant: ChatAttachmentResponse
         get() = alterResponseOf(defaultChatAttachmentResponsePath) {
@@ -140,14 +140,14 @@ class ChatAttachmentUseCaseStub @Inject constructor(
      */
 
     /**
-     * <!--- Start SRW Prompt --->
+     * <!--- Start Ticker Reminder --->
      */
 
-    val defaultSrwPrompt: ChatAttachmentResponse
-        get() = alterResponseOf(sellerSrwPromptPath) { }
+    val defaultTickerReminderAttachment: ChatAttachmentResponse
+        get() = alterResponseOf(tickerReminderAttachmentPath) { }
 
     /**
-     * <!--- End SRW Prompt --->
+     * <!--- End Ticker Reminder --->
      */
 
     /**

@@ -31,11 +31,6 @@ import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
-import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
 import javax.inject.Inject
@@ -143,77 +138,6 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         showLoading()
         viewModel.getRecentView()
         RecentViewTracking.trackEventOpenScreen(context)
-    }
-
-    fun onWishlistClicked(productId: Int, isWishlist: Boolean) {
-        showLoadingProgress()
-
-        var isUsingV2 = false
-        context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingV2 = true
-        }
-        if (!isWishlist) {
-            if (isUsingV2) {
-                viewModel.addToWishlistV2(productId.toString(), object : WishlistV2ActionListener {
-                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                        context?.let { context ->
-                            val errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
-                            }
-                        }
-                    }
-
-                    override fun onSuccessAddWishlist(
-                        result: AddToWishlistV2Response.Data.WishlistAddV2,
-                        productId: String
-                    ) {
-                        context?.let { context ->
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
-                            }
-                        }
-                    }
-
-                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-                    override fun onSuccessRemoveWishlist(
-                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                        productId: String
-                    ) {}
-                })
-            } else viewModel.addToWishlist(productId.toString())
-        } else {
-            if (isUsingV2) {
-                viewModel.removeFromWishlistV2(productId.toString(), object : WishlistV2ActionListener{
-                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
-                    override fun onSuccessAddWishlist(
-                        result: AddToWishlistV2Response.Data.WishlistAddV2,
-                        productId: String
-                    ) {}
-
-                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                        context?.let { context ->
-                            val errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
-                            }
-                        }
-                    }
-
-                    override fun onSuccessRemoveWishlist(
-                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
-                        productId: String
-                    ) {
-                        context?.let { context ->
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
-                            }
-                        }
-                    }
-
-                })
-            } else viewModel.removeFromWishlist(productId.toString())
-        }
     }
 
     override fun showLoading() {

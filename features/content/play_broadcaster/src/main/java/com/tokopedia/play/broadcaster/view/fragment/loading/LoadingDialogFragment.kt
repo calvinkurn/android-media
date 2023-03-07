@@ -40,7 +40,7 @@ class LoadingDialogFragment : DialogFragment() {
     }
 
     fun show(fragmentManager: FragmentManager) {
-        show(fragmentManager, LoadingDialogFragment::class.java.simpleName)
+        if(!isAdded) showNow(fragmentManager, LoadingDialogFragment::class.java.simpleName)
     }
 
     private fun setupView(view: View) {

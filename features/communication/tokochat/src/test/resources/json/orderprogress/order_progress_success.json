@@ -1,0 +1,17 @@
+{
+  "tokochatOrderProgress": {
+    "enable": true,
+    "state": "COMPLETED",
+    "orderId": "4005593",
+    "invoiceId": "INV/20200220/XX/II/3098",
+    "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/9/12/2684597/2684597_49d800f6-4a88-4dc3-81ea-4f76f429bb88_431_740.jpg",
+    "name": "COMPLETED",
+    "status": "Pesanan Selesai",
+    "statusId": 220,
+    "label": {
+      "title": "Estimasi Tiba",
+      "value": "< 10 menit"
+    },
+    "uri": "tokopedia://food/postpurchase/{orderId}"
+  }
+}

@@ -80,10 +80,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                         shopName = availableGroup.shop.shopName
                         shopType = availableGroup.shop.shopTypeInfo.titleFmt
                         categoryId = product.categoryId
-                        freeShippingType =
-                            if (availableGroup.shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
-                            else if (availableGroup.shipmentInformation.freeShipping.eligible) "bebas ongkir"
-                            else ""
+                        freeShippingType = product.freeShippingGeneral.boName
                         category = product.category
                         productName = product.productName
                         productVariantName = product.variantDescriptionDetail.variantName.joinToString(", ")

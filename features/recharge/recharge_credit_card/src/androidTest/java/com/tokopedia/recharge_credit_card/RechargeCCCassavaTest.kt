@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.recharge_credit_card.utils.ResourceUtils
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -21,7 +20,6 @@ import org.junit.Test
 
 class RechargeCCCassavaTest: BaseRechargeCCTest() {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
@@ -34,7 +32,6 @@ class RechargeCCCassavaTest: BaseRechargeCCTest() {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             graphqlCacheManager.deleteAll()
-            gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse {
                 addMockResponse(
                     KEY_QUERY_BANK_LIST,

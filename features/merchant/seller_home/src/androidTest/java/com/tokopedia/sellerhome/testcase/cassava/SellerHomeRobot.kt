@@ -2,7 +2,6 @@ package com.tokopedia.sellerhome.testcase.cassava
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Context
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
@@ -17,10 +16,9 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
@@ -46,13 +44,12 @@ class SellerHomeRobot {
     }
 
     fun validate(
-        context: Context,
-        gtmLogDbSource: GtmLogDBSource,
+        cassavaRule: CassavaTestRule,
         vararg expectedMatchesCount: Int
     ) {
         val errorMessage = queriesToValidate.mapIndexed { index, queryFileName ->
             try {
-                val analyticsQuery = getAnalyticsWithQuery(gtmLogDbSource, context, queryFileName)
+                val analyticsQuery = cassavaRule.validate(queryFileName)
                 MatcherAssert.assertThat(analyticsQuery, hasAllSuccess())
                 val resultMatchCount = analyticsQuery.first().matches.size.orZero()
                 if (expectedMatchesCount.getOrNull(index) == 0 || resultMatchCount == expectedMatchesCount.getOrNull(

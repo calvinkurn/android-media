@@ -11,6 +11,7 @@ import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.search.listener.DealsSearchListener
 import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
@@ -24,8 +25,8 @@ class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchL
     private var mrpPrice = itemView.findViewById<Typography>(R.id.mrp)
     private var discount = itemView.findViewById<Label>(R.id.tv_off)
 
-    private var price = 0
-    private var mrp = 0
+    private var price = 0L
+    private var mrp = 0L
 
     override fun bind(element: VoucherModel) {
         tvDealTitle.text = element.voucherName
@@ -60,10 +61,10 @@ class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchL
 
     private fun checkAndConvertPrice(element: VoucherModel) {
         if (element.realPrice.isNotEmpty()) {
-            price = element.realPrice.toInt()
+            price = element.realPrice.toLong()
         }
         if (element.mrp.isNotEmpty()) {
-            mrp = element.mrp.toInt()
+            mrp = element.mrp.toLong()
         }
     }
 

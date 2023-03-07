@@ -20,7 +20,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
@@ -35,12 +34,16 @@ import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.di.DaggerTopAdsCommonComponent
 import com.tokopedia.topads.common.di.TopAdsCommonComponent
 import com.tokopedia.topads.common.di.module.TopAdsCommonModule
-import com.tokopedia.topads.common.view.AutoAdsWidgetViewModelCommon
+import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
+import com.tokopedia.topads.common.utils.TopadsCommonUtil.showErrorAutoAds
+import com.tokopedia.topads.common.view.AutoAdsWidgetViewModel
 import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -71,7 +74,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         ViewModelProvider(context as BaseActivity, viewModelFactory)
     }
     private val widgetViewModel by lazy {
-        viewModelProvider.get(AutoAdsWidgetViewModelCommon::class.java)
+        viewModelProvider.get(AutoAdsWidgetViewModel::class.java)
     }
 
     init {
@@ -99,13 +102,24 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
 
     }
 
+    private fun successAutoAdsData(data: TopAdsAutoAdsModel) {
+        currentBudget = data.dailyBudget
+        if (data.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
+            widgetViewModel.getNotDeliveredReason(userSession.shopId)
+        } else
+            setUiComponent(data.status, data.dailyUsage)
+    }
+
     private fun renderUI() {
         widgetViewModel.autoAdsData.observe(context as BaseActivity, {
-            currentBudget = it.dailyBudget
-            if (it.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
-                widgetViewModel.getNotDeliveredReason(userSession.shopId)
-            } else
-                setUiComponent(it.status, it.dailyUsage)
+            when(it) {
+                is Success -> {
+                    successAutoAdsData(it.data)
+                }
+                is Fail -> it.throwable.message?.let { errorMessage ->
+                    showErrorAutoAds(errorMessage)
+                }
+            }
         })
         widgetViewModel.adsDeliveryStatus.observe(context as BaseActivity, {
             if (it.status == 2)
@@ -350,13 +364,13 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
 
     private fun switchToManual() {
         widgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
-            TOGGLE_OFF, CHANNEL, currentBudget, userSession.shopId.toInt(), SOURCE))
+            TOGGLE_OFF, CHANNEL, currentBudget, userSession.shopId, SOURCE))
         )
     }
 
     fun loadData(fromEdit: Int) {
         this.entryPoint = fromEdit
-        widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
+        widgetViewModel.getAutoAdsStatus(userSession.shopId)
     }
 
     private fun initView(context: Context) {

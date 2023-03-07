@@ -1,63 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:paddingBottom="16dp">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/product_detail_info_separator"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:visibility="visible" />
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_margin_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_margin_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_detail_info_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/merchant_product_detail_label_product_detail"
+        app:layout_constraintEnd_toEndOf="@id/guideline_margin_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_margin_start"
+        app:layout_constraintTop_toBottomOf="@id/product_detail_info_separator"
         app:typographyType="display_1"
-        app:typographyWeight="bold"
-        tools:text="Detail Produk" />
+        app:typographyWeight="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_product_detail_info"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="vertical" />
+        app:layout_constraintEnd_toEndOf="@id/guideline_margin_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_margin_start"
+        app:layout_constraintTop_toBottomOf="@id/product_detail_info_title" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_catalog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="product_detail_info_separator_catalog, product_detail_info_seemore_specification" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_detail_info_seemore_specification"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/label_read_detail"
+        android:textColor="@color/Unify_GN500"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@id/guideline_margin_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_margin_start"
+        app:layout_constraintTop_toBottomOf="@id/rv_product_detail_info"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/product_detail_info_separator_catalog"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_detail_info_seemore_specification" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_detail_info_description_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/pdp_product_info_description_title"
+        app:layout_constraintEnd_toEndOf="@id/guideline_margin_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_margin_start"
+        app:layout_constraintTop_toBottomOf="@id/product_detail_info_separator_catalog"
+        app:typographyType="display_1"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_detail_info_description"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
         android:ellipsize="end"
         android:longClickable="false"
         android:maxLines="5"
+        app:layout_constraintEnd_toEndOf="@id/guideline_margin_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_margin_start"
+        app:layout_constraintTop_toBottomOf="@id/product_detail_info_description_title"
         app:typographyType="paragraph_2"
         tools:text="Uniqlo AIRism JAKET UV CUT HOODIE RETSLETING - Orange Jaket Uniqlo Airism - Original Store..." />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_detail_info_seemore"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/label_read_detail"
         android:layout_marginTop="8dp"
+        android:text="@string/label_read_detail"
         android:textColor="@color/Unify_GN500"
         android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@id/guideline_margin_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_margin_start"
+        app:layout_constraintTop_toBottomOf="@id/product_detail_info_description"
         app:typographyType="display_3"
         app:typographyWeight="bold" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

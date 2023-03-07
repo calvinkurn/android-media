@@ -33,6 +33,7 @@ class AddToCartBundleDataMapper @Inject constructor() {
 
     private fun mapProductData(productDataResponse: ProductDataResponse): ProductDataModel {
         return ProductDataModel().apply {
+            cartId = productDataResponse.cartId
             customerId = productDataResponse.customerId
             notes = productDataResponse.notes
             productId = productDataResponse.productId

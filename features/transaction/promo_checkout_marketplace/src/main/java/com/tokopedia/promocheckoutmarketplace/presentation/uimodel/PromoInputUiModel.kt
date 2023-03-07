@@ -23,7 +23,8 @@ data class PromoInputUiModel(
             var isError: Boolean = false,
             var isLoading: Boolean = false,
             var isValidSuggestionPromo: Boolean = false,
-            var viewHeight: Int = 0
+            var viewHeight: Int = 0,
+            var needToDismissBottomsheet: Boolean = false
     )
 
 }

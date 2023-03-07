@@ -28,10 +28,18 @@ import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.newrelic.agent.android.NewRelic;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
+import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -54,6 +62,8 @@ import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLife
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.util.GqlActivityCallback;
+import com.tokopedia.inappupdate.InAppUpdateLifecycleCallback;
+import com.tokopedia.journeydebugger.JourneySubscriber;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
@@ -63,6 +73,7 @@ import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -82,6 +93,7 @@ import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
+import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -97,7 +109,10 @@ import kotlin.Pair;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
 import timber.log.Timber;
+
+import com.tokopedia.developer_options.notification.DevOptNotificationManager;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -127,7 +142,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
+    private final String STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
+    private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -139,6 +156,24 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         TokopediaUrl.Companion.init(this); // generate base url
         initCacheManager();
 
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            new Cassava.Builder(this)
+                    .setRemoteValidator(new RemoteSpec() {
+                        @NonNull
+                        @Override
+                        public String getUrl() {
+                            return TokopediaUrl.getInstance().getAPI();
+                        }
+
+                        @NonNull
+                        @Override
+                        public String getToken() {
+                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                        }
+                    })
+                    .setLocalRootPath("tracker")
+                    .initialize();
+        }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
@@ -147,6 +182,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
         super.onCreate();
+        initRobust();
         createAndCallPostSeq();
         initializeAbTestVariant();
         createAndCallFetchAbTest();
@@ -163,6 +199,14 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
         Typography.Companion.setFontTypeOpenSauceOne(true);
+
+        showDevOptNotification();
+    }
+
+    private void initRobust() {
+        if(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_ENABLE_ROBUST, false)) {
+            TokoPatch.init(this);
+        }
     }
 
     private void initializationNewRelic() {
@@ -233,6 +277,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
+            registerActivityLifecycleCallbacks(new JourneySubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
@@ -246,6 +291,65 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return remoteConfig.getBoolean(REMOTE_CONFIG_TELEMETRY_ENABLED, true);
             }
         }));
+        registerActivityLifecycleCallbacks(new InAppUpdateLifecycleCallback(new Function2<Activity, Function1<? super Boolean, Unit>, Unit>() {
+            @Override
+            public Unit invoke(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
+                onCheckAppUpdateRemoteConfig(activity, onSuccessCheckAppListener);
+                return null;
+            }
+        }));
+        registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
+    }
+
+    private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
+        ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(activity);
+        InAppCallback inAppCallback = null;
+        if (activity instanceof InAppCallback) {
+            inAppCallback = (InAppCallback) activity;
+        }
+        InAppCallback finalInAppCallback = inAppCallback;
+        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+            @Override
+            public void onNeedUpdate(DetailUpdate detail) {
+                AppUpdateDialogBuilder appUpdateDialogBuilder = new AppUpdateDialogBuilder(
+                        activity,
+                        detail, new AppUpdateDialogBuilder.Listener() {
+                    @Override
+                    public void onPositiveButtonClicked(DetailUpdate detail) {
+                        if (finalInAppCallback != null) {
+                            finalInAppCallback.onPositiveButtonInAppClicked(detail);
+                        }
+                    }
+
+                    @Override
+                    public void onNegativeButtonClicked(DetailUpdate detail) {
+                        if (finalInAppCallback != null) {
+                            finalInAppCallback.onNegativeButtonInAppClicked(detail);
+                        }
+                    }
+                });
+                if (!activity.isFinishing() && !activity.isDestroyed()) {
+                    appUpdateDialogBuilder.getAlertDialog().show();
+                    if (finalInAppCallback != null) {
+                        finalInAppCallback.onNeedUpdateInApp(detail);
+                    }
+                    onSuccessCheckAppListener.invoke(true);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+
+            @Override
+            public void onNotNeedUpdate() {
+                if (finalInAppCallback != null) {
+                    finalInAppCallback.onNotNeedUpdateInApp();
+                }
+                onSuccessCheckAppListener.invoke(false);
+            }
+        });
     }
 
     private void createAndCallPreSeq() {
@@ -304,21 +408,18 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         String version = versions.getFirst();
         String suffixVersion = versions.getSecond();
 
-        if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
-            GlobalConfig.VERSION_NAME = version;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
-        } else {
+        if (TextUtils.isEmpty(suffixVersion)) {
             GlobalConfig.VERSION_NAME = versionName();
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = versionName();
+        } else {
+            GlobalConfig.VERSION_NAME = version;
+            GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
         }
-        com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = versionName();// save raw version name
+        GlobalConfig.RAW_VERSION_NAME = versionName();
     }
 
     /**
      * cannot reference BuildConfig of an app.
      *
-     * @return
      */
     @NonNull
     public abstract String versionName();
@@ -340,7 +441,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
-        devMonitoring.initLeakCanary(getLeakCanaryToggleValue());
+        devMonitoring.initLeakCanary(getLeakCanaryToggleValue(), getStrictModeLeakPublisherToggleValue(), this);
 
         DeviceInfo.getAdsIdSuspend(ConsumerMainApplication.this, new Function1<String, Unit>() {
             @Override
@@ -357,6 +458,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private boolean getLeakCanaryToggleValue() {
         return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
+    }
+
+    private boolean getStrictModeLeakPublisherToggleValue() {
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY, STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE);
     }
 
     private void initLogManager() {
@@ -598,6 +703,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         } else {
             return false;
         }
+    }
+
+    private void showDevOptNotification() {
+        new DevOptNotificationManager(this).start();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.fragment.setup.cover
 
-import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.RectF
@@ -12,21 +11,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.transition.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -40,8 +35,6 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
-import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropViewComponent
@@ -49,19 +42,18 @@ import com.tokopedia.play.broadcaster.view.partial.CoverSetupViewComponent
 import com.tokopedia.play.broadcaster.view.state.Changeable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.NotChangeable
-import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
-import com.tokopedia.play_common.R as commonR
-import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.yalantis.ucrop.model.ExifInfo
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by furqan on 02/06/20
@@ -156,8 +148,6 @@ class PlayCoverSetupFragment @Inject constructor(
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun onInterceptBackPressed(): Boolean {
-        try { Toaster.snackBar.dismiss() } catch (e: Throwable) {}
-
         val state = viewModel.cropState
         val coverChangeState = viewModel.coverChangeState()
         return when {
@@ -358,7 +348,7 @@ class PlayCoverSetupFragment @Inject constructor(
         if (toasterBottomMargin == 0) {
             val coverSetupBottomActionHeight = coverSetupView.getBottomActionView().height
             val bottomActionHeight = if (coverSetupBottomActionHeight != 0) coverSetupBottomActionHeight else coverCropView.getBottomActionView().height
-            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val offset8 = requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             toasterBottomMargin = bottomActionHeight + offset8
         }
 
@@ -447,7 +437,6 @@ class PlayCoverSetupFragment @Inject constructor(
                         }
                     },
                     intentHandler = { intent, requestCode ->
-                        (activity as? PlayBroadcastActivity)?.stopPreview()
                         startActivityForResult(intent, requestCode)
                     }
             )
@@ -478,12 +467,12 @@ class PlayCoverSetupFragment @Inject constructor(
      */
     private fun isGalleryPermissionGranted(): Boolean {
         return permissionHelper.isAllPermissionsGranted(
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                arrayOf(PermissionHelper.READ_EXTERNAL_STORAGE)
         )
     }
 
     private fun requestGalleryPermission(requestCode: Int, isFullFlow: Boolean = true) {
-        val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        val permissions = arrayOf(PermissionHelper.READ_EXTERNAL_STORAGE)
         if (isFullFlow) {
             permissionHelper.requestMultiPermissionsFullFlow(
                     permissions = permissions,
@@ -550,6 +539,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     return coverSetupViewModelFactory.create(
                         mDataSource?.getProductList().orEmpty(),
+                        mDataSource?.getAuthorId().orEmpty(),
                         mDataSource?.getChannelId().orEmpty(),
                     ) as T
                 }
@@ -604,6 +594,7 @@ class PlayCoverSetupFragment @Inject constructor(
         setupReenterTransition()
     }
 
+    @Suppress("MagicNumber")
     private fun setupEnterTransition() {
         enterTransition = TransitionSet()
                 .addTransition(Slide(Gravity.END))
@@ -617,6 +608,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 .setDuration(450)
     }
 
+    @Suppress("MagicNumber")
     private fun setupReturnTransition() {
         returnTransition = TransitionSet()
                 .addTransition(Slide(Gravity.END))
@@ -629,6 +621,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 .setDuration(450)
     }
 
+    @Suppress("MagicNumber")
     private fun setupExitTransition() {
         exitTransition = TransitionSet()
                 .addTransition(Slide(Gravity.START))
@@ -636,6 +629,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 .setDuration(300)
     }
 
+    @Suppress("MagicNumber")
     private fun setupReenterTransition() {
         reenterTransition = TransitionSet()
                 .addTransition(Slide(Gravity.START))
@@ -663,6 +657,7 @@ class PlayCoverSetupFragment @Inject constructor(
 
     interface DataSource {
         fun getProductList(): List<ProductUiModel>
+        fun getAuthorId(): String
         fun getChannelId(): String
     }
 }

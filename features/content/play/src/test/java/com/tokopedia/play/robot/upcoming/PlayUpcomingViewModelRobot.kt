@@ -6,10 +6,8 @@ import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.GetSocketCredentialUseCase
 import com.tokopedia.play.domain.PlayChannelReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.robot.play.PlayViewModelRobot2
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.view.uimodel.action.PlayUpcomingAction
-import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingUiState
@@ -33,7 +31,6 @@ class PlayUpcomingViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     userSession: UserSessionInterface = mockk(relaxed = true),
     playUiModelMapper: PlayUiModelMapper = mockk(relaxed = true),
-    playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
     playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
     repo: PlayViewerRepository = mockk(relaxed = true),
     playShareExperience: PlayShareExperience = mockk(relaxed = true)
@@ -46,7 +43,6 @@ class PlayUpcomingViewModelRobot(
         dispatchers = dispatchers,
         userSession = userSession,
         playUiModelMapper = playUiModelMapper,
-        playAnalytic = playAnalytic,
         playChannelSSE = playChannelSSE,
         repo = repo,
         playShareExperience = playShareExperience,
@@ -125,7 +121,6 @@ fun createPlayUpcomingViewModelRobot(
     getSocketCredentialUseCase: GetSocketCredentialUseCase  = mockk(relaxed = true),
     userSession: UserSessionInterface  = mockk(relaxed = true),
     playUiModelMapper: PlayUiModelMapper  = mockk(relaxed = true),
-    playAnalytic: PlayNewAnalytic  = mockk(relaxed = true),
     playChannelSSE: PlayChannelSSE  = mockk(relaxed = true),
     repo: PlayViewerRepository  = mockk(relaxed = true),
     playShareExperience: PlayShareExperience = mockk(relaxed = true),
@@ -138,7 +133,6 @@ fun createPlayUpcomingViewModelRobot(
         dispatchers = dispatchers,
         userSession = userSession,
         playUiModelMapper = playUiModelMapper,
-        playAnalytic = playAnalytic,
         playChannelSSE = playChannelSSE,
         repo = repo,
         playShareExperience = playShareExperience,

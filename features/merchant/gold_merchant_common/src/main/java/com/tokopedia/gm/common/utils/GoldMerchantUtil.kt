@@ -3,6 +3,7 @@ package com.tokopedia.gm.common.utils
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.constant.*
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -35,7 +36,7 @@ object GoldMerchantUtil {
                 SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
             val calendar = Calendar.getInstance()
             simpleDateFormat.parse(dateString)?.let { calendar.time = it }
-            calendar.add(Calendar.DATE, totalDays(dateString).toInt())
+            calendar.add(Calendar.DATE, totalDays(dateString).toInt() ?: Int.ZERO)
             return calendar.get(Calendar.DAY_OF_WEEK)
         } catch (e: Exception) {
             e.printStackTrace()

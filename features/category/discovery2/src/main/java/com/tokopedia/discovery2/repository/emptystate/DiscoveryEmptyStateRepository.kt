@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.Constant.EmptyStateTexts.FILTER_BUTTON_TEXT
 import com.tokopedia.discovery2.Constant.EmptyStateTexts.FILTER_DESCRIPTION
 import com.tokopedia.discovery2.Constant.EmptyStateTexts.FILTER_TITLE
 import com.tokopedia.discovery2.Constant.EmptyStateTexts.TITLE
+import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.emptystate.EmptyStateModel
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -18,12 +19,11 @@ class DiscoveryEmptyStateRepository @Inject constructor() : EmptyStateRepository
 
     private fun handleEmptyState(component: ComponentsItem): EmptyStateModel {
         getComponent(component.parentComponentId, component.pageEndPoint)?.let {
-            if ((it.selectedSort != null && it.selectedFilters != null) &&
-                (it.selectedSort?.isNotEmpty() == true ||
-                        it.selectedFilters?.isNotEmpty() == true)) {
+            if (it.areFiltersApplied()) {
                 return EmptyStateModel(
                     isHorizontal = (it.name == ComponentsList.ProductCardCarousel.componentName ||
-                            it.name == ComponentsList.ProductCardSprintSaleCarousel.componentName),
+                        it.name == ComponentsList.ProductCardSprintSaleCarousel.componentName ||
+                        it.name == ComponentsList.MerchantVoucherCarousel.componentName),
                     title = FILTER_TITLE,
                     description = FILTER_DESCRIPTION,
                     buttonText = FILTER_BUTTON_TEXT,

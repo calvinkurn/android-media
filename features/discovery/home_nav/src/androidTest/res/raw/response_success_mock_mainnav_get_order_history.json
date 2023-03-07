@@ -7,7 +7,7 @@
                         "orderUUID": "e1cba007-b699-4135-9b19-930c4dcd7a57",
                         "status": "Dalam Proses",
                         "metadata": {
-                            "queryParams": "{\"ICLogoOS\":\"https://ecs7.tokopedia.net/img/official_store/badge_official.png\",\"ICLogoPM\":\"https://ecs7.tokopedia.net/order/power_merchant_color.png\",\"ICLogoPMPro\":\"https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png\",\"ICLogoTokoNow\":\"https://images.tokopedia.net/img/now/badge/now-badge.png\",\"accept_deadline\":\"2021-08-30 16:46:48\",\"confirm_shipping_deadline\":\"2021-09-01 16:46:48\",\"estimated_arrival_max_date\":\"2021-08-29 19:41:45\",\"estimated_arrival_min_date\":\"2021-08-28 16:46:45\",\"estimated_arrival_text\":\"Estimasi tiba 28 - 29 Aug\",\"invoice\":\"INV/20210827/MPL/1536619756\",\"invoice_url\":\"https://www.tokopedia.com/invoice?id=INV%2F20210827%2FMPL%2F1536619756\\u0026source=\",\"is_power_merchant\":\"true\",\"order_id\":\"908533988\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"product_snapshot_url\":\"https://www.tokopedia.com/snapshot_product?order_id=908533988\\u0026dtl_id=1536619757\",\"role\":\"buyer\",\"shop_id\":\"1479278\",\"shop_name\":\"Tumbler Starbucks 123\",\"shop_type\":\"0\",\"shop_url\":\"https://www.tokopedia.com/tumblersbux\",\"status\":\"450\",\"user_id\":\"12299592\"}",
+                            "queryParams": "{\"ICLogoOS\":\"https://images.tokopedia.net/img/official_store/badge_official.png\",\"ICLogoPM\":\"https://images.tokopedia.net/order/power_merchant_color.png\",\"ICLogoPMPro\":\"https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png\",\"ICLogoTokoNow\":\"https://images.tokopedia.net/img/now/badge/now-badge.png\",\"accept_deadline\":\"2021-08-30 16:46:48\",\"confirm_shipping_deadline\":\"2021-09-01 16:46:48\",\"estimated_arrival_max_date\":\"2021-08-29 19:41:45\",\"estimated_arrival_min_date\":\"2021-08-28 16:46:45\",\"estimated_arrival_text\":\"Estimasi tiba 28 - 29 Aug\",\"invoice\":\"INV/20210827/MPL/1536619756\",\"invoice_url\":\"https://www.tokopedia.com/invoice?id=INV%2F20210827%2FMPL%2F1536619756\\u0026source=\",\"is_power_merchant\":\"true\",\"order_id\":\"908533988\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"product_snapshot_url\":\"https://www.tokopedia.com/snapshot_product?order_id=908533988\\u0026dtl_id=1536619757\",\"role\":\"buyer\",\"shop_id\":\"1479278\",\"shop_name\":\"Tumbler Starbucks 123\",\"shop_type\":\"0\",\"shop_url\":\"https://www.tokopedia.com/tumblersbux\",\"status\":\"450\",\"user_id\":\"12299592\"}",
                             "detailURL": {
                                 "appURL": "tokopedia://marketplace/order/1200467032"
                             },
@@ -19,7 +19,7 @@
                             "products": [
                                 {
                                     "title": "Hampers Parcel Lebaran Garudafood 1A1B - 2box- Biskuit Kaleng",
-                                    "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2022/4/6/f0a72219-3a7c-429c-a314-d38faf84e7b4.jpg",
+                                    "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2022/4/6/f0a72219-3a7c-429c-a314-d38faf84e7b4.jpg",
                                     "inline1": {
                                         "label": "1 barang",
                                         "textColor": "",
@@ -38,7 +38,7 @@
                         "orderUUID": "96c1817a-e281-4409-8ca4-c55e8739799c",
                         "status": "tiba_di_tujuan",
                         "metadata": {
-                            "queryParams": "{\"ICLogoOS\":\"https://ecs7.tokopedia.net/img/official_store/badge_official.png\",\"ICLogoPM\":\"https://ecs7.tokopedia.net/order/power_merchant_color.png\",\"ICLogoPMPro\":\"https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png\",\"ICLogoTokoNow\":\"https://images.tokopedia.net/img/now/badge/now-badge.png\",\"accept_deadline\":\"2021-08-30 16:46:48\",\"confirm_shipping_deadline\":\"2021-09-01 16:46:48\",\"estimated_arrival_max_date\":\"2021-08-29 19:41:45\",\"estimated_arrival_min_date\":\"2021-08-28 16:46:45\",\"estimated_arrival_text\":\"Estimasi tiba 28 - 29 Aug\",\"invoice\":\"INV/20210827/MPL/1536619756\",\"invoice_url\":\"https://www.tokopedia.com/invoice?id=INV%2F20210827%2FMPL%2F1536619756\\u0026source=\",\"is_power_merchant\":\"true\",\"order_id\":\"908533988\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"product_snapshot_url\":\"https://www.tokopedia.com/snapshot_product?order_id=908533988\\u0026dtl_id=1536619757\",\"role\":\"buyer\",\"shop_id\":\"1479278\",\"shop_name\":\"Tumbler Starbucks 123\",\"shop_type\":\"0\",\"shop_url\":\"https://www.tokopedia.com/tumblersbux\",\"status\":\"450\",\"user_id\":\"12299592\"}",
+                            "queryParams": "{\"ICLogoOS\":\"https://images.tokopedia.net/img/official_store/badge_official.png\",\"ICLogoPM\":\"https://images.tokopedia.net/order/power_merchant_color.png\",\"ICLogoPMPro\":\"https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png\",\"ICLogoTokoNow\":\"https://images.tokopedia.net/img/now/badge/now-badge.png\",\"accept_deadline\":\"2021-08-30 16:46:48\",\"confirm_shipping_deadline\":\"2021-09-01 16:46:48\",\"estimated_arrival_max_date\":\"2021-08-29 19:41:45\",\"estimated_arrival_min_date\":\"2021-08-28 16:46:45\",\"estimated_arrival_text\":\"Estimasi tiba 28 - 29 Aug\",\"invoice\":\"INV/20210827/MPL/1536619756\",\"invoice_url\":\"https://www.tokopedia.com/invoice?id=INV%2F20210827%2FMPL%2F1536619756\\u0026source=\",\"is_power_merchant\":\"true\",\"order_id\":\"908533988\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"product_snapshot_url\":\"https://www.tokopedia.com/snapshot_product?order_id=908533988\\u0026dtl_id=1536619757\",\"role\":\"buyer\",\"shop_id\":\"1479278\",\"shop_name\":\"Tumbler Starbucks 123\",\"shop_type\":\"0\",\"shop_url\":\"https://www.tokopedia.com/tumblersbux\",\"status\":\"450\",\"user_id\":\"12299592\"}",
                             "detailURL": {
                                 "appURL": "tokopedia://marketplace/order/1197216381"
                             },
@@ -50,7 +50,7 @@
                             "products": [
                                 {
                                     "title": "MIYAKO 12\" DOU KAD 1227B KIPAS ANGIN MEJA DAN DINDING",
-                                    "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/10/22/11e7b991-d105-430e-85ae-ffadb2e9de6e.jpg",
+                                    "imageURL": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/10/22/11e7b991-d105-430e-85ae-ffadb2e9de6e.jpg",
                                     "inline1": {
                                         "label": "1 barang",
                                         "textColor": "",

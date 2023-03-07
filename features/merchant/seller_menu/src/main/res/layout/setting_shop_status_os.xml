@@ -9,7 +9,7 @@
         android:id="@+id/statusCard"
         android:layout_width="0dp"
         android:layout_height="@dimen/setting_card_height"
-        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:layout_marginHorizontal="16dp"
         android:background="@drawable/bg_other_rounded"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,7 +27,7 @@
 
         <View
             android:id="@+id/badgeBorder"
-            android:layout_width="@dimen/layout_lvl3"
+            android:layout_width="24dp"
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="@id/middleGuideline"
@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="@dimen/spacing_lvl7"/>
+            app:layout_constraintGuide_begin="40dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

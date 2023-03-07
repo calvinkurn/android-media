@@ -9,17 +9,16 @@ import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel.Header
  */
 
 data class ShopHomeShowcaseListSliderUiModel(
-        override val widgetId: String = "",
-        override val layoutOrder: Int = -1,
-        override val name: String = "",
-        override val type: String = "",
-        override val header: Header = Header(),
-        val showcaseListItem: List<ShopHomeShowcaseListItemUiModel> = listOf()
+    override val widgetId: String = "",
+    override val layoutOrder: Int = -1,
+    override val name: String = "",
+    override val type: String = "",
+    override val header: Header = Header(),
+    val showcaseListItem: List<ShopHomeShowcaseListItemUiModel> = listOf()
 ) : BaseShopHomeWidgetUiModel() {
     val impressHolder = ImpressHolder()
 
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }

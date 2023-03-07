@@ -11,7 +11,7 @@ import com.tokopedia.review.common.util.roundDecimal
 import com.tokopedia.review.databinding.ItemRatingProdukBinding
 import com.tokopedia.review.feature.reviewlist.view.model.ProductReviewUiModel
 
-class SellerReviewListViewHolder(val view: View,
+open class SellerReviewListViewHolder(val view: View,
                                  private val sellerReviewListener: SellerReviewListListener): AbstractViewHolder<ProductReviewUiModel>(view) {
 
     companion object {
@@ -25,7 +25,7 @@ class SellerReviewListViewHolder(val view: View,
     override fun bind(element: ProductReviewUiModel) {
         binding.itemRatingProduct.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
-        binding.ivItemProduct.loadImage(element.productImageUrl.orEmpty())
+        bindProductImage(element.productImageUrl.orEmpty())
         binding.tgTitleProduct.text = element.productName
 
         binding.tgRatingCount.text = element.rating?.roundDecimal()
@@ -50,6 +50,10 @@ class SellerReviewListViewHolder(val view: View,
         if(adapterPosition == 1) {
             sellerReviewListener.onAddedCoachMarkItemProduct(itemView)
         }
+    }
+
+    protected open fun bindProductImage(imageUrl: String) {
+        binding.ivItemProduct.loadImage(imageUrl)
     }
 
     interface SellerReviewListListener {

@@ -28,6 +28,7 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_VISIT_CAMERA = "visit camera"
 
     const val EVENT_CATEGORY = "product review detail page"
+    const val EVENT_CATEGORY_EDIT = "product review detail page - edit"
     const val EVENT_CATEGORY_REVIEW_BOTTOM_SHEET =
         "product review detail page - create review form bottomsheet"
     const val EVENT_CATEGORY_MEDIA_CAMERA = "media camera"
@@ -76,13 +77,6 @@ object CreateReviewTrackingConstants {
 
     const val EVENT_PROMO_VIEW = "promoView"
     const val BAD_RATING_REASON_IMPRESSION_ENHANCED_ECOMMERCE_ID = "reason:%s;"
-
-    const val EVENT_KEY_EE_CREATIVE_NAME = "creative_name"
-    const val EVENT_KEY_EE_CREATIVE_SLOT = "creative_slot"
-    const val EVENT_KEY_EE_ITEM_ID = "item_id"
-    const val EVENT_KEY_EE_ITEM_NAME = "item_name"
-
-    const val EVENT_KEY_EE_PROMOTIONS = "promotions"
 
     const val EVENT_NAME_CLICK_PG = "clickPG"
     const val EVENT_NAME_CLICK_COMMUNICATION = "clickCommunication"

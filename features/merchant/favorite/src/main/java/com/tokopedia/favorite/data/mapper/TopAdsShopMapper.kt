@@ -65,7 +65,7 @@ class TopAdsShopMapper(
             topAdsShopItem.shopImageCover = dataResponse.headline?.shop?.imageShop?.cover
             topAdsShopItem.shopImageCoverEcs = dataResponse.headline?.shop?.imageShop?.coverEcs
             topAdsShopItem.shopImageUrl = dataResponse.headline?.image?.fullUrl
-            topAdsShopItem.shopImageEcs = dataResponse.headline?.shop?.imageShop?.getsEcs()
+            topAdsShopItem.shopImageEcs = dataResponse.headline?.shop?.imageShop?.sEcs
             topAdsShopItem.imageUrl = dataResponse.headline?.shop?.product?.firstOrNull()?.imageProduct?.imageUrl
             topAdsShopItem.fullEcs = dataResponse.headline?.image?.fullEcs
             topAdsShopItem.shopIsOfficial = dataResponse.headline?.shop?.shopIsOfficial?: false

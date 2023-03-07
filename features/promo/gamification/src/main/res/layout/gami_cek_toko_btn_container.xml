@@ -7,8 +7,9 @@
 
     <com.tokopedia.gamification.giftbox.presentation.views.GiftBoxReminderButton
         android:id="@+id/btnFirst"
-        style="@style/GiftBoxReminderButton"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 
     <View
         android:id="@+id/view_divider"

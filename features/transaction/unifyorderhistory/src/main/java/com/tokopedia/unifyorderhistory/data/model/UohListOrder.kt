@@ -14,12 +14,6 @@ data class UohListOrder(
             @SerializedName("orders")
             val orders: List<Order> = listOf(),
 
-            @SerializedName("filtersV2")
-            val v2Filters: List<UohFilterCategory.Data.UohFilterCategoryData.FilterV2> = listOf(),
-
-            @SerializedName("categories")
-            val categories: List<UohFilterCategory.Data.UohFilterCategoryData.Category> = listOf(),
-
             @SerializedName("next")
             val next: String = "",
 

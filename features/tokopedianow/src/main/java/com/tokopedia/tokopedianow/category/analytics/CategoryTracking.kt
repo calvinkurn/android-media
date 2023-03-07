@@ -1,8 +1,11 @@
 package com.tokopedia.tokopedianow.category.analytics
 
+import android.os.Bundle
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.getDigits
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.ADD_QUANTITY_ON_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_APPLY_FILTER
@@ -20,6 +23,12 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLI
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_SEARCH_BAR
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_SEMUA_KATEGORI
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_ADD_TO_CART
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_PRODUCT
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_CLICK_SIMILAR_PRODUCT_BTN
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_IMPRESSION_BOTTOMSHEET
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.EVENT_ACTION_IMPRESSION_EMPTY_STATE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_ON_PAST_PURCHASE_WIDGET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_PRODUCT
@@ -44,24 +53,34 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITH_
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITH_VARIANT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_FILES
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ADD_TO_WISHLIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOM_SHEET_SCREENSHOT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_SHARE_WIDGET_BUTTON
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_IMPRESSION_CHANNEL_SHARE_BOTTOM_SHEET_SCREENSHOT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_IMPRESSION_SHARING_CHANNEL
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_COMMUNICATION
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_PG_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEMS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_LIST
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCT_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_USER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_SHARING_EXPERIENCE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_CATEGORY_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_NULL_VALUE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.PAGE_NAME_TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
@@ -91,11 +110,19 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKO_NOW
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.USER_ID
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants
+import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_ADD_TO_CART_CATEGORY
+import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_CATEGORY
+import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_CLICK_PRODUCT_CATEGORY
+import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_EMPTY_STATE_CATEGORY
+import com.tokopedia.tokopedianow.similarproduct.analytic.TokonowSimilarProductConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_CATEGORY
+import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
+import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
@@ -136,6 +163,13 @@ object CategoryTracking {
         const val CLICK_PRODUCT_ON_PAST_PURCHASE_WIDGET = "click product on past purchase widget"
         const val CLICK_ATC_ON_PAST_PURCHASE_WIDGET = "click atc on past purchase widget"
         const val CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION = "click view all on tokonow clp recommendation"
+
+        const val EVENT_ACTION_IMPRESSION_BOTTOMSHEET = "impression product oos bottomsheet"
+        const val EVENT_ACTION_CLICK_SIMILAR_PRODUCT_BTN = "click produk serupa on product card"
+        const val EVENT_ACTION_CLICK_ADD_TO_CART = "add to cart product oos bottomsheet"
+        const val EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET = "click close bottomsheet"
+        const val EVENT_ACTION_IMPRESSION_EMPTY_STATE = "impression empty state bottomsheet"
+        const val EVENT_ACTION_CLICK_PRODUCT = "click product oos bottomsheet"
     }
 
     object Category {
@@ -290,7 +324,7 @@ object CategoryTracking {
                 KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
                 KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 USER_ID, userId,
-                PRODUCT_ID, productItemDataView.id,
+                PRODUCT_ID, productItemDataView.productCardModel.productId,
                 ECOMMERCE, DataLayer.mapOf(
                     CURRENCYCODE, IDR,
                     IMPRESSIONS, DataLayer.listOf(
@@ -306,9 +340,9 @@ object CategoryTracking {
         return DataLayer.mapOf(
                 "brand", NONE_OTHER,
                 "category", NONE_OTHER,
-                "id", id,
-                "name", name,
-                "price", priceInt,
+                "id", productCardModel.productId,
+                "name", productCardModel.name,
+                "price", productCardModel.price.getDigits(),
                 "variant", NONE_OTHER,
                 "position", position,
                 "list", String.format(TOKONOW_CATEGORY_ORGANIC, categoryIdTracking)
@@ -330,7 +364,7 @@ object CategoryTracking {
                 KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
                 KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 USER_ID, userId,
-                PRODUCT_ID, productItemDataView.id,
+                PRODUCT_ID, productItemDataView.productCardModel.productId,
                 ECOMMERCE, DataLayer.mapOf(
                     CLICK, DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(LIST, TOKONOW_CATEGORY_ORGANIC),
@@ -458,9 +492,9 @@ object CategoryTracking {
                 "category", NONE_OTHER,
                 "category_id", categoryId,
                 "dimension45", cartId,
-                "id", id,
-                "name", name,
-                "price", priceInt,
+                "id", productCardModel.productId,
+                "name", productCardModel.name,
+                "price", productCardModel.price.getDigits(),
                 "quantity", quantity,
                 "shop_id", shop.id,
                 "shop_name", shop.name,
@@ -816,4 +850,280 @@ object CategoryTracking {
 
         getTracker().sendGeneralEvent(dataLayer)
     }
+
+    fun trackClickAddToWishlist(warehouseId: String, productId: String){
+        val label = "$warehouseId - $productId"
+
+        val dataLayer = getDataLayer(
+            EVENT_CLICK_GROCERIES,
+            EVENT_ACTION_CLICK_ADD_TO_WISHLIST,
+            EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE,
+            label
+        )
+
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_TRACKER_ID] = TokoNowCommonAnalyticConstants.TRACKER_ID.TRACKER_ID_ADD_TO_WISHLIST_CATEGORY
+        dataLayer[KEY_PRODUCT_ID] = productId
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    fun trackClickRemoveFromWishlist(warehouseId: String, productId: String){
+        val label = "$warehouseId - $productId"
+
+        val dataLayer = getDataLayer(
+            EVENT_CLICK_GROCERIES,
+            EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST,
+            EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE,
+            label
+        )
+
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_TRACKER_ID] = TokoNowCommonAnalyticConstants.TRACKER_ID.TRACKER_ID_REMOVE_FROM_WISHLIST_CATEGORY
+        dataLayer[KEY_PRODUCT_ID] = productId
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    /* Similar Product Bottomsheet Trackers*/
+
+    fun trackClickSimilarProductBtn(
+        userId: String,
+        warehouseId: String,
+        productIdTriggered: String
+    ) {
+        val dataLayer = createGeneralDataLayer(
+            event = EVENT_CLICK_GROCERIES,
+            action = EVENT_ACTION_CLICK_SIMILAR_PRODUCT_BTN,
+            label = "$warehouseId - $productIdTriggered",
+            userId = userId
+        ).apply {
+            putString(KEY_PRODUCT_ID, productIdTriggered)
+            putString(KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_CATEGORY)
+        }
+
+        sendEnhanceEcommerceEvent(
+            eventName = EVENT_CLICK_GROCERIES,
+            dataLayer = dataLayer
+        )
+    }
+
+    fun trackImpressionBottomSheet(
+        userId: String,
+        warehouseId: String,
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String
+    ) {
+        val items = arrayListOf(
+            createProductItemDataLayer(
+                index = similarProduct.position,
+                id = similarProduct.id,
+                name = similarProduct.name,
+                price = similarProduct.priceFmt.getDigits().orZero().toFloat(),
+                category = similarProduct.categoryName
+            )
+        )
+
+        val dataLayer = createGeneralDataLayer(
+            event = EVENT_VIEW_ITEM_LIST,
+            action = EVENT_ACTION_IMPRESSION_BOTTOMSHEET,
+            label = "$warehouseId - $productIdTriggered - ${similarProduct.id}",
+            userId = userId
+        ).apply {
+            putString(KEY_PRODUCT_ID, similarProduct.id)
+            putString(KEY_TRACKER_ID, TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_CATEGORY)
+            putString(KEY_ITEM_LIST, "/tokonow - product card - similar product recom")
+            putParcelableArrayList(KEY_ITEMS, ArrayList(items))
+        }
+
+        sendEnhanceEcommerceEvent(
+            eventName = EVENT_VIEW_PG_IRIS,
+            dataLayer = dataLayer
+        )
+    }
+
+    fun trackClickProduct(
+        userId: String,
+        warehouseId: String,
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String
+    ) {
+        val items = arrayListOf(
+            createProductItemDataLayer(
+                index = similarProduct.position,
+                id = similarProduct.id,
+                name = similarProduct.name,
+                price = similarProduct.priceFmt.getDigits().orZero().toFloat(),
+                category = similarProduct.categoryName
+            )
+        )
+
+        val dataLayer = createGeneralDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_PRODUCT,
+            label = "$warehouseId - $productIdTriggered - ${similarProduct.id}",
+            userId = userId
+        ).apply {
+            putString(KEY_PRODUCT_ID, similarProduct.id)
+            putString(KEY_TRACKER_ID, TRACKER_ID_CLICK_PRODUCT_CATEGORY)
+            putString(KEY_ITEM_LIST, "/tokonow - product card - similar product recom")
+            putParcelableArrayList(KEY_ITEMS, ArrayList(items))
+        }
+
+        sendEnhanceEcommerceEvent(
+            eventName = EVENT_SELECT_CONTENT,
+            dataLayer = dataLayer
+        )
+    }
+
+    fun trackClickAddToCart(
+        userId: String,
+        warehouseId: String,
+        similarProduct: SimilarProductUiModel,
+        productIdTriggered: String,
+        newQuantity: Int
+    ) {
+        val items = arrayListOf(
+            createAtcProductItemDataLayer(
+                id = similarProduct.id,
+                name = similarProduct.name,
+                price = similarProduct.priceFmt,
+                categoryName = similarProduct.categoryName,
+                categoryId = similarProduct.categoryId,
+                quantity = newQuantity.toString(),
+                shopId = similarProduct.shopId,
+                shopName = similarProduct.shopName
+            )
+        )
+
+        val dataLayer = createGeneralDataLayer(
+            event = TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART,
+            action = EVENT_ACTION_CLICK_ADD_TO_CART,
+            label = "$warehouseId - $productIdTriggered - ${similarProduct.id}",
+            userId = userId
+        ).apply {
+            putString(KEY_USER_ID, userId)
+            putString(KEY_PRODUCT_ID, similarProduct.id)
+            putString(KEY_TRACKER_ID, TRACKER_ID_ADD_TO_CART_CATEGORY)
+            putParcelableArrayList(KEY_ITEMS, items)
+        }
+
+        sendEnhanceEcommerceEvent(
+            eventName = TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART,
+            dataLayer = dataLayer
+        )
+    }
+
+    fun trackClickCloseBottomsheet(
+        userId: String,
+        warehouseId: String,
+        productIdTriggered: String
+    ) {
+        val dataLayer = createGeneralDataLayer(
+            event = EVENT_CLICK_GROCERIES,
+            action = EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET,
+            label = "$warehouseId - $productIdTriggered",
+            userId = userId
+        ).apply {
+            putString(KEY_TRACKER_ID, TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_CATEGORY)
+        }
+
+        sendEnhanceEcommerceEvent(
+            eventName = EVENT_CLICK_GROCERIES,
+            dataLayer = dataLayer
+        )
+    }
+
+    fun trackImpressionEmptyState(
+        userId: String,
+        warehouseId: String,
+        productIdTriggered: String
+    ) {
+        val dataLayer = createGeneralDataLayer(
+            event = TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROCERIES,
+            action = EVENT_ACTION_IMPRESSION_EMPTY_STATE,
+            label = "$warehouseId - $productIdTriggered",
+            userId = userId
+        ).apply {
+            putString(KEY_TRACKER_ID, TRACKER_ID_VIEW_EMPTY_STATE_CATEGORY)
+        }
+
+        sendEnhanceEcommerceEvent(
+            eventName = TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROCERIES,
+            dataLayer = dataLayer
+        )
+    }
+
+
+    private fun createGeneralDataLayer(event: String, action: String, label: String = TokoNowCommonAnalyticConstants.VALUE.DEFAULT_EMPTY_VALUE, userId: String): Bundle {
+        return Bundle().apply {
+            putString(TrackerConstant.EVENT, event)
+            putString(TrackerConstant.EVENT_ACTION, action)
+            putString(TrackerConstant.EVENT_CATEGORY, EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE)
+            putString(TrackerConstant.EVENT_LABEL, label)
+            putString(TrackerConstant.BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
+            putString(TrackerConstant.CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            putString(TrackerConstant.USERID, userId)
+        }
+    }
+
+    private fun createProductItemDataLayer(
+        index: Int = 0,
+        id: String = "",
+        name: String = "",
+        price: Float = 0f,
+        brand: String = "none/other",
+        category: String = "",
+        variant: String = "none/other"
+    ): Bundle {
+        return Bundle().apply {
+            putInt(TokoNowCommonAnalyticConstants.KEY.KEY_INDEX, index)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_BRAND, brand)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_CATEGORY, category)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_ID, id)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_NAME, name)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_VARIANT, variant)
+            putFloat(TokoNowCommonAnalyticConstants.KEY.KEY_PRICE, price)
+        }
+    }
+
+    private fun createAtcProductItemDataLayer(
+        id: String = "",
+        name: String = "",
+        price: String = "",
+        brand: String = "none/other",
+        categoryName: String = "",
+        categoryId: String = "",
+        quantity: String = "",
+        variant: String = "none/other",
+        shopId: String = "",
+        shopName: String = TokoNowCommonAnalyticConstants.VALUE.DEFAULT_EMPTY_VALUE
+    ): Bundle {
+        return Bundle().apply {
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_BRAND, brand)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_CATEGORY, categoryName)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_ID, id)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_NAME, name)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_VARIANT, variant)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_PRICE, price)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY_ID, categoryId)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_QUANTITY, quantity)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_ID, shopId)
+            putString(
+                TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_NAME,
+                TokoNowCommonAnalyticConstants.VALUE.DEFAULT_EMPTY_VALUE
+            )
+            putString(
+                TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_TYPE,
+                TokoNowCommonAnalyticConstants.VALUE.DEFAULT_EMPTY_VALUE
+            )
+        }
+    }
+
+    private fun sendEnhanceEcommerceEvent(eventName: String, dataLayer: Bundle) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, dataLayer)
+    }
+
 }

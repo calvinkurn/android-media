@@ -255,11 +255,11 @@ class LottieBottomNavbar : LinearLayout {
             imageContainer.addView(iconPlaceholder)
 
             icon.addAnimatorListener(object: Animator.AnimatorListener {
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
 
                 }
 
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     if (selectedItem != index) {
                         val bottomMenuSelected = bottomMenu
                         val iconSelected = icon
@@ -291,11 +291,11 @@ class LottieBottomNavbar : LinearLayout {
                     iconPlaceholder.visibility = View.VISIBLE
                 }
 
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
 
                 }
 
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                     icon.visibility = View.VISIBLE
                     iconPlaceholder.visibility = View.INVISIBLE
                 }

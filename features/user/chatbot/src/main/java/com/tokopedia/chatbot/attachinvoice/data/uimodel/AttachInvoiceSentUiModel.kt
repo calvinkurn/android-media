@@ -20,6 +20,7 @@ class AttachInvoiceSentUiModel private constructor(
     var invoiceId: String = builder.invoiceId
     var invoiceUrl: String = builder.invoiceUrl
     var createTime: String = builder.createTime
+    var color: String = builder.color
 
     override var isLoading: Boolean = true
     override var isError: Boolean = false
@@ -47,6 +48,7 @@ class AttachInvoiceSentUiModel private constructor(
             this.invoiceUrl = attribute.invoiceLink.attributes.hrefUrl
             this.createTime = attribute.invoiceLink.attributes.createTime
             this.isLoading = false
+            this.color = attribute.invoiceLink.attributes.color
         }
     }
 
@@ -71,6 +73,7 @@ class AttachInvoiceSentUiModel private constructor(
         internal var invoiceUrl: String = ""
         internal var createTime: String = ""
         internal var needSync: Boolean = true
+        internal var color: String = ""
 
         fun withInvoiceAttributesResponse(invoice: InvoiceLinkPojo): Builder {
             withMsg(invoice.attributes.title)
@@ -82,6 +85,7 @@ class AttachInvoiceSentUiModel private constructor(
             withInvoiceId(invoice.attributes.code)
             withInvoiceUrl(invoice.attributes.hrefUrl)
             withCreateTime(invoice.attributes.createTime)
+            withColor(invoice.attributes.color)
             return self()
         }
 
@@ -127,6 +131,11 @@ class AttachInvoiceSentUiModel private constructor(
 
         fun withNeedSync(needSync: Boolean): Builder {
             this.needSync = needSync
+            return self()
+        }
+
+        fun withColor(color : String) : Builder {
+            this.color = color
             return self()
         }
 

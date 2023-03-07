@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scroll_parent"
     android:layout_width="match_parent"
-    android:background="@color/Unify_Background"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="16dp"
-    android:orientation="vertical"
-    android:scrollbars="none">
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scroll_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="72dp"
+        android:orientation="vertical"
+        android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_Background"
         android:clickable="true"
         android:focusable="true">
 
@@ -28,9 +30,245 @@
             app:toolbarAlwaysShowShadow="false"
             app:toolbarBackButton="back"
             app:toolbarContentType="typeTitle"
-            app:toolbarInitialFillColor="@color/Unify_N0"
             app:toolbarInitialTheme="light"
             app:toolbarTitle="Tukar Tambah" />
+
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
+            android:id="@+id/edu_banner"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_android.webp"
+            app:imageDpiSupportType="singleDpi"
+            app:layout_constraintDimensionRatio="H,2:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edu_navToolbar" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/edu_heading_keuntungan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/tradein_edu_heading_keuntungan"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/edu_banner"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/cv_tradein_exchange_adv_1"
+            android:layout_width="0dp"
+            android:layout_height="128dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="6dp"
+            android:padding="0dp"
+            android:elevation="6dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintEnd_toStartOf="@id/cv_tradein_exchange_adv_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edu_heading_keuntungan">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                    android:id="@+id/iv_tradein_exchange_adv_1"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="20dp"
+                    app:imageDpiSupportType="singleDpi"
+                    app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/tradein_exchange_advantage_1.png"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/edu_heading_tradein_exchange_adv_1"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center"
+                    android:lineHeight="16sp"
+                    android:lineSpacingExtra="0sp"
+                    android:text="@string/tradein_edu_heading_cepat"
+                    android:textAlignment="center"
+                    android:textColor="@color/Unify_NN950"
+                    android:textFontWeight="800"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_tradein_exchange_adv_1"
+                    app:typographyType="heading_6" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.tokopedia.unifycomponents.CardUnify2>
+
+        <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/cv_tradein_exchange_adv_2"
+            android:layout_width="0dp"
+            android:layout_height="128dp"
+            android:layout_marginEnd="16dp"
+            android:elevation="6dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cv_tradein_exchange_adv_1"
+            app:layout_constraintTop_toTopOf="@id/cv_tradein_exchange_adv_1">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                    android:id="@+id/iv_tradein_exchange_adv_2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:imageDpiSupportType="singleDpi"
+                    android:layout_marginTop="20dp"
+                    app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/tradein_exchange_advantage_2.png"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/edu_heading_tradein_exchange_adv_2"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center"
+                    android:lineHeight="16sp"
+                    android:text="@string/tradein_edu_heading_murah"
+                    android:textAlignment="center"
+                    android:textColor="@color/Unify_NN950"
+                    android:textFontWeight="800"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_tradein_exchange_adv_2"
+                    app:typographyType="heading_6" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </com.tokopedia.unifycomponents.CardUnify2>
+
+        <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/cv_tradein_exchange_adv_3"
+            android:layout_width="0dp"
+            android:layout_height="128dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
+            android:elevation="6dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintEnd_toStartOf="@id/cv_tradein_exchange_adv_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_tradein_exchange_adv_1">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                    android:id="@+id/iv_tradein_exchange_adv_3"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:imageDpiSupportType="singleDpi"
+                    android:layout_marginTop="20dp"
+                    app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/tradein_exchange_advantage_3.png"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/edu_heading_tradein_exchange_adv_3"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center"
+                    android:lineHeight="16sp"
+                    android:lineSpacingExtra="0sp"
+                    android:text="@string/tradein_edu_heading_segala"
+                    android:textAlignment="center"
+                    android:textColor="@color/Unify_NN950"
+                    android:textFontWeight="800"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_tradein_exchange_adv_3"
+                    app:typographyType="heading_6" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </com.tokopedia.unifycomponents.CardUnify2>
+
+        <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/cv_tradein_exchange_adv_4"
+            android:layout_width="0dp"
+            android:layout_height="128dp"
+            android:layout_marginEnd="16dp"
+            android:elevation="6dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/cv_tradein_exchange_adv_2"
+            app:layout_constraintTop_toTopOf="@id/cv_tradein_exchange_adv_3">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                    android:id="@+id/iv_tradein_exchange_adv_4"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="20dp"
+                    app:imageDpiSupportType="singleDpi"
+                    app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/tradein_exchange_advantage_4.png"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/edu_heading_tradein_exchange_adv_4"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center"
+                    android:lineHeight="16sp"
+                    android:lineSpacingExtra="0sp"
+                    android:text="@string/tradein_edu_heading_praktis"
+                    android:textAlignment="center"
+                    android:textColor="@color/Unify_NN950"
+                    android:textFontWeight="800"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_tradein_exchange_adv_4"
+                    app:typographyType="heading_6" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </com.tokopedia.unifycomponents.CardUnify2>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/edu_heading_1"
@@ -41,7 +279,7 @@
             android:layout_marginRight="16dp"
             android:text="@string/tradein_edu_heading_1"
             android:textColor="@color/Unify_NN950"
-            app:layout_constraintTop_toBottomOf="@id/edu_navToolbar"
+            app:layout_constraintTop_toBottomOf="@id/cv_tradein_exchange_adv_3"
             app:typographyType="heading_3"
             app:typographyWeight="bold" />
 
@@ -51,7 +289,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_1.png"
             app:imageDpiSupportType="singleDpi"
@@ -94,7 +331,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_2.png"
             app:imageDpiSupportType="singleDpi"
@@ -137,7 +373,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_3.png"
             app:imageDpiSupportType="singleDpi"
@@ -180,7 +415,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_4.png"
             app:imageDpiSupportType="singleDpi"
@@ -233,7 +467,7 @@
             android:layout_marginRight="16dp"
             android:text="@string/tradein_edu_heading_2"
             android:textColor="@color/Unify_NN950"
-            app:layout_constraintTop_toBottomOf="@+id/divider1"
+            app:layout_constraintTop_toBottomOf="@id/divider1"
             app:typographyType="heading_4" />
 
         <com.tkpd.remoteresourcerequest.view.DeferredImageView
@@ -243,7 +477,6 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_5.png"
             app:imageDpiSupportType="singleDpi"
@@ -287,17 +520,25 @@
             tools:text="Dengan mulai Tukar Tambah, kamu setuju dengan
 Syarat &amp; Ketentuan yang berlaku." />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_continue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             android:gravity="center_horizontal"
             android:text="@string/tradein_tukar_tambah_sekarang"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/edu_subtext_6" />
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

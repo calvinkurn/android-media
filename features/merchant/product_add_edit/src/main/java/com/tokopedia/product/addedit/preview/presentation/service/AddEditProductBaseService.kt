@@ -135,6 +135,7 @@ abstract class AddEditProductBaseService : JobIntentServiceX(), CoroutineScope {
 
             onUploadProductImagesSuccess(uploadIdList, variantInputModel)
         }, onError = { throwable ->
+            throwable.printStackTrace()
             setUploadProductDataError(cleanErrorMessage(throwable.localizedMessage.orEmpty()))
             logError(TITLE_ERROR_UPLOAD_IMAGE, throwable)
         })

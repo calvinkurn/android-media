@@ -77,5 +77,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/Unify_Background"
             app:layout_constraintTop_toBottomOf="@id/app_bar_layout"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

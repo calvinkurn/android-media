@@ -2,15 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shimmer_back"
         android:padding="16dp"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_56"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_action_back"
@@ -29,7 +28,7 @@
         app:layout_constraintStart_toEndOf="@+id/shimmer_back"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_2"
-        tools:layout_height="@dimen/dp_56">
+        tools:layout_height="56dp">
 
     </com.tokopedia.unifyprinciples.Typography>
 
@@ -46,14 +45,14 @@
         app:layout_constraintTop_toBottomOf="@id/shimmer_toolbar">
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:loader_type="circle" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_56"
+            android:layout_width="56dp"
             android:layout_height="10dp"
-            android:layout_marginTop="@dimen/dp_7"
+            android:layout_marginTop="7dp"
             app:loader_type="line" />
 
     </LinearLayout>
@@ -70,14 +69,14 @@
         app:layout_constraintTop_toTopOf="@+id/linearLayout4">
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:loader_type="circle" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_56"
+            android:layout_width="56dp"
             android:layout_height="10dp"
-            android:layout_marginTop="@dimen/dp_7"
+            android:layout_marginTop="7dp"
             app:loader_type="line" />
 
     </LinearLayout>
@@ -94,14 +93,14 @@
         app:layout_constraintTop_toTopOf="@+id/linearLayout">
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:loader_type="circle" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_56"
+            android:layout_width="56dp"
             android:layout_height="10dp"
-            android:layout_marginTop="@dimen/dp_7"
+            android:layout_marginTop="7dp"
             app:loader_type="line" />
 
     </LinearLayout>
@@ -118,14 +117,14 @@
         app:layout_constraintTop_toTopOf="@+id/linearLayout3">
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:loader_type="circle" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_56"
+            android:layout_width="56dp"
             android:layout_height="10dp"
-            android:layout_marginTop="@dimen/dp_7"
+            android:layout_marginTop="7dp"
             app:loader_type="line" />
 
     </LinearLayout>
@@ -133,7 +132,7 @@
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="12dp"
         android:background="@color/unify_N75"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4"

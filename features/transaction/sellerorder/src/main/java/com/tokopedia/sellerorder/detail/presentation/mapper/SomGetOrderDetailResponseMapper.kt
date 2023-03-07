@@ -178,7 +178,8 @@ object SomGetOrderDetailResponseMapper {
             awb = shipment.awb,
             awbTextColor = shipment.awbTextColor,
             isShippingPrinted = flagOrderMeta.isShippingPrinted,
-            logisticInfo = logisticInfo
+            logisticInfo = logisticInfo,
+            shipmentLogo = flagOrderMeta.shipmentLogo
         )
     }
 

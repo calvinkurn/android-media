@@ -2,8 +2,9 @@ package com.tokopedia.affiliate.model.response
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-data class AffiliateAnnouncementDataV2(
+class AffiliateAnnouncementDataV2(
     @SerializedName("getAffiliateAnnouncementV2")
     var getAffiliateAnnouncementV2: GetAffiliateAnnouncementV2?
 ) {
@@ -14,10 +15,14 @@ data class AffiliateAnnouncementDataV2(
         data class Data(
             @SerializedName("Error")
             var error: Error?,
+            @SerializedName("Id")
+            var id: Long?,
             @SerializedName("Status")
             var status: Int?,
             @SerializedName("TickerType")
             var type: String?,
+            @SerializedName("TickerSubType")
+            var subType: String?,
             @SerializedName("TickerData")
             var tickerData: List<TickerData?>?
         ) {
@@ -50,7 +55,13 @@ data class AffiliateAnnouncementDataV2(
                 var ctaLink: CtaLink?,
                 @SerializedName("CtaText")
                 var ctaText: String?,
-            ) {
+                @SerializedName("CtaLinkSecondary")
+                var ctaLinkSecondary: CtaLink?,
+                @SerializedName("CtaTextSecondary")
+                var ctaTextSecondary: String?,
+                @SerializedName("IllustrationURL")
+                var illustrationURL: String?,
+            ) : Serializable {
                 data class CtaLink(
                     @SerializedName("AndroidURL")
                     var androidURL: String?,
@@ -60,7 +71,7 @@ data class AffiliateAnnouncementDataV2(
                     var iosURL: String?,
                     @SerializedName("MobileURL")
                     var mobileURL: String?
-                )
+                ) : Serializable
             }
         }
     }

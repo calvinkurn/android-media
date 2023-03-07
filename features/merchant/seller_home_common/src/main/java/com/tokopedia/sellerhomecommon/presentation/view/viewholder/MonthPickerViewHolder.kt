@@ -38,7 +38,7 @@ class MonthPickerViewHolder(
 
     override fun bind(element: DateFilterItem.MonthPickerItem) {
         with(binding) {
-            tvStcPerMonthLabel.text = element.label
+            tvStcPerMonthLabel.text = itemView.context.getString(R.string.shc_per_month_outer)
             radStcPerMonth.isChecked = element.isSelected
 
             showSelectedMonth(element)

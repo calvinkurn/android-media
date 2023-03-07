@@ -20,7 +20,7 @@ import com.tokopedia.media.R
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
-import com.tokopedia.picker.common.utils.FileCamera
+import java.io.File
 
 class CameraViewComponent(
     private val param: PickerParam,
@@ -88,13 +88,11 @@ class CameraViewComponent(
         cameraView.takePicture()
     }
 
-    fun onStartTakeVideo() {
-        cameraView.set(Audio.ON)
+    fun onStartTakeVideo(file: File?) {
+        if (file == null) return
 
-        cameraView.takeVideoSnapshot(
-            FileCamera.createVideo(),
-            param.maxVideoDuration()
-        )
+        cameraView.set(Audio.ON)
+        cameraView.takeVideoSnapshot(file, param.maxVideoDuration())
     }
 
     fun onPictureMode() {

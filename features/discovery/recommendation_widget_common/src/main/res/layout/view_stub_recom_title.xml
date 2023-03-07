@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifyprinciples.Typography
-    app:typographyType="heading_4"
+    app:typographyType="paragraph_1"
     android:id="@+id/channel_title"
     android:layout_marginLeft="16dp"
     android:layout_marginStart="16dp"
@@ -11,6 +11,8 @@
     android:textSize="16sp"
     android:lines="1"
     android:ellipsize="end"
+    app:typographyWeight="bold"
+    android:textColor="@color/Unify_NN950"
     tools:text="Hypebeast Banget Pokoknya"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"

@@ -3,7 +3,6 @@ package com.tokopedia.chatbot.analytics
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -28,6 +27,12 @@ class ChatbotAnalytics @Inject constructor(
         const val KEY_CURRENT_SITE = "currentSite"
         const val BUSINESS_UNIT_CX = "Customer Excellence"
         const val CURRENT_SITE_CX = "tokopediamarketplace"
+        const val EVENT_CATEGORY_VIDEO_PICK = "chatbot select video"
+        const val EVENT_ACTION_VIDEO_PICK = "click - select video"
+        const val EVENT_LABEL_VIDEO_PICK = "{select media}"
+        const val KEY_TRACKER_ID = "trackerId"
+        const val TRACKER_ID_VIDEO_PICK = "32055"
+        const val TRACKER_ID_VIDEO_UPLOAD = "32956"
     }
 
     private fun getTracker(): Analytics {
@@ -74,6 +79,35 @@ class ChatbotAnalytics @Inject constructor(
         )
         sendGeneralEvent(map)
 
+    }
+
+    fun eventOnVideoPick() {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME,
+            EVENT_CATEGORY_VIDEO_PICK,
+            EVENT_ACTION_VIDEO_PICK,
+            EVENT_LABEL_VIDEO_PICK
+        )
+        map[KEY_TRACKER_ID] = TRACKER_ID_VIDEO_PICK
+        sendGeneralEventWithTrackerId(map)
+    }
+
+    fun eventOnVideoUpload(videoFilePath: String, extension: String, videoSize: String) {
+        val eventLabel =  "media name:$videoFilePath ;media type:$extension ;media size:$videoSize "
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME,
+            EVENT_CATEGORY_VIDEO_PICK,
+            EVENT_ACTION_VIDEO_PICK,
+            eventLabel
+        )
+        map[KEY_TRACKER_ID] = TRACKER_ID_VIDEO_UPLOAD
+        sendGeneralEventWithTrackerId(map)
+    }
+
+    private fun sendGeneralEventWithTrackerId(map: MutableMap<String, Any>) {
+        map[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_CX
+        map[KEY_CURRENT_SITE] = CURRENT_SITE_CX
+        getTracker().sendGeneralEvent(map)
     }
 
     private fun sendGeneralEvent(map: MutableMap<String, Any>) {

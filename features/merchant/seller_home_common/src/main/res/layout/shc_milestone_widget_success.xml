@@ -5,7 +5,7 @@
     android:id="@+id/containerShcMilestoneSuccess"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/layout_lvl2">
+    android:paddingBottom="16dp">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineShcMilestoneStart"
@@ -33,12 +33,12 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iconShcToggleMission"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/bg_circle_toggle_milestone_widget"
         app:icon_color_light_enable="@color/Unify_NN900"
-        app:icon_name="CHEVRON_UP"
+        app:icon_name="CHEVRON_DOWN"
         app:layout_constraintEnd_toStartOf="@+id/guidelineShcMilestoneEnd"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,7 +59,7 @@
         android:id="@+id/tvTitleMilestoneWidget"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
         android:drawablePadding="8dp"
         android:ellipsize="end"
         android:maxLines="2"
@@ -76,7 +76,7 @@
         android:id="@+id/notifTagMilestone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginStart="4dp"
         app:layout_constraintBottom_toBottomOf="@id/tvTitleMilestoneWidget"
         app:layout_constraintStart_toEndOf="@id/tvTitleMilestoneWidget"
         app:layout_constraintTop_toTopOf="@id/tvTitleMilestoneWidget" />
@@ -118,7 +118,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tvProgressValueMilestoneWidget"
         app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneStart"
         app:layout_constraintTop_toTopOf="@+id/tvProgressValueMilestoneWidget"
-        tools:layout_height="@dimen/layout_lvl2" />
+        tools:layout_height="16dp" />
 
     <View
         android:id="@+id/viewShcProgressBarEnd"
@@ -186,13 +186,13 @@
         android:id="@+id/tvShcMilestoneCta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:gravity="end|center_vertical"
         android:maxLines="1"
         android:text="@string/shc_more"
         android:textColor="@color/Unify_G500"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:textSize="14sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/horLineShcMilestoneBtm"
         app:layout_constraintEnd_toEndOf="parent"

@@ -11,18 +11,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:cardBackgroundColor="@color/Unify_T100"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardElevation="0dp">
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/affiliate_filter_announcement_ticker"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:closeButtonVisibility="gone"
-            app:descriptionText="@string/affilite_filter_ticker_description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:tickerType="announcement" />
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/affiliate_ic_bg_date_picker" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/affiliate_filter_announcement_ticker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="@string/affilite_filter_ticker_description"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView

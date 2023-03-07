@@ -58,7 +58,8 @@ class GetProfileDataCacheUseCase @Inject constructor(
                     shopData?.userShopInfo,
                     shopData?.notifications,
                     affiliateData,
-                    true
+                    true,
+                    tokopediaPlusParam = null
             )
         }
     }

@@ -8,24 +8,25 @@
     <ImageView
         android:id="@+id/imgMvcNoResultState"
         android:layout_width="@dimen/mvc_dimen_120dp"
-        android:layout_height="@dimen/layout_lvl8"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl3"
-        android:layout_marginBottom="@dimen/layout_lvl3"
+        android:layout_height="96dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/image_voucher_list_no_result_content_description" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcNoResultStateTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:text="@string/mvc_no_result_found"
         android:textColor="@color/light_N700_96"
         app:layout_constraintBottom_toTopOf="@+id/tvMvcNoResultStateDescription"
@@ -38,9 +39,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcNoResultStateDescription"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="8dp"
         android:text="@string/mvc_please_try_to_search_again"
         android:textColor="@color/light_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/imgMvcNoResultState"

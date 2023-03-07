@@ -24,7 +24,7 @@ data class Hero(
             attribution = parcel.readString() ?: ""
     )
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest?.run {
             writeLong(id)
             writeString(name)

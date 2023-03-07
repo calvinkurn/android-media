@@ -71,7 +71,7 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
                 val firstVisibleItemPosition: Int =
                     linearLayoutManager.findFirstVisibleItemPosition()
                 if (!calendarWidgetCarouselViewModel.isLoadingData() && !calendarWidgetCarouselViewModel.isLastPage()) {
-                    if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0 && totalItemCount >= calendarWidgetCarouselViewModel.getPageSize()) {
+                    if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
                         calendarWidgetCarouselViewModel.fetchCarouselPaginatedCalendars()
                     }
                 }

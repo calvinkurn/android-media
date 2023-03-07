@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgSsPmProPotentiallyDowngraded"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="Perbaiki parameter yang berwarna merah" />
 
@@ -38,6 +38,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgSsPmProPotentiallyDowngraded"
         app:layout_constraintTop_toBottomOf="@+id/tvSsPmProPotentiallyDowngradedTitle"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Jika ada parameter performa berwarna merah, perbaiki hingga berwarna hitam atau hijau." />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,27 +2,21 @@ package com.tokopedia.kyc_centralized.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.kyc_centralized.domain.GetProjectInfoUseCase
 import com.tokopedia.kyc_centralized.util.CipherProvider
 import com.tokopedia.kyc_centralized.util.CipherProviderImpl
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user_identification_common.KYCConstant
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoMap
-import dagger.multibindings.StringKey
 
-/**
- * @author by nisie on 13/11/18.
- */
 @Module
 open class UserIdentificationCommonModule {
 
@@ -30,36 +24,13 @@ open class UserIdentificationCommonModule {
 
     @ActivityScope
     @Provides
-    fun providesContext(@ApplicationContext context: Context): Context = context
-
-    @ActivityScope
-    @Provides
-    fun provideResources(@ApplicationContext context: Context): Resources {
-        return context.resources
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideUserSession(@ApplicationContext context: Context?): UserSession {
-        return UserSession(context)
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @ActivityScope
     @Provides
     open fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
-    @ActivityScope
-    @Provides
-    @IntoMap
-    @StringKey(KYCConstant.QUERY_GET_KYC_PROJECT_INFO)
-    fun provideRawQueryGetKycProjectInfo(@ActivityScope context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.user_identification_common.R.raw.query_get_kyc_project_info)
 
     @ActivityScope
     @Provides
@@ -77,4 +48,13 @@ open class UserIdentificationCommonModule {
     open fun provideCipher(): CipherProvider {
         return CipherProviderImpl()
     }
+
+    @Provides
+    open fun provideGetUserProjectInfoUseCase(
+        repository: GraphqlRepository,
+        dispatchers: CoroutineDispatchers,
+    ): GetProjectInfoUseCase {
+        return GetProjectInfoUseCase(repository, dispatchers)
+    }
+
 }

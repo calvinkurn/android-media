@@ -20,15 +20,17 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
 
-internal class OriginalProductView
-    @JvmOverloads
-    constructor(context: Context, attributeSet: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0)
-    : BaseCustomView(context, attributeSet, defStyleAttr) {
+internal class OriginalProductView @JvmOverloads constructor(
+    context: Context,
+    attributeSet: AttributeSet? = null,
+    @AttrRes defStyleAttr: Int = 0
+) : BaseCustomView(context, attributeSet, defStyleAttr) {
 
-    private val inflatedView =
-            LayoutInflater
-                    .from(context)
-                    .inflate(R.layout.similar_search_original_product_layout, this, true)
+    init {
+        LayoutInflater.from(context)
+            .inflate(R.layout.similar_search_original_product_layout, this, true)
+    }
+
     private var originalProductCardViewAnimator: OriginalProductViewAnimator? = null
     private var originalProductViewListener: OriginalProductViewListener? = null
 
@@ -84,7 +86,10 @@ internal class OriginalProductView
         findViewById(R.id.imageViewRating5)
     }
 
-    fun bindOriginalProductView(similarSearchOriginalProduct: Product, originalProductViewListener: OriginalProductViewListener) {
+    fun bindOriginalProductView(
+        similarSearchOriginalProduct: Product,
+        originalProductViewListener: OriginalProductViewListener
+    ) {
         this.originalProductViewListener = originalProductViewListener
 
         initCardViewOriginalProduct()
@@ -108,14 +113,19 @@ internal class OriginalProductView
     }
 
     private fun initImageProduct(similarSearchOriginalProduct: Product) {
-        ImageHandler.loadImageRounded2(context, imageProduct, similarSearchOriginalProduct.imageUrl, 6f.toPx())
+        ImageHandler.loadImageRounded2(
+            context,
+            imageProduct,
+            similarSearchOriginalProduct.imageUrl,
+            6f.toPx()
+        )
     }
 
     private fun Float.toPx(): Float {
         return TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                this,
-                resources.displayMetrics
+            TypedValue.COMPLEX_UNIT_DIP,
+            this,
+            resources.displayMetrics
         )
     }
 
@@ -130,8 +140,7 @@ internal class OriginalProductView
     fun updateWishlistStatus(isWishlisted: Boolean) {
         if (isWishlisted) {
             buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_active)
-        }
-        else {
+        } else {
             buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_inactive)
         }
     }
@@ -152,8 +161,7 @@ internal class OriginalProductView
     private fun initRating(similarSearchOriginalProduct: Product) {
         if (similarSearchOriginalProduct.rating == 0) {
             hideRating()
-        }
-        else {
+        } else {
             showRating(similarSearchOriginalProduct.rating)
         }
     }
@@ -174,13 +182,16 @@ internal class OriginalProductView
 
     @DrawableRes
     private fun getRatingDrawable(isActive: Boolean): Int {
-        return if(isActive) R.drawable.similar_search_ic_rating_active
+        return if (isActive) R.drawable.similar_search_ic_rating_active
         else R.drawable.similar_search_ic_rating_default
     }
 
     private fun initReview(similarSearchOriginalProduct: Product) {
         textViewReviewCount?.shouldShowWithAction(similarSearchOriginalProduct.countReview != 0) {
-            textViewReviewCount?.text = context.getString(R.string.similar_search_original_product_review_count, similarSearchOriginalProduct.countReview.toString())
+            textViewReviewCount?.text = context.getString(
+                R.string.similar_search_original_product_review_count,
+                similarSearchOriginalProduct.countReview.toString()
+            )
         }
     }
 

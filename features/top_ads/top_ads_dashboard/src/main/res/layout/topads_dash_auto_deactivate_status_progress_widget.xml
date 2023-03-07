@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/topads_common_iklan_otomatis"
-                android:textColor="@color/black"
+                android:textColor="@color/Unify_NN1000"
                 android:typeface="normal"
                 app:layout_constraintStart_toEndOf="@id/progressImg"
                 app:layout_constraintStart_toStartOf="parent"

@@ -9,7 +9,18 @@ import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.request.AddAddressParam
 import com.tokopedia.logisticCommon.data.request.EditAddressParam
-import com.tokopedia.logisticCommon.data.response.*
+import com.tokopedia.logisticCommon.data.response.AddAddressResponse
+import com.tokopedia.logisticCommon.data.response.AddressResponse
+import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
+import com.tokopedia.logisticCommon.data.response.GetDefaultAddressResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
+import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
+import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
+import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
 
@@ -17,6 +28,9 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
 
     companion object {
         private const val LIMIT_ADDRESS_LIST = 5
+        private const val PARAM_ADDR_IDS = "addr_ids"
+        private const val PARAM_EXTRACT_ADDRESS_DETAIL = "extract_address_detail"
+        private const val PARAM_SOURCE = "source"
     }
 
     suspend fun getAutoComplete(keyword: String, latlng: String): AutoCompleteResponse {
@@ -49,8 +63,12 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
-    suspend fun getAddressDetail(addressId: String): KeroGetAddressResponse.Data {
-        val param = mapOf("input" to mapOf("addr_ids" to addressId, "extract_address_detail" to true))
+    suspend fun getAddressDetail(addressId: String, source: String): KeroGetAddressResponse.Data {
+        val param = mapOf("input" to mapOf(
+            PARAM_ADDR_IDS to addressId,
+            PARAM_EXTRACT_ADDRESS_DETAIL to true,
+            PARAM_SOURCE to source
+        ))
         val request = GraphqlRequest(KeroLogisticQuery.kero_get_address_detail,
                 KeroGetAddressResponse.Data::class.java, param)
         return gql.getResponse(request)
@@ -93,36 +111,40 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
-    suspend fun saveAddress(model: SaveAddressDataModel): AddAddressResponse {
+    suspend fun saveAddress(model: SaveAddressDataModel, source: String): AddAddressResponse {
         val param = AddAddressParam(
-            addr_name = model.addressName,
-            receiver_name = model.receiverName,
-            address_1 = model.address1,
-            address_2 = model.address2,
-            postal_code = model.postalCode,
+            addrName = model.addressName,
+            receiverName = model.receiverName,
+            address1 = model.address1,
+            address1Notes = model.address1Notes,
+            address2 = model.address2,
+            postalCode = model.postalCode,
             phone = model.phone,
             province = model.provinceId.toString(),
             city = model.cityId.toString(),
             district = model.districtId.toString(),
             latitude = model.latitude,
             longitude = model.longitude,
-            is_ana_positive = model.isAnaPositive,
-            set_as_primary_address = model.setAsPrimaryAddresss,
-            apply_name_as_new_user_fullname = model.applyNameAsNewUserFullname
+            isAnaPositive = model.isAnaPositive,
+            setAsPrimaryAddress = model.setAsPrimaryAddresss,
+            applyNameAsNewUserFullname = model.applyNameAsNewUserFullname,
+            source = source,
+            isTokonowRequest = model.isTokonowRequest
         )
-        val gqlParam = mapOf("input" to param.toMap())
+        val gqlParam = mapOf("input" to param)
         val request = GraphqlRequest(KeroLogisticQuery.kero_add_address_query,
                 AddAddressResponse::class.java, gqlParam)
         return gql.getResponse(request)
 
     }
 
-    suspend fun editAddress(model: SaveAddressDataModel): KeroEditAddressResponse.Data {
+    suspend fun editAddress(model: SaveAddressDataModel, source: String): KeroEditAddressResponse.Data {
         val param = EditAddressParam(
             addressId = model.id,
             addressName = model.addressName,
             receiverName = model.receiverName,
             address1 = model.address1,
+            address1Notes = model.address1Notes,
             address2 = model.address2,
             postalCode = model.postalCode,
             district = model.districtId.toString(),
@@ -130,7 +152,9 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
             province = model.provinceId.toString(),
             phone = model.phone,
             latitude = model.latitude,
-            longitude = model.longitude
+            longitude = model.longitude,
+            source = source,
+            isTokonowRequest = model.isTokonowRequest
         )
         val gqlParam = mapOf("input" to param)
         val request = GraphqlRequest(KeroLogisticQuery.kero_edit_address,

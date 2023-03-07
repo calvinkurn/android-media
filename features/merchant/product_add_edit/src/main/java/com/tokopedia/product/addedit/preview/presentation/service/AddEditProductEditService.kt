@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.preview.presentation.service
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -15,8 +16,6 @@ import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandle
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
-import com.tokopedia.product.addedit.preview.data.model.responses.ProductAddEditV3Response
-import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
@@ -26,9 +25,7 @@ import com.tokopedia.product.addedit.tracking.ProductEditUploadTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
-import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 /**
@@ -107,14 +104,22 @@ class AddEditProductEditService : AddEditProductBaseService() {
         return object : AddEditProductNotificationManager(urlImageCount, applicationContext) {
             override fun getSuccessIntent(): PendingIntent {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-                return PendingIntent.getActivity(context, 0, intent, 0)
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE)
+                } else {
+                    PendingIntent.getActivity(context, 0, intent, 0)
+                }
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
                 val draftId = productDraftId.toString()
                 val intent = AddEditProductPreviewActivity.createInstance(context, draftId,
                         isFromSuccessNotif = false, isFromNotifEditMode = true)
-                return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+                } else {
+                    PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                }
             }
         }
     }

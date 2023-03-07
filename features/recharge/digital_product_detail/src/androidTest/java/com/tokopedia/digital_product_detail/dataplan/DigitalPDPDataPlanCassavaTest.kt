@@ -6,9 +6,8 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsNot
@@ -19,7 +18,6 @@ import org.junit.Test
 class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -31,7 +29,6 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
 
     @Before
     fun setUp() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         stubIntent()
     }

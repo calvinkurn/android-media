@@ -2,6 +2,7 @@ package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListRequest
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseApplyManualFailed
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseApplyManualSuccess
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateCouponListEmpty
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateEmpty
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllExpanded
@@ -56,6 +57,26 @@ class PromoCheckoutViewModelApplyPromoManualInputTest : BasePromoCheckoutViewMod
 
         //then
         assert(promoRequest.attemptedCodes[0] == attemptedPromoCode)
+    }
+
+    @Test
+    fun `WHEN apply promo manual input success THEN should dismiss bottomsheet`() {
+        //given
+        val attemptedPromoCode = "PROMO_CODE"
+        val promoRequest = provideGetPromoListRequest()
+        val promoResponse = provideGetPromoListResponseApplyManualSuccess()
+
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(promoResponse)
+        }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
+
+        //when
+        viewModel.getPromoList(promoRequest, attemptedPromoCode)
+
+        //then
+        assert(viewModel.promoInputUiModel.value?.uiState?.needToDismissBottomsheet == true)
     }
 
     @Test

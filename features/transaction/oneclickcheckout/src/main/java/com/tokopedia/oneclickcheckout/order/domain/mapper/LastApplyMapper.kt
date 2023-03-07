@@ -1,9 +1,20 @@
 package com.tokopedia.oneclickcheckout.order.domain.mapper
 
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.*
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.LastApply
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Message
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.VoucherOrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 
 object LastApplyMapper {
 
@@ -26,12 +37,17 @@ object LastApplyMapper {
 
     private fun mapVoucherOrders(voucherOrders: List<VoucherOrdersItem>): List<LastApplyVoucherOrdersItemUiModel> {
         return voucherOrders.map {
-            LastApplyVoucherOrdersItemUiModel(it.code, it.uniqueId,
-                    LastApplyMessageUiModel(
-                            it.message.color,
-                            it.message.state,
-                            it.message.text
-                    )
+            LastApplyVoucherOrdersItemUiModel(
+                code = it.code,
+                uniqueId = it.uniqueId,
+                message = LastApplyMessageUiModel(
+                    it.message.color,
+                    it.message.state,
+                    it.message.text
+                ),
+                shippingId = it.shippingId,
+                spId = it.spId,
+                type = it.type
             )
         }
     }

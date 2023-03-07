@@ -27,4 +27,8 @@ object ApplinkConstInternalTokoFood {
     @JvmField
     val MERCHANT = "$INTERNAL_TOKO_FOOD/merchant"
 
+    //SearchContainerFragment
+    @JvmField
+    val SEARCH = "$INTERNAL_TOKO_FOOD/search"
+
 }

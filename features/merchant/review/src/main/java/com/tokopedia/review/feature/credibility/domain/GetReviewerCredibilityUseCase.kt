@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.credibility.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,8 +12,9 @@ import javax.inject.Inject
     GetReviewerCredibilityUseCase.REVIEW_CREDIBILITY_QUERY_CLASS_NAME,
     GetReviewerCredibilityUseCase.REVIEW_CREDIBILITY_QUERY
 )
-class GetReviewerCredibilityUseCase @Inject constructor(gqlRepository: GraphqlRepository) :
-    GraphqlUseCase<ReviewerCredibilityStatsResponse>(gqlRepository) {
+class GetReviewerCredibilityUseCase @Inject constructor(
+    @ApplicationContext gqlRepository: GraphqlRepository
+) : GraphqlUseCase<ReviewerCredibilityStatsResponse>(gqlRepository) {
 
     companion object {
         const val PARAM_USER_ID = "userID"
@@ -22,13 +24,21 @@ class GetReviewerCredibilityUseCase @Inject constructor(gqlRepository: GraphqlRe
                 query getReviewerCredibilityStats(${'$'}userID: String!, ${'$'}entrypoint: String) {
                   productrevGetReviewerCredibilityStats(userID: ${'$'}userID, entrypoint: ${'$'}entrypoint) {
                     label {
-                      userName
-                      joinDate
                       subtitle
                       footer
                       ctaText
                       infoText
                       ctaApplink
+                      name
+                      sublabel
+                      achievements {
+                        image
+                        name
+                        color
+                        mementoLink
+                      }
+                      totalAchievementFmt
+                      achievementListLink
                     }
                     stats {
                       key
@@ -37,6 +47,13 @@ class GetReviewerCredibilityUseCase @Inject constructor(gqlRepository: GraphqlRe
                       count
                       countFmt
                       show
+                    }
+                    userProfile {
+                      firstName
+                      profilePicture
+                      joinDate
+                      buttonProfileText
+                      buttonProfileLink
                     }
                   }
                 }

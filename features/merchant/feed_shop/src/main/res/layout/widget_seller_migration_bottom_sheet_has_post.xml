@@ -5,22 +5,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/spacing_lvl3">
+    android:paddingBottom="8dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivTabFeedHasPost"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleTabFeedHasPost"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginStart="12dp"
         tools:text="@string/seller_migration_tab_feed_bottom_sheet_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

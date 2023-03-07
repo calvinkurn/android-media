@@ -113,4 +113,15 @@
     <string name="error_message_unautorized_title">Yaah, sesi kamu telah habis</string>
     <string name="error_message_unautorized_body">Masuk kembali untuk lanjut berbelanja</string>
     <string name="error_message_unautorized_button">Masuk Sekarang</string>
+
+    <!-- String force logout -->
+    <string name="force_logout_primary_btn_text">Cek Informasi Lengkap</string>
+    <string name="force_logout_secondary_btn_text">Oke</string>
+
+    <string name="force_logout_general_btn_text">Balik ke Home</string>
+    <string name="force_logout_general_seller_btn_text">Masuk ke Akunmu</string>
+
+    <string name="force_logout_general_title">Kamu otomatis keluar dari akun ini</string>
+    <string name="force_logout_general_description">Ada kendala saat akses akunmu. Biar akunmu tetap aman, kamu dikeluarkan dari akun ini dulu. Cek info lengkapnya di Tokopedia Care, ya.</string>
+
 </resources>

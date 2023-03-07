@@ -12,12 +12,17 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_checkout.R
@@ -30,22 +35,28 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.getElemen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
  * @author by jessica on 03/02/21
  */
+@RunWith(AndroidJUnit4ClassRunner::class)
 class DigitalCartActivityWithFintechTest {
 
     @get:Rule
-    var mActivityRule = ActivityTestRule(DigitalCartActivity::class.java,
-            false, false)
+    val mActivityRule = ActivityTestRule(DigitalCartActivity::class.java, false, false)
+
+    @get:Rule
+    val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun stubAllIntent() {
@@ -67,8 +78,7 @@ class DigitalCartActivityWithFintechTest {
         validatePaymentPrice()
 
         Thread.sleep(1000)
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_DIGITAL_FINTECH_CART),
-                hasAllSuccess())
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_DIGITAL_FINTECH_CART), hasAllSuccess())
     }
 
     private fun setUpMockResponse() {
@@ -97,6 +107,7 @@ class DigitalCartActivityWithFintechTest {
             passData.needGetCart = true
             passData.instantCheckout = "0"
             passData.idemPotencyKey = "17211378_d44feedc9f7138c1fd91015d5bd88810"
+            passData.atcSource = "pg_checkout"
             putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
         }.setData(
                 Uri.parse("tokopedia-android-internal://digital/checkout")
@@ -255,7 +266,7 @@ class DigitalCartActivityWithFintechTest {
         val dummyPromoTitle = "Promo Code dummy"
         val mockIntentData = Intent().apply {
             putExtra(EXTRA_PROMO_DATA, PromoData(state = TickerCheckoutView.State.ACTIVE,
-                    amount = 1000, promoCode = "dummyPromoCode", description = dummyPromoDescription,
+                    amount = 1000L, promoCode = "dummyPromoCode", description = dummyPromoDescription,
                     title = dummyPromoTitle))
         }
 

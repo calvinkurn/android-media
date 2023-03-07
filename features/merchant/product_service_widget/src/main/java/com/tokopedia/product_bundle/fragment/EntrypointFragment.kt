@@ -4,22 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.oldproductbundle.common.data.mapper.ProductBundleApplinkMapper.DEFAULT_VALUE_WAREHOUSE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.mapper.InventoryError
 import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorMapper
 import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorType
+import com.tokopedia.product_bundle.common.data.mapper.ProductBundleApplinkMapper.DEFAULT_VALUE_WAREHOUSE_ID
 import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
@@ -65,13 +63,10 @@ class EntrypointFragment : BaseDaggerFragment() {
     private var warehouseId: String = ""
     private var layoutShimmer: ViewGroup? = null
     private var layoutError: GlobalError? = null
+    private var isFirstLoadData = true
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(ProductBundleViewModel::class.java)
-    }
+    lateinit var viewModel: ProductBundleViewModel
 
     override fun initInjector() {
         DaggerProductBundleComponent.builder()
@@ -83,15 +78,7 @@ class EntrypointFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initApplinkValues()
-
-        viewModel.parentProductID.let {
-            viewModel.getBundleInfo(it, warehouseId)
-        }
-
         setupToolbarActions()
-
-        observePageState()
-        observeGetBundleInfoResult()
     }
 
     override fun onCreateView(
@@ -106,9 +93,18 @@ class EntrypointFragment : BaseDaggerFragment() {
         activity.setBackgroundToWhite()
         setupShimmer(view)
         setupGlobalError(view)
+        loadBundleData()
+        observePageState()
+        observeGetBundleInfoResult()
     }
 
     override fun getScreenName() = null
+
+    private fun loadBundleData() {
+        viewModel.parentProductID.let {
+            viewModel.getBundleInfo(it, warehouseId)
+        }
+    }
 
     private fun setupShimmer(view: View) {
         val totalAmountShimmer: TotalAmount? = view.findViewById(R.id.total_amount)
@@ -176,17 +172,17 @@ class EntrypointFragment : BaseDaggerFragment() {
     }
 
     private fun observePageState() {
-        viewModel.pageState.observe(this) { state ->
+        viewModel.pageState.observe(viewLifecycleOwner, { state ->
             when (state) {
                 ProductBundleState.LOADING -> showShimmering()
                 ProductBundleState.ERROR -> showError()
                 else -> {}
             }
-        }
+        })
     }
 
     private fun observeGetBundleInfoResult() {
-        viewModel.getBundleInfoResult.observe(this, { result ->
+        viewModel.getBundleInfoResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     val productBundleData = result.data
@@ -217,13 +213,14 @@ class EntrypointFragment : BaseDaggerFragment() {
                                 )
                             }
                         }
+                        isFirstLoadData = false
                         parentFragmentManager.beginTransaction()
                             .replace(R.id.parent_view, productBundleFragment, tagFragment)
                             .commit()
                     } else {
                         showEmpty()
                     }
-                    if (layoutError?.isShown == false) {
+                    if (layoutError?.isShown == false && isFirstLoadData) {
                         showInventoryErrorDialog(inventoryError)
                     }
                 }

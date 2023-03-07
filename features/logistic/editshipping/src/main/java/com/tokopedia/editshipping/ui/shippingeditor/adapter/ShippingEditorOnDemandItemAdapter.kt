@@ -87,7 +87,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         private val shipmentCategory = itemView.findViewById<Typography>(R.id.shipment_category)
         private val shipmentProductRv = itemView.findViewById<RecyclerView>(R.id.shipment_item_list)
         private val tickerShipper = itemView.findViewById<Ticker>(R.id.ticker_shipper)
-        private val couponLayout = itemView.findViewById<RelativeLayout>(R.id.layout_coupon)
+        private val couponLayout = itemView.findViewById<FrameLayout>(R.id.layout_coupon)
         private val couponText = itemView.findViewById<Typography>(R.id.title_coupon)
         private val childLayout = itemView.findViewById<FrameLayout>(R.id.item_child_layout)
         private val flDisableContainer = itemView.findViewById<FrameLayout>(R.id.fl_container)
@@ -175,7 +175,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
 
             featureItemAdapter.setData(data.featureInfo)
 
-
+            initUncheckedListener()
         }
 
         private fun setItemChecked(data: OnDemandModel) {
@@ -205,6 +205,14 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                     childLayout.gone()
                 }
             }
+        }
+
+        private fun initUncheckedListener(){
+            productItemAdapter.setupUncheckedListener(object : ShipperProductItemAdapter.ShipperProductUncheckedListener {
+                override fun uncheckedProduct() {
+                    shipmentItemCb.isChecked = false
+                }
+            })
         }
 
     }

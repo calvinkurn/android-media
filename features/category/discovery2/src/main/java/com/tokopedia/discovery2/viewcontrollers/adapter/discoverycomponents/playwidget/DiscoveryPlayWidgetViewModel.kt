@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.usecase.HideSectionUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -28,6 +29,7 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
     private val playWidgetUIMutableLiveData: MutableLiveData<PlayWidgetState?> = MutableLiveData(PlayWidgetState(isLoading = true))
     private val _reminderLoginEvent = SingleLiveEvent<Boolean>()
     private val _reminderObservable = MutableLiveData<Result<PlayWidgetReminderType>>()
+    private val _hideSection = SingleLiveEvent<String>()
 
     private var dataPresent: Boolean = false
     private var reminderData: Pair<String, PlayWidgetReminderType>? = null
@@ -40,8 +42,13 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
     val reminderObservable: LiveData<Result<PlayWidgetReminderType>>
         get() = _reminderObservable
 
+    val hideSectionLD: LiveData<String> = _hideSection
+
     @Inject
     lateinit var playWidgetTools: PlayWidgetTools
+
+    @Inject
+    lateinit var hideSectionUseCase: HideSectionUseCase
 
     fun isPlayWidgetToolsInitialized(): Boolean {
         return this::playWidgetTools.isInitialized
@@ -57,13 +64,25 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
         }
     }
 
+    private fun hideIfPresentInSection() {
+        val response = hideSectionUseCase.checkForHideSectionHandling(components)
+        if(response.shouldHideSection){
+            if(response.sectionId.isNotEmpty())
+                _hideSection.value = response.sectionId
+            syncData.value = true
+        }
+    }
+
     fun hitPlayWidgetService() {
         launchCatchError(block = {
-            components.data?.firstOrNull()?.playWidgetPlayID?.let { widgetID ->
+            components.data?.firstOrNull()?.playWidgetPlayID?.let {  widgetID ->
                 playWidgetUIMutableLiveData.value = processPlayWidget(widgetID)
+            } ?: run {
+                hideIfPresentInSection()
             }
         }, onError = {
             playWidgetUIMutableLiveData.value = null
+            hideIfPresentInSection()
         })
     }
 
@@ -108,8 +127,8 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
 
         launchCatchError(block = {
             val response = playWidgetTools.updateToggleReminder(
-                    channelId,
-                    reminderType
+                channelId,
+                reminderType
             )
 
             when (val success = playWidgetTools.mapWidgetToggleReminder(response)) {

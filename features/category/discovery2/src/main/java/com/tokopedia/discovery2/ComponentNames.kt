@@ -94,6 +94,9 @@ enum class ComponentNames(val componentName: String) {
     //Category Best Seller
     CategoryBestSeller("product-card-horizontal-scroll"),
 
+    // Promo Featured Products - CLP
+    CLPFeaturedProducts("featured-product"),
+
     //Topads Headline View
     TopadsHeadlineView("topads"),
 
@@ -126,6 +129,13 @@ enum class ComponentNames(val componentName: String) {
     BannerInfinite("banner_infinite"),
     BannerInfiniteItem("banner_infinite_item"),
 
-    ShopCardInfinite("shop_card_infinite")
+    ShopCardInfinite("shop_card_infinite"),
+    ProductBundling("product_bundling"),
 
+    ThematicHeader("thematic_header"),
+
+    ExplicitWidget("explicit_widget"),
+
+    ContentCard("content_card"),
+    ContentCardItem("content_card_item")
 }

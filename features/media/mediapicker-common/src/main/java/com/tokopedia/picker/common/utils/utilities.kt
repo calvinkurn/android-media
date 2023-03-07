@@ -47,3 +47,7 @@ fun isVideoFormat(path: String) = getFileFormatByMimeType(
     path = path,
     extension = fileExtension(path)
 )
+
+fun String.isUrl(): Boolean {
+    return this.contains("https") || this.contains("http")
+}

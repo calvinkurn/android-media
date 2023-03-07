@@ -16,5 +16,6 @@ enum class ImagePickerPageSource(val value: String) {
     INBOX_DETAIL_PAGE("Inbox Detail"),
     ACCOUNT_DOCUMENT_SETTING_BANK("Account Document Setting Bank"),
     UPLOAD_PROOF_PAYMENT_PAGE("Upload Proof Payment"),
-    FLIGHT_CANCELATION_REASON_PAGE("Flight Cancelation Reason")
+    FLIGHT_CANCELATION_REASON_PAGE("Flight Cancelation Reason"),
+    PRODUCT_AR("Product Ar")
 }

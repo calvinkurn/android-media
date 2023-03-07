@@ -12,9 +12,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.roomlist.presentation.activity.mock.HotelRoomListResponseConfig
@@ -22,7 +21,6 @@ import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListView
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -34,7 +32,6 @@ import org.junit.Test
 class HotelRoomListActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
     var activityRule: IntentsTestRule<HotelRoomListActivity> =
@@ -42,7 +39,6 @@ class HotelRoomListActivityTest {
 
                 override fun beforeActivityLaunched() {
                     super.beforeActivityLaunched()
-                    gtmLogDBSource.deleteAll().subscribe()
                     setupGraphqlMockResponse(HotelRoomListResponseConfig())
                 }
 
@@ -52,6 +48,9 @@ class HotelRoomListActivityTest {
                 }
             }
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     @Test
     fun checkOnRoomListTrackingEvent() {
         Intents.intending(IntentMatchers.hasComponent(HotelBookingActivity::class.java.name)).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
@@ -59,8 +58,7 @@ class HotelRoomListActivityTest {
         clickOnSeePhoto()
         clickOnChooseRoomInRoomListFragment()
         clickOnRoomViewHolder()
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_HOTEL_ROOM_LIST),
-                hasAllSuccess())
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_HOTEL_ROOM_LIST), hasAllSuccess())
     }
 
     private fun clickOnSeePhoto() {
@@ -101,11 +99,6 @@ class HotelRoomListActivityTest {
     private fun getRoomListCount(): Int {
         val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.recycler_view) as RecyclerView
         return recyclerView.adapter?.itemCount ?: 0
-    }
-
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     private fun login() {

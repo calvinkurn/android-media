@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogProductNavListAdapter
 import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
@@ -51,38 +51,32 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
-import java.util.*
 import javax.inject.Inject
 
 class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener,
         CatalogProductCardListener,
-        WishListActionListener,
+        ChooseAddressWidget.ChooseAddressWidgetListener,
         SortFilterBottomSheet.Callback{
 
     @Inject
@@ -90,11 +84,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     @Inject
     lateinit var viewModel: CatalogDetailProductListingViewModel
-
-    @Inject
-    lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
-    @Inject
-    lateinit var addWishlistActionUseCase: AddWishListUseCase
 
     @Inject
     lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
@@ -112,9 +101,12 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private var departmentId: String = ""
     private var categoryId : String = ""
     private var brand : String = ""
+    private var productSortingStatus : Int = 0
 
     var productNavListAdapter: CatalogProductNavListAdapter? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
+    private var chooseAddressWidget: ChooseAddressWidget? = null
+    private var userAddressData: LocalCacheModel? = null
 
     private lateinit var catalogTypeFactory: CatalogTypeFactory
 
@@ -132,6 +124,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private const val ARG_EXTRA_CATALOG_NAME = "ARG_EXTRA_CATALOG_NAME"
         private const val ARG_EXTRA_CATALOG_CATEGORY_ID = "ARG_EXTRA_CATALOG_CATEGORY_ID"
         private const val ARG_EXTRA_CATALOG_BRAND = "ARG_EXTRA_CATALOG_BRAND"
+        private const val ARG_EXTRA_CATALOG_PRODUCT_SORTING_STATUS = "ARG_EXTRA_CATALOG_PRODUCT_SORTING_STATUS"
 
         private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
         private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
@@ -139,9 +132,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
         const val MORE_CATALOG_WIDGET_INDEX = 3
         const val MINIMUM_SCROLL_FOR_ANIMATION = 15
+        const val SHOP_TIER_VALUE = 2
 
         @JvmStatic
-        fun newInstance(catalogId: String , catalogName : String, catalogUrl : String?,categoryId : String?,catalogBrand : String?): BaseCategorySectionFragment {
+        fun newInstance(catalogId: String , catalogName : String, catalogUrl : String?,categoryId : String?,catalogBrand : String?,productSortingStatus : Int?=0): BaseCategorySectionFragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
@@ -149,6 +143,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             bundle.putString(ARG_EXTRA_CATALOG_URL, catalogUrl)
             bundle.putString(ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
             bundle.putString(ARG_EXTRA_CATALOG_BRAND, catalogBrand)
+            if (productSortingStatus != null) {
+                bundle.putInt(ARG_EXTRA_CATALOG_PRODUCT_SORTING_STATUS, productSortingStatus)
+            }
             fragment.arguments = bundle
             return fragment
         }
@@ -170,12 +167,14 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 catalogUrl = it.getString(ARG_EXTRA_CATALOG_URL, "")
                 categoryId = it.getString(ARG_EXTRA_CATALOG_CATEGORY_ID, "")
                 brand = it.getString(ARG_EXTRA_CATALOG_BRAND, "")
+                productSortingStatus = it.getInt(ARG_EXTRA_CATALOG_PRODUCT_SORTING_STATUS, 0)
             }
         }
         initView()
         observeData()
         setUpAdapter()
         setupRecyclerView()
+        initChooseAddressWidget(view)
         initSearchQuickSortFilter(view)
         sortFilterBottomSheet = SortFilterBottomSheet()
     }
@@ -183,7 +182,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun initView() {
         userSession = UserSession(activity)
         gcmHandler = GCMHandler(activity)
-
+        fetchUserLatestAddressData()
         activity?.let { observer ->
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             viewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
@@ -224,6 +223,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 scrollToPosition(viewModel.lastSeenProductPosition)
             }
         }
+    }
+
+    private fun initChooseAddressWidget(view: View) {
+        chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
+        chooseAddressWidget?.bindChooseAddress(this)
     }
 
     private fun attachScrollListener() {
@@ -430,10 +434,16 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         searchProductRequestParams.apply {
             putString(CategoryNavConstants.START, (start * PAGING_ROW_COUNT).toString())
             putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
-            putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
+            putString(CategoryNavConstants.USER_ID, userSession.userId)
             putString(CategoryNavConstants.ROWS, PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
+            putString(CategoryNavConstants.USER_CITY_ID, userAddressData?.city_id ?: "")
+            putString(CategoryNavConstants.USER_DISTRICT_ID, userAddressData?.district_id ?: "")
+            putString(CategoryNavConstants.Q, catalogName)
+            if (productSortingStatus == 1) {
+                putInt(CategoryNavConstants.SHOP_TIER, SHOP_TIER_VALUE)
+            }
             viewModel.searchParametersMap.value?.let { safeSearchParams ->
                 putAllString(safeSearchParams)
             }
@@ -446,7 +456,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         return ParamMapToUrl.generateUrlParamString(parameters)
     }
 
-    private fun getUniqueId(): String {
+    private fun getUserId(): String {
         return if (userSession.isLoggedIn)
             AuthHelper.getMD5Hash(userSession.userId)
         else
@@ -568,38 +578,33 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             "${viewModel.catalogName} - $catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",userSession.userId,catalogId)
 
         context?.let { context ->
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-                deleteWishlistV2UseCase.setParams(productId, userId)
-                deleteWishlistV2UseCase.execute(
-                    onSuccess = { result ->
-                        when (result) {
-                            is Success -> {
-                                productNavListAdapter?.updateWishlistStatus(productId, true)
-                                enableWishListButton(productId)
+            deleteWishlistV2UseCase.setParams(productId, userId)
+            deleteWishlistV2UseCase.execute(
+                onSuccess = { result ->
+                    when (result) {
+                        is Success -> {
+                            productNavListAdapter?.updateWishlistStatus(productId, true)
+                            enableWishListButton(productId)
 
-                                view?.let { v ->
-                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result.data, context, v)
-                                }
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result.data, context, v)
                             }
-                            is Fail -> {
-                                enableWishListButton(productId)
-                                val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                                view?.let { v ->
-                                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
-                                }
-                            }
-                        } },
-                    onError = {
-                        enableWishListButton(productId)
-                        val errorMsg = ErrorHandler.getErrorMessage(context, it)
-                        view?.let { v ->
-                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
                         }
-                    })
-            } else {
-                removeWishlistActionUseCase.createObservable(productId,
-                    userId, this)
-            }
+                        is Fail -> {
+                            enableWishListButton(productId)
+                            val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+                            }
+                        }
+                    } },
+                onError = {
+                    enableWishListButton(productId)
+                    val errorMsg = ErrorHandler.getErrorMessage(context, it)
+                    view?.let { v ->
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                    }
+                })
         }
     }
 
@@ -611,37 +616,33 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             "${viewModel.catalogName} - $catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId,catalogId)
 
         context?.let { context ->
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-                addToWishlistV2UseCase.setParams(productId, userId)
-                addToWishlistV2UseCase.execute(
-                onSuccess = { result ->
-                    when (result) {
-                        is Success -> {
-                            productNavListAdapter?.updateWishlistStatus(productId, true)
-                            enableWishListButton(productId)
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result.data, context, v
-                                )
-                            }
-                        }
-                        is Fail -> {
-                            enableWishListButton(productId)
-                            val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
-                            }
-                        }
-                    } },
-                    onError = {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            addToWishlistV2UseCase.execute(
+            onSuccess = { result ->
+                when (result) {
+                    is Success -> {
+                        productNavListAdapter?.updateWishlistStatus(productId, true)
                         enableWishListButton(productId)
-                        val errorMessage = ErrorHandler.getErrorMessage(context, it)
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result.data, context, v
+                            )
+                        }
+                    }
+                    is Fail -> {
+                        enableWishListButton(productId)
+                        val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                         view?.let { v ->
                             AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
                         }
-                    })
-            } else {
-                addWishlistActionUseCase.createObservable(productId, userId, this)
-            }
+                    }
+                } },
+                onError = {
+                    enableWishListButton(productId)
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it)
+                    view?.let { v ->
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+                    }
+                })
         }
     }
 
@@ -659,28 +660,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun onChangeSingleGrid() {
         product_recyclerview.requestLayout()
-    }
-
-    override fun onErrorAddWishList(errorMessage: String?, productId: String) {
-        enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
-    }
-
-    override fun onSuccessAddWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId, true)
-        enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
-    }
-
-    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
-        enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
-    }
-
-    override fun onSuccessRemoveWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId, false)
-        enableWishListButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
     }
 
     override fun onDestroyView() {
@@ -710,13 +689,16 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         productNavListAdapter?.onPause()
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateChooseAddressWidget()
+        checkAddressUpdate(false)
+    }
+
     override fun hasThreeDots() = true
 
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
 
-    }
-
-    override fun wishListEnabledTracker(wishListTrackerUrl: String) {
     }
 
     override fun onShareButtonClicked() {
@@ -929,5 +911,62 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun getResultCount(mapParameter: Map<String, String>) {
         sortFilterBottomSheet?.setResultCountText(getString(R.string.catalog_apply_filter))
+    }
+
+    /*******************************  Address Widget **************************/
+
+    private fun updateChooseAddressWidget() {
+        chooseAddressWidget?.updateWidget()
+    }
+
+    private fun checkAddressUpdate(isReload: Boolean = true) {
+        context?.let {
+            if (userAddressData != null) {
+                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) {
+                    userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+                    if(isReload)
+                        refreshPage()
+                }
+            }
+        }
+    }
+
+    private fun refreshPage() {
+        reloadData()
+    }
+
+    private fun fetchUserLatestAddressData() {
+        context?.let {
+            userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        updateChooseAddressWidget()
+        checkAddressUpdate()
+    }
+
+    override fun onLocalizingAddressUpdatedFromBackground() {
+
+    }
+
+    override fun onLocalizingAddressServerDown() {
+        chooseAddressWidget?.hide()
+    }
+
+    override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
+
+    }
+
+    override fun getLocalizingAddressHostFragment(): Fragment {
+        return this
+    }
+
+    override fun getLocalizingAddressHostSourceData(): String {
+        return CatalogConstant.SOURCE
+    }
+
+    override fun onLocalizingAddressLoginSuccess() {
+
     }
 }

@@ -8,6 +8,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Builder
 import com.tokopedia.chat_common.domain.pojo.productattachment.*
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
@@ -65,8 +67,8 @@ open class ProductAttachmentUiModel protected constructor(
 
     val hasDiscount: Boolean
         get() {
-            return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
-                    && priceBefore != productPrice && dropPercentage != "0"
+            return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty() &&
+                priceBefore != productPrice && dropPercentage != "0"
         }
     val stringBlastId: String get() = blastId
     var campaignId: String = builder.campaignId
@@ -150,11 +152,11 @@ open class ProductAttachmentUiModel protected constructor(
         for (variant in variants) {
             val variantOption = variant.options
             if (variantOption.isColor()) {
-                colorVariantId = variantOption.id.toString()
+                colorVariantId = variantOption.id
                 colorVariant = variantOption.value
                 colorHexVariant = variantOption.hex
             } else {
-                sizeVariantId = variantOption.id.toString()
+                sizeVariantId = variantOption.id
                 sizeVariant = variantOption.value
             }
         }
@@ -224,6 +226,17 @@ open class ProductAttachmentUiModel protected constructor(
         }
     }
 
+    private fun getAttachmentSource(): String {
+        val blastIdInt = blastId.toIntOrZero()
+        return if (blastIdInt < Int.ZERO) {
+            "drop alert"
+        } else if (blastIdInt > Int.ZERO) {
+            "broadcast"
+        } else {
+            "chat"
+        }
+    }
+
     fun hasReview(): Boolean {
         return rating.count > 0
     }
@@ -250,20 +263,16 @@ open class ProductAttachmentUiModel protected constructor(
         } else {
             "buyer"
         }
-        val isWarehouse = if (isFulfillment) {
-            "warehouse"
-        } else {
-            "notwarehouse"
-        }
         val isCampaign = if (isProductCampaign()) {
             "campaign"
         } else {
             "notcampaign"
         }
-        return "$role - $productId - $isWarehouse - $isCampaign"
+
+        return "$role - ${getAttachmentSource()} - $blastId - $isCampaign"
     }
 
-    //not a variant, not product campaign, not broadcast, & not pre-order
+    // not a variant, not product campaign, not broadcast, & not pre-order
     fun isEligibleOCC(): Boolean {
         return !isSupportVariant && !isProductCampaign() && !fromBroadcast() && !isPreOrder
     }
@@ -284,7 +293,7 @@ open class ProductAttachmentUiModel protected constructor(
         if (hasSizeVariant()) {
             val size = JsonObject()
             val sizeOption = JsonObject()
-            sizeOption.addProperty("id", sizeVariantId.toInt())
+            sizeOption.addProperty("id", sizeVariantId.toLongOrNull() ?: 0)
             sizeOption.addProperty("value", sizeVariant)
             size.add("option", sizeOption)
             list.add(size)
@@ -468,7 +477,7 @@ open class ProductAttachmentUiModel protected constructor(
         }
 
         fun withVariants(variants: List<AttachmentVariant>?): Builder {
-            this.variants = variants?: emptyList()
+            this.variants = variants ?: emptyList()
             return self()
         }
 
@@ -532,7 +541,7 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
-        fun withIOSUrl(iosUrl: String) : Builder {
+        fun withIOSUrl(iosUrl: String): Builder {
             this.iosUrl = iosUrl
             return self()
         }

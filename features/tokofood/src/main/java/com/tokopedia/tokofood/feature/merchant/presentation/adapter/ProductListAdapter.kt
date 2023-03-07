@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.databinding.TokofoodCategoryHeaderLayoutBinding
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType.CATEGORY_HEADER
@@ -20,7 +21,8 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.CategoryH
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder.OnProductCardItemClickListener
 
-class ProductListAdapter(private val clickListener: OnProductCardItemClickListener) :
+class ProductListAdapter(private val clickListener: OnProductCardItemClickListener,
+                         private val tokofoodScrollChangedListener: TokofoodScrollChangedListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var productListItems: MutableList<ProductListItem> = mutableListOf()
@@ -44,7 +46,7 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
             PRODUCT_CARD -> {
                 val binding = TokofoodProductCardLayoutBinding
                     .inflate(LayoutInflater.from(parent.context), parent, false)
-                ProductCardViewHolder(binding, clickListener)
+                ProductCardViewHolder(binding, clickListener, tokofoodScrollChangedListener)
             }
         }
     }
@@ -75,8 +77,8 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         notifyDataSetChanged()
     }
 
-    fun getProductUiModel(dataSetPosition: Int): ProductUiModel {
-        return productListItems[dataSetPosition].productUiModel
+    fun getProductUiModel(dataSetPosition: Int): ProductUiModel? {
+        return productListItems.getOrNull(dataSetPosition)?.productUiModel
     }
 
     fun updateProductUiModel(
@@ -117,7 +119,7 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
                 val position = customOrderDetails.indexOfFirst { it.cartId == customOrderDetail.cartId }
                 if (position > RecyclerView.NO_POSITION) {
 
-                    cartId = cartTokoFood.cartId
+                    if (!isCustomizable) cartId = cartTokoFood.cartId
                     orderQty = cartTokoFood.quantity
                     orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
                     isAtc = cartTokoFood.quantity.isMoreThanZero()

@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_64">
+        android:layout_marginTop="64dp">
 
         <LinearLayout
             android:id="@+id/ll_expandedProductView"
@@ -33,8 +33,9 @@
                     android:id="@+id/iv_productImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:contentDescription="@null" />
+                    android:layout_marginStart="24dp"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY" />
 
             </RelativeLayout>
 
@@ -53,7 +54,7 @@
                     android:layout_alignParentTop="true"
                     android:visibility="gone"
                     tools:visibility="visible"
-                    android:textSize="@dimen/sp_12"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     tools:text="Sisa 2" />
 
@@ -86,7 +87,7 @@
                         android:paddingRight="5dp"
                         android:paddingBottom="2dp"
                         android:textColor="@color/Unify_R500"
-                        android:textSize="@dimen/sp_12"
+                        android:textSize="12sp"
                         tools:text="20%" />
 
                     <TextView
@@ -95,7 +96,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/sp_12"
+                        android:textSize="12sp"
                         tools:text="Rp1500000" />
 
                 </LinearLayout>
@@ -107,7 +108,7 @@
                     android:layout_below="@+id/ll_oldPriceAndDiscount"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/Unify_N700_96"
-                    android:textSize="@dimen/sp_15"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     tools:text="Rp1500000" />
 
@@ -134,7 +135,7 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/sp_12"
+                        android:textSize="12sp"
                         android:layout_marginStart="4dp"
                         tools:text="4.5" />
 
@@ -142,7 +143,7 @@
                         android:id="@+id/txt_count_review"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/sp_12"
+                        android:textSize="12sp"
                         android:textColor="@color/Unify_N700_68"
                         android:layout_marginStart="4dp"
                         tools:text="(60)" />
@@ -155,26 +156,26 @@
                     android:layout_height="20dp"
                     android:layout_below="@+id/tv_currentPrice"
                     android:layout_marginTop="6dp"
+                    android:contentDescription="@null"
                     android:scaleType="fitStart"
                     android:visibility="gone"
                     tools:src="@tools:sample/avatars"
-                    tools:visibility="visible"
-                    android:contentDescription="@null" />
+                    tools:visibility="visible" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_32"
+                    android:layout_height="32dp"
                     android:layout_marginTop="8dp"
                     android:paddingBottom="2dp"
                     android:layout_alignParentBottom="true">
 
                     <Button
                         android:id="@+id/btn_icon"
-                        android:layout_width="@dimen/dp_32"
+                        android:layout_width="32dp"
                         android:layout_height="match_parent"
+                        android:layout_marginEnd="@dimen/unify_space_8"
                         android:background="@drawable/cm_btn_atc"
-                        android:gravity="center"
-                        android:layout_marginEnd="@dimen/unify_space_8" />
+                        android:gravity="center" />
 
                     <TextView
                         android:id="@+id/btn_text"
@@ -183,7 +184,7 @@
                         android:background="@drawable/cm_background_buy"
                         android:gravity="center"
                         android:layout_toEndOf="@+id/btn_icon"
-                        android:textColor="@color/white"
+                        android:textColor="@color/Unify_Static_White"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         tools:text="Beli Sekarang" />
@@ -196,36 +197,34 @@
 
         <ImageView
             android:id="@+id/ivArrowLeft"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
-            android:layout_margin="5dp"
+            android:layout_width="@dimen/cm_dp_28"
+            android:layout_height="@dimen/cm_dp_28"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/cm_next_btn_background"
             android:clickable="true"
+            android:contentDescription="@null"
             android:focusable="true"
+            android:padding="6dp"
+            android:paddingStart="0dp"
+            android:src="@drawable/cm_ic_arrow_left"
             android:visibility="gone"
-            tools:visibility="visible"
-            android:padding="8dp"
-            android:rotation="180"
-            android:src="@drawable/cm_ic_arrow"
-            android:contentDescription="@null" />
+            tools:visibility="visible" />
 
         <!--Don't convert these image to Vector: Strictly Prohibited-->
         <ImageView
             android:id="@+id/ivArrowRight"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
+            android:layout_width="@dimen/cm_dp_28"
+            android:layout_height="@dimen/cm_dp_28"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_margin="5dp"
-            android:background="@drawable/cm_next_btn_background"
             android:clickable="true"
             android:focusable="true"
             android:visibility="gone"
             tools:visibility="visible"
-            android:padding="8dp"
-            android:src="@drawable/cm_ic_arrow"
+            android:rotation="180"
+            android:padding="6dp"
+            android:paddingStart="0dp"
+            android:src="@drawable/cm_ic_arrow_left"
             android:contentDescription="@null" />
 
     </RelativeLayout>

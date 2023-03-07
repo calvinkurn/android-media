@@ -10,10 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -24,24 +21,25 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_LANDING_SHOP_CREATION
+import com.tokopedia.loginregister.databinding.FragmentLandingShopCreationBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileCompletionData
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -51,14 +49,7 @@ import javax.inject.Inject
 
 class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
-    private lateinit var toolbarShopCreation: Toolbar
-    private lateinit var buttonOpenShop: UnifyButton
-    private lateinit var landingImage: ImageUnify
-    private lateinit var loading: LoaderUnify
-    private lateinit var mainView: View
-    private lateinit var baseView: View
     private lateinit var sharedPrefs: SharedPreferences
-    private var btnDeletedShop: Typography? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -70,11 +61,13 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
+        ViewModelProvider(this, viewModelFactory)
     }
     private val shopCreationViewModel by lazy {
         viewModelProvider.get(ShopCreationViewModel::class.java)
     }
+
+    private var viewBinding by autoClearedNullable<FragmentLandingShopCreationBinding>()
 
     override fun getScreenName(): String = SCREEN_LANDING_SHOP_CREATION
 
@@ -85,20 +78,11 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_landing_shop_creation, container, false)
-        toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
-        buttonOpenShop = view.findViewById(R.id.btn_continue)
-        landingImage = view.findViewById(R.id.landing_shop_creation_image)
-        loading = view.findViewById(R.id.loading)
-        mainView = view.findViewById(R.id.main_view)
-        btnDeletedShop = view.findViewById(R.id.deletedShopInfo2)
-        activity?.let {
-            baseView = it.findViewById(R.id.base_view)
-        }
-        return view
+        viewBinding = FragmentLandingShopCreationBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
-    override fun getToolbar(): Toolbar = toolbarShopCreation
+    override fun getToolbar(): Toolbar? = viewBinding?.toolbarShopCreation
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -162,19 +146,18 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         shopCreationViewModel.getUserProfileResponse.removeObservers(this)
         shopCreationViewModel.getUserInfoResponse.removeObservers(this)
         shopCreationViewModel.getShopInfoResponse.removeObservers(this)
-        shopCreationViewModel.flush()
     }
 
     private fun initView() {
-        ImageHandler.LoadImage(landingImage, LANDING_PICT_URL)
+        viewBinding?.landingShopCreationImage?.loadImage(LANDING_PICT_URL)
 
-        btnDeletedShop?.setOnClickListener {
+        viewBinding?.deletedShopInfo2?.setOnClickListener {
             RouteManager.route(context, URL_DELETED_SHOP)
         }
     }
 
     private fun initButtonListener() {
-        buttonOpenShop.setOnClickListener {
+        viewBinding?.btnContinue?.setOnClickListener {
             shopCreationAnalytics.eventClickOpenShopLanding()
             if (userIsLoggedIn()) {
                 goToShopAdminRedirection()
@@ -199,7 +182,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun setActionAfterSuccessAdminRedirection(appLink: String) {
-        if (appLink == ApplinkConstInternalGlobal.PHONE_SHOP_CREATION) {
+        if (appLink == ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION) {
             showLoading()
             if (userSession.isLoggedIn) {
                 shopCreationViewModel.getUserProfile()
@@ -227,7 +210,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        shopCreationViewModel.getUserProfileResponse.observe(viewLifecycleOwner, Observer {
+        shopCreationViewModel.getUserProfileResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessGetProfileInfo(it.data)
@@ -236,8 +219,9 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     onFailedGetProfileInfo(it.throwable)
                 }
             }
-        })
-        shopCreationViewModel.getUserInfoResponse.observe(viewLifecycleOwner, Observer {
+        }
+
+        shopCreationViewModel.getUserInfoResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessGetUserInfo()
@@ -246,8 +230,9 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     onFailedGetUserInfo(it.throwable)
                 }
             }
-        })
-        shopCreationViewModel.getShopInfoResponse.observe(viewLifecycleOwner, Observer {
+        }
+
+        shopCreationViewModel.getShopInfoResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessGetShopInfo(it.data)
@@ -256,7 +241,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     onFailedGetShopInfo(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun onSuccessGetProfileInfo(userProfileCompletionData: UserProfileCompletionData) {
@@ -306,7 +291,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         view?.run {
             hideLoading()
             throwable.message?.let {
-                Toaster.make(
+                Toaster.build(
                     this,
                     it,
                     Toaster.toasterLength,
@@ -327,7 +312,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun onFailedGetShopInfo(throwable: Throwable) {
         view?.run {
             throwable.message?.let {
-                Toaster.make(
+                Toaster.build(
                     this,
                     it,
                     Toaster.toasterLength,
@@ -339,7 +324,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToNameShopCreation() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.NAME_SHOP_CREATION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.NAME_SHOP_CREATION)
         startActivityForResult(intent, REQUEST_CODE_NAME_SHOP_CREATION)
     }
 
@@ -350,12 +335,12 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToPhoneShopCreation() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PHONE_SHOP_CREATION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION)
         startActivityForResult(intent, REQUEST_CODE_PHONE_SHOP_CREATION)
     }
 
     private fun goToPhoneShopCreation(phone: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PHONE_SHOP_CREATION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
         startActivityForResult(intent, REQUEST_CODE_PHONE_SHOP_CREATION)
     }
@@ -391,10 +376,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun showLoading() {
-        loading.visibility = View.VISIBLE
-        mainView.visibility = View.INVISIBLE
+        viewBinding?.loading?.show()
+        viewBinding?.mainView?.hide()
         context?.let {
-            baseView.setBackgroundColor(
+            viewBinding?.scrollView?.setBackgroundColor(
                 MethodChecker.getColor(
                     context,
                     com.tokopedia.unifyprinciples.R.color.Unify_Background
@@ -404,10 +389,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun hideLoading() {
-        loading.visibility = View.GONE
-        mainView.visibility = View.VISIBLE
+        viewBinding?.loading?.hide()
+        viewBinding?.mainView?.show()
         context?.let {
-            baseView.background = ContextCompat.getDrawable(it, R.drawable.bg_landing_shop_creation)
+            viewBinding?.scrollView?.background = ContextCompat.getDrawable(it, R.drawable.bg_landing_shop_creation)
         }
     }
 
@@ -432,7 +417,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         private const val LANDING_PICT_URL =
-            "https://ecs7.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
+            "https://images.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
         private const val URL_DELETED_SHOP =
             "https://www.tokopedia.com/help/article/kebijakan-penonaktifan-toko-secara-permanen"
 

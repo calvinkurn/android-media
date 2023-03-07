@@ -95,7 +95,7 @@
         android:layout_marginRight="4dp"
         android:gravity="center_vertical"
         android:textColor="@color/Unify_N700_44"
-        android:textSize="@dimen/sp_10"
+        android:textSize="10sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tagTypeText"
         app:layout_constraintRight_toRightOf="parent"

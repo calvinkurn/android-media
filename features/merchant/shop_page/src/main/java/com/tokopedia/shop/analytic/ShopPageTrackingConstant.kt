@@ -8,9 +8,10 @@ object ShopPageTrackingConstant {
     const val HIGHLIGHT_SOLD_PRODUCT = "Produk Terjual"
     const val SCREEN_NAME = "screenName"
 
-    //event
+    // event
     const val EVENT_OPEN_SCREEN = "openScreen"
     const val CLICK_SHOP_PAGE = "clickShopPage"
+    const val CLICK_COMMUNICATION = "clickCommunication"
     const val CLICK_SHOP_SETTING = "clickShopSetting"
     const val CLICK_PROFILE = "clickProfile"
     const val VIEW_SHOP_PAGE = "viewShopPage"
@@ -24,6 +25,7 @@ object ShopPageTrackingConstant {
     const val ADD_TO_CART = "addToCart"
     const val CLICK_MEMBERSHIP_EVENT = "click tokomember"
     const val VIEW_SHOP_PAGE_IRIS = "viewShopPageIris"
+    const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
     const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
     const val CLICK_DIGITAL = "clickDigital"
     const val CLICK_PG = "clickPG"
@@ -32,7 +34,7 @@ object ShopPageTrackingConstant {
     const val SELECT_CONTENT = "select_content"
     const val BUNDLING_ADD_TO_CART = "add_to_cart"
 
-    //category
+    // category
     const val SHOP_PAGE_SELLER = "shop page - seller"
     const val SHOP_PAGE_BUYER = "shop page - buyer"
     const val SHOP_PAGE_DONATION_BY_SELLER = "shop page - donation by seller"
@@ -44,7 +46,7 @@ object ShopPageTrackingConstant {
     const val SHOP_PROFILE_PAGE_BUYER = "shop profile page - buyer"
     const val SHOP_CAMPAIGN_TAB_EVENT_CATEGORY = "shop page - buyer - campaign tab"
 
-    //ACTION
+    // ACTION
     const val TOP_SECTION = "top section"
     const val INFO = "info"
     const val MERCHANT_VOUCHER_CODE = "merchant voucher code"
@@ -162,7 +164,7 @@ object ShopPageTrackingConstant {
     const val CAMPAIGN_TAB_PRODUCT_IMPRESSION_EVENT_ACTION = "product impression"
     const val CAMPAIGN_TAB_PRODUCT_CLICK_EVENT_ACTION = "click product card"
 
-    //label
+    // label
     const val CLICK_SHARE = "click share"
     const val CLICK_BOTTOMSHEET_DISMISS_BUTTON = "x button"
     const val CLICK_CART_BUTTON = "click my cart"
@@ -272,7 +274,7 @@ object ShopPageTrackingConstant {
     const val IMPRESSION_SHOP_BANNER_LABEL = "impression - shop banner - campaign tab - %1s - %2s"
     const val CLICK_SHOP_BANNER_LABEL = "click - shop banner - campaign tab - %1s - %2s"
 
-    //key
+    // key
     const val EVENT = "event"
     const val EVENT_CATEGORY = "eventCategory"
     const val EVENT_ACTION = "eventAction"
@@ -351,12 +353,12 @@ object ShopPageTrackingConstant {
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val ITEM_LIST = "item_list"
 
-    //SCREEN/PAGES
+    // SCREEN/PAGES
     const val SCREEN_SHOP_PAGE = "Shop Page"
     const val SCREEN_SEARCH_BAR = "Search Bar"
     const val SCREEN_ADD_PRODUCT = "/add-product"
 
-    //value
+    // value
     const val VALUE_PRODUCT = "Product"
     const val VALUE_UPCOMING = "upcoming"
     const val VALUE_ONGOING = "ongoing"
@@ -375,7 +377,7 @@ object ShopPageTrackingConstant {
     const val SHOP_HEADER_ACTION_TRACKER_TYPE = "action"
     const val SHOP_HEADER_PLAY_TRACKER_TYPE = "play"
     const val LOCAL_SEARCH = "local_search"
-    const val FIRST_LANDING_PAGE = "first landing page - %1s Tab"
+    const val FIRST_LANDING_PAGE = "first landing page - %1s Tab - %2s"
     const val GRID_VIEW_TYPE = "Grid View"
     const val LIST_VIEW_TYPE = "List View"
     const val BIG_GRID_VIEW_TYPE = "Big Grid View"
@@ -389,21 +391,31 @@ object ShopPageTrackingConstant {
     const val VALUE_SHOP_DECOR_PLAY = "Play"
     const val VALUE_STRING_ZERO = "0"
     const val VALUE_SHOP_PAGE_THEMATIC = "/shoppagethematic"
+    const val ITEM_LIST_PERSO_TRENDING_WIDGET = "/shoppage - trending"
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
+    const val SHOP_AFFILIATE = "affiliate"
+    const val SHOP_NOT_AFFILIATE = "not affiliate"
 
-    //trackerId
+    // trackerId
     const val TRACKER_ID_CLICK_MULTIPLE_BUNDLE = "25998"
     const val TRACKER_ID_CLICK_SINGLE_BUNDLE = "25999"
+    const val TRACKER_ID_CLICK_SHARE_BUTTON = "10544"
+    const val TRACKER_ID_CLOSE_SHARE_BOTTOM_SHEET = "10545"
+    const val TRACKER_ID_CLICK_SHARING_CHANNEL = "10546"
+    const val TRACKER_ID_VIEW_ON_SHARING_CHANNEL = "10547"
+    const val TRACKER_ID_ACCESS_MEDIA_FILES = "10548"
+    const val TRACKER_ID_VIEW_SCREEN_SHOT_BOTTOM_SHEET = "10552"
+    const val TRACKER_ID_CLOSE_SCREEN_SHOT_SHARE_BOTTOM_SHEET = "10553"
+    const val TRACKER_ID_SCREEN_SHOT_CLICK_SHARING_CHANNEL = "10554"
 
-
-    //dimension83
+    // dimension83
     const val BOE = "BoE"
     const val BO_PRODUCT = "BO Product"
     const val NON_BO_PRODUCT = "Non-BO Product"
     const val LABEL_GROUP_POSITION_FULFILLMENT = "fulfillment"
 
-    //page_url
+    // page_url
     const val ETALASE_SHOPNAME = "etalase-%s"
     const val SRP_SHOPNAME = "srp-%s"
     const val VERTICAL_POSITION = "p%1d"
@@ -416,7 +428,7 @@ object ShopPageTrackingConstant {
     const val WITHOUT_CART = "without cart"
     const val GENERAL = "general"
 
-    //empty state
+    // empty state
     const val CLICK_SEARCH_PAGE_NO_RESULT = "click search page no result"
     const val TRY_ANOTHER_WORD = "coba kata lain"
     const val SEARCH_ON_TOKOPEDIA = "search on tokopedia"
@@ -431,6 +443,7 @@ object ShopPageTrackingConstant {
     const val SHOP_PRODUCT_ATC_QUANTITY_DECREASE = "decrease"
     object Event {
         const val DIRECT_PURCHASE_ADD_TO_CART = "add_to_cart"
+        const val VIEW_PG_IRIS = "viewPGIris"
     }
 
     object EventAction {
@@ -438,6 +451,9 @@ object ShopPageTrackingConstant {
         const val CLICK_PRODUCT_ATC = "click - product - add to cart"
         const val CLICK_PRODUCT_ATC_QUANTITY = "click - product - quantity"
         const val CLICK_PRODUCT_ATC_RESET = "click - product - quantity reset"
+        const val IMPRESSION_PERSONALIZATION_TRENDING_WIDGET = "widget impression - home - trending"
+        const val IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM = "product list impression - home - trending"
+        const val CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM = "click product - home - trending"
     }
 
     object EventCategory {
@@ -451,5 +467,19 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_ATC_CLICK = "32349"
         const val TRACKER_ID_ATC_CLICK_QUANTITY = "32350"
         const val TRACKER_ID_ATC_CLICK_DELETE = "32352"
+        const val TRACKER_ID_CLICK_MULTIPLE_BUNDLE = "25998"
+        const val TRACKER_ID_CLICK_SINGLE_BUNDLE = "25999"
+        const val TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET = "25640"
+        const val TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET = "25643"
+        const val TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET = "35966"
+        const val TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM = "35968"
+        const val TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM = "35967"
+        const val TRACKER_SHOP_PAGE_OPEN_SCREEN = "21750"
+    }
+
+    object Key {
+        const val CAMPAIGN_ID = "campaign_id"
+        const val VARIANT_ID = "variant_id"
+        const val AFFILIATE_CHANNEL_ID = "channelId"
     }
 }

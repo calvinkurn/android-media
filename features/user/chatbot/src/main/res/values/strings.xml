@@ -10,8 +10,8 @@
     <string name="chatbot_no">Tidak</string>
     <string name="chatbot_text_satisfied">Beri nilai pada kualitas layanan kami</string>
     <string name="cb_bot_reason_text">Beri saran untuk Toped Bot</string>
-    <string name="cb_bot_other_reason_text_hint">Tulis saran untuk kami (Opsional)</string>
-    <string name="minimum_30_character">Minimum 30 karakter</string>
+    <string name="cb_bot_other_reason_text_hint">Tulis di sini</string>
+    <string name="minimum_30_character">Min. 30 karakter.</string>
     <string name="cb_bot_leave_queue">Keluar Antrian</string>
     <string name="cb_bot_leave_the_queue">Keluar dari Antrian</string>
     <string name="cb_bot_leave_the_queue_desc_one">Antrian kamu akan terputus jika keluar dari percakapan ini. Kamu yakin?</string>
@@ -43,10 +43,25 @@
     <string name="chatbot_sender_info_prefix">chatbot_</string>
     <string name="chatbot_action_bubble_text_color_prefix">#%s</string>
     <string name="chatbot_retry_image_upload_bottom_sheet_title">Gambarmu gagal di-upload</string>
+    <string name="chatbot_retry_video_upload_bottom_sheet_title">Videomu gagal di-upload</string>
     <string name="chatbot_your_picture_has_been_deleted">Gambarmu sudah dihapus.</string>
+    <string name="chatbot_your_video_has_been_deleted">Videomu sudah dihapus.</string>
+    <string name="chatbot_video_title">Video Terkirim</string>
+    <string name="chatbot_video_can_not_be_played">Gambar gagal dimuat. Refresh halaman ini atau cek koneksi internetmu.</string>
+    <string name="chatbot_video_refresh">Refresh</string>
+    <string name="chatbot_default_video_duration">0:00</string>
+    <string name="chatbot_exoplayer_play_button">Exoplayer Play Button</string>
+    <string name="chatbot_exoplayer_pause_button">Exoplayer Play Button</string>
+    <string name="chatbot_video_error">Video error</string>
+    <string name="chatbot_exoplayer_time_separator">/</string>
     <string name="chatbot_text_for_no_transaction_found">Transaksi yang berkendala tidak ada di daftar pilihan.</string>
     <string name="chatbot_action_text_for_no_transaction_found">transaction_not_listed</string>
     <string name="chatbot_float_invoice_input_length_zero">"Ketik pesan dulu sebelum kirim chat, ya."</string>
+    <string name="reply_bs_balas">Balas</string>
+    <string name="chatbot_reply_bubble_onboarding_title">Sekarang bisa langsung balas chat</string>
+    <string name="chatbot_reply_bubble_onboarding_description">Tinggal tekan dan tahan chat yang mau kamu balas, lalu pilih Balas. Selamat mencoba!</string>
+    <string name="chatbot_reply_bubble_bottomsheet_title">Pengaturan pesan</string>
+    <string name="chatbot_reply_bubble_bottomsheet_retry">retry reply bubble bottom sheet</string>
     <string name="chatbot_deferred_image_contactus_migration">https://images.tokopedia.net/img/android/res/singleDpi/contact_us_migration.png</string>
     <string name="chatbot_migration_bottomsheet_title">Pesan Bantuan akan pindah ke halaman Tokopedia Care</string>
     <string name="chatbot_migration_subtitle">Mulai dialihkan 22 Februari 2022</string>
@@ -54,6 +69,12 @@
     <string name="chatbot_migration_button_text">Lihat di Tokopedia Care</string>
     <string name="chatbot_migration_list_item_1">Klik “Bantuan Tokopedia Care” di menu utama</string>
     <string name="chatbot_migration_list_item_2">Temukan TANYA di bagian bawah halaman Tokopedia Care dan klik “Mulai Chat!”</string>
+    <string name="chatbot_invoice_button">Pilih</string>
+    <string name="chatbot_placeholder_date">1 Jan</string>
+    <string name="chatbot_video_upload_onboarding_title">Fitur baru, bisa upload video 🎦</string>
+    <string name="chatbot_video_upload_onboarding_description">Klik ikon (+) dan pilih 1 atau lebih video kamu. Pastikan ukurannya &#60;800MB per video, ya.</string>
+    <string name="chatbot_csat_ok">Kirim</string>
+    <string name="chatbot_csat_opsional"> (Opsional)</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

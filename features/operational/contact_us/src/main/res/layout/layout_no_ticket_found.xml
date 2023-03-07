@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/Theme.White.Background">
+    android:background="@color/contact_us_dms_detail_background">
 
     <ImageView
         android:id="@+id/iv_no_ticket"
@@ -27,8 +27,8 @@
         android:gravity="center_horizontal"
         android:lineSpacingExtra="6sp"
         android:visibility="visible"
-        android:textColor="@color/contact_us_black_38"
-        android:textSize="14sp"
+        android:textColor="@color/contact_us_dms_no_ticket_text"
+        app:typographyType="body_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_no_ticket" />
@@ -41,12 +41,12 @@
         android:background="@drawable/rounded_rectangle_greenbutton_solid"
         android:gravity="center"
         android:paddingBottom="12dp"
-        android:paddingLeft="@dimen/dp_50"
-        android:paddingRight="@dimen/dp_50"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
         android:paddingTop="12dp"
         android:text="OK"
-        android:textColor="@color/white"
-        android:textSize="@dimen/sp_13"
+        android:textColor="@color/Unify_NN0"
+        app:typographyType="body_2"
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

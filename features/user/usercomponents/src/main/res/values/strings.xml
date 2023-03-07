@@ -4,8 +4,10 @@
     <string name="close_button_icon">close button icon</string>
     <string name="sticky_icon">sticky icon</string>
 
+    <string name="usercomponents_failed_load_data">Konten gagal ditampilkan</string>
+    <string name="usercomponents_failed_load_data_click_retry">Klik ikon di samping buat coba lagi.</string>
+
     <!--  USER CONSENT  -->
-    <string name="user_consent_failed_load_collection">Konten gagal ditampilkan</string>
     <string name="user_consent_default_action_text">Action</string>
     <string name="user_consent_term_condition">Syarat &amp; Ketentuan</string>
     <string name="user_consent_policy">Kebijakan Privasi</string>
@@ -15,22 +17,12 @@
     <string name="user_consent_agreement_single_purpose_term_condition_policy">Saya menyetujui %s serta %s %s.</string>
     <string name="user_consent_agreement_multiple_purpose_term_condition_optional">Saya menyetujui %s:</string>
     <string name="user_consent_agreement_multiple_purpose_term_condition_policy_optional">Saya menyetujui %s serta %s:</string>
+    <string name="user_consent_agreement_default_term_condition_mandatory">Saya menyetujui %s yang  berlaku di Tokopedia.</string>
+    <string name="user_consent_agreement_default_term_condition_policy_mandatory">Saya menyetujui %s serta %s yang  berlaku di Tokopedia.</string>
+    <string name="user_consent_agreement_default_term_condition_optional">Dengan klik tombol di bawah, kamu menyetujui %s yang berlaku di Tokopedia.</string>
+    <string name="user_consent_agreement_default_term_condition_policy_optional">Dengan klik tombol di bawah, kamu menyetujui %s serta %s yang berlaku di Tokopedia.</string>
 
     <!--EXPLICIT PROFILE-->
     <string name="explicit_failed_title">Konten gagal ditampilkan</string>
     <string name="explicit_failed_subtitle">Klik ikon di samping buat coba lagi.</string>
-    <string name="explicit_succes_message">Rekomendasi yang lebih baik akan segera datang untukmu. Lihat detail</string>
-    <string name="explicit_succes_message_action">Lihat detail</string>
-    <string name="explicit_error_attribute">
-      TEMPLATE NAME, PAGE NAME, PAGE PATH or PAGE TYPE are NULL! You must declare its!\n
-      if you use xml, please declare\n
-      example:\n
-      app:template_name="PUT_YOUR_TEMPLATE_NAME"\n
-      app:page_name="PUT_YOUR_PAGE_NAME"\n
-      app:page_path="PUT_YOUR_PAGE_PATH"\n
-      app:page_type="PUT_YOUR_PAGE_TYPE"\n
-      if you create from programmatically please put your TEMPLATE NAME, PAGE NAME, PAGE PATH or PAGE TYPE in AttributeSet or when create view\n
-      example:\n
-      val explicitView = ExplicitView(context, attrs, "PUT_YOUR_TEMPLATE_NAME", "PUT_YOUR_PAGE_NAME", "PUT_YOUR_PAGE_PATH", "PUT_YOUR_PAGE_TYPE")
-    </string>
 </resources>

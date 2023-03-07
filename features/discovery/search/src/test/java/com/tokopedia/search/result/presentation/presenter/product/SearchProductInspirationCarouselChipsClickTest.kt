@@ -2,13 +2,13 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
 import com.tokopedia.search.shouldBe
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
@@ -71,9 +71,9 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
     }
 
     private fun `When inspiration carousel chips clicked`(
-            adapterPosition: Int,
-            inspirationCarouselDataView: InspirationCarouselDataView,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option
+        adapterPosition: Int,
+        inspirationCarouselDataView: InspirationCarouselDataView,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option
     ) {
         productListPresenter.onInspirationCarouselChipsClick(
                 adapterPosition,
@@ -101,13 +101,13 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
 
     private fun `Then verify tracking chips click`(clickedInspirationCarouselOption: InspirationCarouselDataView.Option) {
         verify {
-            productListView.trackInspirationCarouselChipsClicked(clickedInspirationCarouselOption)
+            inspirationCarouselView.trackInspirationCarouselChipsClicked(clickedInspirationCarouselOption)
         }
     }
 
     private fun `Then assert view is refreshed`(adapterPosition: Int) {
         verify {
-            productListView.refreshItemAtIndex(adapterPosition)
+            viewUpdater.refreshItemAtIndex(adapterPosition)
         }
     }
 
@@ -201,7 +201,7 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
 
     private fun `Then verify refresh view is called twice`(adapterPosition: Int) {
         verify(exactly = 2) {
-            productListView.refreshItemAtIndex(adapterPosition)
+            viewUpdater.refreshItemAtIndex(adapterPosition)
         }
     }
 }

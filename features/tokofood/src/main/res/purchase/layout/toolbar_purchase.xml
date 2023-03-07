@@ -19,8 +19,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/backButton"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:icon_name="ARROW_BACK"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

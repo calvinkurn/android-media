@@ -13,7 +13,7 @@ class StackedCouponRepository @Inject constructor(private val repository: Graphq
 
     internal suspend fun getFilter(slug: String) = withContext(Dispatchers.IO) {
         val variablesFilter = HashMap<String, Any>()
-        variablesFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, slug.toLowerCase());
+        variablesFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, slug.toLowerCase())
         val filterRequest = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_COUPON_FILTER],
                 CouponFilterBase::class.java, variablesFilter, false)
         repository.response(listOf(filterRequest))

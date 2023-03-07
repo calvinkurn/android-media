@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cl_cleaner_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginTop="16dp"
+    android:layout_marginTop="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -12,18 +11,23 @@
         android:id="@+id/wishlist_cleaner_option_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_alignParentStart="true"
-        tools:text="Pilih Sendiri"/>
+        android:layout_marginTop="10dp"
+        tools:text="Pilih Sendiri"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyWeight="bold"
+        app:typographyType="display_1"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/wishlist_cleaner_option_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_below="@id/wishlist_cleaner_option_title"
-        app:typographyType="body_2"
-        tools:text="Pilih satu per satu dari urutan terlama disimpan"/>
+        app:typographyType="body_3"
+        tools:text="Pilih satu per satu dari urutan terlama disimpan"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/wishlist_cleaner_option_title"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/wishlist_cleaner_option_icon_check"
@@ -32,15 +36,17 @@
         app:icon_name="CHECK_BIG"
         app:icon_color_light_enable="@color/Unify_G500"
         app:icon_color_night_enable="@color/Unify_G500"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/wishlist_cleaner_option_title"
-        android:layout_alignBottom="@id/wishlist_cleaner_option_desc"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/wishlist_cleaner_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="16dp"
-        android:layout_below="@id/wishlist_cleaner_option_desc"/>
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/wishlist_cleaner_option_desc"/>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

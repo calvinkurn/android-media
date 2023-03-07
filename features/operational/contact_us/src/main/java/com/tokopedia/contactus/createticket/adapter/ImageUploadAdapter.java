@@ -1,11 +1,12 @@
 package com.tokopedia.contactus.createticket.adapter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.contactus.R;
@@ -111,7 +112,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     private void setBorder(ViewHolder holder, int position) {
         if (data.get(position).isSelected()) {
-            holder.image.setBackgroundColor(context.getResources().getColor(R.color.contact_us_green_500));
+            holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500));
         } else {
             holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }

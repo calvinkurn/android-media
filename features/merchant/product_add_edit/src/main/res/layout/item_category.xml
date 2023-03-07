@@ -39,7 +39,7 @@
         android:visibility="gone"
         android:background="@color/Unify_N100"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl1"/>
+        android:layout_height="8dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLevelCategory"

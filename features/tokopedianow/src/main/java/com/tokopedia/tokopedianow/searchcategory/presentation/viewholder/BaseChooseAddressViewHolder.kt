@@ -54,6 +54,10 @@ abstract class BaseChooseAddressViewHolder(
             override fun onLocalizingAddressLoginSuccess() { }
 
             override fun getEventLabelHostPage() = chooseAddressListener.trackingEventLabel()
+
+            override fun isFromTokonowPage(): Boolean {
+                return true
+            }
         })
     }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemDetailPenaltyContainer"
     android:layout_marginBottom="12dp"
-    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:layout_marginTop="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_scrollFlags="scroll|enterAlways"
@@ -13,40 +13,41 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_detail_penalty"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl3"
+        android:layout_height="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSectionDetailPenalty"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         android:layout_width="wrap_content"
         android:text="@string/title_detail_penalty_label"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_detail_penalty"
-        app:typographyType="heading_5" />
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPeriodDetailPenalty"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:layout_width="wrap_content"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvSectionDetailPenalty"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Periode 5 Jun - 6 Aug" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_detail_penalty_filter"
-        android:layout_height="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_width="24dp"
         app:icon_name="CALENDAR"
         app:layout_constraintBottom_toBottomOf="@id/tvPeriodDetailPenalty"
         app:layout_constraintEnd_toEndOf="parent"

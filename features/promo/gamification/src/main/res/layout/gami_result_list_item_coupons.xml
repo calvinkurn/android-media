@@ -10,7 +10,7 @@
         android:id="@+id/couponView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:background="@color/y_200">
+        android:background="@color/Unify_N0">
 
         <com.tokopedia.promoui.common.CouponImageView
             android:id="@+id/appCompatImageView"
@@ -23,7 +23,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/couponView"
-            app:srcCompat="@android:color/white" />
+            app:srcCompat="@color/Unify_Static_White" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon"
@@ -34,8 +34,7 @@
             android:layout_marginTop="14dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatImageView"
-            app:srcCompat="@drawable/gami_ic_transaction_icon"
-            tools:background="@color/colorPink" />
+            app:srcCompat="@drawable/gami_ic_transaction_icon" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitle"
@@ -45,7 +44,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="10dp"
             android:text="@string/gami_min_transaction"
-            android:textColor="@color/gf_loader_title_color"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@+id/icon"
             app:layout_constraintTop_toBottomOf="@+id/appCompatImageView"
             app:typographyType="small" />
@@ -57,7 +56,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginBottom="8dp"
-            android:textColor="@color/gf_loader_title_color"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/icon"

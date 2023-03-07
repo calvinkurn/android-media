@@ -119,9 +119,6 @@
     <string name="produk_yang_mungkin_anda_suka">Produk yang mungkin Anda suka</string>
     <string name="title_header_saldo_intro">Info Detail Saldo</string>
 
-    <string name="title_dialog_tokopedia_app_not_valid">Aplikasi Tokopedia tidak valid</string>
-    <string name="title_message_install_from_playstore">Install Tokopedia dari Google Play Store untuk melanjutkan</string>
-
     <!-- Dynamic features Shop Setting -->
     <string name="shop_settings_manage_shop_info">Informasi</string>
     <string name="shop_settings_manage_address">Lokasi</string>
@@ -183,7 +180,6 @@
 
     <!-- Product Detail -->
     <string name="title_activity_product_detail">Rincian Produk</string>
-    <string name="title_activity_atc_variant">Varian Barang</string>
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
     <string name="label_product_installment">Cicilan</string>

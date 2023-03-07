@@ -19,7 +19,7 @@ class TalkInboxViewHolder(
 ) : AbstractViewHolder<TalkInboxUiModel>(view) {
 
     companion object {
-        const val DELETED_PRODUCT_PLACEHOLDER = "https://ecs7.tokopedia.net/img/android/others/talk_reply_deleted_product_placeholder.png"
+        const val DELETED_PRODUCT_PLACEHOLDER = "https://images.tokopedia.net/img/android/others/talk_reply_deleted_product_placeholder.png"
         val LAYOUT = R.layout.item_talk_inbox
     }
 

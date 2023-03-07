@@ -6,25 +6,25 @@ import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoa
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class OrderStatusUiModel(
-        val orderStatusHeaderUiModel: OrderStatusHeaderUiModel,
-        val orderStatusInfoUiModel: OrderStatusInfoUiModel,
-        val ticker: TickerUiModel
+    val orderStatusHeaderUiModel: OrderStatusHeaderUiModel,
+    val orderStatusInfoUiModel: OrderStatusInfoUiModel,
+    val ticker: TickerUiModel
 ) {
     data class OrderStatusHeaderUiModel(
-            val indicatorColor: String,
-            val orderId: String,
-            val orderStatus: String,
-            val orderStatusId: String,
-            val preOrder: PreOrderUiModel
+        val indicatorColor: String,
+        val orderId: String,
+        val orderStatus: String,
+        val orderStatusId: String,
+        val preOrder: PreOrderUiModel
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }
 
         data class PreOrderUiModel(
-                val isPreOrder: Boolean,
-                val label: String,
-                val value: String
+            val isPreOrder: Boolean,
+            val label: String,
+            val value: String
         )
 
         override fun shouldShow(context: Context?): Boolean {
@@ -37,25 +37,25 @@ data class OrderStatusUiModel(
     }
 
     data class OrderStatusInfoUiModel(
-            val deadline: DeadlineUiModel,
-            val invoice: InvoiceUiModel,
-            val orderId: String,
-            val orderStatusId: String,
-            val purchaseDate: String
+        val deadline: DeadlineUiModel,
+        val invoice: InvoiceUiModel,
+        val orderId: String,
+        val orderStatusId: String,
+        val purchaseDate: String
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }
 
         data class InvoiceUiModel(
-                val invoice: String,
-                val url: String
+            val invoice: String,
+            val url: String
         )
 
         data class DeadlineUiModel(
-                val color: String,
-                val label: String,
-                val value: String
+            val color: String,
+            val label: String,
+            val value: String
         )
 
         override fun shouldShow(context: Context?): Boolean {

@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tvTableColumnHtml"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/shc_dimen_6dp"
-    android:layout_marginBottom="@dimen/shc_dimen_6dp"
-    android:ellipsize="end"
-    android:maxLines="2"
-    android:paddingStart="@dimen/spacing_lvl2"
-    android:paddingLeft="@dimen/spacing_lvl2"
-    android:paddingEnd="@dimen/spacing_lvl2"
-    android:paddingRight="@dimen/spacing_lvl2"
-    android:textColor="@color/Unify_N700_96"
-    app:typographyType="body_3"
-    tools:text="Text Of Table" />
+    android:gravity="center_vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTableColumnHtml"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/shc_dimen_6dp"
+        android:layout_marginBottom="@dimen/shc_dimen_6dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingStart="4dp"
+        android:paddingLeft="4dp"
+        android:paddingEnd="4dp"
+        android:paddingRight="4dp"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        tools:text="Text Of Table" />
+</LinearLayout>

@@ -1,6 +1,7 @@
 package com.tokopedia.centralizedpromo.view.activity
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
@@ -14,12 +15,17 @@ class CentralizedPromoActivity : BaseSimpleActivity() {
         handleIntent(intent)
     }
 
-    override fun getNewFragment(): Fragment = CentralizedPromoFragment.createInstance()
+    override fun getNewFragment(): Fragment {
+        return CentralizedPromoFragment.createInstance()
+    }
 
     private fun handleIntent(intent: Intent?) {
         intent?.run {
             getStringExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.let { sellerMigrationNextDestinatonApplink ->
-                RouteManager.getIntent(this@CentralizedPromoActivity, sellerMigrationNextDestinatonApplink).run {
+                RouteManager.getIntent(
+                    this@CentralizedPromoActivity,
+                    sellerMigrationNextDestinatonApplink
+                ).run {
                     addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(this)
                 }

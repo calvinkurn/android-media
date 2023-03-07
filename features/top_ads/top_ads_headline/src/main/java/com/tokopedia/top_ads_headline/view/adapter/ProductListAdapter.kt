@@ -92,10 +92,10 @@ class ProductListAdapter(
             product.isSingleSelect = checkIfSingleSelect(category, product)
             if (product.isSingleSelect) {
                 holder.productCard.setBackgroundColor(
-                    ContextCompat.getColor(holder.itemView.context, com.tokopedia.topads.common.R.color.Red_R100))
+                    ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R100))
             } else {
                 holder.productCard.setBackgroundColor(
-                    ContextCompat.getColor(holder.itemView.context, com.tokopedia.topads.common.R.color.white))
+                    ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             }
             product.positionInRv = position
         }
@@ -133,7 +133,7 @@ class ProductListAdapter(
         }
     }
 
-    private fun setProductRating(productRating: Int, reviewCount: Int, ratingView: ViewGroup) {
+    private fun setProductRating(productRating: Int, reviewCount: String, ratingView: ViewGroup) {
         if (productRating != 0) {
             showRating(productRating, ratingView)
             val ratingText = "($reviewCount)"

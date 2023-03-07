@@ -19,12 +19,6 @@ class RegisterInitialQueryModule{
 
     @Provides
     @IntoMap
-    @StringKey(RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK)
-    fun provideRawMutationRegisterCheck(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_register_check)
-
-    @Provides
-    @IntoMap
     @StringKey(RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST)
     fun provideRawMutationRegisterRequest(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_register_request)

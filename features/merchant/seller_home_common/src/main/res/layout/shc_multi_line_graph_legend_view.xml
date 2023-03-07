@@ -9,7 +9,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icShcMlgLegendLine"
-        android:layout_width="@dimen/layout_lvl2"
+        android:layout_width="16dp"
         android:layout_height="1dp"
         app:unify_image_corner_radius="0"
         app:unify_image_placeholder="@android:color/transparent"
@@ -19,7 +19,7 @@
         android:id="@+id/tvShcMlgLegendName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginStart="4dp"
         android:textColor="@color/Unify_N700_44"
         app:typographyType="body_3"
         tools:text="Periode sebelumnya" />

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/container"
+    android:padding="8dp"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/reply_icon"
+        android:layout_width="22dp"
+        android:layout_height="18dp"
+        app:icon_name="REPLY_FILLED"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:layout_constraintBottom_toBottomOf="@+id/reply_from"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reply_from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/close_btn"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/reply_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Username" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reply_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="15dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/close_btn"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reply_from"
+        app:typographyType="display_3"
+        tools:text="Message Description"
+        android:paddingBottom="@dimen/dp_chatbot_20"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/close_btn"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:icon_name="CLOSE"
+        android:layout_marginRight="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</merge>

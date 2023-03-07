@@ -3,23 +3,19 @@ package com.tokopedia.people.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.di.UserProfileScope
-import com.tokopedia.people.domains.*
 import com.tokopedia.people.model.*
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.Dispatchers
-
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 @UserProfileScope
 class FollowerFollowingViewModel @Inject constructor(
-    private val useCaseFollowersList: FollowerFollowingListingUseCase,
-    private val useCaseFollowingList: FollowerFollowingListingUseCase,
-    private val useCaseDoFollow: ProfileFollowUseCase,
-    private val useCaseDoUnFollow: ProfileUnfollowedUseCase,
+    private val repo: UserProfileRepository,
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val profileFollowers = MutableLiveData<Resources<ProfileFollowerListBase>>()
@@ -28,62 +24,60 @@ class FollowerFollowingViewModel @Inject constructor(
     private val profileFollowingsList = MutableLiveData<Resources<ProfileFollowingListBase>>()
     val profileFollowingsListLiveData: LiveData<Resources<ProfileFollowingListBase>> get() = profileFollowingsList
 
-    private val profileDoFollow = MutableLiveData<Resources<ProfileDoFollowModelBase>>()
-    val profileDoFollowLiveData: LiveData<Resources<ProfileDoFollowModelBase>> get() = profileDoFollow
+    private val profileDoFollow = MutableLiveData<MutationUiModel>()
+    val profileDoFollowLiveData: LiveData<MutationUiModel> get() = profileDoFollow
 
-    private val profileDoUnFollow = MutableLiveData<Resources<ProfileDoUnFollowModelBase>>()
-    val profileDoUnFollowLiveData: LiveData<Resources<ProfileDoUnFollowModelBase>> get() = profileDoUnFollow
+    private val profileDoUnFollow = MutableLiveData<MutationUiModel>()
+    val profileDoUnFollowLiveData: LiveData<MutationUiModel> get() = profileDoUnFollow
 
     private val followersError = MutableLiveData<Throwable>()
     val followersErrorLiveData: LiveData<Throwable> get() = followersError
 
     fun getFollowers(
-        userName: String,
+        username: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ) {
         launchCatchError(block = {
-            val data = useCaseFollowersList.getProfileFollowerList(userName, cursor, limit)
-            if (data != null) {
-                profileFollowers.value = Success(data)
-            } else throw NullPointerException("data is null")
+            val result = repo.getFollowerList(username, cursor, limit)
+
+            profileFollowers.value = Success(result)
         }, onError = {
-            followersError.value = it
-        })
+                followersError.value = it
+            },)
     }
 
     fun getFollowings(
-        userName: String,
+        username: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ) {
         launchCatchError(block = {
-            val data = useCaseFollowingList.getProfileFollowingList(userName, cursor, limit)
-            if (data != null) {
-                profileFollowingsList.value = Success(data)
-            } else throw NullPointerException("data is null")
+            val result = repo.getFollowingList(username, cursor, limit)
+
+            profileFollowingsList.value = Success(result)
         }, onError = {
-            followersError.value = it
-        })
+                followersError.value = it
+            },)
     }
 
     fun doFollow(followingUserIdEnc: String) {
         launchCatchError(block = {
-            val data = useCaseDoFollow.doFollow(followingUserIdEnc)
-            if (data != null) {
-                profileDoFollow.value = Success(data)
-            } else throw NullPointerException("data is null")
-        }) {
+            val result = repo.followProfile(followingUserIdEnc)
+
+            profileDoFollow.value = result
+        },) {
+            profileDoFollow.value = MutationUiModel.Error("")
         }
     }
 
     fun doUnFollow(unFollowingUserIdEnc: String) {
         launchCatchError(block = {
-            val data = useCaseDoUnFollow.doUnfollow(unFollowingUserIdEnc)
-            if (data != null) {
-                profileDoUnFollow.value = Success(data)
-            } else throw NullPointerException("data is null")
-        }) {
+            val result = repo.unFollowProfile(unFollowingUserIdEnc)
+
+            profileDoUnFollow.value = result
+        },) {
+            profileDoUnFollow.value = MutationUiModel.Error("")
         }
     }
 }

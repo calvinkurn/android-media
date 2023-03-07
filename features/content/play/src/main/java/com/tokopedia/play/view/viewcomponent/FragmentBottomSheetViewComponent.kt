@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
+import com.tokopedia.play.view.type.ProductButtonUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -41,6 +42,31 @@ class FragmentBottomSheetViewComponent(
             fragmentManager.beginTransaction()
                     .remove(fragment)
                     .commit()
+        }
+    }
+
+    fun openVariantBottomSheet(button: ProductButtonUiModel) {
+        getOrCreateFragment()
+            .showVariantSheet(button)
+    }
+
+    private fun getFragment(): PlayBottomSheetFragment? {
+        return fragmentManager.findFragmentByTag(BOTTOM_SHEET_FRAGMENT_TAG) as? PlayBottomSheetFragment
+    }
+
+    private fun getOrCreateFragment(): PlayBottomSheetFragment {
+        val existingFragment = getFragment()
+        return if (existingFragment != null) existingFragment
+        else {
+            val fragmentFactory = fragmentManager.fragmentFactory
+            return fragmentFactory.instantiate(
+                container.context.classLoader,
+                BOTTOM_SHEET_FRAGMENT_TAG
+            ).apply {
+                arguments = Bundle().apply {
+                    putString(PLAY_KEY_CHANNEL_ID, channelId)
+                }
+            } as PlayBottomSheetFragment
         }
     }
 

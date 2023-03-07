@@ -37,7 +37,7 @@
             tools:orientation="vertical"
             tools:scrollbars="vertical"
             tools:itemCount="3"
-            tools:layout_height="@dimen/dp_200"
+            tools:layout_height="200dp"
             tools:listitem="@layout/add_to_cart_done_recommendation_carousel_image_item"
             app:useDefaultItemDecorator="false"
             app:layout_constraintTop_toBottomOf="@+id/title_recom"
@@ -75,10 +75,10 @@
             <ImageView
                 android:id="@+id/shop_badge"
                 android:layout_width="18dp"
-                android:layout_height="@dimen/dp_18"
+                android:layout_height="18dp"
                 android:layout_marginTop="4dp"
                 android:orientation="horizontal"
-                android:paddingTop="@dimen/dp_1"
+                android:paddingTop="1dp"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_rating"
@@ -88,7 +88,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shop_location"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_18"
+                android:layout_height="18dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="4dp"
@@ -123,7 +123,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/rating_count"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_18"
+                android:layout_height="18dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginLeft="4dp"
                 android:gravity="center_vertical"
@@ -139,7 +139,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/review_count"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_18"
+                android:layout_height="18dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginLeft="4dp"
                 android:gravity="center_vertical"

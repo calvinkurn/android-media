@@ -95,7 +95,7 @@ object PlayWidgetUiMock {
     )
 
      fun getPlayWidgetBackgroundUiModel() = PlayWidgetBackgroundUiModel(
-            overlayImageUrl = "https://ecs7.tokopedia.net/stessayalp/KV-Left-Widget-September.png",
+            overlayImageUrl = "https://images.tokopedia.net/stessayalp/KV-Left-Widget-September.png",
             overlayImageAppLink = "tokopedia://webview?titlebar=false&url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
             overlayImageWebLink = "www.tokopedia.com/play/channels",
             gradientColors = listOf("#B4DAD1"),

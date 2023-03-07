@@ -1,5 +1,6 @@
 package com.tokopedia.reviewcommon.extension
 
+import android.os.Bundle
 import com.tokopedia.reviewcommon.constant.AnalyticConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -27,7 +28,7 @@ fun MutableMap<String, Any>.appendGeneralEventData(
 }
 
 fun MutableMap<String, Any>.appendUserId(userId: String): MutableMap<String, Any> {
-    put(AnalyticConstant.KEY_ENHANCED_ECOMMERCE_USER_ID, userId)
+    put(AnalyticConstant.KEY_USER_ID, userId)
     return this
 }
 
@@ -48,6 +49,16 @@ fun MutableMap<String, Any>.appendBusinessUnit(businessUnit: String): MutableMap
 
 fun MutableMap<String, Any>.appendCurrentSite(currentSite: String): MutableMap<String, Any> {
     put(AnalyticConstant.KEY_CURRENT_SITE, currentSite)
+    return this
+}
+
+fun MutableMap<String, Any>.appendPageSource(source: String): MutableMap<String, Any> {
+    put(AnalyticConstant.KEY_PAGE_SOURCE, source)
+    return this
+}
+
+fun MutableMap<String, Any>.appendTrackerIdIfNotBlank(trackerId: String): MutableMap<String, Any> {
+    if (trackerId.isNotBlank()) put(AnalyticConstant.KEY_TRACKER_ID, trackerId)
     return this
 }
 
@@ -87,4 +98,51 @@ fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceItemName(name: Stri
 fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceCreativeSlot(position: Int): MutableMap<String, Any> {
     put(AnalyticConstant.KEY_CREATIVE_SLOT, position.toString())
     return this
+}
+
+fun Bundle.appendGeneralEventData(
+    eventName: String,
+    eventCategory: String,
+    eventAction: String,
+    eventLabel: String
+): Bundle {
+    putString(TrackAppUtils.EVENT, eventName)
+    putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
+    putString(TrackAppUtils.EVENT_ACTION, eventAction)
+    putString(TrackAppUtils.EVENT_LABEL, eventLabel)
+    return this
+}
+
+fun Bundle.appendBusinessUnit(businessUnit: String): Bundle {
+    putString(AnalyticConstant.KEY_BUSINESS_UNIT, businessUnit)
+    return this
+}
+
+fun Bundle.appendCurrentSite(currentSite: String): Bundle {
+    putString(AnalyticConstant.KEY_CURRENT_SITE, currentSite)
+    return this
+}
+
+fun Bundle.appendUserId(userId: String): Bundle {
+    putString(AnalyticConstant.KEY_USER_ID, userId)
+    return this
+}
+
+fun Bundle.appendProductID(productID: String): Bundle {
+    putString(AnalyticConstant.KEY_PRODUCT_ID, productID)
+    return this
+}
+
+fun Bundle.appendPageSource(source: String): Bundle {
+    putString(AnalyticConstant.KEY_PAGE_SOURCE, source)
+    return this
+}
+
+fun Bundle.appendTrackerIdIfNotBlank(trackerId: String): Bundle {
+    if (trackerId.isNotBlank()) putString(AnalyticConstant.KEY_TRACKER_ID, trackerId)
+    return this
+}
+
+fun Bundle.sendEnhancedEcommerce(eventName: String) {
+    TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, this)
 }

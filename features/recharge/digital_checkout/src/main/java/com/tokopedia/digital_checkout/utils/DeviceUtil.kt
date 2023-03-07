@@ -5,7 +5,9 @@ import android.os.Build
 import android.text.TextUtils
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.user.session.UserSession
 import java.net.Inet4Address
 import java.net.NetworkInterface
@@ -85,5 +87,13 @@ object DeviceUtil {
         requestBodyAppsFlyer.appsflyerId = afUniqueId ?: ""
         requestBodyAppsFlyer.deviceId = adsId ?: ""
         return requestBodyAppsFlyer
+    }
+
+    fun generateATokenRechargeCheckout(context: Context): String {
+        val timeMillis = System.currentTimeMillis().toString()
+        val token = AuthHelper.getMD5Hash(timeMillis)
+        val userSession = UserSession(context)
+        return String.format(context.getString(R.string.digital_cart_generate_token_checkout),
+            userSession.userId, if (token.isEmpty()) timeMillis else token)
     }
 }

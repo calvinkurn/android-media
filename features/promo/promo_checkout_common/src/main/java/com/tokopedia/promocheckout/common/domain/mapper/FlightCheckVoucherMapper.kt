@@ -13,8 +13,8 @@ open class FlightCheckVoucherMapper @Inject constructor() {
                 message = MessageUiModel(data.messageColor, MESSAGE_STATE_COLOR, data.message),
                 codes = listOf(data.voucherCode),
                 titleDescription = data.titleDescription,
-                discountAmount = data.discountAmountPlain.toInt(),
-                cashbackWalletAmount = data.cashbackAmountPlain.toInt(),
+                discountAmount = data.discountAmountPlain,
+                cashbackWalletAmount = data.cashbackAmountPlain,
                 isCoupon = data.isCoupon
         )
     }

@@ -667,7 +667,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         val url = UrlConstant.SELLER_HOSTNAME + UrlConstant.PRODUCT_COUPON
         tracker.sendReadArticleClickEvent(getString(R.string.read_article), url)
         val encodedUrl = URLEncoder.encode(url, "utf-8")
-        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        val route = String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(requireActivity(), route)
     }
 
@@ -675,7 +675,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         if (!isAdded) return
         val url = UrlConstant.HOSTNAME + UrlConstant.PRODUCT_COUPON_TERM_AND_CONDITION
         val encodedUrl = URLEncoder.encode(url, "utf-8")
-        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        val route = String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(requireActivity(), route)
     }
 

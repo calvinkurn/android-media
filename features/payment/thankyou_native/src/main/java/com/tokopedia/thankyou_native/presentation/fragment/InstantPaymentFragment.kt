@@ -10,8 +10,6 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
@@ -83,23 +81,10 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showCharacterAnimation()
         context?.let {
             checkCreditCardRegisteredForRBA(it)
         }
         observeViewModel()
-    }
-
-    private fun showCharacterAnimation() {
-        context?.let {
-            val lottieTask = LottieCompositionFactory.fromAsset(context, CHARACTER_LOADER_JSON_ZIP_FILE)
-            lottieTask?.addListener { result: LottieComposition? ->
-                result?.let {
-                    lottieAnimationView?.setComposition(result)
-                    lottieAnimationView?.playAnimation()
-                }
-            }
-        }
     }
 
     override fun onPause() {
@@ -124,6 +109,9 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
+
+        setUpIllustration()
+
         if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.title.isNullOrBlank()) {
             tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
         } else {

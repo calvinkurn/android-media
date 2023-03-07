@@ -83,6 +83,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                 title
                                 sub_title
                                 icon_unify
+                                icon_url
                                 is_enabled
                                 id
                                 coupon_groups {
@@ -101,10 +102,29 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                     is_recommended
                                     is_selected
                                     is_attempted
+                                    is_bebas_ongkir
                                     clashing_infos {
                                         code
                                         message
                                         icon
+                                    }
+                                    bo_clashing_infos {
+                                        code
+                                        message
+                                        icon
+                                    }
+                                    additional_bo_datas {
+                                        code
+                                        unique_id
+                                        shipping_id
+                                        sp_id
+                                        benefit_amount
+                                        promo_id
+                                        shipping_subsidy
+                                        shipping_price
+                                        benefit_class
+                                        bo_campaign_id
+                                        eta_txt
                                     }
                                     currency_details_str
                                     coachmark {
@@ -137,6 +157,13 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                         section_tabs {
                             id
                             title
+                        }
+                        bottom_sheet {
+                            title
+                            content_title
+                            content_description
+                            image_url
+                            button_txt
                         }
                     }
                 }

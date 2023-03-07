@@ -29,7 +29,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 2019-10-20.
  * ade.hadian@tokopedia.com
  *
- * For navigate: use [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.COTP]
+ * For navigate: use [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.COTP]
  * please pass :
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_EMAIL]
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_MSISDN]

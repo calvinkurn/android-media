@@ -59,7 +59,7 @@ class ShopOpenRevampQuisionerFragment :
 
     @Inject
     lateinit var viewModel: ShopOpenRevampViewModel
-    private lateinit var btnNext: UnifyButton
+    private var btnNext: UnifyButton? = null
     private val questionsAndAnswersId = mutableMapOf<Int, MutableList<Int>>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private var recyclerView: RecyclerView? = null
@@ -114,7 +114,7 @@ class ShopOpenRevampQuisionerFragment :
         observeSendSurveyResult()
         observeSaveShipmentLocationData()
 
-        btnNext.setOnClickListener {
+        btnNext?.setOnClickListener {
             shopOpenRevampTracking?.clickButtonNextFromSurveyPage()
             val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
             EspressoIdlingResource.increment()
@@ -123,7 +123,7 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     override fun onCheckedCheckbox(questionId: Int, choiceId: Int) {
-        btnNext.isEnabled = true
+        btnNext?.isEnabled = true
         if (!questionsAndAnswersId.containsKey(questionId)) {
             questionsAndAnswersId[questionId] = mutableListOf()
             questionsAndAnswersId[questionId]?.add(choiceId)
@@ -137,11 +137,11 @@ class ShopOpenRevampQuisionerFragment :
             if (it.containsKey(questionId)) {
                 it[questionId]?.remove(choiceId)
                 if (it.get(questionId)?.isEmpty() == true) {
-                    btnNext.isEnabled = false
+                    btnNext?.isEnabled = false
                 }
             }
             if (it.isEmpty()) {
-                btnNext.isEnabled = false
+                btnNext?.isEnabled = false
             }
         }
     }
@@ -185,7 +185,7 @@ class ShopOpenRevampQuisionerFragment :
         adapter = ShopOpenRevampQuisionerAdapter(this)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapter
-        btnNext.isEnabled = false
+        btnNext?.isEnabled = false
     }
 
     private fun setupToolbarActions(view: View?) {
@@ -343,14 +343,14 @@ class ShopOpenRevampQuisionerFragment :
     private fun showLoader() {
         header?.visibility =  View.INVISIBLE
         recyclerView?.visibility = View.INVISIBLE
-        btnNext.visibility = View.INVISIBLE
+        btnNext?.visibility = View.INVISIBLE
         loading.visibility = View.VISIBLE
     }
 
     private fun hideLoader() {
         header?.visibility =  View.VISIBLE
         recyclerView?.visibility = View.VISIBLE
-        btnNext.visibility = View.VISIBLE
+        btnNext?.visibility = View.VISIBLE
         loading.visibility = View.INVISIBLE
     }
 

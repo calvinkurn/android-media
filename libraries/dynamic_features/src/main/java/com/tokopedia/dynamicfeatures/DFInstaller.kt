@@ -153,6 +153,7 @@ object DFInstaller {
         val view = viewRef?.get()
         var tag: String
         if (view != null && view.getModuleNameView() == moduleName) {
+            DFRemoteConfig.runSplitCompat(context)
             view.onInstalled()
             tag = DOWNLOAD_MODE_PAGE
             deeplink = view.getDeeplink()

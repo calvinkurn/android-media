@@ -4,8 +4,10 @@ import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
@@ -19,6 +21,7 @@ import javax.inject.Provider
 
 class MenuSettingViewModel @Inject constructor(
     private val authorizeAccessUseCase: Provider<AuthorizeAccessUseCase>,
+    private val shopLocWhitelist: Provider<ShopMultilocWhitelistUseCase>,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -26,6 +29,12 @@ class MenuSettingViewModel @Inject constructor(
     private val mShopSettingAccessLiveData = MutableLiveData<Result<MenuSettingAccess>>()
     val shopSettingAccessLiveData: LiveData<Result<MenuSettingAccess>>
         get() = mShopSettingAccessLiveData
+
+
+    val shopLocEligible: LiveData<Result<Boolean>>
+        get() = _shopLocEligible
+
+    private val _shopLocEligible = MutableLiveData<Result<Boolean>>()
 
     private val adminAccessList by lazy {
         listOf(
@@ -79,6 +88,17 @@ class MenuSettingViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getShopLocEligible(shopId: Long) {
+        launchCatchError(block = {
+            val shopLocWhitelist = shopLocWhitelist.get().invoke(shopId).shopLocWhitelist
+            val eligibilityState = shopLocWhitelist.data.eligibilityState
+            val isMultilocation = eligibilityState==1
+            _shopLocEligible.postValue(Success(isMultilocation))
+        }, onError = {
+            _shopLocEligible.postValue(Fail(it))
+        })
     }
 
     private suspend fun getSettingAccess(

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.DataAddAddress
@@ -44,6 +45,11 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     val pinpointValidation: LiveData<Result<PinpointValidationResponse.PinpointValidations.PinpointValidationResponseData>>
         get() = _pinpointValidation
 
+    var source: String = ""
+    var isGmsAvailable: Boolean = true
+    val isTokonow: Boolean
+        get() = source == ManageAddressSource.TOKONOW.source
+
     fun getDistrictDetail(districtId: String) {
         viewModelScope.launch {
             try {
@@ -58,7 +64,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun getAddressDetail(addressId: String) {
         viewModelScope.launch {
             try {
-                val addressDetail = repo.getAddressDetail(addressId)
+                val addressDetail = repo.getAddressDetail(addressId, getSourceValue())
                 _addressDetail.value = Success(addressDetail)
             } catch (e: Throwable) {
                 _addressDetail.value = Fail(e)
@@ -80,7 +86,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun saveAddress(model: SaveAddressDataModel) {
         viewModelScope.launch {
             try {
-                val saveAddressData = repo.saveAddress(model)
+                val saveAddressData = repo.saveAddress(model, getSourceValue())
                 _saveAddress.value = Success(saveAddressData.keroAddAddress.data)
             } catch (e: Throwable) {
                 _saveAddress.value = Fail(e)
@@ -91,11 +97,19 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun saveEditAddress(model: SaveAddressDataModel) {
         viewModelScope.launch {
             try {
-                val editAddressData = repo.editAddress(model)
+                val editAddressData = repo.editAddress(model, getSourceValue())
                 _editAddress.value = Success(editAddressData.keroEditAddress.data)
             } catch (e: Throwable) {
                 _editAddress.value = Fail(e)
             }
+        }
+    }
+
+    private fun getSourceValue(): String {
+        return if (isTokonow) {
+            ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source
+        } else {
+            source
         }
     }
 

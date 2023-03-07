@@ -87,8 +87,8 @@ class BottomNavComponent(
     }
 
     companion object {
-        private const val PAGE_CAMERA_INDEX = 0
-        private const val PAGE_GALLERY_INDEX = 1
+        const val PAGE_CAMERA_INDEX = 0
+        const val PAGE_GALLERY_INDEX = 1
     }
 
 }

@@ -14,8 +14,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun gqlDao(): GqlDao
     abstract fun restDao(): RestDao
 
+
     companion object {
-        const val DB_VERSION = 1
+        const val DB_VERSION = 2
         const val DATABASE_NAME = "responseDb.db"
 
         @Volatile
@@ -31,7 +32,8 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DATABASE_NAME
-                ).build()
+                ).fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 return instance
             }

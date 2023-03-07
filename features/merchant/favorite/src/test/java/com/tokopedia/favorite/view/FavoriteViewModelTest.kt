@@ -20,6 +20,7 @@ import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -59,6 +60,9 @@ class FavoriteViewModelTest {
     @RelaxedMockK
     lateinit var getTopAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine
 
+    @RelaxedMockK
+    lateinit var topAdsAddressHelper: TopAdsAddressHelper
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -71,7 +75,8 @@ class FavoriteViewModelTest {
                 getFavoriteShopUseCaseWithCoroutine,
                 getTopAdsShopUseCase,
                 userSession,
-                pagingHandler
+                pagingHandler,
+                topAdsAddressHelper
 
         )
     }

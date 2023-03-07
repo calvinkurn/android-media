@@ -10,12 +10,16 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.play.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * @author by astidhiyaa on 18/04/22
  */
 class InteractiveGameResultViewComponent (container: ViewGroup,
                                           listener: Listener,
+                                          private val scope: CoroutineScope,
 ) : ViewComponent(container, R.id.view_game_interactive_result) {
 
     private val vAnchorBottom = findViewById<View>(com.tokopedia.play_common.R.id.v_anchor_bottom)
@@ -32,16 +36,19 @@ class InteractiveGameResultViewComponent (container: ViewGroup,
     fun showCoachMark(title: String, subtitle: String) {
         coachMark.isDismissed = false
         vAnchorBottom.visible()
-
-        coachMark.showCoachMark(
-            arrayListOf(
-                CoachMark2Item(
-                    vAnchorBottom,
-                    title,
-                    subtitle
+        scope.launch {
+            coachMark.showCoachMark(
+                arrayListOf(
+                    CoachMark2Item(
+                        vAnchorBottom,
+                        title,
+                        subtitle
+                    )
                 )
             )
-        )
+            delay(GIVEAWAY_LOSER_COACHMARK_DELAY)
+            hideCoachMark()
+        }
     }
 
     fun hideCoachMark() {
@@ -57,5 +64,9 @@ class InteractiveGameResultViewComponent (container: ViewGroup,
 
     interface Listener {
         fun onGameResultClicked(view: InteractiveGameResultViewComponent)
+    }
+
+    companion object {
+        private const val GIVEAWAY_LOSER_COACHMARK_DELAY = 5000L
     }
 }

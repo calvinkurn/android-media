@@ -7,5 +7,17 @@ import com.google.gson.annotations.SerializedName
  */
 data class LikeKolPostData(
         @SerializedName("do_like_kol_post")
-        val doLikeKolPost: DoLikeKolPost
-)
+        val doLikeKolPost: DoLikeKolPost,
+) {
+        data class DoLikeKolPost(
+                @SerializedName("error")
+                val error: String = "",
+                @SerializedName("data")
+                val data: LikeKolPostSuccessData = LikeKolPostSuccessData(),
+        )
+
+        data class LikeKolPostSuccessData(
+                @SerializedName("success")
+                val success: Int = 0
+        )
+}

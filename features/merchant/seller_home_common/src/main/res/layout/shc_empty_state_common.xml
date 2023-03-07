@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <LinearLayout
+        android:id="@+id/shcViewEmptyStateCommon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/imgShcEmptyCommon"
+            android:layout_width="180dp"
+            android:layout_height="135dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/shc_content_desc_image_table_empty"
+            tools:src="@drawable/unify_globalerrors_connection"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcEmptyTitleCommon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/Unify_NN950"
+            android:textSize="14sp"
+            app:typographyWeight="bold"
+            tools:text="@string/shc_empty_state_title"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcEmptyDescriptionCommon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="24dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="@string/shc_empty_state_description_post_list"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnShcEmptyCommon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:unifyButtonSize="small"
+            tools:text="@string/shc_empty_state_button_post_list"
+            tools:visibility="visible" />
+    </LinearLayout>
+</merge>

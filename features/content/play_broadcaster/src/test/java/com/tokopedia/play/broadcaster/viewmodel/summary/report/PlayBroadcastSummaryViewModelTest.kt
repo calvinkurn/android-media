@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.viewmodel.summary.report
 
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveSummaryLivestreamResponse
@@ -8,9 +10,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveS
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastSummaryViewModelRobot
-import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.play.broadcaster.ui.model.SummaryLeaderboardInfo
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.util.*
@@ -33,13 +33,13 @@ class PlayBroadcastSummaryViewModelTest {
 
     private val testDispatcher = rule.dispatchers
 
-    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
+    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser())
 
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true)
     private val mockGetSellerLeaderboardUseCase: GetSellerLeaderboardUseCase = mockk(relaxed = true)
-    private val mockGetInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase =
-        mockk(relaxed = true)
+    private val mockGetInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase = mockk(relaxed = true)
+    private val hydraConfigStore: HydraConfigStore = mockk(relaxed = true)
 
     private val modelBuilder = UiModelBuilder()
     private val mockException = modelBuilder.buildException()
@@ -64,12 +64,14 @@ class PlayBroadcastSummaryViewModelTest {
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStats
         coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns mockSlotResponse
         coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns mockParticipant
+        coEvery { hydraConfigStore.getAuthorType() } returns TYPE_SHOP
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,
             getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
             getChannelUseCase = mockGetChannelUseCase,
             getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
-            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
+            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase,
+            hydraConfigStore = hydraConfigStore,
         )
 
         robot.use {
@@ -78,7 +80,7 @@ class PlayBroadcastSummaryViewModelTest {
             with(state) {
                 liveReport.trafficMetricsResult.assertEqualTo(
                     NetworkResult.Success(
-                        playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics)
+                        playBroadcastMapper.mapToLiveTrafficUiMetrics(TYPE_SHOP, mockLiveStats.channel.metrics)
                     )
                 )
                 channelSummary.date.assertEqualTo(mockPublishedAtFormatted)
@@ -98,7 +100,7 @@ class PlayBroadcastSummaryViewModelTest {
                 count = mockTotalInteractiveParticipant,
             )
         ).apply {
-            addAll(playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics))
+            addAll(playBroadcastMapper.mapToLiveTrafficUiMetrics(TYPE_SHOP, mockLiveStats.channel.metrics))
         }
 
         val mockSlotResponse = mockSlotResponse.copy(
@@ -109,12 +111,14 @@ class PlayBroadcastSummaryViewModelTest {
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStats
         coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns mockSlotResponse
         coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns mockParticipant
+        coEvery { hydraConfigStore.getAuthorType() } returns TYPE_SHOP
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,
             getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
             getChannelUseCase = mockGetChannelUseCase,
             getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
-            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
+            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase,
+                hydraConfigStore = hydraConfigStore,
         )
 
         robot.use {

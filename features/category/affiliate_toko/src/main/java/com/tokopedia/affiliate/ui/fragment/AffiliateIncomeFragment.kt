@@ -9,55 +9,56 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.affiliate.adapter.AffiliateAdapter
-import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
-import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
-import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
-import com.tokopedia.affiliate.model.response.AffiliateBalance
-import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
-import com.tokopedia.affiliate.viewmodel.AffiliateIncomeViewModel
-import com.tokopedia.affiliate_toko.R
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.Typography
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
-import com.tokopedia.affiliate.AFFILIATE_WITHDRAWAL
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.affiliate.APP_LINK_KYC
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.KYC_DONE
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.PRODUCT_TYPE
 import com.tokopedia.affiliate.TRANSACTION_TYPE_DEPOSIT
 import com.tokopedia.affiliate.TRANSACTION_TYPE_WITHDRAWAL
 import com.tokopedia.affiliate.WITHDRAWAL_APPLINK_PROD
 import com.tokopedia.affiliate.WITHDRAWAL_APPLINK_STAGING
+import com.tokopedia.affiliate.adapter.AffiliateAdapter
+import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
+import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
+import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
+import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
+import com.tokopedia.affiliate.model.response.AffiliateBalance
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.setAnnouncementData
+import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
+import com.tokopedia.affiliate.viewmodel.AffiliateIncomeViewModel
+import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
@@ -73,8 +74,12 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
     private var listSize = 0
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null
+    private var isReviewed = false
+    private var walletOnHold = true
 
     companion object {
+        private const val TICKER_BOTTOM_SHEET = "bottomSheet"
+        private const val WALLET_STATUS_HOLD = "WALLET_STATUS_HOLD"
         fun getFragmentInstance(userNameParam : String, profilePictureParam : String, affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
             return AffiliateIncomeFragment().apply {
                 userName = userNameParam
@@ -119,14 +124,14 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
     private var lastItem : Visitable<AffiliateAdapterTypeFactory>? = null
 
     private fun setObservers() {
-        affiliateIncomeViewModel.getAffiliateBalanceData().observe(this, { balanceData ->
+        affiliateIncomeViewModel.getAffiliateBalanceData().observe(this) { balanceData ->
             onGetAffiliateBalance(balanceData)
-        })
+        }
 
-        affiliateIncomeViewModel.getAffiliateDataItems().observe(this, { dataList ->
+        affiliateIncomeViewModel.getAffiliateDataItems().observe(this) { dataList ->
             onGetAffiliateDataItems(dataList)
-        })
-        affiliateIncomeViewModel.getShimmerVisibility().observe(this, { visibility ->
+        }
+        affiliateIncomeViewModel.getShimmerVisibility().observe(this) { visibility ->
             if (visibility != null) {
                 if (visibility)
                     adapter.addShimmer()
@@ -135,44 +140,72 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
                     adapter.removeShimmer(listSize)
                 }
             }
-        })
-        affiliateIncomeViewModel.getErrorMessage().observe(this, { error ->
+        }
+        affiliateIncomeViewModel.getErrorMessage().observe(this) { error ->
             onGetError(error)
-        })
-        affiliateIncomeViewModel.getRangeChange().observe(this,{changed ->
-            if(changed) {
+        }
+        affiliateIncomeViewModel.getRangeChange().observe(this) { changed ->
+            if (changed) {
                 resetItems()
-                view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
+                view?.findViewById<Typography>(R.id.date_range_text)?.text =
+                    affiliateIncomeViewModel.getSelectedDate()
             }
-        })
-        affiliateIncomeViewModel.getAffiliateKycData().observe(this,{
+        }
+        affiliateIncomeViewModel.getAffiliateKycData().observe(this) {
             onGetAffiliateKycData(it)
-        })
+        }
 
-        affiliateIncomeViewModel.getAffiliateKycLoader().observe(this,{ show ->
-            if(show){
+        affiliateIncomeViewModel.getAffiliateKycLoader().observe(this) { show ->
+            if (show) {
                 view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.invisible()
                 view?.findViewById<LoaderUnify>(R.id.tarik_saldo_loader)?.show()
-            }
-            else{
+            } else {
                 view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.show()
                 view?.findViewById<LoaderUnify>(R.id.tarik_saldo_loader)?.hide()
             }
-        })
+        }
 
-        affiliateIncomeViewModel.getKycErrorMessage().observe(this,{
+        affiliateIncomeViewModel.getKycErrorMessage().observe(this) {
             view?.let {
-            Toaster.build(it, getString(R.string.affiliate_retry_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                Toaster.build(
+                    it,
+                    getString(R.string.affiliate_retry_message),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).show()
             }
-        })
-        affiliateIncomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
+        }
+        affiliateIncomeViewModel.getValidateUserdata().observe(this) { validateUserdata ->
             onGetValidateUserData(validateUserdata)
-        })
-        affiliateIncomeViewModel.getAffiliateAnnouncement().observe(this,{ announcementData ->
-            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
-                announcementData,
-                activity)
-        })
+        }
+        affiliateIncomeViewModel.getAffiliateAnnouncement().observe(this) { announcementData ->
+            if (announcementData.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+                sendTickerImpression(
+                    announcementData.getAffiliateAnnouncementV2?.data?.type,
+                    announcementData.getAffiliateAnnouncementV2?.data?.id
+                )
+                view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
+                    announcementData,
+                    activity,
+                    source = PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
+                )
+            }
+        }
+    }
+
+    private fun sendTickerImpression(tickerType: String?, tickerId: Long?) {
+        if (tickerId.isMoreThanZero()) {
+            AffiliateAnalytics.sendTickerEvent(
+                AffiliateAnalytics.EventKeys.VIEW_ITEM,
+                AffiliateAnalytics.ActionKeys.IMPRESSION_TICKER_COMMUNICATION,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                "$tickerType - $tickerId",
+                PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY,
+                tickerId!!,
+                AffiliateAnalytics.ItemKeys.AFFILIATE_PENDAPATAN_TICKER_COMMUNICATION,
+               UserSession(context).userId
+            )
+        }
     }
 
     private fun onGetError(error: Throwable?) {
@@ -300,17 +333,19 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
                 it.show()
             }
             view?.findViewById<LoaderUnify>(R.id.affiliate_saldo_progress_bar)?.gone()
+            walletOnHold = this.walletStatus == WALLET_STATUS_HOLD
+            initTarikSaldo()
         }
     }
 
     private fun afterViewCreated() {
-        initUi()
+        setTarikSaldoButtonUI()
         view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
         view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.let {
             it.setOnRefreshListener {
                 resetItems()
             }
-            view?.findViewById<AppBarLayout>(R.id.appbar)?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {appBarLayout, verticalOffset ->
+            view?.findViewById<AppBarLayout>(R.id.appbar)?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                 it.isEnabled = verticalOffset == 0
             })
         }
@@ -318,7 +353,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
            sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_TARIK_SALDO,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,"")
            openWithdrawalScreen()
         }
-        ImageHandler.loadImageCircle2(context, view?.findViewById<ImageUnify>(R.id.withdrawal_user_image), profilePicture)
+        view?.findViewById<ImageUnify>(R.id.withdrawal_user_image)?.loadImageCircle(profilePicture)
         view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
         view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
             AffiliateBottomDatePicker.newInstance(AffiliateBottomDatePicker.TODAY,this).show(childFragmentManager, "")
@@ -347,24 +382,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
         affiliateIncomeViewModel.getAffiliateValidateUser(UserSession(context).email)
     }
 
-    private var enableTarikSaldo = false
-    private fun initUi() {
-        setTarikSaldoButtonUI()
-        when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            AFFILIATE_WITHDRAWAL,
-            ""
-        )) {
-            AFFILIATE_WITHDRAWAL -> enableTarikSaldo = true
-            else ->{
-                enableTarikSaldo = false
-                initTicker()
-            }
-        }
-    }
 
-    private fun initTicker() {
-        view?.findViewById<Ticker>(R.id.affiliate_income_ticker)?.show()
-    }
 
     private fun setTarikSaldoButtonUI() {
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.apply {
@@ -446,18 +464,35 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
     }
 
     override fun onReviewed() {
-        initTarikSaldo(false)
+        isReviewed = false
+        initTarikSaldo()
         affiliateIncomeViewModel.getAnnouncementInformation()
         affiliateIncomeViewModel.getAffiliateBalance()
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
     }
 
-    private fun initTarikSaldo(isReviewed: Boolean) {
-        view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.isEnabled = isReviewed  && enableTarikSaldo
+    private fun initTarikSaldo() {
+        view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.isEnabled =
+            isReviewed && !affiliateIncomeViewModel.getIsBlackListed() && !walletOnHold
     }
 
-    override fun onUserRegistered() {
-        initTarikSaldo(true)
+    override fun onUserNotRegistered() {
+        activity?.let {
+            AffiliateRegistrationActivity.newInstance(it)
+            it.finish()
+        }
+    }
+
+    override fun onNotEligible() {
+        activity?.let {
+            AffiliateRegistrationActivity.newInstance(it)
+            it.finish()
+        }
+    }
+
+    override fun onUserValidated() {
+        isReviewed = true
+        initTarikSaldo()
         affiliateIncomeViewModel.getAnnouncementInformation()
         affiliateIncomeViewModel.getAffiliateBalance()
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)

@@ -54,8 +54,11 @@ data class TemplateDataModel(
 
 @Parcelize
 data class SectionsDataModel(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("sectionID")
     var sectionId: Int = 0,
+    @SerializedName("maxAnswer")
+    var maxAnswer: Int = 0,
     @SerializedName("layout")
     var layout: String = "",
     @SerializedName("property")

@@ -7,8 +7,8 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.pdpCheckout.testing.atc_common.interceptor.AtcInterceptor
@@ -17,7 +17,11 @@ import com.tokopedia.pdpCheckout.testing.oneclickcheckout.interceptor.OccCheckou
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.interceptor.OccLogisticTestInterceptor
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.interceptor.OccPromoTestInterceptor
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.robot.orderSummaryPage
-import com.tokopedia.pdpCheckout.testing.product.detail.*
+import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailIntentRule
+import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailInterceptor
+import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailRobot
+import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P1_PATH
+import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P2_DATA_PATH
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert.assertThat

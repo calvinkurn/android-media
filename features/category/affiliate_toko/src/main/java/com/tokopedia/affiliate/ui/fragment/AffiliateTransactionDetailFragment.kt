@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.NEW_DATE_FORMAT
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TRAFFIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -21,6 +23,7 @@ import com.tokopedia.affiliate.interfaces.AffiliateInfoClickInterfaces
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet.Companion.TYPE_WITHDRAWAL
+import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.affiliate.viewmodel.AffiliateTransactionDetailViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -33,6 +36,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -41,6 +45,8 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private lateinit var affiliateVM: AffiliateTransactionDetailViewModel
 
@@ -69,27 +75,27 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
     }
 
     private fun initObserver() {
-        affiliateVM.getErrorMessage().observe(viewLifecycleOwner , {
+        affiliateVM.getErrorMessage().observe(viewLifecycleOwner) {
             hideView()
             showError(it)
-        })
-        affiliateVM.getCommissionData().observe(viewLifecycleOwner,{
+        }
+        affiliateVM.getCommissionData().observe(viewLifecycleOwner) {
             setData(it)
-        })
-        affiliateVM.getDetailList().observe(viewLifecycleOwner,{
-            if(it?.isNotEmpty() == true) {
+        }
+        affiliateVM.getDetailList().observe(viewLifecycleOwner) {
+            if (it?.isNotEmpty() == true) {
                 listCount += it.size
                 adapter.addMoreData(it)
                 loadMoreTriggerListener?.updateStateAfterGetData()
             }
-        })
-        affiliateVM.getShimmerVisibility().observe(viewLifecycleOwner,{shimmer ->
+        }
+        affiliateVM.getShimmerVisibility().observe(viewLifecycleOwner) { shimmer ->
             shimmer?.let {
-                if(it)adapter.addShimmer(false)
+                if (it) adapter.addShimmer(false)
                 else adapter.removeShimmer(listCount)
             }
-        })
-        affiliateVM.progressBar().observe(viewLifecycleOwner, { visibility ->
+        }
+        affiliateVM.progressBar().observe(viewLifecycleOwner) { visibility ->
             if (visibility != null) {
                 if (visibility) {
                     view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.show()
@@ -98,12 +104,12 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
                     view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
                 }
             }
-        })
-        affiliateVM.getDetailTitle().observe(viewLifecycleOwner,{ title ->
+        }
+        affiliateVM.getDetailTitle().observe(viewLifecycleOwner) { title ->
             title?.let {
                 view?.findViewById<NavToolbar>(R.id.transaction_navToolbar)?.setToolbarTitle(it)
             }
-        })
+        }
     }
 
     private fun showError(it: Throwable?) {
@@ -141,11 +147,31 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
     private fun setData(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?) {
         if(commissionData?.data?.commissionType != TRAFFIC_TYPE) {
             showView()
+            sendOrderOpenScreenEvent(commissionData?.data?.pageType)
             setProductTransactionData(commissionData)
         }
         else{
+            sendTrafficOpenScreenEvent(commissionData.data?.pageType)
             setTrafficTransactionView()
         }
+    }
+
+    private fun sendOrderOpenScreenEvent(pageType: String?) {
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            if (pageType.equals(PAGE_PDP, true)) AffiliateAnalytics.ScreenKeys.AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_ORDER_PRODUCT else AffiliateAnalytics.ScreenKeys.AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_ORDER_SHOP,
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
+    }
+
+    private fun sendTrafficOpenScreenEvent(pageType: String?) {
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            if (pageType.equals(PAGE_PDP, true)) AffiliateAnalytics.ScreenKeys.AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_TRAFFIC_PRODUCT else AffiliateAnalytics.ScreenKeys.AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_TRAFFIC_SHOP,
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
     }
 
     private fun setTrafficTransactionView() {
@@ -166,7 +192,15 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
         view?.findViewById<Typography>(R.id.shop_name)?.text =
             commissionData?.data?.cardDetail?.shopName
         view?.findViewById<Typography>(R.id.transaction_date)?.text =
-            commissionData?.data?.createdAtFormatted
+            commissionData?.data?.createdAt?.let {
+                DateUtils().formatDate(newFormat = NEW_DATE_FORMAT, dateString = it)
+            }
+        view?.findViewById<Typography>(R.id.promotion_link)?.text =
+           when(commissionData?.data?.pageType?.uppercase()){
+               PAGE_PDP -> "Produk"
+               PAGE_SHOP -> "Toko"
+               else -> "None"
+           }
     }
 
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(affiliateInfoClickInterfaces = this))
@@ -210,6 +244,8 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
 
     companion object {
         private const val PARAM_TRANSACTION = "PARAM_TRANSACTION"
+        private const val PAGE_PDP = "PDP"
+        private const val PAGE_SHOP = "SHOP"
         fun newInstance(transactionId: String?): Fragment{
             return AffiliateTransactionDetailFragment().apply {
                 arguments = Bundle().apply {

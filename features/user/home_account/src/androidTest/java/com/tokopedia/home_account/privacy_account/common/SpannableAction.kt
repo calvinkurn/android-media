@@ -7,8 +7,8 @@ import android.widget.TextView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.instanceOf
 
 fun clickOnSpannable(textToClick: CharSequence): ViewAction {
     return object : ViewAction {

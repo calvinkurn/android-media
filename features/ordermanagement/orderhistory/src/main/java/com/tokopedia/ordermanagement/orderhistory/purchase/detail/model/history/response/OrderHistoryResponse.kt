@@ -5,11 +5,13 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.model.OrderDetailResponseError
 
 data class OrderHistoryResponse(
-        @SerializedName("data")
-        @Expose
-        val data: Data = Data(),
+    @SerializedName("get_buyer_history")
+    val getBuyerHistory: GetBuyerHistory = GetBuyerHistory()
+)
 
-        @SerializedName("errors")
-        @Expose
-        val errorList: List<OrderDetailResponseError> = emptyList()
+data class GetBuyerHistory(
+    @SerializedName("data")
+    val buyerHistoryData: BuyerHistoryData = BuyerHistoryData(),
+    @SerializedName("errors")
+    val errorList: List<OrderDetailResponseError> = emptyList()
 )

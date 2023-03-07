@@ -11,6 +11,8 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
@@ -48,6 +50,12 @@ import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import org.jetbrains.annotations.NotNull
 import kotlin.math.abs
 
@@ -77,6 +85,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
         initInputField()
         initSortFilterChip()
         initPrimaryButton()
+        initTickerView()
     }
 
     private fun initInputField() {
@@ -228,7 +237,28 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
             sortFilter.add(sortFilterItem)
         }
 
+        // create extra chip for navigation
+        val sortFilterItem = SortFilterItem(
+            "",
+            type = ChipsUnify.TYPE_ALTERNATE
+        )
+        sortFilterItem.listener = {
+            mFilterChipListener?.onClickIcon(true)
+        }
+        sortFilter.add(sortFilterItem)
+
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.addItem(sortFilter)
+
+        // init navigation chip's icon & color
+        val chevronRight = IconUnify(
+            context, IconUnify.VIEW_LIST,
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+        chevronRight.layoutParams = ViewGroup.LayoutParams(
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+        )
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.chipItems?.
+            last()?.refChipUnify?.addCustomView(chevronRight)
     }
 
     private fun onClickClearIcon(){
@@ -269,6 +299,34 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
             RechargeCCUtil.getDigitArray(inputNumber.toEditable(), TOTAL_DIGITS), DIVIDER)
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.editText
             .setText(formattedInputNumber)
+    }
+
+    private fun initTickerView() {
+        val messages = arrayListOf(
+            TickerData(
+                title = context.getString(R.string.cc_ticker_title),
+                description = context.getString(R.string.cc_ticker_desc),
+                type = Ticker.TYPE_ANNOUNCEMENT
+            ),
+            TickerData(
+                title = "",
+                description = context.getString(R.string.cc_ticker_2_desc),
+                type = Ticker.TYPE_ANNOUNCEMENT
+            ),
+        )
+
+        val tickerAdapter = TickerPagerAdapter(context, messages).apply {
+            setPagerDescriptionClickEvent(object: TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                    mCreditCardActionListener?.onNavigateTokoCardWebView()
+                }
+            })
+        }
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetTicker.run {
+            autoSlideDelay = TICKER_AUTO_SLIDE_DELAY
+            addPagerView(tickerAdapter, messages)
+        }
     }
 
     fun getInputNumber(): String {
@@ -390,5 +448,10 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
     interface CreditCardActionListener {
         fun onClickNextButton(clientNumber: String)
         fun onManualInput()
+        fun onNavigateTokoCardWebView()
+    }
+
+    companion object {
+        private val TICKER_AUTO_SLIDE_DELAY = 5000
     }
 }

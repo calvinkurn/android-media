@@ -1,15 +1,16 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.general
 
+import android.content.Intent
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matcher
-import android.content.Intent
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import androidx.test.espresso.matcher.ViewMatchers.withId
 
 object GeneralResult {
 
@@ -20,7 +21,8 @@ object GeneralResult {
     ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, viewId
+                position,
+                viewId
             )
         ).check(matches(matcher))
     }
@@ -31,6 +33,10 @@ object GeneralResult {
 
     fun openPageWithIntent(intent: Intent) {
         intended(hasData(intent.data))
+    }
+
+    fun openPageWithExtra(key: String, value: String) {
+        intended(hasExtra(key, value))
     }
 
     fun assertChatRecyclerview(matcher: Matcher<in View>) {

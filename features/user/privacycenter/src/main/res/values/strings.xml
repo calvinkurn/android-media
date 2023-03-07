@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Main page-->
+    <string name="title_privacy_center">Privasi Akun</string>
+    <string name="privacy_center_toolbar_title">Hai, %s</string>
+    <string name="privacy_center_toolbar_desc">Penggunaan datamu bisa diatur di sini</string>
+    <string name="privacy_center_error_network_title">Koneksi internetmu terganggu</string>
+    <string name="privacy_center_error_network_detail">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu.</string>
+
+    <!--Section | account linking-->
+    <string name="account_linking_partner_gojek">Gojek</string>
+    <string name="account_linking_title">Akun tersambung</string>
+    <string name="account_linking_subtitle">Atur aplikasi yang tersambung ke Tokopedia</string>
+    <string name="account_linking_text_detail_unlinked">Sambungin Akun</string>
+    <string name="account_linking_label_account_linked">+%1$s - Tersambung %2$s</string>
+    <string name="account_linking_label_account_unlinked">Belum tersambung</string>
+    <string name="account_linking_subtitle_failed">Klik ikon di samping buat coba lagi.</string>
+    <string name="account_linking_skip_for_now">Lewatin Dulu</string>
+
+    <!--Account Linking Webview-->
+    <string name="account_linking_label_link_account_menu_skip">Lewati</string>
+    <string name="account_linking_label_toolbar_verifikasi_akun">Verifikasi Akun</string>
+    <string name="account_linking_label_toolbar_aktifasi_gopay">\u0020\u0020\u0020Aktifin GoPay</string>
+    <string name="account_linking_title_skip_gopay_dialog">Aktifin GoPay lain kali?</string>
+    <string name="account_linking_desc_skip_gopay_dialog">Tenang aja, akun Tokopedia &amp; Gojek kamu tetap kesambung. Kamu bisa aktifin GoPay belakangan.</string>
+    <string name="account_linking_label_primary_btn_gopay_dialog">Iya, Nanti Aja</string>
+    <string name="account_linking_label_secondary_btn_gopay_dialog">Kembali</string>
+
+    <!--Section | Consent Withdrawal -->
+    <string name="consent_withdrawal_section_title">Persetujuan kamu</string>
+    <string name="consent_withdrawal_section_description">Atur fitur apa aja yang boleh akses datamu</string>
+
+    <!--Section | Privacy Policy -->
+    <string name="privacy_policy_label">Privacy Policy</string>
+    <string name="privacy_policy_section_title">Kebijakan Privasi Tokopedia</string>
+    <string name="privacy_policy_section_description">Kebijakan Privasi menjelaskan data pribadimu yang disimpan, bagaimana Tokopedia menggunakannya, dan kenapa Tokopedia memprosesnya.</string>
+    <string name="privacy_policy_bottom_sheet_title">Riwayat Kebijakan Privasi</string>
+    <string name="privacy_policy_show_all_list_button">Lihat Semua</string>
+
+    <!--Section | Recommendation and promotion-->
+    <string name="privacy_center_recommendation_title">Rekomendasi &amp; promo</string>
+    <string name="privacy_center_recommendation_subtitle">Pakai perangkatmu buat penawaran spesial</string>
+    <string name="privacy_center_recommendation_title_shake_shake">Shake Shake</string>
+    <string name="privacy_center_recommendation_subtitle_shake_shake">Goyang HP untuk dapat promo menarik</string>
+    <string name="privacy_center_recommendation_title_geolocation">Geolokasi</string>
+    <string name="privacy_center_recommendation_subtitle_geolocation">Atur rekomendasi berdasarkan lokasi</string>
+    <string name="privacy_center_recommendation_dialog_title_permission_geolocation">Bagikan lokasimu ke Tokopedia?</string>
+    <string name="privacy_center_recommendation_dialog_description_permission_geolocation">Kami perlu lokasimu biar bisa kasih rekomendasi yang cocok. Aktifkan pengaturan HP untuk membagikan lokasi.</string>
+    <string name="privacy_center_recommendation_dialog_button_primary_permission_geolocation">Bagikan Lokasi</string>
+    <string name="privacy_center_recommendation_dialog_button_secondary_permission_geolocation">Batal</string>
+    <string name="privacy_center_recommendation_dialog_permission_denied">Akses lokasi sudah ditolak, aktifkan lewat pengaturan HP ya.</string>
+    <string name="privacy_center_recommendation_dialog_permission_setting">Aktifkan</string>
+    <string name="privacy_center_recommendation_friend_in_feed_title">Rekomendasi Teman di Feed</string>
+    <string name="privacy_center_recommendation_friend_in_feed_subtitle">Tampilkan teman yang bisa di-follow</string>
+    <string name="privacy_center_recommendation_friend_desc">Kami akan kasih rekomendasi teman yang bisa di-follow di Profil Feed kamu, berdasarkan datamu di fitur Referral dan Berbagi Alamat.</string>
+    <string name="privacy_center_recommendation_friend_checkbox_desc">Saya telah membaca dan menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi yang berlaku.</string>
+    <string name="privacy_center_recommendation_friend_button">Aktifkan Sekarang</string>
+    <string name="privacy_center_recommendation_friend_dialog_disabled_title">Matikan penggunaan data akun?</string>
+    <string name="privacy_center_recommendation_friend_dialog_disabled_subtitle">Kamu nggak akan dapat rekomendasi teman yang mungkin kamu kenal di Feed.</string>
+    <string name="privacy_center_recommendation_friend_dialog_secondary">Batal</string>
+    <string name="privacy_center_recommendation_friend_dialog_primary">Ya, Matikan</string>
+
+    <!--Section | FAQ Privacy Section-->
+    <string name="privacy_center_faq_title">Punya pertanyaan seputar privasi?</string>
+    <string name="privacy_center_faq_subtitle">Temukan semua jawabannya disini</string>
+
+    <!--Section | Tokopedia Care-->
+    <string name="privacy_center_tokopedia_care_title">Butuh info lebih lanjut?</string>
+    <string name="privacy_center_tokopedia_care_item_title">Hubungi Tokopedia Care</string>
+
+    <!--Section | Activity-->
+    <string name="privacy_center_activity_title">Aktivitas</string>
+    <string name="privacy_center_activity_subtitle">Atur data dari aktivitasmu di Tokopedia</string>
+    <string name="privacy_center_activity_share_wishlist_title">Bagikan Wishlist</string>
+    <string name="privacy_center_activity_search_history_title">Riwayat Pencarian</string>
+
+    <!--  CONSENT WITHDRAWAL  -->
+    <string name="consent_withdrawal_page_title">Consent Withdrawal</string>
+    <string name="consent_withdrawal_primary_data_usage">Penggunaan data utama</string>
+    <string name="consent_withdrawal_secondary_data_usage">Penggunaan data tambahan</string>
+    <string name="consent_withdrawal_dialog_title">Matikan penggunaan datamu?</string>
+    <string name="consent_withdrawal_dialog_body">Kalau dimatikan, kamu nggak bisa pakai fitur atau produk yang butuh data ini.</string>
+    <string name="consent_withdrawal_dialog_primary_cta">Ya, Matikan</string>
+    <string name="consent_withdrawal_dialog_secondary_cta">Batal</string>
+    <string name="consent_withdrawal_error_page_back_home">Balik ke Home</string>
+    <string name="consent_withdrawal_error_page_try_again">Coba Lagi</string>
+
+    <!--Section | DSAR-->
+    <string name="dsar_section_title">Download data pribadimu</string>
+    <string name="dsar_section_description">Download datamu yang tersimpan di Tokopedia</string>
+    <string name="dsar_activity_title">Download Data</string>
+    <string name="dsar_bottom_sheet_title">Detail Pengajuan</string>
+    <string name="dsar_bottom_sheet_info_prefix">Datamu akan dikirim ke e-mail di atas paling lambat </string>
+    <string name="dsar_btn_lanjut_title">Lanjut</string>
+    <string name="dsar_progress_description">Info selanjutnya akan dikirim ke e-mail <![CDATA[<b>%1$s</b>]]>, paling lambat %2$s.\nNanti cek e-mail kamu, ya! </string>
+
+
+    <!--Search History-->
+    <string name="privacy_center_search_history_title">Riwayat Pencarian</string>
+    <string name="privacy_center_search_history_latest_search">Terakhir dicari</string>
+    <string name="privacy_center_search_history_delete_all">Hapus Semua</string>
+    <string name="privacy_center_search_history_empty_list">Tidak ada riwayat pencarian terakhir</string>
+    <string name="privacy_center_search_history_local_load_title">Konten gagal ditampilkan</string>
+    <string name="privacy_center_search_history_local_load_subtitle">Klik ikon di samping buat coba lagi.</string>
+    <string name="privacy_center_search_history_dialog_title">Yakin hapus semua riwayat terakhir dicari?</string>
+    <string name="privacy_center_search_history_dialog_subtitle">Riwayat yang akan dihapus tidak dapat dikembalikan</string>
+    <string name="privacy_center_search_history_dialog_primary">Hapus Semua</string>
+    <string name="privacy_center_search_history_dialog_secondary">Kembali</string>
+    <string name="privacy_center_search_history_message_failed_delete_all">Gagal menghapus semua riwayat pencarian </string>
+    <string name="privacy_center_search_history_message_failed_delete_one">Gagal menghapus riwayat pencarian </string>
+    <string name="dsar_success_description">E-mail akan digunakan untuk kirim link download datamu.</string>
+    <string name="dsar_btn_add_email_title">Tambah E-mail</string>
+    <string name="dsar_add_email_title">Tambah e-mail dulu, yuk!</string>
+    <string name="dsar_on_progress_title">Pengajuan download data kamu masih diproses</string>
+    <string name="dsar_btn_on_progress_back_title">Balik ke Privasi Akun</string>
+    <string name="dsar_btn_on_progress_details_btn">Lihat Detail Pengajuan</string>
+    <string name="dsar_success_page_title">Oke, pengajuan download data sudah terkirim!</string>
+    <string name="dsar_choose_data_title">Jenis data yang di-download</string>
+    <string name="dsar_pick_min_data_label">Pilih minimum satu jenis data</string>
+    <string name="dsar_payment_info_description">Daftar rekening bank, daftar kartu kredit, daftar kartu debit</string>
+    <string name="dsar_payment_info_title">Informasi Pembayaran</string>
+    <string name="dsar_personal_info_title">Informasi Pribadi</string>
+    <string name="dsar_personal_info_description">User ID, nama lengkap, nomor HP, e-mail, tanggal lahir, jenis kelamin, daftar alamat pengiriman</string>
+    <string name="dsar_transcion_info_title">Riwayat Transaksi</string>
+    <string name="dsar_bottom_sheet_detail_subtitle">Download data dari akun ini:</string>
+    <string name="dsar_date_picker_title">Pilih rentang riwayat transaksi</string>
+    <string name="dsar_date_picker_btn_title">Simpan</string>
+    <string name="dsar_failed_otp_label">Gagal Verifikasi</string>
+    <string name="dsar_submit_download_btn_title">Ajukan Download Data</string>
+    <string name="dsar_date_picker_start_title">Mulai dari</string>
+    <string name="dsar_date_picker_choose_btn_title">Pilih</string>
+    <string name="dsar_date_picker_end_title">Sampai</string>
+
+    <!-- SHARING WISHLIST -->
+    <string name="sharing_wishlist_page_title">Bagikan Wishlist</string>
+    <string name="sharing_wishlist_empty_page_title">Belum ada koleksi wishlist yang bersifat %s</string>
+    <string name="sharing_wishlist_empty_page_description">Jika ada koleksi wishlist yang bersifat %s, kamu bisa lihat dan atur dari sini </string>
+    <string name="sharing_wishlist_collection_atur_button">Atur</string>
+    <string name="sharing_wishlist_bottom_sheet_title">Siapa yang boleh lihat Koleksi “%s” ini?</string>
+    <string name="sharing_wishlist_private_option">Hanya saya</string>
+    <string name="sharing_wishlist_public_option">Semua orang</string>
+    <string name="sharing_wishlist_save_button">Simpan</string>
+    <string name="sharing_wishlist_another_setup">Ubah Pengaturan Lainnya</string>
+    <string name="sharing_wishlist_failed_title">Konten gagal ditampilkan</string>
+    <string name="sharing_wishlist_label_private">Pribadi</string>
+    <string name="sharing_wishlist_label_public">Publik</string>
+    <string name="sharing_wishlist_success_private">Koleksi “%s” sekarang cuma bisa dilihat oleh kamu sendiri.</string>
+    <string name="sharing_wishlist_success_public">Koleksi “%s” sekarang bisa dilihat oleh publik.</string>
+    <string name="sharing_wishlist_oke">Oke</string>
+    <string name="sharing_wishlist_message_update">Koleksi “%1$s” sudah berhasil menjadi %2$s.</string>
+    <string name="dsar_summary_ticker_info">Datamu akan dikirim ke e-mail di atas maks. 14 hari sejak tanggal pengajuan.</string>
+    <string name="dsar_range_item_6">Pilih Tanggal Sendiri</string>
+    <string name="dsar_range_item_5">7 Hari Terakhir</string>
+    <string name="dsar_range_item_4">30 Hari Terakhir</string>
+    <string name="dsar_range_item_3">3 Bulan Terakhir</string>
+    <string name="dsar_range_item_2">3 Tahun Terakhir</string>
+    <string name="dsar_range_item_1">Selama Tahun Ini</string>
+
+
+</resources>

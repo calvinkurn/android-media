@@ -8,6 +8,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -19,6 +20,7 @@ import com.tokopedia.hotel.destination.usecase.GetHotelRecentSearchUseCase
 import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -53,7 +55,7 @@ class HotelDestinationViewModel @Inject constructor(
             if (popularPropertyData.isNotEmpty()) popularSearch.postValue(Success(popularPropertyData))
 
             if (userSessionInterface.isLoggedIn) {
-                val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt())
+                val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toLongOrZero())
                 getHotelRecentSearchUseCase.params = params
                 val recentSearchData = getHotelRecentSearchUseCase.executeOnBackground()
                 if (recentSearchData.isNotEmpty()) recentSearch.postValue(Success(recentSearchData))
@@ -64,7 +66,7 @@ class HotelDestinationViewModel @Inject constructor(
         }
     }
 
-    fun getHotelSearchDestination(rawQuery: String, keyword: String) {
+    fun getHotelSearchDestination(rawQuery: GqlQueryInterface, keyword: String) {
         val params = mapOf(PARAM_SEARCH_KEY to keyword)
         val dataParams = mapOf(PARAM_DATA to params)
         launchCatchError(block = {
@@ -79,8 +81,8 @@ class HotelDestinationViewModel @Inject constructor(
         }
     }
 
-    fun deleteRecentSearch(query: String, uuid: String) {
-        val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt(), PARAM_DELETE_RECENT_UUID to uuid)
+    fun deleteRecentSearch(query: GqlQueryInterface, uuid: String) {
+        val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toLong(), PARAM_DELETE_RECENT_UUID to uuid)
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(query, RecentSearch.DeleteResponse::class.java, params)

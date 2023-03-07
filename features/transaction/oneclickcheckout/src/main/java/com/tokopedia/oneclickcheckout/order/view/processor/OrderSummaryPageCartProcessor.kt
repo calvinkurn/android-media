@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -13,16 +14,32 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_QTY_NOTES
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
+import com.tokopedia.oneclickcheckout.order.view.model.AddressState
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
+import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EpharmacyPrescriptionDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiExternalUseCase: Lazy<AddToCartOccMultiExternalUseCase>,
-                                                        private val getOccCartUseCase: GetOccCartUseCase,
-                                                        private val updateCartOccUseCase: UpdateCartOccUseCase,
-                                                        private val executorDispatchers: CoroutineDispatchers) {
+class OrderSummaryPageCartProcessor @Inject constructor(
+    private val atcOccMultiExternalUseCase: Lazy<AddToCartOccMultiExternalUseCase>,
+    private val getOccCartUseCase: GetOccCartUseCase,
+    private val updateCartOccUseCase: UpdateCartOccUseCase,
+    private val getPrescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine,
+    private val executorDispatchers: CoroutineDispatchers
+) {
 
     suspend fun atcOcc(productIds: String, userId: String): OccGlobalEvent {
         OccIdlingResource.increment()
@@ -66,21 +83,39 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                         },
                         throwable = null,
                         addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage),
-                        profileCode = orderData.profileCode
+                        profileCode = orderData.profileCode,
+                        imageUpload = orderData.imageUpload
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext ResultGetOccCart(
-                        orderCart = OrderCart(),
-                        orderPreference = OrderPreference(),
-                        orderProfile = OrderProfile(),
-                        orderPayment = OrderPayment(),
-                        orderPromo = OrderPromo(),
-                        globalEvent = null,
-                        throwable = t,
-                        addressState = AddressState(),
-                        profileCode = ""
+                    orderCart = OrderCart(),
+                    orderPreference = OrderPreference(),
+                    orderProfile = OrderProfile(),
+                    orderPayment = OrderPayment(),
+                    orderPromo = OrderPromo(),
+                    globalEvent = null,
+                    throwable = t,
+                    addressState = AddressState(),
+                    profileCode = "",
+                    imageUpload = ImageUploadDataModel()
                 )
+            }
+        }
+        OccIdlingResource.decrement()
+        return result
+    }
+
+    suspend fun getPrescriptionId(checkoutId: String): EpharmacyPrescriptionDataModel {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+                val prescriptionIds =
+                    getPrescriptionIdsUseCase.setParams(checkoutId, GetPrescriptionIdsUseCaseCoroutine.SOURCE_OCC).executeOnBackground()
+                return@withContext PrescriptionMapper.mapPrescriptionResponse(prescriptionIds)
+            } catch (t: Throwable) {
+                Timber.d(t)
+                return@withContext EpharmacyPrescriptionDataModel()
             }
         }
         OccIdlingResource.decrement()
@@ -101,7 +136,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                                     it.cartId,
                                     it.orderQuantity,
                                     it.notes,
-                                    it.productId.toString()
+                                it.productId
                             )
                     )
                 }
@@ -126,10 +161,10 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
             val profile = UpdateCartOccProfileRequest(
                     gatewayCode = orderProfile.payment.gatewayCode,
                     metadata = metadata,
-                    addressId = orderProfile.address.addressId.toString(),
-                    serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId else realServiceId,
-                    shippingId = orderShipment.getRealShipperId(),
-                    spId = orderShipment.getRealShipperProductId(),
+                    addressId = orderProfile.address.addressId,
+                    serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId.toIntOrZero() else realServiceId,
+                    shippingId = orderShipment.getRealShipperId().toString(),
+                    spId = orderShipment.getRealShipperProductId().toString(),
                     isFreeShippingSelected = orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null,
                     tenureType = selectedGoCicilTerm?.installmentTerm ?: 0,
                     optionId = selectedGoCicilTerm?.optionId ?: ""
@@ -239,5 +274,6 @@ class ResultGetOccCart(
     val globalEvent: OccGlobalEvent? = null,
     val throwable: Throwable? = null,
     val addressState: AddressState = AddressState(),
-    val profileCode: String = ""
+    val profileCode: String = "",
+    val imageUpload: ImageUploadDataModel = ImageUploadDataModel()
 )

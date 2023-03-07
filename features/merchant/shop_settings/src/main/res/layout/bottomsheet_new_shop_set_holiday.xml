@@ -34,25 +34,25 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/text_field_start_date_holiday"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/ops_hour_save_button_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/dp_16"
+        android:elevation="16dp"
         app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="0dp"
-        app:cardElevation="@dimen/dp_16"
+        app:cardElevation="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:id="@+id/holiday_calendar_footer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_8"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:visibility="gone">
 
             <com.tokopedia.unifycomponents.UnifyButton

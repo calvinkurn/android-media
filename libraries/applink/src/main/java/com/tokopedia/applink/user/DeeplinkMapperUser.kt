@@ -3,15 +3,16 @@ package com.tokopedia.applink.user
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.FirebaseRemoteConfigInstance
+import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
+
+    private const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and"
 
     fun getRegisteredNavigationUser(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
@@ -23,28 +24,32 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PIN_ONBOARD -> ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING
             deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
             deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
-            deeplink == ApplinkConst.SETTING_PROFILE -> getSettingProfileApplink(context)
-            deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getSettingProfileApplink(
-                context
-            )
+            deeplink == ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalUserPlatform.SETTING_PROFILE
             deeplink == ApplinkConst.INPUT_INACTIVE_NUMBER -> ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER
-            deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalGlobal.ADD_PHONE
+            deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
+            deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             else -> deeplink
         }
     }
 
-    private fun getSettingProfileApplink(context: Context): String {
-        return if (isUseNewProfile(context)) {
-            ApplinkConstInternalUserPlatform.NEW_PROFILE_INFO
-        } else ApplinkConstInternalUserPlatform.SETTING_PROFILE
+    private fun getApplinkPrivacyCenter(): String {
+        return if (isRollencePrivacyCenterActivated()) {
+            ApplinkConstInternalUserPlatform.PRIVACY_CENTER
+        } else {
+            ApplinkConsInternalHome.HOME_NAVIGATION
+        }
     }
 
-    private fun isUseNewProfile(context: Context): Boolean {
-        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
-        val remoteConfigValue =
-            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO, true)
-        return (remoteConfigValue && getAbTestPlatform().getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP)
-            .isNotEmpty())
+    private fun isRollencePrivacyCenterActivated(): Boolean {
+        return getAbTestPlatform()
+            .getString(ROLLENCE_PRIVACY_CENTER)
+            .isNotEmpty()
+    }
+
+    fun getRegisteredUserNavigation(deeplink: String): String {
+        return deeplink.replace(
+            DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
+            ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER+"/")
     }
 
     private fun getAbTestPlatform(): AbTestPlatform =

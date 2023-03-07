@@ -42,9 +42,6 @@ class GetTopadsIsAdsUseCase @Inject constructor(
         const val IRIS_SESSION_ID = "iris_session_id"
         const val DEFAULT_DEVICE = "android"
         const val DEFAULT_SRC = "recom_landing_page"
-        const val DEFAULT_PAGE_NAME_GOOGLE = "im_google"
-        const val DEFAULT_PAGE_NAME_FACEBOOK = "im_facebook"
-        const val DEFAULT_PAGE_NAME_TIKTOK = "im_tiktok"
         const val DEFAULT_Q = "recom"
         const val TIMEOUT_REMOTE_CONFIG_KEY = "android_top_ads_is_ads_time_out"
     }

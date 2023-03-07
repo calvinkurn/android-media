@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/upload_prescription_layout"
+    android:orientation="vertical"
+    android:background="@color/Unify_Background">
+
+    <View
+        android:id="@+id/occ_divider"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/Unify_N50" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_upload_prescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_pp_rounded_grey"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        >
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/upload_icon"
+            android:layout_width="@dimen/spacing_lvl5"
+            android:layout_height="@dimen/spacing_lvl5"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:contentDescription="@string/pp_cd_image_upload_prescription"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <LinearLayout
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/upload_icon"
+            app:layout_constraintTop_toTopOf="@id/upload_icon"
+            app:layout_constraintBottom_toBottomOf="@id/upload_icon"
+            app:layout_constraintEnd_toStartOf="@id/iv_prescription_right"
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingBottom="@dimen/spacing_lvl3"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/upload_prescription_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyWeight="bold"
+                app:typographyType="heading_5"
+                android:textColor="@color/Unify_N700_96"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                tools:text="Upload Foto Resep"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/upload_description_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:text="2 foto resep di-upload"
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
+
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_prescription_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_pp_chevron_right"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

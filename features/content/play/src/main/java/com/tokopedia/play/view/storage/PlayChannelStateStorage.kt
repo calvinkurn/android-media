@@ -37,3 +37,8 @@ data class PlayChannelData(
     val tagItems: TagItemUiModel,
     val status: PlayStatusUiModel,
 )
+
+data class PagingChannel(
+    val channelList: List<PlayChannelData>,
+    val cursor: String,
+)

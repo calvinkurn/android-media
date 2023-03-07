@@ -28,11 +28,10 @@ class RecommendationWidgetModule {
     fun provideGetCoroutineSingleRecommendationUseCase(@ApplicationContext context: Context, coroutineGqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(context, coroutineGqlRepository)
 
     @Provides
-    fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository): GetRecommendationFilterChips {
+    fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository, @ApplicationContext context: Context): GetRecommendationFilterChips {
         val graphql = GraphqlUseCase<RecommendationFilterChipsEntity>(graphqlRepository)
-        return GetRecommendationFilterChips(graphql)
+        return GetRecommendationFilterChips(graphql, context)
     }
-
 
     @RecommendationWidgetScope
     @Provides
@@ -42,5 +41,4 @@ class RecommendationWidgetModule {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface =
         UserSession(context)
-
 }

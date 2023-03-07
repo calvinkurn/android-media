@@ -77,6 +77,38 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
     }
 
     @Test
+    fun `when user has login then isUserLoggedIn should be true`() = coroutineTestRule.runBlockingTest {
+        // given
+        coEvery {
+            userSession.userId
+        } returns "12345"
+
+        // when
+        val testHasLogin = viewModel.isUserLoggedIn()
+        val userId = viewModel.getUserId()
+
+        // then
+        assert(testHasLogin)
+        assert(userId.isNotEmpty())
+    }
+
+    @Test
+    fun `when user has login then isUserLoggedIn should be false`() = coroutineTestRule.runBlockingTest {
+        // given
+        coEvery {
+            userSession.userId
+        } returns ""
+
+        // when
+        val testNotLogin = viewModel.isUserLoggedIn()
+        val userId = viewModel.getUserId()
+
+        // then
+        assert(!testNotLogin)
+        assert(userId.isEmpty())
+    }
+
+    @Test
     fun `validateAndAddToCart should return not selected toasterError`() = runBlocking {
         viewModel.validateAndAddToCart("", "", "", "", listOf(
             SingleProductBundleSelectedItem(

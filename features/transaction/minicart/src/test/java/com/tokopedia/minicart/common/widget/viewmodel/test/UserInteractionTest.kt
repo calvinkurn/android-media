@@ -2,6 +2,7 @@ package com.tokopedia.minicart.common.widget.viewmodel.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
@@ -14,9 +15,11 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemBundleGroup
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetProductBundleRecomUseCase
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import io.mockk.spyk
 import org.junit.Before
@@ -36,13 +39,29 @@ class UserInteractionTest {
     private val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     private val updateCartUseCase: UpdateCartUseCase = mockk()
     private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase = mockk()
+    private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase = mockk()
+    private val addToCartBundleUseCase: AddToCartBundleUseCase = mockk()
+    private val userSession: UserSessionInterface = mockk()
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
-        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, addToCartOccMultiUseCase, miniCartListUiModelMapper, miniCartChatListUiModelMapper)
+        viewModel = MiniCartViewModel(
+            dispatcher,
+            getMiniCartListSimplifiedUseCase,
+            getMiniCartListUseCase,
+            deleteCartUseCase,
+            undoDeleteCartUseCase,
+            updateCartUseCase,
+            getProductBundleRecomUseCase,
+            addToCartBundleUseCase,
+            addToCartOccMultiUseCase,
+            miniCartListUiModelMapper,
+            miniCartChatListUiModelMapper,
+            userSession
+        )
     }
 
     @Test

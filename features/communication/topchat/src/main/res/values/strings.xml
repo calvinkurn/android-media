@@ -34,6 +34,8 @@ yang ditemukan</string>
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
     <string name="error_no_connection_retrying">Tunggu sebentar, ya. Kami sedang menghubungkanmu.</string>
     <string name="title_time_machine_message">Tokopedia</string>
+    <string name="chat_performance_ticker">Performa chat perlu ditingkatkan</string>
+    <string name="chat_performance_ticker_maintain">Performa chat baik, pertahankan!</string>
 
     <!-- Chat Room -->
     <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
@@ -242,4 +244,45 @@ yang ditemukan</string>
     <string name="coach_product_bundling_title">Perlu menanyakan terkait produk?</string>
     <string name="coach_product_bundling_desc">Pilih pertanyaan di bawah, dapatkan jawaban otomatis yang cepat dan akurat!</string>
     <string name="topchat_product_bundling_label">Paket isi %s</string>
+
+    <string name="text_area_tab_reply_box_title">Tulis Pesan</string>
+    <string name="text_area_tab_smart_reply_title">Smart Reply</string>
+
+    <string name="topchat_operational_insight_ticker_fix"><![CDATA[<b>Tingkatkan Performa Chat</b> sesuai target agar Performa Toko kamu lebih baik, ya.]]></string>
+    <string name="topchat_operational_insight_ticker_maintain"><![CDATA[<b>Pertahankan Performa Chat</b> sesuai target agar Performa Toko kamu tetap baik, ya.]]></string>
+    <string name="topchat_operational_insight_weekly"><![CDATA[<b>Performa Chat mingguan</b> (%s)]]></string>
+    <string name="topchat_operational_insight_chat_reply_speed">Kecepatan balas chat</string>
+    <string name="topchat_operational_insight_chat_reply_rate">Tingkat chat terbalas</string>
+    <string name="topchat_operational_insight_target">Target:</string>
+    <string name="topchat_operational_insight_monday_update">Data diperbarui setiap hari Senin.</string>
+    <string name="topchat_operational_insight_effect_performance">Pengaruh Performa Chat ke Performa Toko</string>
+    <string name="topchat_operational_insight_chat_discussion_rate">Tingkat chat dan diskusi terbalas:</string>
+    <string name="topchat_operational_insight_chat_discussion_speed">Kecepatan balas chat dan diskusi:</string>
+    <string name="topchat_operational_insight_data_ninety_days">Data di atas berdasarkan Performa Toko (90 hari terakhir).</string>
+    <string name="topchat_operational_insight_monitor">Pantau data yang lebih detail di Wawasan Operasional, yuk!</string>
+    <string name="topchat_operational_insight_button">Kunjungi Wawasan Operasional</string>
+    <string name="topchat_operational_insight_performance_shop">Performa Toko</string>
+    <string name="topchat_operational_insight_good">baik</string>
+    <string name="topchat_operational_insight_need_improvement">perlu ditingkatkan</string>
+
+    <string name="topchat_bubble_activation_intro_title">Kenapa kamu perlu coba fitur Bubbles? </string>
+    <string name="topchat_bubble_activation_benefit_1">Pembeli puas karena chat cepat dibalas! Bikin kamu <![CDATA[<b>lebih responsif</b>]]> dan performa tokomu <![CDATA[<b>meningkat</b>]]>.</string>
+    <string name="topchat_bubble_activation_benefit_2">Nggak perlu masuk aplikasi Seller dulu, kamu bisa akses chat <![CDATA[<b>lebih cepat & mudah lewat Bubbles</b>]]> di layar HP.</string>
+    <string name="topchat_bubble_activation_intro_button">Cari Tahu Caranya, Yuk!</string>
+
+    <string name="topchat_bubble_ticker_activation_guide_desc">Tampilan fitur bisa berbeda tergantung versi sistem operasi atau merek HP Android kamu.</string>
+
+    <string name="topchat_bubble_activation_guide_1_desc">Pastikan pengaturan notifikasi HP-mu aktif, ya. Caranya tinggal klik ikonnya <![CDATA[<b>pas dapet notifikasi chat</b>]]> dari pembeli.</string>
+    <string name="topchat_bubble_activation_guide_1_desc_sample_icon">Ini contoh ikonnya</string>
+    <string name="topchat_bubble_activation_guide_2_desc">Yay! Setelah itu, <![CDATA[<b>Bubbles akan muncul</b>]]> di layar HP kamu (dari notifikasi chat yang kamu pilih sebelumnya).</string>
+    <string name="topchat_bubble_activation_guide_3_desc"><![CDATA[<b>Buat akses ruang chat</b>]]> lebih cepat, tinggal klik Bubbles yang melayang di layar HP tanpa buka aplikasi Seller lagi.</string>
+
+    <string name="topchat_bubble_activation_guide_seller_edu_label">Mau tahu lebih lanjut seputar fitur Bubbles? &lt;a href="#"&gt;Baca Artikel&lt;/a&gt;</string>
+    <string name="topchat_bubble_activation_guide_button_title">Cek Pengaturan Bubbles</string>
+    
+    <string name="topchat_bubble_settings_title">Bubbles</string>
+    <string name="topchat_bubble_settings_desc">Akses ruang chat dengan pembeli jadi lebih mudah dan cepat dengan sekali klik.</string>
+    <string name="topchat_bubble_settings_label">BARU</string>
+
+    <string name="topchat_bubble_ticker_message">Mau balas dan akses ruang chat dengan pembeli lebih cepat? &lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 </resources>

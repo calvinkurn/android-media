@@ -10,7 +10,6 @@
         android:id="@+id/error_image_view"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:background="@color/Unify_N0"
         android:gravity="center"
         android:paddingTop="40dp"
         android:visibility="gone"

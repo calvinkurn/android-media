@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@color/Unify_NN300"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent">
+
+
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:id="@+id/video_center_play_button"
+        android:src="@drawable/chatbot_ic_video_play"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="@string/chatbot_exoplayer_play_button"/>
+
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:id="@+id/video_center_pause_button"
+        android:src="@drawable/chatbot_ic_video_pause"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="@string/chatbot_exoplayer_pause_button"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/nav_container"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/exo_player_action_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/exo_progress"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/exo_progress">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@id/exo_play"
+                style="@style/ExoMediaButton.Play"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/exo_controls_play"
+                android:visibility="visible"
+                tools:viewBindingIgnore="true" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@id/exo_pause"
+                style="@style/ExoMediaButton.Pause"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/exo_controls_pause"
+                android:visibility="gone"
+                tools:viewBindingIgnore="true" />
+
+        </LinearLayout>
+
+        <com.google.android.exoplayer2.ui.DefaultTimeBar
+            android:id="@id/exo_progress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            app:buffered_color="@color/Unify_NN500"
+            app:layout_constraintLeft_toRightOf="@id/exo_player_action_container"
+            app:layout_constraintRight_toLeftOf="@id/exo_player_timer_container"
+            app:layout_constraintTop_toTopOf="parent"
+            app:played_color="@color/Unify_NN0"
+            app:scrubber_color="@color/Unify_NN0"
+            app:unplayed_color="@color/Unify_NN500"
+            tools:viewBindingIgnore="true" />
+
+        <LinearLayout
+            android:id="@+id/exo_player_timer_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/exo_progress"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/exo_progress">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@id/exo_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/Unify_NN0"
+                app:layout_constraintBottom_toBottomOf="@id/exo_progress"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/exo_progress"
+                app:typographyType="display_3"
+                tools:text="00:00"
+                tools:viewBindingIgnore="true" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:text="@string/chatbot_exoplayer_time_separator"
+                android:textColor="@color/Unify_NN0"
+                app:typographyType="display_3"
+                tools:text="/" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@id/exo_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="end"
+                android:textColor="@color/Unify_NN0"
+                app:layout_constraintBottom_toBottomOf="@id/exo_progress"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/exo_progress"
+                app:typographyType="display_3"
+                tools:text="02:10"
+                tools:viewBindingIgnore="true" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

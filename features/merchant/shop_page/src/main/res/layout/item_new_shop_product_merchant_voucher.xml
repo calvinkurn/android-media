@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/merchantVoucherWidget"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_64"
+    android:layout_height="64dp"
     app:mvlwTitleString="@string/merchant_voucher"
     android:clipToPadding="false"
     android:clipChildren="false"/>

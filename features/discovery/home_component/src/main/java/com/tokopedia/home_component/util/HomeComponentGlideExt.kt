@@ -18,7 +18,7 @@ const val FPM_USE_CASE_ICON = "home_use_case_icon"
 const val FPM_DEALS_WIDGET_PRODUCT_IMAGE = "home_deals_widget_product_image"
 const val FPM_SEE_ALL_CARD_BACKGROUND = "home_see_all_card_background_image"
 const val FPM_RECOMMENDATION_LIST_CAROUSEL = "home_recommendation_list_carousel"
-const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
+const val TRUNCATED_URL_PREFIX = "https://images.tokopedia.net/img/cache/"
 
 fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)

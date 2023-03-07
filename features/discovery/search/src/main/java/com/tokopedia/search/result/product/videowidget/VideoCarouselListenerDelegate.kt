@@ -1,9 +1,8 @@
 package com.tokopedia.search.result.product.videowidget
 
 import android.content.Context
-import com.tokopedia.search.analytics.InspirationCarouselTrackingUnification
-import com.tokopedia.search.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
-import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.videowidget.VideoCarouselDataViewMapper.toProductModel
@@ -18,7 +17,6 @@ import com.tokopedia.video_widget.carousel.VideoCarouselDataView
 class VideoCarouselListenerDelegate(
     context: Context?,
     private val trackingQueue: TrackingQueue?,
-    private val inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification,
     queryKeyProvider: QueryKeyProvider,
     searchParameterProvider: SearchParameterProvider,
     applinkOpener: ApplinkOpener = ApplinkOpenerDelegate
@@ -36,7 +34,7 @@ class VideoCarouselListenerDelegate(
             getSearchParameter()
         )
 
-        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data)
+        InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
     }
 
     override fun onInspirationVideoCarouselProductClicked(videoItem: VideoCarouselDataView.VideoItem) {
@@ -47,6 +45,6 @@ class VideoCarouselListenerDelegate(
             getSearchParameter()
         )
 
-        inspirationCarouselTrackingUnification.trackCarouselClick(data)
+        InspirationCarouselTracking.trackCarouselClick(data)
     }
 }

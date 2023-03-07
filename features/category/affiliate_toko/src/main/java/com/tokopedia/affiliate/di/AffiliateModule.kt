@@ -18,5 +18,4 @@ class AffiliateModule {
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
 }

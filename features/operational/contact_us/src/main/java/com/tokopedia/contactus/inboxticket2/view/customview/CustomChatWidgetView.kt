@@ -2,7 +2,6 @@ package com.tokopedia.contactus.inboxticket2.view.customview
 
 import android.content.Context
 import android.graphics.Color
-import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout

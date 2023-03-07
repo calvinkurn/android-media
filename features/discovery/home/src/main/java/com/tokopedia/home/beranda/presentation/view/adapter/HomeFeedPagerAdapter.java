@@ -52,7 +52,8 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
         HomeRecommendationFragment homeFeedFragment = HomeRecommendationFragment.Companion.newInstance(
                 position,
                 Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
-                recommendationTabDataModelList.get(position).getName()
+                recommendationTabDataModelList.get(position).getName(),
+                recommendationTabDataModelList.get(position).getSourceType()
         );
         homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
         homeFeedFragment.setParentPool(parentPool);

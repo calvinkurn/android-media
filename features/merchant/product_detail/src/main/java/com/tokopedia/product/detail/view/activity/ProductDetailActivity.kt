@@ -21,11 +21,11 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-
 
 /**
  * For navigating to this class
@@ -53,6 +53,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val PRODUCT_DETAIL_TAG = "productDetailTag"
 
         private const val AFFILIATE_HOST = "affiliate"
+        private const val PARAM_CAMPAIGN_ID = "campaign_id"
+        private const val PARAM_VARIANT_ID = "variant_id"
 
         @JvmStatic
         fun createIntent(context: Context, productUrl: String) =
@@ -87,6 +89,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var affiliateChannel: String? = null
     private var userSessionInterface: UserSessionInterface? = null
     private var productDetailComponent: ProductDetailComponent? = null
+    private var campaignId: String? = null
+    private var variantId: String? = null
 
     //Performance Monitoring
     var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -134,6 +138,11 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
         productDetailLoadTimeMonitoringListener?.onStopPltListener()
+    }
+
+    fun stopPLTRenderPageAndMonitoringP1(isVariant: Boolean) {
+        stopMonitoringPltRenderPage(isVariant = isVariant)
+        stopMonitoringP1()
     }
 
     fun getPltPerformanceResultData(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
@@ -221,14 +230,29 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             layoutId,
             extParam,
             getSource(),
-            affiliateChannel = affiliateChannel
+            affiliateChannel = affiliateChannel,
+            campaignId = campaignId,
+            variantId = variantId
     )
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        userSessionInterface = UserSession(this)
-        isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
+        try {
+            userSessionInterface = UserSession(this)
+            isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
+
+            parseApplink()
+            initPLTMonitoring()
+            initPerformanceMonitoring()
+        } catch (e: Throwable) {
+            onApplinkParseError(e)
+        }
+
+        super.onCreate(savedInstanceState)
+    }
+
+    private fun parseApplink() {
         val uri = intent.data
         val bundle = intent.extras
         if (uri != null) {
@@ -257,6 +281,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             affiliateUniqueId = uri.getQueryParameter(PARAM_AFFILIATE_UNIQUE_ID)
             extParam = uri.getQueryParameter(PARAM_EXT_PARAM)
             affiliateChannel = uri.getQueryParameter(PARAM_CHANNEL)
+            campaignId = uri.getQueryParameter(PARAM_CAMPAIGN_ID)
+            variantId = uri.getQueryParameter(PARAM_VARIANT_ID)
         }
         bundle?.let {
             warehouseId = it.getString("warehouse_id")
@@ -291,10 +317,16 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         if (productKey?.isNotEmpty() == true && shopDomain?.isNotEmpty() == true) {
             isFromDeeplink = true
         }
-        initPLTMonitoring()
-        initPerformanceMonitoring()
+    }
 
-        super.onCreate(savedInstanceState)
+    private fun onApplinkParseError(t: Throwable) {
+        val uri = intent.data
+        val uriString = uri?.toString() ?: ""
+        ProductDetailServerLogger.logNewRelicProductCannotOpen(
+                uriString,
+                t
+        )
+        finish()
     }
 
     private fun initPLTMonitoring() {

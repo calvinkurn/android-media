@@ -29,7 +29,7 @@ object HomeCategoryMapper {
         return HomeLayoutItemUiModel(categoryGridUiModel, state)
     }
 
-    fun mapToCategoryList(response: List<CategoryResponse>?, warehouseId: String): TokoNowCategoryListUiModel {
+    fun mapToCategoryList(response: List<CategoryResponse>?, warehouseId: String, headerName: String): TokoNowCategoryListUiModel {
         val newCategoryList = mutableListOf<TokoNowCategoryItemUiModel>()
         val responseCategoryList = response?.take(MAX_CATEGORY_ITEM_COUNT).orEmpty()
         val gridSpanCount = getGridSpanCount(
@@ -53,7 +53,8 @@ object HomeCategoryMapper {
                     id = it.id,
                     title = it.name,
                     imageUrl = it.imageUrl,
-                    appLink = it.appLinks
+                    appLink = it.appLinks,
+                    headerName = headerName
                 )
             }
         )

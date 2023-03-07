@@ -146,29 +146,6 @@
             app:srcCompat="@drawable/ic_play_share_link_white"
             />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/iv_setting"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/bg_play_light_gray_circle"
-            app:layout_constraintBottom_toTopOf="@id/iv_share_link"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:icon_name="SETTING_FILLED"
-            android:visibility="invisible"/>
-
-        <com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
-            android:id="@+id/live_debug_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/play_dms_N700_68"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <include
             android:id="@+id/loading_view"
             layout="@layout/layout_play_live_loading"

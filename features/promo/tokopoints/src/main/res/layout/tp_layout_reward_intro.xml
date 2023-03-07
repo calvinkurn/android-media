@@ -15,8 +15,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_intro_reward"
-            android:layout_width="@dimen/dp_280"
-            android:layout_height="@dimen/dp_280"
+            android:layout_width="280dp"
+            android:layout_height="280dp"
             android:layout_marginLeft="@dimen/tp_margin_large"
             android:layout_marginTop="@dimen/tp_margin_top_error_button"
             android:layout_marginRight="@dimen/tp_margin_large"
@@ -63,7 +63,7 @@
             android:gravity="center"
             android:text="Learn More"
             android:textColor="@color/Unify_G400"
-            android:textSize="@dimen/sp_16"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_check"
@@ -80,7 +80,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="12dp"
             android:text="Check Now"
-            android:textSize="@dimen/sp_16"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

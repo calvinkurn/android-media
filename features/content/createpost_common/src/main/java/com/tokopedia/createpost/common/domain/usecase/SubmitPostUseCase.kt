@@ -1,134 +1,194 @@
 package com.tokopedia.createpost.common.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitInput
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
+import com.tokopedia.createpost.common.domain.entity.request.MediaTag
+import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.createpost.common.TYPE_CONTENT_SHOP
-import com.tokopedia.createpost.common.di.ActivityContext
-import com.tokopedia.createpost.common.view.util.SubmitPostNotificationManager
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
-import rx.functions.Func1
-import java.util.*
+import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
+import com.tokopedia.createpost.common.view.viewmodel.MediaModel
+import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
+import com.tokopedia.createpost.common.domain.entity.UploadMediaDataModel
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
- * @author by milhamj on 10/1/18.
+ * Revamped By : Jonathan Darwin on October 13, 2022
  */
+@GqlQuery(SubmitPostUseCase.QUERY_NAME, SubmitPostUseCase.QUERY)
 open class SubmitPostUseCase @Inject constructor(
-        @ActivityContext private val context: Context,
-        private val uploadMultipleImageUseCase: UploadMultipleImageUseCase,
-        private val graphqlUseCase: GraphqlUseCase) : UseCase<SubmitPostData>() {
+    private val uploadMultipleMediaUseCase: UploadMultipleMediaUseCase,
+    graphqlRepository: GraphqlRepository,
+) : GraphqlUseCase<SubmitPostData>(graphqlRepository) {
 
-    var notificationManager: SubmitPostNotificationManager? = null
+    var postUpdateProgressManager: PostUpdateProgressManager? = null
 
-    @Suppress("UNCHECKED_CAST")
-    override fun createObservable(requestParams: RequestParams): Observable<SubmitPostData> {
-        val relatedIdList = requestParams.getObject(PARAM_TAGS) as List<String>
-        val type = requestParams.getString(PARAM_TYPE, "")
-        val tags = getListOfTag(relatedIdList, type)
-
-        uploadMultipleImageUseCase.notificationManager = notificationManager
-
-        val media = (requestParams.getObject(PARAM_MEDIA_LIST) as List<Pair<String, String>>?
-                ?: emptyList())
-
-        return uploadMultipleImageUseCase
-                .createObservable(
-                        UploadMultipleImageUseCase.createRequestParams(getMediumList(media, tags))
-                )
-                .map(rearrangeMedia())
-                .flatMap(submitPostToGraphql(requestParams))
+    init {
+        setGraphqlQuery(SubmitPostUseCaseQuery())
+        setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(SubmitPostData::class.java)
     }
 
-    private fun getMediumList(media: List<Pair<String, String>>, tags: List<MediaTag>): List<SubmitPostMedium> {
+    private val _state = MutableStateFlow<SubmitPostResult>(SubmitPostResult.Unknown)
+    val state: Flow<SubmitPostResult>
+        get() = _state
+
+    suspend fun execute(
+        id: String?,
+        type: String,
+        token: String,
+        authorId: String,
+        caption: String,
+        media: List<Pair<String, String>>,
+        relatedIdList: List<String>,
+        mediaList: List<MediaModel>,
+        mediaWidth: Int,
+        mediaHeight: Int
+    ) {
+        uploadMultipleMediaUseCase.postUpdateProgressManager = postUpdateProgressManager
+
+        val mediumList = getMediumList(media, mediaList)
+
+        uploadMultipleMediaUseCase.execute(mediumList)
+
+        uploadMultipleMediaUseCase.state.collectLatest { state ->
+            if(state.images is UploadMediaDataModel.Media.Success && state.videos is UploadMediaDataModel.Media.Success) {
+                val newMedia = state.images.mediumList + state.videos.mediumList
+
+                /** If all media is alr processed */
+                if(mediumList.size == newMedia.size) {
+                    /** Rearrange Media */
+                    val arrangedMedia = rearrangeMedia(newMedia)
+
+                    /** Submit Post */
+                    postUpdateProgressManager?.onSubmitPost()
+
+                    setRequestParams(
+                        mapOf(
+                            PARAM_INPUT to mapOf(
+                                PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                                PARAM_ID to if(id.isNullOrEmpty()) null else id,
+                                PARAM_AD_ID to null,
+                                PARAM_TYPE to INPUT_TYPE_CONTENT,
+                                PARAM_TOKEN to token,
+                                PARAM_AUTHOR_ID to authorId,
+                                PARAM_AUTHOR_TYPE to type,
+                                PARAM_CAPTION to caption,
+                                PARAM_MEDIA_WIDTH to mediaWidth,
+                                PARAM_MEDIA_HEIGHT to mediaHeight,
+                                PARAM_MEDIA to arrangedMedia,
+                            )
+                        )
+                    )
+
+                    val result = super.executeOnBackground()
+
+                    _state.update { SubmitPostResult.Success(result) }
+                }
+            }
+            else if (state.images is UploadMediaDataModel.Media.Fail) {
+                _state.update { SubmitPostResult.Fail(state.images.throwable) }
+            }
+            else if (state.videos is UploadMediaDataModel.Media.Fail) {
+                _state.update { SubmitPostResult.Fail(state.videos.throwable) }
+            }
+        }
+    }
+
+    /**
+     * The code below will be used when we have migrated
+     * both image & video uploader to uploadpedia
+     */
+    suspend fun executeOnBackground(
+        id: String?,
+        type: String,
+        token: String,
+        authorId: String,
+        caption: String,
+        media: List<Pair<String, String>>,
+        relatedIdList: List<String>,
+        mediaList: List<MediaModel>,
+        mediaWidth: Int,
+        mediaHeight: Int
+    ): SubmitPostData {
+        uploadMultipleMediaUseCase.postUpdateProgressManager = postUpdateProgressManager
+
+        /** Upload All Media */
+        val newMediumList = uploadMultipleMediaUseCase.executeOnBackground(getMediumList(media, mediaList))
+
+        /** Rearrange Media */
+        val arrangedMedia = rearrangeMedia(newMediumList)
+
+        /** Submit Post */
+        postUpdateProgressManager?.onSubmitPost()
+
+        setRequestParams(
+            mapOf(
+                PARAM_INPUT to mapOf(
+                    PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ID to if(id.isNullOrEmpty()) null else id,
+                    PARAM_AD_ID to null,
+                    PARAM_TYPE to INPUT_TYPE_CONTENT,
+                    PARAM_TOKEN to token,
+                    PARAM_AUTHOR_ID to authorId,
+                    PARAM_AUTHOR_TYPE to type,
+                    PARAM_CAPTION to caption,
+                    PARAM_MEDIA_WIDTH to mediaWidth,
+                    PARAM_MEDIA_HEIGHT to mediaHeight,
+                    PARAM_MEDIA to arrangedMedia,
+                )
+            )
+        )
+
+        return super.executeOnBackground()
+    }
+
+    private fun getMediumList(media: List<Pair<String, String>>, mediaList: List<MediaModel>): List<SubmitPostMedium> {
         val mediumList = mutableListOf<SubmitPostMedium>()
         media.forEachIndexed { index, pair ->
-            mediumList.add(SubmitPostMedium(pair.first, index, addProductTagsToFirstIndex(index, tags), pair.second))
+            val tags = mapTagList(mediaList[index].tags, mediaList[index].products)
+            mediumList.add(SubmitPostMedium(pair.first, index, tags, pair.second))
         }
         return mediumList
     }
 
-    private fun addProductTagsToFirstIndex(index: Int, tags: List<MediaTag>): List<MediaTag> {
-        return if (index == 0) tags else arrayListOf()
-    }
+    private fun mapTagList(tags: List<FeedXMediaTagging>, productItem: List<RelatedProductItem>): List<MediaTag> {
+        val tagList : MutableList<MediaTag> = arrayListOf()
 
-    private fun getListOfTag(relatedIdList: List<String>, type: String): List<MediaTag> {
-        val tags = arrayListOf<MediaTag>()
-        relatedIdList.forEach {
-            tags.add(MediaTag(getTagType(type), it))
-        }
-        return tags
-    }
+        tags.forEach {
+            val position: MutableList<Double> = arrayListOf()
+            position.add(it.posX.toDouble())
+            position.add(it.posY.toDouble())
 
-    private fun getTagType(type: String): String {
-        return if (type == TYPE_CONTENT_SHOP) TAGS_TYPE_PRODUCT else type
-    }
-
-    private fun rearrangeMedia(): Func1<List<SubmitPostMedium>, List<SubmitPostMedium>> {
-        return Func1 {
-            val rearrangedList: MutableList<SubmitPostMedium> = ArrayList(it)
-            it.forEach { media ->
-                rearrangedList[media.order] = media
+            val id = productItem.getOrNull(it.tagIndex)?.id
+            if(id != null) {
+                val tag = MediaTag(
+                    type = TAGS_TYPE_PRODUCT,
+                    content = id,
+                    position = position
+                )
+                tagList.add(tag)
             }
-            rearrangedList
         }
+
+        return tagList
     }
 
-    private fun submitPostToGraphql(requestParams: RequestParams): Func1<List<SubmitPostMedium>, Observable<SubmitPostData>> {
-        return Func1 { mediumList ->
-            notificationManager?.onSubmitPost()
-
-            val query = GraphqlHelper.loadRawString(
-                    context.resources,
-                    com.tokopedia.affiliatecommon.R.raw.mutation_af_submit_post
-            )
-
-            val variables = HashMap<String, Any>()
-            variables[PARAM_INPUT] = getContentSubmitInput(requestParams, mediumList)
-
-            val graphqlRequest = GraphqlRequest(
-                    query,
-                    SubmitPostData::class.java,
-                    variables)
-
-            graphqlUseCase.clearRequest()
-            graphqlUseCase.addRequest(graphqlRequest)
-            graphqlUseCase
-                    .createObservable(RequestParams.create())
-                    .map(mapGraphqlResponse())
+    private fun rearrangeMedia(mediaList: List<SubmitPostMedium>): List<SubmitPostMedium> {
+        val rearrangedList: MutableList<SubmitPostMedium> = ArrayList(mediaList)
+        mediaList.forEach { media ->
+            rearrangedList[media.order] = media
         }
-    }
-
-    private fun mapGraphqlResponse(): Func1<GraphqlResponse, SubmitPostData> {
-        return Func1 { graphqlResponse -> graphqlResponse.getData(SubmitPostData::class.java) }
-    }
-
-    private fun getInputType(type: String): String {
-        return if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
-    }
-
-    protected open fun getContentSubmitInput(requestParams: RequestParams,
-                                             mediumList: List<SubmitPostMedium>): ContentSubmitInput {
-        val input = ContentSubmitInput(
-                action = requestParams.getString(PARAM_ACTION, null)
-        )
-        input.type = getInputType(requestParams.getString(PARAM_TYPE, ""))
-        input.token = requestParams.getString(PARAM_TOKEN, "")
-        input.authorID = requestParams.getString(PARAM_AUTHOR_ID, "")
-        input.authorType = requestParams.getString(PARAM_AUTHOR_TYPE, "")
-        input.caption = requestParams.getString(PARAM_CAPTION, "")
-        input.media = mediumList
-        input.activityId = requestParams.getString(PARAM_ID, null)
-
-        return input
+        return rearrangedList
     }
 
     companion object {
@@ -137,47 +197,45 @@ open class SubmitPostUseCase @Inject constructor(
         private const val PARAM_AUTHOR_ID = "authorID"
         private const val PARAM_AUTHOR_TYPE = "authorType"
         private const val PARAM_CAPTION = "caption"
-        private const val PARAM_TAGS = "tags"
         private const val PARAM_ACTION = "action"
         private const val PARAM_ID = "ID"
-
+        private const val PARAM_AD_ID = "adID"
+        private const val PARAM_MEDIA = "media"
+        private const val ACTION_CREATE = "create"
+        private const val PARAM_MEDIA_WIDTH = "mediaRatioW"
+        private const val PARAM_MEDIA_HEIGHT = "mediaRatioH"
         private const val PARAM_INPUT = "input"
 
         private const val INPUT_TYPE_CONTENT = "content"
         private const val TAGS_TYPE_PRODUCT = "product"
 
-
-        const val SUCCESS = 1
-
-        private const val PARAM_MEDIA_LIST = "media_list"
         private const val ACTION_UPDATE = "update"
 
-        fun createRequestParams(
-                id: String?,
-                type: String,
-                token: String,
-                authorId: String,
-                caption: String,
-                media: List<Pair<String, String>>,
-                relatedIdList: List<String>
-        ): RequestParams {
 
-            val requestParams = RequestParams.create()
-            requestParams.putString(PARAM_TYPE, type)
-            requestParams.putString(PARAM_TOKEN, token)
-            requestParams.putString(PARAM_AUTHOR_ID, authorId)
-            requestParams.putString(PARAM_AUTHOR_TYPE, type)
-            requestParams.putString(PARAM_CAPTION, caption)
-            requestParams.putObject(PARAM_TAGS, relatedIdList)
-
-            if (!id.isNullOrEmpty()) {
-                //this is edit post
-                requestParams.putString(PARAM_ID, id)
-                requestParams.putString(PARAM_ACTION, ACTION_UPDATE)
-            } else {
-                requestParams.putObject(PARAM_MEDIA_LIST, media)
+        const val QUERY_NAME = "SubmitPostUseCaseQuery"
+        const val QUERY = """          
+            mutation SubmitPost(${'$'}input:ContentSubmitInput!) {
+              feed_content_submit(
+                Input:${'$'}input
+              ){
+                success
+                redirectURI
+                error
+                meta {
+                  followers
+                  content {
+                    activityID
+                    title
+                    description
+                    url
+                    instagram {
+                      backgroundURL
+                      profileURL
+                    }
+                  }
+                }
+              }
             }
-            return requestParams
-        }
+        """
     }
 }

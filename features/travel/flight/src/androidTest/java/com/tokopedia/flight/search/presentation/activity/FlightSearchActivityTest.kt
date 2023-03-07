@@ -15,9 +15,8 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
@@ -40,48 +39,50 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class FlightSearchActivityTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
-    var activityRule: IntentsTestRule<FlightSearchActivity> = object : IntentsTestRule<FlightSearchActivity>(FlightSearchActivity::class.java) {
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            setupGraphqlMockResponse(FlightSearchMockResponse())
-            gtmLogDBSource.deleteAll().subscribe()
+    var activityRule: IntentsTestRule<FlightSearchActivity> =
+        object : IntentsTestRule<FlightSearchActivity>(FlightSearchActivity::class.java) {
+            override fun beforeActivityLaunched() {
+                super.beforeActivityLaunched()
+                setupGraphqlMockResponse(FlightSearchMockResponse())
+            }
+
+            override fun getActivityIntent(): Intent =
+                FlightSearchActivity.getCallingIntent(
+                    context,
+                    FlightSearchPassDataModel(
+                        "2021-11-11",
+                        "",
+                        true,
+                        FlightPassengerModel(1, 0, 0),
+                        FlightAirportModel().apply {
+                            cityCode = "JKTA"
+                            cityId = ""
+                            cityName = "Jakarta"
+                            cityAirports = arrayListOf("CGK", "HLP")
+                            countryName = "Indonesia"
+                            airportName = ""
+                            airportCode = "CGK"
+                        },
+                        FlightAirportModel().apply {
+                            cityCode = ""
+                            cityId = ""
+                            cityName = "Banda Aceh"
+                            cityAirports = arrayListOf()
+                            countryName = "Indonesia"
+                            airportName = "Bandara Intl. Sultan Iskandar Muda"
+                            airportCode = "BTJ"
+                        },
+                        FlightClassModel(1, "Ekonomi"),
+                        "", ""
+                    ),
+                    false
+                )
         }
 
-        override fun getActivityIntent(): Intent =
-                FlightSearchActivity.getCallingIntent(
-                        context,
-                        FlightSearchPassDataModel(
-                                "2021-11-11",
-                                "",
-                                true,
-                                FlightPassengerModel(1, 0, 0),
-                                FlightAirportModel().apply {
-                                    cityCode = "JKTA"
-                                    cityId = ""
-                                    cityName = "Jakarta"
-                                    cityAirports = arrayListOf("CGK", "HLP")
-                                    countryName = "Indonesia"
-                                    airportName = ""
-                                    airportCode = "CGK"
-                                },
-                                FlightAirportModel().apply {
-                                    cityCode = ""
-                                    cityId = ""
-                                    cityName = "Banda Aceh"
-                                    cityAirports = arrayListOf()
-                                    countryName = "Indonesia"
-                                    airportName = "Bandara Intl. Sultan Iskandar Muda"
-                                    airportCode = "BTJ"
-                                },
-                                FlightClassModel(1, "Ekonomi"),
-                                "", ""
-                        ),
-                        false
-                )
-    }
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun setup() {
@@ -95,8 +96,10 @@ class FlightSearchActivityTest {
         changeSearch()
 
         Thread.sleep(2000)
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_ALL),
-                hasAllSuccess())
+        assertThat(
+            cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_ALL),
+            hasAllSuccess()
+        )
     }
 
     private fun quickFilter() {
@@ -119,13 +122,38 @@ class FlightSearchActivityTest {
         onView(withId(R.id.tvFlightPassenger)).perform(click())
 
         // change passengers
-        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 0)).perform(click())
-        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 0)).perform(click())
+        onView(
+            CommonMatcher.getElementFromMatchAtPosition(
+                withId(R.id.quantity_editor_add),
+                0
+            )
+        ).perform(click())
+        onView(
+            CommonMatcher.getElementFromMatchAtPosition(
+                withId(R.id.quantity_editor_add),
+                0
+            )
+        ).perform(click())
 
-        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 1)).perform(click())
-        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 1)).perform(click())
+        onView(
+            CommonMatcher.getElementFromMatchAtPosition(
+                withId(R.id.quantity_editor_add),
+                1
+            )
+        ).perform(click())
+        onView(
+            CommonMatcher.getElementFromMatchAtPosition(
+                withId(R.id.quantity_editor_add),
+                1
+            )
+        ).perform(click())
 
-        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 2)).perform(click())
+        onView(
+            CommonMatcher.getElementFromMatchAtPosition(
+                withId(R.id.quantity_editor_add),
+                2
+            )
+        ).perform(click())
         Thread.sleep(1000)
 
         onView(withId(R.id.btnFlightPassenger)).perform(click())
@@ -138,40 +166,59 @@ class FlightSearchActivityTest {
 
         try {
             onView(withId(R.id.text_next)).check(matches(isDisplayed())).perform(click())
-        } catch (e: NoMatchingViewException) { }
+        } catch (e: NoMatchingViewException) {
+        }
 
         assert(getJourneyItemCount() > 1)
 
         if (getJourneyItemCount() > 0) {
-            onView(withId(R.id.recycler_view)).perform(RecyclerViewActions
-                    .actionOnItemAtPosition<FlightSearchViewHolder>(0, click()))
+            onView(withId(R.id.recycler_view)).perform(
+                RecyclerViewActions
+                    .actionOnItemAtPosition<FlightSearchViewHolder>(0, click())
+            )
         }
 
         Thread.sleep(2000)
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_P1),
-                hasAllSuccess())
+        assertThat(
+            cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_P1),
+            hasAllSuccess()
+        )
     }
 
     @Test
-    fun promoChipsOnClicked(){
+    fun promoChipsOnClicked() {
         Thread.sleep(5000)
-        val viewInteraction = onView(AllOf.allOf(
-                AllOf.allOf(withId(R.id.recycler_view_promo_chips), withParent(withId(R.id.widget_flight_promo_chips)),
-                        isDisplayed()))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions
-                .actionOnItemAtPosition<FlightPromoChipsViewHolder>(0, click()))
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_PROMO_CHIPS),
-                hasAllSuccess())
+        val viewInteraction = onView(
+            AllOf.allOf(
+                AllOf.allOf(
+                    withId(R.id.recycler_view_promo_chips),
+                    withParent(withId(R.id.widget_flight_promo_chips)),
+                    isDisplayed()
+                )
+            )
+        ).check(matches(isDisplayed()))
+        viewInteraction.perform(
+            RecyclerViewActions
+                .actionOnItemAtPosition<FlightPromoChipsViewHolder>(0, click())
+        )
+        assertThat(
+            cassavaRule.validate(ANALYTIC_VALIDATOR_PROMO_CHIPS),
+            hasAllSuccess()
+        )
     }
 
     private fun getJourneyItemCount(): Int {
-        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.recycler_view) as RecyclerView
+        val recyclerView: RecyclerView =
+            activityRule.activity.findViewById(R.id.recycler_view) as RecyclerView
         return recyclerView.adapter?.itemCount ?: 0
     }
 
     companion object {
-        private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_search_p1.json"
-        private const val ANALYTIC_VALIDATOR_QUERY_ALL = "tracker/travel/flight/flight_search_all.json"
-        private const val ANALYTIC_VALIDATOR_PROMO_CHIPS = "tracker/travel/flight/flight_srp_promochips.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_P1 =
+            "tracker/travel/flight/flight_search_p1.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_ALL =
+            "tracker/travel/flight/flight_search_all.json"
+        private const val ANALYTIC_VALIDATOR_PROMO_CHIPS =
+            "tracker/travel/flight/flight_srp_promochips.json"
     }
 }

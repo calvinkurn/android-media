@@ -60,7 +60,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
                 domStorageEnabled = true
                 builtInZoomControls = false
                 displayZoomControls = true
-                setAppCacheEnabled(true)
+//                setAppCacheEnabled(true)
             }
             webView.webViewClient = PaymentMethodWebViewClient()
             webSettings?.mediaPlaybackRequiresUserGesture = false
@@ -81,7 +81,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
         return "merchant_code=${getUrlEncoded(additionalData.merchantCode)}&" +
                 "profile_code=${getUrlEncoded(additionalData.profileCode)}&" +
                 "enable_add_card=${getUrlEncoded("false")}&" +
-                "user_id=${getUrlEncoded(additionalData.id.toString())}&" +
+                "user_id=${getUrlEncoded(additionalData.id)}&" +
                 "customer_name=${getUrlEncoded(additionalData.name.trim())}&" +
                 "customer_email=${getUrlEncoded(additionalData.email)}&" +
                 "customer_msisdn=${getUrlEncoded(additionalData.msisdn)}&" +

@@ -8,10 +8,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils
-import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.BaseCopyableKeyValueUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: View?) : BaseToasterViewHolder<T>(itemView) {
+open class CopyableKeyValueViewHolder<T : BaseCopyableKeyValueUiModel>(itemView: View?) : BaseToasterViewHolder<T>(itemView) {
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_copyable_key_value
     }

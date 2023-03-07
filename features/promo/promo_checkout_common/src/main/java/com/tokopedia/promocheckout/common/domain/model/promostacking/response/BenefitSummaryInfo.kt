@@ -10,7 +10,7 @@ data class BenefitSummaryInfo(
 	val finalBenefitAmountStr: String = "",
 
 	@field:SerializedName("final_benefit_amount")
-	val finalBenefitAmount: Int = 0,
+	val finalBenefitAmount: Long = 0L,
 
 	@field:SerializedName("final_benefit_text")
 	val finalBenefitText: String = "",

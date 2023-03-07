@@ -6,9 +6,9 @@
     <string name="up_btn_text_follow">Follow</string>
     <string name="up_btn_text_live">LIVE</string>
     <string name="up_btn_text_following">Following</string>
-    <string name="up_empty_page_title">Kamu belum ada postingan</string>
-    <string name="up_empty_page_desc">Ayo buat postingan dulu, siapa tahu nanti banyak yang suka!</string>
-    <string name="up_empty_page_title2">Belum ada postingan</string>
+    <string name="up_empty_post_title_on_self">Kamu belum ada postingan</string>
+    <string name="up_empty_post_desc_on_self">Ayo buat postingan dulu, siapa tahu nanti\nbanyak yang suka!</string>
+    <string name="up_empty_post_on_visitor">Belum ada postingan</string>
     <string name="up_empty_page_follower_title">Belum ada follower</string>
     <string name="up_empty_page_my_follower_title">Yaah, kamu belum punya follower</string>
     <string name="up_empty_page_my_follower_desc">Ayo buat konten yang menarik, biar nanti banyak yang follow!</string>
@@ -26,4 +26,9 @@
     <string name="up_error_follow">Gagal follow. Coba lagi ya."</string>
     <string name="up_error_local_error">Koneshi internetmu targanggu. Coba lagi ya."</string>
     <string name="up_error_page_sec_btn_txt">Ke Homepage</string>
+    <string name="up_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+    <string name="up_username_template">\@%s</string>
+    <string name="up_user_profile_reminder_title">Yuk bikin profil yang unik &#10024;</string>
+    <string name="up_user_profile_reminder_sub_title">Bikin username, foto profil &amp; bio yang kamu banget!</string>
+    <string name="up_user_profile_reminder_cta">Lengkapi Profil</string>
 </resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:paddingStart="4dp"
+    android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/button_add_to_wishlist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="@drawable/wishlist_btn_bg"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            >
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/image_add_to_wishlist"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:icon_name="HEART"
+            app:icon_color_light_enable="@color/Unify_NN500"
+            />
+        </FrameLayout>
+
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/button_add_to_cart"
+            android:layout_height="32dp"
+            android:layout_width="0dp"
+            android:text="@string/btn_add_to_cart_text"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost"
+            app:layout_constraintStart_toEndOf="@id/button_add_to_wishlist"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

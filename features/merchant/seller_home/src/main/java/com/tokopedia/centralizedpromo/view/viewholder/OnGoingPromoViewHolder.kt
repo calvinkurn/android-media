@@ -9,12 +9,12 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_on_going_promo
 import com.tokopedia.sellerhome.databinding.CentralizedPromoItemOnGoingPromoBinding
 
-class OnGoingPromoViewHolder(private val onProductCouponOngoingPromoClicked: (String) -> Unit,
-                             view: View?) : AbstractViewHolder<OnGoingPromoUiModel>(view) {
+class OnGoingPromoViewHolder(
+    view: View?
+) : AbstractViewHolder<OnGoingPromoUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = centralized_promo_item_on_going_promo
@@ -29,7 +29,6 @@ class OnGoingPromoViewHolder(private val onProductCouponOngoingPromoClicked: (St
             tvOnGoingPromoTitle.text = element.title
             tvOnGoingPromoStatus.text = element.status.text
             tvOnGoingPromoCount.text = element.status.count.toString()
-            tvSeePastPromotion.text = element.footer.text
         }
 
         initListeners(element)
@@ -40,78 +39,47 @@ class OnGoingPromoViewHolder(private val onProductCouponOngoingPromoClicked: (St
             tvOnGoingPromoTitle.setOnClickListener {
                 onStatusClicked(
                     element.status.url,
-                    element.title,
-                    element.status.count,
-                    element.status.text
+                    element.title
+                )
+            }
+            ivCaret.setOnClickListener {
+                onStatusClicked(
+                    element.status.url,
+                    element.title
                 )
             }
             tvOnGoingPromoStatus.setOnClickListener {
-                onStatusClicked(
-                    element.status.url,
-                    element.title,
-                    element.status.count,
-                    element.status.text
-                )
+                onFooterClicked(element.footer.url, element.title)
             }
             tvOnGoingPromoCount.setOnClickListener {
-                onStatusClicked(
-                    element.status.url,
-                    element.title,
-                    element.status.count,
-                    element.status.text
-                )
+                onFooterClicked(element.footer.url, element.title)
             }
-            tvSeePastPromotion.setOnClickListener {
-                onFooterClicked(element.footer.url, element.title, element.footer.text)
-            }
-            ivCaret.setOnClickListener {
-                onFooterClicked(element.footer.url, element.title, element.footer.text)
-            }
+
             root.addOnImpressionListener(element.impressHolder) {
                 CentralizedPromoTracking.sendImpressionOnGoingPromoStatus(
-                    widgetName = element.title,
-                    value = element.status.count,
-                    state = element.status.text
+                    widgetName = element.title
                 )
             }
         }
     }
 
-    private fun onStatusClicked(appLink: String, title: String, value: Int, state: String) {
+    private fun onStatusClicked(appLink: String, title: String) {
         if (openApplink(appLink)) {
-            if (title.isProductCouponCard()) {
-                onProductCouponOngoingPromoClicked(title)
-            } else {
-                CentralizedPromoTracking.sendClickOnGoingPromoStatus(
-                    widgetName = title,
-                    value = value,
-                    state = state
-                )
-            }
+            CentralizedPromoTracking.sendClickOnGoingPromoStatus(
+                widgetName = title
+            )
         }
     }
 
-    private fun onFooterClicked(applink: String, title: String, footerText: String) {
+    private fun onFooterClicked(applink: String, title: String) {
         if (openApplink(applink)) {
-            if (title.isProductCouponCard()) {
-                onProductCouponOngoingPromoClicked(title)
-            } else {
-                CentralizedPromoTracking.sendClickOnGoingPromoFooter(
-                    widgetName = title,
-                    footerText = footerText
-                )
-            }
+            CentralizedPromoTracking.sendClickOnGoingPromoFooter(
+                widgetName = title
+            )
         }
     }
 
     private fun openApplink(url: String): Boolean = RouteManager.route(itemView.context, url)
-
-    private fun String.isProductCouponCard(): Boolean {
-        return this.equals(
-            getString(R.string.centralized_promo_promo_creation_voucher_product_title),
-            ignoreCase = true
-        )
-    }
 
     class ItemDecoration(private val margin: Int) : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(

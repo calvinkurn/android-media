@@ -30,7 +30,8 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class
+BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                  val brizziCardObjectMapper: BrizziCardObjectMapper,
                                                  val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
@@ -50,7 +51,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
         //token on server will refresh automatically per 30 minutes
         launchCatchError(block = {
-            var mapParam = HashMap<String, Any>()
+            val mapParam = HashMap<String, Any>()
             mapParam[REFRESH_TOKEN] = refreshToken
 
             val data = withContext(dispatcher) {
@@ -66,6 +67,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
                 brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
             }
+
             brizziInstance.getBalanceInquiry(intent, object : Callback {
                 override fun OnFailure(brizziException: BrizziException?) {
                     brizziException?.let {
@@ -153,6 +155,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         logBrizzi(inquiryIdBrizzi, it.cardNumber, logRawQuery, "success", it.lastBalance.toDouble())
                     }
                 }
+
                 emoneyInquiry.postValue(balanceInquiry)
             }
         })

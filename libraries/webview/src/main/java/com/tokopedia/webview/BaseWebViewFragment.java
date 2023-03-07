@@ -9,9 +9,11 @@ import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
 import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
+import static com.tokopedia.webview.ConstantKt.LOGIN;
 import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
+import static com.tokopedia.webview.ConstantKt.WWW_TOKOPEDIA_COM;
 import static com.tokopedia.webview.ConstantKt.ZOOM_US_STRING;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.decode;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
@@ -66,6 +68,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
+import com.tokopedia.locationmanager.RequestLocationType;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.utils.ErrorHandler;
@@ -80,6 +84,7 @@ import com.tokopedia.webview.ext.UrlEncoderExtKt;
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import kotlin.Unit;
@@ -105,6 +110,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
+    private static final String RESOLUTION_APPLINK = "tokopedia://resolution/success-create";
     private static final String REGISTER_APPLINK = "tokopedia://registration";
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
@@ -189,11 +195,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
         Uri uri = Uri.parse(url);
         String host = uri.getHost();
-        if(uri.getUserInfo()!=null) {
+        if (uri.getUserInfo() != null) {
             ErrorHandler.Builder builder = new ErrorHandler.Builder();
             builder.sendToScalyr(true);
             builder.setErrorCode(true);
-            Toast.makeText(getActivity(), ErrorHandler.getErrorMessage(getActivity(), new NullPointerException("Unable to open link"), builder ), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), ErrorHandler.getErrorMessage(getActivity(), new NullPointerException("Unable to open link"), builder), Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
 
@@ -294,6 +300,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     protected void loadWeb() {
         String url = getUrl();
         if (isTokopediaUrl) {
+            webView.requestFocus();
             webView.loadAuthUrl(url, new UserSession(getContext()));
         } else {
             redirectToNativeBrowser();
@@ -347,7 +354,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
-            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL);
             webView.loadUrl(kycRedirectionUrl);
             return;
         }
@@ -355,7 +362,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
-            if (imagePath != null && base64!= null) {
+            if (imagePath != null && base64 != null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
                 jsCallbackBuilder.append("javascript:")
                         .append(mJsHciCallbackFuncName)
@@ -423,7 +430,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    public static @Nullable String encodeToBase64(String imagePath, int quality) {
+    public static @Nullable
+    String encodeToBase64(String imagePath, int quality) {
         Bitmap bm = BitmapFactory.decodeFile(imagePath);
         if (bm == null) {
             return null;
@@ -556,22 +564,25 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private void checkLocationPermission(GeolocationPermissions.Callback callback, String origin) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             permissionCheckerHelper = new PermissionCheckerHelper();
-            permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
-                @Override
-                public void onPermissionDenied(String permissionText) {
-                    callback.invoke(origin, false, false);
-                }
 
-                @Override
-                public void onNeverAskAgain(String permissionText) {
-                    callback.invoke(origin, false, false);
-                }
+            permissionCheckerHelper.checkPermissions(this,
+                    LocationDetectorHelper.Companion.getPermissions(RequestLocationType.APPROXIMATE_OR_PRECISE),
+                    new PermissionCheckerHelper.PermissionCheckListener() {
+                        @Override
+                        public void onPermissionDenied(String permissionText) {
+                            callback.invoke(origin, false, false);
+                        }
 
-                @Override
-                public void onPermissionGranted() {
-                    callback.invoke(origin, true, false);
-                }
-            }, getString(R.string.webview_rationale_need_location));
+                        @Override
+                        public void onNeverAskAgain(String permissionText) {
+                            callback.invoke(origin, false, false);
+                        }
+
+                        @Override
+                        public void onPermissionGranted() {
+                            callback.invoke(origin, true, false);
+                        }
+                    }, getString(R.string.webview_rationale_need_location));
         } else callback.invoke(origin, true, false);
     }
 
@@ -586,7 +597,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+        if (permissionCheckerHelper != null) {
+            permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+        }
     }
 
     class MyWebViewClient extends WebViewClient {
@@ -853,6 +866,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return true;
         }
 
+        if (url.contains(RESOLUTION_APPLINK)) {
+            RouteManager.route(getContext(), url);
+            activity.finish();
+            return true;
+        }
+
         if (isExternalAppLink(url)) {
             return redirectToExternalAppAndFinish(activity, uri);
         }
@@ -875,6 +894,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } else {
                 logApplinkErrorOpen(url);
             }
+        } else { // network url
+            if (handleWebUrlLogin(uri)) {
+                return true;
+            }
         }
         if (!allowOverride) {
             return false;
@@ -882,6 +905,20 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean handleWebUrlLogin(Uri uri) {
+        if (WWW_TOKOPEDIA_COM.equals(uri.getHost())) {
+            List<String> pathSegments = uri.getPathSegments();
+            // https://www.tokopedia.com/login/?...
+            if (pathSegments.size() == 1 &&
+                    LOGIN.equals(pathSegments.get(0)) &&
+                    !userSession.isLoggedIn()) {
+                startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isBriIntent(Uri uri) {
@@ -936,10 +973,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private void gotoAlaCarteKyc(Uri uri) {
-        String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
-        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
-        String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO);
-        String kycType = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE);
+        String projectId = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID);
+        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL);
+        String layout = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_SHOW_INTRO);
+        String kycType = uri.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE);
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl, kycType);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }

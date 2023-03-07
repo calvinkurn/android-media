@@ -15,7 +15,10 @@ object DeeplinkMapperSearch {
         } else {
             "?" + uri.encodedQuery
         }
-        if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE))
+
+        if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH_UNIVERSAL))
+            return ApplinkConstInternalDiscovery.UNIVERSAL + queryString
+        else if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE))
             return ApplinkConstInternalDiscovery.AUTOCOMPLETE + queryString
         else if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
             return ApplinkConstInternalDiscovery.SEARCH_RESULT + queryString

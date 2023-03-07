@@ -3,8 +3,14 @@ package com.tokopedia.review.feature.inbox.pending.analytics
 import android.os.Bundle
 import com.tokopedia.review.common.analytics.ReviewInboxTrackingConstants
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
+import com.tokopedia.reviewcommon.extension.appendBusinessUnit
+import com.tokopedia.reviewcommon.extension.appendCurrentSite
+import com.tokopedia.reviewcommon.extension.appendGeneralEventData
+import com.tokopedia.reviewcommon.extension.appendProductId
+import com.tokopedia.reviewcommon.extension.appendTrackerIdIfNotBlank
+import com.tokopedia.reviewcommon.extension.appendUserId
+import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
 
 object ReviewPendingTracking {
 
@@ -60,6 +66,42 @@ object ReviewPendingTracking {
             .sendEnhancedEcommerce(ReviewPendingTrackingConstants.EVENT_NAME_VALUE_VIEW_ITEM)
     }
 
+    fun trackClickCheckReviewContribution(isCompetitionWinner: Boolean, userId: String) {
+        mutableMapOf<String, Any>()
+            .appendGeneralEventData(
+                eventName = if (isCompetitionWinner) {
+                    ReviewPendingTrackingConstants.EVENT_NAME_CLICK_PG
+                } else {
+                    ReviewPendingTrackingConstants.EVENT_NAME_CLICK_INBOX_REVIEW
+                },
+                eventCategory = ReviewPendingTrackingConstants.EVENT_CATEGORY_VALUE_REVIEW_PAGE_PENDING_REVIEW,
+                eventAction = if (isCompetitionWinner) {
+                    ReviewPendingTrackingConstants.EVENT_ACTION_VALUE_CLICK_HI_REVIEW_COMPETITION_WINNER
+                } else {
+                    ReviewPendingTrackingConstants.EVENT_ACTION_VALUE_CLICK_CHECK_REVIEW_CONTRIBUTION
+                },
+                eventLabel = ""
+            )
+            .appendBusinessUnit(ReviewPendingTrackingConstants.PDP_BUSINESS_UNIT)
+            .appendCurrentSite(ReviewPendingTrackingConstants.CREDIBILITY_CURRENT_SITE)
+            .appendTrackerIdIfNotBlank(
+                if (isCompetitionWinner) {
+                    ReviewPendingTrackingConstants.TRACKER_ID_CLICK_HI_REVIEW_COMPETITION_WINNER
+                } else {
+                    ReviewPendingTrackingConstants.TRACKER_ID_CLICK_CHECK_REVIEW_CONTRIBUTION
+                }
+            )
+            .apply {
+                if (isCompetitionWinner) {
+                    appendProductId("")
+                    appendUserId(userId)
+                } else {
+                    appendUserId("")
+                }
+            }
+            .sendGeneralEvent()
+    }
+
     private fun generateTrackingMap(label: String, action: String, userId: String, source: String): Map<String, String> {
         with(ReviewTrackingConstant) {
             return mapOf(
@@ -74,41 +116,13 @@ object ReviewPendingTracking {
         }
     }
 
-    private fun Bundle.appendGeneralEventData(
-        eventName: String,
-        eventCategory: String,
-        eventAction: String,
-        eventLabel: String
-    ): Bundle {
-        putString(TrackAppUtils.EVENT, eventName)
-        putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
-        putString(TrackAppUtils.EVENT_ACTION, eventAction)
-        putString(TrackAppUtils.EVENT_LABEL, eventLabel)
-        return this
-    }
-
-    private fun Bundle.appendBusinessUnit(businessUnit: String): Bundle {
-        putString(ReviewPendingTrackingConstants.BUSINESS_UNIT, businessUnit)
-        return this
-    }
-
-    private fun Bundle.appendCurrentSite(currentSite: String): Bundle {
-        putString(ReviewPendingTrackingConstants.CURRENT_SITE, currentSite)
-        return this
-    }
-
-    private fun Bundle.appendUserId(userId: String): Bundle {
-        putString(ReviewTrackingConstant.KEY_USER_ID, userId)
-        return this
-    }
-
     private fun Bundle.appendBannerPromotions(position: Int, title: String): Bundle {
         val bannersPayload = listOf(
             Bundle().apply {
-                putString(ReviewPendingTrackingConstants.EVENT_FIELD_EE_CREATIVE_NAME, null)
+                putString(ReviewPendingTrackingConstants.EVENT_FIELD_EE_CREATIVE_NAME, "")
                 putInt(ReviewPendingTrackingConstants.EVENT_FIELD_EE_CREATIVE_SLOT, position)
                 putString(ReviewPendingTrackingConstants.EVENT_FIELD_EE_ITEM_ID, title)
-                putString(ReviewPendingTrackingConstants.EVENT_FIELD_EE_ITEM_NAME, null)
+                putString(ReviewPendingTrackingConstants.EVENT_FIELD_EE_ITEM_NAME, "")
             }
         )
         putParcelableArrayList(ReviewPendingTrackingConstants.EVENT_FIELD_EE_PROMOTIONS, ArrayList(bannersPayload))

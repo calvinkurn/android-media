@@ -10,7 +10,6 @@ import com.tokopedia.usecase.RequestParams
 
 abstract class BaseGraphqlUseCase<T : Any>(graphqlRepository: GraphqlRepository) : GraphqlUseCase<T>(graphqlRepository) {
     protected var params: RequestParams = RequestParams.EMPTY
-    var isFirstLoad: Boolean = true
 
     abstract suspend fun executeOnBackground(useCache: Boolean): T
 

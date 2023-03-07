@@ -29,11 +29,14 @@ class ShopHomeFlashSaleProductListViewHolder(
 
     private fun setupImpressionListener(listener: ShopHomeFlashSaleWidgetListener) {
         uiModel?.let {
-            productCardList?.setImageProductViewHintListener(it, object : ViewHintListener {
-                override fun onViewHint() {
-                    listener.onFlashSaleProductImpression(it, fsUiModel, adapterPosition)
+            productCardList?.setImageProductViewHintListener(
+                it,
+                object : ViewHintListener {
+                    override fun onViewHint() {
+                        listener.onFlashSaleProductImpression(it, fsUiModel, adapterPosition)
+                    }
                 }
-            })
+            )
         }
     }
 
@@ -69,12 +72,13 @@ class ShopHomeFlashSaleProductListViewHolder(
                             )
                         }
                     }
-                })
+                }
+            )
         }
     }
 
     private fun setupAddToCartListener(listener: ShopHomeFlashSaleWidgetListener) {
-        uiModel?.let{ shopHomeProductUiModel ->
+        uiModel?.let { shopHomeProductUiModel ->
             productCardList?.setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
                     listener.onProductAtcNonVariantQuantityEditorChanged(

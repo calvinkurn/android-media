@@ -493,12 +493,12 @@ class CashbackVoucherCreateViewModelTest {
         with(mViewModel) {
             changeCashbackType(CashbackType.Rupiah)
 
-            assert(rupiahValueList.value?.contentEquals(arrayOf(anyInt(), anyInt(), anyInt()))
+            assert(rupiahValueList.value?.contentEquals(intArrayOf(anyInt(), anyInt(), anyInt()))
                     ?: false)
 
             changeCashbackType(CashbackType.Percentage)
 
-            assert(percentageValueList.value?.contentEquals(arrayOf(anyInt(), anyInt(), anyInt(), anyInt()))
+            assert(percentageValueList.value?.contentEquals(intArrayOf(anyInt(), anyInt(), anyInt(), anyInt()))
                     ?: false)
         }
     }

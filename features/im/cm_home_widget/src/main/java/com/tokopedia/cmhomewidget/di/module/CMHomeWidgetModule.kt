@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetBinding
 import com.tokopedia.cmhomewidget.di.qualifier.CMHomeWidgetUserSession
 import com.tokopedia.cmhomewidget.di.scope.CMHomeWidgetScope
+import com.tokopedia.cmhomewidget.listener.CMHomeWidgetPaymentCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetViewAllCardListener
 import com.tokopedia.cmhomewidget.presentation.customview.CMHomeWidget
@@ -20,6 +21,11 @@ class CMHomeWidgetModule(private val cmHomeWidget: CMHomeWidget) {
 
     @Provides
     fun provideCMHomeWidgetProductListener(): CMHomeWidgetProductCardListener {
+        return cmHomeWidget
+    }
+
+    @Provides
+    fun provideCMHomeWidgetPaymentListener(): CMHomeWidgetPaymentCardListener {
         return cmHomeWidget
     }
 

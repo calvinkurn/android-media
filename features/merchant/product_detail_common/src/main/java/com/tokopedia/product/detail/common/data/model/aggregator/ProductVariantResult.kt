@@ -15,6 +15,7 @@ data class ProductVariantResult(
         var selectedProductId: String = "",
         var parentProductId: String = "",
         var requestCode: Int = 0,
+        var cartId: String = "",
 
         /**
          * PDP Only

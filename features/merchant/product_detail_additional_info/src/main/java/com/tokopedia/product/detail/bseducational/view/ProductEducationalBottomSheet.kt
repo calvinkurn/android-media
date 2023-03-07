@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -37,7 +36,22 @@ import javax.inject.Inject
 class ProductEducationalBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val EDUCATIONAL_SHEET_TAG = "product_educational_bs"
+        const val EDUCATIONAL_SHEET_TAG = "product_educational_bs"
+        const val ARG_TYPE = "args_param"
+        const val ARG_PRODUCT_ID = "args_product_id"
+        const val ARG_SHOP_ID = "args_shop_id"
+
+        fun instance(
+            typeParam: String,
+            productId: String,
+            shopId: String
+        ) = ProductEducationalBottomSheet().also {
+            it.arguments = Bundle().apply {
+                putString(ARG_TYPE, typeParam)
+                putString(ARG_PRODUCT_ID, productId)
+                putString(ARG_SHOP_ID, shopId)
+            }
+        }
     }
 
     @Inject
@@ -64,23 +78,20 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
     private var btnError: UnifyButton? = null
     private var viewImpressed: Boolean = false
 
-    private var typeParam: String = ""
-    private var productId: String = ""
-    private var shopId: String = ""
-
-    fun show(typeParam: String, productId: String, shopId: String, fragmentManager: FragmentManager) {
-        this.typeParam = typeParam
-        this.productId = productId
-        this.shopId = shopId
-        show(fragmentManager, EDUCATIONAL_SHEET_TAG)
-    }
+    private val typeParam by lazy { arguments?.getString(ARG_TYPE).orEmpty() }
+    private val productId by lazy { arguments?.getString(ARG_PRODUCT_ID).orEmpty() }
+    private val shopId by lazy { arguments?.getString(ARG_SHOP_ID).orEmpty() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getComponent()?.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         initBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -130,16 +141,18 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun trackClick(button: String,
-                           response: ProductEducationalResponse) {
+    private fun trackClick(
+        button: String,
+        response: ProductEducationalResponse
+    ) {
         ProductEducationalTracker.onCloseOrButtonClicked(
-                button = button,
-                eduTitle = response.title,
-                eduDesc = response.description,
-                shopId = shopId,
-                productId = productId,
-                userId = userSession.userId ?: "",
-                eventCategory = response.eventCategory
+            button = button,
+            eduTitle = response.title,
+            eduDesc = response.description,
+            shopId = shopId,
+            productId = productId,
+            userId = userSession.userId ?: "",
+            eventCategory = response.eventCategory
         )
     }
 
@@ -147,14 +160,14 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
         if (!viewImpressed) {
             viewImpressed = true
             ProductEducationalTracker.onImpressView(
-                    trackingQueue = trackingQueue,
-                    position = 0,
-                    eduTitle = response.title,
-                    eduDesc = response.description,
-                    productId = productId,
-                    shopId = shopId,
-                    userId = userSession.userId ?: "",
-                    eventCategory = response.eventCategory
+                trackingQueue = trackingQueue,
+                position = 0,
+                eduTitle = response.title,
+                eduDesc = response.description,
+                productId = productId,
+                shopId = shopId,
+                userId = userSession.userId ?: "",
+                eventCategory = response.eventCategory
             )
         }
     }
@@ -269,9 +282,9 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
 
     private fun getComponent(): ProductEducationalComponent? {
         return DaggerProductEducationalComponent
-                .builder()
-                .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .productEducationalModule(ProductEducationalModule(typeParam))
-                .build()
+            .builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .productEducationalModule(ProductEducationalModule(typeParam))
+            .build()
     }
 }

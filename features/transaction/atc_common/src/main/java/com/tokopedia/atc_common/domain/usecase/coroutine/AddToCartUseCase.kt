@@ -11,6 +11,7 @@ import com.tokopedia.atc_common.domain.usecase.query.QUERY_ADD_TO_CART
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.network.exception.ResponseErrorException
@@ -94,7 +95,7 @@ open class AddToCartUseCase @Inject constructor(@ApplicationContext private val 
                 /*tracking data*/ productName: String = "", category: String = "", price: String = "", userId: String = ""): AddToCartRequestParams {
             return AddToCartRequestParams(
                     productId = productId.toLong(),
-                    shopId = shopId.toInt(),
+                    shopId = shopId.toIntSafely(),
                     quantity = quantity,
                     notes = notes,
                     atcFromExternalSource = atcExternalSource,

@@ -431,6 +431,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     override fun openGeoLocation() {
+        val activity = activity ?: return
         val availability = GoogleApiAvailability.getInstance()
         val resultCode = availability.isGooglePlayServicesAvailable(activity)
         if (ConnectionResult.SUCCESS == resultCode) {
@@ -449,7 +450,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         } else {
             Timber.d("Google play services unavailable")
             val dialog = availability.getErrorDialog(activity, resultCode, 0)
-            dialog.show()
+            dialog?.show()
         }
     }
 

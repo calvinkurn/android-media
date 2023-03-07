@@ -3,15 +3,19 @@ package com.tokopedia.usercomponents.common.utils
 import android.text.SpannableString
 import android.text.style.ClickableSpan
 import android.view.View
-import androidx.test.espresso.*
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.util.TreeIterables
 import com.tokopedia.unifycomponents.TextFieldUnify2
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
+
 
 fun setTextOnTextFieldUnify2(text: String, resId: Int): ViewAction {
     return object : ViewAction {
@@ -98,7 +102,7 @@ fun searchFor(matcher: Matcher<View>): ViewAction {
 fun clickClickableSpanOnTypographyUnify(textToClick: CharSequence): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {
-            return Matchers.instanceOf(Typography::class.java)
+            return CoreMatchers.instanceOf(Typography::class.java)
         }
 
         override fun getDescription(): String {

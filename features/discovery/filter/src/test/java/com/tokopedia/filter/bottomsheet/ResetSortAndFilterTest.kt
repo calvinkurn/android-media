@@ -3,6 +3,7 @@ package com.tokopedia.filter.bottomsheet
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -61,9 +62,9 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
 
         `When reset sort and filter and applied`()
 
-        // Position 0 is sort, 1 is filter location, 3 is filter price, 5 is filter toko
+        // Position 0 is sort, 1 is filter location, 3 is filter price, 5 is filter toko, 13 is filter range checkbox
         `Then assert reset functionality`(
-                listOf(1, 3, 5),
+                listOf(1, 3, 5, 13),
                 true,
                 mapOf(SearchApiConst.Q to "samsung", dynamicFilterModel.getSortKey() to dynamicFilterModel.defaultSortValue)
         )
@@ -72,9 +73,11 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
     private fun createMapWithVariousFilters(dynamicFilterModel: DynamicFilterModel): Map<String, String> {
         val locationFilter = dynamicFilterModel.data.filter[0]
         val priceFilter = dynamicFilterModel.data.filter[2]
+        val priceRangeCheckboxFilter = dynamicFilterModel.data.filter[12]
         val selectedPriceRange = priceFilter.options.find { it.key == Option.KEY_PRICE_RANGE_1 }!!
         val minPriceFilterValue = selectedPriceRange.valMin
         val maxPriceFilterValue = selectedPriceRange.valMax
+        val selectedPriceRangeCheckboxValue = priceRangeCheckboxFilter.options.find { it.key == Option.KEY_PRICING }?.value
 
         return mutableMapOf<String, String>().also {
             it[SearchApiConst.Q] = "samsung"
@@ -82,6 +85,9 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
             it[SearchApiConst.FCITY] = locationFilter.options[0].value + OPTION_SEPARATOR + locationFilter.options[2].value
             it[SearchApiConst.PMIN] = minPriceFilterValue
             it[SearchApiConst.PMAX] = maxPriceFilterValue
+            selectedPriceRangeCheckboxValue?.let { value ->
+                it[SearchApiConst.PRICING] = value
+            }
             it[dynamicFilterModel.getSortKey()] = dynamicFilterModel.defaultSortValue
         }
     }
@@ -109,6 +115,7 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
                 is SortViewModel -> it.assertSortIsReset()
                 is FilterViewModel -> it.assertFilterIsReset()
                 is PriceFilterViewModel -> it.assertPriceFilterIsReset()
+                is PriceRangeFilterCheckboxDataView -> it.assertPriceRangeFilterCheckboxIsReset()
             }
         }
     }
@@ -146,6 +153,12 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
             assert(!it.isSelected) {
                 "Price Range Option ${it.option.name} is selected should be false"
             }
+        }
+    }
+
+    private fun PriceRangeFilterCheckboxDataView.assertPriceRangeFilterCheckboxIsReset() {
+        assert(optionViewModelList.all { !it.isSelected }) {
+            "Price range option ${optionViewModelList.find { it.isSelected }} is still selected, expected is none"
         }
     }
 

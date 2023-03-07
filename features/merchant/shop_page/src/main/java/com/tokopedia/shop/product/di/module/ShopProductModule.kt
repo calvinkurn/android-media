@@ -31,7 +31,6 @@ import com.tokopedia.shop.product.data.source.cloud.interceptor.ShopOfficialStor
 import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier
 import com.tokopedia.shop.product.di.ShopProductQualifier
 import com.tokopedia.shop.product.di.ShopProductSortQualifier
-import com.tokopedia.shop.product.di.ShopProductWishListFeaturedQualifier
 import com.tokopedia.shop.product.di.scope.ShopProductScope
 import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository
@@ -70,17 +69,21 @@ class ShopProductModule {
     }
 
     @Provides
-    fun provideGMAuthInterceptor(@ShopPageContext context: Context,
-                                 userSession: UserSessionInterface,
-                                 abstractionRouter: NetworkRouter): GMAuthInterceptor {
+    fun provideGMAuthInterceptor(
+        @ShopPageContext context: Context,
+        userSession: UserSessionInterface,
+        abstractionRouter: NetworkRouter
+    ): GMAuthInterceptor {
         return GMAuthInterceptor(context, userSession, abstractionRouter)
     }
 
     @ShopProductGMFeaturedQualifier
     @Provides
-    fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
-                              @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                              errorResponseInterceptor: HeaderErrorResponseInterceptor): OkHttpClient {
+    fun provideGMOkHttpClient(
+        gmAuthInterceptor: GMAuthInterceptor,
+        @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+        errorResponseInterceptor: HeaderErrorResponseInterceptor
+    ): OkHttpClient {
         return Builder()
             .addInterceptor(gmAuthInterceptor)
             .addInterceptor(errorResponseInterceptor)
@@ -91,8 +94,10 @@ class ShopProductModule {
     @ShopProductGMFeaturedQualifier
     @ShopProductScope
     @Provides
-    fun provideGMRetrofit(@ShopProductGMFeaturedQualifier okHttpClient: OkHttpClient,
-                          retrofitBuilder: Retrofit.Builder): Retrofit {
+    fun provideGMRetrofit(
+        @ShopProductGMFeaturedQualifier okHttpClient: OkHttpClient,
+        retrofitBuilder: Retrofit.Builder
+    ): Retrofit {
         return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build()
     }
 
@@ -122,17 +127,21 @@ class ShopProductModule {
 
     // Product
     @Provides
-    fun provideShopOfficialStoreAuthInterceptor(@ShopPageContext context: Context,
-                                                networkRouter: NetworkRouter,
-                                                userSessionInterface: UserSessionInterface): ShopOfficialStoreAuthInterceptor {
+    fun provideShopOfficialStoreAuthInterceptor(
+        @ShopPageContext context: Context,
+        networkRouter: NetworkRouter,
+        userSessionInterface: UserSessionInterface
+    ): ShopOfficialStoreAuthInterceptor {
         return ShopOfficialStoreAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
     @ShopProductQualifier
     @Provides
-    fun provideOfficialStoreOkHttpClient(shopOfficialStoreAuthInterceptor: ShopOfficialStoreAuthInterceptor,
-                                         @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                                         errorResponseInterceptor: HeaderErrorResponseInterceptor): OkHttpClient {
+    fun provideOfficialStoreOkHttpClient(
+        shopOfficialStoreAuthInterceptor: ShopOfficialStoreAuthInterceptor,
+        @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+        errorResponseInterceptor: HeaderErrorResponseInterceptor
+    ): OkHttpClient {
         return Builder()
             .addInterceptor(shopOfficialStoreAuthInterceptor)
             .addInterceptor(errorResponseInterceptor)
@@ -174,21 +183,25 @@ class ShopProductModule {
     @ShopProductSortQualifier
     @ShopProductScope
     @Provides
-    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor,
-                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                            errorResponseInterceptor: HeaderErrorResponseInterceptor): OkHttpClient? {
+    fun provideOkHttpClient(
+        shopAuthInterceptor: ShopAuthInterceptor,
+        @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+        errorResponseInterceptor: HeaderErrorResponseInterceptor
+    ): OkHttpClient? {
         return Builder()
-                .addInterceptor(shopAuthInterceptor)
-                .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .build()
+            .addInterceptor(shopAuthInterceptor)
+            .addInterceptor(errorResponseInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
+            .build()
     }
 
     @ShopProductSortQualifier
     @ShopProductScope
     @Provides
-    fun provideShopAceRetrofit(@ShopProductSortQualifier okHttpClient: OkHttpClient,
-                               retrofitBuilder: Retrofit.Builder): Retrofit {
+    fun provideShopAceRetrofit(
+        @ShopProductSortQualifier okHttpClient: OkHttpClient,
+        retrofitBuilder: Retrofit.Builder
+    ): Retrofit {
         return retrofitBuilder.baseUrl(ShopUrl.BASE_ACE_URL).client(okHttpClient).build()
     }
 
@@ -212,17 +225,20 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideAddToCart(graphqlRepository: GraphqlRepository,
-                         addToCartDataMapper: AddToCartDataMapper,
-                         chosenAddressRequestHelper: ChosenAddressRequestHelper
+    fun provideAddToCart(
+        graphqlRepository: GraphqlRepository,
+        addToCartDataMapper: AddToCartDataMapper,
+        chosenAddressRequestHelper: ChosenAddressRequestHelper
     ): AddToCartUseCase {
         return AddToCartUseCase(graphqlRepository, addToCartDataMapper, chosenAddressRequestHelper)
     }
 
     @ShopProductScope
     @Provides
-    fun provideUpdateCart(graphqlRepository: GraphqlRepository,
-                         chosenAddressRequestHelper: ChosenAddressRequestHelper): UpdateCartUseCase {
+    fun provideUpdateCart(
+        graphqlRepository: GraphqlRepository,
+        chosenAddressRequestHelper: ChosenAddressRequestHelper
+    ): UpdateCartUseCase {
         return UpdateCartUseCase(graphqlRepository, chosenAddressRequestHelper)
     }
 

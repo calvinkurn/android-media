@@ -16,8 +16,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_feed"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
@@ -31,8 +31,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_feed_byme"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_above="@id/fab_feed"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -63,8 +63,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_feed_shop"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_above="@id/fab_feed_byme"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"

@@ -22,7 +22,12 @@ sealed class HomeSharingWidgetUiModel (
         val ogDescription: String = "",
         val textDescription: String = "",
         val sharingUrlParam: String = "",
-        val maxReward: String = ""
+        val maxReward: String = "",
+        val type: String = "",
+        val applink: String = "",
+        val url: String = "",
+        val textButton: String = "",
+        val titleSection: String = ""
     ): HomeSharingWidgetUiModel(
         id,
         state

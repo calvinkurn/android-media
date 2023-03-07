@@ -17,6 +17,7 @@ class CoachMarkPrefHelper @Inject constructor(
         const val REBATE_ULTIMATE_DATA_KEY = "rebateWidget"
         const val KEY_REBATE_MVP_COACH_MARK = "rebate_mvp_coach_mark_key"
         const val KEY_REBATE_ULTIMATE_COACH_MARK = "rebate_ultimate_coach_mark_key"
+        const val KEY_UNIFICATION_WIDGET_COACH_MARK = "unification_widget_coach_mark_key"
     }
 
     fun saveRebateCoachMarkMvpFlag() {
@@ -25,6 +26,14 @@ class CoachMarkPrefHelper @Inject constructor(
 
     fun getRebateCoachMarkMvpStatus(): Boolean {
         return getBoolean(KEY_REBATE_MVP_COACH_MARK, false)
+    }
+
+    fun getUnificationCoachMarkStatus(): Boolean {
+        return getBoolean(KEY_UNIFICATION_WIDGET_COACH_MARK, false)
+    }
+
+    fun saveUnificationMarkFlag() {
+        saveBoolean(KEY_UNIFICATION_WIDGET_COACH_MARK, true)
     }
 
     fun saveRebateCoachMarkUltimateFlag() {

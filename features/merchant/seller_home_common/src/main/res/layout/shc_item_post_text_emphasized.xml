@@ -7,22 +7,33 @@
     android:layout_marginBottom="@dimen/shc_dimen_6dp"
     tools:background="@drawable/shc_bg_ripple_radius_4dp">
 
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbShcItemPostTextEmphasize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/parentViewShcItemPostTextEmphasized"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/parentViewShcItemPostTextEmphasized"
+        tools:visibility="visible" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/parentViewShcItemPostTextEmphasized"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/layout_lvl1"
+        android:paddingStart="8dp"
         android:paddingTop="@dimen/shc_dimen_6dp"
-        android:paddingEnd="@dimen/layout_lvl1"
+        android:paddingEnd="8dp"
         android:paddingBottom="@dimen/shc_dimen_6dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cbShcItemPostTextEmphasize"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgShcPostState"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/tvShcPostState"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvShcPostState"
@@ -32,9 +43,9 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcPostState"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginStart="12dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/Unify_N700_96"
@@ -46,10 +57,10 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcPostTextTitle"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginEnd="@dimen/unify_space_12"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="12dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/Unify_N700_96"
@@ -64,7 +75,7 @@
             android:id="@+id/tvShcPostTextDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="4dp"
             android:drawablePadding="10dp"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_68"
@@ -77,8 +88,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgShcPostMedia"
-            android:layout_width="@dimen/layout_lvl5"
-            android:layout_height="@dimen/layout_lvl5"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/shc_content_desc_image_post"
             android:scaleType="centerCrop"
@@ -93,11 +104,11 @@
 
     <View
         android:id="@+id/lineShcItemPost"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="@dimen/shc_dimen_1dp"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="@dimen/shc_dimen_6dp"
-        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginEnd="8dp"
         android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

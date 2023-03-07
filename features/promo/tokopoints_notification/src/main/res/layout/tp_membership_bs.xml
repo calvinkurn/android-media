@@ -8,13 +8,12 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_bs_membership"
-        android:layout_width="@dimen/dp_180"
-        android:layout_height="@dimen/dp_180"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="@dimen/spacing_lvl8"
         android:layout_marginStart="@dimen/spacing_lvl8"
-        tools:src="@color/tkpd_dark_red"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="@dimen/unify_space_16"/>
 

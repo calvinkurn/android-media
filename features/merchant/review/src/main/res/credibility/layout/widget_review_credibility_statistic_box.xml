@@ -2,56 +2,130 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/review_credibility_statistic_box_wrapper"
+    android:id="@+id/container_review_credibility_statistic_box"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/Unify_Background"
-    android:paddingBottom="16dp"
-    tools:viewBindingIgnore="true">
+    android:layout_height="0dp"
+    android:padding="12dp"
+    app:card_type="border"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:background="@drawable/bg_review_credibility_statistics_box"
+    tools:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/review_credibility_statistic_box_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:textAlignment="center"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="paragraph_3"
+        tools:text="Di tahun ini, [First Name] sudah membantu 3 pembeli lainnya dengan kasih:" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/review_credibility_statistic_box_guideline"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/review_credibility_statistics_loading_title"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="4dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/review_credibility_statistics_loading_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="6dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/review_credibility_statistics_loading_title"
+        app:layout_constraintStart_toStartOf="@id/review_credibility_statistics_loading_title"
+        app:layout_constraintTop_toBottomOf="@id/review_credibility_statistics_loading_title"
+        app:layout_constraintWidth_percent="0.7"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_review_credibility_statistic_box_title_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="review_credibility_statistics_loading_subtitle,review_credibility_statistic_box_title"
+        app:layout_constraintTop_toBottomOf="@id/review_credibility_statistics_loading_subtitle"
+        tools:layout_height="0dp"
+        tools:layout_width="0dp" />
 
-    <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityStatisticWidget
+    <include
         android:id="@+id/review_credibility_statistics_1"
-        android:layout_width="wrap_content"
+        layout="@layout/partial_review_credibility_statistic"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toStartOf="@id/review_credibility_statistics_2"
-        app:layout_constraintTop_toBottomOf="@id/review_credibility_statistic_box_title" />
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_review_credibility_statistic_box_title_bottom"
+        app:layout_constraintWidth_percent="0.3" />
 
-    <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityStatisticWidget
+    <include
+        android:id="@+id/review_credibility_statistics_1_loading"
+        layout="@layout/partial_review_credibility_statistic_loading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toStartOf="@id/review_credibility_statistics_2_loading"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_review_credibility_statistic_box_title_bottom"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <include
         android:id="@+id/review_credibility_statistics_2"
-        android:layout_width="wrap_content"
+        layout="@layout/partial_review_credibility_statistic"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="@id/review_credibility_statistic_box_guideline"
-        app:layout_constraintStart_toStartOf="@id/review_credibility_statistic_box_guideline"
-        app:layout_constraintTop_toBottomOf="@id/review_credibility_statistic_box_title" />
+        app:layout_constraintEnd_toStartOf="@id/review_credibility_statistics_3"
+        app:layout_constraintStart_toEndOf="@id/review_credibility_statistics_1"
+        app:layout_constraintTop_toBottomOf="@id/barrier_review_credibility_statistic_box_title_bottom"
+        app:layout_constraintWidth_percent="0.3" />
 
-    <com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityStatisticWidget
+    <include
+        android:id="@+id/review_credibility_statistics_2_loading"
+        layout="@layout/partial_review_credibility_statistic_loading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toStartOf="@id/review_credibility_statistics_3_loading"
+        app:layout_constraintStart_toEndOf="@id/review_credibility_statistics_1_loading"
+        app:layout_constraintTop_toBottomOf="@id/barrier_review_credibility_statistic_box_title_bottom"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <include
         android:id="@+id/review_credibility_statistics_3"
-        android:layout_width="wrap_content"
+        layout="@layout/partial_review_credibility_statistic"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/review_credibility_statistics_2"
-        app:layout_constraintTop_toBottomOf="@id/review_credibility_statistic_box_title" />
+        app:layout_constraintTop_toBottomOf="@id/barrier_review_credibility_statistic_box_title_bottom"
+        app:layout_constraintWidth_percent="0.3" />
 
+    <include
+        android:id="@+id/review_credibility_statistics_3_loading"
+        layout="@layout/partial_review_credibility_statistic_loading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/review_credibility_statistics_2_loading"
+        app:layout_constraintTop_toBottomOf="@id/barrier_review_credibility_statistic_box_title_bottom"
+        app:layout_constraintWidth_percent="0.3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

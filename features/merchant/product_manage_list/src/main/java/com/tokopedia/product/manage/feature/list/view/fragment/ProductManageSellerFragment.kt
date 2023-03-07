@@ -31,16 +31,19 @@ open class ProductManageSellerFragment : ProductManageFragment() {
     companion object {
         const val FILTER_OPTIONS = "filter_options"
         const val SEARCH_KEYWORD_OPTIONS = "search_keyword_options"
+        const val PRODUCT_MANAGE_TAB = "product_manage_tab"
 
         @JvmStatic
         fun newInstance(
             filterOptions: ArrayList<String>,
+            tab: String,
             searchKeyWord: String
         ): ProductManageSellerFragment {
             return ProductManageSellerFragment().apply {
                 arguments = Bundle().apply {
                     putStringArrayList(FILTER_OPTIONS, filterOptions)
                     putString(SEARCH_KEYWORD_OPTIONS, searchKeyWord)
+                    putString(PRODUCT_MANAGE_TAB, tab)
                 }
             }
         }

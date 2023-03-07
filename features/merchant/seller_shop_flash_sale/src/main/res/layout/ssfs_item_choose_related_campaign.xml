@@ -9,7 +9,7 @@
         android:id="@+id/checbox_related_campaign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_2"
+        android:layout_marginStart="2dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/tg_related_campaign_name"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -17,8 +17,8 @@
         android:id="@+id/tg_related_campaign_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:maxLines="1"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -33,7 +33,7 @@
         android:id="@+id/tg_related_campaign_code"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginStart="8dp"
         android:ellipsize="middle"
         android:textColor="@color/Unify_NN600"
         android:singleLine="true"

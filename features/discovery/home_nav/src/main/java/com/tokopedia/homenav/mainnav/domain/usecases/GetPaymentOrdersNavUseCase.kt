@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
 import com.tokopedia.homenav.mainnav.data.pojo.payment.PaymentQuery
 import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
-import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
+import com.tokopedia.homenav.mainnav.domain.usecases.query.GetPaymentQuery
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 
@@ -16,26 +16,8 @@ import com.tokopedia.usecase.coroutines.UseCase
 class GetPaymentOrdersNavUseCase (
         private val graphqlUseCase: GraphqlUseCase<Payment>
 ): UseCase<List<NavPaymentOrder>>(){
-
-    private var params : Map<String, Any> = mapOf()
-
     init {
-        val query = """
-            query PaymentQuery {
-              paymentQuery: paymentList(lang: "ID", cursor:"") {
-                paymentList: payment_list {
-                  merchantCode: merchant_code
-                  transactionID: transaction_id
-                  paymentAmount: payment_amount
-                  tickerMessage: ticker_message
-                  gatewayImg: gateway_img
-                  applink: app_link
-                  bankImg: bank_img
-                }
-              }
-            }
-        """.trimIndent()
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(GetPaymentQuery())
         graphqlUseCase.setRequestParams(generateParam())
         graphqlUseCase.setTypeClass(Payment::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())

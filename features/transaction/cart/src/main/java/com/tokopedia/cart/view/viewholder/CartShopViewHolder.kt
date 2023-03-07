@@ -41,11 +41,18 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                          private val cartItemAdapterListener: CartItemAdapter.ActionListener,
                          private val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
 
+    // variable to hold identifier
+    private var cartString: String = ""
+
     private val localCacheHandler: LocalCacheHandler by lazy {
         LocalCacheHandler(itemView.context, KEY_ONBOARDING_ICON_PIN)
     }
 
     fun bindUpdatedWeight(cartShopHolderData: CartShopHolderData) {
+        if (cartString != cartShopHolderData.cartString) {
+            // workaround for different binding
+            bindData(cartShopHolderData)
+        }
         renderMaximumWeight(cartShopHolderData)
         cartShopHolderData.isNeedToRefreshWeight = false
         renderBoAfford(cartShopHolderData)
@@ -66,6 +73,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderMaximumWeight(cartShopHolderData)
         renderBoAfford(cartShopHolderData)
         renderGiftingAddOn(cartShopHolderData)
+        cartString = cartShopHolderData.cartString
     }
 
     private fun renderIconPin(cartShopHolderData: CartShopHolderData) {
@@ -345,14 +353,18 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 ImageHandler.loadImageWithoutPlaceholderAndError(
                         imgFreeShipping, cartShopHolderData.freeShippingBadgeUrl
                 )
-                val contentDescriptionStringResource = if (cartShopHolderData.isFreeShippingExtra) {
-                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+                val contentDescriptionStringResource = if (cartShopHolderData.isFreeShippingPlus) {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
                 } else {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
                 }
                 imgFreeShipping.contentDescription = itemView.context.getString(contentDescriptionStringResource)
                 imgFreeShipping.show()
                 separatorFreeShipping.show()
+                if (!cartShopHolderData.hasSeenFreeShippingBadge && cartShopHolderData.isFreeShippingPlus) {
+                    cartShopHolderData.hasSeenFreeShippingBadge = true
+                    actionListener.onViewFreeShippingPlusBadge()
+                }
             } else {
                 imgFreeShipping.gone()
                 separatorFreeShipping.gone()
@@ -440,7 +452,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             binding.apply {
                 val boAffordability = cartShopHolderData.boAffordability
                 when (boAffordability.state) {
-                    CartShopBoAffordabilityState.LOADING -> {
+                    CartShopBoAffordabilityState.FIRST_LOAD, CartShopBoAffordabilityState.LOADING -> {
                         textBoAffordability.gone()
                         arrowBoAffordability.gone()
                         largeLoaderBoAffordability.show()
@@ -496,6 +508,9 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                     CartShopBoAffordabilityState.EMPTY -> {
                         layoutBoAffordability.gone()
                     }
+                }
+                if (boAffordability.state == CartShopBoAffordabilityState.FIRST_LOAD) {
+                    actionListener.checkBoAffordability(cartShopHolderData)
                 }
             }
         } else {

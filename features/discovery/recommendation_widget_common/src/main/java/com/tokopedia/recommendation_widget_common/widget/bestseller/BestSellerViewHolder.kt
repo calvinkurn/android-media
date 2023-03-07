@@ -187,7 +187,6 @@ class BestSellerViewHolder (private val view: View,
         bestSellerDataModel?.let { listener.onBestSellerThreeDotsClick(it, item, adapterPosition) }
     }
 
-    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
 
     companion object{

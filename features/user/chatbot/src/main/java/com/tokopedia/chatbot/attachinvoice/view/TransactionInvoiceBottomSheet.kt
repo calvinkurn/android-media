@@ -17,6 +17,7 @@ import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.VALUE_P
 import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.VALUE_PENJUALAN
 import com.tokopedia.chatbot.attachinvoice.view.fragment.TransactionInvoiceListFragment
 import com.tokopedia.chatbot.attachinvoice.view.fragment.TransactionInvoiceListFragmentListener
+import com.tokopedia.chatbot.databinding.BottomsheetTransactionInvoiceBinding
 import com.tokopedia.chatbot.view.adapter.ChatBotViewPagerAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnify
@@ -31,8 +32,10 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
     private lateinit var touchViewPager: TouchViewPager
     private lateinit var transactionNotFoundButton: UnifyButton
     private lateinit var context: FragmentActivity
-    private var messageId: Int = 0
+    private var messageId: Long = 0
     private lateinit var listener: TransactionInvoiceBottomSheetListener
+    private var _viewBinding: BottomsheetTransactionInvoiceBinding? = null
+    private fun getBindingView() = _viewBinding!!
 
     init {
         isFullpage = true
@@ -42,8 +45,10 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
 
     companion object {
         @JvmStatic
-        fun newInstance(context: FragmentActivity, messageId: Int,
-                        listener: TransactionInvoiceBottomSheetListener): TransactionInvoiceBottomSheet {
+        fun newInstance(
+            context: FragmentActivity, messageId: Long,
+            listener: TransactionInvoiceBottomSheetListener
+        ): TransactionInvoiceBottomSheet {
             return TransactionInvoiceBottomSheet().apply {
                 this.context = context
                 this.messageId = messageId
@@ -52,15 +57,24 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val contentView = View.inflate(context, R.layout.bottomsheet_transaction_invoice, null)
-        setChild(contentView)
-        contentView.run {
-            tabsUnify = findViewById(R.id.transaction_invoice_tab_layout)
-            touchViewPager = findViewById(R.id.transaction_invoice_view_pager)
-            transactionNotFoundButton = findViewById(R.id.transaction_not_found_btn)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _viewBinding = BottomsheetTransactionInvoiceBinding.inflate(LayoutInflater.from(context))
+        setChild(getBindingView().root)
+        getBindingView().run {
+            tabsUnify = this.transactionInvoiceTabLayout
+            touchViewPager = this.transactionInvoiceViewPager
+            transactionNotFoundButton = this.transactionNotFoundBtn
         }
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,8 +102,10 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         list.add(TransactionInvoiceListFragment.newInstance(messageId, VALUE_PEMBELIAN, this))
         list.add(TransactionInvoiceListFragment.newInstance(messageId, VALUE_PENJUALAN, this))
         list.add(TransactionInvoiceListFragment.newInstance(messageId, VALUE_PENARIKAN_DANA, this))
-        return ChatBotViewPagerAdapter(arrayOf(TITLE_PURCHASE, TITLE_SALES, TITLE_WITHDRAWING_FUNDS),
-                childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT).apply {
+        return ChatBotViewPagerAdapter(
+            arrayOf(TITLE_PURCHASE, TITLE_SALES, TITLE_WITHDRAWING_FUNDS),
+            childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        ).apply {
             setData(list)
         }
     }

@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.merchant.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -9,10 +10,13 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.mvcwidget.AnimatedInfos
+import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper.mapTokoFoodProductsToCustomOrderDetails
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
 import com.tokopedia.tokofood.feature.merchant.domain.usecase.GetMerchantDataUseCase
@@ -29,6 +33,12 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -44,6 +54,12 @@ class MerchantPageViewModel @Inject constructor(
     val getMerchantDataResult: SingleLiveEvent<Result<GetMerchantDataResponse>> get() = getMerchantDataResultLiveData
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>> get() = _chooseAddress
+    private val _mvcLiveData = SingleLiveEvent<MvcData?>()
+    val mvcLiveData: LiveData<MvcData?> get() = _mvcLiveData
+
+    private val _quantityUpdateState = MutableSharedFlow<Boolean>()
+    private val _currentProductsWithUpdatedQuantity: MutableMap<String, List<UpdateProductParam>> = mutableMapOf()
+    val updateQuantityParam = MutableSharedFlow<UpdateParam>(Int.ONE)
 
     // map of productId to card positions info <dataset,adapter>
     val productMap: HashMap<String, Pair<Int, Int>> = hashMapOf()
@@ -72,6 +88,24 @@ class MerchantPageViewModel @Inject constructor(
 
     var merchantData: TokoFoodGetMerchantData? = null
 
+    init {
+        viewModelScope.launch {
+            _quantityUpdateState
+                .debounce(UPDATE_QUANTITY_DEBOUNCE)
+                .flatMapConcat {
+                    flow {
+                        getCurrentQuantityUpdateParams().forEach {
+                            emit(it)
+                        }
+                    }
+                }
+                .collect {
+                    _currentProductsWithUpdatedQuantity.clear()
+                    updateQuantityParam.emit(it)
+                }
+        }
+    }
+
     fun getMerchantData(merchantId: String, latlong: String, timezone: String) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
@@ -86,8 +120,10 @@ class MerchantPageViewModel @Inject constructor(
             filterList = result.tokofoodGetMerchantData.filters
             merchantData = result.tokofoodGetMerchantData
             getMerchantDataResultLiveData.value = Success(result)
+            _mvcLiveData.value = getMvcData(result.tokofoodGetMerchantData.topBanner)
         }, onError = {
             getMerchantDataResultLiveData.value = Fail(it)
+            _mvcLiveData.value = null
         })
     }
 
@@ -134,11 +170,13 @@ class MerchantPageViewModel @Inject constructor(
     fun mapOpsHourDetailsToMerchantOpsHours(today: Int, opsHourDetails: List<TokoFoodMerchantOpsHour>): List<MerchantOpsHour> {
         return opsHourDetails.mapIndexed { index, opsHourDetail ->
             // response data from be always start from monday with index 0
-            // monday index from be = 0 ; Calendar.MONDAY = 2
-            var day = index + DAYS_INCREASE
-            // sunday index from be = 6 ; Calendar.SUNDAY = 1
+            var day = index
             if (index == opsHourDetails.lastIndex) {
+                // sunday index from be = 6 ; Calendar.SUNDAY = 1
                 day -= DAYS_DECREASE
+            } else {
+                // monday index from be = 0 ; Calendar.MONDAY = 2
+                day += DAYS_INCREASE
             }
             MerchantOpsHour(
                     initial = opsHourDetail.day.firstOrNull(),
@@ -219,7 +257,7 @@ class MerchantPageViewModel @Inject constructor(
                 maxQty = variant.maxQty,
                 minQty = variant.minQty,
                 options = mapOptionDetailsToOptionUiModels(variant.minQty, variant.maxQty, variant.options),
-                outOfStockWording = resourceProvider.getOutOfStockWording().orEmpty()
+                outOfStockWording = resourceProvider.getOutOfStockWording()
         )
     }
 
@@ -253,9 +291,11 @@ class MerchantPageViewModel @Inject constructor(
                 val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
-                selectedProductListItem?.productUiModel?.apply {
-                    isAtc = true
-                    customOrderDetails = mapTokoFoodProductsToCustomOrderDetails(entry.value)
+                if (selectedProductListItem != null) {
+                    with(selectedProductListItem.productUiModel) {
+                        isAtc = true
+                        customOrderDetails = mapTokoFoodProductsToCustomOrderDetails(entry.value)
+                    }
                 }
             } else {
                 // NON-VARIANT PRODUCT ORDER
@@ -263,11 +303,13 @@ class MerchantPageViewModel @Inject constructor(
                 val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
-                selectedProductListItem?.productUiModel?.apply {
-                    isAtc = true
-                    cartId = selectedProduct.cartId
-                    orderQty = selectedProduct.quantity
-                    orderNote = selectedProduct.notes
+                if (selectedProductListItem != null) {
+                    with(selectedProductListItem.productUiModel) {
+                        isAtc = true
+                        cartId = selectedProduct.cartId
+                        orderQty = selectedProduct.quantity
+                        orderNote = selectedProduct.notes
+                    }
                 }
             }
         }
@@ -275,7 +317,9 @@ class MerchantPageViewModel @Inject constructor(
     }
 
     fun getAppliedProductSelection(): List<ProductListItem>? {
-        return (getMerchantDataResultLiveData.value as? Success)?.data?.tokofoodGetMerchantData?.let { merchantData ->
+        val successMerchantData = (getMerchantDataResultLiveData.value as? Success)?.data
+        val tokofoodGetMerchantData = successMerchantData?.tokofoodGetMerchantData
+        return tokofoodGetMerchantData?.let { merchantData ->
             val isShopClosed = merchantData.merchantProfile.opsHourFmt.isWarning
             val foodCategories = merchantData.categories
             val productListItems = mapFoodCategoriesToProductListItems(
@@ -302,7 +346,8 @@ class MerchantPageViewModel @Inject constructor(
         )
     }
 
-    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
+    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail? {
+        if (!productUiModel.isCustomizable) return null
         resetMasterData(productUiModel.customListItems)
         return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetail(
                 cartTokoFood = cartTokoFood,
@@ -310,18 +355,92 @@ class MerchantPageViewModel @Inject constructor(
         )
     }
 
+    fun updateQuantity(shopId: String, productUiModel: ProductUiModel) {
+        val currentProducts = _currentProductsWithUpdatedQuantity[shopId].orEmpty().toMutableList()
+        val shouldReplaceProductIndex = getShouldReplaceProductIndex(currentProducts, productUiModel.cartId, productUiModel.id)
+        val updatedProductParam = TokoFoodMerchantUiModelMapper.mapProductUiModelToUpdateProductParams(productUiModel)
+        if (shouldReplaceProductIndex == null) {
+            currentProducts.add(updatedProductParam)
+        } else {
+            currentProducts[shouldReplaceProductIndex] = updatedProductParam
+        }
+        _currentProductsWithUpdatedQuantity[shopId] = currentProducts
+
+        viewModelScope.launch {
+            _quantityUpdateState.emit(true)
+        }
+    }
+
+    fun updateQuantity(
+        shopId: String,
+        productId: String,
+        customOrderDetail: CustomOrderDetail
+    ) {
+        val currentProducts = _currentProductsWithUpdatedQuantity[shopId].orEmpty().toMutableList()
+        val shouldReplaceProductIndex = getShouldReplaceProductIndex(currentProducts, customOrderDetail.cartId, productId)
+        val updatedProductParam = TokoFoodMerchantUiModelMapper.mapCustomOrderDetailToUpdateProductParams(productId, customOrderDetail)
+        if (shouldReplaceProductIndex == null) {
+            currentProducts.add(updatedProductParam)
+        } else {
+            currentProducts[shouldReplaceProductIndex] = updatedProductParam
+        }
+        _currentProductsWithUpdatedQuantity[shopId] = currentProducts
+
+        viewModelScope.launch {
+            _quantityUpdateState.emit(true)
+        }
+    }
+
+    private fun getShouldReplaceProductIndex(
+        currentProducts: List<UpdateProductParam>,
+        cartId: String,
+        productId: String
+    ): Int? {
+        var shouldReplaceProductIndex: Int? = null
+        currentProducts.forEachIndexed { index, updateProductParam ->
+            if (updateProductParam.cartId == cartId && updateProductParam.productId == productId) {
+                shouldReplaceProductIndex = index
+            }
+        }
+        return shouldReplaceProductIndex
+    }
+
+    private fun getCurrentQuantityUpdateParams(): List<UpdateParam> {
+        return _currentProductsWithUpdatedQuantity.entries.map {
+            UpdateParam(
+                shopId = it.key,
+                productList = it.value
+            )
+        }
+    }
+
     private fun resetMasterData(customListItems: List<CustomListItem>): List<CustomListItem> {
         customListItems.forEach {
             it.orderNote = String.EMPTY
-            it.addOnUiModel?.isSelected = false
-            it.addOnUiModel?.options?.forEach { optionUiModel ->
-                optionUiModel.isSelected = false
+            it.addOnUiModel?.run {
+                isSelected = false
+                options.forEach { optionUiModel ->
+                    optionUiModel.isSelected = false
+                }
+                selectedAddOns = listOf()
             }
-            it.addOnUiModel?.selectedAddOns = listOf()
         }
         return customListItems
     }
 
+    private fun getMvcData(topBanner: TokoFoodTopBanner): MvcData? {
+        return topBanner.takeIf { it.isShown }?.let {
+            MvcData(
+                listOf(
+                    AnimatedInfos(
+                        title = it.title,
+                        subTitle = it.subtitle,
+                        iconURL = it.imageUrl
+                    )
+                )
+            )
+        }
+    }
 
     fun isTickerDetailEmpty(tickerData: TokoFoodTickerDetail): Boolean {
         return tickerData.title.isBlank() && tickerData.subtitle.isBlank()
@@ -330,5 +449,7 @@ class MerchantPageViewModel @Inject constructor(
     companion object {
         private const val DAYS_DECREASE = 5
         private const val DAYS_INCREASE = 2
+
+        private const val UPDATE_QUANTITY_DEBOUNCE = 500L
     }
 }

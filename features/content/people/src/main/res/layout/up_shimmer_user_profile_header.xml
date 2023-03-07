@@ -134,51 +134,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="284dp">
+    <include layout="@layout/up_shimmer_user_feed" />
 
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:loader_corner_radius="10dp"
-            app:loader_type="rect" />
-
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_weight="1"
-            app:loader_corner_radius="10dp"
-            app:loader_type="rect" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="284dp"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="16dp">
-
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:loader_corner_radius="10dp"
-            app:loader_type="rect" />
-
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_weight="1"
-            app:loader_corner_radius="10dp"
-            app:loader_type="rect" />
-
-    </LinearLayout>
 </LinearLayout>
 

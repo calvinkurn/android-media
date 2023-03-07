@@ -6,6 +6,7 @@ import com.tokopedia.reviewcommon.extension.appendCurrentSite
 import com.tokopedia.reviewcommon.extension.appendGeneralEventData
 import com.tokopedia.reviewcommon.extension.appendProductId
 import com.tokopedia.reviewcommon.extension.appendShopId
+import com.tokopedia.reviewcommon.extension.appendTrackerIdIfNotBlank
 import com.tokopedia.reviewcommon.extension.appendUserId
 import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 
@@ -77,22 +78,30 @@ object ReviewDetailTracker {
         userId: String,
         statistics: String,
         productId: String,
-        currentUserId: String
+        currentUserId: String,
+        label: String,
+        trackerId: String
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            AnalyticConstant.EVENT_CLICK_PDP,
-            if (isFromGallery) ReviewDetailTrackerConstant.EVENT_CATEGORY_REVIEW_IMAGE_GALLERY else ReviewDetailTrackerConstant.EVENT_CATEGORY_REVIEW_IMAGE_READING_PAGE,
+            AnalyticConstant.EVENT_CLICK_PG,
+            if (isFromGallery) {
+                ReviewDetailTrackerConstant.EVENT_CATEGORY_REVIEW_IMAGE_GALLERY
+            } else {
+                ReviewDetailTrackerConstant.EVENT_CATEGORY_REVIEW_IMAGE_READING_PAGE
+            },
             ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_REVIEWER_NAME,
             String.format(
                 ReviewDetailTrackerConstant.EVENT_LABEL_CLICK_REVIEWER_NAME,
                 feedbackId,
                 userId,
-                statistics
+                statistics,
+                label
             )
         ).appendProductId(productId)
             .appendUserId(currentUserId)
             .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
             .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
+            .appendTrackerIdIfNotBlank(trackerId)
             .sendGeneralEvent()
     }
 }

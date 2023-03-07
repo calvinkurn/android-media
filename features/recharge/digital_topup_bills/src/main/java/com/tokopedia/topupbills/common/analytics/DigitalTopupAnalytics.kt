@@ -3,11 +3,13 @@ package com.tokopedia.topupbills.common.analytics
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
+import com.tokopedia.common.topupbills.data.constant.GeneralComponentName
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -100,7 +102,7 @@ class DigitalTopupAnalytics {
     }
 
     fun eventClickDotsMenuTelco(categoryId: String, userId: String) {
-        var category = getTrackingCategoryName(categoryId.toIntOrNull() ?: 0)
+        var category = getTrackingCategoryName(categoryId.toIntSafely())
         if (categoryId.isEmpty()) category = categoryId
 
         val mapEvent = TrackAppUtils.gtmData(
@@ -334,7 +336,7 @@ class DigitalTopupAnalytics {
     }
 
     private fun getTrackingCategoryName(categoryId: String): String {
-        return getCategoryName(categoryId.toIntOrZero()).lowercase()
+        return getCategoryName(categoryId.toIntSafely()).lowercase()
     }
 
     fun getCategoryName(categoryId: Int): String {
@@ -342,6 +344,7 @@ class DigitalTopupAnalytics {
             TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA
             TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA
             TelcoCategoryType.CATEGORY_ROAMING -> TelcoComponentName.PRODUCT_ROAMING
+            GeneralCategoryType.CATEGORY_SIGNAL -> GeneralComponentName.CATEGORY_SIGNAL
             else -> TelcoComponentName.PRODUCT_PASCABAYAR
         }
     }

@@ -15,7 +15,7 @@ import com.tokopedia.managepassword.di.module.ManagePasswordModule
  * @team : @minion-kevin
  *
  * For navigating to this class
- * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PASSWORD]
+ * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PASSWORD]
  * @params
  *
  */

@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/img_notif"
-        android:layout_width="@dimen/dp_52"
-        android:layout_height="@dimen/dp_52"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:adjustViewBounds="true"
         android:layout_alignTop="@+id/rate_title"
         android:layout_alignBottom="@+id/rate_message"

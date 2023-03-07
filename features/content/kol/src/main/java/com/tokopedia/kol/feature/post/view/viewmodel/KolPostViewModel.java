@@ -1,6 +1,6 @@
 package com.tokopedia.kol.feature.post.view.viewmodel;
 
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class KolPostViewModel extends BaseKolViewModel {
     private String tagsLink;
     private String trackingId;
     private String info;
-    private List<TrackingViewModel> trackingViewModel;
+    private List<TrackingModel> trackingModel;
     private boolean showTopShadow;
 
     public KolPostViewModel(String userId, String activityType, String cardType, String title, String name, String avatar, String label, String kolProfileUrl, boolean followed, String review, boolean liked, int totalLike, int totalComment, int page, String contentId, String time, boolean isShowComment, boolean isShowLike, boolean editable, boolean deletable, boolean multipleContent) {
@@ -36,7 +36,7 @@ public class KolPostViewModel extends BaseKolViewModel {
                             boolean liked, int totalLike, int totalComment, int page, String kolId,
                             String time, boolean isShowComment, boolean isShowLike,
                             List<String> imageList, String tagsId, String contentName, String tagsType,
-                            String tagsCaption, String tagsLink, List<TrackingViewModel> trackingViewModel) {
+                            String tagsCaption, String tagsLink, List<TrackingModel> trackingModel) {
         super(userId, tagsType, cardType, title, name, avatar, label, kolProfileUrl, followed,
                 review, liked, totalLike, totalComment, page, kolId, time, isShowComment,
                 isShowLike, false, false, imageList.size() > 1);
@@ -46,7 +46,7 @@ public class KolPostViewModel extends BaseKolViewModel {
         this.tagsType = tagsType;
         this.tagsCaption = tagsCaption;
         this.tagsLink = tagsLink;
-        this.trackingViewModel = trackingViewModel;
+        this.trackingModel = trackingModel;
     }
 
     public KolPostViewModel(String userId, String cardType, String title, String name, String avatar,
@@ -141,8 +141,8 @@ public class KolPostViewModel extends BaseKolViewModel {
         this.showTopShadow = showTopShadow;
     }
 
-    public List<TrackingViewModel> getTrackingViewModel() {
-        return trackingViewModel;
+    public List<TrackingModel> getTrackingViewModel() {
+        return trackingModel;
     }
 }
 

@@ -9,6 +9,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ELEC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_PAKET_DATA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_PULSA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ROAMING
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.DEFAULT_SUBHOMEPAGE_PLATFORM_ID
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_PAKET_DATA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_PULSA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_ROAMING
@@ -26,7 +27,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_TAGIHAN
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_TOKEN_LISTRIK_DIGITAL_PDP
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TRAVEL_SUBHOMEPAGE_PLATFORM_ID
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
-import com.tokopedia.applink.order.DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh.getRegisteredNavigationUohOrder
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -92,7 +93,7 @@ object DeeplinkMapperDigital {
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME) -> {
                 if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
-                else ApplinkConsInternalDigital.SUBHOMEPAGE
+                else UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITH_PARAM, DEFAULT_SUBHOMEPAGE_PLATFORM_ID, false.toString())
             }
             deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) -> {
                 if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) {

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
@@ -137,14 +138,27 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
 
     private fun askPermissions() {
         if (!viewModel.isPermissionGranted()) {
-            ActivityCompat.requestPermissions(this, arrayOf(
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-                Manifest.permission.VIBRATE),
-                MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
-            )
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                ActivityCompat.requestPermissions(this, arrayOf(
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_AUDIO,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.VIBRATE),
+                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
+                )
+            }else{
+                ActivityCompat.requestPermissions(this, arrayOf(
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.VIBRATE),
+                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
+                )
+            }
         } else {
             setUpEducationalFragment()
         }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.gone
@@ -39,7 +40,9 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private var mListener: Listener? = null
 
-    private lateinit var viewModel: PlayBroadcastSummaryViewModel
+    private val viewModel: PlayBroadcastSummaryViewModel by activityViewModels {
+        (parentFragment as ViewModelFactoryProvider).getFactory()
+    }
 
     private var _binding: FragmentPlayBroadcastReportBinding? = null
     private val binding: FragmentPlayBroadcastReportBinding
@@ -54,11 +57,6 @@ class PlayBroadcastReportFragment @Inject constructor(
     )
 
     override fun getScreenName(): String = "Play Report Page"
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity(), (parentFragment as ViewModelFactoryProvider).getFactory()).get(PlayBroadcastSummaryViewModel::class.java)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentPlayBroadcastReportBinding.inflate(LayoutInflater.from(requireContext()), container, false)

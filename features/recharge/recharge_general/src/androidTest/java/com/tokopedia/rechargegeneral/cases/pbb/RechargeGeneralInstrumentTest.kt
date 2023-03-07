@@ -14,9 +14,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
@@ -42,7 +41,6 @@ import org.junit.runner.RunWith
 class RechargeGeneralInstrumentTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
@@ -58,11 +56,13 @@ class RechargeGeneralInstrumentTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             graphqlCacheManager.deleteAll()
-            gtmLogDBSource.deleteAll().subscribe()
 
             setupGraphqlMockResponse(RechargeGeneralMockResponseConfig(RechargeGeneralProduct.PBB))
         }
     }
+
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun stubAllExternalIntents() {
@@ -78,8 +78,7 @@ class RechargeGeneralInstrumentTest {
         validate_select_product()
         validate_manual_input()
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY),
-                hasAllSuccess())
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY), hasAllSuccess())
     }
 
     fun validate_initial_state() {

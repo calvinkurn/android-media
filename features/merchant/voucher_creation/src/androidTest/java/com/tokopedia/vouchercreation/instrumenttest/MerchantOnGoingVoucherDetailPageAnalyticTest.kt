@@ -5,30 +5,29 @@ import android.text.SpannableString
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView.*
-import androidx.test.espresso.Espresso.*
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.contrib.RecyclerViewActions.*
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.shop.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.mock.MerchantOnGoingVoucherDetailMockModelConfig
-import org.hamcrest.CoreMatchers.*
+import com.tokopedia.vouchercreation.shop.detail.view.activity.VoucherDetailActivity
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -46,12 +45,11 @@ class MerchantOnGoingVoucherDetailPageAnalyticTest {
     @get:Rule
     var activityRule: IntentsTestRule<VoucherDetailActivity> = IntentsTestRule(VoucherDetailActivity::class.java, false, false)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun beforeTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(MerchantOnGoingVoucherDetailMockModelConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         activityRule.launchActivity(Intent())
@@ -59,7 +57,6 @@ class MerchantOnGoingVoucherDetailPageAnalyticTest {
 
     @After
     fun afterTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
@@ -101,7 +98,7 @@ class MerchantOnGoingVoucherDetailPageAnalyticTest {
 
     private fun doAnalyticDebuggerTest(fileName: String) {
         MatcherAssert.assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, fileName),
+                cassavaRule.validate(fileName),
                 hasAllSuccess()
         )
     }
@@ -110,7 +107,7 @@ class MerchantOnGoingVoucherDetailPageAnalyticTest {
         return object : ViewAction {
 
             override fun getConstraints(): Matcher<View> {
-                return Matchers.instanceOf(TextView::class.java)
+                return CoreMatchers.instanceOf(TextView::class.java)
             }
 
             override fun getDescription(): String {

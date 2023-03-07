@@ -5,11 +5,18 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
+import com.tokopedia.topads.common.data.response.TopAdsAutoAds
+import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
+import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
+import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.topads.data.response.AdCreationOption
-import com.tokopedia.topads.data.response.TopAdsAutoAdsCreate
 import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,13 +40,18 @@ class AdChooserViewModelTest {
     private lateinit var repository: GraphqlRepository
     private lateinit var context: Context
     private lateinit var userSession: UserSession
+    private val queryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         repository = mockk()
         context = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
-        viewModel = spyk(AdChooserViewModel(context, userSession, rule.dispatchers, repository))
+        viewModel = spyk(AdChooserViewModel(context,
+            userSession,
+            rule.dispatchers,
+            repository,
+            queryPostAutoadsUseCase))
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
@@ -81,38 +93,33 @@ class AdChooserViewModelTest {
     }
 
     @Test
-    fun `test result in postAutoAds`() {
-        val expected = "status_desc"
-        val data =
-            TopAdsAutoAdsCreate.Response(TopAdsAutoAdsCreate(TopAdsAutoAdsCreate.Response.TopAdsAutoAdsData(
-                statusDesc = expected)))
-        val response: GraphqlResponse = mockk(relaxed = true)
+    fun `test exception in postAutoAds`() {
+        val data = Fail(throwable = Throwable())
 
-        every { userSession.shopId } returns "12"
-
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.response(any(), any()) } returns response
-        every { response.getError(TopAdsAutoAdsCreate.Response::class.java) } returns listOf()
-        every { response.getData<TopAdsAutoAdsCreate.Response>(TopAdsAutoAdsCreate.Response::class.java) } returns data
+        every {
+            queryPostAutoadsUseCase.executeQuery(any(),captureLambda())
+        } answers {
+            secondArg<(Result<TopAdsAutoAdsModel>) -> Unit>().invoke(data)
+        }
 
         viewModel.postAutoAds("toggle_status", budget = 1000)
 
-        val actual = viewModel.autoAdsData.value?.statusDesc
-
-        Assert.assertEquals(expected, actual)
+        Assert.assertEquals(data, viewModel.autoAdsData.value)
     }
 
+
     @Test
-    fun `test exception in postAutoAds`() {
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } throws Throwable()
+    fun `test result in postAutoAds`() {
+        val data = Success(TopAdsAutoAdsModel(shopId = "123"))
+
+        every {
+            queryPostAutoadsUseCase.executeQuery(any(), captureLambda())
+        } answers {
+            secondArg<(Result<TopAdsAutoAdsModel>) -> Unit>().invoke(data)
+        }
 
         viewModel.postAutoAds("toggle_status", budget = 1000)
-
-        val actual = viewModel.autoAdsData.value?.statusDesc
-
-        Assert.assertEquals(null, actual)
+        Assert.assertEquals(data, viewModel.autoAdsData.value)
     }
 
     @Test

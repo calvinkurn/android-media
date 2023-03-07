@@ -13,6 +13,12 @@ buildscript {
     }
 }
 
+android{
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)

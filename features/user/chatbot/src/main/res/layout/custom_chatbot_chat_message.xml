@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:parentTag="android.widget.FrameLayout">
+    tools:parentTag="com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMessage"
@@ -11,9 +11,9 @@
         android:layout_gravity="top"
         android:gravity="left|top"
         android:lineSpacingMultiplier="1.1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/chatbot_dms_message_text"
         android:textIsSelectable="true"
-        android:textColorLink="@color/read_more_color"
+        android:textColorLink="@color/Unify_G400"
         app:typographyType="body_1"
         tools:ignore="RtlHardcoded"
         android:ellipsize="end"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:includeFontPadding="false"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/chatbot_dms_time_text"
             app:typographyType="body_3"
             tools:text="11:00" />
     </LinearLayout>
@@ -57,7 +57,7 @@
         android:layout_gravity="bottom|start"
         android:layout_marginTop="@dimen/dp_chatbot_6"
         android:text="@string/read_more"
-        android:textColor="@color/read_more_color"
+        android:textColor="@color/chatbot_dms_message_see_more"
         android:textStyle="bold"
         android:textIsSelectable="true"
         android:visibility="gone"

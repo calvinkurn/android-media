@@ -41,7 +41,6 @@
             android:name="com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -59,7 +58,6 @@
             android:name=".datefilter.presentation.activity.TokoNowDateFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -133,7 +131,6 @@
             android:name="com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -152,7 +149,6 @@
             android:name="com.tokopedia.tokopedianow.educationalinfo.presentation.activity.TokoNowEducationalInfoActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -166,5 +162,173 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.tokopedia.tokopedianow.recipedetail.presentation.activity.TokoNowRecipeDetailActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_recipe_detail"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".recipebookmark.persentation.activity.TokoNowRecipeBookmarkActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_recipe_bookmark"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.tokopedianow.common.activity.TokoNowMediaGalleryActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name="com.tokopedia.tokopedianow.recipehome.presentation.activity.TokoNowRecipeHomeActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_recipe_home"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".recipesearch.presentation.activity.TokoNowRecipeSearchActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_recipe_search"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.tokopedianow.recipelist.presentation.activity.TokoNowRecipeFilterActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:theme="@style/Theme.AppCompat.Translucent">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_recipe_filter"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".recipeautocomplete.presentation.activity.TokoNowRecipeAutoCompleteActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:windowSoftInputMode="stateVisible"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_recipe_autocomplete"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.tokopedianow.recipesearch.presentation.activity.TokoNowRecipeSearchIngredientActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:theme="@style/Theme.AppCompat.Translucent">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_recipe_ingredient"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.tokopedianow.recipedetail.presentation.activity.TokoNowRecipeSimilarProductActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_recipe_similar_product"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 </manifest>

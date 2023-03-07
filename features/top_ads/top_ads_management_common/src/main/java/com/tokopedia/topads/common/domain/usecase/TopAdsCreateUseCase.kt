@@ -198,7 +198,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             strategy = dataGroup[STRATEGIES] as ArrayList<String>?
         }
         val dailyBudgetGroup = dataGroup[DAILY_BUDGET]?.toString()?.toDouble()
-        val groupId = dataGroup[GROUPID] as? Int
+        val groupId = dataGroup[GROUPID]
         val isNameEdited = dataGroup[NAME_EDIT] as? Boolean
         val isBudgetLimited = dataGroup[BUDGET_LIMITED] as? Boolean
         val dataAddProduct =

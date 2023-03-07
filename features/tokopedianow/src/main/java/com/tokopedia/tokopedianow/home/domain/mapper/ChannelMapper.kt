@@ -68,8 +68,9 @@ object ChannelMapper {
                     warehouseId = it.warehouseId,
                     parentProductId = it.parentProductId,
                     recommendationType = it.recommendationType,
+                    maxOrder = it.maxOrder,
                     minOrder = it.minOrder,
-                    stock = it.maxOrder,
+                    stock = it.stock,
                     price = it.price,
                     imageUrl = it.imageUrl,
                     name = it.name,
@@ -77,6 +78,7 @@ object ChannelMapper {
                     url = it.url,
                     discount = it.discount,
                     slashedPrice = it.slashedPrice,
+                    labelTextColor = it.labelTextColor,
                     label = it.label,
                     soldPercentage = it.soldPercentage,
                     attribution = it.attribution,
@@ -86,15 +88,14 @@ object ChannelMapper {
                     isTopads = it.isTopads,
                     productViewCountFormatted = it.productViewCountFormatted,
                     isOutOfStock = it.isOutOfStock,
-                    isFreeOngkirActive = it.freeOngkir.isActive,
-                    freeOngkirImageUrl = it.freeOngkir.imageUrl,
                     shopId = it.shop.shopId,
                     hasBuyButton = it.hasBuyButton,
                     labelGroup = it.labelGroup.map { label ->
                         LabelGroup(
                             title = label.title,
                             position = label.position,
-                            type = label.type
+                            type = label.type,
+                            url = label.url
                         )
                     },
                     rating = it.rating,
@@ -106,7 +107,8 @@ object ChannelMapper {
                         it.benefit.value
                     ),
                     textColor = it.textColor,
-                    param = it.param
+                    param = it.param,
+                    categoryBreadcrumbs = it.categoryBreadcrumbs
                 )
             }
         )

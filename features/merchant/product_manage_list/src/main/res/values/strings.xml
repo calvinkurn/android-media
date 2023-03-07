@@ -3,7 +3,6 @@
 
     <string name="product_manage_you_have_x_unfinished_product">Anda memiliki %1$d draft produk yang belum terselesaikan.<![CDATA[<br /><font color=\"#42b549\">Cek Sekarang</font>]]></string>
     <string name="product_manage_menu_set_price">Atur Harga</string>
-    <string name="product_manage_menu_set_cashback">Atur Cashback</string>
     <string name="product_manage_menu_delete_product">Hapus</string>
     <string name="product_manage_desc_product_on_supervision">Produk dalam Pengawasan %1$s</string>
     <string name="product_manage_bulk_count">%1$s produk dipilih</string>
@@ -127,19 +126,6 @@
     <string name="product_manage_edit_products_success">%1$d produk berhasil diubah.</string>
     <string name="product_manage_edit_products_inactive_description">Produk yang dinonaktifkan tidak dapat dilihat calon pembeli.</string>
 
-    <string name="product_manage_set_cashback">Cashback</string>
-    <string name="product_manage_set_cashback_success">Pengaturan Cashback untuk \"%1$s\" berhasil.</string>
-    <string name="product_manage_set_cashback_header_title">Atur Cashback</string>
-    <string name="product_manage_set_cashback_ticker_title">Info Cashback</string>
-    <string name="product_manage_set_cashback_ticker_info">Cashback akan otomatis dikurangi dari harga produkmu.</string>
-    <string name="product_manage_set_cashback_no_cashback">Tidak ada cashback</string>
-    <string name="product_manage_set_cashback_three_percent">3%% cashback %1$s </string>
-    <string name="product_manage_set_cashback_four_percent">4%% cashback %1$s </string>
-    <string name="product_manage_set_cashback_five_percent">5%% cashback %1$s </string>
-    <string name="product_manage_set_cashback_dialog_title">Promo cashback maksimum 5 produk</string>
-    <string name="product_manage_set_cashback_dialog_desc">Maksimalkan penjualanmu dengan upgrade jadi Power Merchant agar lebih bebas menggunakan promo cashback.</string>
-    <string name="product_manage_set_cashback_dialog_upgrade_button">Upgrade Tokomu</string>
-    <string name="product_manage_set_cashback_dialog_see_cashback_products_button">Lihat Produk Cashback</string>
     <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
     <string name="product_manage_edit_products_etalase_retry">%1$d produk berhasil dipindahkan, %2$d gagal dipindahkan.</string>
     <string name="product_manage_edit_products_etalase_success">%1$d produk berhasil dipindahkan.</string>
@@ -238,5 +224,14 @@
     <string name="content_coach_mark_nav_home_stock_reminder_title">Dapatkan notifikasi terkait stokmu</string>
     <string name="content_coach_mark_nav_home_stock_reminder_desc">Kamu akan menerima notifikasi saat stok produk menipis lewat ikon lonceng di Home. Selain itu, kamu juga akan diingatkan lewat email.</string>
     <string name="product_stock_reminder_label_variant">Varian</string>
+    <string name="product_manage_shop_moderated_title">Fitur tidak dapat diakses karena toko sedang ditangguhkan</string>
 
+    <string name="product_manage_notify_me_buyer_manage_stock_now">Atur Stok Sekarang</string>
+    <string name="product_manage_notify_me_title">Produkmu ditunggu pembeli!</string>
+
+    <string name="content_coach_mark_notify_me_title">Produkmu ditunggu pembeli, lho! 🚨</string>
+    <string name="content_coach_mark_notify_me_desc">Ikon ini menunjukkan kalau ada pembeli yang memasang pengingat jika produk kembali tersedia.</string>
+    <string name="text_read_article">Baca Artikel</string>
+    <string name="content_coach_mark_label_guarantee_title">Kini, ada tanda “Stok Tersedia” di produkmu, lho!</string>
+    <string name="content_coach_mark_label_guarantee_desc">Tanda ini akan dilihat pembeli di halaman detail produkmu. Klik di sini untuk pelajari lebih lanjut, ya.</string>
 </resources>

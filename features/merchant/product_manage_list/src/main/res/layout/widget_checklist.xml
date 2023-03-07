@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/layout_lvl2"
-    android:layout_marginStart="@dimen/layout_lvl2"
+    android:paddingTop="16dp"
+    android:layout_marginStart="16dp"
     android:background="?attr/selectableItemBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -11,7 +11,7 @@
         android:id="@+id/checklist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:textSize="14sp"
         android:text="@string/filter_button"
         app:bold="true"
         app:indeterminate="false"
@@ -21,9 +21,9 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginLeft="@dimen/layout_lvl4"
-        android:layout_marginStart="@dimen/layout_lvl4"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="@id/checklist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/checklist" />

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollviewContent"
@@ -42,7 +43,7 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
                         android:text="@string/topads_headline_schedule_advertising_cost_header"
-                        android:textColor="@color/black"
+                        android:textColor="@color/Unify_NN1000"
                         app:layout_constraintStart_toStartOf="@id/cardLayout1"
                         app:layout_constraintTop_toTopOf="@id/cardLayout1"
                         app:typographyType="heading_5"
@@ -115,7 +116,7 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
                         android:text="@string/topads_headline_schedule_header"
-                        android:textColor="@color/black"
+                        android:textColor="@color/Unify_NN1000"
                         app:layout_constraintStart_toStartOf="@id/cardLayout2"
                         app:layout_constraintTop_toTopOf="@id/cardLayout2"
                         app:typographyType="heading_5"
@@ -219,7 +220,7 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
                         android:text="@string/topads_headline_daily_budget_header"
-                        android:textColor="@color/black"
+                        android:textColor="@color/Unify_NN1000"
                         app:layout_constraintStart_toStartOf="@id/cardLayout3"
                         app:layout_constraintTop_toTopOf="@id/cardLayout3"
                         app:typographyType="heading_5"

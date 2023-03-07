@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.GestureDetector
@@ -18,18 +19,27 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.common.extension.collectWhenResumed
 import com.tokopedia.review.databinding.ActivityDetailedReviewMediaGalleryBinding
+import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTracker
+import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTrackerConstant
 import com.tokopedia.review.feature.media.detail.presentation.fragment.ReviewDetailFragment
+import com.tokopedia.review.feature.media.detail.presentation.uimodel.ReviewDetailUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.fragment.ReviewMediaGalleryFragment
 import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
@@ -43,6 +53,7 @@ import com.tokopedia.reviewcommon.extension.hideSystemUI
 import com.tokopedia.reviewcommon.extension.intersectWith
 import com.tokopedia.reviewcommon.extension.showSystemUI
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
@@ -59,6 +70,8 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         const val KEY_CACHE_MANAGER_ID = "cacheManagerId"
         const val AUTO_HIDE_OVERLAY_DURATION = 5000L
         const val AUTO_HIDE_TOUCH_CLICKABLE_MARGIN = 16
+        const val HEADER_HEIGHT_IN_PORTRAIT = 100
+        const val HEADER_HEIGHT_IN_LANDSCAPE = 48
     }
 
     @Inject
@@ -152,12 +165,12 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         outState.putString(KEY_CACHE_MANAGER_ID, cacheManager.id)
     }
 
-    override fun dispatchTouchEvent(e: MotionEvent?): Boolean {
+    override fun dispatchTouchEvent(e: MotionEvent): Boolean {
         autoHideOverlayHandler.restartTimerIfAlreadyStarted()
         return if (
-            e != null && !e.isAboveCloseButton() && !e.isAboveKebabButton() &&
-            !e.isAboveController() && !e.isAboveReviewDetail() && !e.isAboveCounter() &&
-            gestureDetector?.onTouchEvent(e) == true
+            e != null && !e.isAboveCloseButton() && !e.isAboveReviewerBasicInfo() &&
+            !e.isAboveKebabButton() && !e.isAboveController() && !e.isAboveReviewDetail() &&
+            !e.isAboveCounter() && gestureDetector?.onTouchEvent(e) == true
         ) {
             true
         } else super.dispatchTouchEvent(e)
@@ -268,26 +281,6 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                 }
                 insets
             }
-            ViewCompat.setOnApplyWindowInsetsListener(it.icReviewMediaGalleryClose) { v, insets ->
-                v.setMargin(
-                    left = 12.toPx(),
-                    top = 12.toPx() + insets.systemWindowInsetTop,
-                    right = Int.ZERO,
-                    bottom = insets.systemWindowInsetBottom
-                )
-                insets
-            }
-            ViewCompat.setOnApplyWindowInsetsListener(it.icReviewMediaGalleryKebab) { v, insets ->
-                if (sharedReviewMediaGalleryViewModel.orientationUiState.value.isPortrait()) {
-                    v.setMargin(
-                        left = Int.ZERO,
-                        top = 12.toPx() + insets.systemWindowInsetTop,
-                        right = 12.toPx(),
-                        bottom = insets.systemWindowInsetBottom
-                    )
-                }
-                insets
-            }
         }
     }
 
@@ -296,10 +289,38 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         icReviewMediaGalleryKebab.setOnClickListener {
             sharedReviewMediaGalleryViewModel.showActionMenuBottomSheet()
         }
+        ivBgHeaderReviewMediaGallery.setImageResource(R.drawable.bg_header)
     }
 
     private fun ActivityDetailedReviewMediaGalleryBinding.setupCounter() {
         layoutReviewMediaGalleryItemCounter.setBackgroundResource(R.drawable.bg_review_media_gallery_item_counter)
+    }
+
+    private fun ActivityDetailedReviewMediaGalleryBinding.setupReviewerBasicInfo(
+        reviewDetailUiModel: ReviewDetailUiModel?,
+        orientationUiState: OrientationUiState
+    ) {
+        if (reviewDetailUiModel == null || orientationUiState.isLandscape()) {
+            basicInfoReviewMediaGallery.gone()
+        } else {
+            basicInfoReviewMediaGallery.invertColors()
+            basicInfoReviewMediaGallery.hideThreeDots()
+            basicInfoReviewMediaGallery.hideRating()
+            basicInfoReviewMediaGallery.hideCreateTime()
+            basicInfoReviewMediaGallery.hideVariant()
+            basicInfoReviewMediaGallery.setCredibilityData(
+                isProductReview = true,
+                isAnonymous = reviewDetailUiModel.basicInfoUiModel.anonymous,
+                userId = reviewDetailUiModel.basicInfoUiModel.userId,
+                feedbackId = reviewDetailUiModel.feedbackID
+            )
+            basicInfoReviewMediaGallery.setReviewerImage(reviewDetailUiModel.basicInfoUiModel.profilePicture)
+            basicInfoReviewMediaGallery.setReviewerName(reviewDetailUiModel.basicInfoUiModel.reviewerName)
+            basicInfoReviewMediaGallery.setReviewerLabel(reviewDetailUiModel.basicInfoUiModel.reviewerLabel)
+            basicInfoReviewMediaGallery.setStatsString(reviewDetailUiModel.basicInfoUiModel.reviewerStatsSummary)
+            basicInfoReviewMediaGallery.setListeners(ReviewerBasicInfoListener(), null)
+            basicInfoReviewMediaGallery.show()
+        }
     }
 
     private fun collectToolbarUiStateUpdate() {
@@ -311,14 +332,30 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             ) { orientationUiState, overlayVisibility, currentReviewDetail ->
                 Triple(orientationUiState, overlayVisibility, currentReviewDetail)
             }
-        ) {
-            val showOverlay = it.second
-            val isInPortrait = it.first.isPortrait()
-            val isReportable = it.third?.isReportable.orFalse()
+        ) { (orientationUiState, showOverlay, currentReviewDetail) ->
+            val isInPortrait = orientationUiState.isPortrait()
+            val isReportable = currentReviewDetail?.isReportable.orFalse()
+            binding?.headerReviewMediaGallery?.apply {
+                showWithCondition(showOverlay)
+                val layoutParamsCopy = layoutParams
+                layoutParamsCopy.height = if (isInPortrait) {
+                    HEADER_HEIGHT_IN_PORTRAIT.toPx()
+                } else {
+                    HEADER_HEIGHT_IN_LANDSCAPE.toPx()
+                }
+                layoutParams = layoutParamsCopy
+            }
+            if (isInPortrait && currentReviewDetail != null) {
+                binding?.ivBgHeaderReviewMediaGallery?.show()
+            } else {
+                binding?.ivBgHeaderReviewMediaGallery?.gone()
+            }
             binding?.icReviewMediaGalleryClose?.showWithCondition(showOverlay)
-            binding?.icReviewMediaGalleryKebab?.showWithCondition(
-                showOverlay && isInPortrait && isReportable
-            )
+            if (showOverlay && isInPortrait && isReportable) {
+                binding?.icReviewMediaGalleryKebab?.show()
+            } else {
+                binding?.icReviewMediaGalleryKebab?.invisible()
+            }
         }
     }
 
@@ -414,6 +451,19 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    private fun collectReviewerBasicInfo() {
+        collectLatestWhenResumed(
+            combine(
+                sharedReviewMediaGalleryViewModel.currentReviewDetail,
+                sharedReviewMediaGalleryViewModel.orientationUiState
+            ) { currentReviewDetail, orientationUiState ->
+                currentReviewDetail to orientationUiState
+            }
+        ) { (currentReviewDetail, orientationUiState) ->
+            binding?.setupReviewerBasicInfo(currentReviewDetail, orientationUiState)
+        }
+    }
+
     private fun initUiStateCollectors() {
         collectToolbarUiStateUpdate()
         collectOrientationUiStateUpdate()
@@ -422,10 +472,17 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         collectToasterActionClickEvent()
         collectOverlayVisibilityUpdate()
         collectMediaCounterUpdate()
+        collectReviewerBasicInfo()
     }
 
     private fun MotionEvent.isAboveCloseButton(): Boolean {
         return binding?.icReviewMediaGalleryClose?.let { closeButton ->
+            intersectWith(closeButton, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
+        } ?: false
+    }
+
+    private fun MotionEvent.isAboveReviewerBasicInfo(): Boolean {
+        return binding?.basicInfoReviewMediaGallery?.let { closeButton ->
             intersectWith(closeButton, AUTO_HIDE_TOUCH_CLICKABLE_MARGIN.toPx().toLong())
         } ?: false
     }
@@ -455,7 +512,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private inner class DetailedReviewMediaGalleryGestureListener : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             sharedReviewMediaGalleryViewModel.toggleOverlayVisibility()
             return true
         }
@@ -502,12 +559,12 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         private val callback = Callback()
 
         fun attachListener() {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.registerNetworkCallback(networkRequest, callback)
         }
 
         fun detachListener() {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.unregisterNetworkCallback(callback)
         }
 
@@ -556,6 +613,43 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             if (started) {
                 stopTimer()
                 startTimer()
+            }
+        }
+    }
+
+    private inner class ReviewerBasicInfoListener : ReviewBasicInfoListener {
+        override fun onUserNameClicked(
+            feedbackId: String,
+            userId: String,
+            statistics: String,
+            label: String
+        ) {
+            val routed = RouteManager.route(
+                this@DetailedReviewMediaGalleryActivity,
+                Uri.parse(
+                    UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
+                        userId,
+                        ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING
+                    )
+                ).buildUpon()
+                    .appendQueryParameter(
+                        ReviewApplinkConst.PARAM_PRODUCT_ID,
+                        sharedReviewMediaGalleryViewModel.getProductId()
+                    ).build()
+                    .toString()
+            )
+            if (routed) {
+                ReviewDetailTracker.trackClickReviewerName(
+                    sharedReviewMediaGalleryViewModel.isFromGallery(),
+                    sharedReviewMediaGalleryViewModel.currentReviewDetail.value?.feedbackID.orEmpty(),
+                    userId,
+                    statistics,
+                    sharedReviewMediaGalleryViewModel.getProductId(),
+                    sharedReviewMediaGalleryViewModel.getUserID(),
+                    label,
+                    ReviewDetailTrackerConstant.TRACKER_ID_CLICK_REVIEWER_NAME_FROM_DETAILED_REVIEW_MEDIA_GALLERY
+                )
             }
         }
     }

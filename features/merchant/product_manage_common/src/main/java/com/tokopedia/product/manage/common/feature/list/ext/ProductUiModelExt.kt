@@ -39,3 +39,7 @@ internal fun ProductUiModel?.hasEditProductAccess(): Boolean {
 internal fun ProductUiModel?.suspendAccess(): Boolean {
     return this?.isSuspend() == true
 }
+
+internal fun ProductUiModel?.haveNotifyMeBuyer(): Boolean {
+    return this?.haveNotifyMeOOS == true
+}

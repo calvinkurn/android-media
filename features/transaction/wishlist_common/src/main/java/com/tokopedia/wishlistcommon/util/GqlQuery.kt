@@ -1,6 +1,6 @@
 package com.tokopedia.wishlistcommon.util
 
-    const val GQL_WISHLIST_V2 = """
+const val GQL_WISHLIST_V2 = """
         query WishlistV2(${'$'}params:WishlistV2Params) {
                 wishlist_v2(params:${'$'}params) {
                     page
@@ -110,9 +110,9 @@ package com.tokopedia.wishlistcommon.util
                   }
                 }"""
 
-    const val GQL_WISHLIST_ADD_V2 = """
-         mutation WishlistAddV2(${'$'}productID: SuperInteger, ${'$'}userID: SuperInteger) {
-              wishlist_add_v2(productID:${'$'}productID, userID:${'$'}userID) {
+const val GQL_WISHLIST_ADD_V2 = """
+         mutation WishlistAddV2(${'$'}productID: SuperInteger, ${'$'}userID: SuperInteger, ${'$'}collection_sharing: CollectionSharingParams) {
+              wishlist_add_v2(productID:${'$'}productID, userID:${'$'}userID, collection_sharing:${'$'}collection_sharing) {
                 id
                 success
                 message
@@ -122,10 +122,11 @@ package com.tokopedia.wishlistcommon.util
                     action
                     url
                 }
+                error_type
               }
             }"""
 
-    const val GQL_WISHLIST_REMOVE_V2 = """
+const val GQL_WISHLIST_REMOVE_V2 = """
          mutation WishlistRemoveV2(${'$'}productID: SuperInteger, ${'$'}userID: SuperInteger) {
               wishlist_remove_v2(productID:${'$'}productID, userID:${'$'}userID) {
                 id
@@ -136,22 +137,6 @@ package com.tokopedia.wishlistcommon.util
                     text
                     action
                     url
-                }
-              }
-            }"""
-
-    const val GQL_COUNT_DELETION_WISHLIST_V2 = """
-         query DeleteWishlistProgress() {
-              delete_wishlist_progress() {
-                error_message
-                status
-                data {
-                  total_items
-                  successfully_removed_items
-                  message
-                  ticker_color
-                  success
-                  toaster_message
                 }
               }
             }"""

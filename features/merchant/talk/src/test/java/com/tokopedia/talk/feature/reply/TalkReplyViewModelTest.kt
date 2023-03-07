@@ -20,6 +20,7 @@ import com.tokopedia.talk.feature.reply.data.model.report.TalkReportTalkResponse
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudSuccess
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
+import com.tokopedia.talk.feature.reply.domain.usecase.TalkReportTalkUseCase
 import com.tokopedia.talk.feature.sellersettings.template.data.ChatTemplatesAll
 import com.tokopedia.talk.feature.sellersettings.template.data.GetAllTemplateResponseWrapper
 import com.tokopedia.unit.test.ext.verifyErrorEquals
@@ -455,6 +456,42 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
     }
 
     @Test
+    fun `when blockTalk success should execute expected usecase and get expected data`() {
+        val expectedResponse = TalkReportTalkResponseWrapper(TalkMutationResponse(data = TalkMutationData(isSuccess = 1)))
+
+        onTalkReportTalk_thenReturn(expectedResponse)
+
+        viewModel.blockTalk(anyString())
+
+        verifyTalkBlockTalkUseCaseExecuted()
+        verifyBlockTalkDataEquals(Success(expectedResponse))
+    }
+
+    @Test
+    fun `when blockTalk fail due to backend should execute expected usecase and fail with expected error`() {
+        val expectedResponse = TalkReportTalkResponseWrapper(TalkMutationResponse(data = TalkMutationData(isSuccess = 0)))
+
+        onTalkReportTalk_thenReturn(expectedResponse)
+
+        viewModel.blockTalk(anyString())
+
+        verifyTalkBlockTalkUseCaseExecuted()
+        verifyBlockTalkErrorEquals(Fail(MessageErrorException(expectedResponse.talkReportTalk.messageError.firstOrNull())))
+    }
+
+    @Test
+    fun `when blockTalk fail due to network should execute expected usecase and fail with expected error`() {
+        val expectedResponse = Throwable()
+
+        onTalkReportTalkFail_thenReturn(expectedResponse)
+
+        viewModel.blockTalk(anyString())
+
+        verifyTalkBlockTalkUseCaseExecuted()
+        verifyBlockTalkErrorEquals(Fail(expectedResponse))
+    }
+
+    @Test
     fun `when getTemplateList success should execute expected use case`() {
         val expectedResponse = GetAllTemplateResponseWrapper()
 
@@ -655,6 +692,12 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
         coVerify { talkReportTalkUseCase.executeOnBackground() }
     }
 
+    private fun verifyTalkBlockTalkUseCaseExecuted() {
+        coVerify {
+            talkReportTalkUseCase.setParams(any(), TalkReportTalkUseCase.REPORT_REASON_BLOCK, any())
+            talkReportTalkUseCase.executeOnBackground()
+        }
+    }
 
     private fun verifyDiscussionDataEquals(expectedResponse: Success<DiscussionDataByQuestionIDResponseWrapper>) {
         viewModel.discussionData.verifySuccessEquals(expectedResponse)
@@ -726,6 +769,14 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     private fun verifyReportTalkErrorEquals(expectedResponse: Fail) {
         viewModel.reportTalkResult.verifyErrorEquals(expectedResponse)
+    }
+
+    private fun verifyBlockTalkDataEquals(expectedResponse: Success<TalkReportTalkResponseWrapper>) {
+        viewModel.blockTalkResult.verifySuccessEquals(expectedResponse)
+    }
+
+    private fun verifyBlockTalkErrorEquals(expectedResponse: Fail) {
+        viewModel.blockTalkResult.verifyErrorEquals(expectedResponse)
     }
 
     private fun verifyIsFollowingEquals(isFollowing: Boolean) {

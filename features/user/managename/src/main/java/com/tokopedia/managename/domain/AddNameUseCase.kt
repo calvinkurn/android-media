@@ -39,11 +39,16 @@ class AddNameUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_NAME = "fullname"
+        private const val PARAM_TOKEN = "currValidateToken"
 
         fun params(
-                fullname: String
+                fullname: String,
+                currValidateToken: String,
         ): HashMap<String, Any> {
-            return hashMapOf(PARAM_NAME to fullname)
+            return hashMapOf(
+                PARAM_NAME to fullname,
+                PARAM_TOKEN to currValidateToken
+            )
         }
 
     }

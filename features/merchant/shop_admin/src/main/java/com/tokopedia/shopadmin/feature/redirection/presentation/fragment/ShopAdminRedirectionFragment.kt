@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
@@ -88,9 +89,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
     }
 
     private fun setShopId(shopId: String) {
-        if (shopId.isNotBlank() && shopId != DEFAULT_SHOP_ID_NOT_OPEN) {
-            userSession.shopId = shopId
-        }
+        userSession.shopId = shopId
     }
 
     private fun redirectCreateShopIfFail() {
@@ -123,7 +122,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
                 ApplinkConstInternalMarketplace.ADMIN_INVITATION
             }
         } else {
-            ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
+            ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION
         }
 
         context?.let {
@@ -143,7 +142,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
         val appLink = if (isShopAdminMA(adminTypeUiModel)) {
             ApplinkConstInternalMarketplace.ADMIN_INVITATION
         } else {
-            ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
+            ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION
         }
 
         context?.let {
@@ -156,8 +155,8 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
 
     private fun isShopAdminMA(adminTypeUiModel: AdminTypeUiModel): Boolean {
         return adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN &&
-                adminTypeUiModel.shopID.isNotBlank() &&
-                adminTypeUiModel.status != AdminStatus.ACTIVE
+            adminTypeUiModel.shopID.isNotBlank() &&
+            adminTypeUiModel.status != AdminStatus.ACTIVE
     }
 
     companion object {

@@ -7,20 +7,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-
 import androidx.annotation.NonNull;
-
 import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.domain.model.editshipping.Service;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 import com.tokopedia.editshipping.util.EditShippingConstant;
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 
 /**
  * Created by kris on 8/23/16. Tokopedia
  */
 public class PackageViewCheckBox extends EditShippingCourierView<Service,
         EditShippingViewListener>{
-    CheckBox serviceCheckbox;
+    CheckboxUnify serviceCheckbox;
 
     EditShippingViewListener mainView;
 
@@ -45,7 +44,7 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
 
     @Override
     protected void bindView(View view) {
-        serviceCheckbox = (CheckBox) view.findViewById(R.id.service_checkbox);
+        serviceCheckbox = view.findViewById(R.id.service_checkbox);
     }
 
     @SuppressLint("ClickableViewAccessibility")

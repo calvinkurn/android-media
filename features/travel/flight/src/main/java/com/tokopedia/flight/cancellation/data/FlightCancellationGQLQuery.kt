@@ -1,11 +1,17 @@
 package com.tokopedia.flight.cancellation.data
 
+import com.tokopedia.flight.cancellation.data.CancelEstimateQuery.CANCEL_ESTIMATE
+import com.tokopedia.flight.cancellation.data.CancelPassengerQuery.CANCEL_PASSENGER
+import com.tokopedia.flight.cancellation.data.CancelRequestQuery.CANCEL_REQUEST
+import com.tokopedia.gql_query_annotation.GqlQuery
+
 /**
  * @author by furqan on 06/07/2020
  */
-object FlightCancellationGQLQuery {
 
-    val CANCEL_PASSENGER = """
+@GqlQuery("QueryCancelPassenger", CANCEL_PASSENGER)
+internal object CancelPassengerQuery{
+    const val CANCEL_PASSENGER = """
         query cancelPassenger(${'$'}invoiceID:String!){
           flightCancelPassenger(invoiceID:${'$'}invoiceID){
             passengers {
@@ -51,9 +57,12 @@ object FlightCancellationGQLQuery {
             }
           }
         }
-    """.trimIndent()
+    """
+}
 
-    val CANCEL_REQUEST = """
+@GqlQuery("QueryCancelRequest", CANCEL_REQUEST)
+internal object CancelRequestQuery{
+    const val CANCEL_REQUEST = """
         mutation cancelRequest(${'$'}data:FlightCancelRequestArgs) {
           flightCancelRequest(input:${'$'}data) {
             id
@@ -65,9 +74,12 @@ object FlightCancellationGQLQuery {
             }
           }
         }
-    """.trimIndent()
+    """
+}
 
-    val CANCEL_ESTIMATE = """
+@GqlQuery("QueryCancelEstimate", CANCEL_ESTIMATE)
+internal object CancelEstimateQuery{
+    const val CANCEL_ESTIMATE = """
         mutation estimatedFlight(${'$'}data:FlightEstimatedArgs) {
           flightEstimated(input:${'$'}data) {
             details {
@@ -83,6 +95,5 @@ object FlightCancellationGQLQuery {
             nonRefundableText
           }
         }
-    """.trimIndent()
-
+    """
 }

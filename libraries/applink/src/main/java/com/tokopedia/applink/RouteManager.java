@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 import android.widget.Toast;
@@ -208,7 +209,7 @@ public class RouteManager {
         } else {
             destinationFragment = FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
         }
-        if( destinationFragment == null){
+        if (destinationFragment == null) {
             logErrorGetFragmentDF(activity, classPathName);
         }
         return destinationFragment;
@@ -253,8 +254,10 @@ public class RouteManager {
     private static void showAndCopyApplink(Context context, String applink) {
         if (GlobalConfig.isAllowDebuggingTools()) {
             if (context.getSharedPreferences(SHOW_AND_COPY_APPLINK_TOGGLE_NAME, Context.MODE_PRIVATE).getBoolean(SHOW_AND_COPY_APPLINK_TOGGLE_KEY, SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE)) {
-                Toast.makeText(context, applink, Toast.LENGTH_SHORT).show();
-
+                if (Looper.myLooper() == Looper.getMainLooper()) {
+                    // only show toast from main thread.
+                    Toast.makeText(context, applink, Toast.LENGTH_SHORT).show();
+                }
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, applink);
                 clipboard.setPrimaryClip(clip);
@@ -498,7 +501,7 @@ public class RouteManager {
         return resultIntent;
     }
 
-    private static boolean checkSellerappIntent(Context context, Intent intent, String deeplink){
+    private static boolean checkSellerappIntent(Context context, Intent intent, String deeplink) {
         return (intent == null || intent.resolveActivity(context.getPackageManager()) == null)
                 &&
                 (!GlobalConfig.isSellerApp() && deeplink.startsWith(SCHEME_SELLERAPP));

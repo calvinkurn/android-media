@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutShimmeringFirst"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loadingTitle"
+            android:layout_width="140dp"
+            android:layout_height="16dp"
+            app:loader_type="rect"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loadingSubtitle"
+            android:layout_width="100dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="16dp"
+            app:loader_type="rect"
+            app:layout_constraintTop_toBottomOf="@+id/loadingTitle"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loadingCta"
+            android:layout_width="40dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="16dp"
+            app:loader_type="rect"
+            app:layout_constraintTop_toTopOf="@+id/loadingTitle"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loadingList1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            app:loader_type="rect"
+            app:layout_constraintTop_toBottomOf="@+id/loadingSubtitle"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutShimmeringSecond"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@+id/layoutShimmeringFirst"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loadingTitleSecond"
+            android:layout_width="140dp"
+            android:layout_height="16dp"
+            app:loader_type="rect"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loadingSubtitleSecond"
+            android:layout_width="100dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="16dp"
+            app:loader_type="rect"
+            app:layout_constraintTop_toBottomOf="@+id/loadingTitleSecond"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loadingCtaSecond"
+            android:layout_width="40dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="16dp"
+            app:loader_type="rect"
+            app:layout_constraintTop_toTopOf="@+id/loadingTitleSecond"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loadingList1Second"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            app:loader_type="rect"
+            app:layout_constraintTop_toBottomOf="@+id/loadingSubtitleSecond"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

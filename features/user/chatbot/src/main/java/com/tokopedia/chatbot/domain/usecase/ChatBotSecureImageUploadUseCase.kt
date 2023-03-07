@@ -1,12 +1,13 @@
 package com.tokopedia.chatbot.domain.usecase
 
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
+import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.util.SecureImageUploadUrl
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.usecase.RequestParams
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -14,7 +15,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-import java.util.*
 import javax.inject.Inject
 
 private const val MEDIA_TYPE_TEXT = "text/plain"
@@ -42,6 +42,12 @@ class ChatBotSecureImageUploadUseCase @Inject constructor() : RestRequestUseCase
             )] =
                 reqImgFile
         } catch (e: UnsupportedEncodingException) {
+            ChatbotNewRelicLogger.logNewRelic(
+                false,
+                messageId,
+                ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD,
+                e
+            )
             e.printStackTrace()
         }
 

@@ -1,12 +1,9 @@
 package com.tokopedia.csat_rating
 
 import android.content.Intent
-
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
-
-import java.util.ArrayList
 
 interface ProvideRatingContract {
     interface ProvideRatingView : CustomerView {
@@ -32,7 +29,8 @@ interface ProvideRatingContract {
         fun hideProgress()
         fun hideSubmitButton()
         fun showSubmitButton()
-
+        fun disableSubmitButton()
+        fun enableSubmitButton()
     }
 
     interface ProvideRatingPresenter : CustomerPresenter<ProvideRatingView> {

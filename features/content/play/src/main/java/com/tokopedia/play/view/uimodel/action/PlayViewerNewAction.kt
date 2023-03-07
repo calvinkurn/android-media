@@ -21,8 +21,22 @@ sealed class PlayViewerNewAction {
     object StartPlayingInteractive : PlayViewerNewAction()
     object StopPlayingInteractive : PlayViewerNewAction()
     object FollowInteractive : PlayViewerNewAction()
+    object AutoOpenInteractive: PlayViewerNewAction()
 
     object Follow : PlayViewerNewAction()
+
+    data class BuyProduct(
+        val product: PlayProductUiModel.Product,
+        val isProductFeatured: Boolean = false,
+    ) : PlayViewerNewAction()
+    data class AtcProduct(
+        val product: PlayProductUiModel.Product,
+        val isProductFeatured: Boolean = false,
+    ) : PlayViewerNewAction()
+    data class OCCProduct(
+        val product: PlayProductUiModel.Product,
+        val isProductFeatured: Boolean = false,
+    ) : PlayViewerNewAction()
 }
 
 /**
@@ -75,6 +89,8 @@ data class BuyProductAction(val sectionInfo: ProductSectionUiModel.Section, val 
 data class BuyProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
 data class AtcProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
 data class AtcProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
+data class OCCProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
+data class OCCProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
 data class SelectVariantOptionAction(val option: VariantOptionWithAttribute) : PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
@@ -86,3 +102,6 @@ data class OpenFooterUserReport(val appLink: String): PlayViewerNewAction()
 data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): PlayViewerNewAction()
 
 data class SendWarehouseId(val id: String, val isOOC: Boolean) : PlayViewerNewAction()
+
+object DismissFollowPopUp : PlayViewerNewAction()
+object OpenCart: PlayViewerNewAction()

@@ -6,7 +6,6 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
@@ -44,9 +43,9 @@ import com.tokopedia.tokopedianow.home.domain.model.Ticker
 import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
 import com.tokopedia.tokopedianow.home.domain.model.Tickers
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSpaceUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
@@ -120,14 +119,6 @@ fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
             layout = "left_carousel_atc",
             header = Header(
                 name = "Mix Left Atc Carousel",
-                serverTimeUnix = 0
-            )
-        ),
-        HomeLayoutResponse(
-            id = "2333",
-            layout = "left_carousel",
-            header = Header(
-                name = "Mix Left Carousel",
                 serverTimeUnix = 0
             )
         )
@@ -279,7 +270,7 @@ fun createMiniCartSimplifier(): MiniCartSimplifiedData {
     return MiniCartSimplifiedData(
             miniCartWidgetData = MiniCartWidgetData(
                     totalProductCount = 1,
-                    totalProductPrice = 100
+                    totalProductPrice = 100.0
             ),
             miniCartItems = mapOf(
                     MiniCartItemKey("125") to MiniCartItem.MiniCartItemProduct(
@@ -421,32 +412,20 @@ fun createSliderBannerDataModel(
 fun createLeftCarouselAtcDataModel(
     id: String,
     headerName: String,
+    warehouseId: String = ""
 ): HomeLeftCarouselAtcUiModel {
     return HomeLeftCarouselAtcUiModel(
         id = id,
         name = "",
         header = TokoNowDynamicHeaderUiModel(title = headerName),
-        productList = listOf(HomeLeftCarouselAtcProductCardSpaceUiModel(channelId = id, channelHeaderName = headerName))
+        productList = listOf(),
+        realTimeRecom = HomeRealTimeRecomUiModel(
+            channelId = id,
+            headerName = headerName,
+            warehouseId = warehouseId,
+            type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
+        )
     )
-}
-
-fun createLeftCarouselDataModel(
-    id: String,
-    groupId: String,
-    headerName: String,
-    headerServerTimeUnix: Long = 0,
-    layout: String = "lego_3_image"
-): MixLeftDataModel {
-    val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
-    val channelConfig = ChannelConfig(layout = layout)
-    val channelModel = ChannelModel(
-        id = id,
-        groupId = groupId,
-        layout = layout,
-        channelHeader = channelHeader,
-        channelConfig = channelConfig
-    )
-    return MixLeftDataModel(channelModel = channelModel)
 }
 
 fun createCategoryGridDataModel(
@@ -471,14 +450,17 @@ fun createTickerData(
 }
 
 fun createHomeProductCardUiModel(
+    channelId: String = "",
     productId: String = "",
     shopId: String = "",
     quantity: Int = 0,
     parentId: String = "",
     product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT
+    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT,
+    position: Int = 0,
+    headerName: String = ""
 ): TokoNowProductCardUiModel {
-    return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
+    return TokoNowProductCardUiModel(channelId, productId, shopId, quantity, parentId, product, type, position, headerName)
 }
 
 fun createLocalCacheModel(

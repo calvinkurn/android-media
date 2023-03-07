@@ -6,10 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cmhomewidget.di.scope.CMHomeWidgetScope
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetProductCardShimmerViewHolder
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetProductCardViewHolder
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetViewAllCardShimmerViewHolder
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetViewAllCardViewHolder
+import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.*
 import com.tokopedia.unifycomponents.toPx
 
 import javax.inject.Inject
@@ -26,10 +23,8 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
         val currentViewType = currentItemViewHolder.itemViewType
         val currentItemPosition = currentItemViewHolder.adapterPosition
         val totalItems = state.itemCount
-
         setItemSpacing(outRect, currentItemPosition, totalItems)
-
-        setItemWidth(parent, view, currentViewType)
+        setItemWidth(parent, view, currentViewType, totalItems)
     }
 
     private fun setItemSpacing(outRect: Rect, currentItemPosition: Int, totalItems: Int) {
@@ -52,9 +47,11 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
     private fun setItemWidth(
         parent: RecyclerView,
         view: View,
-        currentViewType: Int
+        currentViewType: Int,
+        totalItems: Int
     ) {
         var ratio = CMHomeWidgetProductCardViewHolder.RATIO_WIDTH
+
         when (currentViewType) {
             CMHomeWidgetProductCardViewHolder.LAYOUT,
             CMHomeWidgetProductCardShimmerViewHolder.LAYOUT -> {
@@ -63,6 +60,13 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
             CMHomeWidgetViewAllCardViewHolder.LAYOUT,
             CMHomeWidgetViewAllCardShimmerViewHolder.LAYOUT -> {
                 ratio = CMHomeWidgetViewAllCardViewHolder.RATIO_WIDTH
+            }
+            //this ratio will only applied if single item is there in adapter for Payment HTDW
+            CMHomeWidgetPaymentCardViewHolder.LAYOUT -> {
+                ratio = CMHomeWidgetPaymentCardViewHolder.RATIO_WIDTH
+                if (totalItems == 1) {
+                    ratio = CMHomeWidgetPaymentCardViewHolder.SINGLE_ITEM_RATIO_WIDTH
+                }
             }
         }
         val layoutParams: ViewGroup.LayoutParams = view.layoutParams

@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.common.topupbills.favoritepage.view.fragment.TopupBillsPersoContactListFragment
 import com.tokopedia.common.topupbills.favoritepage.view.fragment.TopupBillsPersoFavoriteNumberFragment
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import java.util.ArrayList
 
 class TopupBillsPersoSavedNumTabAdapter(
@@ -13,7 +14,8 @@ class TopupBillsPersoSavedNumTabAdapter(
     private var dgCategoryIds: ArrayList<String>,
     private var dgOperatorIds: ArrayList<String>,
     private var currentCategoryName: String = "",
-    private var loyaltyStatus: String = ""
+    private var loyaltyStatus: String = "",
+    private var pageConfig: FavoriteNumberPageConfig,
 ): FragmentStateAdapter(fragment) {
     private var instance: HashMap<String, Fragment> = hashMapOf()
 
@@ -33,7 +35,8 @@ class TopupBillsPersoSavedNumTabAdapter(
                         currentCategoryName,
                         dgCategoryIds,
                         dgOperatorIds,
-                        loyaltyStatus
+                        loyaltyStatus,
+                        pageConfig,
                     )
                 }
                 instance[position.toString()]!!

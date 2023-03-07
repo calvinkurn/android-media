@@ -1,0 +1,32 @@
+<resources>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="txt_bs_info_desc">Makeup yang kamu coba akan membantumu sebagai referensi sebelum belanja. Warna barang bisa berbeda tergantung cahaya, warna kulit, jarak, atau resolusi kamera HP.</string>
+    <string name="txt_bs_info_title">Tentang fitur Coba Virtual</string>
+    <string name="txt_bs_comparison_title">Coba Virtual</string>
+
+    <string name="txt_image_picker_title">Pilih Media</string>
+
+    <string name="txt_animated_text_icon_take_from_gallery">Ambil dari Galeri</string>
+    <string name="txt_animated_text_icon_change_photo">Ganti Foto</string>
+    <string name="txt_animated_text_icon_use_camera">Pakai Kamera</string>
+
+    <string name="txt_comparison_desc">Kamu bisa pilih hingga 4 varian untuk dibandingkan.</string>
+
+    <string name="txt_btn_save_photo">Simpan Foto ke Galeri</string>
+    <string name="message_success_save_photo_to_gallery">Foto berhasil disimpan di galeri HP-mu.</string>
+    <string name="message_face_not_detected">Oops, wajahmu nggak terdeteksi. Coba\n lagi &amp; pastikan wajahmu terlihat jelas, ya.</string>
+    <string name="product_ar_oke_label">Oke</string>
+    <string name="product_ar_see">Lihat</string>
+    <string name="product_ar_permission_rejected_message">Aktifkan akses ke Kamera di pengaturan HP kamu supaya bisa coba virtual, ya.</string>
+
+    <string name="coachmark_1_title_ar">Cobain pilihan varian yang ada, yuk!</string>
+    <string name="coachmark_1_desc_ar">Tinggal klik varian yang tersedia di bawah sini dan lihat hasil makeup-nya.</string>
+
+    <string name="coachmark_2_title_ar">Atau bisa juga pakai foto di sini</string>
+    <string name="coachmark_2_desc_ar">Kamu bisa lihat hasil makeup-nya pada foto model yang tersedia atau ambil foto dari galeri HP.</string>
+
+    <string name="coachmark_3_title_ar">Mau bandingkan beberapa varian?</string>
+    <string name="coachmark_3_desc_ar">Bisa juga, lho! Habis ambil atau pakai foto, kamu bisa pilih lebih dari 1 varian.</string>
+
+    <string name="oke_sip_label">Oke, Sip</string>
+</resources>

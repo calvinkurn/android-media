@@ -193,7 +193,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun setShadows() {
         context?.let {
-            val shadowColor = ContextCompat.getColor(it, com.tokopedia.gamification.R.color.gf_box_text_shadow)
+            val shadowColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_32)
             val shadowRadius = tvRewardFirstLine.dpToPx(5)
             val shadowOffset = tvRewardFirstLine.dpToPx(4)
             tvRewardFirstLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
@@ -634,14 +634,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun renderReminderButton(isUserReminded: Boolean, showToast: Boolean) {
         context?.let {
             if (isUserReminded) {
-                tokoButtonContainer.btnReminder.setText(reminder?.buttonUnset)
                 isReminderSet = true
                 if (showToast && !reminder?.textSet.isNullOrEmpty()) {
                     CustomToast.show(context, reminder?.textSet!!)
                     GtmEvents.clickReminderButton(userSession?.userId, reminder?.textSet!!)
                 }
             } else {
-                tokoButtonContainer.btnReminder.setText(reminder?.buttonSet)
                 isReminderSet = false
                 if (showToast && !reminder?.textUnset.isNullOrEmpty()) {
                     CustomToast.show(context, reminder?.textUnset!!)
@@ -712,7 +710,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         super.initialViewSetup()
 
         tvTapHint.setBackgroundResource(R.drawable.gami_bg_text_hint_box)
-        tvTapHint.setTextColor(ContextCompat.getColor(tvTapHint.context, R.color.gf_tap_hint))
+        tvTapHint.setTextColor(ContextCompat.getColor(tvTapHint.context, R.color.gamification_dms_tap_hint))
         directGiftView.alpha = 0f
         llRewardMessage.alpha = 0f
         tokoButtonContainer.btnReminder.alpha = 0f
@@ -878,7 +876,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 height = 180.toPx()
                 width = 180.toPx()
             }
-            dialog.dialogImageContainer.setBackgroundColor(ContextCompat.getColor(it, R.color.gf_black_transparent))
+            dialog.dialogImageContainer.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.gamification.R.color.gamification_dms_black_transparent))
             dialog.dialogImageContainer.outlineProvider = null
             dialog.setImageDrawable(R.drawable.gami_exit_icon)
             dialog.setDescription(backButton.text)

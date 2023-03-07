@@ -42,8 +42,8 @@
 
                 <ImageView
                     android:id="@+id/authorImage"
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_32"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:background="@drawable/bg_circle_gray_border"
                     android:contentDescription="@string/content_desc_authorImage"
                     android:visibility="visible"
@@ -103,7 +103,7 @@
                     android:fontFamily="sans-serif"
                     android:lines="1"
                     android:textColor="@color/Unify_N700_32"
-                    android:textSize="@dimen/sp_10"
+                    android:textSize="10sp"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/headerAction"
@@ -153,7 +153,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:lineSpacingExtra="@dimen/sp_5"
+                android:lineSpacingExtra="5sp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:textColor="@color/Unify_N700_44"
@@ -243,8 +243,8 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/likeIcon"
-                        android:layout_width="@dimen/dp_18"
-                        android:layout_height="@dimen/dp_18"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:layout_gravity="center"
                         android:contentDescription="@string/kol_action_like"
                         android:scaleType="fitCenter"
@@ -277,8 +277,8 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/commentIcon"
-                        android:layout_width="@dimen/dp_18"
-                        android:layout_height="@dimen/dp_18"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:layout_gravity="center"
                         android:layout_marginStart="16dp"
                         android:layout_marginLeft="16dp"
@@ -314,8 +314,8 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/shareIcon"
-                        android:layout_width="@dimen/dp_18"
-                        android:layout_height="@dimen/dp_18"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginLeft="16dp"
                         android:contentDescription="@string/kol_action_share"
@@ -342,8 +342,8 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/statsIcon"
-                        android:layout_width="@dimen/dp_18"
-                        android:layout_height="@dimen/dp_18"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         app:layout_constraintBottom_toBottomOf="@id/shareText"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/shareText"

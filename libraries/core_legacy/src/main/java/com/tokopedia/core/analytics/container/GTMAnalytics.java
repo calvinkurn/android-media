@@ -29,7 +29,7 @@ import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
-import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -64,6 +64,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import rx.Observable;
@@ -123,6 +124,22 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String EMBRACE_EVENT_NAME = "eventName";
     private static final String EMBRACE_EVENT_ACTION = "eventAction";
     private static final String EMBRACE_EVENT_LABEL = "eventLabel";
+
+    private static String UTM_SOURCE_HOLDER = "";
+    private static String UTM_MEDIUM_HOLDER = "";
+    private static String UTM_CAMPAIGN_HOLDER = "";
+
+    public static void setUTMParamsForSession(Map<String, Object> maps){
+        if(maps != null && maps.get(AppEventTracking.GTM.UTM_SOURCE) != null) {
+            UTM_SOURCE_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_SOURCE)).toString();
+        }
+        if(maps != null && maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null) {
+            UTM_MEDIUM_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_MEDIUM)).toString();
+        }
+        if(maps != null && maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null) {
+            UTM_CAMPAIGN_HOLDER = Objects.requireNonNull(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN)).toString();
+        }
+    }
 
     public GTMAnalytics(Context context) {
         super(context);
@@ -302,7 +319,7 @@ public class GTMAnalytics extends ContextAnalytics {
                 stacktrace.append(String.format("%s\n", ste.toString()));
             }
             Map<String, Object> logMap = Collections.singletonMap("stacktrace", stacktrace.toString());
-            GtmLogger.getInstance(context).save(logMap, null, AnalyticsSource.ERROR);
+            Cassava.save(logMap, null, AnalyticsSource.ERROR);
             if (!TextUtils.isEmpty(e.getMessage())) {
                 Map<String, String> map = new HashMap<>();
                 map.put("msg", e.getMessage());
@@ -913,7 +930,7 @@ public class GTMAnalytics extends ContextAnalytics {
             String name = eventName == null ? (String) values.get("event") : eventName;
             if (!isGtmV5) name += " (legacy_v4)";
             String source = (isGtmV5) ? AnalyticsSource.GTM : AnalyticsSource.LEGACY_GTM;
-            GtmLogger.getInstance(context).save(values, name, source);
+            Cassava.save(values, name, source);
             logEventSize(eventName, values);
             logEventForVerification(eventName, values);
             if (tetraDebugger != null) {
@@ -1428,6 +1445,9 @@ public class GTMAnalytics extends ContextAnalytics {
                             addGclIdIfNeeded(eventName, it);
                         }
                     }
+                    it.put(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+                    it.put(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+                    it.put(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
                     pushIris("", it);
                     return true;
                 })

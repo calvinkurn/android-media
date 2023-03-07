@@ -60,8 +60,11 @@ internal object NotificationHelper {
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         setNotificationChannel(notificationManager)
-
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+        } else {
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
         val inboxStyle = NotificationCompat.BigTextStyle().bigText(payload)
         val builder = NotificationCompat.Builder(context, NOTIF_CHANNEL_ID)
                 .setContentIntent(pendingIntent)

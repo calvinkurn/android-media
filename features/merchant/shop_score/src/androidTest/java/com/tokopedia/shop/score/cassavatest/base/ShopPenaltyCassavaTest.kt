@@ -1,8 +1,8 @@
 package com.tokopedia.shop.score.cassavatest.base
 
 import androidx.test.espresso.Espresso
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.BaseShopPenaltyTest
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel

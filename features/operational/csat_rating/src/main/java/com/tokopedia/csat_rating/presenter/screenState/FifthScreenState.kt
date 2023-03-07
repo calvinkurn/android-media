@@ -21,11 +21,11 @@ class FifthScreenState(private val mCaption: String, private val mQuestion: Stri
     }
 
     override fun getFifthEmoji(): Int {
-        return R.drawable.rating_active_5
+        return R.drawable.emoji_active_5
     }
 
     override fun getMessageColor(): Int {
-        return R.color.message_color_good
+        return R.color.csat_dms_rating_active_5
     }
 
     override fun getMessage(): String {

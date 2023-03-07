@@ -1,27 +1,27 @@
 package com.tokopedia.smartbills.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.smartbills.R
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.smartbills.data.SmartBillsCatalogMenu
-import kotlinx.android.synthetic.main.view_smart_bills_item_icon_bottom_sheet.view.*
+import com.tokopedia.smartbills.databinding.ViewSmartBillsItemIconBottomSheetBinding
 
 class SmartBillsAddBillsAdapter(private val listener: SmartBillsCatalogsListener) : RecyclerView.Adapter<SmartBillsAddBillsAdapter.SmartBillsAddBillViewHolder>() {
 
     var listCatalogMenu = emptyList<SmartBillsCatalogMenu>()
 
-    inner class SmartBillsAddBillViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class SmartBillsAddBillViewHolder(
+        private val binding: ViewSmartBillsItemIconBottomSheetBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(catalogMenu: SmartBillsCatalogMenu) {
-            with(itemView) {
-                setOnClickListener {
+            with(binding) {
+                root.setOnClickListener {
                     listener.onCatalogClicked(catalogMenu.applink, catalogMenu.label)
                 }
-                img_catalog_smart_bills.loadImage(catalogMenu.icon)
-                txt_catalog_title_smart_bills.text = catalogMenu.label
+                imgCatalogSmartBills.loadImage(catalogMenu.icon)
+                txtCatalogTitleSmartBills.text = catalogMenu.label
             }
         }
     }
@@ -35,11 +35,15 @@ class SmartBillsAddBillsAdapter(private val listener: SmartBillsCatalogsListener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmartBillsAddBillViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.view_smart_bills_item_icon_bottom_sheet, parent, false)
-        return SmartBillsAddBillViewHolder(itemView)
+        val binding = ViewSmartBillsItemIconBottomSheetBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return SmartBillsAddBillViewHolder(binding)
     }
 
-    interface SmartBillsCatalogsListener{
+    interface SmartBillsCatalogsListener {
         fun onCatalogClicked(applink: String, category: String)
     }
 }

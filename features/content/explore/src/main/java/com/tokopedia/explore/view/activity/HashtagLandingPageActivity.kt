@@ -19,13 +19,27 @@ class HashtagLandingPageActivity : BaseSimpleActivity(), HasComponent<ExploreCom
         } else {
             intent.extras?.getString(HashtagLandingPageFragment.ARG_HASHTAG) ?: ""
         }
-        return HashtagLandingPageFragment.createInstance(hashtag)
+        return HashtagLandingPageFragment.createInstance(
+            hashtag,
+            checkIfHashtagPageSourceIsContentDetail(),
+            getContentDetailPageSource()
+        )
+    }
+
+    private fun getContentDetailPageSource(): String {
+        return intent?.extras?.getString(CONTENT_DETAIL_PAGE_SOURCE) ?: SHARE_LINK
+    }
+    private fun checkIfHashtagPageSourceIsContentDetail(): Boolean {
+        return intent?.extras?.getBoolean(ARG_IS_FROM_CONTENT_DETAIL_PAGE) ?: false
     }
 
     override fun getComponent(): ExploreComponent = DaggerExploreComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
 
     companion object {
+        const val ARG_IS_FROM_CONTENT_DETAIL_PAGE = "IS_FROM_CONTENT_DETAIL_PAGE"
+        const val CONTENT_DETAIL_PAGE_SOURCE = "CONTENT_DETAIL_PAGE_SOURCE"
+        const val SHARE_LINK = "share_link"
 
         private fun decode(param: String): String {
             return try {

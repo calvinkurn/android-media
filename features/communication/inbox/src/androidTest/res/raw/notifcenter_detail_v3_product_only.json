@@ -73,7 +73,7 @@
             "android_url":"tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter",
             "ios_url":"tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter",
             "url": "https://www.tokopedia.com/br04dc4st-s4tu/k124b13y-p4tty-putih",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/3/0c236dc9-59c4-4e9b-8231-cc127ed254f2.jpg",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/3/0c236dc9-59c4-4e9b-8231-cc127ed254f2.jpg",
             "department_id": 0,
             "min_order": 1,
             "price": 999999,
@@ -111,7 +111,7 @@
               "badges": [
                 {
                   "title": "Official Store",
-                  "image_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+                  "image_url": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
                 }
               ],
               "free_shipping_icon": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
@@ -128,7 +128,7 @@
             "url": "https://www.tokopedia.com/br04dc4st-s4tu/pr0d-k4d3-v4r-hitam-m",
             "android_url":"tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter",
             "ios_url":"tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/8/20/c54b2113-29b4-4326-90cd-596c95331e71.jpg",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/8/20/c54b2113-29b4-4326-90cd-596c95331e71.jpg",
             "department_id": 0,
             "min_order": 1,
             "price": 22000,
@@ -171,7 +171,7 @@
               "badges": [
                 {
                   "title": "Official Store",
-                  "image_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+                  "image_url": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
                 }
               ],
               "free_shipping_icon": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
@@ -188,7 +188,7 @@
             "url": "https://www.tokopedia.com/br04dc4st-s4tu/pr0d-k4d3e5-0c5-v4r-hitam-m",
             "android_url":"tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter",
             "ios_url":"tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter",
-            "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/9/4a6360d6-83e3-426c-a723-709e737897cc.png",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/9/4a6360d6-83e3-426c-a723-709e737897cc.png",
             "department_id": 0,
             "min_order": 1,
             "price": 22000,
@@ -231,7 +231,7 @@
               "badges": [
                 {
                   "title": "Official Store",
-                  "image_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+                  "image_url": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
                 }
               ],
               "free_shipping_icon": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"

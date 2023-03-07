@@ -2,12 +2,14 @@ package com.tokopedia.applink.powermerchant
 
 import android.content.Context
 import android.net.Uri
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.user.session.UserSession
 
 /**
  * Created By @ilhamsuaib on 11/05/21
@@ -46,11 +48,21 @@ object PowerMerchantDeepLinkMapper {
      * else redirect to power merchant page (native)
      */
     fun getPowerMerchantAppLink(context: Context): String {
-        return if (isEnablePMSwitchToWebView(context)) {
-            PM_WEBVIEW_URL
+        val isLoginAndHasShop = isLoginAndHasShop(context)
+        return if (isLoginAndHasShop) {
+             if (isEnablePMSwitchToWebView(context)) {
+                PM_WEBVIEW_URL
+            } else {
+                ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+            }
         } else {
-            ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+            ApplinkConst.CREATE_SHOP
         }
+    }
+
+    fun isLoginAndHasShop(context: Context): Boolean{
+        val userSession = UserSession(context)
+        return userSession.isLoggedIn && userSession.hasShop()
     }
 
     fun isEnablePMSwitchToWebView(context: Context): Boolean {

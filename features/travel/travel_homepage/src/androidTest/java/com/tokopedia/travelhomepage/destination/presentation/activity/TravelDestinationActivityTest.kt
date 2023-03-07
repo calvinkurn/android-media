@@ -8,9 +8,8 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -22,7 +21,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.junit.*
+import org.junit.Assert
+import org.junit.Rule
+import org.junit.Test
 
 
 /**
@@ -31,7 +32,6 @@ import org.junit.*
 class TravelDestinationActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
@@ -39,7 +39,6 @@ class TravelDestinationActivityTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             graphqlCacheManager.deleteAll()
-            gtmLogDBSource.deleteAll().toBlocking().first()
             setupGraphqlMockResponse {
                 addMockResponse(KEY_TRAVEL_DESTINATION_CITY_DATA, InstrumentationMockHelper.getRawString(context,
                         com.tokopedia.travelhomepage.test.R.raw.response_mock_travel_destination_city_data), MockModelConfig.FIND_BY_CONTAINS)
@@ -63,9 +62,8 @@ class TravelDestinationActivityTest {
         }
     }
 
-    @Before
-    fun setUp() {
-    }
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Test
     fun mainFlow() {
@@ -78,7 +76,7 @@ class TravelDestinationActivityTest {
         actionsOnDealsViewHolder()
         actionsOnBlogViewHolder()
 
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_TRAVEL_DESTINATION),
+        Assert.assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_TRAVEL_DESTINATION),
                 hasAllSuccess())
     }
 
@@ -175,10 +173,6 @@ class TravelDestinationActivityTest {
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(ARTICLE_VIEW_HOLDER_POSITION,
                         CommonActions.clickChildViewWithId(R.id.tv_travel_destination_article_see_all))
         )
-    }
-
-    @After
-    fun tearDown() {
     }
 
     companion object {

@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/dp_15">
+        android:padding="15dp">
 
         <RelativeLayout
             android:id="@+id/layout_period_promo"
@@ -35,7 +35,7 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
-                android:padding="@dimen/dp_3"
+                android:padding="3dp"
                 app:srcCompat="@drawable/ic_period_promo"
                 tools:ignore="ContentDescription"/>
 
@@ -64,7 +64,7 @@
 
         <androidx.legacy.widget.Space
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_15"/>
+            android:layout_height="15dp"/>
 
         <RelativeLayout
             android:id="@+id/layout_single_code_promo"
@@ -79,7 +79,7 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
-                android:padding="@dimen/dp_3"
+                android:padding="3dp"
                 app:srcCompat="@drawable/ic_coupon_promo"
                 tools:ignore="ContentDescription"/>
 
@@ -134,7 +134,7 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
-                android:padding="@dimen/dp_3"
+                android:padding="3dp"
                 app:srcCompat="@drawable/ic_coupon_promo"
                 tools:ignore="ContentDescription"/>
 
@@ -167,7 +167,7 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
-                android:padding="@dimen/dp_3"
+                android:padding="3dp"
                 app:srcCompat="@drawable/ic_coupon_promo"
                 tools:ignore="ContentDescription"/>
 

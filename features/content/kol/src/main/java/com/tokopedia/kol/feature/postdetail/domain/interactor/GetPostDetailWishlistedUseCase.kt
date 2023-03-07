@@ -1,25 +1,26 @@
 package com.tokopedia.kol.feature.postdetail.domain.interactor
 
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-import com.tokopedia.wishlist.common.domain.interactor.GetProductIsWishlistedUseCase
+import com.tokopedia.wishlistcommon.domain.GetProductIsWishlistedUseCase
 import rx.Observable
 import javax.inject.Inject
 
 class GetPostDetailWishlistedUseCase @Inject constructor(private val detailUseCase: GetPostDetailUseCaseSeller,
-                                                         private val isProductWishlistedUseCase: GetProductIsWishlistedUseCase)
-    : UseCase<PostDetailViewModel>() {
+                                                         private val isProductWishlistedUseCase: GetProductIsWishlistedUseCase
+)
+    : UseCase<PostDetailUiModel>() {
 
 
-    override fun createObservable(requestParams: RequestParams?): Observable<PostDetailViewModel> {
+    override fun createObservable(requestParams: RequestParams?): Observable<PostDetailUiModel> {
         return detailUseCase.createObservable(requestParams ?: RequestParams.EMPTY)
                 .flatMap { checkWishListObservable(it) }
     }
 
-    private fun checkWishListObservable(postDetailViewModel: PostDetailViewModel): Observable<PostDetailViewModel> {
-        val dynamicPost = postDetailViewModel.dynamicPostViewModel.postList.firstOrNull() as? DynamicPostViewModel?
+    private fun checkWishListObservable(postDetailViewModel: PostDetailUiModel): Observable<PostDetailUiModel> {
+        val dynamicPost = postDetailViewModel.dynamicPostViewModel.postList.firstOrNull() as? DynamicPostModel?
         return if (dynamicPost == null)
             Observable.just(dynamicPost)
         else {

@@ -15,4 +15,6 @@ interface FeedPlusDetailListener {
         context: Context,
         shopId: String = ""
     )
+    fun onAddToWishlistButtonClicked(item: FeedDetailProductModel, productPosition: Int)
+    fun onAddToCartButtonClicked(item: FeedDetailProductModel)
 }

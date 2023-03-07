@@ -5,7 +5,14 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.RatesParam
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.network.utils.ErrorHandler.Companion.getErrorMessage
@@ -16,10 +23,12 @@ import javax.inject.Inject
 /**
  * Created by Irfan Khoirul on 06/08/18.
  */
-class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: GetRatesUseCase,
-                                                    private val ratesApiUseCase: GetRatesApiUseCase,
-                                                    private val stateConverter: RatesResponseStateConverter,
-                                                    private val shippingCourierConverter: ShippingCourierConverter) : BaseDaggerPresenter<ShippingDurationContract.View>(), ShippingDurationContract.Presenter {
+class ShippingDurationPresenter @Inject constructor(
+    private val ratesUseCase: GetRatesUseCase,
+    private val ratesApiUseCase: GetRatesApiUseCase,
+    private val stateConverter: RatesResponseStateConverter,
+    private val shippingCourierConverter: ShippingCourierConverter
+) : BaseDaggerPresenter<ShippingDurationContract.View>(), ShippingDurationContract.Presenter {
 
     private var view: ShippingDurationContract.View? = null
 
@@ -37,96 +46,125 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
     /**
      * Calls rates
      */
-    override fun loadCourierRecommendation(shipmentDetailData: ShipmentDetailData,
-                                           selectedServiceId: Int,
-                                           shopShipmentList: List<ShopShipment>,
-                                           codHistory: Int, isCorner: Boolean,
-                                           isLeasing: Boolean, pslCode: String,
-                                           products: List<Product>, cartString: String,
-                                           isTradeInDropOff: Boolean,
-                                           recipientAddressModel: RecipientAddressModel,
-                                           isFulfillment: Boolean, preOrderTime: Int,
-                                           mvc: String) {
+    override fun loadCourierRecommendation(
+        shipmentDetailData: ShipmentDetailData,
+        selectedServiceId: Int,
+        shopShipmentList: List<ShopShipment>,
+        codHistory: Int,
+        isCorner: Boolean,
+        isLeasing: Boolean,
+        pslCode: String,
+        products: List<Product>,
+        cartString: String,
+        isTradeInDropOff: Boolean,
+        recipientAddressModel: RecipientAddressModel,
+        isFulfillment: Boolean,
+        preOrderTime: Int,
+        mvc: String,
+        cartData: String
+    ) {
         if (view != null) {
             view!!.showLoading()
-            val shippingParam = getShippingParam(shipmentDetailData, products, cartString,
-                    isTradeInDropOff, recipientAddressModel)
+            val shippingParam = getShippingParam(
+                shipmentDetailData,
+                products,
+                cartString,
+                isTradeInDropOff,
+                recipientAddressModel
+            )
             var selectedSpId = 0
             if (shipmentDetailData.selectedCourier != null) {
                 selectedSpId = shipmentDetailData.selectedCourier!!.shipperProductId
             }
-            loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
-                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, mvc)
+            loadDuration(
+                selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
+                shopShipmentList, isTradeInDropOff, shippingParam, pslCode, mvc, cartData
+            )
         }
     }
 
-    private fun loadDuration(selectedSpId: Int, selectedServiceId: Int, codHistory: Int,
-                             isCorner: Boolean, isLeasing: Boolean,
-                             shopShipmentList: List<ShopShipment>, isRatesTradeInApi: Boolean,
-                             shippingParam: ShippingParam, pslCode: String,
-                             mvc: String) {
+    private fun loadDuration(
+        selectedSpId: Int,
+        selectedServiceId: Int,
+        codHistory: Int,
+        isCorner: Boolean,
+        isLeasing: Boolean,
+        shopShipmentList: List<ShopShipment>,
+        isRatesTradeInApi: Boolean,
+        shippingParam: ShippingParam,
+        pslCode: String,
+        mvc: String,
+        cartData: String
+    ) {
         val param = RatesParam.Builder(shopShipmentList, shippingParam)
-                .isCorner(isCorner)
-                .codHistory(codHistory)
-                .isLeasing(isLeasing)
-                .promoCode(pslCode)
-                .mvc(mvc)
-                .build()
+            .isCorner(isCorner)
+            .codHistory(codHistory)
+            .isLeasing(isLeasing)
+            .promoCode(pslCode)
+            .mvc(mvc)
+            .cartData(cartData)
+            .build()
         val observable: Observable<ShippingRecommendationData> = if (isRatesTradeInApi) {
             ratesApiUseCase.execute(param)
         } else {
             ratesUseCase.execute(param)
         }
         observable
-                .map { shippingRecommendationData: ShippingRecommendationData ->
-                    stateConverter.fillState(shippingRecommendationData, shopShipmentList,
-                            selectedSpId, selectedServiceId)
-                }
-                .subscribe(
-                        object : Subscriber<ShippingRecommendationData>() {
-                            override fun onCompleted() {
-                                //no-op
-                            }
+            .map { shippingRecommendationData: ShippingRecommendationData ->
+                stateConverter.fillState(
+                    shippingRecommendationData,
+                    shopShipmentList,
+                    selectedSpId,
+                    selectedServiceId
+                )
+            }
+            .subscribe(
+                object : Subscriber<ShippingRecommendationData>() {
+                    override fun onCompleted() {
+                        // no-op
+                    }
 
-                            override fun onError(e: Throwable) {
-                                if (view != null) {
-                                    view!!.showErrorPage(getErrorMessage(view!!.getActivity(), e))
-                                    view!!.stopTrace()
-                                }
-                            }
+                    override fun onError(e: Throwable) {
+                        if (view != null) {
+                            view!!.showErrorPage(getErrorMessage(view!!.getActivity(), e))
+                            view!!.stopTrace()
+                        }
+                    }
 
-                            override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
-                                if (view != null) {
-                                    view!!.hideLoading()
-                                    if (shippingRecommendationData.errorId != null && shippingRecommendationData.errorId == ErrorProductData.ERROR_RATES_NOT_AVAILABLE) {
-                                        view!!.showNoCourierAvailable(shippingRecommendationData.errorMessage)
-                                        view!!.stopTrace()
-                                    } else if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
-                                        if (view!!.isDisableCourierPromo()) {
-                                            for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
-                                                shippingDurationUiModel.serviceData.isPromo = 0
-                                                for (productData in shippingDurationUiModel.serviceData.products) {
-                                                    productData.promoCode = ""
-                                                }
-                                            }
+                    override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
+                        if (view != null) {
+                            view!!.hideLoading()
+                            if (shippingRecommendationData.errorId != null && shippingRecommendationData.errorId == ErrorProductData.ERROR_RATES_NOT_AVAILABLE) {
+                                view!!.showNoCourierAvailable(shippingRecommendationData.errorMessage)
+                                view!!.stopTrace()
+                            } else if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
+                                if (view!!.isDisableCourierPromo()) {
+                                    for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
+                                        shippingDurationUiModel.serviceData.isPromo = 0
+                                        for (productData in shippingDurationUiModel.serviceData.products) {
+                                            productData.promoCode = ""
                                         }
-                                        view!!.showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
-                                        view!!.stopTrace()
-                                    } else {
-                                        view!!.showNoCourierAvailable(view!!.getActivity().getString(R.string.label_no_courier_bottomsheet_message))
-                                        view!!.stopTrace()
                                     }
                                 }
+                                view!!.showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
+                                view!!.stopTrace()
+                            } else {
+                                view!!.showNoCourierAvailable(view!!.getActivity().getString(R.string.label_no_courier_bottomsheet_message))
+                                view!!.stopTrace()
                             }
                         }
-                )
+                    }
+                }
+            )
     }
 
-    private fun getShippingParam(shipmentDetailData: ShipmentDetailData,
-                                 products: List<Product>,
-                                 cartString: String,
-                                 isTradeInDropOff: Boolean,
-                                 recipientAddressModel: RecipientAddressModel): ShippingParam {
+    private fun getShippingParam(
+        shipmentDetailData: ShipmentDetailData,
+        products: List<Product>,
+        cartString: String,
+        isTradeInDropOff: Boolean,
+        recipientAddressModel: RecipientAddressModel
+    ): ShippingParam {
         val shippingParam = ShippingParam()
         shippingParam.originDistrictId = shipmentDetailData.shipmentCartData!!.originDistrictId
         shippingParam.originPostalCode = shipmentDetailData.shipmentCartData!!.originPostalCode
@@ -168,7 +206,10 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
 
     override fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): CourierItemData? {
         for (shippingCourierUiModel in shippingCourierUiModels) {
-            if (shippingCourierUiModel.productData.isRecommend) {
+            if (shippingCourierUiModel.productData.isRecommend &&
+                !shippingCourierUiModel.productData.isUiRatesHidden &&
+                shippingCourierUiModel.productData.error?.errorMessage?.isEmpty() != false
+            ) {
                 return shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
             }
         }

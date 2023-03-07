@@ -11,9 +11,8 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.promogamification.common.FloatingEggMockResponse
 import com.tokopedia.promogamification.common.R
 import com.tokopedia.promogamification.common.floating.view.activity.FloatingEggActivity
@@ -21,8 +20,7 @@ import com.tokopedia.promotion.common.idling.TkpdIdlingResource
 import com.tokopedia.promotion.common.idling.TkpdIdlingResourceProvider
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.MatcherAssert
-import org.hamcrest.core.AllOf
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -34,13 +32,13 @@ class FloatingEggButtonFragmentAnalyticsTest {
 
     @get:Rule
     val activityRule = ActivityTestRule(FloatingEggActivity::class.java, false, false)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
     var floatingIdlingResource: TkpdIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
-        clearData()
         login()
         setupIdlingResource()
         setupGraphqlMockResponse(FloatingEggMockResponse())
@@ -53,11 +51,7 @@ class FloatingEggButtonFragmentAnalyticsTest {
         Espresso.onView(ViewMatchers.withId(R.id.vg_floating_egg)).perform(ViewActions.click())
 
         val luckyEggClickQuery = "tracker/promo/promo_gamification_common/lucky_egg_trackers.json"
-        MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, luckyEggClickQuery), hasAllSuccess())
-    }
-
-    private fun clearData() {
-        gtmLogDBSource.deleteAll().toBlocking()
+        assertThat(cassavaRule.validate(luckyEggClickQuery), hasAllSuccess())
     }
 
     private val idlingResource = object : IdlingResource {

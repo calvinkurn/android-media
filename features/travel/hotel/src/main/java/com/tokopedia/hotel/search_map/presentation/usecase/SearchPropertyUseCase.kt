@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.search_map.presentation.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.hotel.search_map.data.model.PropertySearch
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 class SearchPropertyUseCase @Inject constructor(val graphqlRepository: GraphqlRepository) :
         GraphqlUseCase<PropertySearch.Response>(graphqlRepository) {
-    suspend fun execute(rawQuery: String, searchParam: SearchParam): Result<PropertySearch> {
+    suspend fun execute(rawQuery: GqlQueryInterface, searchParam: SearchParam): Result<PropertySearch> {
         return try {
             this.setTypeClass(PropertySearch.Response::class.java)
             this.setGraphqlQuery(rawQuery)

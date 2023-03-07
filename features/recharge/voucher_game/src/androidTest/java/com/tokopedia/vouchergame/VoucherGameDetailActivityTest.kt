@@ -14,16 +14,17 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.util.*
+import com.tokopedia.test.application.util.InstrumentationMockHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListViewHolder
 import com.tokopedia.vouchergame.test.R
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -31,15 +32,16 @@ import org.junit.Test
 
 class VoucherGameDetailActivityTest{
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
     @get:Rule
     var mActivityRule = ActivityTestRule(VoucherGameDetailActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     @Before
     fun setUp(){
         Intents.init()
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_QUERY_VOUCHER_DETAIL,
@@ -54,8 +56,7 @@ class VoucherGameDetailActivityTest{
     fun validateTracking(){
         clickOnDetail()
         clickOnInfoButton()
-        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTICS_VOUCHER_GAME_DETAIL),
-                hasAllSuccess())
+        assertThat(cassavaRule.validate(ANALYTICS_VOUCHER_GAME_DETAIL), hasAllSuccess())
     }
 
     fun clickOnDetail(){

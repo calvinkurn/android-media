@@ -5,115 +5,101 @@ import com.tokopedia.library.baseadapter.BaseItem
 
 data class UserPostModel(
     @SerializedName("playGetContentSlot")
-    val playGetContentSlot: PlayGetContentSlot
+    val playGetContentSlot: PlayGetContentSlot = PlayGetContentSlot(),
 )
-
 
 data class PlayGetContentSlot(
     @SerializedName("data")
-    val data: MutableList<PlayPostContent>,
-
+    val data: List<PlayPostContent> = emptyList(),
     @SerializedName("meta")
-    val playGetContentSlot: PlayGetContentSlotMeta
-): BaseItem()
+    val playGetContentSlot: PlayGetContentSlotMeta = PlayGetContentSlotMeta(),
+) : BaseItem()
 
 data class PlayGetContentSlotMeta(
     @SerializedName("is_autoplay")
-    val isAutoplay: Boolean,
-
+    val isAutoplay: Boolean = false,
     @SerializedName("max_autoplay_in_cell")
-    val maxAutoplayInCell: Int,
-
+    val maxAutoplayInCell: Int = 0,
     @SerializedName("next_cursor")
-    val nextCursor: String
+    val nextCursor: String = "",
 )
 
 data class PlayPostContent(
     @SerializedName("hash")
-    val hash: String,
-
+    val hash: String = "",
     @SerializedName("type")
-    val type: String,
-
+    val type: String = "",
     @SerializedName("title")
-    val title: String,
-
+    val title: String = "",
     @SerializedName("id")
-    val id: String,
-
+    val id: String = "",
     @SerializedName("items")
-    val items: MutableList<PlayPostContentItem>
-): BaseItem()
+    val items: List<PlayPostContentItem> = emptyList(),
+) : BaseItem()
 
 data class PlayPostContentItem(
     @SerializedName("app_link")
-    val appLink: String,
-
+    val appLink: String = "",
     @SerializedName("cover_url")
-    val coverUrl: String,
-
+    val coverUrl: String = "",
     @SerializedName("description")
-    val description: String,
-
+    val description: String = "",
     @SerializedName("is_live")
-    val isLive: Boolean,
-
+    val isLive: Boolean = false,
     @SerializedName("id")
-    val id: String,
-
+    val id: String = "",
     @SerializedName("title")
-    val title: String,
-
+    val title: String = "",
     @SerializedName("start_time")
-    val startTime: String,
-
+    val startTime: String = "",
     @SerializedName("air_time")
-    val airTime: String,
-
+    val airTime: String = "",
     @SerializedName("web_link")
-    val webLink: String,
-
+    val webLink: String = "",
     @SerializedName("stats")
-    val stats: PlayPostContentItemStats,
-
+    val stats: PlayPostContentItemStats = PlayPostContentItemStats(),
     @SerializedName("configurations")
-    val configurations: PlayPostConfigurations
+    val configurations: PlayPostConfigurations = PlayPostConfigurations(),
+    @SerializedName("partner")
+    val partner: Partner = Partner(),
 ) : BaseItem()
+
+data class Partner(
+    @SerializedName("id")
+    val id: String = "",
+    @SerializedName("name")
+    val name: String = "",
+)
 
 data class PlayPostContentItemStats(
     @SerializedName("view")
-    val view: StatsView
+    val view: StatsView = StatsView(),
 )
 
 data class StatsView(
     @SerializedName("value")
-    var value: String,
-
+    var value: String = "",
     @SerializedName("formatted")
-    var formatted: String
+    var formatted: String = "",
 )
 
 data class PlayPostConfigurations(
     @SerializedName("has_promo")
-    val hasPromo: Boolean,
-
+    val hasPromo: Boolean = false,
     @SerializedName("reminder")
-    val reminder: PostReminder,
-
+    val reminder: PostReminder = PostReminder(),
     @SerializedName("promo_labels")
-    val promoLabels: List<PostPromoLabel>
+    val promoLabels: List<PostPromoLabel> = emptyList(),
 )
 
 data class PostReminder(
     @SerializedName("is_set")
-    var isSet: Boolean
+    var isSet: Boolean = false,
 )
 
 data class PostPromoLabel(
     @SerializedName("text")
-    val text: String,
+    val text: String = "",
     @SerializedName("type")
-    val type: String
+    val type: String = "",
 )
-
-

@@ -1,46 +1,33 @@
 package com.tokopedia.sessioncommon.util
 
 import android.util.Base64
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.given
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
-import org.junit.platform.runner.JUnitPlatform
-import org.junit.runner.RunWith
+import org.hamcrest.CoreMatchers.*
+import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Ignore
+import org.junit.Test
 
-/**
- * @author by nisie on 29/05/19.
- */
-@RunWith(JUnitPlatform::class)
-class TokenGeneratorTest : Spek({
+class TokenGeneratorTest  {
 
-    given("Token Generator") {
+    @Test
+    fun `test generate random token`() {
         val tokenGenerator = TokenGenerator()
-        on("test generate random char") {
-            val randomChar = tokenGenerator.randomChar(4)
 
-            it("generate 4 random char") {
-                assert(randomChar.length == 4)
-            }
+        val actual = tokenGenerator.randomChar(4)
 
-            it("doesn't contain -") {
-                assert(!randomChar.contains("-"))
-            }
-        }
-
-        on("test generate grantType password") {
-            val grantType = tokenGenerator.encode("password")
-            System.out.println("GrantType : $grantType")
-
-            it("encoded grantType is not null") {
-                assert(!grantType.startsWith("null"))
-            }
-
-            it("when decoded, starts with password") {
-                assert(Base64.decode(grantType, Base64.NO_WRAP).toString().startsWith("password"))
-            }
-
-        }
-
+        assertThat(actual.length, equalTo(4))
+        assertThat(actual, not(containsString("-")))
     }
-})
+
+    @Test
+    @Ignore("this test should be in androidTest, it is always fail because Base64 is android class")
+    fun `test generate grantType password`() {
+        val tokenGenerator = TokenGenerator()
+
+        val actual = tokenGenerator.encode("password")
+        println("GrantType: $actual")
+
+        assertThat(Base64.decode(actual, Base64.NO_WRAP).toString(), startsWith("password"))
+        assertThat(actual, not(startsWith("null")))
+    }
+
+}

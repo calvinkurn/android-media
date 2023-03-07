@@ -15,7 +15,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/voucher_code_title"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         android:textColor="@color/Unify_NN600"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -27,7 +27,8 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="heading_5"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
         tools:text="@string/booking_code"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -41,6 +42,7 @@
         android:gravity="center_horizontal|center_vertical"
         android:text="@string/salin_text"
         android:textColor="@color/Unify_GN500"
-        app:typographyType="heading_6"/>
+        app:typographyType="display_3"
+        app:typographyWeight="bold"/>
 
 </RelativeLayout>

@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:elevation="@dimen/spacing_lvl2"
-        android:background="@color/Unify_Static_White"
+        android:background="@color/Unify_Background"
         android:orientation="horizontal"
         android:layout_marginBottom="@dimen/spacing_lvl2"
         android:padding="@dimen/spacing_lvl3">

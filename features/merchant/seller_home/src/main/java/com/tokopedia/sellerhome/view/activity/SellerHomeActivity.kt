@@ -2,14 +2,15 @@ package com.tokopedia.sellerhome.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -23,16 +24,19 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.notifications.utils.NotificationUserSettingsTracker
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
@@ -45,7 +49,6 @@ import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitorin
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
-import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
@@ -86,6 +89,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
         private const val NAVIGATION_HOME_MENU_POSITION = 0
+        private const val TRACKER_PREF_NAME = "NotificationUserSettings"
+        private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
+        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.spotify.music"
     }
 
     @Inject
@@ -118,12 +124,15 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
     private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
     private var binding: ActivitySahSellerHomeBinding? = null
-
-    var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
+    private val sharedPreference: SharedPreferences by lazy {
+        applicationContext.getSharedPreferences(TRACKER_PREF_NAME, MODE_PRIVATE)
+    }
 
     override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
 
     override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
+
+    var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setActivityOrientation()
@@ -147,10 +156,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         observeIsRoleEligible()
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
-    }
-
-    override fun checkAppUpdateAndInApp() {
-        // no op, this activity already uses UpdateCheckerHelper
+        sendNotificationUserSetting()
+        observeWearDialog()
     }
 
     override fun getComponent(): HomeDashboardComponent {
@@ -163,6 +170,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onResume()
         homeViewModel.getNotifications()
         homeViewModel.getAdminInfo()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            homeViewModel.checkIfWearHasCompanionApp()
+        }
 
         if (!userSession.isLoggedIn) {
             RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
@@ -264,14 +274,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     override fun getSomListLoadTimeMonitoring() = performanceMonitoringSomListPlt
 
-    private fun fetchSellerAppWidget() {
-        val broadcastIntent = Intent().apply {
-            action = ACTION_GET_ALL_APP_WIDGET_DATA
-            setPackage(packageName)
-        }
-        sendBroadcast(broadcastIntent)
-    }
-
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
     }
@@ -282,6 +284,25 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     fun attachOtherMenuFragmentChangeCallback(callback: FragmentChangeCallback) {
         otherMenuFragmentChangeCallback = callback
+    }
+
+    private fun sendNotificationUserSetting() {
+        val isSettingsSent: Boolean =
+            sharedPreference.getBoolean(NOTIFICATION_USER_SETTING_KEY, false)
+        if (userSession.isLoggedIn && !isSettingsSent) {
+            NotificationUserSettingsTracker(applicationContext).sendNotificationUserSettings()
+            sharedPreference.edit()
+                .putBoolean(NOTIFICATION_USER_SETTING_KEY, true)
+                .apply()
+        }
+    }
+
+    private fun fetchSellerAppWidget() {
+        val broadcastIntent = Intent().apply {
+            action = ACTION_GET_ALL_APP_WIDGET_DATA
+            setPackage(packageName)
+        }
+        sendBroadcast(broadcastIntent)
     }
 
     private fun setContentView() {
@@ -299,18 +320,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private fun setupToolbar() {
         binding?.run {
             setSupportActionBar(sahToolbar)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val statusBarHeight = StatusbarHelper.getStatusBarHeight(this@SellerHomeActivity)
-                val layoutParams = statusBarBackground?.layoutParams
-                layoutParams?.let {
-                    if (it is LinearLayout.LayoutParams) {
-                        it.height = statusBarHeight
-                        statusBarBackground?.layoutParams = it
-                        statusBarBackground?.requestLayout()
-                    }
-                }
-            }
         }
     }
 
@@ -467,17 +476,17 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun observeNotificationsLiveData() {
-        homeViewModel.notifications.observe(this, {
+        homeViewModel.notifications.observe(this) {
             if (it is Success) {
                 showNotificationBadge(it.data.notifCenterUnread)
                 showChatNotificationCounter(it.data.chat)
                 showOrderNotificationCounter(it.data.sellerOrderStatus)
             }
-        })
+        }
     }
 
     private fun observeShopInfoLiveData() {
-        homeViewModel.shopInfo.observe(this, {
+        homeViewModel.shopInfo.observe(this) {
             when (it) {
                 is Success -> {
                     navigator?.run {
@@ -516,12 +525,12 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     }
                 }
             }
-        })
+        }
         homeViewModel.getShopInfo()
     }
 
     private fun observeIsRoleEligible() {
-        homeViewModel.isRoleEligible.observe(this, { result ->
+        homeViewModel.isRoleEligible.observe(this) { result ->
             if (result is Success) {
                 result.data.let { isRoleEligible ->
                     if (!isRoleEligible) {
@@ -530,7 +539,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     }
                 }
             }
-        })
+        }
     }
 
     private fun showNotificationBadge(notifUnreadInt: Int) {
@@ -538,14 +547,14 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         homeFragment?.setNotifCenterCounter(notifUnreadInt)
     }
 
-    private fun showChatNotificationCounter(unreadsSeller: Int) {
-        val badgeVisibility = if (unreadsSeller <= 0) View.INVISIBLE else View.VISIBLE
-        binding?.sahBottomNav?.setBadge(unreadsSeller, FragmentType.CHAT, badgeVisibility)
+    private fun showChatNotificationCounter(unreadSeller: Int) {
+        val badgeVisibility = if (unreadSeller <= Int.ZERO) View.INVISIBLE else View.VISIBLE
+        binding?.sahBottomNav?.setBadge(unreadSeller, FragmentType.CHAT, badgeVisibility)
     }
 
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
         val notificationCount = orderStatus.newOrder.plus(orderStatus.readyToShip)
-        val badgeVisibility = if (notificationCount <= 0) View.INVISIBLE else View.VISIBLE
+        val badgeVisibility = if (notificationCount <= Int.ZERO) View.INVISIBLE else View.VISIBLE
         binding?.sahBottomNav?.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
     }
 
@@ -710,5 +719,28 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 .isNullOrBlank()
 
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
+    }
+
+    private fun observeWearDialog() {
+        homeViewModel.shouldAskInstallCompanionApp.observe(this) {
+            if (it) {
+                val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.apply{
+                    setTitle(resources.getString(R.string.wearos_install_popup_title))
+                    setPrimaryCTAText(resources.getString(R.string.wearos_install_popup_install))
+                    setSecondaryCTAText(resources.getString(R.string.wearos_install_popup_later))
+                    setPrimaryCTAClickListener {
+                        val marketIntent = Intent(Intent.ACTION_VIEW)
+                            .addCategory(Intent.CATEGORY_BROWSABLE)
+                            .setData(Uri.parse(TOKOPEDIA_MARKET_WEAR_APP))
+                        homeViewModel.launchMarket(marketIntent)
+                    }
+                    setSecondaryCTAClickListener {
+                        dialog.dismiss()
+                    }
+                }
+                dialog.show()
+            }
+        }
     }
 }

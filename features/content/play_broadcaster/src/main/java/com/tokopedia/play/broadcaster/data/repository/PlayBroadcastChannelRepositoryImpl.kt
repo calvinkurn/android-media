@@ -1,7 +1,12 @@
 package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.teleporter.Teleporter.gson
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
@@ -13,8 +18,6 @@ import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -26,35 +29,50 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val createChannelUseCase: CreateChannelUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
-    private val userSession: UserSessionInterface,
     private val remoteConfig: RemoteConfig,
     private val mapper: PlayBroadcastMapper,
     private val dispatchers: CoroutineDispatchers,
+    private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
 ): PlayBroadcastChannelRepository {
 
-    override suspend fun getChannelConfiguration(): ConfigurationUiModel = withContext(dispatchers.io) {
-        val response = getConfigurationUseCase.apply {
-            params = GetConfigurationUseCase.createParams(userSession.shopId)
-        }.executeOnBackground()
+    override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
+        val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
 
-        return@withContext mapper.mapConfiguration(response)
+        return@withContext mapper.mapAuthorList(response)
     }
 
-    override suspend fun createChannel(): String = withContext(dispatchers.io) {
+    override suspend fun getChannelConfiguration(authorId: String, authorType: String): ConfigurationUiModel = withContext(dispatchers.io) {
+        val response = getConfigurationUseCase.execute(authorId = authorId, authorType = authorType)
+
+        return@withContext mapper.mapConfiguration(mapConfiguration(response.authorConfig.config)
+            .copy(streamAllowed = response.authorConfig.streamAllowed, tnc = response.authorConfig.tnc)
+        )
+    }
+
+    private fun mapConfiguration(config: String): Config {
+        return try {
+            gson.fromJson(config, Config::class.java)
+        } catch (e: Exception) {
+            Config()
+        }
+    }
+
+    override suspend fun createChannel(authorId: String, authorType: String): String = withContext(dispatchers.io) {
         val response = createChannelUseCase.apply {
             params = CreateChannelUseCase.createParams(
-                authorId = userSession.shopId
+                authorId = authorId,
+                authorType = authorType
             )
         }.executeOnBackground()
         return@withContext response.id
     }
 
-    override suspend fun updateChannelStatus(channelId: String, status: PlayChannelStatusType): String = withContext(dispatchers.io) {
+    override suspend fun updateChannelStatus(authorId: String, channelId: String, status: PlayChannelStatusType): String = withContext(dispatchers.io) {
         val response = updateChannelUseCase.apply {
             setQueryParams(
                 UpdateChannelUseCase.createUpdateStatusRequest(
                     channelId = channelId,
-                    authorId = userSession.shopId,
+                    authorId = authorId,
                     status = status
                 )
             )

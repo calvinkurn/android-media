@@ -14,6 +14,8 @@ data class GetMerchantDataResponse(
 data class TokoFoodGetMerchantData(
         @SerializedName("ticker")
         val ticker: TokoFoodTickerDetail,
+        @SerializedName("topBanner")
+        val topBanner: TokoFoodTopBanner,
         @SerializedName("merchantProfile")
         val merchantProfile: TokoFoodMerchantProfile,
         @SerializedName("filters")
@@ -31,6 +33,17 @@ data class TokoFoodTickerDetail(
         val link: String = "",
         @SerializedName("type")
         val type: String = ""
+)
+
+data class TokoFoodTopBanner(
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("subtitle")
+        val subtitle: String = "",
+        @SerializedName("imageURL")
+        val imageUrl: String = "",
+        @SerializedName("isShown")
+        val isShown: Boolean = false
 )
 
 data class TokoFoodMerchantProfile(

@@ -28,12 +28,12 @@ class DynamicChannelSprintSaleViewHolder(
     override fun bind(element: DynamicChannelDataModel?) {
         element?.run {
             dcEventHandler.flashSaleImpression(dynamicChannelData.channel)
-            setupHeader(dynamicChannelData.channel.header)
+            setupHeader(dynamicChannelData.channel.id, dynamicChannelData.channel.header)
             setupContent(dynamicChannelData.channel)
         }
     }
 
-    private fun setupHeader(header: Header?) {
+    private fun setupHeader(channelId: String, header: Header?) {
         if (header != null && header.name.isNotEmpty()) {
             headerContainer.visibility = View.VISIBLE
             headerTitle.text = header.name
@@ -54,7 +54,7 @@ class DynamicChannelSprintSaleViewHolder(
             if (header.applink.isNotEmpty()) {
                 headerActionText.apply {
                     visibility = View.VISIBLE
-                    setOnClickListener(dcEventHandler.onClickFlashSaleActionText(header.applink, header.id))
+                    setOnClickListener(dcEventHandler.onClickFlashSaleActionText(header.applink, channelId, header.name))
                 }
             } else {
                 headerActionText.visibility = View.GONE

@@ -1,5 +1,6 @@
 package com.tokopedia.kotlin.extensions.view
 
+import java.util.Date
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -9,6 +10,12 @@ import kotlin.math.pow
 
 
 const val THOUSAND_EXPONENT = 3
+
+
+fun Long.toDate(): Date {
+    return Date(this)
+}
+
 
 /**
  * Convert to non-nullable

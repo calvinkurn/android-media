@@ -4,6 +4,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
+import com.tokopedia.product.detail.common.data.model.variant.Picture
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
@@ -136,11 +137,13 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         val productBundleDetails = listOf(
             ProductBundleDetail(
                 bundlePrice = 500.toDouble(),
-                originalPrice = 1000.toDouble()
+                originalPrice = 1000.toDouble(),
+                productQuantity = 1
             ),
             ProductBundleDetail(
                 bundlePrice = 500.toDouble(),
-                originalPrice = 1000.toDouble()
+                originalPrice = 1000.toDouble(),
+                productQuantity = 1
             )
         )
 
@@ -163,25 +166,16 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         val activeStatus = "ACTIVE"
         val inactiveStatus = "INACTIVE"
         val preorderDay = 1
-        val preorderMonth = 2
+        val preorderWeek = 2
+        val preorderMonth = 3
         val preorderInvalid = -1
 
         coEvery {
             resourceProvider.getPreOrderTimeUnitDay()
-        } returns null
-        coEvery {
-            resourceProvider.getPreOrderTimeUnitMonth()
-        } returns null
-
-        var preOrderWordingDay = viewModel.getPreOrderTimeUnitWording(preorderDay)
-        var preOrderWordingMonth = viewModel.getPreOrderTimeUnitWording(preorderMonth)
-
-        assertEquals("", preOrderWordingDay)
-        assertEquals("", preOrderWordingMonth)
-
-        coEvery {
-            resourceProvider.getPreOrderTimeUnitDay()
         } returns "hari"
+        coEvery {
+            resourceProvider.getPreOrderTimeUnitWeek()
+        } returns "minggu"
         coEvery {
             resourceProvider.getPreOrderTimeUnitMonth()
         } returns "bulan"
@@ -191,14 +185,16 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         val preOrderInactive = viewModel.isPreOrderActive(inactiveStatus)
         val preOrderWordingInvalid = viewModel.getPreOrderTimeUnitWording(preorderInvalid)
 
-        preOrderWordingDay = viewModel.getPreOrderTimeUnitWording(preorderDay)
-        preOrderWordingMonth = viewModel.getPreOrderTimeUnitWording(preorderMonth)
+        val preOrderWordingDay = viewModel.getPreOrderTimeUnitWording(preorderDay)
+        val preOrderWordingWeek = viewModel.getPreOrderTimeUnitWording(preorderWeek)
+        val preOrderWordingMonth = viewModel.getPreOrderTimeUnitWording(preorderMonth)
 
         // then
         assert(preOrderActive)
         assert(!preOrderInactive)
         assertEquals("", preOrderWordingInvalid)
         assertEquals("hari", preOrderWordingDay)
+        assertEquals("minggu", preOrderWordingWeek)
         assertEquals("bulan", preOrderWordingMonth)
     }
 
@@ -561,7 +557,10 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
             ProductBundleDetail(productId = 123L),
             ProductBundleDetail(),
             ProductBundleDetail(productVariant = ProductVariant(
-                children = listOf(VariantChild(productId = "1111", optionIds = listOf("1"), optionName = listOf("merah"))),
+                children = listOf(
+                    VariantChild(productId = "1111", optionIds = listOf("1"), optionName = listOf("merah"), picture = Picture(url100 = "")),
+                    VariantChild(productId = "1111", optionIds = listOf("1"), optionName = listOf("merah"), picture = null)
+                ),
                 variants = listOf(Variant(pv = "1111", name = "Warna", options = listOf(
                     VariantOption(id = "1", value = "merah")
                 )))

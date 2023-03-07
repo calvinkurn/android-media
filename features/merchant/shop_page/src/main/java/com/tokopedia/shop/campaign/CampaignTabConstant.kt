@@ -8,4 +8,3 @@ object WidgetName {
     const val FLASH_SALE_TOKO = "flash_sale_toko"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
 }
-

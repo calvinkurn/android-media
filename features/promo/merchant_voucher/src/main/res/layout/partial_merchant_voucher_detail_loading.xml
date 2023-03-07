@@ -10,13 +10,13 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_120"
+        android:layout_height="120dp"
         app:loader_corner_radius="0dp"
         app:loader_type="rect"
         android:layout_gravity="start|center_vertical"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="@dimen/dp_200"
+        android:layout_width="200dp"
         android:layout_height="12dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -26,7 +26,7 @@
         android:layout_gravity="start|center_vertical"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="@dimen/dp_150"
+        android:layout_width="150dp"
         android:layout_height="12dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -36,7 +36,7 @@
         android:layout_gravity="start|center_vertical"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="@dimen/dp_150"
+        android:layout_width="150dp"
         android:layout_height="12dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -46,17 +46,17 @@
         android:layout_gravity="start|center_vertical"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="@dimen/dp_200"
+        android:layout_width="200dp"
         android:layout_height="12dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="@dimen/dp_60"
+        android:layout_marginTop="60dp"
         app:loader_corner_radius="3dp"
         app:loader_type="rect"
         android:layout_gravity="start|center_vertical"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="@dimen/dp_150"
+        android:layout_width="150dp"
         android:layout_height="12dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"

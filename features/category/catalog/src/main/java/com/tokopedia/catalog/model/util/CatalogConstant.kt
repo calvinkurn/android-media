@@ -14,6 +14,8 @@ object CatalogConstant {
     const val VIDEO = "catalog-video-horizontal-scroll"
     const val REVIEW = "catalog-product-review"
     const val COMPARISON = "catalog-product-recommendation"
+    const val COMPARISON_NEW = "catalog-product-comparison-new"
+    const val CATALOG_COMPARISON = "catalog_comparison"
     const val COMPARISON_PRODUCT = "catalog-comparison-product"
     const val CATALOG_PRODUCT_FILTER = "product-filter"
     const val CATALOG_PRODUCT_LIST = "product-list-infinite-scroll"

@@ -6,10 +6,10 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 sealed class MultiATCState {
     data class Success(
         val data: AtcMultiData
-    ): MultiATCState()
+    ) : MultiATCState()
 
     data class Fail(
         val message: StringRes = StringRes(Int.ZERO),
         val throwable: Throwable? = null
-    ): MultiATCState()
+    ) : MultiATCState()
 }

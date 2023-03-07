@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_iv_review_credibility_header_reviewer_profile_picture"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circle" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_tv_review_credibility_header_reviewer_name"
+        android:layout_width="0dp"
+        android:layout_height="18dp"
+        android:layout_marginHorizontal="8dp"
+        app:layout_constraintBottom_toTopOf="@id/loader_tv_review_credibility_header_reviewer_join_date"
+        app:layout_constraintEnd_toStartOf="@id/loader_btn_review_credibility_header_reviewer_see_profile"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/loader_iv_review_credibility_header_reviewer_profile_picture"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintWidth_percent="0.5"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_tv_review_credibility_header_reviewer_join_date"
+        android:layout_width="0dp"
+        android:layout_height="18dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/loader_btn_review_credibility_header_reviewer_see_profile"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/loader_iv_review_credibility_header_reviewer_profile_picture"
+        app:layout_constraintTop_toBottomOf="@id/loader_tv_review_credibility_header_reviewer_name"
+        app:layout_constraintWidth_percent="0.3"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_btn_review_credibility_header_reviewer_see_profile"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.2"
+        app:loader_type="rect" />
+</androidx.constraintlayout.widget.ConstraintLayout>

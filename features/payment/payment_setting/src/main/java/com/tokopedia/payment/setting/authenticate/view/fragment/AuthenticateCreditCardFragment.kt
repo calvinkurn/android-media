@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.authenticate.model.AuthException
@@ -141,7 +142,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     }
 
     private fun onResultUpdateWhiteList(checkWhiteListStatus: CheckWhiteListStatus?) {
-        if (checkWhiteListStatus?.statusCode == 200) {
+        if (checkWhiteListStatus?.statusCode == STATUS_CODE_SUCCESS) {
             activity?.setResult(Activity.RESULT_OK)
             checkWhiteListStatus.message?.let { message ->
                 view?.let {
@@ -180,7 +181,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     }
 
     private fun goToOtpPage(phoneNumber: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
@@ -229,6 +230,8 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     companion object {
         const val REQUEST_CODE_OTP_PAYMENT = 1273
         const val OTP_TYPE_VERIFY_AUTH_CREDIT_CARD = 122
+
+        const val STATUS_CODE_SUCCESS = 200
         const val MODE_SMS = "sms"
         fun createInstance(): AuthenticateCreditCardFragment {
             return AuthenticateCreditCardFragment()

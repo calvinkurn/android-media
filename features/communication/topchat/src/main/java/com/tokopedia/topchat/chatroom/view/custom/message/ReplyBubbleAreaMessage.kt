@@ -59,6 +59,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         fun getUserName(senderId: String): String
         fun goToBubble(parentReply: ParentReply)
         fun getAnalytic(): TopChatAnalytics
+        fun onCloseReplyBubble()
+        fun onShowReplyBubble()
     }
 
     private fun initLayout() {
@@ -137,6 +139,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         )
         bindParentReply(parentReply, null)
         updateCloseButtonState(enableCloseButton)
+        listener?.onShowReplyBubble()
         show()
     }
 
@@ -159,6 +162,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             closeBtn?.setOnClickListener {
                 TopChatAnalyticsKt.eventClickCloseReplyBubblePreview(referredMsg?.replyId ?: "")
                 clearReferTo()
+                listener?.onCloseReplyBubble()
                 hide()
             }
         } else {

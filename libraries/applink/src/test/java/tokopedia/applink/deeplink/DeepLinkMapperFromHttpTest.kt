@@ -1,9 +1,11 @@
 package tokopedia.applink.deeplink
 
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -11,7 +13,7 @@ import org.robolectric.RobolectricTestRunner
 import tokopedia.applink.util.DeepLinkUrlConstant
 
 @RunWith(RobolectricTestRunner::class)
-class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
+class DeepLinkMapperFromHttpTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of pulsa then should be equal to the actual`() {
@@ -620,6 +622,12 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check link url for video tab in feed should be equal to the actual`() {
+        val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_FEED_HOME_NAVIGATION}?${DeeplinkMapperHome.EXTRA_TAB_POSITION}=1&${ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION}=3&tab=live"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.CONTENT.VIDEO_TAB_ON_FEED, expectedDeepLink)
+    }
+
+    @Test
     fun `check link url of recommendation with id then should be redirected to discovery page with id`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${ApplinkConsInternalHome.AUTHORITY_DISCOVERY}/${ApplinkConsInternalHome.PATH_REKOMENDASI}?recomProdId=3190804069"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.RECOMMENDATION.RECOMMENDATION_WITH_ID, expectedDeepLink)
@@ -635,5 +643,52 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
     fun `check link url of searching something on now page should be equal to the actual`() {
         val expectedDeepLink = "${ApplinkConstInternalTokopediaNow.SEARCH}?q=jj%20royal"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.TOKOPEDIANOW_SEARCH_LINK_URL, expectedDeepLink)
+    }
+
+    @Test
+    fun `check amp find url with search query should return tokopedia internal search in customerapp`() {
+        val expectedDeepLink =
+            ApplinkConstInternalDiscovery.SEARCH_RESULT +
+                "?q=3%20ply%20masker" +
+                "&navsource=find"
+
+        assertEqualsDeepLinkMapper(
+            "https://www.tokopedia.com/amp/find/3-ply-masker",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check find appLink with search query then should return tokopedia internal search in customerapp`() {
+        val expectedDeepLink =
+            ApplinkConstInternalDiscovery.SEARCH_RESULT +
+                "?q=3%20ply%20masker" +
+                "&navsource=find"
+
+        assertEqualsDeepLinkMapper(
+            "https://www.tokopedia.com/find/3-ply-masker",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check find appLink with query and city then should return tokopedia internal search in customerapp`() {
+        val expectedDeepLink =
+            ApplinkConstInternalDiscovery.SEARCH_RESULT +
+                "?q=3%20ply%20masker%20di%20dki%20jakarta" +
+                "&navsource=find"
+
+        assertEqualsDeepLinkMapper(
+            "https://www.tokopedia.com/find/3-ply-masker/c/dki-jakarta",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `non-find url containing find word should not redirect to search`() {
+        assertEqualsDeepLinkMapper(
+            "https://www.tokopedia.com/findustri/plat-besi-5mm-steel-plate-harga-per-1-cm2",
+            ""
+        )
     }
 }

@@ -2,74 +2,71 @@ package com.tokopedia.usercomponents.explicit.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import javax.inject.Inject
+import com.tokopedia.usercomponents.explicit.view.ExplicitData
 
-class ExplicitAnalytics @Inject constructor() {
+object ExplicitAnalytics {
 
-    fun trackClickCard(
-        source: String,
-        template: String,
-        pagePath: String,
-        pageType: String
-    ) {
+    private const val KEY_PAGE_PATH = "pagePath"
+    private const val KEY_PAGE_TYPE = "pageType"
+    private const val KEY_BUSINESS_UNIT = "businessUnit"
+    private const val KEY_CURRENT_SITE = "currentSite"
+    private const val VALUE_BUSINESS_UNIT = "user platform"
+    private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
+
+    private const val EVENT_VIEW_ACCOUNT_IRIS = "viewAccountIris"
+    private const val EVENT_VIEW_ACCOUNT = "clickAccount"
+
+    private const val ACTION_IMPRESSION = "impression"
+    private const val ACTION_CLICK_ON_YES_BUTTON = "click on yes button"
+    private const val ACTION_CLICK_ON_NO_BUTTON = "click on no button"
+    private const val ACTION_CLICK_ON_CLOSE_BUTTON = "click on close button"
+
+    private const val EXPLICIT_WIDGET = "explicit widget"
+
+    fun trackQuestionShow(param: ExplicitData) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT_IRIS,
-            concatVariable(source, EXPLICIT_WIDGET),
+            concatVariable(param.pageName, EXPLICIT_WIDGET),
             concatVariable(ACTION_IMPRESSION, EXPLICIT_WIDGET),
-            concatVariable(source, template)
+            concatVariable(param.pageName, param.templateName)
         )
-        data.putAll(generateCommon(pagePath, pageType))
+        data.putAll(generateCommon(param.pagePath, param.pageType))
 
         sendData(data)
     }
 
-    fun trackClickPositifButton(
-        source: String,
-        template: String,
-        pagePath: String,
-        pageType: String
-    ) {
+    fun trackClickPositiveButton(param: ExplicitData) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT,
-            concatVariable(source, EXPLICIT_WIDGET),
+            concatVariable(param.pageName, EXPLICIT_WIDGET),
             concatVariable(ACTION_CLICK_ON_YES_BUTTON, EXPLICIT_WIDGET),
-            concatVariable(source, template)
+            concatVariable(param.pageName, param.templateName)
         )
-        data.putAll(generateCommon(pagePath, pageType))
+        data.putAll(generateCommon(param.pagePath, param.pageType))
 
         sendData(data)
     }
 
-    fun trackClickNegatifButton(
-        source: String,
-        template: String,
-        pagePath: String,
-        pageType: String
-    ) {
+    fun trackClickNegativeButton(param: ExplicitData) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT,
-            concatVariable(source, EXPLICIT_WIDGET),
+            concatVariable(param.pageName, EXPLICIT_WIDGET),
             concatVariable(ACTION_CLICK_ON_NO_BUTTON, EXPLICIT_WIDGET),
-            concatVariable(source, template)
+            concatVariable(param.pageName, param.templateName)
         )
-        data.putAll(generateCommon(pagePath, pageType))
+        data.putAll(generateCommon(param.pagePath, param.pageType))
 
         sendData(data)
     }
 
-    fun trackClickDismissButton(
-        source: String,
-        template: String,
-        pagePath: String,
-        pageType: String
-    ) {
+    fun trackClickDismissButton(param: ExplicitData) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT,
-            concatVariable(source, EXPLICIT_WIDGET),
+            concatVariable(param.pageName, EXPLICIT_WIDGET),
             concatVariable(ACTION_CLICK_ON_CLOSE_BUTTON, EXPLICIT_WIDGET),
-            concatVariable(source, template)
+            concatVariable(param.pageName, param.templateName)
         )
-        data.putAll(generateCommon(pagePath, pageType))
+        data.putAll(generateCommon(param.pagePath, param.pageType))
 
         sendData(data)
     }
@@ -91,22 +88,4 @@ class ExplicitAnalytics @Inject constructor() {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    companion object {
-        private const val KEY_PAGE_PATH = "pagePath"
-        private const val KEY_PAGE_TYPE = "pageType"
-        private const val KEY_BUSINESS_UNIT = "businessUnit"
-        private const val KEY_CURRENT_SITE = "currentSite"
-        private const val VALUE_BUSINESS_UNIT = "user platform"
-        private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
-
-        private const val EVENT_VIEW_ACCOUNT_IRIS = "viewAccountIris"
-        private const val EVENT_VIEW_ACCOUNT = "clickAccount"
-
-        private const val ACTION_IMPRESSION = "impression"
-        private const val ACTION_CLICK_ON_YES_BUTTON = "click on yes button"
-        private const val ACTION_CLICK_ON_NO_BUTTON = "click on no button"
-        private const val ACTION_CLICK_ON_CLOSE_BUTTON = "click on close button"
-
-        private const val EXPLICIT_WIDGET = "explicit widget"
-    }
 }

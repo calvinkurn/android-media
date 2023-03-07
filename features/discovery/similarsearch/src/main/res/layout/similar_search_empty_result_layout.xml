@@ -50,9 +50,9 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/similarSearchEmptyButton"
-        android:layout_width="@dimen/dp_220"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_44"
+        android:layout_marginTop="44dp"
         android:text="@string/similar_search_empty_button"
         android:foreground="?android:selectableItemBackground"
         android:clickable="true"

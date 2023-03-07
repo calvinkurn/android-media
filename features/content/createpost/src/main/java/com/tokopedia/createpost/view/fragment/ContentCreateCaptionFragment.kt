@@ -9,13 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.affiliatecommon.view.widget.ClearFocusEditText
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.view.adapter.CaptionPagePreviewImageAdapter
+import com.tokopedia.createpost.view.util.widget.ClearFocusEditText
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
@@ -78,7 +78,7 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         initView()
     }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val menuTitle = activity?.getString(R.string.feed_content_text_post)
+        val menuTitle = activity?.getString(com.tokopedia.content.common.R.string.feed_content_text_post)
         if (!menuTitle.isNullOrEmpty()) {
             MenuManager.addCustomMenu(activity, menuTitle, true, menu) {
                 activityListener?.postFeed()

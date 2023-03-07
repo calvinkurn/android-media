@@ -48,24 +48,44 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
         rvShipping.adapter = ShippingDurationOccAdapter(mutableList, this)
     }
 
-    override fun onShippingDurationChoosen(shippingCourierUiModelList: List<ShippingCourierUiModel>, cartPosition: Int, serviceData: ServiceData) {
+    override fun onShippingDurationChoosen(
+        shippingCourierUiModelList: List<ShippingCourierUiModel>,
+        cartPosition: Int,
+        serviceData: ServiceData
+    ) {
+        val selectedShippingCourierUiModel =
+            findSelectedCourier(serviceData, shippingCourierUiModelList)
         var flagNeedToSetPinpoint = false
-        var selectedServiceId = 0
-        var selectedShippingCourierUiModel = shippingCourierUiModelList[0]
-        for (shippingCourierUiModel in shippingCourierUiModelList) {
-            val recommend =
-                if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else shippingCourierUiModel.productData.isRecommend
-            if (recommend) {
-                selectedShippingCourierUiModel = shippingCourierUiModel
-            }
-            shippingCourierUiModel.isSelected = recommend
-            selectedServiceId = shippingCourierUiModel.serviceData.serviceId
-            if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorMessage != null && shippingCourierUiModel.productData.error.errorId != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+        shippingCourierUiModelList.forEach { shippingCourierUiModel ->
+            shippingCourierUiModel.isSelected =
+                shippingCourierUiModel == selectedShippingCourierUiModel
+            if (shippingCourierUiModel.productData.error != null &&
+                shippingCourierUiModel.productData.error.errorMessage != null &&
+                shippingCourierUiModel.productData.error.errorId != null &&
+                shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+            ) {
                 flagNeedToSetPinpoint = true
             }
         }
-        listener.onDurationChosen(serviceData, selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+        val selectedServiceId = selectedShippingCourierUiModel.serviceData.serviceId
+        listener.onDurationChosen(
+            serviceData,
+            selectedServiceId,
+            selectedShippingCourierUiModel,
+            flagNeedToSetPinpoint
+        )
         bottomSheetUnify.dismiss()
+    }
+
+    private fun findSelectedCourier(
+        serviceData: ServiceData,
+        shippingCourierUiModelList: List<ShippingCourierUiModel>
+    ): ShippingCourierUiModel {
+        return shippingCourierUiModelList.takeIf { serviceData.selectedShipperProductId > 0 }
+            ?.find { shippingCourierUiModel -> shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId }
+            ?: shippingCourierUiModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden }
+            ?: shippingCourierUiModelList.firstOrNull { !it.productData.isUiRatesHidden && (it.productData.error?.errorMessage?.isEmpty() != false) }
+            ?: shippingCourierUiModelList.first()
     }
 
     override fun isToogleYearEndPromotionOn(): Boolean {

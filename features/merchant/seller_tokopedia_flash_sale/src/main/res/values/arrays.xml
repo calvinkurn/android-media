@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Common Bottomsheet-->
+    <string-array name="sort_items">
+        <item>Terdekat</item>
+        <item>Terbaru</item>
+    </string-array>
+    <string-array name="sort_items_id">
+        <item>nearest</item>
+        <item>latest</item>
+    </string-array>
+    <string-array name="status_filter_items">
+        <item>Selesai</item>
+        <item>Terlewat</item>
+        <item>Dibatalkan</item>
+    </string-array>
+    <string-array name="status_filter_items_id">
+        <item>ended</item>
+        <item>missed</item>
+        <item>canceled</item>
+    </string-array>
+    <string-array name="criteria_items">
+        <item>Tampilan foto produk harus terlihat jelas, tidak terpotong, dengan pencahayaan terang, dan direkomendasikan berlatar putih atau bersih. Foto produk yang terhalang logo kurir tertentu, watermark, atau tulisan tidak dapat mengikuti campaign.</item>
+        <item><![CDATA[Judul, gambar, dan deskripsi harus sesuai dengan produk didaftarkan tanpa melanggar Hak Merek Dagang dan sesuai syarat & ketentuan Tokopedia.]]></item>
+        <item>Khusus untuk produk kategori makanan, pastikan produk memiliki surat keterangan BPOM dengan tanggal kedaluwarsa produk tidak kurang dari 1 bulan.</item>
+        <item>Pastikan produkmu sesuai dengan kategori yang dipilih dan tema campaign yang diikuti.</item>
+        <item>Stok produk harus memadai, dalam kondisi baru, dan tidak terdaftar di campaign lain di dalam periode yang sama.</item>
+        <item><![CDATA[Sesuai syarat & ketentuan Tokopedia, susu formula bayi usia 0–12 bulan tidak boleh mengikuti Flash Sale/campaign.]]></item>
+        <item>Pastikan produkmu tidak terdaftar lebih dari 2 kali dalam 1 periode campaign yang sama.</item>
+    </string-array>
+    <string-array name="criteria_filter_items">
+        <item>Memenuhi Kriteria</item>
+        <item>Semua Produk</item>
+    </string-array>
+    <string-array name="criteria_filter_items_id">
+        <item>PRODUCT_CRITERIA_FILTERED</item>
+        <item>ALL_PRODUCTS</item>
+    </string-array>
+
+</resources>

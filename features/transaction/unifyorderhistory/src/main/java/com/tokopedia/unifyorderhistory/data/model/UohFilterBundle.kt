@@ -6,6 +6,7 @@ package com.tokopedia.unifyorderhistory.data.model
 data class UohFilterBundle (
         val key: String = "",
         val value: String = "",
+        val desc: String = "",
         val type: Int = -1)
 
         /*type = 0 --> label

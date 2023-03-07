@@ -3,18 +3,23 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
+import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers.allOf
 
 class AddressRevampRobot {
 
@@ -22,6 +27,7 @@ class AddressRevampRobot {
         val i = Intent()
         i.putExtra(EXTRA_REF, screenName)
         rule.launchActivity(i)
+        waitForData()
     }
 
     fun searchAddressStreet(keyword: String) {
@@ -38,22 +44,34 @@ class AddressRevampRobot {
 
     fun onClickChooseLocation() {
         onView(withId(R.id.btn_primary)).perform(click())
-        waitForData()
+        waitForData(3000)
     }
 
     fun fillAddress(address: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
-                .perform(click(), typeText(address), closeSoftKeyboard())
+                .perform(click())
+        waitForData()
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
+            .perform(replaceText(address), closeSoftKeyboard())
+        waitForData()
     }
 
     fun fillReceiver(receiver: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
-                .perform(click(), typeText(receiver), closeSoftKeyboard())
+                .perform(click())
+        waitForData()
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
+            .perform(replaceText(receiver), closeSoftKeyboard())
+        waitForData()
     }
 
     fun fillPhoneNumber(phone: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
-                .perform(click(), typeText(phone), closeSoftKeyboard())
+                .perform(click())
+        waitForData()
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
+            .perform(replaceText(phone), closeSoftKeyboard())
+        waitForData()
     }
 
     fun clickManualForm() {
@@ -68,7 +86,7 @@ class AddressRevampRobot {
     fun searchKotaKecamatan(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
         onView(withId(R.id.searchbar_textfield))
-                .perform(click(), typeText(keyword), closeSoftKeyboard())
+                .perform(click(), replaceText(keyword), closeSoftKeyboard())
         waitForData()
     }
 
@@ -97,8 +115,8 @@ class AddressRevampRobot {
                 .perform(click(), replaceText(address), closeSoftKeyboard())
     }
 
-    private fun waitForData() {
-        Thread.sleep(1000L)
+    private fun waitForData(millis: Long = 1000) {
+        Thread.sleep(millis)
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {

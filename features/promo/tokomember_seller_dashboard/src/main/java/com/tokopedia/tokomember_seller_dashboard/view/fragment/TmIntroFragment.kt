@@ -33,7 +33,21 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC_NO_INTERNET
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_NO_INTERNET
+import com.tokopedia.tokomember_seller_dashboard.util.RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.TM_INTRO_BG
+import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SELLER_INTRO_EDU
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SELLER_INTRO_OS
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SELLER_NO_OS
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmIntroAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
@@ -46,6 +60,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_intro_new.*
 import javax.inject.Inject
+
+private const val SDK_19 = 19
+private const val SDK_20 = 20
+private const val SDK_21 = 21
 
 class TmIntroFragment : BaseDaggerFragment(),
     TmIntroButtonVh.TokomemberIntroButtonListener {
@@ -90,18 +108,17 @@ class TmIntroFragment : BaseDaggerFragment(),
         ivBg.loadImage(TM_INTRO_BG)
         hideStatusBar()
         observeViewModel()
+        tmTracker = TmTracker()
         arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
             tmTracker?.viewIntroPage(it.toString())
-            tmIntroViewModel.getIntroInfo(it)
+            introLogic(it)
             btnContinue.setOnClickListener { _ ->
-                if (openBS) {
-                    redirectSellerOs()
-                } else {
-                    openCreationActivity()
-                }
+                proceedIntroLogic()
                 tmTracker?.clickIntroLanjut(it.toString())
             }
         }
+
+        toolbar_tokomember.setActivity(activity)
 
         scrollContainer?.viewTreeObserver?.addOnScrollChangedListener {
             val y = scrollContainer.scrollY
@@ -121,12 +138,58 @@ class TmIntroFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun introLogic(it: Int) {
+        if (com.tokopedia.tokomember_seller_dashboard.util.TmInternetCheck.isConnectedToInternet(context)) {
+            tmIntroViewModel.getIntroInfo(it)
+        }
+        else {
+            noInternetUi {
+                introLogic(it)
+            }
+        }
+    }
+
+    private fun proceedIntroLogic() {
+        if (com.tokopedia.tokomember_seller_dashboard.util.TmInternetCheck.isConnectedToInternet(context)) {
+            if (openBS) {
+                redirectSellerOs()
+            } else {
+                openCreationActivity()
+            }
+        }
+        else {
+            noInternetUi {
+                proceedIntroLogic()
+            }
+        }
+    }
+
     override fun getScreenName() = ""
 
     override fun initInjector() {
         DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
+    private fun noInternetUi(action: () -> Unit) {
+        //show no internet bottomsheet
+
+        val bundle = Bundle()
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+            ERROR_CREATING_TITLE_NO_INTERNET,
+            ERROR_CREATING_DESC_NO_INTERNET,
+            "",
+            RETRY,
+            errorCount = 0,
+            showSecondaryCta = true
+        )
+        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+        val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
+            override fun onButtonClick(errorCount: Int) {
+                action()
+            }})
+        bottomsheet.show(childFragmentManager,"")
+    }
     private fun observeViewModel() {
 
         tmIntroViewModel.tokomemberOnboardingResultLiveData.observe(viewLifecycleOwner, {
@@ -287,7 +350,7 @@ class TmIntroFragment : BaseDaggerFragment(),
                 )
             }
         }
-        if (Build.VERSION.SDK_INT in 19..20) {
+        if (Build.VERSION.SDK_INT in SDK_19..SDK_20) {
             activity?.let {
                 setWindowFlag(
                     it,
@@ -296,11 +359,11 @@ class TmIntroFragment : BaseDaggerFragment(),
                 )
             }
         }
-        if (Build.VERSION.SDK_INT >= 19) {
+        if (Build.VERSION.SDK_INT >= SDK_19) {
             activity?.window?.decorView?.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= SDK_21) {
             activity?.let {
                 setWindowFlag(
                     it,

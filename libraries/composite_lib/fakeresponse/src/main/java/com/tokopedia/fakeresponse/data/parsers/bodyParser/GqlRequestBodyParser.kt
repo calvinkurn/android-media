@@ -4,6 +4,7 @@ import android.util.Log
 import com.tokopedia.fakeresponse.data.parsers.GetResultFromDaoUseCase
 import com.tokopedia.fakeresponse.data.parsers.ParserRuleProvider
 import com.tokopedia.fakeresponse.db.dao.GqlDao
+import com.tokopedia.fakeresponse.db.entities.GqlRecord
 import com.tokopedia.fakeresponse.domain.repository.GqlRepository
 import org.json.JSONArray
 
@@ -11,7 +12,7 @@ class GqlRequestBodyParser(gqlDao: GqlDao) : BodyParser {
     val parserRuleProvider = ParserRuleProvider()
     val useCase = GetResultFromDaoUseCase(GqlRepository(gqlDao))
 
-    fun parse(requestBody: String): String? {
+    fun parse(requestBody: String): GqlRecord? {
         try {
             val jsonArray = JSONArray(requestBody)
             for (i in 0 until jsonArray.length()) {
@@ -24,12 +25,12 @@ class GqlRequestBodyParser(gqlDao: GqlDao) : BodyParser {
                 return fakeResponse
             }
         } catch (ex: Exception) {
-            Log.e("NooB", ex.message)
+            Log.e("NooB", ex?.message ?: "")
         }
         return null
     }
 
-    fun getFakeResponseFromGqlDatabase(operationName: String): String? {
+    fun getFakeResponseFromGqlDatabase(operationName: String): GqlRecord? {
         return useCase.getResponseFromDao(operationName)
     }
 }

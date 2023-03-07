@@ -1,13 +1,10 @@
 package com.tokopedia.app.common;
 
-import android.os.Build;
-
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.tokopedia.app.common.di.CommonAppComponent;
-import com.tokopedia.app.common.di.DaggerCommonAppComponent;
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
@@ -21,7 +18,6 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -33,13 +29,9 @@ import java.io.File;
 
 public abstract class MainApplication extends CoreNetworkApplication {
 
-    private LocationUtils locationUtils;
-    private DaggerCommonAppComponent.Builder daggerBuilder;
-    private CommonAppComponent appComponent;
-    private UserSession userSession;
+    protected UserSession userSession;
     protected RemoteConfig remoteConfig;
     private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
-    private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
     private final String ENABLE_ASYNC_CRASHLYTICS_USER_INFO = "android_async_crashlytics_user_info";
     private final String ENABLE_ASYNC_BRANCH_USER_INFO = "android_async_branch_user_info";
 
@@ -77,16 +69,11 @@ public abstract class MainApplication extends CoreNetworkApplication {
         super.onCreate();
         userSession = new UserSession(this);
         initCrashlytics();
-
-        daggerBuilder = DaggerCommonAppComponent.builder()
-                .baseAppComponent((MainApplication.this).getBaseAppComponent());
-        getApplicationComponent().inject(this);
+        initAnalyticUserId();
 
         initBranch();
         NotificationUtils.setNotificationChannel(this);
-        upgradeSecurityProvider();
         createAndCallBgWork();
-        TokoPatch.init(this);
     }
 
     private void createAndCallBgWork(){
@@ -103,8 +90,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
     @NotNull
     private Boolean executeInBackground(){
-        locationUtils = new LocationUtils(MainApplication.this);
-        locationUtils.initLocationBackground();
+        new LocationUtils(MainApplication.this).initLocationBackground();
         upgradeSecurityProvider();
         return true;
     }
@@ -121,14 +107,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
     }
 
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        if(locationUtils != null) {
-            locationUtils.deInitLocationBackground();
-        }
-    }
-
     public void initCrashlytics() {
         if (!BuildConfig.DEBUG) {
             WeaveInterface crashlyticsUserInfoWeave = new WeaveInterface() {
@@ -144,15 +122,17 @@ public abstract class MainApplication extends CoreNetworkApplication {
         }
     }
 
-    public CommonAppComponent getApplicationComponent() {
-        return getAppComponent();
-    }
-
-    public CommonAppComponent getAppComponent() {
-        if (appComponent == null) {
-            appComponent = daggerBuilder.build();
-        }
-        return appComponent;
+    public void initAnalyticUserId() {
+        WeaveInterface crashlyticsAnalyticsUserIdWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                String userId = userSession.getUserId();
+                TkpdFirebaseAnalytics.getInstance(MainApplication.this).setUserId(userId);
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(crashlyticsAnalyticsUserIdWeave);
     }
 
     //this method needs to be called from here in case of migration get it tested from CM team

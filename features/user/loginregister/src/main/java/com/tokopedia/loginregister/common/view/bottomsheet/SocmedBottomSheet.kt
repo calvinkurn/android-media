@@ -1,32 +1,61 @@
 package com.tokopedia.loginregister.common.view.bottomsheet
 
-import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.databinding.LayoutSocmedBottomsheetBinding
+import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by Yoris Prayogo on 15/12/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class SocmedBottomSheet(mContext: Context?): BottomSheetUnify() {
+interface SocmedBottomSheetListener {
+    fun onItemClick(provider: ProviderData)
+}
 
-    private var socmedButtonsContainer: LinearLayout? = null
+class SocmedBottomSheet(
+    private val listener: SocmedBottomSheetListener
+): BottomSheetUnify() {
 
-    init {
-        createBottomSheet(mContext)
+    private var viewBinding by autoClearedNullable<LayoutSocmedBottomsheetBinding>()
+    private var socmedAdapter: SocmedBottomSheetAdapter? = null
+    private var providers: MutableList<ProviderData> = mutableListOf()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        viewBinding = LayoutSocmedBottomsheetBinding.inflate(
+            inflater
+        ).also {
+            setChild(it.root)
+        }
+
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun createBottomSheet(context: Context?): SocmedBottomSheet? {
-        val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
-        socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setTitle(context?.getString(R.string.choose_social_media) ?: "")
-        setChild(viewBottomSheetDialog)
-        return this
+
+        socmedAdapter = SocmedBottomSheetAdapter(providers, listener)
+        viewBinding?.socmedList?.run {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = socmedAdapter
+        }
     }
 
-    fun getSocmedButtonContainer(): LinearLayout? = socmedButtonsContainer
+    fun setProviders(providers: List<ProviderData>) {
+        this.providers.clear()
+        this.providers.addAll(providers)
+        socmedAdapter?.notifyItemRangeInserted(0, providers.size)
+    }
 }

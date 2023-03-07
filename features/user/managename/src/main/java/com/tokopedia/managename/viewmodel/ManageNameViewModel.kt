@@ -24,8 +24,8 @@ class ManageNameViewModel @Inject constructor(
     val updateNameLiveData: LiveData<com.tokopedia.usecase.coroutines.Result<UpdateNameModel>>
         get() = mutableUpdateName
 
-    fun updateName(fullname: String) {
-        addNameUseCase.update(AddNameUseCase.params(fullname),
+    fun updateName(fullname: String, currValidateToken: String) {
+        addNameUseCase.update(AddNameUseCase.params(fullname, currValidateToken),
                 onSuccess = {
                     mutableUpdateName.value = Success(it)
                 },

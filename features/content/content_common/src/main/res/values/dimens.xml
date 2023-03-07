@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="content_common_space_0">0dp</dimen>
+    <dimen name="content_common_space_1">1dp</dimen>
+    <dimen name="content_common_space_6" tools:ignore="UnusedResources">6dp</dimen>
+    <dimen name="content_common_space_8">8dp</dimen>
+    <dimen name="content_common_space_10">10dp</dimen>
+    <dimen name="content_common_space_12">12dp</dimen>
+    <dimen name="content_common_space_14" tools:ignore="UnusedResources">14dp</dimen>
+    <dimen name="content_common_space_16">16dp</dimen>
+    <dimen name="content_common_space_24">24dp</dimen>
+    <dimen name="content_common_space_32">32dp</dimen>
+    <dimen name="content_common_space_40" tools:ignore="UnusedResources">40dp</dimen>
+    <dimen name="content_common_space_60">60dp</dimen>
+    <dimen name="content_common_space_64">64dp</dimen>
+</resources>

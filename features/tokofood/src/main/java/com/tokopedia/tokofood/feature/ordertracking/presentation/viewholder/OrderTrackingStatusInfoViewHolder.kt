@@ -4,13 +4,14 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingStatusInfoSectionBinding
+import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.partialview.OrderTrackingStatusInfoWidget
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StepperStatusUiModel
 
 class OrderTrackingStatusInfoViewHolder(
     itemView: View
-) : BaseOrderTrackingViewHolder<OrderTrackingStatusInfoUiModel>(itemView) {
+) : CustomPayloadViewHolder<OrderTrackingStatusInfoUiModel>(itemView) {
 
     companion object {
         @LayoutRes

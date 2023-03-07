@@ -15,8 +15,8 @@ data class InteractiveConfigUiModel(
     @OptIn(ExperimentalStdlibApi::class)
     fun availableGameList(): List<GameType> {
         return buildList {
-            if (quizConfig.isActive) add(GameType.Quiz)
-            if (giveawayConfig.isActive) add(GameType.Giveaway)
+            if (quizConfig.isActive && quizConfig.availableStartTimeInMs.isNotEmpty()) add(GameType.Quiz)
+            if (giveawayConfig.isActive && giveawayConfig.availableStartTimeInMs.isNotEmpty()) add(GameType.Giveaway)
         }
     }
 
@@ -52,26 +52,24 @@ data class GiveawayConfigUiModel(
 
 data class QuizConfigUiModel(
     val isActive: Boolean,
+    val isGiftActive: Boolean,
     val maxTitleLength: Int,
     val maxChoicesCount: Int,
     val minChoicesCount: Int,
-    val maxRewardLength: Int,
     val maxChoiceLength: Int,
     val availableStartTimeInMs: List<Long>,
     val eligibleStartTimeInMs: List<Long>,
-    val showPrizeCoachMark: Boolean,
 ) {
     companion object {
         fun empty() = QuizConfigUiModel(
             isActive = false,
+            isGiftActive = false,
             maxTitleLength = 0,
             maxChoicesCount = 0,
             minChoicesCount = 0,
-            maxRewardLength = 0,
             maxChoiceLength = 0,
             availableStartTimeInMs = emptyList(),
             eligibleStartTimeInMs =  emptyList(),
-            showPrizeCoachMark = true,
         )
     }
 }

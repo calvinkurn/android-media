@@ -4,12 +4,13 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
 
 data class DynamicProductInfoP1(
-        val basic: BasicInfo = BasicInfo(),
-        val data: ComponentData = ComponentData(),
-        val bestSellerContent: Map<String, OneLinersContent>? = mapOf(),
-        val stockAssuranceContent: Map<String, OneLinersContent>? = mapOf(),
-        val layoutName: String = "",
-        val pdpSession: String = ""
+    val basic: BasicInfo = BasicInfo(),
+    val data: ComponentData = ComponentData(),
+    val bestSellerContent: Map<String, OneLinersContent>? = mapOf(),
+    val stockAssuranceContent: Map<String, OneLinersContent>? = mapOf(),
+    val layoutName: String = "",
+    val pdpSession: String = "",
+    val requestId: String = ""
 ) {
 
     fun isProductVariant(): Boolean = data.variant.isVariant
@@ -29,9 +30,6 @@ data class DynamicProductInfoP1(
             }
         }
 
-    val isProductParent: Boolean
-        get() = data.variant.isVariant && basic.productID == data.variant.parentID
-
     val parentProductId: String
         get() =
             if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toLongOrNull() ?: 0L > 0L) {
@@ -49,24 +47,6 @@ data class DynamicProductInfoP1(
                 data.campaign.discountedPrice
             } else {
                 data.price.value
-            }
-        }
-
-    val priceBeforeDouble: Double
-        get() {
-            return if (data.campaign.isActive) {
-                data.campaign.originalPrice
-            } else {
-                0.0
-            }
-        }
-
-    val dropPercentage: String?
-        get() {
-            return if (data.campaign.isActive) {
-                data.campaign.percentageAmount.toString()
-            } else {
-                ""
             }
         }
 

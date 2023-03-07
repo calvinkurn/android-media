@@ -15,6 +15,7 @@ import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2TickerItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 
 class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
@@ -46,10 +47,12 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
                         WishlistV2Consts.TICKER_TYPE_WARNING -> {
                             tickerType = Ticker.TYPE_WARNING
                             closeButtonVisibility = View.VISIBLE
+                            WishlistCollectionAnalytics.sendViewMaxQtyTickerOnWishlistPageEvent(false)
                         }
                         WishlistV2Consts.TICKER_TYPE_ERROR -> {
                             tickerType = Ticker.TYPE_ERROR
                             closeButtonVisibility = View.GONE
+                            WishlistCollectionAnalytics.sendViewMaxQtyTickerOnWishlistPageEvent(true)
                         }
                     }
 
@@ -59,9 +62,11 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
                             when (tickerData.button.action) {
                                 WishlistV2Consts.TICKER_CTA_OPEN_DELETE_BOTTOMSHEET -> {
                                     actionListener?.onTickerCTAShowBottomSheet(bottomSheetCleanerData)
+                                    WishlistCollectionAnalytics.sendClickLihatButtonOnMaxQtyTickerOnWishlistPageEvent(true)
                                 }
                                 WishlistV2Consts.TICKER_CTA_SORT_FROM_OLDEST -> {
                                     actionListener?.onTickerCTASortFromLatest()
+                                    WishlistCollectionAnalytics.sendClickLihatButtonOnMaxQtyTickerOnWishlistPageEvent(false)
                                 }
                             }
                         }

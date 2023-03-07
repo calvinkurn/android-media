@@ -31,7 +31,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-class ShopCampaignThematicWidgetViewHolder (
+class ShopCampaignThematicWidgetViewHolder(
     itemView: View,
     private val listener: ThematicWidgetViewHolder.ThematicWidgetListener,
     private val widgetConfigListener: WidgetConfigListener
@@ -174,7 +174,7 @@ class ShopCampaignThematicWidgetViewHolder (
 
     private fun restoreInstanceStateToLayoutManager() {
         launch {
-            val rvState =  uiModel?.productList?.firstOrNull()?.rvState
+            val rvState = uiModel?.productList?.firstOrNull()?.rvState
             if (null != rvState) {
                 rvProduct?.layoutManager?.onRestoreInstanceState(rvState)
             }

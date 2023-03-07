@@ -31,4 +31,6 @@ interface OfficialHomeTypeFactory : OfficialTypeFactory, HomeComponentTypeFactor
     override fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int
 
     override fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int
+
+    fun type(officialTopAdsBannerDataModel: OfficialTopAdsBannerDataModel): Int
 }

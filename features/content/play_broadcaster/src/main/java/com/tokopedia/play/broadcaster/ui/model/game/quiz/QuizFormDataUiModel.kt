@@ -5,7 +5,6 @@ package com.tokopedia.play.broadcaster.ui.model.game.quiz
  */
 data class QuizFormDataUiModel(
     val title: String = "",
-    val gift: String = "",
     val options: List<Option> = emptyList(),
     val durationInMs: Long = 0,
 ) {

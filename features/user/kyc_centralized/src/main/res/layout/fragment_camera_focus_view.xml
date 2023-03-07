@@ -42,13 +42,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/subtitle"/>
 
-    <com.tokopedia.kyc_centralized.view.customview.FocusedCameraKTPView
+    <com.tokopedia.kyc_centralized.ui.customview.FocusedCameraKTPView
         android:id="@+id/focused_view_ktp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible" />
 
-    <com.tokopedia.kyc_centralized.view.customview.FocusCameraFaceView
+    <com.tokopedia.kyc_centralized.ui.customview.FocusCameraFaceView
         android:id="@+id/focused_view_face"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -172,7 +172,7 @@
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/progress_bar"
+        android:id="@+id/loader"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
         android:layout_centerInParent="true"

@@ -23,7 +23,8 @@ data class OrderPayment(
         val errorData: OrderPaymentErrorData? = null,
         val bid: String = "",
         val specificGatewayCampaignOnlyType: Int = 0,
-        val walletData: OrderPaymentWalletAdditionalData = OrderPaymentWalletAdditionalData()
+        val walletData: OrderPaymentWalletAdditionalData = OrderPaymentWalletAdditionalData(),
+        val paymentFees: List<OrderPaymentFee> = emptyList(),
 ) {
     val isOvo: Boolean
         get() = gatewayCode.contains("OVO")
@@ -39,7 +40,19 @@ data class OrderPayment(
         if (walletData.isGoCicil) {
             return walletData.goCicilData.selectedTerm?.feeAmount ?: 0.0
         }
-        return fee
+        return getTotalPaymentFee()
+    }
+
+    fun isInstallment(): Boolean {
+        return creditCard.selectedTerm != null || walletData.isGoCicil
+    }
+
+    fun getTotalPaymentFee(): Double {
+        var totalPaymentFee = 0.0
+        for (paymentFee in paymentFees) {
+            totalPaymentFee += paymentFee.fee
+        }
+        return totalPaymentFee
     }
 }
 
@@ -102,7 +115,7 @@ data class OrderPaymentCreditCardsNumber(
 
 @Parcelize
 data class OrderPaymentCreditCardAdditionalData(
-        val id: Long = 0,
+        val id: String = "",
         val name: String = "",
         val email: String = "",
         val msisdn: String = "",
@@ -243,3 +256,12 @@ data class OrderPaymentGoCicilTerms(
     val hasPromoLabel: Boolean
         get() = labelMessage.isNotBlank()
 }
+
+data class OrderPaymentFee(
+    val title: String = "",
+    val fee: Double = 0.0,
+    val showTooltip: Boolean = false,
+    val showSlashed: Boolean = false,
+    val slashedFee: Int = 0,
+    val tooltipInfo: String = "",
+)

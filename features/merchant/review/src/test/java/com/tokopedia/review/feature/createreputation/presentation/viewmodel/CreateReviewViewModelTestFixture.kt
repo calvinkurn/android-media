@@ -1,10 +1,13 @@
 package com.tokopedia.review.feature.createreputation.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
@@ -26,11 +29,11 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.delay
 import org.junit.Before
 import org.junit.Rule
-import org.mockito.ArgumentMatchers
 
 abstract class CreateReviewViewModelTestFixture {
 
@@ -49,7 +52,9 @@ abstract class CreateReviewViewModelTestFixture {
         const val SAMPLE_UPLOAD_ID = "abcd-1234-efgh-5678-ijkl"
         const val SAMPLE_VIDEO_URL = "https://www.tokopedia.com/patrick-belly-dancing.mp4"
 
-        const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW = "json/get_reputation_form_use_case_result_success_valid_to_review.json"
+        const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_NON_EMPTY_KEYWORDS = "json/get_reputation_form_use_case_result_success_valid_to_review_with_non_empty_keywords.json"
+        const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_EMPTY_KEYWORDS = "json/get_reputation_form_use_case_result_success_valid_to_review_with_empty_keywords.json"
+        const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_EMPTY_PLACEHOLDER = "json/get_reputation_form_use_case_result_success_valid_to_review_with_empty_placeholder.json"
         const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_INVALID_TO_REVIEW = "json/get_reputation_form_use_case_result_success_invalid_to_review.json"
         const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_PRODUCT_DELETED = "json/get_reputation_form_use_case_result_success_product_deleted.json"
         const val SAMPLE_GET_REVIEW_TEMPLATE_RESULT_SUCCESS_EMPTY = "json/get_review_template_use_case_result_success_empty.json"
@@ -92,13 +97,24 @@ abstract class CreateReviewViewModelTestFixture {
     @RelaxedMockK
     lateinit var getPostSubmitBottomSheetUseCase: ProductrevGetPostSubmitBottomSheetUseCase
 
+    @RelaxedMockK
+    lateinit var cacheManager: CacheManager
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     protected lateinit var viewModel: CreateReviewViewModel
 
-    protected val getReputationFormUseCaseResultSuccessValid = createSuccessResponse<ProductRevGetForm>(
-        SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW
+    protected val getReputationFormUseCaseResultSuccessValidWithNonEmptyKeywords = createSuccessResponse<ProductRevGetForm>(
+        SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_NON_EMPTY_KEYWORDS
+    ).getSuccessData<ProductRevGetForm>()
+
+    protected val getReputationFormUseCaseResultSuccessValidWithEmptyKeywords = createSuccessResponse<ProductRevGetForm>(
+        SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_EMPTY_KEYWORDS
+    ).getSuccessData<ProductRevGetForm>()
+
+    protected val getReputationFormUseCaseResultSuccessValidWithEmptyPlaceholder = createSuccessResponse<ProductRevGetForm>(
+        SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_EMPTY_PLACEHOLDER
     ).getSuccessData<ProductRevGetForm>()
 
     protected val getReputationFormUseCaseResultSuccessInvalid = createSuccessResponse<ProductRevGetForm>(
@@ -158,7 +174,8 @@ abstract class CreateReviewViewModelTestFixture {
             userSessionInterface,
             getReviewTemplatesUseCase,
             getBadRatingCategoryUseCase,
-            getPostSubmitBottomSheetUseCase
+            getPostSubmitBottomSheetUseCase,
+            cacheManager
         )
     }
 
@@ -187,7 +204,7 @@ abstract class CreateReviewViewModelTestFixture {
     }
 
     protected fun mockSuccessGetReputationForm(
-        response: ProductRevGetForm = getReputationFormUseCaseResultSuccessValid
+        response: ProductRevGetForm = getReputationFormUseCaseResultSuccessValidWithNonEmptyKeywords
     ) {
         coEvery { getProductReputationForm.getReputationForm(any()) } returns response
     }
@@ -218,11 +235,16 @@ abstract class CreateReviewViewModelTestFixture {
         uploadID: String = SAMPLE_UPLOAD_ID,
         videoUrl: String = SAMPLE_VIDEO_URL
     ) {
-        coEvery { uploaderUseCase(any()) } returns UploadResult.Success(uploadID, videoUrl)
+        coEvery {
+            uploaderUseCase(any())
+        } returns UploadResult.Success(
+            uploadId = uploadID,
+            videoUrl = videoUrl
+        )
     }
 
     protected fun mockErrorUploadMedia(withException: Boolean = true, delayTime: Long = 0L) {
-        coEvery { uploaderUseCase(any()) } coAnswers  {
+        coEvery { uploaderUseCase(any()) } coAnswers {
             delay(delayTime)
             if (withException) throw Exception() else UploadResult.Error("")
         }
@@ -246,5 +268,28 @@ abstract class CreateReviewViewModelTestFixture {
 
     protected fun mockErrorPostSubmitBottomSheet() {
         coEvery { getPostSubmitBottomSheetUseCase.executeOnBackground() } throws Exception()
+    }
+
+    protected suspend fun mockStringAb(key: String, defaultValue: String, value: String, block: suspend () -> Unit) {
+        mockkStatic(RemoteConfigInstance::class) {
+            val mockRemoteConfigInstance = mockk<RemoteConfigInstance>(relaxed = true) {
+                val mockAbTestPlatform = mockk<AbTestPlatform>(relaxed = true) {
+                    every { getString(key, defaultValue) } returns value
+                }
+                every { abTestPlatform } returns mockAbTestPlatform
+            }
+            every { RemoteConfigInstance.getInstance() } returns mockRemoteConfigInstance
+            block()
+        }
+    }
+
+    protected fun setShouldRunReviewTopicsPeekAnimation() {
+        every {
+            cacheManager.get(
+                customId = "cacheKeyIsReviewTopicsPeekAnimationAlreadyRun",
+                type = Boolean::class.java,
+                defaultValue = false
+            )
+        } returns false
     }
 }

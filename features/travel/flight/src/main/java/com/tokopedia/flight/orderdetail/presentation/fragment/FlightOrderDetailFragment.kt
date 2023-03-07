@@ -65,6 +65,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     private var isCancellation: Boolean = false
     private var isRequestCancel: Boolean = false
     private var isOpenTrackSent: Boolean = false
+    private var isOpenInvoice: Boolean = false
 
     private var isTravelInsurance: Boolean = false
     private var isZeroCancellation: Boolean = false
@@ -86,6 +87,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
         isCancellation = arguments?.getBoolean(EXTRA_IS_CANCELLATION) ?: false
         isRequestCancel = arguments?.getBoolean(EXTRA_REQUEST_CANCEL) ?: false
+        isOpenInvoice = arguments?.getBoolean(EXTRA_IS_OPEN_INVOICE) ?: false
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         flightOrderDetailViewModel = viewModelProvider.get(FlightOrderDetailViewModel::class.java)
@@ -117,6 +119,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     }
                     renderView(it.data)
                     checkIfShouldGoToCancellation(it.data)
+                    checkIfShouldGoToInvoice()
                 }
                 is Fail -> {
                     var title = ""
@@ -509,6 +512,12 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun checkIfShouldGoToInvoice() {
+        if (isOpenInvoice) {
+            onInvoiceIdClicked()
+        }
+    }
+
     private fun navigateToWebview(title: String, htmlContent: String) {
         context?.let {
             startActivity(
@@ -552,6 +561,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         private const val EXTRA_IS_CANCELLATION = "EXTRA_IS_CANCELLATION"
         private const val EXTRA_REQUEST_CANCEL = "EXTRA_REQUEST_CANCEL"
         private const val EXTRA_IS_AFTER_CANCELLATION = "EXTRA_IS_AFTER_CANCELLATION"
+        private const val EXTRA_IS_OPEN_INVOICE = "EXTRA_IS_OPEN_INVOICE"
 
         private const val CLIP_LABEL_INVOICE_ID = "Invoice id"
         private const val CLIP_LABEL_DEPARTURE_BOOKING_CODE = "Kode booking keberangkatan"
@@ -566,13 +576,15 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         fun createInstance(
             invoiceId: String,
             isCancellation: Boolean,
-            isRequestCancellation: Boolean
+            isRequestCancellation: Boolean,
+            isOpenInvoice: Boolean
         ): FlightOrderDetailFragment =
             FlightOrderDetailFragment().also {
                 it.arguments = Bundle().apply {
                     putString(EXTRA_INVOICE_ID, invoiceId)
                     putBoolean(EXTRA_IS_CANCELLATION, isCancellation)
                     putBoolean(EXTRA_REQUEST_CANCEL, isRequestCancellation)
+                    putBoolean(EXTRA_IS_OPEN_INVOICE, isOpenInvoice)
                 }
             }
     }

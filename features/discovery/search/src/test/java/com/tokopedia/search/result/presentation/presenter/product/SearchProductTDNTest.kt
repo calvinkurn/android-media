@@ -5,10 +5,9 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
+import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -150,23 +149,14 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list with TDN above headline ads in first page`() {
-        visitableList.size shouldBe 21
+        visitableList.size shouldBe 19
 
         visitableList.forEachIndexed { index, visitable ->
-            if (index == 0) {
-                visitable.shouldBeInstanceOf<ChooseAddressDataView>()
-            }
-            else if (index == 1 || index == 17) {
-                visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
-            }
-            else if (index == 18 || index == 20) {
-                visitable.shouldBeInstanceOf<SeparatorDataView>()
-            }
-            else if (index == 2 || index == 19) {
-                visitable.shouldBeInstanceOf<CpmDataView>()
-            }
-            else {
-                visitable.shouldBeInstanceOf<ProductItemDataView>()
+            when (index) {
+                0 -> visitable.shouldBeInstanceOf<ChooseAddressDataView>()
+                1, 17 -> visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
+                2, 18 -> visitable.shouldBeInstanceOf<CpmDataView>()
+                else -> visitable.shouldBeInstanceOf<ProductItemDataView>()
             }
         }
     }
@@ -190,23 +180,14 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list with TDN above headline ads after load more`() {
-        visitableList.size shouldBe 41
+        visitableList.size shouldBe 37
 
         visitableList.forEachIndexed { index, visitable ->
-            if (index == 0) {
-                visitable.shouldBeInstanceOf<ChooseAddressDataView>()
-            }
-            else if (index == 1 || index == 17 || index == 35) {
-                visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
-            }
-            else if (index == 18 || index == 20 || index == 37 || index == 39) {
-                visitable.shouldBeInstanceOf<SeparatorDataView>()
-            }
-            else if (index == 2 || index == 19 || index == 38 || index == 40) {
-                visitable.shouldBeInstanceOf<CpmDataView>()
-            }
-            else {
-                visitable.shouldBeInstanceOf<ProductItemDataView>()
+            when (index) {
+                0 -> visitable.shouldBeInstanceOf<ChooseAddressDataView>()
+                1, 17, 33 -> visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
+                2, 18, 35, 36 -> visitable.shouldBeInstanceOf<CpmDataView>()
+                else -> visitable.shouldBeInstanceOf<ProductItemDataView>()
             }
         }
     }

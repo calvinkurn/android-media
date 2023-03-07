@@ -7,11 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
-import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantBottomSheet
 import com.tokopedia.product.manage.common.feature.variant.adapter.ProductVariantAdapter
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantBottomSheet
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.factory.ProductVariantPriceAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantPriceViewHolder.ProductVariantListener
-import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 
 class QuickEditVariantPriceBottomSheet(
     private val onSaveVariantsPrice: (EditVariantResult) -> Unit = {}
@@ -58,7 +58,7 @@ class QuickEditVariantPriceBottomSheet(
 
     private fun isVariantsPriceValid(result: EditVariantResult): Boolean {
         result.variants.forEach {
-            if(it.price < MINIMUM_PRICE.toDouble()) {
+            if(it.price < MINIMUM_PRICE) {
                 return false
             }
         }

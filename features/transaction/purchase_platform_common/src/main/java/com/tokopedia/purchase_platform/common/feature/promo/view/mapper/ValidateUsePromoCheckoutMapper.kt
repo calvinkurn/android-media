@@ -36,6 +36,7 @@ class ValidateUsePromoCheckoutMapper {
             return ValidateUsePromoRevampUiModel(
                     status = validateUsePromoRevamp.status,
                     message = validateUsePromoRevamp.message,
+                    errorCode = validateUsePromoRevamp.errorCode,
                     promoUiModel = mapToPromoUiModel(validateUsePromoRevamp.promo)
             )
         }
@@ -96,7 +97,9 @@ class ValidateUsePromoCheckoutMapper {
                     code = voucherOrdersItem.code,
                     type = voucherOrdersItem.type,
                     uniqueId = voucherOrdersItem.uniqueId,
-                    messageUiModel = mapMessageUiModel(voucherOrdersItem.message)
+                    messageUiModel = mapMessageUiModel(voucherOrdersItem.message),
+                    shippingId = voucherOrdersItem.shippingId,
+                    spId = voucherOrdersItem.spId,
             )
         }
 

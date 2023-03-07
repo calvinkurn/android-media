@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,14 +10,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.DismissibleState
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.databinding.ShcPostListCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
@@ -42,20 +48,21 @@ class PostListViewHolder(
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_post_list_card_widget
+        private const val DIMEN_22DP = 22
     }
 
     private val binding by lazy { ShcPostListCardWidgetBinding.bind(itemView) }
     private val errorStateBinding by lazy {
         binding.shcPostListErrorView
     }
-    private val commonErrorStateBinding by lazy {
-        errorStateBinding.shcPostListCommonErrorView
-    }
     private val loadingStateBinding by lazy {
         binding.shcPostListLoadingView
     }
 
     private var pagerAdapter: PostListPagerAdapter? = null
+    private val mLayoutManager = object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
+        override fun canScrollVertically(): Boolean = false
+    }
 
     override fun bind(element: PostListWidgetUiModel) {
         if (!listener.getIsShouldRemoveWidget()) {
@@ -70,21 +77,21 @@ class PostListViewHolder(
         when {
             data == null || postListWidgetUiModel.showLoadingState -> showLoadingState()
             data.error.isNotEmpty() -> {
-                onError(postListWidgetUiModel.title)
-                listener.setOnErrorWidget(adapterPosition, postListWidgetUiModel, data.error)
+                onError(postListWidgetUiModel)
+                listener.setOnErrorWidget(absoluteAdapterPosition, postListWidgetUiModel, data.error)
             }
             else -> onSuccessLoadData(postListWidgetUiModel)
         }
     }
 
-    private fun onError(cardTitle: String) {
+    private fun onError(element: PostListWidgetUiModel) {
         hideListLayout()
         hideShimmeringLayout()
         with(errorStateBinding) {
-            tvPostListTitleOnError.text = cardTitle
-            commonErrorStateBinding.imgWidgetOnError.loadImage(
-                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-            )
+            tvPostListTitleOnError.text = element.title
+            shcPostListCommonErrorView.setOnReloadClicked {
+                listener.onReloadWidget(element)
+            }
             showErrorLayout()
         }
     }
@@ -94,9 +101,9 @@ class PostListViewHolder(
         when {
             isEmpty && !postListWidgetUiModel.isShowEmpty -> {
                 if (listener.getIsShouldRemoveWidget()) {
-                    listener.removeWidget(adapterPosition, postListWidgetUiModel)
+                    listener.removeWidget(absoluteAdapterPosition, postListWidgetUiModel)
                 } else {
-                    listener.onRemoveWidget(adapterPosition)
+                    listener.onRemoveWidget(absoluteAdapterPosition)
                     itemView.toggleWidgetHeight(false)
                 }
                 setupLastUpdated(postListWidgetUiModel)
@@ -112,7 +119,7 @@ class PostListViewHolder(
     private fun setupLastUpdated(element: PostListWidgetUiModel) {
         with(binding.shcPostListSuccessView.luvShcPost) {
             element.data?.lastUpdated?.let { lastUpdated ->
-                isVisible = lastUpdated.isEnabled
+                isVisible = lastUpdated.isEnabled && !element.isCheckingMode
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.needToUpdated)
                 setRefreshButtonClickListener {
@@ -167,33 +174,188 @@ class PostListViewHolder(
             rvPostList.visible()
         }
 
-        element.data?.run {
-            initPagerAdapter(element)
-            hideErrorLayout()
-            hideShimmeringLayout()
-            setupTooltip(element.tooltip)
-            binding.shcPostListSuccessView.tvPostListTitle.text = element.title
-            setTagNotification(element.tag)
-            setupPostFilter(element)
-            showCtaButtonIfNeeded(element)
-            showListLayout()
-            addImpressionTracker(element)
-            setupLastUpdated(element)
+        initPagerAdapter(element)
+        hideErrorLayout()
+        hideShimmeringLayout()
+        setupTooltip(element.tooltip)
+        binding.shcPostListSuccessView.tvPostListTitle.text = element.title
+        setTagNotification(element.tag)
+        setupPostFilter(element)
+        showCtaButtonIfNeeded(element)
+        showListLayout()
+        addImpressionTracker(element)
+        setupLastUpdated(element)
+        setupCheckingMode(element)
 
-            if (isWidgetEmpty()) {
-                showEmptyState(element)
+        val data = element.data
+        if (data?.isWidgetEmpty().orTrue()) {
+            showEmptyState(element)
+        } else {
+            val postList = if (element.shouldShowDismissalTimer) {
+                data?.postPagers?.flatMap { it.postList }?.filter { !it.isChecked }
             } else {
-                setupPostPager(postPagers)
+                data?.postPagers?.flatMap { it.postList }
+            }
+            val pagers = getPostPagers(postList.orEmpty(), element.maxDisplay)
+            setupPostPager(pagers)
+        }
+    }
+
+    private fun getPostPagers(
+        postList: List<PostItemUiModel>, maxDisplay: Int
+    ): List<PostListPagerUiModel> {
+        return postList.chunked(maxDisplay).map {
+            return@map PostListPagerUiModel(it)
+        }
+    }
+
+    private fun setupCheckingMode(element: PostListWidgetUiModel) {
+        binding.shcPostListSuccessView.run {
+            setMoreOptionVisibility(element)
+
+            moreShcPostWidget.setOnMoreClicked {
+                listener.showPostWidgetMoreOption(element)
+            }
+            moreShcPostWidget.setOnCancelClicked {
+                setOnCancelClicked(element)
+            }
+            moreShcPostWidget.showCheckingMode(element.isCheckingMode)
+
+            groupShcPostRemoveItem.isVisible = element.isCheckingMode
+
+            if (element.isCheckingMode) {
+                tvPostListSeeDetails.gone()
+                luvShcPost.gone()
+                setOnCheckedListener(element)
+                filterShcPostList.gone()
+            } else {
+                setupLastUpdated(element)
+                setupCtaButton(element)
+                setupPostFilter(element)
+            }
+            btnShcPostRemoveItem.setOnClickListener {
+                listener.setOnPostWidgetRemoveItemClicked(element)
             }
         }
     }
 
-    private fun initPagerAdapter(element: PostListWidgetUiModel) {
-        pagerAdapter = PostListPagerAdapter {
-            if (RouteManager.route(itemView.context, it.appLink)) {
-                listener.sendPosListItemClickEvent(element, it)
+    private fun setMoreOptionVisibility(element: PostListWidgetUiModel): Boolean {
+        val shouldMoreOption = !element.shouldShowDismissalTimer
+            && element.isDismissible && (element.dismissibleState == DismissibleState.ALWAYS)
+
+        binding.shcPostListSuccessView.run {
+            if (shouldMoreOption) {
+                moreShcPostWidget.visible()
+            } else {
+                moreShcPostWidget.gone()
             }
         }
+
+        return shouldMoreOption
+    }
+
+    private fun setOnCancelClicked(element: PostListWidgetUiModel) {
+        resetCheckList(element)
+        element.isCheckingMode = !element.isCheckingMode
+        setupCheckingMode(element)
+        val postList = element.data?.postPagers?.flatMap { it.postList }.orEmpty()
+        val pagers = getPostPagers(postList, element.maxDisplay)
+        setPagers(pagers)
+        pagerAdapter?.setCheckingMode(element.isCheckingMode)
+        notifyPostAdapter()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun notifyPostAdapter() {
+        pagerAdapter?.notifyDataSetChanged()
+    }
+
+    private fun resetCheckList(element: PostListWidgetUiModel) {
+        element.data?.postPagers?.flatMap { it.postList }?.forEach {
+            it.isChecked = false
+        }
+    }
+
+    private fun initPagerAdapter(element: PostListWidgetUiModel) {
+        pagerAdapter = PostListPagerAdapter(object : PostListPagerAdapter.Listener {
+            override fun onItemClicked(model: PostItemUiModel) {
+                if (RouteManager.route(itemView.context, model.appLink)) {
+                    listener.sendPosListItemClickEvent(element, model)
+                }
+            }
+
+            override fun onCheckedListener(isChecked: Boolean) {
+                setOnCheckedListener(element)
+            }
+
+            override fun onTimerFinished() {
+                updatePostPager(element)
+                element.shouldShowDismissalTimer = false
+                setMoreOptionVisibility(element)
+            }
+
+            override fun onCancelDismissalClicked() {
+                listener.setOnWidgetCancelDismissal(element)
+                removeTimerItem(element)
+                element.shouldShowDismissalTimer = false
+                setMoreOptionVisibility(element)
+            }
+        })
+        pagerAdapter?.setCheckingMode(element.isCheckingMode)
+    }
+
+    private fun updatePostPager(element: PostListWidgetUiModel) {
+        val postList = getPostsWithoutTimerItem(element).filter { !it.isChecked }
+        val pagers = getPostPagers(postList, element.maxDisplay)
+        setPagers(pagers)
+        notifyPostAdapter()
+
+        setDataPagers(element, pagers)
+    }
+
+    private fun removeTimerItem(element: PostListWidgetUiModel) {
+        val postList = getPostsWithoutTimerItem(element).map {
+            it.isChecked = false
+            return@map it
+        }
+
+        val pagers = getPostPagers(postList, element.maxDisplay)
+        setPagers(pagers)
+        notifyPostAdapter()
+
+        setDataPagers(element, pagers)
+    }
+
+    private fun setDataPagers(element: PostListWidgetUiModel, pagers: List<PostListPagerUiModel>) {
+        element.data = element.data?.copy(
+            postPagers = pagers
+        )
+        if (element.isEmpty()) {
+            if (element.isShowEmpty) {
+                showEmptyState(element)
+            } else {
+                if (listener.getIsShouldRemoveWidget()) {
+                    listener.removeWidget(absoluteAdapterPosition, element)
+                } else {
+                    listener.onRemoveWidget(absoluteAdapterPosition)
+                    itemView.toggleWidgetHeight(false)
+                }
+            }
+        }
+    }
+
+    private fun getPostsWithoutTimerItem(element: PostListWidgetUiModel): List<PostItemUiModel> {
+        val postList = element.data?.postPagers?.flatMap { it.postList }
+            .orEmpty().toMutableList()
+        postList.removeFirst { it is PostItemUiModel.PostTimerDismissalUiModel }
+        return postList
+    }
+
+    private fun setOnCheckedListener(element: PostListWidgetUiModel) {
+        val isItemChecked = element.data?.postPagers?.any {
+            it.postList.any { item -> item.isChecked }
+        }.orFalse()
+        binding.shcPostListSuccessView.btnShcPostRemoveItem.isEnabled = isItemChecked
     }
 
     private fun setTagNotification(tag: String) {
@@ -217,9 +379,12 @@ class PostListViewHolder(
                 val selectedFilter = element.postFilter.find { it.isSelected }
                 filterShcPostList.visible()
                 filterShcPostList.text = selectedFilter?.name.orEmpty()
-                filterShcPostList.setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN)
+                filterShcPostList.setUnifyDrawableEnd(
+                    iconId = IconUnify.CHEVRON_DOWN,
+                    width = root.context.dpToPx(DIMEN_22DP)
+                )
                 filterShcPostList.setOnClickListener {
-                    listener.showPostFilter(element, adapterPosition)
+                    listener.showPostFilter(element)
                     listener.sendPostListFilterClick(element)
                 }
             } else {
@@ -334,13 +499,9 @@ class PostListViewHolder(
     private fun setupPostPager(pagers: List<PostListPagerUiModel>) {
         with(binding.shcPostListSuccessView) {
             pageControlShcPostPager.setIndicator(pagers.size)
-            pageControlShcPostPager.isVisible = pagers.size > 1
+            pageControlShcPostPager.isVisible = pagers.size > Int.ONE
 
             rvPostList.run {
-                val mLayoutManager =
-                    object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
-                        override fun canScrollVertically(): Boolean = false
-                    }
                 layoutManager = mLayoutManager
                 adapter = pagerAdapter
 
@@ -350,6 +511,7 @@ class PostListViewHolder(
                     Timber.e(e)
                 }
 
+                clearOnScrollListeners()
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -365,12 +527,14 @@ class PostListViewHolder(
             }
         }
 
-        if (pagers != pagerAdapter?.pagers) {
-            pagerAdapter?.pagers = pagers
-        }
+        setPagers(pagers)
     }
 
-    interface Listener : BaseViewHolderListener {
+    private fun setPagers(pagers: List<PostListPagerUiModel>) {
+        pagerAdapter?.setPagers(pagers)
+    }
+
+    interface Listener : BaseViewHolderListener, WidgetDismissalListener {
 
         fun sendPosListItemClickEvent(element: PostListWidgetUiModel, post: PostItemUiModel) {}
 
@@ -382,6 +546,10 @@ class PostListViewHolder(
 
         fun sendPostListEmptyStateCtaClickEvent(element: PostListWidgetUiModel) {}
 
-        fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {}
+        fun showPostFilter(element: PostListWidgetUiModel) {}
+
+        fun showPostWidgetMoreOption(element: PostListWidgetUiModel) {}
+
+        fun setOnPostWidgetRemoveItemClicked(element: PostListWidgetUiModel) {}
     }
 }

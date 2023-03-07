@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="0dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcUnificationTabTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Ada pelanggaran (5)" />
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/shcUnificationTabTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvShcUnificationTabTitle"
+        app:layout_constraintStart_toEndOf="@+id/tvShcUnificationTabTitle"
+        app:layout_constraintTop_toTopOf="@+id/tvShcUnificationTabTitle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcUnificationTabDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcUnificationTabTitle"
+        app:typographyType="display_3"
+        tools:text="Produk yang melanggar peraturan Tokopedia." />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icShcUnificationTabStatus"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="16dp"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_name="CHECK"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerShcUnificationTab"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcUnificationTabDescription" />
+</androidx.constraintlayout.widget.ConstraintLayout>

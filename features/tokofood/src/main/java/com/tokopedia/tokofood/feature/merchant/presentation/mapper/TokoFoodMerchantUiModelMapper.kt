@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.feature.merchant.presentation.mapper
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.metadata.CartMetadataVariantTokoFood
@@ -10,7 +9,6 @@ import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
-import com.tokopedia.tokofood.common.util.TokofoodExt.copyParcelable
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 
@@ -32,6 +30,19 @@ object TokoFoodMerchantUiModelMapper {
                     variants = mapCustomListItemsToVariantParams(addOnUiModels)
                 )
             }
+        )
+    }
+
+    fun mapProductUiModelToUpdateProductParams(
+        productUiModel: ProductUiModel,
+        addOnUiModels: List<AddOnUiModel> = listOf()
+    ): UpdateProductParam {
+        return UpdateProductParam(
+            productId = productUiModel.id,
+            cartId = productUiModel.cartId,
+            notes = productUiModel.orderNote,
+            quantity = productUiModel.orderQty,
+            variants = mapCustomListItemsToVariantParams(addOnUiModels)
         )
     }
 
@@ -58,6 +69,22 @@ object TokoFoodMerchantUiModelMapper {
         )
     }
 
+    fun mapCustomOrderDetailToUpdateProductParams(
+        productId: String,
+        customOrderDetail: CustomOrderDetail
+    ): UpdateProductParam {
+        val addOnUiModels = customOrderDetail.customListItems
+            .filter { it.addOnUiModel != null }
+            .map { customListItem -> customListItem.addOnUiModel ?: AddOnUiModel() }
+        return UpdateProductParam(
+            productId = productId,
+            cartId = customOrderDetail.cartId,
+            notes = customOrderDetail.orderNote,
+            quantity = customOrderDetail.qty,
+            variants = mapCustomListItemsToVariantParams(addOnUiModels)
+        )
+    }
+
     private fun mapCustomListItemsToVariantParams(addOnUiModels: List<AddOnUiModel>): List<UpdateProductVariantParam> {
         val variantParams = mutableListOf<UpdateProductVariantParam>()
         // selected variant e.g. sugar level
@@ -65,6 +92,7 @@ object TokoFoodMerchantUiModelMapper {
             val variantId = addOnUiModel.id
             variantParams.addAll(addOnUiModel.options
                     .filter { it.isSelected } // selected options
+                    .distinctBy { it.id }
                     .map { optionUiModel ->
                         UpdateProductVariantParam(
                                 variantId = variantId,
@@ -84,7 +112,6 @@ object TokoFoodMerchantUiModelMapper {
         )
         val subTotal = calculateSubtotalPrice(
                 baseProductPrice = productUiModel.price,
-                quantity = productUiModel.orderQty,
                 addOnUiModels = selectedCustomListItems.map { it.addOnUiModel }
         )
         val subTotalFmt = subTotal.getCurrencyFormatted()
@@ -97,7 +124,7 @@ object TokoFoodMerchantUiModelMapper {
         )
     }
 
-    private fun calculateSubtotalPrice(baseProductPrice: Double, quantity: Int, addOnUiModels: List<AddOnUiModel?>): Double {
+    private fun calculateSubtotalPrice(baseProductPrice: Double, addOnUiModels: List<AddOnUiModel?>): Double {
         var subTotalPrice = baseProductPrice
         addOnUiModels.forEach { addOnUiModel ->
             addOnUiModel?.run {
@@ -106,7 +133,7 @@ object TokoFoodMerchantUiModelMapper {
                 subTotalPrice += subTotalOptionPrice
             }
         }
-        return subTotalPrice * quantity
+        return subTotalPrice
     }
 
     private fun mapCartTokoFoodVariantsToSelectedCustomListItems(
@@ -118,13 +145,13 @@ object TokoFoodMerchantUiModelMapper {
         val optionMap = selectedVariants.groupBy { it.variantId }
         optionMap.keys.forEach { variantId ->
             val selectedOptionIds = optionMap[variantId]?.map { it.optionId } ?: listOf()
-            val selectedCustomListItem = selectedCustomListItems.first { it.addOnUiModel?.id == variantId }
-            selectedCustomListItem.addOnUiModel?.isSelected = true
-            selectedCustomListItem.addOnUiModel?.options?.forEach {
+            val selectedCustomListItem = selectedCustomListItems.firstOrNull { it.addOnUiModel?.id == variantId }
+            selectedCustomListItem?.addOnUiModel?.isSelected = true
+            selectedCustomListItem?.addOnUiModel?.options?.forEach {
                 if (selectedOptionIds.contains(it.id)) it.isSelected = true
             }
-            val options = selectedCustomListItem.addOnUiModel?.options?: listOf()
-            selectedCustomListItem.addOnUiModel?.selectedAddOns = options.filter { it.isSelected }.map { it.name }
+            val options = selectedCustomListItem?.addOnUiModel?.options?: listOf()
+            selectedCustomListItem?.addOnUiModel?.selectedAddOns = options.filter { it.isSelected }.map { it.name }
         }
         // set order note
         val customOrderWidgetUiModel = selectedCustomListItems.firstOrNull() { it.addOnUiModel == null }
@@ -187,4 +214,5 @@ object TokoFoodMerchantUiModelMapper {
         merchantFoodAppLink = UriUtil.buildUri(merchantFoodAppLink, mapOf("{"+ShareComponentConstants.Merchant.PRODUCT_ID+"}" to productId))
         return merchantFoodAppLink
     }
+
 }

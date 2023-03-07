@@ -1,5 +1,5 @@
-mutation updateName($fullname: String!) {
-    userProfileUpdate(fullname: $fullname) {
+mutation updateName($fullname: String!, $currValidateToken: String) {
+    userProfileUpdate(fullname: $fullname, validateToken: $currValidateToken) {
         isSuccess
         completionScore
         errors

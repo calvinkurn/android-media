@@ -38,7 +38,6 @@ import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.common.model.CheckPinV2Data
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
@@ -182,29 +181,11 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun checkPinMediator(pin: String) {
-        if(isResetPinV2()) {
-            changePinViewModel.checkPinV2(pin)
-        } else {
-            changePinViewModel.checkPin(pin)
-        }
+        changePinViewModel.checkPinV2(pin)
     }
 
     private fun changePinMediator(pin: String, pinConfirm: String, pinOld: String) {
-        if(isUpdatePinV2()) {
-            changePinViewModel.changePinV2(pin = pin, pinOld = pinOld)
-        } else {
-            changePinViewModel.changePin(pin = pin, pinConfirm = pinConfirm, pinOld = pinOld)
-        }
-    }
-
-    private fun isUpdatePinV2(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(UPDATE_PIN_ROLLENCE, "")
-            .isNotEmpty()
-    }
-
-    private fun isResetPinV2(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(RESET_PIN_ROLLENCE, "")
-            .isNotEmpty()
+        changePinViewModel.changePinV2(pin = pin, pinOld = pinOld)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -216,15 +197,11 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun resetPinMediator(validateToken: String?) {
-        if(isResetPinV2()) {
-            changePinViewModel.resetPinV2(validateToken.orEmpty())
-        } else {
-            changePinViewModel.resetPin(validateToken)
-        }
+        changePinViewModel.resetPinV2(validateToken.orEmpty())
     }
 
     open fun goToVerificationActivity() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle().apply {
             putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
             putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
@@ -456,8 +433,6 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
         const val OTP_TYPE_PHONE_VERIFICATION = 125
         const val PIN_LENGTH = 6
-        const val RESET_PIN_ROLLENCE = "pdh_rp_and"
-        const val UPDATE_PIN_ROLLENCE = "pdh_up_and"
 
         fun createInstance(bundle: Bundle): ChangePinFragment {
             val fragment = ChangePinFragment()

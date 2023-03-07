@@ -26,8 +26,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="16dp"
             android:layout_marginStart="12dp"
             android:orientation="horizontal"
             android:visibility="gone">
@@ -37,12 +35,11 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@color/transparent"
+                android:background="@color/contact_us_dms_transparent"
                 android:hint="Cari..."
-                android:textColor="@color/black_70"
-                android:textColorHint="@color/contact_us_black_38"
-                android:textSize="@dimen/sp_16"
+                android:textColor="@color/Unify_N700_96"
+                android:textColorHint="@color/contact_us_dms_no_ticket_text"
+                android:textSize="16sp"
                 android:gravity="center_vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/close_search"
@@ -64,7 +61,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/contact_us_dms_detail_background"
         android:layout_marginTop="?attr/actionBarSize">
 
 
@@ -91,7 +88,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/contact_us_grey_n_700_96"
+            android:textColor="@color/contact_us_dms_detail_text"
             android:visibility="gone"
             android:gravity="center_horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -113,7 +110,7 @@
             android:gravity="center_horizontal"
             android:text="@string/contact_us_display_a_problem_report_here"
             android:visibility="gone"
-            android:textColor="@color/contact_us_text_field_color"
+            android:textColor="@color/contact_us_dms_complain_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_greeting" />
@@ -128,11 +125,11 @@
             android:background="@drawable/rounded_rectangle_greenbutton_solid"
             android:gravity="center"
             android:paddingBottom="12dp"
-            android:paddingLeft="@dimen/dp_50"
-            android:paddingRight="@dimen/dp_50"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
             android:paddingTop="12dp"
             android:text="@string/contact_us_show_all_ticket"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -179,14 +176,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="16dp"
-        android:background="@color/green_text"
         android:visibility="visible"
-        app:cardCornerRadius="@dimen/dp_22"
+        app:cardCornerRadius="22dp"
         app:cardElevation="4dp"
         app:contentPaddingBottom="8dp"
         app:contentPaddingLeft="16dp"
         app:contentPaddingRight="16dp"
         app:contentPaddingTop="8dp"
+        android:background="@color/Unify_NN100"
         app:layout_behavior="com.tokopedia.contactus.inboxticket2.view.behaviour.QuickHideBehaviour">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -197,22 +194,23 @@
             app:typographyWeight="bold"
             android:gravity="center"
             android:text="@string/filter"
-            android:textColor="@color/contact_us_text_field_color" />
+            android:textColor="@color/Unify_NN950" />
     </androidx.cardview.widget.CardView>
 
     <FrameLayout
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_12"
+        android:background="@color/Unify_NN100"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">
+
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/prog_bar"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
-            app:loader_type="circular"
-            android:layout_gravity="center"/>
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            app:loader_type="circular" />
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

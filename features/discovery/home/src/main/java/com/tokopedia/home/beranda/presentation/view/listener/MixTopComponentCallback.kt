@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.listener
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
@@ -14,7 +15,7 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
     override fun onMixTopImpressed(channel: ChannelModel, parentPos: Int) {
     }
 
-    override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
+    override fun onSeeAllHeaderClicked(channel: ChannelModel, applink: String) {
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.id, channel.channelHeader.name, homeCategoryListener.userId) as HashMap<String, Any>)
         homeCategoryListener.onDynamicChannelClicked(channel.channelHeader.applink)
     }
@@ -33,42 +34,64 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int) {
-        //GA
-        val product = MixTopTracking.mapGridToProductTrackerComponent(
-                channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId, channel.channelHeader.name, channel.pageName)
-        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
+        if (adapterPosition != RecyclerView.NO_POSITION) {
+            //GA
+            val product = MixTopTracking.mapGridToProductTrackerComponent(
+                channelGrid,
+                channel.id,
+                position + 1,
+                channel.trackingAttributionModel.persoType,
+                channel.trackingAttributionModel.categoryId,
+                channel.channelHeader.name,
+                channel.pageName
+            )
+            homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 MixTopTracking.getMixTopView(
-                        grid = channelGrid,
-                        products = listOf(product),
-                        headerName = channel.channelHeader.name,
-                        positionOnWidgetHome = adapterPosition.toString(),
-                        buType = channel.trackingAttributionModel.galaxyAttribution
-                ) as HashMap<String, Any>)
-        
-        //iris
-        homeCategoryListener.putEEToIris(MixTopTracking.getMixTopViewIris(
-                grid = channelGrid,
-                products = listOf(product),
-                headerName = channel.channelHeader.name,
-                channelId = channel.id,
-                positionOnWidgetHome = adapterPosition.toString(),
-                buType = channel.trackingAttributionModel.galaxyAttribution
-        ) as java.util.HashMap<String, Any>)
+                    grid = channelGrid,
+                    products = listOf(product),
+                    headerName = channel.channelHeader.name,
+                    positionOnWidgetHome = adapterPosition.toString(),
+                    buType = channel.trackingAttributionModel.galaxyAttribution
+                ) as HashMap<String, Any>
+            )
 
+            //iris
+            homeCategoryListener.putEEToIris(
+                MixTopTracking.getMixTopViewIris(
+                    grid = channelGrid,
+                    products = listOf(product),
+                    headerName = channel.channelHeader.name,
+                    channelId = channel.id,
+                    positionOnWidgetHome = adapterPosition.toString(),
+                    buType = channel.trackingAttributionModel.galaxyAttribution
+                ) as java.util.HashMap<String, Any>
+            )
+        }
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int, applink: String) {
-        val product = MixTopTracking.mapGridToProductTrackerComponent(
-                channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId, channel.channelHeader.name, channel.pageName)
-        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopClick(
-                grid = channelGrid,
-                products = listOf(product),
-                headerName = channel.channelHeader.name,
-                channelId = channel.id,
-                positionOnWidgetHome = adapterPosition.toString(),
-                campaignCode = channel.trackingAttributionModel.campaignCode,
-                buType = channel.trackingAttributionModel.galaxyAttribution
-        ) as HashMap<String, Any>)
+        if (adapterPosition != RecyclerView.NO_POSITION) {
+            val product = MixTopTracking.mapGridToProductTrackerComponent(
+                channelGrid,
+                channel.id,
+                position + 1,
+                channel.trackingAttributionModel.persoType,
+                channel.trackingAttributionModel.categoryId,
+                channel.channelHeader.name,
+                channel.pageName
+            )
+            homeCategoryListener.sendEETracking(
+                MixTopTracking.getMixTopClick(
+                    grid = channelGrid,
+                    products = listOf(product),
+                    headerName = channel.channelHeader.name,
+                    channelId = channel.id,
+                    positionOnWidgetHome = adapterPosition.toString(),
+                    campaignCode = channel.trackingAttributionModel.campaignCode,
+                    buType = channel.trackingAttributionModel.galaxyAttribution
+                ) as HashMap<String, Any>
+            )
+        }
         homeCategoryListener.onDynamicChannelClicked(channelGrid.applink)
     }
 

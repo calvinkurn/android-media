@@ -11,16 +11,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetCreateReviewSubmitButtonBinding
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewSubmitButtonUiState
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewSubmitButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewSubmitButtonBinding>(context, attrs, defStyleAttr) {
-
-    companion object {
-        private const val TRANSITION_DURATION = 300L
-    }
+) : BaseReviewCustomView<WidgetCreateReviewSubmitButtonBinding>(context, attrs, defStyleAttr) {
 
     private val transitionHandler = TransitionHandler()
     private var createReviewSubmitButtonListener: Listener? = null
@@ -49,23 +47,31 @@ class CreateReviewSubmitButton @JvmOverloads constructor(
         layoutSubmitButton.root.isLoading = sending
     }
 
-    fun updateUi(uiState: CreateReviewSubmitButtonUiState) {
+    fun updateUi(uiState: CreateReviewSubmitButtonUiState, continuation: Continuation<Unit>) {
         when(uiState) {
             is CreateReviewSubmitButtonUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewSubmitButtonUiState.Enabled -> {
                 binding.showButton(enabled = true, sending = false)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewSubmitButtonUiState.Disabled -> {
                 binding.showButton(enabled = false, sending = false)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewSubmitButtonUiState.Sending -> {
                 binding.showButton(enabled = false, sending = true)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }
@@ -77,7 +83,7 @@ class CreateReviewSubmitButton @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutSubmitButton.root)
                 addTarget(binding.layoutSubmitButtonLoading.root)
                 interpolator = AccelerateInterpolator()

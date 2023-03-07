@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +22,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.InboxReputati
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.HeaderOptionUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.OptionUiModel
 import com.tokopedia.review.inbox.R
+import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 import javax.inject.Inject
 
@@ -54,7 +54,7 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
     }
 
     private var list: RecyclerView? = null
-    private var saveButton: Button? = null
+    private var saveButton: UnifyButton? = null
     private var adapter: InboxReputationFilterAdapter? = null
     private var listOption: ArrayList<OptionUiModel> = arrayListOf()
     private var timeFilter = ""
@@ -98,7 +98,7 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
             false
         )
         list = parentView.findViewById<View>(R.id.list) as RecyclerView?
-        saveButton = parentView.findViewById<View>(R.id.save_button) as Button?
+        saveButton = parentView.findViewById<View>(R.id.save_button) as UnifyButton?
         prepareView()
         return parentView
     }

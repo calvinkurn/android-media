@@ -3,25 +3,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl2"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/account_seller_migration_set_stock_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         app:srcCompat="@drawable/ic_account_seller_migration_set_stock" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/account_seller_migration_set_stock_description"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/seller_migration_generic_bottom_sheet_set_stock_description"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginStart="8dp"
         android:layout_alignTop="@id/account_seller_migration_set_stock_image"
         android:layout_toEndOf="@id/account_seller_migration_set_stock_image"
         android:layout_alignParentEnd="true"
@@ -38,11 +38,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/seller_migration_chat_info"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/seller_migration_generic_bottom_sheet_reply_chat_description"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@id/account_seller_migration_chat_image"
         android:layout_below="@id/account_seller_migration_set_stock_description"
@@ -59,12 +59,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/seller_migration_promotion_info"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/seller_migration_generic_bottom_sheet_promotion_and_ads_description"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
         android:layout_below="@id/seller_migration_chat_info"
         android:layout_toEndOf="@id/account_seller_migration_promo_image"
         app:typographyType="body_2"

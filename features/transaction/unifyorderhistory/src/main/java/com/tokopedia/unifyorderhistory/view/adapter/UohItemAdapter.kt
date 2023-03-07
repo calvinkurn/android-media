@@ -199,7 +199,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return listTypeData[index].dataObject as RecommendationItem
     }
 
-    fun appendPmsButton(pmsButtonData: UohTypeData) {
+    fun appendPmsButton(pmsButtonData: UohTypeData, onItemInserted: (position: Int) -> Unit) {
         var targetIndex = RecyclerView.NO_POSITION
         var targetData: UohTypeData? = null
         loop@ for ((index, data) in listTypeData.withIndex()) {
@@ -223,6 +223,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 // insert pms button item
                 listTypeData.add(targetIndex, pmsButtonData)
                 notifyItemInserted(targetIndex)
+                onItemInserted.invoke(targetIndex)
             }
         }
     }

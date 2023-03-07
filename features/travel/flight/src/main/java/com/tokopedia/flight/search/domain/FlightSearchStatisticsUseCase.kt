@@ -8,7 +8,11 @@ import com.tokopedia.flight.search.data.cache.db.JourneyAndRoutes
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.search.presentation.model.statistics.*
+import com.tokopedia.flight.search.presentation.model.statistics.AirlineStat
+import com.tokopedia.flight.search.presentation.model.statistics.DepartureStat
+import com.tokopedia.flight.search.presentation.model.statistics.FlightSearchStatisticModel
+import com.tokopedia.flight.search.presentation.model.statistics.RefundableStat
+import com.tokopedia.flight.search.presentation.model.statistics.TransitStat
 import java.util.*
 import javax.inject.Inject
 
@@ -16,7 +20,17 @@ import javax.inject.Inject
  * Created by Rizky on 15/10/18.
  */
 class FlightSearchStatisticsUseCase @Inject constructor(
-        private val flightSearchRepository: FlightSearchRepository) {
+    private val flightSearchRepository: FlightSearchRepository
+) {
+
+    private companion object{
+        val DEPARTURE_TIME_00_RANGE = 0..559
+        val DEPARTURE_TIME_06_RANGE = 600..1159
+        val DEPARTURE_TIME_12_RANGE = 1200..1759
+
+        const val INDEX_MINUS_1 = -1
+        const val INDEX_1 = 1
+    }
 
     suspend fun execute(flightFilterModel: FlightFilterModel): FlightSearchStatisticModel? {
         return mapToFlightSearchStatisticsModel(flightSearchRepository.getSearchFilterStatistic(
@@ -71,9 +85,9 @@ class FlightSearchStatisticsUseCase @Inject constructor(
                 1 -> TransitEnum.ONE
                 else -> TransitEnum.TWO
             }
-            if (transitIDTrackArray.get(transitTypeDef.id, -1) == -1) {
+            if (transitIDTrackArray.get(transitTypeDef.id, INDEX_MINUS_1) == INDEX_MINUS_1) {
                 transitTypeStatList.add(TransitStat(transitTypeDef, price, priceString))
-                transitIDTrackArray.put(transitTypeDef.id, transitTypeStatList.size - 1)
+                transitIDTrackArray.put(transitTypeDef.id, transitTypeStatList.size - INDEX_1)
             } else {
                 val index = transitIDTrackArray.get(transitTypeDef.id)
                 val prevTransitStat = transitTypeStatList[index]
@@ -91,7 +105,7 @@ class FlightSearchStatisticsUseCase @Inject constructor(
 
                     if (!airlineIDTrackArray.containsKey(airlineID)) {
                         airlineStatList.add(AirlineStat(flightAirlineDB, price, priceString))
-                        airlineIDTrackArray[airlineID] = airlineStatList.size - 1
+                        airlineIDTrackArray[airlineID] = airlineStatList.size - INDEX_1
                     } else {
                         val index = airlineIDTrackArray[airlineID]
                         val prevAirlineStat = airlineStatList[index!!]
@@ -105,15 +119,15 @@ class FlightSearchStatisticsUseCase @Inject constructor(
 
             // populate departureTime and minprice per each time
             val departureTimeDef = when (journeyAndRoutes.flightJourneyTable.departureTimeInt) {
-                in 0..559 -> DepartureTimeEnum._00
-                in 600..1159 -> DepartureTimeEnum._06
-                in 1200..1759 -> DepartureTimeEnum._12
+                in DEPARTURE_TIME_00_RANGE -> DepartureTimeEnum._00
+                in DEPARTURE_TIME_06_RANGE -> DepartureTimeEnum._06
+                in DEPARTURE_TIME_12_RANGE -> DepartureTimeEnum._12
                 else -> DepartureTimeEnum._18
             }
 
-            if (departureIDTrackArray.get(departureTimeDef.id, -1) == -1) {
+            if (departureIDTrackArray.get(departureTimeDef.id, INDEX_MINUS_1) == INDEX_MINUS_1) {
                 departureTimeStatList.add(DepartureStat(departureTimeDef, price, priceString))
-                departureIDTrackArray.put(departureTimeDef.id, departureTimeStatList.size - 1)
+                departureIDTrackArray.put(departureTimeDef.id, departureTimeStatList.size - INDEX_1)
             } else {
                 val index = departureIDTrackArray.get(departureTimeDef.id)
                 val prevDepartureStat = departureTimeStatList[index]
@@ -125,15 +139,15 @@ class FlightSearchStatisticsUseCase @Inject constructor(
 
             // populate arrivalTime and minprice per each time
             val arrivalTimeDef = when (journeyAndRoutes.flightJourneyTable.arrivalTimeInt) {
-                in 0..559 -> DepartureTimeEnum._00
-                in 600..1159 -> DepartureTimeEnum._06
-                in 1200..1759 -> DepartureTimeEnum._12
+                in DEPARTURE_TIME_00_RANGE -> DepartureTimeEnum._00
+                in DEPARTURE_TIME_06_RANGE -> DepartureTimeEnum._06
+                in DEPARTURE_TIME_12_RANGE -> DepartureTimeEnum._12
                 else -> DepartureTimeEnum._18
             }
 
-            if (arrivalIDTrackArray.get(arrivalTimeDef.id, -1) == -1) {
+            if (arrivalIDTrackArray.get(arrivalTimeDef.id, INDEX_MINUS_1) == INDEX_MINUS_1) {
                 arrivalTimeStatList.add(DepartureStat(arrivalTimeDef, price, priceString))
-                arrivalIDTrackArray.put(arrivalTimeDef.id, arrivalTimeStatList.size - 1)
+                arrivalIDTrackArray.put(arrivalTimeDef.id, arrivalTimeStatList.size - INDEX_1)
             } else {
                 val index = arrivalIDTrackArray.get(arrivalTimeDef.id)
                 val prevArrivalStat = arrivalTimeStatList[index]
@@ -145,9 +159,9 @@ class FlightSearchStatisticsUseCase @Inject constructor(
 
             // populate distinct refundable
             val refundable = journeyAndRoutes.flightJourneyTable.isRefundable
-            if (refundableTrackArray.get(refundable.id, -1) == -1) {
+            if (refundableTrackArray.get(refundable.id, INDEX_MINUS_1) == INDEX_MINUS_1) {
                 refundableTypeStatList.add(RefundableStat(refundable, price, priceString))
-                refundableTrackArray.put(refundable.id, refundableTypeStatList.size - 1)
+                refundableTrackArray.put(refundable.id, refundableTypeStatList.size - INDEX_1)
             } else {
                 val index = refundableTrackArray.get(refundable.id)
                 val prevRefundableStat = refundableTypeStatList[index]

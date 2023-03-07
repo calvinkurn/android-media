@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lottie_goto_seamless_illustration">https://assets.tokopedia.net/asts/android/user/goto_seamless/goto_seamless_illustration.json</string>
+
+    <!--Redefine Register Email-->
+    <string name="redefine_phone_init_image">"https://images.tokopedia.net/img/android/user/register/img_redefine_register_input_phone.png</string>
+</resources>

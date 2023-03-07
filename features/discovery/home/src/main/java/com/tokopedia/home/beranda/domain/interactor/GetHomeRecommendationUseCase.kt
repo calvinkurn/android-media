@@ -4,19 +4,20 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
+import com.tokopedia.home.beranda.di.module.query.HomeFeedQuery
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetHomeRecommendationUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<HomeFeedContentGqlResponse>,
-        private val homeRecommendationMapper: HomeRecommendationMapper
-) : UseCase<HomeRecommendationDataModel>(){
+    private val graphqlUseCase: GraphqlUseCase<HomeFeedContentGqlResponse>,
+    private val homeRecommendationMapper: HomeRecommendationMapper
+) : HomeRecommendationFeedUseCase() {
     private val params = RequestParams.create()
 
     init {
+        graphqlUseCase.setGraphqlQuery(HomeFeedQuery())
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(HomeFeedContentGqlResponse::class.java)
     }
@@ -26,10 +27,10 @@ class GetHomeRecommendationUseCase @Inject constructor(
         graphqlUseCase.setRequestParams(params.parameters)
         val tabName = params.getString(PARAM_TAB_NAME, "")
         val pageNumber = params.getInt(PARAM_PAGE, 0)
-        return homeRecommendationMapper.mapToHomeRecommendationDataModel(graphqlUseCase.executeOnBackground(), tabName, pageNumber)
+        return homeRecommendationMapper.mapToHomeRecommendationDataModel(graphqlUseCase.executeOnBackground().homeRecommendation, tabName, pageNumber)
     }
 
-    fun setParams(tabName: String, recomId: Int, count: Int, page: Int, location: String = "") {
+    override fun setParams(tabName: String, recomId: Int, count: Int, page: Int, location: String, sourceType: String) {
         params.parameters.clear()
         params.putString(PARAM_TAB_NAME, tabName)
         params.putInt(PARAM_RECOM_ID, recomId)
@@ -38,7 +39,7 @@ class GetHomeRecommendationUseCase @Inject constructor(
         params.putString(PARAM_LOCATION, location)
     }
 
-    companion object{
+    companion object {
         private const val PARAM_TAB_NAME = "tabName"
         private const val PARAM_RECOM_ID = "recomID"
         private const val PARAM_COUNT = "count"

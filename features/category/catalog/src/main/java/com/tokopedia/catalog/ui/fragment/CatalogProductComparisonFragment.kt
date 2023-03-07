@@ -274,7 +274,8 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK,
-            "$catalogName - $catalogId", userSession?.userId ?: "",catalogId)
+            "$catalogName - $catalogId", userSession?.userId ?: "",catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_SEARCH_BAR)
 
     }
 
@@ -330,7 +331,8 @@ class CatalogProductComparisonFragment : BaseViewModelFragment<CatalogProductCom
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_BANDINGKAN_PERBANDINGAN_PRODUK,
-            "catalog page: $catalogId | catalog comparison: $comparedCatalogId | search keyword: $searchKeyword",userSession?.userId ?: "",catalogId)
+            "catalog page: $catalogId | catalog comparison: $comparedCatalogId | search keyword: $searchKeyword",userSession?.userId ?: "",catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_BANDINGAN)
 
         dismissBottomSheet()
         (parentFragment as? CatalogComponentBottomSheet)?.changeComparison(comparedCatalogId)

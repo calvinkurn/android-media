@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.PROJECT_ID
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
@@ -185,7 +186,7 @@ class AffiliateIncomeViewModelTest{
     @Test
     fun getAnnouncementInformation(){
         val affiliateAnnouncementData : AffiliateAnnouncementDataV2 = mockk(relaxed = true)
-        coEvery { affiliateIncomeViewModel.affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement() } returns affiliateAnnouncementData
+        coEvery { affiliateIncomeViewModel.affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY) } returns affiliateAnnouncementData
 
         affiliateIncomeViewModel.getAnnouncementInformation()
 
@@ -195,7 +196,9 @@ class AffiliateIncomeViewModelTest{
     @Test
     fun getAnnouncementValidateException() {
         val throwable = Throwable("Validate Data Exception")
-        coEvery { affiliateIncomeViewModel.affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement() } throws throwable
+        coEvery { affiliateIncomeViewModel.affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(
+            PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
+        ) } throws throwable
 
         affiliateIncomeViewModel.getAnnouncementInformation()
 

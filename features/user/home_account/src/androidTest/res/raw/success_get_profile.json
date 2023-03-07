@@ -5,7 +5,7 @@
     "full_name":"Rama Widragama Putra",
     "completion":100,
     "user_id":"17211378",
-    "profilePicture":"https://ecs7.tokopedia.net/img/cache/300/user-1/2020/1/10/17211378/17211378_e4f52052-69dd-4d24-bcc9-dc397bc65a71.jpg",
+    "profilePicture":"https://images.tokopedia.net/img/cache/300/user-1/2020/1/10/17211378/17211378_e4f52052-69dd-4d24-bcc9-dc397bc65a71.jpg",
     "phone_verified":true
   },
   "tokopoints":{
@@ -14,11 +14,11 @@
         "id":440,
         "name":"Silver",
         "nameDesc":"Member Silver",
-        "imageURL":"https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/v2-egg-silver.png",
+        "imageURL":"https://images.tokopedia.net/assets/images/promo/tokopoints/egg-icon/v2-egg-silver.png",
         "eggImageURL":"https://assets.tokopedia.net/asts/rewards/unify/silver.svg",
-        "eggImageHomepageURL":"https://ecs7.tokopedia.net/img/blog/promo/2021/04/silver.png",
+        "eggImageHomepageURL":"https://images.tokopedia.net/img/blog/promo/2021/04/silver.png",
         "backgroundImgURL":"",
-        "backgroundImgURLMobile":"https://ecs7.tokopedia.net/tokopointsimprovement/tokopointsattribute/img-bg-tokopoints-silver.png"
+        "backgroundImgURLMobile":"https://images.tokopedia.net/tokopointsimprovement/tokopointsattribute/img-bg-tokopoints-silver.png"
       },
       "points":{
         "reward":0,

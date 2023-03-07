@@ -231,7 +231,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
-                android:lineSpacingExtra="@dimen/sp_6"
+                android:lineSpacingExtra="6sp"
                 android:text="@string/tnc_coupon_catalog"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toLeftOf="@+id/top_separator"
@@ -272,7 +272,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:lineSpacingExtra="@dimen/sp_6"
+                android:lineSpacingExtra="6sp"
                 android:text="@string/how_to_use_coupon_catalog"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toLeftOf="@+id/tp_mid_separator"
@@ -345,11 +345,11 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/gift_btn"
-                    android:layout_width="@dimen/dp_120"
+                    android:layout_width="120dp"
                     android:layout_height="40dp"
                     android:background="@drawable/rounded_red_border_only_tokopoints"
                     android:gravity="center"
-                    android:lineSpacingExtra="@dimen/sp_4"
+                    android:lineSpacingExtra="4sp"
                     android:paddingLeft="24dp"
                     android:paddingRight="24dp"
                     android:text="@string/tp_gift_btn_text"
@@ -462,7 +462,7 @@
 
         <RelativeLayout
             android:id="@+id/btnContainer"
-            android:layout_width="@dimen/dp_120"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"

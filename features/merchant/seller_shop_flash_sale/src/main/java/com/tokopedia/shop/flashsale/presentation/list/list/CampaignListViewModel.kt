@@ -4,17 +4,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
+import com.tokopedia.shop.flashsale.common.constant.Constant
+import com.tokopedia.shop.flashsale.common.constant.Constant.DEFAULT_SHOP_TIER_BENEFIT_PACKAGE_ID
+import com.tokopedia.shop.flashsale.common.constant.Constant.SELLER_QUOTA_SOURCE_EXPIRING_DAY_RANGE
+import com.tokopedia.shop.flashsale.common.extension.daysDifference
 import com.tokopedia.shop.flashsale.common.extension.digitsOnly
+import com.tokopedia.shop.flashsale.common.extension.epochToDate
 import com.tokopedia.shop.flashsale.common.extension.isNumber
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackageAvailability
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignPackageListUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GenerateCampaignBannerUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignPrerequisiteDataUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
@@ -24,6 +31,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
+import java.util.*
 import javax.inject.Inject
 
 class CampaignListViewModel @Inject constructor(
@@ -33,10 +42,16 @@ class CampaignListViewModel @Inject constructor(
     private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase,
     private val validateCampaignCreationEligibility: ValidateCampaignCreationEligibilityUseCase,
     private val generateCampaignBannerUseCase: GenerateCampaignBannerUseCase,
-    private val getShopPageHomeTypeUseCase : GqlShopPageGetHomeType,
+    private val getShopPageHomeTypeUseCase: GqlShopPageGetHomeType,
+    private val getSellerCampaignPackageListUseCase: GetSellerCampaignPackageListUseCase,
     private val userSession: UserSessionInterface,
     private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        const val TIMER_FOR_FLIP = 5000L
+        const val DEFAULT_VALUE_OF_ANIMATION = 0
+    }
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
     val campaigns: LiveData<Result<CampaignMeta>>
@@ -62,9 +77,32 @@ class CampaignListViewModel @Inject constructor(
     val shopDecorStatus: LiveData<Result<String>>
         get() = _shopDecorStatus
 
+    private val _vpsPackages = MutableLiveData<Result<List<VpsPackage>>>()
+    val vpsPackages: LiveData<Result<List<VpsPackage>>>
+        get() = _vpsPackages
+
+    //Timer for running motion
+    private val _timeFlip = MutableLiveData<Int>()
+    val timeToFlip: LiveData<Int>
+        get() = _timeFlip
+
     private var drafts: List<CampaignUiModel> = emptyList()
     private var campaignId: Long = 0
     private var thumbnailImageUrl = ""
+
+    private val timerForToFlip by lazy {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                while (true) { //will always true because is for looping purpose
+                    val currentValue = _timeFlip.value?:DEFAULT_VALUE_OF_ANIMATION
+                    _timeFlip.postValue(currentValue+1)
+                    delay(TIMER_FOR_FLIP)
+                }
+            },
+            onError = {}
+        )
+    }
 
     fun getCampaigns(
         rows: Int,
@@ -131,11 +169,11 @@ class CampaignListViewModel @Inject constructor(
         )
     }
 
-    fun validateCampaignCreationEligibility() {
+    fun validateCampaignCreationEligibility(vpsPackageId : Long) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val metadata = validateCampaignCreationEligibility.execute()
+                val metadata = validateCampaignCreationEligibility.execute(vpsPackageId)
                 _sellerEligibility.postValue(Success(metadata))
             },
             onError = { error ->
@@ -152,7 +190,8 @@ class CampaignListViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val requestParams = GqlShopPageGetHomeType.createParams(userSession.shopId, extParam = "")
+                val requestParams =
+                    GqlShopPageGetHomeType.createParams(userSession.shopId, extParam = "")
                 getShopPageHomeTypeUseCase.params = requestParams
                 getShopPageHomeTypeUseCase.isFromCacheFirst = false
                 val shopHome = getShopPageHomeTypeUseCase.executeOnBackground()
@@ -164,6 +203,45 @@ class CampaignListViewModel @Inject constructor(
             }
         )
 
+    }
+
+    fun getVpsPackages() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getSellerCampaignPackageListUseCase.execute()
+                _vpsPackages.postValue(Success(result))
+            },
+            onError = { error ->
+                _vpsPackages.postValue(Fail(error))
+            }
+        )
+    }
+
+    fun getPackageAvailability(packages: List<VpsPackage>): VpsPackageAvailability {
+        var totalQuota = Constant.ZERO
+        var totalRemainingQuota = Constant.ZERO
+        var isNearExpirePackageAvailable = false
+        var packageNearExpireCount = Constant.ZERO
+
+        packages.forEach { vpsPackage ->
+            totalQuota += vpsPackage.originalQuota
+            totalRemainingQuota += vpsPackage.remainingQuota
+            if (vpsPackage.packageEndTime.epochToDate()
+                    .daysDifference(Date()) <= SELLER_QUOTA_SOURCE_EXPIRING_DAY_RANGE
+                && vpsPackage.packageId != DEFAULT_SHOP_TIER_BENEFIT_PACKAGE_ID
+            ) {
+                isNearExpirePackageAvailable = true
+                packageNearExpireCount++
+            }
+        }
+
+        return VpsPackageAvailability(
+            totalQuota = totalQuota,
+            remainingQuota = totalRemainingQuota,
+            isNearExpirePackageAvailable = isNearExpirePackageAvailable,
+            packageNearExpire = packageNearExpireCount
+        )
     }
 
     fun setCampaignDrafts(drafts: List<CampaignUiModel>) {
@@ -209,6 +287,24 @@ class CampaignListViewModel @Inject constructor(
 
     fun onMoreMenuEditClicked(campaign: CampaignUiModel) {
         tracker.sendClickEditPopupEvent(campaign)
+    }
+
+    fun findActiveVpsPackagesCount(): Int {
+        val vpsPackages = if (_vpsPackages.value is Success) {
+            (_vpsPackages.value as Success<List<VpsPackage>>).data
+        } else {
+            emptyList()
+        }
+        return vpsPackages.size
+    }
+
+    fun isTimerForFlipRunning() = timerForToFlip.isActive
+    fun startAnimationOfWarningQuota(){
+        timerForToFlip.start()
+    }
+
+    fun stopAnimationOfWarningQuota(){
+        timerForToFlip.cancel()
     }
 
 }

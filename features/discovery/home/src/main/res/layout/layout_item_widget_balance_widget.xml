@@ -1,88 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_balance_widget"
-    android:layout_marginLeft="@dimen/home_component_margin_default"
-    android:layout_marginStart="@dimen/home_component_margin_default"
-    android:layout_marginRight="@dimen/home_component_margin_default"
-    android:layout_marginEnd="@dimen/home_component_margin_default"
-    android:padding="10dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/home_component_margin_default"
     android:gravity="center_vertical"
     android:minHeight="1px"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    app:card_type="clear">
 
-    <LinearLayout
-        android:visibility="invisible"
-        android:orientation="vertical"
-        android:id="@+id/view_balance_widget_coachmark"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="4dp">
-        <View
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:id="@+id/home_coachmark_item_gopay"
-            android:layout_width="20dp"
-            android:layout_height="20dp"/>
-        <View
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:id="@+id/home_coachmark_item_tokopoints"
-            android:layout_width="20dp"
-            android:layout_height="20dp"/>
-    </LinearLayout>
-    <LinearLayout
-        tools:visibility="invisible"
-        android:visibility="gone"
-        android:orientation="horizontal"
-        android:id="@+id/view_balance_widget_coachmark_new"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        tools:ignore="DisableBaselineAlignment">
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <View
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:id="@+id/home_coachmark_item_gopay_new"
-                android:layout_width="20dp"
-                android:layout_height="20dp"/>
-            <View
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginTop="14dp"
-                android:id="@+id/home_coachmark_item_gopay_activate_new"
-                android:layout_width="16dp"
-                android:layout_height="match_parent"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <View
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:id="@+id/home_coachmark_item_tokopoint_new"
-                android:layout_width="20dp"
-                android:layout_height="20dp"/>
-        </LinearLayout>
-    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_balance_widget"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="4dp"/>
-</FrameLayout>
+        android:layout_height="wrap_content"/>
+</com.tokopedia.unifycomponents.CardUnify2>

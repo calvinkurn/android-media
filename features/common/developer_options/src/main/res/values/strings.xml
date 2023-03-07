@@ -36,9 +36,11 @@
     <string name="access_token">Access Token</string>
     <string name="pdp_dev">Product Detail Dev</string>
     <string name="app_auth_secret">App Auth Secret (IT Risk)</string>
+    <string name="skip_onboarding_user_session">Set False OnBoarding User Session</string>
     <string name="reset_onboarding">Reset OnBoarding</string>
     <string name="test_onboarding">Test OnBoarding</string>
     <string name="force_crash">Force Crash</string>
+    <string name="force_logout">Force Logout</string>
     <string name="crash_message">crash message</string>
     <string name="send_firebase_exception">Send Firebase Exception</string>
     <string name="open_screen_recorder">Open Screen Recorder</string>
@@ -49,7 +51,9 @@
     <string name="enable_topads_notif">Enable TopAds Log on Notification</string>
     <string name="view_topads_log">View TopAds Log</string>
     <string name="enable_applink_notif">Enable Applink Log on Notification</string>
+    <string name="enable_journey_notif">Enable Journey Log on Notification</string>
     <string name="view_applink_log">View Applink Log</string>
+    <string name="view_journey_log">View Journey Log</string>
     <string name="enable_fpm_log_file">Enable FPM Log on File (Download/fpm-auto-log.txt)</string>
     <string name="enable_fpm_log_notif">Enable FPM Log on Notification</string>
     <string name="enable_fpm_log">View FPM Log</string>
@@ -112,6 +116,22 @@
     <string name="view_applink_list">View Applink List</string>
 
     <string name="enable_new_typography_guideline">Enable New Typography Guideline</string>
+    <string name="convert_resource_id_to_resource_name">Convert Resource ID to Resource Name</string>
+    <string name="input_resource_id">Please input Resource ID after #0x prefix</string>
+    <string name="prefix_resource_id">#0x</string>
+    <string name="prefix_resource_name">Resource name: </string>
+    <string name="hansel_patch_list">Hansel Patch List</string>
+    <string name="placeholder_searchbar_hansel">Search by Function Name or Patch Id</string>
+    <string name="title_button_hansel_patch_list">View Hansel Patch List</string>
+    <string name="btn_title_hansel">View Hansel Patch List</string>
+    <string name="label_is_device_test">Device Hansel Test: %1$s</string>
 
+    <string name="enable_developer_options_on_notification">Enable Developer Options on Notification</string>
+    <string name="label_patch_name">Patch Name:</string>
+    <string name="label_patch_id">Patch ID:</string>
+    <string name="label_function_id">Function ID:</string>
+    <string name="label_function_name">Function Name:</string>
+    <string name="label_counter">Counter:</string>
+    <string name="enable_strict_mode_leak_publisher">Enable Strict Mode Leak Publihser</string>
 
 </resources>

@@ -1,19 +1,9 @@
 package com.tokopedia.shop.analytic
 
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
-import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.PlayWidgetView
-import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.builder.BaseTrackerBuilder
-import com.tokopedia.track.builder.util.BaseTrackerConst
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -41,112 +31,112 @@ class ShopPlayWidgetAnalyticListener(
 
     fun onImpressMoreActionChannel(item: PlayWidgetChannelUiModel) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        EVENT to VIEW_SHOP_PAGE_IRIS,
-                        EVENT_CATEGORY to SHOP_PAGE_SELLER,
-                        EVENT_ACTION to "view bottom sheet - widget play",
-                        EVENT_LABEL to "$shopId - ${item.channelId}",
-                        BUSINESS_UNIT to "play",
-                        CURRENT_SITE to currentSite,
-                        USER_ID to userId,
-                        SHOP_ID to shopId
-                )
+            mapOf(
+                EVENT to VIEW_SHOP_PAGE_IRIS,
+                EVENT_CATEGORY to SHOP_PAGE_SELLER,
+                EVENT_ACTION to "view bottom sheet - widget play",
+                EVENT_LABEL to "$shopId - ${item.channelId}",
+                BUSINESS_UNIT to "play",
+                CURRENT_SITE to currentSite,
+                USER_ID to userId,
+                SHOP_ID to shopId
+            )
         )
     }
 
     fun onClickMoreActionShareLinkChannel(channelId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        EVENT to CLICK_SHOP_PAGE,
-                        EVENT_CATEGORY to SHOP_PAGE_SELLER,
-                        EVENT_ACTION to "click share on bottom sheet - widget play",
-                        EVENT_LABEL to "$shopId - $channelId",
-                        BUSINESS_UNIT to "play",
-                        CURRENT_SITE to currentSite,
-                        USER_ID to userId,
-                        SHOP_ID to shopId
-                )
+            mapOf(
+                EVENT to CLICK_SHOP_PAGE,
+                EVENT_CATEGORY to SHOP_PAGE_SELLER,
+                EVENT_ACTION to "click share on bottom sheet - widget play",
+                EVENT_LABEL to "$shopId - $channelId",
+                BUSINESS_UNIT to "play",
+                CURRENT_SITE to currentSite,
+                USER_ID to userId,
+                SHOP_ID to shopId
+            )
         )
     }
 
     fun onClickMoreActionPerformaChannel(channelId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        EVENT to CLICK_SHOP_PAGE,
-                        EVENT_CATEGORY to SHOP_PAGE_SELLER,
-                        EVENT_ACTION to "click lihat performa - widget play",
-                        EVENT_LABEL to "$shopId - $channelId",
-                        BUSINESS_UNIT to "play",
-                        CURRENT_SITE to currentSite,
-                        USER_ID to userId,
-                        SHOP_ID to shopId
-                )
+            mapOf(
+                EVENT to CLICK_SHOP_PAGE,
+                EVENT_CATEGORY to SHOP_PAGE_SELLER,
+                EVENT_ACTION to "click lihat performa - widget play",
+                EVENT_LABEL to "$shopId - $channelId",
+                BUSINESS_UNIT to "play",
+                CURRENT_SITE to currentSite,
+                USER_ID to userId,
+                SHOP_ID to shopId
+            )
         )
     }
 
     fun onClickMoreActionDeleteChannel(channelId: String) {
         if (!isOwnShop) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        EVENT to CLICK_SHOP_PAGE,
-                        EVENT_CATEGORY to SHOP_PAGE_SELLER,
-                        EVENT_ACTION to "click delete on bottom sheet - widget play",
-                        EVENT_LABEL to "$shopId - $channelId",
-                        BUSINESS_UNIT to "play",
-                        CURRENT_SITE to currentSite,
-                        USER_ID to userId,
-                        SHOP_ID to shopId
-                )
+            mapOf(
+                EVENT to CLICK_SHOP_PAGE,
+                EVENT_CATEGORY to SHOP_PAGE_SELLER,
+                EVENT_ACTION to "click delete on bottom sheet - widget play",
+                EVENT_LABEL to "$shopId - $channelId",
+                BUSINESS_UNIT to "play",
+                CURRENT_SITE to currentSite,
+                USER_ID to userId,
+                SHOP_ID to shopId
+            )
         )
     }
 
     fun onImpressDialogDeleteChannel(channelId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        EVENT to VIEW_SHOP_PAGE_IRIS,
-                        EVENT_CATEGORY to SHOP_PAGE_SELLER,
-                        EVENT_ACTION to "view confirm on pop up delete - widget play",
-                        EVENT_LABEL to "$shopId - $channelId",
-                        BUSINESS_UNIT to "play",
-                        CURRENT_SITE to currentSite,
-                        USER_ID to userId,
-                        SHOP_ID to shopId
-                )
+            mapOf(
+                EVENT to VIEW_SHOP_PAGE_IRIS,
+                EVENT_CATEGORY to SHOP_PAGE_SELLER,
+                EVENT_ACTION to "view confirm on pop up delete - widget play",
+                EVENT_LABEL to "$shopId - $channelId",
+                BUSINESS_UNIT to "play",
+                CURRENT_SITE to currentSite,
+                USER_ID to userId,
+                SHOP_ID to shopId
+            )
         )
     }
 
     fun onClickDialogDeleteChannel(channelId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        EVENT to CLICK_SHOP_PAGE,
-                        EVENT_CATEGORY to SHOP_PAGE_SELLER,
-                        EVENT_ACTION to "click delete on pop up delete - widget play",
-                        EVENT_LABEL to "$shopId - $channelId",
-                        BUSINESS_UNIT to "play",
-                        CURRENT_SITE to currentSite,
-                        USER_ID to userId,
-                        SHOP_ID to shopId
-                )
+            mapOf(
+                EVENT to CLICK_SHOP_PAGE,
+                EVENT_CATEGORY to SHOP_PAGE_SELLER,
+                EVENT_ACTION to "click delete on pop up delete - widget play",
+                EVENT_LABEL to "$shopId - $channelId",
+                BUSINESS_UNIT to "play",
+                CURRENT_SITE to currentSite,
+                USER_ID to userId,
+                SHOP_ID to shopId
+            )
         )
     }
 
     fun onImpressErrorDeleteChannel(channelId: String, errorMessage: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        EVENT to VIEW_SHOP_PAGE_IRIS,
-                        EVENT_CATEGORY to SHOP_PAGE_SELLER,
-                        EVENT_ACTION to "error state on shop page seller - widget play",
-                        EVENT_LABEL to "$shopId - $channelId - $errorMessage",
-                        BUSINESS_UNIT to "play",
-                        CURRENT_SITE to currentSite,
-                        USER_ID to userId,
-                        SHOP_ID to shopId
-                )
+            mapOf(
+                EVENT to VIEW_SHOP_PAGE_IRIS,
+                EVENT_CATEGORY to SHOP_PAGE_SELLER,
+                EVENT_ACTION to "error state on shop page seller - widget play",
+                EVENT_LABEL to "$shopId - $channelId - $errorMessage",
+                BUSINESS_UNIT to "play",
+                CURRENT_SITE to currentSite,
+                USER_ID to userId,
+                SHOP_ID to shopId
+            )
         )
     }
 
     private fun getChannelStatusValue(channelType: PlayWidgetChannelType): String {
-        return when(channelType) {
+        return when (channelType) {
             PlayWidgetChannelType.Live -> "live"
             PlayWidgetChannelType.Vod -> "active"
             PlayWidgetChannelType.Upcoming -> "upcoming"

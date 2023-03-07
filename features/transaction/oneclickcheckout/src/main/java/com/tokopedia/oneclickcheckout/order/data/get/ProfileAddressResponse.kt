@@ -1,34 +1,31 @@
 package com.tokopedia.oneclickcheckout.order.data.get
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.localizationchooseaddress.domain.response.Warehouse
 
 class Address(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("address_id")
-        val addressId: Long = 0,
+        val addressId: String = "",
         @SerializedName("receiver_name")
         val receiverName: String = "",
         @SerializedName("address_name")
         val addressName: String = "",
         @SerializedName("address_street")
         val addressStreet: String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("district_id")
-        val districtId: Long = 0,
+        val districtId: String = "",
         @SerializedName("district_name")
         val districtName: String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("city_id")
-        val cityId: Long = 0,
+        val cityId: String = "",
         @SerializedName("city_name")
         val cityName: String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("province_id")
-        val provinceId: Long = 0,
+        val provinceId: String = "",
         @SerializedName("province_name")
         val provinceName: String = "",
+        @SerializedName("country")
+        val country: String = "",
         @SerializedName("phone")
         val phone: String = "",
         @SerializedName("longitude")

@@ -15,59 +15,58 @@ sealed class ShopShareModel {
     abstract var appIntent: Intent?
 
     data class CopyLink(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShopShareModel()
 
     data class Instagram(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShopShareModel()
 
     data class Facebook(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShopShareModel()
 
     data class Whatsapp(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShopShareModel()
 
     data class Line(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShopShareModel()
 
     data class Twitter(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShopShareModel()
 
     data class Telegram(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShopShareModel()
 
     data class Others(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShopShareModel()
-
 }

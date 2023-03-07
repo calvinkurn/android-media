@@ -32,6 +32,9 @@ import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewLis
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
+import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
+import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationListener
+import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationViewHolder
 
 class InitialStateAdapterTypeFactory(
     private val recentViewListener: RecentViewListener,
@@ -41,6 +44,7 @@ class InitialStateAdapterTypeFactory(
     private val dynamicInitialStateListener: DynamicInitialStateListener,
     private val curatedCampaignListener: CuratedCampaignListener,
     private val chipListener: InitialStateChipListener,
+    private val searchBarEducationListener: SearchBarEducationListener,
 ) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
     override fun type(popularSearchTitleDataView: PopularSearchTitleDataView): Int {
         return PopularSearchTitleViewHolder.LAYOUT
@@ -98,6 +102,10 @@ class InitialStateAdapterTypeFactory(
         return InitialStateChipWidgetTitleViewHolder.LAYOUT
     }
 
+    override fun type(searchBarEducationDataView: SearchBarEducationDataView): Int {
+        return SearchBarEducationViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             PopularSearchViewHolder.LAYOUT ->
@@ -128,6 +136,8 @@ class InitialStateAdapterTypeFactory(
                 InitialStateChipWidgetViewHolder(parent, chipListener)
             InitialStateChipWidgetTitleViewHolder.LAYOUT ->
                 InitialStateChipWidgetTitleViewHolder(parent)
+            SearchBarEducationViewHolder.LAYOUT ->
+                SearchBarEducationViewHolder(parent, searchBarEducationListener)
             else -> super.createViewHolder(parent, type)
         }
     }

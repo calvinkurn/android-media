@@ -1,7 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.analytics
 
-import java.util.*
-import kotlin.collections.HashMap
 import kotlin.collections.set
 
 class OrderSummaryPageEnhanceECommerce {
@@ -95,14 +93,17 @@ class OrderSummaryPageEnhanceECommerce {
 
     fun setShopIdDimension(shopId: String) {
         data[KEY_SHOP_ID_DIMENSION] = shopId
+        data[KEY_SHOP_ID] = shopId
     }
 
     fun setShopNameDimension(shopName: String) {
         data[KEY_SHOP_NAME_DIMENSION] = shopName
+        data[KEY_SHOP_NAME] = shopName
     }
 
     fun setShopTypeDimension(isOfficial: Int, isGold: Int) {
         data[KEY_SHOP_TYPE_DIMENSION] = if (isOfficial == 1) "official_store" else if (isGold == 1) "gold_merchant" else "marketplace"
+        data[KEY_SHOP_TYPE] = if (isOfficial == 1) "official_store" else if (isGold == 1) "gold_merchant" else "marketplace"
     }
 
     fun setCategoryId(categoryId: String) {
@@ -207,7 +208,7 @@ class OrderSummaryPageEnhanceECommerce {
         private const val KEY_BUYER_ADDRESS_ID = "dimension11"
         private const val KEY_SP_ID = "dimension14"
         private const val KEY_COD_FLAG = "dimension10"
-        private const val KEY_TOKOPEDIA_CORNER_FLAG = "dimension57"
+        private const val KEY_TOKOPEDIA_CORNER_FLAG = "dimension67"
         private const val KEY_IS_FULFILLMENT = "dimension58"
         private const val KEY_SHOP_ID_DIMENSION = "dimension79"
         private const val KEY_SHOP_ID = "shop_id"

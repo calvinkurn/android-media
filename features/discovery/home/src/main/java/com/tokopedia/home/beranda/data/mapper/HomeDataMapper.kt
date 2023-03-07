@@ -31,7 +31,6 @@ class HomeDataMapper(
         var processingAtf = homeData.atfData?.isProcessingAtf?: false
         var processingDynamicChannel = homeData.isProcessingDynamicChannel
 
-        var isChannelBeautyFest = HomeRevampFragment.BEAUTY_FEST_NOT_SET
         if (isCache) {
             processingAtf = false
             processingDynamicChannel = false
@@ -41,36 +40,6 @@ class HomeDataMapper(
             }
             if (homeData.dynamicHomeChannel.channels.isEmpty() && haveCachedData) {
                 throw IllegalStateException(DC_ERROR_MESSAGE)
-            }
-            var isDynamicChannelContainsBeautyFest = false
-            var isAtfChannelContainsBeautyFest = false
-
-            val beautyFestChannelId = arrayOf("129362",
-                "129363",
-                "129364",
-                "129365",
-                "129366",
-                "129367",
-                "129368",
-                "129369",
-                "129370",
-                "129371")
-
-            for (channel in homeData.dynamicHomeChannel.channels) {
-                isDynamicChannelContainsBeautyFest = channel.id in beautyFestChannelId
-                if(isDynamicChannelContainsBeautyFest)
-                    break
-            }
-            for (atfChannel in homeData.atfData?.dataList?: listOf()) {
-                if (atfChannel.component == AtfKey.TYPE_CHANNEL) {
-                    isAtfChannelContainsBeautyFest = beautyFestChannelId.filter {
-                        atfChannel.content?.contains(it)?:false }.isNotEmpty()
-                }
-            }
-            isChannelBeautyFest = if (isAtfChannelContainsBeautyFest || isDynamicChannelContainsBeautyFest) {
-                HomeRevampFragment.BEAUTY_FEST_TRUE
-            } else {
-                HomeRevampFragment.BEAUTY_FEST_FALSE
             }
         }
         val firstPage = homeData.token.isNotEmpty()
@@ -97,8 +66,7 @@ class HomeDataMapper(
                 isCache = isCache,
                 isFirstPage = firstPage,
                 homeChooseAddressData = HomeChooseAddressData(true),
-                flowCompleted = false,
-                isBeautyFest = isChannelBeautyFest
+                flowCompleted = false
         )
     }
 }

@@ -14,7 +14,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderPaym
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderProductRevampViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderReviewViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
-import org.hamcrest.Matchers
+import org.hamcrest.CoreMatchers
 
 /**
  * Created by dhaba
@@ -25,6 +25,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_ORDER_TRANSACTION =
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST = "tracker/home_nav/wishlist.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SHOP_AFFILIATE = "tracker/home_nav/shop_affiliate.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MENU_CATEGORY = "tracker/home_nav/menu_category.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TOKOPEDIA_PLUS = "tracker/home_nav/tokopedia_plus.json"
 
 fun clickOnEachShop(viewHolder: RecyclerView.ViewHolder) {
     CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.favorite_shop_rv, 0)
@@ -105,7 +106,7 @@ fun clickOnEachItemRecyclerViewOrderHistory(
         }
     }
     Espresso.onView(
-        Matchers.allOf(
+        CoreMatchers.allOf(
             ViewMatchers.withId(recyclerViewId)
         )
     )
@@ -119,6 +120,12 @@ fun clickOnEachItemRecyclerViewOrderHistory(
 
 fun clickOnShopAndAffiliate(viewHolder: RecyclerView.ViewHolder) {
     clickOnEachItemRecyclerViewOrderHistory(viewHolder.itemView, R.id.recycler_seller, 0)
+}
+
+fun clickOnTokopediaPlus() {
+    Espresso.onView(ViewMatchers.withId(R.id.tokopedia_plus_widget)).perform(
+        ViewActions.click()
+    )
 }
 
 fun clickMenu(recyclerViewId: Int, cardPosition: Int) {

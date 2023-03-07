@@ -78,49 +78,27 @@
         app:layout_constraintTop_toBottomOf="@id/post_image"
         tools:ignore="PxUsage"
         />
-  
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/top_ads_detail_card"
+
+    <com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignUpcomingView
+        android:id="@+id/feed_fst_upcoming"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_NN50"
-        android:paddingTop="@dimen/unify_space_8"
-        android:paddingBottom="@dimen/unify_space_8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/post_image"
+        app:layout_constraintEnd_toEndOf="@id/post_image"
         app:layout_constraintTop_toBottomOf="@id/separator"
-        tools:visibility="visible"
-        >
+        />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/top_ads_product_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="@string/feeds_cek_sekarang"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/chevron"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            />
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/chevron"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:icon_name="CHEVRON_RIGHT"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignOngoingView
+        android:id="@+id/feed_fst_ongoing"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/post_image"
+        app:layout_constraintEnd_toEndOf="@id/post_image"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
 

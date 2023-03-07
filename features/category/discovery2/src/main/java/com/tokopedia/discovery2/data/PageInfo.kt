@@ -37,6 +37,9 @@ data class PageInfo(
         @SerializedName("tokonow_has_mini_cart_active")
         val tokonowMiniCartActive : Boolean = false,
 
+        @SerializedName("thematic_header")
+        val thematicHeader: ThematicHeader? = null,
+
         var additionalInfo: AdditionalInfo? = null,
 
         var redirectionUrl: String? = null,

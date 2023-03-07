@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
+import android.accounts.NetworkErrorException
 import android.content.Context
 import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -13,11 +14,44 @@ import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
-import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.beranda.domain.interactor.repository.*
+import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetRechargeBUWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeDataRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeDeclineRechargeRecommendationRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeDeclineSalamWIdgetRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeDynamicChannelsRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeFlagRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeHeadlineAdsRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeIconRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomePageBannerRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomePlayLiveDynamicRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomePlayRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomePopularKeywordRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeRechargeRecommendationRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendationChipRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendationFeedTabRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendationRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeReviewSuggestedRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeSalamWidgetRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.*
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeListCarouselUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeMissionWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomePlayUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomePopularKeywordUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRechargeBuWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRechargeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
@@ -26,8 +60,11 @@ import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRe
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
@@ -35,7 +72,6 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.RechargePerso
@@ -59,112 +95,110 @@ import java.util.concurrent.TimeoutException
 
 @ExperimentalCoroutinesApi
 fun createHomeViewModel(
-        getHomeUseCase: HomeDynamicChannelUseCase = mockk(relaxed = true),
-        userSessionInterface: UserSessionInterface = mockk(relaxed = true),
-        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
-        homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase = mockk(relaxed = true),
-        homeSuggestedReviewUseCase: HomeSuggestedReviewUseCase = mockk(relaxed = true),
-        homeListCarouselUseCase: HomeListCarouselUseCase = mockk(relaxed = true),
-        homePlayUseCase: HomePlayUseCase = mockk(relaxed = true),
-        homePopularKeywordUseCase: HomePopularKeywordUseCase = mockk(relaxed = true),
-        homeRechargeRecommendationUseCase: HomeRechargeRecommendationUseCase = mockk(relaxed = true),
-        homeRechargeBuWidgetUseCase: HomeRechargeBuWidgetUseCase = mockk(relaxed = true),
-        homeRecommendationUseCase: HomeRecommendationUseCase = mockk(relaxed = true),
-        homeSalamRecommendationUseCase: HomeSalamRecommendationUseCase = mockk(relaxed = true),
-        homeSearchUseCase: HomeSearchUseCase = mockk(relaxed = true),
-        homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true),
-        homeBeautyFestUseCase: HomeBeautyFestUseCase = mockk(relaxed = true),
-        getCMHomeWidgetDataUseCase : GetCMHomeWidgetDataUseCase = mockk(relaxed = true),
-        deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true),
-        deletePayLaterWidgetUseCase: ClosePayLaterWidgetUseCase = mockk(relaxed = true),
-        getPayLaterWidgetUseCase: GetPayLaterWidgetUseCase = mockk(relaxed = true),
-        homeMissionWidgetUseCase: HomeMissionWidgetUseCase = mockk(relaxed = true)
-): HomeRevampViewModel{
+    getHomeUseCase: HomeDynamicChannelUseCase = mockk(relaxed = true),
+    userSessionInterface: UserSessionInterface = mockk(relaxed = true),
+    dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
+    homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase = mockk(relaxed = true),
+    homeSuggestedReviewUseCase: HomeSuggestedReviewUseCase = mockk(relaxed = true),
+    homeListCarouselUseCase: HomeListCarouselUseCase = mockk(relaxed = true),
+    homePlayUseCase: HomePlayUseCase = mockk(relaxed = true),
+    homePopularKeywordUseCase: HomePopularKeywordUseCase = mockk(relaxed = true),
+    homeRechargeRecommendationUseCase: HomeRechargeRecommendationUseCase = mockk(relaxed = true),
+    homeRechargeBuWidgetUseCase: HomeRechargeBuWidgetUseCase = mockk(relaxed = true),
+    homeRecommendationUseCase: HomeRecommendationUseCase = mockk(relaxed = true),
+    homeSalamRecommendationUseCase: HomeSalamRecommendationUseCase = mockk(relaxed = true),
+    homeSearchUseCase: HomeSearchUseCase = mockk(relaxed = true),
+    homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true),
+    getCMHomeWidgetDataUseCase: GetCMHomeWidgetDataUseCase = mockk(relaxed = true),
+    deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true),
+    deletePayLaterWidgetUseCase: ClosePayLaterWidgetUseCase = mockk(relaxed = true),
+    getPayLaterWidgetUseCase: GetPayLaterWidgetUseCase = mockk(relaxed = true),
+    homeMissionWidgetUseCase: HomeMissionWidgetUseCase = mockk(relaxed = true)
+): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return HomeRevampViewModel(
-            homeDispatcher = Lazy{ dispatchers },
-            homeUseCase = Lazy{ getHomeUseCase },
-            userSession = Lazy{userSessionInterface},
-            homeBalanceWidgetUseCase = Lazy { homeBalanceWidgetUseCase },
-            homeSuggestedReviewUseCase = Lazy { homeSuggestedReviewUseCase },
-            homeListCarouselUseCase = Lazy { homeListCarouselUseCase },
-            homePlayUseCase = Lazy { homePlayUseCase },
-            homePopularKeywordUseCase = Lazy { homePopularKeywordUseCase },
-            homeRechargeBuWidgetUseCase = Lazy { homeRechargeBuWidgetUseCase },
-            homeRechargeRecommendationUseCase = Lazy { homeRechargeRecommendationUseCase },
-            homeRecommendationUseCase = Lazy { homeRecommendationUseCase },
-            homeSalamRecommendationUseCase = Lazy { homeSalamRecommendationUseCase },
-            homeSearchUseCase = Lazy { homeSearchUseCase },
-            homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase },
-            homeBeautyFestUseCase = Lazy { homeBeautyFestUseCase },
-            getCMHomeWidgetDataUseCase = Lazy{ getCMHomeWidgetDataUseCase },
-            deleteCMHomeWidgetUseCase = Lazy{ deleteCMHomeWidgetUseCase },
-            deletePayLaterWidgetUseCase = Lazy {deletePayLaterWidgetUseCase  },
-            getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase },
-            homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase }
+        homeDispatcher = Lazy { dispatchers },
+        homeUseCase = Lazy { getHomeUseCase },
+        userSession = Lazy { userSessionInterface },
+        homeBalanceWidgetUseCase = Lazy { homeBalanceWidgetUseCase },
+        homeSuggestedReviewUseCase = Lazy { homeSuggestedReviewUseCase },
+        homeListCarouselUseCase = Lazy { homeListCarouselUseCase },
+        homePlayUseCase = Lazy { homePlayUseCase },
+        homePopularKeywordUseCase = Lazy { homePopularKeywordUseCase },
+        homeRechargeBuWidgetUseCase = Lazy { homeRechargeBuWidgetUseCase },
+        homeRechargeRecommendationUseCase = Lazy { homeRechargeRecommendationUseCase },
+        homeRecommendationUseCase = Lazy { homeRecommendationUseCase },
+        homeSalamRecommendationUseCase = Lazy { homeSalamRecommendationUseCase },
+        homeSearchUseCase = Lazy { homeSearchUseCase },
+        homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase },
+        getCMHomeWidgetDataUseCase = Lazy { getCMHomeWidgetDataUseCase },
+        deleteCMHomeWidgetUseCase = Lazy { deleteCMHomeWidgetUseCase },
+        deletePayLaterWidgetUseCase = Lazy { deletePayLaterWidgetUseCase },
+        getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase },
+        homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase }
     )
 }
 
 @ExperimentalCoroutinesApi
 fun createHomeDynamicChannelUseCase(
-        homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase = mockk(relaxed = true),
-        homeDataMapper: HomeDataMapper = mockk(relaxed = true),
-        homeDynamicChannelsRepository: HomeDynamicChannelsRepository = mockk(relaxed = true),
-        homeDataRepository: HomeDataRepository = mockk(relaxed = true),
-        homeAtfRepository: HomeAtfRepository = mockk(relaxed = true),
-        homeFlagRepository: HomeFlagRepository = mockk(relaxed = true),
-        homePageBannerRepository: HomePageBannerRepository = mockk(relaxed = true),
-        homeTickerRepository: HomeTickerRepository = mockk(relaxed = true),
-        homeIconRepository: HomeIconRepository = mockk(relaxed = true),
-        homeRoomDataSource: HomeRoomDataSource = mockk(relaxed = true),
-        homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper = mockk(relaxed = true),
-        applicationContext: Context = mockk(relaxed = true),
-        remoteConfig: RemoteConfig = mockk(relaxed = true),
-        homePlayRepository: HomePlayRepository = mockk(relaxed = true),
-        homeReviewSuggestedRepository: HomeReviewSuggestedRepository = mockk(relaxed = true),
-        homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository = mockk(relaxed = true),
-        homePopularKeywordRepository: HomePopularKeywordRepository = mockk(relaxed = true),
-        homeHeadlineAdsRepository: HomeHeadlineAdsRepository = mockk(relaxed = true),
-        homeRecommendationRepository: HomeRecommendationRepository = mockk(relaxed = true),
-        homeRecommendationChipRepository: HomeRecommendationChipRepository = mockk(relaxed = true),
-        bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
-        homeTopadsImageRepository: HomeTopadsImageRepository = mockk(relaxed = true),
-        homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository = mockk(relaxed = true),
-        homeSalamWidgetRepository: HomeSalamWidgetRepository = mockk(relaxed = true),
-        homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository = mockk(relaxed = true),
-        homeChooseAddressRepository: HomeChooseAddressRepository = mockk(relaxed = true),
-        homeUserSessionInterface: UserSessionInterface = mockk(relaxed = true),
-        homeMissionWidgetRepository: HomeMissionWidgetRepository = mockk(relaxed = true)
+    homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase = mockk(relaxed = true),
+    homeDataMapper: HomeDataMapper = mockk(relaxed = true),
+    homeDynamicChannelsRepository: HomeDynamicChannelsRepository = mockk(relaxed = true),
+    homeDataRepository: HomeDataRepository = mockk(relaxed = true),
+    homeAtfRepository: HomeAtfRepository = mockk(relaxed = true),
+    homeFlagRepository: HomeFlagRepository = mockk(relaxed = true),
+    homePageBannerRepository: HomePageBannerRepository = mockk(relaxed = true),
+    homeTickerRepository: HomeTickerRepository = mockk(relaxed = true),
+    homeIconRepository: HomeIconRepository = mockk(relaxed = true),
+    homeRoomDataSource: HomeRoomDataSource = mockk(relaxed = true),
+    homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper = mockk(relaxed = true),
+    applicationContext: Context = mockk(relaxed = true),
+    remoteConfig: RemoteConfig = mockk(relaxed = true),
+    homePlayRepository: HomePlayRepository = mockk(relaxed = true),
+    homeReviewSuggestedRepository: HomeReviewSuggestedRepository = mockk(relaxed = true),
+    homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository = mockk(relaxed = true),
+    homePopularKeywordRepository: HomePopularKeywordRepository = mockk(relaxed = true),
+    homeHeadlineAdsRepository: HomeHeadlineAdsRepository = mockk(relaxed = true),
+    homeRecommendationRepository: HomeRecommendationRepository = mockk(relaxed = true),
+    homeRecommendationChipRepository: HomeRecommendationChipRepository = mockk(relaxed = true),
+    bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
+    homeTopadsImageRepository: HomeTopadsImageRepository = mockk(relaxed = true),
+    homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository = mockk(relaxed = true),
+    homeSalamWidgetRepository: HomeSalamWidgetRepository = mockk(relaxed = true),
+    homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository = mockk(relaxed = true),
+    homeChooseAddressRepository: HomeChooseAddressRepository = mockk(relaxed = true),
+    homeUserSessionInterface: UserSessionInterface = mockk(relaxed = true),
+    homeMissionWidgetRepository: HomeMissionWidgetRepository = mockk(relaxed = true)
 ): HomeDynamicChannelUseCase {
     return HomeDynamicChannelUseCase(
-            homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
-            homeDataMapper = homeDataMapper,
-            homeDynamicChannelsRepository = homeDynamicChannelsRepository,
-            homeDataRepository = homeDataRepository,
-            atfDataRepository = homeAtfRepository,
-            homeFlagRepository = homeFlagRepository,
-            homePageBannerRepository = homePageBannerRepository,
-            homeTickerRepository = homeTickerRepository,
-            homeIconRepository = homeIconRepository,
-            getHomeRoomDataSource = homeRoomDataSource,
-            homeDynamicChannelDataMapper = homeDynamicChannelDataMapper,
-            applicationContext = applicationContext,
-            remoteConfig = remoteConfig,
-            homePlayRepository = homePlayRepository,
-            homeReviewSuggestedRepository = homeReviewSuggestedRepository,
-            homePlayLiveDynamicRepository = homePlayLiveDynamicRepository,
-            homePopularKeywordRepository = homePopularKeywordRepository,
-            homeHeadlineAdsRepository = homeHeadlineAdsRepository,
-            homeRecommendationRepository = homeRecommendationRepository,
-            homeRecommendationChipRepository = homeRecommendationChipRepository,
-            bestSellerMapper = bestSellerMapper,
-            homeTopadsImageRepository = homeTopadsImageRepository,
-            homeRechargeRecommendationRepository = homeRechargeRecommendationRepository,
-            homeSalamWidgetRepository = homeSalamWidgetRepository,
-            homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
-            homeChooseAddressRepository = homeChooseAddressRepository,
-            userSessionInterface = homeUserSessionInterface,
-            homeMissionWidgetRepository = homeMissionWidgetRepository
+        homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
+        homeDataMapper = homeDataMapper,
+        homeDynamicChannelsRepository = homeDynamicChannelsRepository,
+        homeDataRepository = homeDataRepository,
+        atfDataRepository = homeAtfRepository,
+        homeFlagRepository = homeFlagRepository,
+        homePageBannerRepository = homePageBannerRepository,
+        homeTickerRepository = homeTickerRepository,
+        homeIconRepository = homeIconRepository,
+        getHomeRoomDataSource = homeRoomDataSource,
+        homeDynamicChannelDataMapper = homeDynamicChannelDataMapper,
+        applicationContext = applicationContext,
+        remoteConfig = remoteConfig,
+        homePlayRepository = homePlayRepository,
+        homeReviewSuggestedRepository = homeReviewSuggestedRepository,
+        homePlayLiveDynamicRepository = homePlayLiveDynamicRepository,
+        homePopularKeywordRepository = homePopularKeywordRepository,
+        homeHeadlineAdsRepository = homeHeadlineAdsRepository,
+        homeRecommendationRepository = homeRecommendationRepository,
+        homeRecommendationChipRepository = homeRecommendationChipRepository,
+        bestSellerMapper = bestSellerMapper,
+        homeTopadsImageRepository = homeTopadsImageRepository,
+        homeRechargeRecommendationRepository = homeRechargeRecommendationRepository,
+        homeSalamWidgetRepository = homeSalamWidgetRepository,
+        homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
+        homeChooseAddressRepository = homeChooseAddressRepository,
+        userSessionInterface = homeUserSessionInterface,
+        homeMissionWidgetRepository = homeMissionWidgetRepository
     )
 }
 
@@ -179,7 +213,7 @@ fun HomeSuggestedReviewUseCase.givenOnReviewDismissedReturn() {
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel? = createDefaultHomeDataModel()) {
-    coEvery { getHomeDataFlow() } returns flow{
+    coEvery { getHomeDataFlow() } returns flow {
         emit(homeDynamicChannelModel)
     }
 }
@@ -208,15 +242,14 @@ fun HomePlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshError() {
     coEvery { onGetPlayWidgetWhenShouldRefresh() } throws Exception()
 }
 
-
 fun HomeDynamicChannelUseCase.givenGetHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {
-    coEvery { getHomeDataFlow() } returns flow{
+    coEvery { getHomeDataFlow() } returns flow {
         throw t
     }
 }
 
 fun HomeDynamicChannelUseCase.givenUpdateHomeDataReturn(result: com.tokopedia.home.beranda.helper.Result<Any>) {
-    coEvery { updateHomeData() } returns flow{
+    coEvery { updateHomeData() } returns flow {
         emit(result)
     }
 }
@@ -228,7 +261,7 @@ fun HomeBalanceWidgetUseCase.givenGetLoadingStateReturn() {
 fun HomeDynamicChannelUseCase.givenUpdateHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {
     mockkStatic(Log::class)
     every { Log.getStackTraceString(t) } returns ""
-    coEvery { updateHomeData() } returns flow{
+    coEvery { updateHomeData() } returns flow {
         throw t
     }
 }
@@ -237,7 +270,7 @@ fun HomeDynamicChannelUseCase.givenUpdateHomeDataErrorNullMessage() {
     val throwable = Throwable()
     mockkStatic(Log::class)
     every { Log.getStackTraceString(throwable) } returns ""
-    coEvery { updateHomeData() } returns flow{
+    coEvery { updateHomeData() } returns flow {
         throw throwable
     }
 }
@@ -278,7 +311,6 @@ fun HomeSalamRecommendationUseCase.givenOnDeclineSalamRecommendationError() {
     coEvery { onDeclineSalamRecommendation(any()) } throws Exception()
 }
 
-
 fun HomeRecommendationUseCase.givenOnHomeBestSellerFilterClickReturn(bestSellerDataModel: BestSellerDataModel = BestSellerDataModel()) {
     coEvery { onHomeBestSellerFilterClick(any(), any(), any()) } returns bestSellerDataModel
 }
@@ -302,15 +334,23 @@ fun HomeSearchUseCase.givenSearchPlaceHolderReturn(isFirstInstall: Boolean) {
 }
 
 fun HomeBalanceWidgetUseCase.givenGetTokopointDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
-    coEvery { onGetTokopointData(any()) } returns homeHeaderDataModel
+    coEvery { onGetTokopointData(any(), any(), any()) } returns homeHeaderDataModel
+}
+
+fun HomeBalanceWidgetUseCase.givenGetWalletDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
+    coEvery { onGetWalletAppData(any(), any(), any()) } returns homeHeaderDataModel
 }
 
 fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
-    coEvery { onGetWalletAppData(any()) } returns homeHeaderDataModel
+    coEvery { onGetBalanceWidgetData() } returns homeHeaderDataModel
+}
+
+fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetFailed() {
+    coEvery { onGetBalanceWidgetData() } throws NetworkErrorException()
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel, newHomeDynamicChannelModel: HomeDynamicChannelModel) {
-    coEvery { getHomeDataFlow() } returns flow{
+    coEvery { getHomeDataFlow() } returns flow {
         emit(homeDynamicChannelModel)
         emit(newHomeDynamicChannelModel)
     }
@@ -322,20 +362,20 @@ fun HomeDynamicChannelUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataM
 
 fun createDefaultHomeDataModel(): HomeDynamicChannelModel {
     return HomeDynamicChannelModel(
-            list = listOf<Visitable<*>>(
-                    DynamicLegoBannerDataModel(ChannelModel(id = "1", groupId = "1")),
-                    DynamicLegoBannerDataModel(ChannelModel(id = "2", groupId = "1")),
-                    DynamicLegoBannerDataModel(ChannelModel(id = "3", groupId = "1")),
-                    DynamicLegoBannerDataModel(ChannelModel(id = "4", groupId = "1")),
-                    DynamicLegoBannerDataModel(ChannelModel(id = "5", groupId = "1"))
-            )
+        list = listOf<Visitable<*>>(
+            DynamicLegoBannerDataModel(ChannelModel(id = "1", groupId = "1")),
+            DynamicLegoBannerDataModel(ChannelModel(id = "2", groupId = "1")),
+            DynamicLegoBannerDataModel(ChannelModel(id = "3", groupId = "1")),
+            DynamicLegoBannerDataModel(ChannelModel(id = "4", groupId = "1")),
+            DynamicLegoBannerDataModel(ChannelModel(id = "5", groupId = "1"))
+        )
     )
 }
 
 fun HomePlayLiveDynamicRepository.givenGetPlayLiveDynamicUseCaseReturn(channel: PlayChannel) {
     setParams()
     coEvery { executeOnBackground() } returns PlayData(
-            playChannels = listOf(channel)
+        playChannels = listOf(channel)
     )
 }
 
@@ -365,53 +405,35 @@ fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
     coEvery { getBusinessUnitData(tabId, positionTab, tabName, homeDataModel, buModel, positionBuModelIndex) } returns resultBuModel
 }
 
-fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnTrue(
-    data: HomeDynamicChannelModel
-) {
-    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_TRUE
-}
-
-fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnFalse(
-    data: HomeDynamicChannelModel
-) {
-    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_FALSE
-}
-
-fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnNotSet(
-    data: HomeDynamicChannelModel
-) {
-    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_NOT_SET
-}
-
-fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){
+fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation) {
     coEvery { executeOnBackground() } returns rechargeRecommendation
 }
 
-fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationThrowReturn(){
+fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationThrowReturn() {
     coEvery { executeOnBackground() } throws Exception()
 }
 
-fun HomeDeclineRechargeRecommendationRepository.givenDeclineRechargeRecommendationUseCase(declineRechargeRecommendation: DeclineRechargeRecommendation){
+fun HomeDeclineRechargeRecommendationRepository.givenDeclineRechargeRecommendationUseCase(declineRechargeRecommendation: DeclineRechargeRecommendation) {
     coEvery { executeOnBackground() } returns declineRechargeRecommendation
 }
 
-fun HomeSalamWidgetRepository.givenGetSalamWidgetUseCase(salamWidget : SalamWidget){
+fun HomeSalamWidgetRepository.givenGetSalamWidgetUseCase(salamWidget: SalamWidget) {
     coEvery { executeOnBackground() } returns salamWidget
 }
 
-fun HomeSalamWidgetRepository.givenGetSalamWidgetThrowReturn(){
+fun HomeSalamWidgetRepository.givenGetSalamWidgetThrowReturn() {
     coEvery { executeOnBackground() } throws Exception()
 }
 
-fun HomeDeclineSalamWIdgetRepository.givenDeclineSalamWidgetUseCase(salamWidget: SalamWidget){
+fun HomeDeclineSalamWIdgetRepository.givenDeclineSalamWidgetUseCase(salamWidget: SalamWidget) {
     coEvery { executeOnBackground() } returns salamWidget
 }
 
-fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetUseCase(rechargePerso: RechargePerso){
+fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetUseCase(rechargePerso: RechargePerso) {
     coEvery { executeOnBackground() } returns rechargePerso
 }
 
-fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetThrowReturn(){
+fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetThrowReturn() {
     coEvery { executeOnBackground() } throws Exception()
 }
 
@@ -438,18 +460,18 @@ fun HomeMissionWidgetUseCase.givenOnMissionWidgetReturn(
     coEvery { onMissionWidgetRefresh(currentMissionWidgetListDataModel) } returns resultMissionWidgetListDataModel
 }
 
-fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
-    first.forEach{
-        if(it.value != second[it.key]) return false
+fun areEqualKeyValues(first: Map<String, Any>, second: Map<String, Any>): Boolean {
+    first.forEach {
+        if (it.value != second[it.key]) return false
     }
     return true
 }
 
-inline fun <reified T> HomeDynamicChannelModel.findWidget(predicate: (T?) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit, actionOnNotFound: () -> Unit) {
+inline fun <reified T> HomeDynamicChannelModel.findWidget(predicate: (T?) -> Boolean = { true }, actionOnFound: (T, Int) -> Unit, actionOnNotFound: () -> Unit) {
     this.list.withIndex().find { it.value is T && predicate.invoke(it.value as? T) }.let {
         it?.let {
             if (it.value is T) {
-                actionOnFound.invoke(it.value as T, it. index)
+                actionOnFound.invoke(it.value as T, it.index)
                 return
             }
         }

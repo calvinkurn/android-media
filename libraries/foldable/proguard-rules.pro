@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Window
+-keep class androidx.window.** { *; }
+-keepclasseswithmembers class androidx.window.** { *; }

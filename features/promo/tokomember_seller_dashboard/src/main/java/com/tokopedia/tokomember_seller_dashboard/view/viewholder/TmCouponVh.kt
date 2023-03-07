@@ -10,12 +10,15 @@ import com.google.gson.Gson
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.model.Actions
 import com.tokopedia.tokomember_seller_dashboard.model.TripleDotsItem
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DELETED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_ENDED
@@ -26,7 +29,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_PROCESSING
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_STOPPED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
+import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.SHARE
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
@@ -51,7 +56,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
     lateinit var btnAddQuota: UnifyButton
 
     @SuppressLint("ResourcePackage", "SetTextI18n")
-    fun bind(item: VouchersItem, tmCouponActions: TmCouponActions) {
+    fun bind(item: VouchersItem, tmCouponActions: TmCouponActions,callback: TmCouponDetailCallback?,tmTracker:TmTracker?) {
 
         viewStatus = itemView.findViewById(R.id.view_status)
         tvCouponState = itemView.findViewById(R.id.tv_coupon_state)
@@ -188,14 +193,12 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
             }
             COUPON_ON_GOING -> {
                 optionMenu.setOnClickListener {
-                    item.voucherId?.let { it1 ->
+                    item.voucherId.let { it1 ->
+                        tmTracker?.clickCouponListThreeDot(item.shopId)
                         val actions = Actions()
                         val tripleDots = arrayListOf<TripleDotsItem?>()
                         tripleDots.add(TripleDotsItem("Tambah Kuota", ADD_QUOTA))
-                        /*
-                            Not in phase 1
-                            tripleDots.add(TripleDotsItem("Bakikan", SHARE))
-                        */
+                        tripleDots.add(TripleDotsItem("Bagikan", SHARE))
                         tripleDots.add(TripleDotsItem("Hentikan Kupon", STOP))
                         actions.tripleDots = tripleDots
                         item.voucherTypeFormatted?.let { it2 ->
@@ -235,7 +238,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
             }
             COUPON_ENDED -> {
                 ivCoupon.loadImage(R.drawable.tm_ic_member_grey)
-                optionMenu.hide()
+                optionMenu.show()
                 btnAddQuota.hide()
                 tvCouponState.text = "Berakhir"
                 tvCouponState.setTextColor(
@@ -252,10 +255,21 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                         com.tokopedia.unifyprinciples.R.color.Unify_NN400
                     )
                 )
+                optionMenu.setOnClickListener {
+                    val actions = Actions()
+                    val tripleDots = arrayListOf<TripleDotsItem?>()
+                    tripleDots.add(TripleDotsItem("Duplikat Kupon", DUPLICATE))
+                    actions.tripleDots = tripleDots
+                    TokomemberOptionsMenuBottomsheet.show(
+                        Gson().toJson(actions), fragmentManager, tmCouponActions, item.voucherId,
+                        item.voucherTypeFormatted,
+                        0
+                    )
+                }
             }
             COUPON_STOPPED -> {
                 ivCoupon.loadImage(R.drawable.tm_ic_member_grey)
-                optionMenu.hide()
+                optionMenu.show()
                 btnAddQuota.hide()
                 tvCouponState.text = "Berakhir"
                 tvCouponState.setTextColor(
@@ -272,6 +286,18 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                         com.tokopedia.unifyprinciples.R.color.Unify_NN400
                     )
                 )
+                optionMenu.setOnClickListener {
+                    val actions = Actions()
+                    val tripleDots = arrayListOf<TripleDotsItem?>()
+                    tripleDots.add(TripleDotsItem("Duplikat Kupon", DUPLICATE))
+                    actions.tripleDots = tripleDots
+                    TokomemberOptionsMenuBottomsheet.show(
+                        Gson().toJson(actions), fragmentManager, tmCouponActions, item.voucherId,
+                        item.voucherTypeFormatted,
+                        0
+                    )
+                }
+
             }
         }
 
@@ -293,6 +319,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
             )
             btnAddQuota.show()
             btnAddQuota.setOnClickListener {
+                tmTracker?.clickBsAddQuotaButton(item.shopId)
                 item.voucherId?.let { it1 ->
                     item.voucherTypeFormatted?.let { it2 ->
                         item.voucherQuota?.let { it3 ->
@@ -329,5 +356,14 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                 }
             }
         }
+
+        itemView.setOnClickListener {
+            tmTracker?.clickSpecificCoupon(item.shopId)
+            callback?.openCouponDetailFragment(item.voucherId.toIntOrZero())
+        }
+    }
+
+    companion object{
+        val LAYOUT = R.layout.tm_coupon_list_item
     }
 }

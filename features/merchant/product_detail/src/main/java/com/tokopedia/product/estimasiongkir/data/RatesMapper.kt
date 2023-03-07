@@ -5,8 +5,11 @@ import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductServiceDetailDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingServiceDataModel
+import com.tokopedia.product.estimasiongkir.data.model.shipping.WhiteLabelDataModel
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesModel
+import com.tokopedia.product.estimasiongkir.data.model.v3.ServiceBasedShipment
+import com.tokopedia.product.estimasiongkir.data.model.v3.ServiceModel
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
 
 /**
@@ -46,19 +49,41 @@ object RatesMapper {
 
     private fun mapToServicesData(rates: RatesModel): MutableList<ProductShippingVisitable> {
         return rates.services.mapNotNull { service ->
-            val servicesDetail = service.products.filter { !it.uiRatesHidden }.map {
-                ProductServiceDetailDataModel(
-                    it.name,
-                    it.eta.textEta,
-                    it.price.priceFmt,
-                    it.cod.isCodAvailable == COD_AVAILABLE,
-                    it.cod.text,
-                    it.features.dynamicPrice.dynamicPriceString
-                )
-            }
-            if (servicesDetail.isNotEmpty()) {
-                ProductShippingServiceDataModel(service.id.toLongOrZero(), service.name, servicesDetail)
-            } else null
+            val serviceBasedShipment = service.serviceBasedShipment
+            val isWhitelabel = serviceBasedShipment.isAvailable
+
+            if (isWhitelabel) mapWhiteLabel(service, serviceBasedShipment)
+            else mapGeneralServiceProducts(service)
         }.toMutableList()
+    }
+
+    private fun mapWhiteLabel(
+        service: ServiceModel,
+        whiteLabelData: ServiceBasedShipment
+    ): ProductShippingServiceDataModel {
+        return ProductShippingServiceDataModel(
+            id = service.id.toLongOrZero(),
+            serviceName = service.name,
+            whiteLabelData = WhiteLabelDataModel(
+                eta = whiteLabelData.textEta,
+                price = whiteLabelData.textPrice
+            )
+        )
+    }
+
+    private fun mapGeneralServiceProducts(service: ServiceModel): ProductShippingServiceDataModel? {
+        val servicesDetail = service.products.filter { !it.uiRatesHidden }.map {
+            ProductServiceDetailDataModel(
+                it.name,
+                it.eta.textEta,
+                it.price.priceFmt,
+                it.cod.isCodAvailable == COD_AVAILABLE,
+                it.cod.text,
+                it.features.dynamicPrice.dynamicPriceString
+            )
+        }
+        return if (servicesDetail.isNotEmpty()) {
+            ProductShippingServiceDataModel(service.id.toLongOrZero(), service.name, servicesDetail)
+        } else null
     }
 }

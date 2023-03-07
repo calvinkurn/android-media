@@ -1,0 +1,18 @@
+{
+  "errors": [
+    {
+      "message": "",
+      "path": [
+        "generate_key"
+      ],
+      "extensions": {
+        "code": 412,
+        "developerMessage": "Auth Token Not Found in Header",
+        "timestamp": "2022-09-30 16:15:27.958002622 +0700 WIB m=+24577.142453956"
+      }
+    }
+  ],
+  "data": {
+    "generate_key": null
+  }
+}

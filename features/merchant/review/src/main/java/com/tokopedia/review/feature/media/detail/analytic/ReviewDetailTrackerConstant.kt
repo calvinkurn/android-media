@@ -11,5 +11,7 @@ object ReviewDetailTrackerConstant {
     const val EVENT_CATEGORY_REVIEW_IMAGE_GALLERY = "product detail page - review - review image - gallery"
     const val EVENT_LABEL_CLICK_LIKE = "feedback_id:%s;is_active:%s;"
     const val EVENT_LABEL_CLICK_SEE_ALL = "feedback_id:%s;"
-    const val EVENT_LABEL_CLICK_REVIEWER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;"
+    const val EVENT_LABEL_CLICK_REVIEWER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;label:%s;"
+    const val TRACKER_ID_CLICK_REVIEWER_NAME_FROM_EXPANDED_REVIEW_DETAIL = "22557"
+    const val TRACKER_ID_CLICK_REVIEWER_NAME_FROM_DETAILED_REVIEW_MEDIA_GALLERY = "33901"
 }

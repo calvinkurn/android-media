@@ -150,8 +150,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         val v = super.onCreateView(inflater, container, savedInstanceState)
 
         downloadAudios()
-        colorDim = ContextCompat.getColor(requireActivity(), com.tokopedia.gamification.R.color.gf_dim)
-        colorBlackTransParent = ContextCompat.getColor(requireActivity(), com.tokopedia.gamification.R.color.gf_black_transparent)
+        colorDim = ContextCompat.getColor(requireActivity(), com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_44)
+        colorBlackTransParent = ContextCompat.getColor(requireActivity(), com.tokopedia.gamification.R.color.gamification_dms_black_transparent)
         viewModel.getGiftBoxHome()
         return v
     }
@@ -793,7 +793,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     private fun setShadows() {
         context?.let {
-            val shadowColor = ContextCompat.getColor(it, com.tokopedia.gamification.R.color.gf_box_text_shadow)
+            val shadowColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_32)
             val shadowRadius = tvProgressCount.dpToPx(5)
             val shadowOffset = tvProgressCount.dpToPx(4)
 

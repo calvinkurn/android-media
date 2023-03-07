@@ -7,6 +7,10 @@ import com.tokopedia.oneclickcheckout.databinding.*
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.card.*
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.purchase_platform.common.databinding.ItemUploadPrescriptionBinding
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 
 class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
@@ -15,6 +19,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                               private val preferenceListener: OrderPreferenceCard.OrderPreferenceCardListener,
                               private val insuranceListener: OrderInsuranceCard.OrderInsuranceCardListener,
                               private val promoCardListener: OrderPromoCard.OrderPromoCardListener,
+                              private val uploadPrescriptionListener: UploadPrescriptionListener,
                               private val paymentCardListener: OrderTotalPaymentCard.OrderTotalPaymentCardListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -24,10 +29,11 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
         const val shopIndex = 2
         const val productStartIndex = 3
 
-        private const val preferenceIndexAddition = 3
-        private const val insuranceIndexAddition = 4
-        private const val promoIndexAddition = 5
-        private const val totalPaymentIndexAddition = 6
+        private const val uploadPrescriptionIndexAddition = 3
+        private const val preferenceIndexAddition = 4
+        private const val insuranceIndexAddition = 5
+        private const val promoIndexAddition = 6
+        private const val totalPaymentIndexAddition = 7
     }
 
     var ticker: TickerData? = null
@@ -38,7 +44,11 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     var shipment: OrderShipment = OrderShipment()
     var payment: OrderPayment = OrderPayment()
     var promo: OrderPromo = OrderPromo()
+    var uploadPrescription = UploadPrescriptionUiModel()
     var total: OrderTotal = OrderTotal()
+
+    val uploadPrescriptionIndex: Int
+        get() = products.size + uploadPrescriptionIndexAddition
 
     val preferenceIndex: Int
         get() = products.size + preferenceIndexAddition
@@ -95,6 +105,9 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
             OrderTotalPaymentCard.VIEW_TYPE -> {
                 return OrderTotalPaymentCard(LayoutPaymentBinding.inflate(inflater, parent, false), paymentCardListener)
             }
+            UploadPrescriptionViewHolder.ITEM_VIEW_UPLOAD -> {
+                return UploadPrescriptionViewHolder(ItemUploadPrescriptionBinding.inflate(inflater, parent, false).root, uploadPrescriptionListener)
+            }
             else -> throw UnknownError("missing view type $viewType")
         }
     }
@@ -125,6 +138,9 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
             is OrderTotalPaymentCard -> {
                 holder.setupPayment(total)
             }
+            is UploadPrescriptionViewHolder -> {
+                holder.bindViewHolder(uploadPrescription)
+            }
         }
     }
 
@@ -138,7 +154,8 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
             position == tickerIndex -> OrderTickerCard.VIEW_TYPE
             position == onboardingIndex -> OrderOnboardingCard.VIEW_TYPE
             position == shopIndex -> OrderShopCard.VIEW_TYPE
-            bottomPosition < preferenceIndexAddition -> OrderProductCard.VIEW_TYPE
+            bottomPosition < uploadPrescriptionIndexAddition -> OrderProductCard.VIEW_TYPE
+            bottomPosition == uploadPrescriptionIndexAddition -> UploadPrescriptionViewHolder.ITEM_VIEW_UPLOAD
             bottomPosition == preferenceIndexAddition -> OrderPreferenceCard.VIEW_TYPE
             bottomPosition == insuranceIndexAddition -> OrderInsuranceCard.VIEW_TYPE
             bottomPosition == promoIndexAddition -> OrderPromoCard.VIEW_TYPE

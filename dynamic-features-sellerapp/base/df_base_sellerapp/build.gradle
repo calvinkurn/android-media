@@ -36,6 +36,12 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
     }
 
+    buildTypes {
+        release {
+            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
+        }
+    }
+
     // Specifies 4 flavor dimensions.
     flavorDimensions "tier", "client"
 
@@ -72,7 +78,6 @@ dependencies {
 
     //Content
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
-    implementation projectOrAar(rootProject.ext.features.people)
 
     //Discovery
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
@@ -109,6 +114,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.voucherCreation)
     implementation projectOrAar(rootProject.ext.features.sellerShopFlashSale)
+    implementation projectOrAar(rootProject.ext.features.sellerTokopediaFlashSale)
     implementation projectOrAar(rootProject.ext.features.sellerSearch)
     implementation projectOrAar(rootProject.ext.features.activation)
     implementation projectOrAar(rootProject.ext.features.manageaddress)
@@ -130,6 +136,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
 
     //Media
+    implementation projectOrAar(rootProject.ext.features.mediaeditor)
     implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
+
+    implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
+    implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
+
 }

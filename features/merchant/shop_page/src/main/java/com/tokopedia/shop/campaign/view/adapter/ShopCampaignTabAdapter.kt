@@ -14,13 +14,15 @@ class ShopCampaignTabAdapter(
     fun setCampaignLayoutData(data: List<Visitable<*>>) {
         val newList = getNewVisitableItems()
         newList.clear()
-        newList.addAll(data.onEach {
-            if (it is BaseShopHomeWidgetUiModel) {
-                it.widgetState = WidgetState.PLACEHOLDER
-            } else if (it is ThematicWidgetUiModel) {
-                it.widgetState = WidgetState.PLACEHOLDER
+        newList.addAll(
+            data.onEach {
+                if (it is BaseShopHomeWidgetUiModel) {
+                    it.widgetState = WidgetState.PLACEHOLDER
+                } else if (it is ThematicWidgetUiModel) {
+                    it.widgetState = WidgetState.PLACEHOLDER
+                }
             }
-        })
+        )
         submitList(newList)
     }
 
@@ -28,12 +30,11 @@ class ShopCampaignTabAdapter(
         // remove voucher visitable widget since it's loaded from different gql and finished earlier
         val filteredVisitables = visitables.filter { it !is ShopHomeVoucherUiModel }
         return filteredVisitables.filterIsInstance<Visitable<*>>().all {
-            when(it) {
+            when (it) {
                 is BaseShopHomeWidgetUiModel -> it.widgetState == WidgetState.PLACEHOLDER || it.widgetState == WidgetState.LOADING
                 is ThematicWidgetUiModel -> it.widgetState == WidgetState.PLACEHOLDER || it.widgetState == WidgetState.LOADING
                 else -> false
             }
         }
     }
-
 }

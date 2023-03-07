@@ -11,6 +11,7 @@ import com.tokopedia.home_account.explicitprofile.data.SectionsDataModel
 import com.tokopedia.home_account.explicitprofile.features.categories.sections.chips.ChipsAdapter
 import com.tokopedia.home_account.explicitprofile.features.categories.sections.chips.ChipsViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SectionViewHolder(
@@ -22,7 +23,12 @@ class SectionViewHolder(
     private val chipsAdapter = ChipsAdapter(this)
     private val flexboxLayoutManager = FlexboxLayoutManager(itemView.context)
 
+    private var maxAnswersSelection = 0
+    private var selectedAnswers: MutableList<QuestionDataModel> = mutableListOf()
+
     fun onBind(sectionsDataModel: SectionsDataModel) {
+        maxAnswersSelection = sectionsDataModel.maxAnswer
+
         flexboxLayoutManager.flexWrap = FlexWrap.WRAP
         flexboxLayoutManager.flexDirection = FlexDirection.ROW
         flexboxLayoutManager.alignItems = AlignItems.FLEX_START
@@ -30,6 +36,17 @@ class SectionViewHolder(
 
         itemViewBinding?.apply {
             sectionTitle.text = sectionsDataModel.property.title
+            sectionInfoSubtitle.apply {
+                if (maxAnswersSelection > 0) {
+                    text = getString(
+                        R.string.explicit_profile_max_selection_answer_limit,
+                        maxAnswersSelection.toString()
+                    )
+                } else if (maxAnswersSelection == 0) {
+                    text = getString(R.string.explicit_profile_max_selection_answer_no_limit)
+                }
+            }.show()
+
             sectionQuestionList.apply {
                 layoutManager = flexboxLayoutManager
                 adapter = chipsAdapter
@@ -46,7 +63,25 @@ class SectionViewHolder(
         }
     }
 
-    override fun onItemClick(questionDataModel: QuestionDataModel, isActive: Boolean) {
+    override fun onItemClick(
+        questionDataModel: QuestionDataModel,
+        isChipSelected: Boolean,
+        updateChipsSelection: (isSelected: Boolean) -> Unit
+    ) {
+        var isActive = isChipSelected
+
+        if (isChipSelected) {
+            selectedAnswers.remove(questionDataModel)
+            updateChipsSelection.invoke(!isChipSelected)
+            isActive = !isChipSelected
+        } else {
+            if (selectedAnswers.size < maxAnswersSelection || maxAnswersSelection == 0) {
+                selectedAnswers.add(questionDataModel)
+                updateChipsSelection.invoke(!isChipSelected)
+                isActive = !isChipSelected
+            }
+        }
+
         sectionListener.onQuestionSelected(questionDataModel, isActive)
     }
 

@@ -1,0 +1,58 @@
+{
+  "validate_use_promo_revamp": {
+    "status": "OK",
+    "message": [],
+    "error_code": "200",
+    "code": "200000",
+    "promo": {
+      "global_success": false,
+      "success": true,
+      "codes": [],
+      "promo_code_id": 0,
+      "title_description": "catalog testing loadtest",
+      "discount_amount": 0,
+      "cashback_wallet_amount": 10000,
+      "cashback_advocate_referral_amount": 0,
+      "cashback_voucher_description": "",
+      "invoice_description": "",
+      "gateway_id": "",
+      "is_coupon": 1,
+      "coupon_description": "",
+      "is_tokopedia_gerai": false,
+      "voucher_orders": [
+        {
+          "code": "PLUSAA",
+          "success": false,
+          "unique_id": "239594-0-301643",
+          "cart_id": 0,
+          "order_id": 0,
+          "shop_id": 239594,
+          "is_po": 0,
+          "duration": "0",
+          "warehouse_id": 7515958,
+          "address_id": 0,
+          "type": "logistic",
+          "shipping_id": 1,
+          "sp_id": 1,
+          "cashback_wallet_amount": 0,
+          "discount_amount": 44444,
+          "invoice_description": "",
+          "title_description": "Promo Gratis Ongkir POMA3A96FB",
+          "message": {
+            "state": "red",
+            "color": "#ade3af",
+            "text": "Gagal menggunakan promo"
+          },
+          "benefit_details": []
+        }
+      ],
+      "tracking_details": [
+        {
+          "product_id": 618078867,
+          "promo_codes_tracking": "POMA3A96FB",
+          "promo_details_tracking": "M:3:0:red"
+        }
+      ]
+    }
+  }
+}

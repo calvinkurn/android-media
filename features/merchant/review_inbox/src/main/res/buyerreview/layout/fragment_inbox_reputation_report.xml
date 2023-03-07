@@ -7,22 +7,22 @@
     android:background="@color/Unify_N50"
     android:orientation="vertical">
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/send_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/padding_activity"
-        android:background="@drawable/bg_button_disabled"
+        android:layout_marginStart="@dimen/padding_activity"
+        android:layout_marginTop="@dimen/padding_activity"
+        android:layout_marginEnd="@dimen/padding_activity"
+        android:layout_marginBottom="@dimen/padding_activity"
         android:enabled="false"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:lineSpacingExtra="7sp"
         android:text="@string/submit_review"
-        android:textColor="@color/Unify_N500"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="normal"
-        />
+        android:textSize="14sp"
+        android:textStyle="normal" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -54,9 +54,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/question"
                 android:background="@color/Unify_N0"
-                android:paddingBottom="@dimen/padding_activity"
                 android:paddingLeft="@dimen/padding_activity"
-                android:paddingRight="@dimen/padding_activity">
+                android:paddingRight="@dimen/padding_activity"
+                android:paddingBottom="@dimen/padding_activity">
 
                 <RadioButton
                     android:id="@+id/report_spam"
@@ -68,7 +68,7 @@
                     android:text="@string/report_option_spam"
                     android:textColor="@color/Unify_N700_44"
                     android:textSize="@dimen/sp_14"
-                    android:textStyle="normal"/>
+                    android:textStyle="normal" />
 
                 <RadioButton
                     android:id="@+id/report_sara"
@@ -80,7 +80,7 @@
                     android:text="@string/report_option_sara"
                     android:textColor="@color/Unify_N700_44"
                     android:textSize="@dimen/sp_14"
-                    android:textStyle="normal"/>
+                    android:textStyle="normal" />
 
                 <RadioButton
                     android:id="@+id/report_other"
@@ -91,20 +91,19 @@
                     android:text="@string/report_option_others"
                     android:textColor="@color/Unify_N700_44"
                     android:textSize="@dimen/sp_14"
-                    android:textStyle="normal"/>
+                    android:textStyle="normal" />
 
-                <EditText
+                <com.tokopedia.unifycomponents.TextFieldUnify
                     android:id="@+id/reason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_10"
                     android:layout_marginLeft="32dp"
-                    android:textColor="@color/Unify_N700_96"
-                    android:textColorHint="@color/Unify_N700_44"
-                    android:hint="@string/hint_input_reason"
-                    android:paddingLeft="@dimen/padding_activity"
-                    android:paddingRight="@dimen/padding_activity"
-                    />
+                    android:layout_marginBottom="10dp"
+                    app:text_field_input_type="text"
+                    app:text_field_label_static="false"
+                    app:text_field_label="@string/hint_input_reason"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp" />
             </RadioGroup>
         </RelativeLayout>
     </ScrollView>

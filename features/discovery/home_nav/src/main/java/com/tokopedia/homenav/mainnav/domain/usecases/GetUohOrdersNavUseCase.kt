@@ -6,6 +6,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohOrders
 import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
+import com.tokopedia.homenav.mainnav.domain.usecases.query.GetOrderHistoryMePageQuery
+import com.tokopedia.homenav.mainnav.domain.usecases.query.GetOrderHistoryQuery
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 
@@ -23,42 +25,7 @@ class GetUohOrdersNavUseCase (
     }
 
     private fun prepareGql() {
-        val query = """
-            query GetOrderHistory(${'$'}input:UOHOrdersRequest!){
-              uohOrders(input:${'$'}input) {
-                orders {
-                          orderUUID
-                          status
-                          metadata {
-                            ${if (isMePageUsingRollenceVariant) "queryParams" else ""}
-                            detailURL {
-                              appURL
-                            }
-                            status {
-                              label
-                              textColor
-                              bgColor
-                            }
-                            products {
-                              title
-                              imageURL
-                              inline1 {
-                                label
-                                textColor
-                                bgColor
-                              }
-                              inline2 {
-                                label
-                                textColor
-                                bgColor
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        """.trimIndent()
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(if(isMePageUsingRollenceVariant) GetOrderHistoryMePageQuery() else GetOrderHistoryQuery())
         graphqlUseCase.setRequestParams(generateParam(NavUohListParam(verticalCategory = VERTICAL_CATEGORY)))
         graphqlUseCase.setTypeClass(UohData::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())

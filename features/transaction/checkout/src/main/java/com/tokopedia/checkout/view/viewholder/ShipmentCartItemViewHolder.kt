@@ -2,9 +2,14 @@ package com.tokopedia.checkout.view.viewholder
 
 import android.graphics.Paint
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import android.widget.*
+import android.widget.CompoundButton
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +19,7 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.utils.WeightFormatterUtil
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -28,39 +34,53 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
 class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var shipmentItemListener: ShipmentItemListener? = null
-    private val productBundlingInfo: ConstraintLayout = itemView.findViewById(R.id.product_bundling_info)
+    private val productBundlingInfo: ConstraintLayout =
+        itemView.findViewById(R.id.product_bundling_info)
     private val imageBundle: ImageUnify = itemView.findViewById(R.id.image_bundle)
     private val textBundleTitle: Typography = itemView.findViewById(R.id.text_bundle_title)
     private val textBundlePrice: Typography = itemView.findViewById(R.id.text_bundle_price)
-    private val textBundleSlashPrice: Typography = itemView.findViewById(R.id.text_bundle_slash_price)
-    private val vBundlingProductSeparator: View = itemView.findViewById(R.id.v_bundling_product_separator)
-    private val llFrameItemProductContainer: LinearLayout = itemView.findViewById(R.id.ll_frame_item_product_container)
+    private val textBundleSlashPrice: Typography =
+        itemView.findViewById(R.id.text_bundle_slash_price)
+    private val vBundlingProductSeparator: View =
+        itemView.findViewById(R.id.v_bundling_product_separator)
+    private val llFrameItemProductContainer: LinearLayout =
+        itemView.findViewById(R.id.ll_frame_item_product_container)
     private val rlProductInfo: ConstraintLayout = itemView.findViewById(R.id.rl_product_info)
     private val mIvProductImage: ImageView = itemView.findViewById(R.id.iv_product_image)
     private val mTvProductName: Typography = itemView.findViewById(R.id.tv_product_name)
     private val mTvProductPrice: Typography = itemView.findViewById(R.id.tv_product_price)
-    private val mTvProductOriginalPrice: Typography = itemView.findViewById(R.id.tv_product_original_price)
-    private val mTvProductCountAndWeight: Typography = itemView.findViewById(R.id.tv_item_count_and_weight)
-    private val mTvOptionalNoteToSeller: TextView = itemView.findViewById(R.id.tv_optional_note_to_seller)
-    private val mRlPurchaseProtection: RelativeLayout = itemView.findViewById(R.id.rlayout_purchase_protection)
+    private val mTvProductOriginalPrice: Typography =
+        itemView.findViewById(R.id.tv_product_original_price)
+    private val mTvProductCountAndWeight: Typography =
+        itemView.findViewById(R.id.tv_item_count_and_weight)
+    private val mTvOptionalNoteToSeller: TextView =
+        itemView.findViewById(R.id.tv_optional_note_to_seller)
+    private val mRlPurchaseProtection: RelativeLayout =
+        itemView.findViewById(R.id.rlayout_purchase_protection)
     private val mTvPPPLinkText: TextView = itemView.findViewById(R.id.text_link_text)
     private val mTvPPPPrice: TextView = itemView.findViewById(R.id.text_protection_desc)
     private val mCbPPP: CheckboxUnify = itemView.findViewById(R.id.checkbox_ppp)
-    private val mSeparatorMultipleProductSameStore: View = itemView.findViewById(R.id.v_separator_multiple_product_same_store)
+    private val mSeparatorMultipleProductSameStore: View =
+        itemView.findViewById(R.id.v_separator_multiple_product_same_store)
     private val tickerError: Ticker = itemView.findViewById(R.id.checkout_ticker_product_error)
     private val productTicker: Ticker = itemView.findViewById(R.id.product_ticker)
     private val mTextVariant: Typography = itemView.findViewById(R.id.text_variant)
     private val mLayoutProductInfo: FlexboxLayout = itemView.findViewById(R.id.layout_product_info)
     private val mIconTooltip: IconUnify = itemView.findViewById(R.id.icon_tooltip)
     private val mPricePerProduct: Typography = itemView.findViewById(R.id.text_item_per_product)
-    private val llGiftingAddOnProductLevel: LinearLayout = itemView.findViewById(R.id.ll_gifting_addon_product_level)
-    private val buttonGiftingAddOnProductLevel: ButtonGiftingAddOnView = itemView.findViewById(R.id.button_gifting_addon_product_level)
+    private val llGiftingAddOnProductLevel: LinearLayout =
+        itemView.findViewById(R.id.ll_gifting_addon_product_level)
+    private val buttonGiftingAddOnProductLevel: ButtonGiftingAddOnView =
+        itemView.findViewById(R.id.button_gifting_addon_product_level)
 
-    fun bindViewHolder(cartItem: CartItemModel, addOnWordingModel: AddOnWordingModel, listener: ShipmentItemListener?) {
+    fun bindViewHolder(
+        cartItem: CartItemModel,
+        addOnWordingModel: AddOnWordingModel,
+        listener: ShipmentItemListener?
+    ) {
         shipmentItemListener = listener
         if (cartItem.isError) {
             showShipmentWarning(cartItem)
@@ -69,9 +89,12 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         }
         ImageHandler.LoadImage(mIvProductImage, cartItem.imageUrl)
         mTvProductName.text = cartItem.name
-        mTvProductCountAndWeight.text = String.format(mTvProductCountAndWeight.context
-                .getString(R.string.iotem_count_and_weight_format), cartItem.quantity.toString(),
-                WeightFormatterUtil.getFormattedWeight(cartItem.weight, cartItem.quantity))
+        mTvProductCountAndWeight.text = String.format(
+            mTvProductCountAndWeight.context
+                .getString(R.string.iotem_count_and_weight_format),
+            cartItem.quantity.toString(),
+            WeightFormatterUtil.getFormattedWeight(cartItem.weight, cartItem.quantity)
+        )
         if (!TextUtils.isEmpty(cartItem.variant)) {
             mTextVariant.text = cartItem.variant
             mTextVariant.visibility = View.VISIBLE
@@ -89,10 +112,15 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
 
     private fun renderProductProperties(cartItemModel: CartItemModel) {
         val productInformationList = cartItemModel.productInformation
-        if (productInformationList != null && !productInformationList.isEmpty()) {
+        if (productInformationList.isNotEmpty()) {
             for (i in productInformationList.indices) {
                 val productInfo = Typography(itemView.context)
-                productInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                productInfo.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    )
+                )
                 productInfo.setType(SMALL)
                 if (mLayoutProductInfo.childCount > 0) {
                     productInfo.text = ", " + productInformationList[i]
@@ -105,16 +133,65 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         } else {
             mLayoutProductInfo.visibility = View.GONE
         }
+        renderEthicalDrugsProperty(cartItemModel)
+    }
+
+    private fun renderEthicalDrugsProperty(cartItemModel: CartItemModel) {
+        if (cartItemModel.ethicalDrugDataModel.needPrescription) {
+            val ethicalDrugView: View = createProductInfoTextWithIcon(cartItemModel)
+            if (mLayoutProductInfo.childCount > 0) {
+                ethicalDrugView.setPadding(
+                    4.dpToPx(ethicalDrugView.resources.displayMetrics),
+                    0,
+                    0,
+                    0
+                )
+            }
+            mLayoutProductInfo.addView(ethicalDrugView)
+            mLayoutProductInfo.visibility = View.VISIBLE
+        }
+    }
+
+    private fun createProductInfoTextWithIcon(cartItemModel: CartItemModel): LinearLayout {
+        val propertyLayoutWithIcon = LinearLayout(itemView.context)
+        propertyLayoutWithIcon.orientation = LinearLayout.HORIZONTAL
+        val propertiesBinding = LayoutInflater.from(itemView.context)
+            .inflate(
+                com.tokopedia.purchase_platform.common.R.layout.item_product_info_add_on,
+                null,
+                false
+            )
+        val propertyIcon =
+            propertiesBinding.findViewById<ImageUnify>(com.tokopedia.purchase_platform.common.R.id.pp_iv_product_info_add_on)
+        if (propertyIcon != null && !TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.iconUrl)) {
+            ImageHandler.loadImageWithoutPlaceholderAndError(
+                propertyIcon,
+                cartItemModel.ethicalDrugDataModel.iconUrl
+            )
+        }
+        val propertyText =
+            propertiesBinding.findViewById<Typography>(com.tokopedia.purchase_platform.common.R.id.pp_label_product_info_add_on)
+        if (propertyText != null && !TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.text)) {
+            propertyText.text = cartItemModel.ethicalDrugDataModel.text
+        }
+        propertyLayoutWithIcon.addView(propertiesBinding)
+        return propertyLayoutWithIcon
     }
 
     private fun renderProductPrice(cartItem: CartItemModel) {
-        mTvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItem.price.toLong(), false).removeDecimalSuffix()
-        val dp4 = mTvProductPrice.resources.getDimensionPixelOffset(R.dimen.dp_4)
+        mTvProductPrice.text = CurrencyFormatUtil
+            .convertPriceValueToIdrFormat(cartItem.price.toLong(), false)
+            .removeDecimalSuffix()
+        val dp4 =
+            mTvProductPrice.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4)
         if (cartItem.originalPrice > 0) {
             mTvProductPrice.setPadding(0, dp4, 0, 0)
             mTvProductOriginalPrice.setPadding(0, dp4, 0, 0)
-            mTvProductOriginalPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItem.originalPrice.toLong(), false).removeDecimalSuffix()
-            mTvProductOriginalPrice.paintFlags = mTvProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            mTvProductOriginalPrice.text = CurrencyFormatUtil
+                .convertPriceValueToIdrFormat(cartItem.originalPrice.toLong(), false)
+                .removeDecimalSuffix()
+            mTvProductOriginalPrice.paintFlags =
+                mTvProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             mTvProductOriginalPrice.visibility = View.VISIBLE
         } else {
             mTvProductPrice.setPadding(0, dp4, 0, 0)
@@ -132,12 +209,19 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     }
 
     private fun renderPurchaseProtection(cartItem: CartItemModel) {
-        mRlPurchaseProtection.visibility = if (cartItem.isProtectionAvailable && !cartItem.isError) View.VISIBLE else View.GONE
+        mRlPurchaseProtection.visibility =
+            if (cartItem.isProtectionAvailable && !cartItem.isError) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
         if (cartItem.isProtectionAvailable && !cartItem.isError) {
             mIconTooltip.setOnClickListener { shipmentItemListener?.navigateToWebView(cartItem) }
             mTvPPPLinkText.text = cartItem.protectionTitle
             mTvPPPPrice.text = cartItem.protectionSubTitle
-            mPricePerProduct.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItem.protectionPricePerProduct.toLong(), false).removeDecimalSuffix()
+            mPricePerProduct.text = CurrencyFormatUtil
+                .convertPriceValueToIdrFormat(cartItem.protectionPricePerProduct.toLong(), false)
+                .removeDecimalSuffix()
             if (cartItem.isProtectionCheckboxDisabled) {
                 mCbPPP.isEnabled = false
                 mCbPPP.isChecked = true
@@ -146,7 +230,12 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
                 mCbPPP.isEnabled = true
                 mCbPPP.isChecked = cartItem.isProtectionOptIn
                 mCbPPP.skipAnimation()
-                mCbPPP.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean -> shipmentItemListener?.notifyOnPurchaseProtectionChecked(checked, adapterPosition + 1) }
+                mCbPPP.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
+                    shipmentItemListener?.notifyOnPurchaseProtectionChecked(
+                        checked,
+                        adapterPosition + 1
+                    )
+                }
             }
         }
     }
@@ -196,27 +285,35 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     }
 
     private fun disableItemView() {
-        productBundlingInfo.alpha = 0.5f
-        llFrameItemProductContainer.alpha = 0.5f
+        productBundlingInfo.alpha = ALPHA_DISABLED
+        llFrameItemProductContainer.alpha = ALPHA_DISABLED
     }
 
     private fun renderBundlingInfo(cartItemModel: CartItemModel) {
         val ivProductImageLayoutParams = mIvProductImage.layoutParams as MarginLayoutParams
-        val tvOptionalNoteToSellerLayoutParams = mTvOptionalNoteToSeller.layoutParams as MarginLayoutParams
-        val productContainerLayoutParams = llFrameItemProductContainer.layoutParams as MarginLayoutParams
+        val tvOptionalNoteToSellerLayoutParams =
+            mTvOptionalNoteToSeller.layoutParams as MarginLayoutParams
+        val productContainerLayoutParams =
+            llFrameItemProductContainer.layoutParams as MarginLayoutParams
         val productInfoLayoutParams = rlProductInfo.layoutParams as MarginLayoutParams
-        val bottomMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_8)
+        val bottomMargin = itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
         if (cartItemModel.isBundlingItem) {
             if (!TextUtils.isEmpty(cartItemModel.bundleIconUrl)) {
-                ImageHandler.loadImage2(imageBundle, cartItemModel.bundleIconUrl, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+                ImageHandler.loadImage2(
+                    imageBundle,
+                    cartItemModel.bundleIconUrl,
+                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder
+                )
             }
 
-            ivProductImageLayoutParams.leftMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_14)
-            tvOptionalNoteToSellerLayoutParams.leftMargin = itemView.resources.getDimensionPixelSize(R.dimen.dp_14)
+            ivProductImageLayoutParams.leftMargin =
+                itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14)
+            tvOptionalNoteToSellerLayoutParams.leftMargin =
+                itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14)
             vBundlingProductSeparator.visibility = View.VISIBLE
             val productImageLayoutParams = mIvProductImage.layoutParams as MarginLayoutParams
             val productNameLayoutParams = mTvProductName.layoutParams as MarginLayoutParams
-            val productMarginTop = itemView.resources.getDimensionPixelSize(R.dimen.dp_12)
+            val productMarginTop = itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_12)
             if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
                 productBundlingInfo.visibility = View.VISIBLE
                 productImageLayoutParams.topMargin = 0
@@ -229,9 +326,15 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
                 mSeparatorMultipleProductSameStore.gone()
             }
             textBundleTitle.text = cartItemModel.bundleTitle
-            textBundlePrice.text = convertPriceValueToIdrFormat(cartItemModel.bundlePrice, false).removeDecimalSuffix()
-            textBundleSlashPrice.text = convertPriceValueToIdrFormat(cartItemModel.bundleOriginalPrice, false).removeDecimalSuffix()
-            textBundleSlashPrice.paintFlags = textBundleSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            textBundlePrice.text =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemModel.bundlePrice, false)
+                    .removeDecimalSuffix()
+            textBundleSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                cartItemModel.bundleOriginalPrice,
+                false
+            ).removeDecimalSuffix()
+            textBundleSlashPrice.paintFlags =
+                textBundleSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             productContainerLayoutParams.bottomMargin = 0
             productInfoLayoutParams.bottomMargin = 0
         } else {
@@ -245,7 +348,10 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         }
     }
 
-    private fun renderAddOnProductLevel(cartItemModel: CartItemModel, addOnWordingModel: AddOnWordingModel) {
+    private fun renderAddOnProductLevel(
+        cartItemModel: CartItemModel,
+        addOnWordingModel: AddOnWordingModel
+    ) {
         val addOns = cartItemModel.addOnProductLevelModel
         if (addOns.status == 0) {
             llGiftingAddOnProductLevel.visibility = View.GONE
@@ -260,7 +366,12 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             buttonGiftingAddOnProductLevel.desc = addOns.addOnsButtonModel.description
             buttonGiftingAddOnProductLevel.urlLeftIcon = addOns.addOnsButtonModel.leftIconUrl
             buttonGiftingAddOnProductLevel.urlRightIcon = addOns.addOnsButtonModel.rightIconUrl
-            buttonGiftingAddOnProductLevel.setOnClickListener { shipmentItemListener?.openAddOnProductLevelBottomSheet(cartItemModel, addOnWordingModel) }
+            buttonGiftingAddOnProductLevel.setOnClickListener {
+                shipmentItemListener?.openAddOnProductLevelBottomSheet(
+                    cartItemModel,
+                    addOnWordingModel
+                )
+            }
             shipmentItemListener?.addOnProductLevelImpression(cartItemModel.productId.toString())
         }
     }
@@ -268,13 +379,15 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     interface ShipmentItemListener {
         fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int)
         fun navigateToWebView(cartItem: CartItemModel)
-        fun openAddOnProductLevelBottomSheet(cartItem: CartItemModel, addOnWordingModel: AddOnWordingModel)
+        fun openAddOnProductLevelBottomSheet(
+            cartItem: CartItemModel,
+            addOnWordingModel: AddOnWordingModel
+        )
+
         fun addOnProductLevelImpression(productId: String)
     }
 
     companion object {
-        private const val IMAGE_ALPHA_DISABLED = 128
-        private const val IMAGE_ALPHA_ENABLED = 255
+        private const val ALPHA_DISABLED = 0.5f
     }
-
 }

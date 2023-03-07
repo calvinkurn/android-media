@@ -95,12 +95,6 @@ class EventPDPModule {
         return EventPDPTracking(userSession, irisSession)
     }
 
-    @Provides
-    @EventPDPScope
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
-    }
-
     @EventPDPScope
     @Provides
     fun provideAuthInterceptors(@ApplicationContext context: Context,
@@ -111,18 +105,10 @@ class EventPDPModule {
     @Provides
     @EventPDPScope
     fun provideInterceptors(tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            fingerprintInterceptor: FingerprintInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor,
-                            chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
+                            fingerprintInterceptor: FingerprintInterceptor): MutableList<Interceptor> {
         val listInterceptor = mutableListOf<Interceptor>()
         listInterceptor.add(fingerprintInterceptor)
         listInterceptor.add(tkpdAuthInterceptor)
-
-        if (GlobalConfig.isAllowDebuggingTools()){
-            listInterceptor.add(httpLoggingInterceptor)
-            listInterceptor.add(chuckerInterceptor)
-        }
-
         return listInterceptor
     }
 

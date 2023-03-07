@@ -31,8 +31,8 @@ class RechargeSetFailUseCase @Inject constructor(@ApplicationContext private val
 
     companion object {
         val QUERY = """
-            mutation rechargeSetOrderToFail(${'$'}orderId: Int!) {
-              rechargeSetOrderToFail(orderId:${'$'}orderId) {
+            mutation rechargeSetOrderToFail(${'$'}orderId: Int64!) {
+              rechargeSetOrderToFailV2(order_id:${'$'}orderId) {
                 attributes {
                   user_id
                   order_status

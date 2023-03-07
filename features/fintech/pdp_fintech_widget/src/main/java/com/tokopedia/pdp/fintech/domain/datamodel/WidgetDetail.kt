@@ -32,7 +32,7 @@ data class ChipList(
 
 @Parcelize
 data class ChipsData(
-    @SerializedName("gateway_id") var gatewayId: Int? = null,
+    @SerializedName("gateway_id") var gatewayId: String? = null,
     @SerializedName("name") var name: String? = null,
     @SerializedName("product_code") var productCode: String? = null,
     @SerializedName("is_active") var isActive: Boolean? = null,

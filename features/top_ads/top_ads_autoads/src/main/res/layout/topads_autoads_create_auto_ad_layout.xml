@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
@@ -29,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="0.00"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_NN1000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/potensi_tayang_txt"
@@ -42,7 +43,7 @@
         android:layout_marginTop="24dp"
         android:lineSpacingExtra="6sp"
         android:text="@string/potential_ads_reach"
-        android:textColor="#F531353B"
+        android:textColor="@color/Unify_NN1000"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +56,7 @@
         android:layout_height="wrap_content"
         android:lineSpacingExtra="6sp"
         android:text="@string/price_range"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_NN1000"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +89,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="@dimen/dp_3"
                 android:progress="0"
-                android:progressTint="@color/tkpd_main_green"
+                android:progressTint="@color/Unify_GN500"
                 android:thumb="@drawable/seekbar_thumb"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -136,7 +137,7 @@
                 android:id="@+id/error_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/bright_red"
+                android:textColor="@color/top_ads_autoads_dms_red_error"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/budgetEditText"
                 app:layout_constraintTop_toBottomOf="@+id/budgetEditText"
@@ -150,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:text="@string/budget_range"
-                android:textColor="@color/topads_heading_color"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toTopOf="@+id/seekbar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -215,5 +216,6 @@
         android:gravity="center_horizontal"
         android:text="@string/info_text"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/Unify_NN1000"
         app:typographyType="body_3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

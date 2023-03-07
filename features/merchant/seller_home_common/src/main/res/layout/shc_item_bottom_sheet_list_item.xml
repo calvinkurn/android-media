@@ -4,14 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/layout_lvl1"
-    android:paddingBottom="@dimen/layout_lvl1">
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcBottomSheetListItemTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/spacing_lvl2"
+        android:lineSpacingExtra="4dp"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
@@ -20,7 +20,7 @@
         android:id="@+id/tvShcBottomSheetListItemDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="4dp"
         android:lineSpacingExtra="@dimen/shc_line_spacing_6"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="body_2"

@@ -1,9 +1,9 @@
 package com.tokopedia.promotionstarget.data.di.modules
 
 import android.content.Context
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.di.*
-import com.tokopedia.promotionstarget.data.gql.GraphqlHelper
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides

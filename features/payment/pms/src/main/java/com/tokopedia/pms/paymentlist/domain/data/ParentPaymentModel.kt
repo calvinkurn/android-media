@@ -45,6 +45,7 @@ data class CreditCardPaymentModel(
     val amount: Int,
     val showCancelButton: Boolean,
     val productName: String,
+    val paymentUrl:String?,
 ) : BasePaymentModel(), Parcelable
 
 @Parcelize

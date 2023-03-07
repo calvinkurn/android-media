@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.core.content.ContextCompat
@@ -41,13 +40,10 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogComparisonNewDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
-import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.catalog.model.raw.ComparisionModel
-import com.tokopedia.catalog.model.raw.TopSpecificationsComponentData
-import com.tokopedia.catalog.model.raw.VideoComponentData
+import com.tokopedia.catalog.model.raw.*
 import com.tokopedia.catalog.model.util.CatalogConstant
-import com.tokopedia.catalog.model.util.CatalogConstant.CATALOG_PRODUCT_BS_NEW_DESIGN
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
@@ -154,7 +150,7 @@ class CatalogDetailPageFragment : Fragment(),
     private var lastAttachItemPosition : Int = 0
     private var isScrollDownButtonClicked = false
 
-    private var isNewProductDesign = false
+    private var isNewComparison = false
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
@@ -197,17 +193,14 @@ class CatalogDetailPageFragment : Fragment(),
         setupRecyclerView(view)
         setObservers()
         setUpUniversalShare()
-        if(isNewProductDesign)
-            setUpAnimationViews()
+        setUpAnimationViews()
     }
 
     private fun injectComponents(){
         component.inject(this)
         activity?.let { observer ->
-            if (isNewProductDesign){
-                val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
-                sharedViewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
-            }
+            val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
+            sharedViewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
         }
     }
 
@@ -244,12 +237,12 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun initRollence() {
-        isNewProductDesign =
+        isNewComparison =
             when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                CATALOG_PRODUCT_BS_NEW_DESIGN,
+                CatalogConstant.CATALOG_COMPARISON,
                 ""
             )) {
-                CATALOG_PRODUCT_BS_NEW_DESIGN -> true
+                CatalogConstant.CATALOG_COMPARISON -> true
                 else -> false
             }
     }
@@ -263,11 +256,7 @@ class CatalogDetailPageFragment : Fragment(),
         mProductsCountText = parentView.findViewById(R.id.products_count_text)
         mToTopLayout = parentView.findViewById(R.id.toTopLayout)
         initNavToolbar()
-        if(isNewProductDesign){
-            bottom_sheet_fragment_container.hide()
-        }else {
-            bottom_sheet_fragment_container.show()
-        }
+        bottom_sheet_fragment_container.hide()
     }
 
     private fun setUpUniversalShare() {
@@ -320,7 +309,15 @@ class CatalogDetailPageFragment : Fragment(),
                         catalogUiUpdater.updateModel(component)
                         if(component is CatalogComparisionDataModel && comparisonCatalogId.isBlank()){
                             recommendedCatalogId = (component).comparisionCatalog[CatalogConstant.COMPARISION_DETAIL]?.id ?: ""
+                        }else if(component is CatalogComparisonNewDataModel && comparisonCatalogId.isBlank()){
+                            recommendedCatalogId = component.specsList?.firstOrNull()?.subcard?.firstOrNull()?.featureRightData?.id ?: ""
                         }
+
+                    }
+                    if (isNewComparison) {
+                        catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON)
+                    } else {
+                        catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON_NEW)
                     }
                     catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
@@ -354,13 +351,11 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun observerSharedProductCount() {
-        if (isNewProductDesign) {
-            sharedViewModel.mProductCount.observe(viewLifecycleOwner, { filterProductCount ->
-                filterProductCount?.let {
-                    setProductCountText(it)
-                }
-            })
-        }
+        sharedViewModel.mProductCount.observe(viewLifecycleOwner, { filterProductCount ->
+            filterProductCount?.let {
+                setProductCountText(it)
+            }
+        })
     }
 
     private fun setProductCountText(productCount : Int) {
@@ -448,11 +443,6 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun updateUi() {
-        if(requireActivity().supportFragmentManager.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG) == null){
-            if(!isNewProductDesign){
-                setUpBottomSheet()
-            }
-        }
         hideShimmer()
         catalogPageRecyclerView?.show()
         catalogLinearLayoutManager?.lastComponentIndex = catalogUiUpdater.mapOfData.size - 1
@@ -478,16 +468,14 @@ class CatalogDetailPageFragment : Fragment(),
                 addItemDecoration(DividerItemDecorator(it))
             }
             adapter = catalogDetailAdapter
-            if(isNewProductDesign){
-                addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        super.onScrolled(recyclerView, dx, dy)
-                        if(dy > CatalogLinearLayoutManager.MINIMUM_SCROLL_FOR_ANIMATION.toPx()){
-                            slideUpMoreProductsView()
-                        }
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if(dy > CatalogLinearLayoutManager.MINIMUM_SCROLL_FOR_ANIMATION.toPx()){
+                        slideUpMoreProductsView()
                     }
-                })
-            }
+                }
+            })
         }
         catalogLinearLayoutManager?.setCatalogAnimationListener(this)
     }
@@ -597,16 +585,17 @@ class CatalogDetailPageFragment : Fragment(),
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        val shareString = resources.getString(com.tokopedia.catalog.R.string.catalog_share_string,
-                                catalogName,linkerShareData?.url)
-                        SharingUtil.executeShareIntent(
-                                shareModel,
-                                linkerShareData,
-                                activity,
-                                view,
-                                shareString
-                        )
-                        universalShareBottomSheet?.dismiss()
+                        context?.resources?.getString(com.tokopedia.catalog.R.string.catalog_share_string,
+                            catalogName,linkerShareData?.url)?.let { shareString ->
+                                SharingUtil.executeShareIntent(
+                                    shareModel,
+                                    linkerShareData,
+                                    activity,
+                                    view,
+                                    shareString
+                                )
+                            universalShareBottomSheet?.dismiss()
+                        }
                     }
 
                     override fun onError(linkerError: LinkerError?) {
@@ -743,6 +732,50 @@ class CatalogDetailPageFragment : Fragment(),
         catalogComparisonBottomSheet.show(childFragmentManager, "")
     }
 
+    override fun openComparisonNewBottomSheet(comparisonNewModel: ComparisonNewModel?) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_GANTI_PERBANDINGAN,
+            "catalog page: $catalogId | catalog comparison: ${comparisonNewModel?.id ?: ""}",userSession.userId,catalogId,
+            CatalogDetailAnalytics.TrackerId.OPEN_BOTTOMSHEET)
+
+        val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
+            catalogBrand, catalogDepartmentId, recommendedCatalogId,
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,this)
+        catalogComparisonBottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun comparisonNewCatalogClicked(comparisonCatalogId: String) {
+        context.let {
+            CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_NEXT_CATALOG_PAGE_PERBANDINGAN_PRODUK,
+                "catalog page: $catalogId | next catalog page: $comparisonCatalogId", userSession.userId, catalogId,
+                CatalogDetailAnalytics.TrackerId.CLICK_NEXT_CATALOG_PAGE)
+            RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisonCatalogId}")
+        }
+    }
+
+    override fun accordionDropUp(tabName: String?) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_DROP_UP_BUTTON_PERBANDINGAN_PRODUK,
+            "$catalogName - $catalogId - tabName: $tabName", userSession.userId, catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_DROP_UP_BUTTON)
+    }
+
+    override fun accordionDropDown(tabName: String?) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_DROP_DOWN_BUTTON_PERBANDINGAN_PRODUK,
+            "$catalogName - $catalogId - tabName: $tabName", userSession.userId, catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_DROP_DOWN_BUTTON)
+    }
+
     override fun changeComparison(comparedCatalogId: String) {
         comparisonCatalogId = comparedCatalogId
         recommendedCatalogId = comparedCatalogId
@@ -785,21 +818,13 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun hideFloatingLayout() {
-        if(!isNewProductDesign)
-            bottom_sheet_fragment_container.hide()
-        else {
-            slideDownMoreProductsView()
-            slideUpToTopView()
-        }
+        slideDownMoreProductsView()
+        slideUpToTopView()
     }
 
     override fun showFloatingLayout() {
-        if(!isNewProductDesign)
-            bottom_sheet_fragment_container.show()
-        else{
-            slideDownToTopView()
-            slideUpMoreProductsView()
-        }
+        slideDownToTopView()
+        slideUpMoreProductsView()
     }
 
     override fun onViewMoreDescriptionClick() {
@@ -882,9 +907,7 @@ class CatalogDetailPageFragment : Fragment(),
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
-        if(isNewProductDesign){
-            catalogLinearLayoutManager?.removeAllHandlers()
-        }
+        catalogLinearLayoutManager?.removeAllHandlers()
     }
 
     override fun setIsScrollButtonDown(value: Boolean) {

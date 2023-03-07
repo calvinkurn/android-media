@@ -13,7 +13,7 @@ class CreateReviewExpandedTextAreaHelper @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewExpandedTextAreaHelperBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewExpandedTextAreaHelperBinding>(context, attrs, defStyleAttr) {
     override val binding = WidgetCreateReviewExpandedTextAreaHelperBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun updateUi(uiState: CreateReviewTextAreaUiState) {

@@ -46,7 +46,7 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         }
 
         // Then
-        onView(withId(R.id.new_comment)).check(matches(withText(intentMsg)))
+        typeMessage(intentMsg)
     }
 
     @Test
@@ -63,7 +63,7 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         }
 
         // Then
-        onView(withId(R.id.new_comment)).check(matches(withText(intentMsg)))
+        typeMessage(intentMsg)
     }
 
     @Test
@@ -94,7 +94,7 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         getChatUseCase.response.chatReplies.list = arrayListOf()
         chatAttachmentUseCase.response = chatAttachmentResponse
         getChatRoomSettingUseCase.response = chatRoomSettingResponse
-        launchChatRoomActivity()
+        launchChatRoomActivity(isSellerApp = true)
 
         onView(withId(R.id.recycler_view_chatroom)).check(
             matches(

@@ -9,7 +9,7 @@ object Constants {
     }
 
     object Urls {
-        const val EMPTY_DATA_URL = "https://ecs7.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
+        const val EMPTY_DATA_URL = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
     }
 
     object ErrorMessages {

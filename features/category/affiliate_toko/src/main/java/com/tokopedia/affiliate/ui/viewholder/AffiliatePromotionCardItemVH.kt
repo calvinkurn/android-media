@@ -44,7 +44,7 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
                         element?.promotionItem?.title ?: "",
                         element?.promotionItem?.image?.androidURL ?:"",
                         element?.promotionItem?.cardUrl ?: "",
-                         adapterPosition,commission,
+                         bindingAdapterPosition,commission,
                          getStatus(element?.promotionItem),
                         element?.promotionItem?.type
                 )
@@ -63,7 +63,7 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             UserSession(itemView.context).userId,
             item?.productID,
-            adapterPosition + 1,
+            bindingAdapterPosition + 1,
             item?.title,
             "${item?.productID} - ${item?.commission?.amount} - ${getStatus(item)}",
             AffiliateAnalytics.ItemKeys.AFFILIATE_SEARCH_PROMOSIKAN_CLICK

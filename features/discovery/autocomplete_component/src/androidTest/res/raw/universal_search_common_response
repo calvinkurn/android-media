@@ -1,0 +1,668 @@
+[
+    {
+        "data": {
+            "universe_universal_search": {
+                "header": {
+                    "status_code": 200,
+                    "message": "success",
+                    "time_process": 225.93561300000002
+                },
+                "data": {
+                    "items": [
+                        {
+                            "id": "196328",
+                            "applink": "tokopedia://search?st=product&q=Susu&srp_page_id=35&srp_page_title=Makanan%20%26%20Minuman&navsource=clp&srp_component_id=05.01.01.00",
+                            "image_url": "https://images.tokopedia.net/img/jbZAUJ/2022/5/18/2f231260-6d32-4395-877a-89e21a68b9fb.png",
+                            "template": "carousel",
+                            "title": "Susu di Makanan & Minuman",
+                            "subtitle": "",
+                            "type": "highlighted",
+                            "component_id": "05.01.01.00",
+                            "tracking_option": 3,
+                            "campaign_code": "thco0005699",
+                            "product": [
+                                {
+                                    "id": "3552582960",
+                                    "applink": "tokopedia://product/3552582960?extParam=ivf%3Dfalse%26src%3Dsearch%26whid%3D5931369",
+                                    "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/4/14/32953fcf-fd76-4ea9-bb11-27ae24fe1132.jpg",
+                                    "title": "HiLo Active Vanilla 1000g - Susu Tinggi Kalsium Lebih Rendah Lemak",
+                                    "component_id": "05.01.01.01",
+                                    "tracking_option": 3,
+                                    "price": "Rp113.000",
+                                    "price_int": 113000,
+                                    "original_price": "Rp173.300",
+                                    "discount_percentage": "35",
+                                    "rating_average": "5.0",
+                                    "count_sold": "Terjual 2,7 rb",
+                                    "free_ongkir": {
+                                        "img_url": "",
+                                        "is_active": false
+                                    },
+                                    "shop": {
+                                        "name": "NutriMart",
+                                        "city": "Jakarta Selatan",
+                                        "url": "https://www.tokopedia.com/nutrimartid"
+                                    },
+                                    "badge": [
+                                        {
+                                            "title": "Official Store",
+                                            "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                                            "show": true
+                                        }
+                                    ],
+                                    "label_groups": [
+                                        {
+                                            "position": "promo",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "offers",
+                                            "title": "Dilayani Tokopedia",
+                                            "type": "lightGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "integrity",
+                                            "title": "Terjual 2,7 rb",
+                                            "type": "textDarkGrey",
+                                            "url": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "3552568800",
+                                    "applink": "tokopedia://product/3552568800?extParam=ivf%3Dfalse%26src%3Dsearch%26whid%3D5931369",
+                                    "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/4/14/67c48f5e-4736-4c61-a004-3fda24a6b199.jpg",
+                                    "title": "HiLo School Vanilla 1000g - Susu Tinggi Kalsium",
+                                    "component_id": "05.01.01.02",
+                                    "tracking_option": 3,
+                                    "price": "Rp139.000",
+                                    "price_int": 139000,
+                                    "original_price": "Rp179.900",
+                                    "discount_percentage": "23",
+                                    "rating_average": "5.0",
+                                    "count_sold": "Terjual 1,1 rb",
+                                    "free_ongkir": {
+                                        "img_url": "",
+                                        "is_active": false
+                                    },
+                                    "shop": {
+                                        "name": "NutriMart",
+                                        "city": "Jakarta Selatan",
+                                        "url": "https://www.tokopedia.com/nutrimartid"
+                                    },
+                                    "badge": [
+                                        {
+                                            "title": "Official Store",
+                                            "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                                            "show": true
+                                        }
+                                    ],
+                                    "label_groups": [
+                                        {
+                                            "position": "promo",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "offers",
+                                            "title": "Dilayani Tokopedia",
+                                            "type": "lightGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "integrity",
+                                            "title": "Terjual 1,1 rb",
+                                            "type": "textDarkGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "campaign",
+                                            "title": "TOSERBA",
+                                            "type": "",
+                                            "url": "https://images.tokopedia.net/img/phOWBv/2022/8/29/1ec15311-08d7-4f09-96f2-af9e0c1329aa.png"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "1330035974",
+                                    "applink": "tokopedia://product/1330035974?extParam=ivf%3Dfalse%26src%3Dsearch",
+                                    "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/7/20/b7cab376-88a1-4f0f-bfea-beac5263e0e1.jpg",
+                                    "title": "DIAMOND MILK UHT FULL CREAM 1 LITER - SUSU",
+                                    "component_id": "05.01.01.03",
+                                    "tracking_option": 3,
+                                    "price": "Rp16.490",
+                                    "price_int": 16490,
+                                    "original_price": "",
+                                    "discount_percentage": "0",
+                                    "rating_average": "4.9",
+                                    "count_sold": "Terjual 15 rb",
+                                    "free_ongkir": {
+                                        "img_url": "",
+                                        "is_active": false
+                                    },
+                                    "shop": {
+                                        "name": "Hypermart Pejaten Village",
+                                        "city": "Jakarta Selatan",
+                                        "url": "https://www.tokopedia.com/hypermartpejaten"
+                                    },
+                                    "badge": [
+                                        {
+                                            "title": "Official Store",
+                                            "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                                            "show": true
+                                        }
+                                    ],
+                                    "label_groups": [
+                                        {
+                                            "position": "promo",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "price",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "integrity",
+                                            "title": "Terjual 15 rb",
+                                            "type": "textDarkGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "campaign",
+                                            "title": "TOSERBA",
+                                            "type": "",
+                                            "url": "https://images.tokopedia.net/img/phOWBv/2022/8/29/1ec15311-08d7-4f09-96f2-af9e0c1329aa.png"
+                                        },
+                                        {
+                                            "position": "category",
+                                            "title": "Halal",
+                                            "type": "textGreen",
+                                            "url": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "1376771383",
+                                    "applink": "tokopedia://product/1376771383?extParam=ivf%3Dfalse%26src%3Dsearch",
+                                    "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/7/20/981f0732-65e8-4676-bb19-a73af9af92e4.jpg",
+                                    "title": "DIAMOND MILK UHT FULL CREAM 1 LITER - SUSU",
+                                    "component_id": "05.01.01.04",
+                                    "tracking_option": 3,
+                                    "price": "Rp16.490",
+                                    "price_int": 16490,
+                                    "original_price": "",
+                                    "discount_percentage": "0",
+                                    "rating_average": "5.0",
+                                    "count_sold": "Terjual 16 rb",
+                                    "free_ongkir": {
+                                        "img_url": "",
+                                        "is_active": false
+                                    },
+                                    "shop": {
+                                        "name": "Hypermart Puri Indah",
+                                        "city": "Jakarta Barat",
+                                        "url": "https://www.tokopedia.com/hpmpuriindah"
+                                    },
+                                    "badge": [
+                                        {
+                                            "title": "Official Store",
+                                            "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                                            "show": true
+                                        }
+                                    ],
+                                    "label_groups": [
+                                        {
+                                            "position": "promo",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "price",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "integrity",
+                                            "title": "Terjual 16 rb",
+                                            "type": "textDarkGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "category",
+                                            "title": "Halal",
+                                            "type": "textGreen",
+                                            "url": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "435484653",
+                                    "applink": "tokopedia://product/435484653?extParam=ivf%3Dfalse%26src%3Dsearch",
+                                    "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/11/5/50f70af2-faf9-4b53-be1c-30b1e7185d5c.png",
+                                    "title": "Susu Diamond UHT 1 Liter Diamon Full Cream Plain 1000 ml / 1L",
+                                    "component_id": "05.01.01.05",
+                                    "tracking_option": 3,
+                                    "price": "Rp15.578",
+                                    "price_int": 15578,
+                                    "original_price": "",
+                                    "discount_percentage": "0",
+                                    "rating_average": "5.0",
+                                    "count_sold": "Terjual 1,3 rb",
+                                    "free_ongkir": {
+                                        "img_url": "",
+                                        "is_active": false
+                                    },
+                                    "shop": {
+                                        "name": "TitanBaking",
+                                        "city": "Jakarta Selatan",
+                                        "url": "https://www.tokopedia.com/titanbaking"
+                                    },
+                                    "badge": [
+                                        {
+                                            "title": "Official Store",
+                                            "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                                            "show": true
+                                        }
+                                    ],
+                                    "label_groups": [
+                                        {
+                                            "position": "promo",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "price",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "integrity",
+                                            "title": "Terjual 1,3 rb",
+                                            "type": "textDarkGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "category",
+                                            "title": "Halal",
+                                            "type": "textGreen",
+                                            "url": ""
+                                        }
+                                    ]
+                                }
+                            ],
+                            "curated": []
+                        },
+                        {
+                            "id": "",
+                            "applink": "",
+                            "image_url": "",
+                            "template": "list_grid",
+                            "title": "Cek juga halaman ini",
+                            "subtitle": "",
+                            "type": "related",
+                            "component_id": "",
+                            "tracking_option": 0,
+                            "campaign_code": "",
+                            "product": [],
+                            "curated": [
+                                {
+                                    "id": "269786",
+                                    "url": "https://www.tokopedia.com/topserbaos/product?q=Susu&srp_page_id=14073896&srp_page_title=Topserba&navsource=shop&srp_component_id=05.02.02.01",
+                                    "applink": "tokopedia://shop/14073896/etalase/product?q=Susu&srp_page_id=14073896&srp_page_title=Topserba&navsource=shop&srp_component_id=05.02.02.01",
+                                    "image_url": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/7/30/336a6df9-e7ef-4b37-99ff-70f5471aae7f.png",
+                                    "title": "Susu di Topserba",
+                                    "component_id": "05.02.02.01",
+                                    "tracking_option": 3,
+                                    "campaign_code": " "
+                                },
+                                {
+                                    "id": "239317",
+                                    "url": "https://www.tokopedia.com/search?st=product&q=susu&srp_page_id=39654&srp_page_title=Toserba&navsource=campaign&srp_disco_url=toserba&srp_component_id=05.02.02.02",
+                                    "applink": "tokopedia://search?st=product&q=susu&srp_page_id=39654&srp_page_title=Toserba&navsource=campaign&srp_disco_url=toserba&srp_component_id=05.02.02.02",
+                                    "image_url": "https://images.tokopedia.net/img/jbZAUJ/2022/8/31/4e4f7e97-463c-4754-8140-3b29da6ce38c.png",
+                                    "title": "Susu di Toserba",
+                                    "component_id": "05.02.02.02",
+                                    "tracking_option": 3,
+                                    "campaign_code": "thco0007652"
+                                },
+                                {
+                                    "id": "267590",
+                                    "url": "https://www.tokopedia.com/search?st=product&q=susu&srp_page_id=41890&srp_page_title=susu%20di%20Promo%20Hari%20Ini&navsource=deals&srp_disco_url=deals&srp_component_id=05.02.02.03",
+                                    "applink": "tokopedia://search?st=product&q=susu&srp_page_id=41890&srp_page_title=susu%20di%20Promo%20Hari%20Ini&navsource=deals&srp_disco_url=deals&srp_component_id=05.02.02.03",
+                                    "image_url": "https://images.tokopedia.net/img/jbZAUJ/2022/8/1/cfb8e39e-3a35-4228-a58f-eb7bc9ebec29.png",
+                                    "title": "susu di Promo Hari Ini",
+                                    "component_id": "05.02.02.03",
+                                    "tracking_option": 3,
+                                    "campaign_code": " "
+                                },
+                                {
+                                    "id": "268425",
+                                    "url": "https://www.tokopedia.com/search?st=product&q=susu%20uht&srp_page_id=41890&srp_page_title=susu%20uht%20di%20Promo%20Hari%20Ini&navsource=deals&srp_disco_url=deals&srp_component_id=05.02.02.04",
+                                    "applink": "tokopedia://search?st=product&q=susu%20uht&srp_page_id=41890&srp_page_title=susu%20uht%20di%20Promo%20Hari%20Ini&navsource=deals&srp_disco_url=deals&srp_component_id=05.02.02.04",
+                                    "image_url": "https://images.tokopedia.net/img/jbZAUJ/2022/8/1/cfb8e39e-3a35-4228-a58f-eb7bc9ebec29.png",
+                                    "title": "susu uht di Promo Hari Ini",
+                                    "component_id": "05.02.02.04",
+                                    "tracking_option": 3,
+                                    "campaign_code": " "
+                                }
+                            ]
+                        },
+                        {
+                            "id": "",
+                            "applink": "tokopedia://search?st=product&q=susu&srp_page_id=37166&srp_page_title=Deals&navsource=deals&srp_component_id=05.03.03.00",
+                            "image_url": "",
+                            "template": "carousel",
+                            "title": "Yang lagi promo hari ini",
+                            "subtitle": "",
+                            "type": "deals",
+                            "component_id": "05.03.03.00",
+                            "tracking_option": 3,
+                            "campaign_code": "",
+                            "product": [
+                                {
+                                    "id": "3552582960",
+                                    "applink": "tokopedia://product/3552582960?extParam=ivf%3Dfalse%26src%3Dsearch%26whid%3D5931369",
+                                    "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/4/14/32953fcf-fd76-4ea9-bb11-27ae24fe1132.jpg",
+                                    "title": "HiLo Active Vanilla 1000g - Susu Tinggi Kalsium Lebih Rendah Lemak",
+                                    "component_id": "05.03.03.01",
+                                    "tracking_option": 3,
+                                    "price": "Rp113.000",
+                                    "price_int": 113000,
+                                    "original_price": "Rp173.300",
+                                    "discount_percentage": "35",
+                                    "rating_average": "5.0",
+                                    "count_sold": "Terjual 2,7 rb",
+                                    "free_ongkir": {
+                                        "img_url": "",
+                                        "is_active": false
+                                    },
+                                    "shop": {
+                                        "name": "NutriMart",
+                                        "city": "Jakarta Selatan",
+                                        "url": "https://www.tokopedia.com/nutrimartid"
+                                    },
+                                    "badge": [
+                                        {
+                                            "title": "Official Store",
+                                            "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                                            "show": true
+                                        }
+                                    ],
+                                    "label_groups": [
+                                        {
+                                            "position": "promo",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "offers",
+                                            "title": "Dilayani Tokopedia",
+                                            "type": "lightGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "integrity",
+                                            "title": "Terjual 2,7 rb",
+                                            "type": "textDarkGrey",
+                                            "url": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "3552568800",
+                                    "applink": "tokopedia://product/3552568800?extParam=ivf%3Dfalse%26src%3Dsearch%26whid%3D5931369",
+                                    "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/4/14/67c48f5e-4736-4c61-a004-3fda24a6b199.jpg",
+                                    "title": "HiLo School Vanilla 1000g - Susu Tinggi Kalsium",
+                                    "component_id": "05.03.03.02",
+                                    "tracking_option": 3,
+                                    "price": "Rp139.000",
+                                    "price_int": 139000,
+                                    "original_price": "Rp179.900",
+                                    "discount_percentage": "23",
+                                    "rating_average": "5.0",
+                                    "count_sold": "Terjual 1,1 rb",
+                                    "free_ongkir": {
+                                        "img_url": "",
+                                        "is_active": false
+                                    },
+                                    "shop": {
+                                        "name": "NutriMart",
+                                        "city": "Jakarta Selatan",
+                                        "url": "https://www.tokopedia.com/nutrimartid"
+                                    },
+                                    "badge": [
+                                        {
+                                            "title": "Official Store",
+                                            "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                                            "show": true
+                                        }
+                                    ],
+                                    "label_groups": [
+                                        {
+                                            "position": "promo",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "offers",
+                                            "title": "Dilayani Tokopedia",
+                                            "type": "lightGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "integrity",
+                                            "title": "Terjual 1,1 rb",
+                                            "type": "textDarkGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "campaign",
+                                            "title": "TOSERBA",
+                                            "type": "",
+                                            "url": "https://images.tokopedia.net/img/phOWBv/2022/8/29/1ec15311-08d7-4f09-96f2-af9e0c1329aa.png"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "1959842774",
+                                    "applink": "tokopedia://product/1959842774?extParam=ivf%3Dfalse%26src%3Dsearch",
+                                    "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/25/7db63b7f-e4a2-4e8e-9e7d-147175032426.jpg",
+                                    "title": "CYPRUZ Sauce Pan 16 cm, 18 cm /Panci Susu MarbleSeries (Anti Lengket)",
+                                    "component_id": "05.03.03.03",
+                                    "tracking_option": 3,
+                                    "price": "Rp139.000",
+                                    "price_int": 139000,
+                                    "original_price": "",
+                                    "discount_percentage": "0",
+                                    "rating_average": "4.9",
+                                    "count_sold": "Terjual 380",
+                                    "free_ongkir": {
+                                        "img_url": "",
+                                        "is_active": false
+                                    },
+                                    "shop": {
+                                        "name": "Nusantara Perabot Kebayoran",
+                                        "city": "Jakarta Selatan",
+                                        "url": "https://www.tokopedia.com/nusantaraperabot"
+                                    },
+                                    "badge": [
+                                        {
+                                            "title": "Power Merchant Pro Badge",
+                                            "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+                                            "show": true
+                                        }
+                                    ],
+                                    "label_groups": [
+                                        {
+                                            "position": "promo",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "gimmick",
+                                            "title": "Sisa 4",
+                                            "type": "textDarkRed",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "price",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "integrity",
+                                            "title": "Terjual 380",
+                                            "type": "textDarkGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "campaign",
+                                            "title": "Home Sweet Home",
+                                            "type": "",
+                                            "url": "https://images.tokopedia.net/img/phOWBv/2022/9/9/5a3791cc-ba57-43ec-b5f1-8b57a744ca5d.png"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "384406092",
+                                    "applink": "tokopedia://product/384406092?extParam=ivf%3Dfalse%26src%3Dsearch",
+                                    "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/1/4/224471/224471_8fc5e1aa-4c14-4f4b-8fe6-cc8318d073d6_600_549.jpg",
+                                    "title": "MILK POT / Panci Susu 20 CM With Steamer panci mini 2 in 1 bisa kukus",
+                                    "component_id": "05.03.03.04",
+                                    "tracking_option": 3,
+                                    "price": "Rp49.000",
+                                    "price_int": 49000,
+                                    "original_price": "Rp55.000",
+                                    "discount_percentage": "11",
+                                    "rating_average": "4.8",
+                                    "count_sold": "Terjual 3,1 rb",
+                                    "free_ongkir": {
+                                        "img_url": "",
+                                        "is_active": false
+                                    },
+                                    "shop": {
+                                        "name": "Cellis Houseware",
+                                        "city": "Jakarta Barat",
+                                        "url": "https://www.tokopedia.com/cellishouseware"
+                                    },
+                                    "badge": [
+                                        {
+                                            "title": "Official Store",
+                                            "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                                            "show": true
+                                        }
+                                    ],
+                                    "label_groups": [
+                                        {
+                                            "position": "promo",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "offers",
+                                            "title": "Grosir",
+                                            "type": "lightGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "integrity",
+                                            "title": "Terjual 3,1 rb",
+                                            "type": "textDarkGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "campaign",
+                                            "title": "Selalu OS",
+                                            "type": "",
+                                            "url": "https://images.tokopedia.net/img/phOWBv/2021/10/28/0086bd2b-7e74-435b-9412-46c5aa5ae809.png"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "1330035974",
+                                    "applink": "tokopedia://product/1330035974?extParam=ivf%3Dfalse%26src%3Dsearch",
+                                    "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/7/20/b7cab376-88a1-4f0f-bfea-beac5263e0e1.jpg",
+                                    "title": "DIAMOND MILK UHT FULL CREAM 1 LITER - SUSU",
+                                    "component_id": "05.03.03.05",
+                                    "tracking_option": 3,
+                                    "price": "Rp16.490",
+                                    "price_int": 16490,
+                                    "original_price": "",
+                                    "discount_percentage": "0",
+                                    "rating_average": "4.9",
+                                    "count_sold": "Terjual 15 rb",
+                                    "free_ongkir": {
+                                        "img_url": "",
+                                        "is_active": false
+                                    },
+                                    "shop": {
+                                        "name": "Hypermart Pejaten Village",
+                                        "city": "Jakarta Selatan",
+                                        "url": "https://www.tokopedia.com/hypermartpejaten"
+                                    },
+                                    "badge": [
+                                        {
+                                            "title": "Official Store",
+                                            "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
+                                            "show": true
+                                        }
+                                    ],
+                                    "label_groups": [
+                                        {
+                                            "position": "promo",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "price",
+                                            "title": "Cashback",
+                                            "type": "lightGreen",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "integrity",
+                                            "title": "Terjual 15 rb",
+                                            "type": "textDarkGrey",
+                                            "url": ""
+                                        },
+                                        {
+                                            "position": "campaign",
+                                            "title": "TOSERBA",
+                                            "type": "",
+                                            "url": "https://images.tokopedia.net/img/phOWBv/2022/8/29/1ec15311-08d7-4f09-96f2-af9e0c1329aa.png"
+                                        },
+                                        {
+                                            "position": "category",
+                                            "title": "Halal",
+                                            "type": "textGreen",
+                                            "url": ""
+                                        }
+                                    ]
+                                }
+                            ],
+                            "curated": []
+                        }
+                    ]
+                }
+            }
+        }
+    }
+]

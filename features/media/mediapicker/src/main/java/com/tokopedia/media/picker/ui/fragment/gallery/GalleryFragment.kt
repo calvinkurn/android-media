@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
@@ -18,12 +18,11 @@ import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentGalleryBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
-import com.tokopedia.media.picker.data.URL_EMPTY_STATE_DRAWABLE
 import com.tokopedia.media.picker.data.repository.AlbumRepository.Companion.RECENT_ALBUM_ID
-import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
+import com.tokopedia.media.picker.ui.activity.picker.PickerViewModel
 import com.tokopedia.media.picker.ui.adapter.GalleryAdapter
 import com.tokopedia.media.picker.ui.adapter.utils.GridItemDecoration
 import com.tokopedia.media.picker.ui.observer.observe
@@ -37,24 +36,19 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listener {
+open class GalleryFragment @Inject constructor(
+    private var viewModelFactory: ViewModelProvider.Factory,
+    private var param: ParamCacheManager,
+    private var galleryAnalytics: GalleryAnalytics,
+) : BaseDaggerFragment(), DrawerSelectionWidget.Listener {
 
-    @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var param: ParamCacheManager
-    @Inject lateinit var galleryAnalytics: GalleryAnalytics
+    private val viewModel: PickerViewModel by activityViewModels { viewModelFactory }
 
     private val binding: FragmentGalleryBinding? by viewBinding()
     private var contract: PickerActivityContract? = null
 
     private val adapter by lazy {
         GalleryAdapter(emptyList(), ::selectMedia)
-    }
-
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this,
-            factory
-        )[GalleryViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -93,7 +87,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
             val (id, name) = AlbumActivity.getAlbumBucketDetails(data)
 
             binding?.albumSelector?.txtName?.text = name
-            viewModel.fetch(id)
+            viewModel.loadLocalGalleryBy(bucketId = id)
 
             // force and scroll to up if the bucketId is "recent medias / all media"
             if (id == ALL_MEDIA_BUCKET_ID) {
@@ -105,6 +99,10 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     override fun onResume() {
         super.onResume()
         binding?.drawerSelector?.setListener(this)
+
+        if (!param.get().isMultipleSelectionType()) {
+            adapter.removeAllSelectedSingleClick()
+        }
     }
 
     override fun onPause() {
@@ -153,9 +151,10 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     }
 
     private fun initView() {
-        setupRecyclerView()
+        // for first time
+        viewModel.loadLocalGalleryBy(RECENT_ALBUM_ID)
 
-        viewModel.fetch(RECENT_ALBUM_ID)
+        setupRecyclerView()
     }
 
     private fun hasMediaList(isShown: Boolean) {
@@ -166,7 +165,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
     private fun setupEmptyState(isShown: Boolean) {
         binding?.emptyState?.root?.showWithCondition(isShown)
-        binding?.emptyState?.imgEmptyState?.loadImage(URL_EMPTY_STATE_DRAWABLE)
+        binding?.emptyState?.imgEmptyState?.loadImage(getString(R.string.picker_img_empty_state))
         binding?.emptyState?.emptyNavigation?.showWithCondition(param.get().isCommonPageType())
         binding?.emptyState?.emptyNavigation?.setOnClickListener {
             contract?.onEmptyStateActionClicked()
@@ -264,12 +263,9 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                 contract?.onShowMediaLimitReachedGalleryToast()
                 return false
             }
-        } else {
-            if (contract?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
-                adapter.removeAllSelectedSingleClick()
-            }
         }
 
+        // publish the state and send tracking
         if (!isSelected) {
             stateOnAddPublished(media)
             galleryAnalytics.selectGalleryItem()
@@ -280,12 +276,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         return true
     }
 
-    override fun initInjector() {
-        DaggerPickerComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
-    }
+    override fun initInjector() {}
 
     override fun getScreenName() = "Camera"
 

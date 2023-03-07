@@ -20,6 +20,66 @@
                     android:path="/wishlist"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity"
+            android:exported="false"
+            android:label="@string/page_name_wishlist_collection"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_transaction"
+                    android:path="/wishlist-collection"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity"
+            android:exported="false"
+            android:label="@string/page_name_wishlist_collection_detail"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_transaction"
+                    android:pathPattern="@string/path_collection_detail"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionHostBottomSheetActivity"
+            android:label="@string/page_name_wishlist_collection_host_bottomsheet"
+            android:theme="@style/Theme.TransparentNoAnimation"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_transaction"
+                    android:path="/wishlist-collection-bottomsheet" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity"
+            android:exported="false"
+            android:label="@string/page_name_wishlist_edit"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 
 </manifest>

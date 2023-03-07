@@ -1,20 +1,18 @@
 package com.tokopedia.review.feature.reading.presentation.adapter.viewholder
 
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
-import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
-import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReviewResponse
@@ -26,6 +24,10 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Us
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoThreeDotsListener
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewViewHolder(
@@ -34,29 +36,36 @@ class ReadReviewViewHolder(
     reviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener,
     private val readReviewItemListener: ReadReviewItemListener,
     private val reviewBasicInfoListener: ReviewBasicInfoListener,
-) : AbstractViewHolder<ReadReviewUiModel>(view) {
+) : AbstractViewHolder<ReadReviewUiModel>(view), ReviewBasicInfoThreeDotsListener {
 
     companion object {
         val LAYOUT = com.tokopedia.review.R.layout.item_read_review
-        private const val MAX_CHAR = 140
-        private const val ALLOW_CLICK = true
-        private const val MAX_LINES_REVIEW = 3
+        private const val MAX_LINES_REVIEW_COLLAPSED = 3
+        private const val MAX_LINES_REVIEW_EXPANDED = Int.MAX_VALUE
         private const val EMPTY_REVIEW_LIKE = 0
     }
 
     private var productInfo: ReadReviewProductInfo? = null
-    private var basicInfo: ReviewBasicInfoWidget? = null
-    private var reportOption: IconUnify? = null
+    private val basicInfo: ProductReviewBasicInfoWidget?
+        get() = if (isProductReview) {
+            itemView.findViewById(R.id.read_product_review_basic_info)
+        } else {
+            itemView.findViewById(R.id.read_shop_review_basic_info)
+        }
     private var likeImage: IconUnify? = null
     private var likeCount: Typography? = null
     private var reviewMessage: Typography? = null
+    private var tvReviewMessageSeeMore: Typography? = null
     private var attachedMedia: ReviewMediaThumbnail? = null
     private var showResponseText: Typography? = null
     private var showResponseChevron: IconUnify? = null
     private var sellerResponse: ReadReviewSellerResponse? = null
     private var isProductReview = false
+    private var reviewId = ""
     private var shopId = ""
     private var badRatingReason: ReviewBadRatingReasonWidget? = null
+
+    private val reviewMessageEllipsizeChecker = ReviewMessageEllipsizeChecker()
 
     init {
         bindViews()
@@ -66,6 +75,7 @@ class ReadReviewViewHolder(
 
     override fun bind(element: ReadReviewUiModel) {
         isProductReview = !element.isShopViewHolder
+        reviewId = element.reviewData.feedbackID
         shopId = element.shopId
         with(element.reviewData) {
             if (!isProductReview) {
@@ -97,12 +107,12 @@ class ReadReviewViewHolder(
             setRating(productRating)
             setCreateTime(reviewCreateTimestamp)
             setReviewerName(user.fullName)
+            setReviewerLabel(user.label)
             setReviewerStats(userReviewStats)
             setProfilePicture(user.image)
+            setVariantName(variantName)
             showReportOptionWithCondition(
-                isReportable = isReportable && !element.isShopViewHolder,
-                reviewId = feedbackID,
-                shopId = element.shopId
+                isReportable = isReportable && !element.isShopViewHolder
             )
             setReview(message, feedbackID, element.productId)
             showAttachedImages(element.mediaThumbnails)
@@ -113,14 +123,19 @@ class ReadReviewViewHolder(
             setReply(element.shopName, reviewResponse, feedbackID, element.productId)
             showBadRatingReason(badRatingReasonFmt)
         }
+        itemView.findViewById<View>(R.id.read_product_review_basic_info)?.showWithCondition(isProductReview)
+        itemView.findViewById<View>(R.id.read_shop_review_basic_info)?.showWithCondition(!isProductReview)
+    }
+
+    override fun onThreeDotsClicked() {
+        readReviewItemListener.onThreeDotsClicked(reviewId, shopId)
     }
 
     private fun bindViews() {
         with(itemView) {
             productInfo = findViewById(R.id.read_review_product_info)
-            basicInfo = findViewById(R.id.read_review_basic_info)
-            reportOption = findViewById(R.id.read_review_item_three_dots)
             reviewMessage = findViewById(R.id.read_review_item_review)
+            tvReviewMessageSeeMore = findViewById(R.id.read_review_item_review_see_more)
             attachedMedia = findViewById(R.id.read_review_attached_media)
             likeImage = findViewById(R.id.read_review_like_button)
             likeCount = findViewById(R.id.read_review_like_count)
@@ -128,6 +143,40 @@ class ReadReviewViewHolder(
             showResponseChevron = findViewById(R.id.read_review_show_response_chevron)
             sellerResponse = findViewById(R.id.read_review_seller_response)
             badRatingReason = findViewById(R.id.read_review_bad_rating_reason)
+        }
+    }
+
+    private fun setupReviewMessageSeeMore(message: String, feedbackId: String, productId: String, expanded: Boolean) {
+        setupReviewMessageSeeMoreText(expanded)
+        setupReviewMessageSeeMoreListener(message, feedbackId, productId, expanded)
+        reviewMessage?.viewTreeObserver?.addOnPreDrawListener(reviewMessageEllipsizeChecker)
+    }
+
+    private fun setupReviewMessageSeeMoreText(expanded: Boolean) {
+        tvReviewMessageSeeMore?.text = HtmlLinkHelper(
+            itemView.context,
+            if (expanded) {
+                getString(R.string.review_reading_collapse)
+            } else {
+                getString(R.string.review_expand)
+            }
+        ).spannedString
+    }
+
+    private fun setupReviewMessageSeeMoreListener(
+        message: String,
+        feedbackId: String,
+        productId: String,
+        expanded: Boolean
+    ) {
+        tvReviewMessageSeeMore?.apply {
+            setOnClickListener {
+                if (expanded) {
+                    onCollapseReviewTextClicked(message, feedbackId, productId)
+                } else {
+                    onExpandReviewTextClicked(message, feedbackId, productId)
+                }
+            }
         }
     }
 
@@ -165,20 +214,11 @@ class ReadReviewViewHolder(
         basicInfo?.setCreateTime(createTime)
     }
 
-    private fun showReportOptionWithCondition(
-        isReportable: Boolean,
-        reviewId: String,
-        shopId: String
-    ) {
-        reportOption?.apply {
-            if (isReportable) {
-                show()
-                setOnClickListener {
-                    readReviewItemListener.onThreeDotsClicked(reviewId, shopId)
-                }
-            } else {
-                hide()
-            }
+    private fun showReportOptionWithCondition(isReportable: Boolean) {
+        if (isReportable) {
+            basicInfo?.showThreeDots()
+        } else {
+            basicInfo?.hideThreeDots()
         }
     }
 
@@ -186,48 +226,33 @@ class ReadReviewViewHolder(
         basicInfo?.setReviewerName(name)
     }
 
+    private fun setReviewerLabel(label: String) {
+        basicInfo?.setReviewerLabel(label)
+    }
+
+    private fun setVariantName(variantName: String) {
+        basicInfo?.setVariantName(variantName)
+    }
+
     private fun setReview(message: String, feedbackId: String, productId: String) {
+        setupReviewMessageSeeMore(message, feedbackId, productId, false)
         if (message.isEmpty()) {
-            reviewMessage?.apply {
-                text = getString(R.string.review_reading_empty_review)
-                isEnabled = false
-            }
+            setReviewText(
+                message = getString(R.string.review_reading_empty_review),
+                maxLines = MAX_LINES_REVIEW_COLLAPSED,
+                enable = false
+            )
             return
         }
-        setExpandableReview(message, feedbackId, productId)
+        setReviewText(message = message, maxLines = MAX_LINES_REVIEW_COLLAPSED, enable = true)
     }
 
-    private fun setExpandableReview(message: String, feedbackId: String, productId: String) {
+    private fun setReviewText(message: String, maxLines: Int, enable: Boolean) {
         reviewMessage?.apply {
-            isEnabled = true
-            val formattingResult = ReviewUtil.formatReviewExpand(itemView.context, message, MAX_CHAR, ALLOW_CLICK)
-            maxLines = MAX_LINES_REVIEW
-            text = formattingResult.first
-            if (formattingResult.second) {
-                setOnClickListener {
-                    if(isProductReview) {
-                        ReadReviewTracking.trackOnSeeFullReviewClicked(feedbackId, productId)
-                    } else {
-                        ReadReviewTracking.trackOnShopReviewSeeFullReviewClicked(feedbackId, shopId)
-                    }
-                    setCollapsableReview(message, feedbackId, productId)
-                }
-            } else {
-                setOnClickListener {  }
-            }
-            typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
+            isEnabled = enable
+            this.maxLines = maxLines
+            text = HtmlLinkHelper(context, message).spannedString ?: ""
             show()
-        }
-    }
-
-    private fun setCollapsableReview(message: String, feedbackId: String, productId: String) {
-        reviewMessage?.apply {
-            text = ReviewUtil.formatReviewCollapse(context, message)
-            maxLines = Integer.MAX_VALUE
-            setOnClickListener {
-                setExpandableReview(message, feedbackId, productId)
-            }
-            typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
         }
     }
 
@@ -343,7 +368,7 @@ class ReadReviewViewHolder(
 
     private fun setBasicInfoDataAndListener(isAnonymous: Boolean, userId: String, feedbackId: String) {
         basicInfo?.setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
-        basicInfo?.setListener(reviewBasicInfoListener)
+        basicInfo?.setListeners(reviewBasicInfoListener, this)
     }
 
     private fun showBadRatingReason(reason: String) {
@@ -361,6 +386,52 @@ class ReadReviewViewHolder(
                 val greyColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
                 likeImage?.setImage(IconUnify.THUMB, greyColor)
             }
+        }
+    }
+
+    private fun onCollapseReviewTextClicked(
+        message: String,
+        feedbackId: String,
+        productId: String
+    ) {
+        setupReviewMessageSeeMore(message, feedbackId, productId, false)
+        setReviewText(
+            message = message,
+            maxLines = MAX_LINES_REVIEW_COLLAPSED,
+            enable = true
+        )
+    }
+
+    private fun onExpandReviewTextClicked(
+        message: String,
+        feedbackId: String,
+        productId: String
+    ) {
+        if (isProductReview) {
+            ReadReviewTracking.trackOnSeeFullReviewClicked(feedbackId, productId)
+        } else {
+            ReadReviewTracking.trackOnShopReviewSeeFullReviewClicked(feedbackId, shopId)
+        }
+        setupReviewMessageSeeMore(message, feedbackId, productId, true)
+        setReviewText(
+            message = message,
+            maxLines = MAX_LINES_REVIEW_EXPANDED,
+            enable = true
+        )
+    }
+
+    private inner class ReviewMessageEllipsizeChecker: ViewTreeObserver.OnPreDrawListener {
+        override fun onPreDraw(): Boolean {
+            reviewMessage?.layout?.run {
+                val lines = lineCount
+                val ellipsisCount = getEllipsisCount(lines.dec())
+                val isEllipsized = ellipsisCount.isMoreThanZero()
+                val isCollapsed = reviewMessage?.maxLines == MAX_LINES_REVIEW_COLLAPSED
+                val isEllipsizedWhenCollapsed = isEllipsized && isCollapsed
+                tvReviewMessageSeeMore?.showWithCondition(isEllipsizedWhenCollapsed || !isCollapsed)
+            }
+            reviewMessage?.viewTreeObserver?.removeOnPreDrawListener(this)
+            return true
         }
     }
 }

@@ -3,9 +3,9 @@ package com.tokopedia.foldable
 import android.graphics.Rect
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.window.DisplayFeature
-import androidx.window.FoldingFeature
-import androidx.window.WindowLayoutInfo
+import androidx.window.layout.DisplayFeature
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowLayoutInfo
 
 class FoldableInfo(newLayoutInfo: WindowLayoutInfo) {
     var windowLayoutInfo: WindowLayoutInfo = newLayoutInfo
@@ -25,15 +25,15 @@ class FoldableInfo(newLayoutInfo: WindowLayoutInfo) {
 
     fun isTableTopMode(): Boolean {
         return foldingFeature?.let {
-            it.state == FoldingFeature.STATE_HALF_OPENED &&
-                    it.orientation == FoldingFeature.ORIENTATION_HORIZONTAL
+            it.state == FoldingFeature.State.HALF_OPENED &&
+                it.orientation == FoldingFeature.Orientation.HORIZONTAL
         } ?: false
     }
 
     fun isBookMode(): Boolean {
         return foldingFeature?.let {
-            it.state == FoldingFeature.STATE_HALF_OPENED &&
-                    it.orientation == FoldingFeature.ORIENTATION_VERTICAL
+            it.state == FoldingFeature.State.HALF_OPENED &&
+                it.orientation == FoldingFeature.Orientation.VERTICAL
         } ?: false
     }
 
@@ -43,13 +43,13 @@ class FoldableInfo(newLayoutInfo: WindowLayoutInfo) {
 
     fun isHalfOpen(): Boolean {
         return foldingFeature?.let { it ->
-            it.state == FoldingFeature.STATE_HALF_OPENED
+            it.state == FoldingFeature.State.HALF_OPENED
         } ?: false
     }
 
     fun isFlat(): Boolean {
         return foldingFeature?.let { it ->
-            it.state == FoldingFeature.STATE_FLAT
+            it.state == FoldingFeature.State.FLAT
         } ?: false
     }
 
@@ -150,7 +150,7 @@ class FoldableInfo(newLayoutInfo: WindowLayoutInfo) {
                 ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0
             )
 
-            if (foldingFeature?.orientation == FoldingFeature.ORIENTATION_VERTICAL) {
+            if (foldingFeature?.orientation == FoldingFeature.Orientation.VERTICAL) {
                 constraintSet.setMargin(separatingViewID, ConstraintSet.START, rect.left)
             } else {
                 // FoldingFeature is Horizontal

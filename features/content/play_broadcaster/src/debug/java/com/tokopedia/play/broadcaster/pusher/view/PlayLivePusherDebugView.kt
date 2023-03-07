@@ -4,12 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ScrollView
+import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
-import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
+import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -22,14 +22,12 @@ class PlayLivePusherDebugView : ScrollView {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     private val tvStatus: Typography
-    private val tvPushInfo: Typography
     private val tvPushUpdatedInfo: Typography
     private val tvFullLog: Typography
 
     init {
         val view = View.inflate(context, R.layout.view_play_live_pusher_debug, this)
         tvStatus = view.findViewById(R.id.tvt_status)
-        tvPushInfo = view.findViewById(R.id.tv_debug_view_push_info)
         tvPushUpdatedInfo = view.findViewById(R.id.tv_debug_view_push_updated_info)
         tvFullLog = view.findViewById(R.id.tv_debug_view_full_log)
 
@@ -40,28 +38,32 @@ class PlayLivePusherDebugView : ScrollView {
         tvFullLog.text = "\nSTATUS HISTORY"
     }
 
-    fun setLiveInfo(liveInfo: PlayLiveLogState.Init) {
-        val info = StringBuilder()
-        info.append("\n\n")
-        info.append("Initial Configuration\n")
-        info.append("URL: ${liveInfo.ingestUrl}\n")
-        info.append("Size: ${liveInfo.videoWidth}x${liveInfo.videoHeight}\n")
-        info.append("FPS: ${liveInfo.fps}\n")
-        info.append("Bitrate: ${liveInfo.bitrate}\n")
-        tvPushInfo.text = info.toString()
+    fun logAspectRatio(aspectRatio: Double) {
+        tvFullLog.append("\nAspect Ratio: $aspectRatio")
     }
 
-    fun updateStats(stats: PlayLivePusherStatistic) {
-        val info = StringBuilder()
-        info.append("\n\n")
-        info.append("Current Bandwidth: ${stats.getBandwidth()}\n")
-        info.append("Current FPS: ${stats.getFps()}\n")
-        info.append("Network Usage: ${stats.getTraffic()}\n")
-        tvPushUpdatedInfo.text = info.toString()
-    }
-
-    fun updateState(state: PlayLivePusherMediatorState) {
+    fun logBroadcastInitState(state: BroadcastInitState) {
         tvStatus.text = state.tag
         tvFullLog.append("\n${state.tag}")
+    }
+
+    fun logBroadcastState(state: PlayBroadcasterState) {
+        tvStatus.text = state.tag
+        tvFullLog.append("\n${state.tag}")
+    }
+
+    fun logBroadcastStatistic(metric: BroadcasterMetric) {
+        val info = StringBuilder()
+        info.append("\n\n")
+        info.append("Video Bitrate: ${metric.videoBitrate}\n")
+        info.append("Audio Bitrate: ${metric.audioBitrate}\n")
+        info.append("Resolution W x H: ${metric.resolutionWidth}x${metric.resolutionHeight} \n")
+        info.append("Current Bandwidth: ${metric.bandwidth}\n")
+        info.append("Current FPS: ${metric.fps}\n")
+        info.append("Network Usage: ${metric.traffic}\n")
+        info.append("Packet Loss Increased: ${metric.packetLossIncreased}\n")
+        info.append("Video Buffer Timestamp: ${metric.videoBufferTimestamp}\n")
+        info.append("Audio Buffer Timestamp: ${metric.audioBufferTimestamp}\n")
+        tvPushUpdatedInfo.text = info.toString()
     }
 }

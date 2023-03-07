@@ -2,7 +2,7 @@ package com.tokopedia.kol.feature.comment.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.view.custom.KolCommentNewCardView
 import com.tokopedia.kol.feature.comment.view.listener.KolComment
@@ -16,12 +16,15 @@ class KolCommentNewViewHolder(
     private val commentView: KolCommentNewCardView = itemView.findViewById(R.id.kcv_comment)
     private val commentViewListener: KolCommentNewCardView.Listener =
         object : KolCommentNewCardView.Listener {
-
-            override fun onMenuClicked(id: String?, canDeleteComment: Boolean) {
-                viewListener.onMenuClicked(id, canDeleteComment, adapterPosition)
+            override fun onMenuClicked(
+                id: String?,
+                canDeleteComment: Boolean,
+                canReportComment: Boolean
+            ) {
+                viewListener.onMenuClicked(id, canDeleteComment, canReportComment, adapterPosition)
             }
 
-            override fun onHashtagClicked(hashtag: String, id: String) {
+            override fun onHashtagClicked(hashtag: String) {
             }
 
             override fun onAvatarClicked(profileUrl: String, userId: String?) {
@@ -33,7 +36,8 @@ class KolCommentNewViewHolder(
             }
 
             override fun onTokopediaUrlClicked(url: String) {}
-            override fun onReplyClicked(mentionableUser: MentionableUserViewModel) {
+
+            override fun onReplyClicked(mentionableUser: MentionableUserModel) {
                 viewListener.replyToUser(mentionableUser)
             }
         }

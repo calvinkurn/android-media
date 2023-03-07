@@ -35,7 +35,11 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -56,7 +60,6 @@ class ActivationPageFragment: BaseDaggerFragment() {
         ViewModelProviders.of(this, viewModelFactory)[ActivationPageViewModel::class.java]
     }
 
-    private val animationDuration: Long = 300
     private var codIcon: ImageView? = null
     private var codTitleText: Typography? = null
     private var codDescText: Typography? = null
@@ -86,7 +89,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
     private var codCheckboxRL: RelativeLayout? = null
     private var codLabel: Label? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
-    private var itemLayout: CardUnify? = null
+    private var itemLayout: CardUnify2? = null
     private var globalError: GlobalError? = null
 
     private var codValue: Boolean = false
@@ -139,7 +142,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
         if(expandLayout) {
             codExpandLL?.show()
         } else {
-            codImageExtend?.animate()?.rotation(180f)?.duration = animationDuration
+            codImageExtend?.animate()?.rotation(ANIMATION_ROTATION)?.duration = ANIMATION_DURATION
             codExpandLL?.gone()
         }
 
@@ -224,11 +227,11 @@ class ActivationPageFragment: BaseDaggerFragment() {
     private fun initListeners() {
         codImageExtend?.setOnClickListener {
             if(expandLayout) {
-                codImageExtend?.animate()?.rotation(180f)?.duration = animationDuration
+                codImageExtend?.animate()?.rotation(ANIMATION_ROTATION)?.duration = ANIMATION_DURATION
                 expandLayout = false
                 codExpandLL?.let { layout -> collapse(layout) }
             } else {
-                codImageExtend?.animate()?.rotation(0f)?.duration = animationDuration
+                codImageExtend?.animate()?.rotation(0f)?.duration = ANIMATION_DURATION
                 expandLayout = true
                 codExpandLL?.let { layout -> expand(layout) }
             }
@@ -287,7 +290,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
 
     private fun validateActivatedShipping(){
         val userId = userSession.userId
-        viewModel.validateActivatedShipping(userId.toInt())
+        viewModel.validateActivatedShipping(userId.toLong())
     }
 
     private fun collapse(view: View) {
@@ -330,7 +333,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
                 return true
             }
         }
-        anim.interpolator = PathInterpolatorCompat.create(0.77f, 0f, 0.175f, 1f)
+        anim.interpolator = PathInterpolatorCompat.create(INTERPOLATOR_X1, INTERPOLATOR_Y1, INTERPOLATOR_X2, INTERPOLATOR_Y2)
         anim.duration = (targetHeight / view.context.resources.displayMetrics.density).toInt().toLong()
         view.startAnimation(anim)
     }
@@ -426,5 +429,16 @@ class ActivationPageFragment: BaseDaggerFragment() {
         itemLayout?.gone()
         globalError?.visible()
     }
+
+    companion object {
+
+        private const val ANIMATION_DURATION = 300L
+        private const val ANIMATION_ROTATION = 180f
+        private const val INTERPOLATOR_X1 = 0.77f
+        private const val INTERPOLATOR_X2 = 0.175f
+        private const val INTERPOLATOR_Y1 = 0f
+        private const val INTERPOLATOR_Y2 = 1f
+    }
+
 
 }

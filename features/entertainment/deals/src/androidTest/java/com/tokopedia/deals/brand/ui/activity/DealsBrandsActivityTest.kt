@@ -11,9 +11,8 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.deals.DealsDummyResponseString
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_SECOND_CATEGORY_TITLE
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_USER_TYPE_STRING
@@ -22,21 +21,19 @@ import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
-import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 
 class DealsBrandsActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDbSource = GtmLogDBSource(context)
 
     @get: Rule
     var activityRule: IntentsTestRule<DealsBrandActivity> = object : IntentsTestRule<DealsBrandActivity>(DealsBrandActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDbSource.deleteAll().subscribe()
             setupGraphqlMockResponse(DealsCategoryMockResponse())
         }
 
@@ -44,6 +41,9 @@ class DealsBrandsActivityTest {
             return DealsBrandActivity.getCallingIntent(context, "")
         }
     }
+
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Test
     fun testBrandLayout() {
@@ -53,8 +53,7 @@ class DealsBrandsActivityTest {
         actionOnDealsBrandViewHolder()
         clickOnRelaksasiTab()
 
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_BRANDPAGE),
-                hasAllSuccess())
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_DEALS_BRANDPAGE), hasAllSuccess())
     }
 
     private fun actionOnDealsBrandViewHolder() {

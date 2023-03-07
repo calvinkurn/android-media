@@ -8,14 +8,19 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import java.util.Locale
 
 class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
     private val buyEmas: CheckBox = itemView.findViewById(R.id.cb_emas)
@@ -23,6 +28,7 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
     private val tvEmasDesc: Typography = itemView.findViewById(R.id.tv_emas_sub_title)
     private val imgEmasInfo: IconUnify = itemView.findViewById(R.id.img_emas_info)
     private val llContainer: LinearLayout = itemView.findViewById(R.id.ll_container)
+    private val tvEmasHyperlink: Typography = itemView.findViewById(R.id.tv_emas_hyperlink)
 
     @SuppressLint("NewApi")
     fun bindViewHolder(egoldAttributeModel: EgoldAttributeModel) {
@@ -49,6 +55,21 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
                 shipmentAdapterActionListener.onEgoldChecked(isChecked)
             }
         }
+
+        if (egoldAttributeModel.isShowHyperlink) {
+            tvEmasHyperlink.text = String.format(Locale.getDefault(), "(${egoldAttributeModel.hyperlinkText})")
+            tvEmasHyperlink.setOnClickListener {
+                RouteManager.route(
+                    itemView.context,
+                    String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, egoldAttributeModel.hyperlinkUrl)
+                )
+            }
+            tvEmasHyperlink.visible()
+        }
+        else {
+            tvEmasHyperlink.gone()
+        }
+
         if (egoldAttributeModel.isEnabled) {
             buyEmas.isEnabled = true
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {

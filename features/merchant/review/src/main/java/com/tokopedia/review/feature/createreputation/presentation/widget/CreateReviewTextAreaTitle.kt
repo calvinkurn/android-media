@@ -12,16 +12,14 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetCreateReviewTextAreaTitleBinding
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
 import com.tokopedia.reviewcommon.uimodel.StringRes
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewTextAreaTitle @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewTextAreaTitleBinding>(context, attrs, defStyleAttr) {
-
-    companion object {
-        private const val TRANSITION_DURATION = 300L
-    }
+) : BaseReviewCustomView<WidgetCreateReviewTextAreaTitleBinding>(context, attrs, defStyleAttr) {
 
     private val transitionHandler = TransitionHandler()
 
@@ -38,15 +36,19 @@ class CreateReviewTextAreaTitle @JvmOverloads constructor(
         layoutTextAreaTitle.root.text = textRes.getStringValue(context)
     }
 
-    fun updateUi(uiState: CreateReviewTextAreaTitleUiState) {
+    fun updateUi(uiState: CreateReviewTextAreaTitleUiState, continuation: Continuation<Unit>) {
         when(uiState) {
             is CreateReviewTextAreaTitleUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewTextAreaTitleUiState.Showing -> {
                 binding.showTitle(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }
@@ -58,7 +60,7 @@ class CreateReviewTextAreaTitle @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutTextAreaTitle.root)
                 addTarget(binding.layoutTextAreaTitleLoading.root)
                 interpolator = AccelerateInterpolator()

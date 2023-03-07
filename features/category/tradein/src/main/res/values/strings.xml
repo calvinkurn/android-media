@@ -31,6 +31,11 @@
     <string name="tradein_undiagnosed_info_text">Harga akhir tergantung pada hasil pengecekan kondisi HP.</string>
     <string name="tradein_pilih_method">Pilih Metode Penukaran</string>
     <string name="tradein_edu_heading_1">4 Langkah Mudah Tukar Tambah</string>
+    <string name="tradein_edu_heading_cepat">Prosesnya cepat \ndan mudah</string>
+    <string name="tradein_edu_heading_murah">Dapatkan harga gadget baru yang lebih murah</string>
+    <string name="tradein_edu_heading_segala">Bisa terima segala \nkondisi HP</string>
+    <string name="tradein_edu_heading_praktis">Praktis dan bisa tukar \nHP di mana saja </string>
+    <string name="tradein_edu_heading_keuntungan">Keuntungan Tukar Tambah</string>
     <string name="tradein_edu_subheading_1">Cari toko dan gadget</string>
     <string name="tradein_edu_subtext_1">Cek jangkauan toko dan kisaran harga gadget.</string>
     <string name="tradein_edu_subheading_2">Lakukan Tes Fungsi HP</string>

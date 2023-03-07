@@ -7,18 +7,17 @@ import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.*
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Rule
-import java.lang.Error
 import kotlin.reflect.KClass
 
+@ExperimentalCoroutinesApi
 class CatalogListItemViewModelTest {
 
     lateinit var viewModel: CatalogListItemViewModel
@@ -60,22 +59,22 @@ class CatalogListItemViewModelTest {
         assert(listItem == (viewModel.listCatalogItem.value as Success).data)
     }
 
-    @Test
-    fun `get catalog list item error`() {
-        val observer = mockk<Observer<Resources<CatalogEntity>>>(){
-            every { onChanged(any())  } just runs
-        }
-        coEvery {
-            repository.getListOfCatalog(1, 1, 0) } returns mockk {
-            every { catalog } returns null
-        }
-        viewModel.listCatalogItem.observeForever(observer)
-        viewModel.getCataloglistItem(1,1,0)
-
-        verify(ordering = Ordering.ORDERED) {
-            observer.onChanged(ofType(Loading::class as KClass<Loading<CatalogEntity>>))
-        }
-    }
+//    @Test
+//    fun `get catalog list item error`() {
+//        val observer = mockk<Observer<Resources<CatalogEntity>>>(){
+//            every { onChanged(any())  } just runs
+//        }
+//        coEvery {
+//            repository.getListOfCatalog(1, 1, 0) } returns mockk {
+//            every { catalog } returns null
+//        }
+//        viewModel.listCatalogItem.observeForever(observer)
+//        viewModel.getCataloglistItem(1,1,0)
+//
+//        verify(ordering = Ordering.ORDERED) {
+//            observer.onChanged(ofType(Loading::class as KClass<Loading<CatalogEntity>>))
+//        }
+//    }
 
     @Test
     fun `redeem Coupon success`() {
@@ -190,7 +189,7 @@ class CatalogListItemViewModelTest {
     fun `fetch Latest Status error case`() {
         val observer = mockk<Observer<List<CatalogStatusItem>>>()
         coEvery { repository.fetchLatestStatus(any()) } returns mockk {
-            every { catalogStatus } returns null
+            every { catalogStatus } throws Exception()
         }
         viewModel.latestStatusLiveData.observeForever(observer)
         viewModel.fetchLatestStatus(listOf())

@@ -35,8 +35,8 @@
 
         <ImageView
             android:id="@+id/authorImage"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:background="@drawable/bg_circle_gray_border"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -155,7 +155,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:visibility="gone"
-        android:paddingTop="@dimen/dp_32"
+        android:paddingTop="32dp"
         android:paddingBottom="16dp"
         tools:visibility="visible">
 
@@ -168,8 +168,8 @@
 
             <ImageView
                 android:id="@+id/likeIcon"
-                android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:contentDescription="@string/kol_action_like"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_thumb_white"
@@ -198,8 +198,8 @@
 
             <ImageView
                 android:id="@+id/commentIcon"
-                android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:contentDescription="@string/kol_action_comment"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/kol_ic_comment"
@@ -235,8 +235,8 @@
 
             <ImageView
                 android:id="@+id/shareIcon"
-                android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:contentDescription="@string/kol_action_share"
                 android:scaleType="fitCenter"
                 android:tint="@color/Unify_N0"

@@ -1,0 +1,21 @@
+{
+  "userProfileCompletion": {
+    "isActive": true,
+    "fullName": "Rama Widragama Putra",
+    "birthDate": "1",
+    "birthDay": "1999-01-01",
+    "birthMonth": "1",
+    "birthYear": "1999",
+    "gender": 1,
+    "email": "rama.putra+13@tokopedia.com",
+    "msisdn": "6287880624201",
+    "isMsisdnVerified": true,
+    "isCreatedPassword": false,
+    "isBiodataDone": false,
+    "isEmailDone": true,
+    "isPasswordDone": false,
+    "isMsisdnDone": true,
+    "completionDone": false,
+    "completionScore": 60
+  }
+}

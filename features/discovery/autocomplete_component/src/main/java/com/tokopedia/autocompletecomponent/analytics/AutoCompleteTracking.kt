@@ -4,9 +4,7 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.CLICK_CARI
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.CLICK_SEARCH_BAR
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.CLICK_SEARCH_SEARCH_BAR
-import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.VOICE_SEARCH
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Category.LONG_PRESS
-import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Category.SEARCH
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Label.PRODUCT_SEARCH
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.BUSINESS_UNIT
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.BUSINESS_UNIT_PHYSICAL_GOODS
@@ -26,10 +24,12 @@ import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstan
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Category.SEARCH_COMPONENT
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_CANCEL_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_VOICE_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_CANCEL_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
+import com.tokopedia.iris.Iris
 import com.tokopedia.remoteconfig.RollenceKey.AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING
 import com.tokopedia.remoteconfig.RollenceKey.AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING
 import com.tokopedia.track.TrackApp
@@ -37,18 +37,17 @@ import com.tokopedia.user.session.UserSessionInterface
 
 open class AutoCompleteTracking(
     protected val userSession: UserSessionInterface,
+    protected val iris: Iris,
 ) {
 
     object Category {
         const val LONG_PRESS = "Long Press"
-        const val SEARCH = "Search"
     }
 
     object Action {
         const val CLICK_CARI = "Click Cari"
         const val CLICK_SEARCH_SEARCH_BAR = "click - search - search bar"
         const val CLICK_SEARCH = "click - search"
-        const val VOICE_SEARCH = "Voice Search"
         const val CLICK_SEARCH_BAR = "click search bar"
     }
 
@@ -140,13 +139,19 @@ open class AutoCompleteTracking(
         )
     }
 
-    open fun eventDiscoveryVoiceSearch(label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            CLICK_SEARCH,
-            SEARCH,
-            VOICE_SEARCH,
-            label
-        )
+    open fun eventClickDiscoveryVoiceSearch(label: String, pageSource: String) {
+        searchComponentTracking(
+            keyword = label,
+            componentId = AUTO_COMPLETE_VOICE_SEARCH,
+            dimension90 = pageSource,
+        ).click(TrackApp.getInstance().gtm)
+    }
+
+    open fun eventImpressDiscoveryVoiceSearch(pageSource: String) {
+        searchComponentTracking(
+            componentId = AUTO_COMPLETE_VOICE_SEARCH,
+            dimension90 = pageSource,
+        ).impress(iris)
     }
 
     open fun eventCancelSearch(query: String, pageSource: String) {

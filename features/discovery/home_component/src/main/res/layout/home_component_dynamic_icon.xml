@@ -5,10 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:paddingStart="@dimen/home_component_margin_default"
-    android:paddingEnd="@dimen/home_component_margin_default"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="16dp"
+    android:paddingHorizontal="12dp"
+    android:layout_marginVertical="12dp"
     android:orientation="horizontal">
 
 </androidx.recyclerview.widget.RecyclerView>

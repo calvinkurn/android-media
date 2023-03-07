@@ -93,7 +93,6 @@ object ReviewConstants {
     const val PARAM_IS_EDIT_MODE = "isEditMode"
     const val PARAM_FEEDBACK_ID = "feedbackId"
     const val PARAM_SOURCE = "source"
-    const val EDIT_MODE = true
 
     const val REPUTATION_SCORE_BAD = -1
     const val REPUTATION_SCORE_MEDIOCRE = 1
@@ -143,12 +142,6 @@ object ReviewConstants {
     const val REVIEW_CREDIBILITY_PLT_PREPARE_METRICS = "review_credibility_trace"
     const val REVIEW_CREDIBILITY_PLT_NETWORK_METRICS = "review_credibility_trace"
     const val REVIEW_CREDIBILITY_PLT_RENDER_METRICS = "review_credibility_trace"
-
-    const val RATING_ONE = 1
-    const val RATING_TWO = 2
-    const val RATING_THREE = 3
-    const val RATING_FOUR = 4
-    const val RATING_FIVE = 5
 
     const val TEMP_IMAGE_EXTENSION = ".0"
 }

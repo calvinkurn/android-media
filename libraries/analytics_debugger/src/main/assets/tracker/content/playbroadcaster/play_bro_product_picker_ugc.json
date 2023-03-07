@@ -1,0 +1,176 @@
+{
+  "readme": "Play Broadcaster - Product Picker UGC Analytic",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickContent",
+      "eventAction": "click - product tagging source",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - product source tokopedia",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - product source terakhir dibeli",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - cari di tokopedia",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - filter produk",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - simpan filter produk",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - chips di filter produk",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - toko",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user - \\d+",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "impression - toko",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user - \\d+",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - barang atau toko tab",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - product card tokopedia",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user - \\d+",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "impression - product card tokopedia",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user - \\d+",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - back pilih produk dari toko",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - cari di toko",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - simpan produk tokopedia",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - product card terakhir dibeli",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user - \\d+",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - simpan produk terakhir dibeli",
+      "eventCategory": "play broadcast",
+      "eventLabel": ".* - user",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
-import com.tokopedia.test.application.datastore.TestUserSessionDataStore
+import com.tokopedia.home_account.stub.domain.FakeUserSessionDataStore
 import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import dagger.Module
@@ -28,7 +28,7 @@ class FakeAppModule(private val context: Context) {
     @ApplicationScope
     @Provides
     fun provideUserSessionDataStore(): UserSessionDataStore {
-        return TestUserSessionDataStore()
+        return FakeUserSessionDataStore()
     }
 
     @ApplicationScope

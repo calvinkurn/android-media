@@ -2,22 +2,22 @@ package com.tokopedia.checkout.view.converter;
 
 import com.google.gson.Gson;
 import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.common.OntimeDeliveryGuarantee;
+import com.tokopedia.checkout.data.model.request.common.RatesFeature;
 import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.common.OntimeDeliveryGuarantee;
-import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest;
-import com.tokopedia.checkout.data.model.request.common.RatesFeature;
-import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest;
-import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,6 +134,7 @@ public class ShipmentDataRequestConverter {
                     promoRequest.setCode(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                     promoRequest.setType(PromoRequest.TYPE_LOGISTIC);
                     promoRequests.add(promoRequest);
+                    shopProductCheckout.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
                 }
                 shopProductCheckout.setPromos(promoRequests);
 
@@ -155,13 +156,24 @@ public class ShipmentDataRequestConverter {
                     shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
                 }
 
-                shopProductCheckout.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
+                shopProductCheckout.setNeedPrescription(productInCartNeedsPrescription(shipmentCartItemModel));
 
                 return shopProductCheckout;
             }
             return null;
         }
         return null;
+    }
+
+    private boolean productInCartNeedsPrescription(ShipmentCartItemModel shipmentCartItemModel) {
+        boolean flag = false;
+        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+            if (cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
     }
 
     public static RatesFeature generateRatesFeature(CourierItemData courierItemData) {
@@ -227,6 +239,7 @@ public class ShipmentDataRequestConverter {
         productDataCheckoutRequest.setDiscountedPrice(cartItem.getAnalyticsProductCheckoutData().isDiscountedPrice());
         productDataCheckoutRequest.setFreeShipping(cartItem.isFreeShipping());
         productDataCheckoutRequest.setFreeShippingExtra(cartItem.isFreeShippingExtra());
+        productDataCheckoutRequest.setFreeShippingName(cartItem.getFreeShippingName());
         productDataCheckoutRequest.setCampaignId(cartItem.getAnalyticsProductCheckoutData().getCampaignId());
         productDataCheckoutRequest.setProtectionPricePerProduct(cartItem.getProtectionPricePerProduct());
         productDataCheckoutRequest.setProtectionTitle(cartItem.getProtectionTitle());

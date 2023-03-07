@@ -234,4 +234,5 @@
     <string name="error_alamat_exceed_max_char">Alamat melebihi batas karakter. Cek lagi, ya.</string>
     <string name="error_notes_exceed_max_char">Catatan melebihi batas karakter. Cek lagi, ya.</string>
     <string name="editaddress_back_dialog_secondary_cta">Batal</string>
+    <string name="addaddress_maps_unavailable_ticker_description">Yaah, perangkat kamu belum bisa pinpoint. Tenang, kamu bisa atur di perangkat lain, pakai alamat lain yang sudah pinpoint, atau lanjutkan transaksi dengan kurir selain instan/same day.</string>
 </resources>

@@ -9,10 +9,8 @@
     android:layout_marginBottom="@dimen/shc_dimen_6dp"
     android:ellipsize="end"
     android:maxLines="2"
-    android:paddingStart="@dimen/spacing_lvl2"
-    android:paddingLeft="@dimen/spacing_lvl2"
-    android:paddingEnd="@dimen/spacing_lvl2"
-    android:paddingRight="@dimen/spacing_lvl2"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp"
     android:textColor="@color/Unify_N700_96"
     app:typographyType="body_3"
     tools:text="Header Of Table" />

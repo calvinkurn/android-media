@@ -20,11 +20,10 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
-
 class ShopActionButtonWidgetFollowButtonComponentViewHolder(
-        itemView: View,
-        private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
-        private val listener: Listener
+    itemView: View,
+    private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+    private val listener: Listener
 ) : AbstractViewHolder<ShopHeaderActionWidgetFollowButtonComponentUiModel>(itemView) {
 
     companion object {
@@ -39,12 +38,12 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
     interface Listener {
         fun onImpressionVoucherFollowUnFollowShop()
         fun onClickFollowUnFollowButton(
-                componentModel: ShopHeaderButtonComponentUiModel,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopHeaderButtonComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
         )
         fun onImpressionFollowButtonComponent(
-                componentModel: ShopHeaderButtonComponentUiModel,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopHeaderButtonComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
         )
     }
 
@@ -99,15 +98,15 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
             setOnClickListener {
                 if (!isLoading)
                     listener.onClickFollowUnFollowButton(
-                            model,
-                            shopHeaderWidgetUiModel
+                        model,
+                        shopHeaderWidgetUiModel
                     )
             }
-            if(text.isNotEmpty()) {
+            if (text.isNotEmpty()) {
                 addOnImpressionListener(model) {
                     listener.onImpressionFollowButtonComponent(
-                            model,
-                            shopHeaderWidgetUiModel
+                        model,
+                        shopHeaderWidgetUiModel
                     )
                 }
             }
@@ -117,10 +116,10 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
     private fun setDrawableLeft(button: UnifyButton, leftDrawableUrl: String, isUserNeverFollow: Boolean) {
         if (leftDrawableUrl.isNotBlank() && isUserNeverFollow) {
             convertUrlToBitmapAndLoadImage(
-                    itemView.context,
-                    leftDrawableUrl,
-                    16.toPx()
-            ){
+                itemView.context,
+                leftDrawableUrl,
+                16.toPx()
+            ) {
                 try {
                     val drawableImage = BitmapDrawable(itemView.resources, it)
                     val left = 0
@@ -131,14 +130,14 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
                     val imageSpan = ImageSpan(drawableImage)
                     spannableString.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannableString.setSpan(
-                            TextBaselineSpanAdjuster(TEST_ASCENT_MULTIPLIER),
-                            0,
-                            spannableString.length,
-                            SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+                        TextBaselineSpanAdjuster(TEST_ASCENT_MULTIPLIER),
+                        0,
+                        spannableString.length,
+                        SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                     button.text = spannableString
                     listener.onImpressionVoucherFollowUnFollowShop()
-                }catch (e: Throwable){}
+                } catch (e: Throwable) {}
             }
         } else {
             removeCompoundDrawableFollowButton()
@@ -150,5 +149,4 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
             buttonFollow?.removeDrawable()
         }
     }
-
 }

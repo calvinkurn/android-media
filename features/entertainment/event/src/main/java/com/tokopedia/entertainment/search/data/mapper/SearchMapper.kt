@@ -1,11 +1,23 @@
 package com.tokopedia.entertainment.search.data.mapper
 
-import android.content.res.Resources
 import com.tokopedia.entertainment.search.adapter.SearchEventItem
-import com.tokopedia.entertainment.search.adapter.viewholder.*
-import com.tokopedia.entertainment.search.adapter.viewmodel.*
-import com.tokopedia.entertainment.search.data.*
+import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
+import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
+import com.tokopedia.entertainment.search.adapter.viewholder.HistoryBackgroundItemViewHolder
+import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
+import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
+import com.tokopedia.entertainment.search.adapter.viewmodel.FirstTimeModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.HistoryModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEmptyStateModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationModel
+import com.tokopedia.entertainment.search.data.CategoryModel
+import com.tokopedia.entertainment.search.data.EventDetailResponse
+import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
+import com.tokopedia.entertainment.search.data.EventSearchHistoryResponse
+import com.tokopedia.entertainment.search.data.EventSearchLocationResponse
 import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 /**
  * Author errysuprayogi on 05,March,2020
@@ -58,30 +70,13 @@ object SearchMapper {
         )
     }
 
-    fun mapperLocationtoSearchList(dataLocation: EventSearchFullLocationResponse.Data): MutableList<SearchEventItem<*>>{
-        val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
-        val lists: MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
-        dataLocation.let {
-            it.eventLocationSearch.let {
-                if(it.count.toInt() > 0){
-                    it.locations.forEach{
-                        lists.add(mappingLocationFullSuggestion(it))
-                    }
-                    listViewHolder.add(SearchLocationModel(lists, allLocation = true))
-                }
-            }
-        }
-
-        return listViewHolder
-    }
-
     fun mappingLocationandKegiatantoSearchList(dataLocation: EventSearchLocationResponse.Data, text:String): MutableList<SearchEventItem<*>>{
         val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
         val listsLocation : MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
         val listsKegiatan : MutableList<SearchEventListViewHolder.KegiatanSuggestion> = mutableListOf()
         dataLocation?.let {
             it.eventLocationSearch.let {
-                if(it.count.toInt()  > 0){
+                if(it.count.toIntSafely()  > 0){
                     it.locations.forEach {
                         listsLocation.add(SearchMapper.mappingLocationSuggestion(it))
                     }
@@ -89,7 +84,7 @@ object SearchMapper {
                 }
             }
             it.eventSearch.let {
-                if(it.count.toInt() > 0){
+                if(it.count.toIntSafely() > 0){
                     it.products.forEach{
                         listsKegiatan.add(SearchMapper.mappingEventSuggestion(it))
                     }

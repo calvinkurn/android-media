@@ -53,7 +53,7 @@ class GroupDetailViewModel @Inject constructor(
     private val userSession: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     fun getGroupProductData(
-        page: Int, groupId: Int, search: String,
+        page: Int, groupId: String, search: String,
         sort: String, status: Int?, startDate: String, endDate: String, goalId: Int,
         onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit,
     ) {

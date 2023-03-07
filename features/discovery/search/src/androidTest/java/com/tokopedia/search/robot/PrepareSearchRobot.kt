@@ -3,7 +3,6 @@ package com.tokopedia.search.robot
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.test.R
@@ -32,10 +31,6 @@ internal class PrepareSearchRobot {
         setupGraphqlMockResponseWithCheck {
             addMockResponse("SearchProduct", getRawString(context, R.raw.search_product_common_response), FIND_BY_CONTAINS)
         }
-    }
-
-    fun deleteAllTrackingRecord() {
-        GtmLogDBSource(InstrumentationRegistry.getInstrumentation().targetContext).deleteAll().subscribe()
     }
 
     fun disableOnBoarding() {

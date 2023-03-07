@@ -15,6 +15,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankList
@@ -23,7 +24,6 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
-import com.tokopedia.recharge_credit_card.datamodel.*
 import com.tokopedia.recharge_credit_card.isMasked
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst
 import kotlinx.coroutines.CoroutineDispatcher
@@ -67,7 +67,7 @@ class RechargeCCViewModel @Inject constructor(
     fun getMenuDetail(rawQuery: String, menuId: String) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
-            mapParam[MENU_ID] = menuId.toInt()
+            mapParam[MENU_ID] = menuId.toIntSafely()
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCMenuDetailResponse::class.java, mapParam)
@@ -115,7 +115,7 @@ class RechargeCCViewModel @Inject constructor(
     fun getPrefixes(rawQuery: String, menuId: String) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
-            mapParam[MENU_ID] = menuId.toInt()
+            mapParam[MENU_ID] = menuId.toIntSafely()
 
             prefixData = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)

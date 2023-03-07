@@ -25,6 +25,20 @@ data class EligibleCommission (
     var message: String? = ""
 )
 
+data class Banner (
+    @SerializedName("Icon")
+    val icon: String = "",
+
+    @SerializedName("Title")
+    val title: String = "",
+
+    @SerializedName("Message")
+    val message: String = "",
+
+    @SerializedName("CtaLink")
+    val ctaLink: String = ""
+)
+
 data class GenerateAffiliateLinkEligibility(
     @SerializedName("Status")
     var status: Int = 0,
@@ -40,6 +54,9 @@ data class GenerateAffiliateLinkEligibility(
 
     @SerializedName("AffiliateEligibility")
     var affiliateEligibility: AffiliateEligibility? = null,
+
+    @SerializedName("Banner")
+    var banner: Banner? = null,
 
     @SerializedName("EligibleCommission")
     var eligibleCommission: EligibleCommission? = null

@@ -13,6 +13,8 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 
 import static android.content.Context.SENSOR_SERVICE;
 
+import java.lang.ref.WeakReference;
+
 public class ShakeDetectManager implements ShakeDetector.Listener {
 
     private static String SHAKE_DETECT_CAMPAIGN_ACTIVITY_SCREEN_NAME = "ShakeDetectCampaignActivity";
@@ -38,7 +40,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     public static String sTopActivity = "";
     private String mOpenedActivity = "";
-    private Activity activity;
+    private WeakReference<Activity> activityRef;
 
     private ShakeDetectManager() {
 
@@ -48,14 +50,14 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         return shakeDetectManager;
     }
 
-    public void registerShake(String screenName,Activity activity) {
+    public void registerShake(String screenName, Activity activity) {
         initSettingConfig();
         if (isShakeShakeEnable()) {
             sd.registerListener(this);
             sd.start(sensorManager);
             if (!screenName.equals(SHAKE_DETECT_CAMPAIGN_ACTIVITY_SCREEN_NAME)) {
                 mOpenedActivity = screenName;
-                this.activity = activity;
+                this.activityRef = new WeakReference<>(activity);
             }
         }
 
@@ -68,14 +70,15 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
 
     public void init(Context context, Callback callback) {
-        if(sd == null) {
+        if (sd == null) {
             mContext = context;
             this.callback = callback;
             sd = new ShakeDetector();
-            sensorManager = (SensorManager)mContext.getSystemService(SENSOR_SERVICE);
+            sensorManager = (SensorManager) mContext.getSystemService(SENSOR_SERVICE);
         }
 
     }
+
     boolean isNotificationOn = true;
 
     private void initSettingConfig() {
@@ -91,19 +94,19 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     private RemoteConfig getRemoteConfig() {
-        if(remoteConfig == null){
+        if (remoteConfig == null) {
             remoteConfig = new FirebaseRemoteConfigImpl(mContext);
         }
         return remoteConfig;
     }
 
     private boolean isShakeShakeEnable() {
-        return getRemoteConfig().getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) && isNotificationOn;
+        return getRemoteConfig().getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY, true) && isNotificationOn;
 
     }
 
     private boolean isAudioShakeEnable() {
-        return getRemoteConfig().getBoolean(FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY,false);
+        return getRemoteConfig().getBoolean(FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY, false);
 
     }
 
@@ -116,15 +119,15 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     public void hearShake() {
         sTopActivity = mOpenedActivity;
 
-        if(mShakeEnabler.hasMessages(MESSAGE_SHAKE_END)) {
+        if (mShakeEnabler.hasMessages(MESSAGE_SHAKE_END)) {
             mShakeEnabler.removeMessages(MESSAGE_SHAKE_END);
-            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END, SHAKE_SHAKE_END_TIME_MS);
             return;
         }
 
         if (isShakeShakeEnable() && isReactNativeOnReleaseMode()) {
-            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
-            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG,SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END, SHAKE_SHAKE_END_TIME_MS);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG, SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND);
         }
     }
 
@@ -134,25 +137,29 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     Handler mShakeEnabler = new Handler() {
         public void handleMessage(Message m) {
-           switch (m.what) {
-               case MESSAGE_SHAKE_END:
-                   if(mShakeEnabler.hasMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG)) {
-                       mShakeEnabler.removeMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG);
-                       startShake(false);
-                   }
-                   break;
-               case MESSAGE_SHAKE_SHAKE_CONTINUE_LONG:
-                   startShake(true);
-                   break;
+            switch (m.what) {
+                case MESSAGE_SHAKE_END:
+                    if (mShakeEnabler.hasMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG)) {
+                        mShakeEnabler.removeMessages(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG);
+                        startShake(false);
+                    }
+                    break;
+                case MESSAGE_SHAKE_SHAKE_CONTINUE_LONG:
+                    startShake(true);
+                    break;
 
-           }
+            }
         }
     };
 
-    public void onDestroy(String screenName,Activity activity) {
-        if (!screenName.equals(mOpenedActivity) && activity.equals(this.activity)) {
+    public void onDestroy(String screenName, Activity activity) {
+        if (activityRef == null) {
+            return;
+        }
+        Activity act = activityRef.get();
+        if (!screenName.equals(mOpenedActivity) && (act != null && act.equals(activity))) {
             mOpenedActivity = null;
-            this.activity = null;
+            this.activityRef = null;
         }
 
     }

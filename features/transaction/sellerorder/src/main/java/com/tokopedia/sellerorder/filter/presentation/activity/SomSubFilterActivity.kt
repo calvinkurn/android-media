@@ -26,7 +26,6 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         SomSubFilterCheckboxAdapter.SomSubCheckboxFilterListener, SomSubFilterRadioButtonAdapter.SomSubRadioButtonFilterListener {
 
     companion object {
-        const val KEY_FILTER_DATE = "key_filter_date"
         const val KEY_ID_FILTER = "key_id_filter"
         const val KEY_SOM_LIST_FILTER_CHIPS = "key_som_list_filter"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
@@ -34,17 +33,14 @@ class SomSubFilterActivity : BaseSimpleActivity(),
 
         @JvmStatic
         fun newInstance(context: Context?,
-                        filterDate: String,
                         idFilter: String,
                         cacheManagerId: String
         ) = Intent(context, SomSubFilterActivity::class.java).apply {
-            putExtra(KEY_FILTER_DATE, filterDate)
             putExtra(KEY_ID_FILTER, idFilter)
             putExtra(KEY_CACHE_MANAGER_ID, cacheManagerId)
         }
     }
 
-    private var filterDate: String = ""
     private var idFilter: String = ""
     private var cacheManagerId: String = ""
 
@@ -62,7 +58,6 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     override fun getLayoutRes(): Int = R.layout.activity_som_sub_filter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        filterDate = intent?.getStringExtra(KEY_FILTER_DATE) ?: ""
         idFilter = intent?.getStringExtra(KEY_ID_FILTER) ?: ""
         cacheManagerId = intent?.getStringExtra(KEY_CACHE_MANAGER_ID) ?: ""
         val manager = SaveInstanceCacheManager(this, savedInstanceState)
@@ -114,7 +109,6 @@ class SomSubFilterActivity : BaseSimpleActivity(),
             val cacheManager = SaveInstanceCacheManager(this, true)
             val cacheManagerId = cacheManager.id
             val intent = Intent()
-            intent.putExtra(KEY_FILTER_DATE, filterDate)
             intent.putExtra(KEY_ID_FILTER, idFilter)
             intent.putExtra(KEY_CACHE_MANAGER_ID, cacheManagerId)
             cacheManager.put(SomFilterBottomSheet.KEY_SOM_LIST_GET_ORDER_PARAM, somListGetOrderListParam)

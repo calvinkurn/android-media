@@ -29,7 +29,6 @@ object ProductManageListErrorHandler {
         const val EDIT_VARIANT_PRICE_ERROR = "product manage edit variant price error"
         const val EDIT_VARIANT_STOCK_ERROR = "product manage edit variant stock error"
         const val GET_ALL_DRAFT_COUNT_ERROR = "product manage get all draft count error"
-        const val SET_CASHBACK_ERROR = "product manage set cashback error"
         const val GET_STOCK_REMINDER_ERROR = "product manage get stock reminder error"
         const val CREATE_STOCK_REMINDER_ERROR = "product manage create stock reminder error"
         const val UPDATE_STOCK_REMINDER_ERROR = "product manage update stock reminder error"

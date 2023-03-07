@@ -27,4 +27,5 @@ interface HomeComponentTypeFactory {
     fun type(cueCategoryDataModel: CueCategoryDataModel): Int = 0
     fun type(vpsDataModel: VpsDataModel): Int = 0
     fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int = 0
+    fun type(lego4ProductDataModel: Lego4ProductDataModel): Int = 0
 }

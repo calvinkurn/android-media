@@ -12,11 +12,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.topads.credit.history.data.model.CreditHistory
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
 import com.tokopedia.topads.credit.history.view.activity.PARAM_DATE_PICKER_INDEX
@@ -147,9 +145,9 @@ class TopAdsCreditHistoryFragment :
         context?.let {
             autoTopupStatus?.setTextColor(ContextCompat.getColor(it,
                 if (data.status == ACTIVE_STATUS) {
-                    com.tokopedia.topads.common.R.color.topads_common_select_color_checked
+                    com.tokopedia.topads.common.R.color.Unify_G500
                 } else {
-                    com.tokopedia.topads.common.R.color.topads_common_text_disabled
+                    com.tokopedia.topads.common.R.color.Unify_N700_32
                 }
             ))
         }
@@ -337,11 +335,7 @@ class TopAdsCreditHistoryFragment :
 
     override fun loadData(page: Int) {
         adapter.clearAllElements()
-        val resources = context?.resources
-        viewModel.getCreditHistory(
-            GraphqlHelper.loadRawString(resources, R.raw.gql_query_credit_history),
-            startDate, endDate
-        )
+        viewModel.getCreditHistory(startDate, endDate)
     }
 
     override fun getScreenName(): String? = null

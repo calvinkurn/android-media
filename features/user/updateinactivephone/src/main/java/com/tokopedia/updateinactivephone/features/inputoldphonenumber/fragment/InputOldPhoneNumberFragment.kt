@@ -29,14 +29,18 @@ import javax.inject.Inject
 
 open class InputOldPhoneNumberFragment : BaseDaggerFragment() {
 
-    private val binding : FragmentInputOldPhoneNumberBinding? by viewBinding()
+    private val binding: FragmentInputOldPhoneNumberBinding? by viewBinding()
 
     @Inject
     lateinit var analytics: InputOldPhoneNumberAnalytics
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel by lazy { ViewModelProvider(this, viewModelFactory).get(InputOldPhoneNumberViewModel::class.java) }
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(
+            InputOldPhoneNumberViewModel::class.java
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,10 +72,9 @@ open class InputOldPhoneNumberFragment : BaseDaggerFragment() {
             binding?.textInputOldPhoneNumber?.setMessage(
                 if (!it.isDataValid && it.numberError != PhoneFormState.DEFAULT_NUMBER_ERROR) {
                     val message = getString(it.numberError)
-                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message, binding?.textInputOldPhoneNumber?.getEditableValue().toString())
+                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message)
                     message
-                }
-                else " "
+                } else " "
             )
 
             binding?.textInputOldPhoneNumber?.isInputError = !it.isDataValid
@@ -103,14 +106,14 @@ open class InputOldPhoneNumberFragment : BaseDaggerFragment() {
 
     private fun statusPhoneNumberObserver() {
         viewModel.statusPhoneNumber.observe(viewLifecycleOwner) {
-            when (it.first) {
+            when (it) {
                 is Success -> {
                     analytics.trackPageInactivePhoneNumberClickNext(LABEL_SUCCESS)
-                    onGoToInactivePhoneNumber((it.first as Success<String>).data)
+                    onGoToInactivePhoneNumber(it.data)
                 }
                 is Fail -> {
-                    val message = getErrorMsgWithLogging((it.first as Fail).throwable)
-                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message, it.second)
+                    val message = getErrorMsgWithLogging(it.throwable)
+                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message)
                     onError(message)
                 }
             }

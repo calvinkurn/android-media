@@ -37,6 +37,7 @@
     <!--REGISTER PHONE NUMBER-->
     <string name="register_with_email">Email</string>
     <string name="phone_number_not_registered_info">Apakah nomor ponsel yang Anda masukkan sudah benar?</string>
+    <string name="text_field_label_phone_number">Nomor HP</string>
 
     <!--ADD CHANGE EMAIL-->
 
@@ -83,7 +84,7 @@
     <string name="title_register_wo_u">Daftar</string>
     <string name="account_registered_title">Akun Anda Sudah Pernah Terdaftar</string>
     <string name="account_registered_body">Anda sudah pernah melakukan pendaftaran akun tokopedia dengan email %1$s.\nSilakan login menggunakan akun anda atau klik disini untuk mengganti kata sandi anda.</string>
-    <string name="text_term_and_privacy">Dengan mendaftar, saya menyetujui Syarat dan Ketentuan serta Kebijakan Privasi.</string>
+    <string name="text_term_and_privacy">Dengan mendaftar di sini, kamu menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi Tokopedia.</string>
     <string name="error_illegal_character">Hanya dapat menggunakan huruf</string>
     <string name="error_max_35_character">Maksimal 35 karakter</string>
     <string name="account_registered_body_part">klik disini untuk mengganti kata sandi anda.</string>
@@ -112,6 +113,9 @@
     <string name="please_fill_name">Harap isi Nama anda</string>
     <string name="deleted_shop_info">Tokomu hilang?</string>
     <string name="deleted_shop_info_clickable">Pelajari Selengkapnya</string>
+    <string name="phone_shop_tnc_policy">Dengan klik tombol di bawah, kamu menyetujui %s serta %s Pendaftaran Toko.</string>
+    <string name="phone_shop_tnc_title">Syarat &amp; Ketentuan</string>
+    <string name="phone_shop_policy_title">Kebijakan Privasi</string>
 
     <!-- ERROR LOGIN -->
     <string name="error_login_user_cancel_login_phone">Cancel login phone</string>
@@ -150,34 +154,6 @@
     <string name="close_popup">Tutup</string>
 
     <!-- External Register -->
-    <string name="title_external_register">Daftar</string>
-    <string name="title_external_register_verify">Verifikasi</string>
-    <string name="title_external_register_add_name">Siapa nama kamu?</string>
-    <string name="ovo_connect_account_description">Kamu bisa menghubungkan akun Tokopedia dan OVO agar transaksi jadi lebih praktis.</string>
-    <string name="ovo_connect_account_title">Hubungkan akun ini ke OVO?</string>
-    <string name="dialog_connect_account_positive_btn_text">Ya, Hubungkan</string>
-    <string name="dialog_connect_account_negative_btn_text">Daftar Tanpa Hubungkan</string>
-
-    <string name="dialog_register_account_positive_btn_text">Daftar Tokopedia &amp; OVO</string>
-    <string name="dialog_register_account_negative_btn_text">Daftar Tokopedia Saja</string>
-
-    <string name="base_add_name_next">Lanjut Daftar</string>
-    <string name="ovo_external_register_description_success">Akunmu sudah aktif. Cashback dari transaksimu di Tokopedia akan masuk ke OVO Points.</string>
-    <string name="ovo_external_register_title_success">Hore! Pendaftaranmu berhasil</string>
-
-    <string name="ovo_external_register_description_error">Kamu bisa lanjut daftar dulu &amp; hubungkan akun ini ke OVO lewat home Tokopedia nanti.</string>
-    <string name="ovo_external_register_title_error">Ada kendala saat akses OVO</string>
-
-    <string name="base_add_name_ktp_message">Pastikan sesuai KTP untuk memudahkan verifikasi.</string>
-    <string name="base_add_name_full_name">Nama Lengkap</string>
-    <string name="base_add_name_title">Siapa nama kamu?</string>
-
-    <string name="base_add_name_error_empty">Wajib diisi.</string>
-
-    <string name="ovo_register_account_description">Kamu bisa daftarkan nomor %1$s di Tokopedia &amp; OVO sekaligus, lho!</string>
-    <string name="ovo_register_account_title">Mau sekalian daftar OVO?</string>
-    <string name="content_desc_ovo_success">OvoSuccess</string>
-    <string name="external_account_success_btn_text">Mulai Belanja</string>
     <string name="desc_banner_register">banner_register</string>
     <string name="color_ticker_default">#cde4c3</string>
     <string name="color_ticker_warning">#ecdb77</string>
@@ -191,8 +167,45 @@
     <string name="loginregister_what_help_do_you_need">Butuh bantuan apa?</string>
     <string name="loginregister_need_another_help">Butuh bantuan lain? Hubungi Tokopedia Care</string>
 
+    <!--Other Method Bottom Sheet-->
+    <string name="other_method_email">E-mail</string>
+    <string name="other_method_title">Pilih metode untuk Daftar</string>
+
+    <!--Redefine Register Email-->
+    <string name="register_email_title">Daftar dengan E-mail</string>
+    <string name="register_email_label_field_email">E-mail</string>
+    <string name="register_email_label_field_password">Kata Sandi</string>
+    <string name="register_email_label_field_name">Nama Lengkap</string>
+    <string name="register_email_button_next">Lanjut</string>
+    <string name="register_email_desc">Setelah ini kamu perlu masukkan kode verifikasi yang akan dikirimkan ke e-mail diatas</string>
+    <string name="register_email_message_must_be_filled">Harus diisi!</string>
+    <string name="register_email_message_email_not_available">E-mail ini tidak bisa dipakai di Tokopedia</string>
+    <string name="register_email_message_email_not_valid">Format email salah</string>
+    <string name="register_email_message_name_min_length_error">Min. 3 karakter.</string>
+    <string name="register_email_message_name_character_error">Ketik namamu pakai huruf, ya.</string>
+    <string name="register_email_message_name_max_length_error">Maks. 35 karakter.</string>
+    <string name="register_email_dialog_offer_login_title">E-mail sudah Terdaftar</string>
+    <string name="register_email_dialog_offer_login_subtitle">Lanjut masuk dengan e-mail ini\n%s</string>
+    <string name="register_email_dialog_offer_login_secondary_button">Ubah</string>
+    <string name="register_email_dialog_offer_login_primary_button">Ya, Masuk</string>
+    <string name="register_email_input_phone_header">Selangkah lagi selesai!</string>
+    <string name="register_email_input_phone_description">Masukkan nomor HP untuk bisa dapat cashback, akun makin aman, dan banyak lagi!</string>
+    <string name="register_email_input_phone_min_length_error">Min. 8 angka</string>
+    <string name="register_email_input_phone_max_length_error">Maks. 15 angka</string>
+    <string name="register_email_input_phone_dialog_offer_login_title">Nomor HP Sudah Terdaftar</string>
+    <string name="register_email_input_phone_dialog_offer_login_subtitle">Lanjut masuk dengan nomor ini\n%s</string>
+    <string name="register_email_input_phone_dialog_failed_title">Permintaanmu gagal diproses</string>
+    <string name="register_email_input_phone_dialog_failed_subtitle">Ada kendala pada akun atau HP-mu. Coba lagi atau hubungi Tokopedia Care.</string>
+    <string name="register_email_input_phone_dialog_failed_primary_button">Hubungi Tokopedia Care</string>
+    <string name="register_email_input_phone_dialog_failed_secondary_button">Tutup</string>
+    <string name="register_email_input_phone_dialog_success_subtitle">Pastikan nomor HP yang kamu isi sudah benar untuk diverifikasi.</string>
+    <string name="register_email_input_phone_dialog_success_primary_button">Ya, Benar</string>
+    <string name="register_email_input_phone_dialog_success_secondary_button">Ubah</string>
+    <string name="register_email_input_phone_skip">Lewati</string>
 
     <string name="goto_seamless_description_text">Akunmu udah kesambung ke Gojek. Kamu bisa masuk ke Tokopedia lebih cepat, deh!</string>
+    <string name="goto_seamless_description_text_2">Kamu bisa masuk ke Tokopedia lebih cepat, karena akunmu udah kesambung ke Gojek.</string>
+
     <string name="goto_seamless_primary_title">Sekali klik, langsung masuk!</string>
     <string name="goto_seamless_secondary_btn_text">Masuk ke Akun Lain</string>
 

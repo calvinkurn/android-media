@@ -1,7 +1,7 @@
 package com.tokopedia.common.travel.domain
 
 import com.tokopedia.common.travel.constant.TravelType
-import com.tokopedia.common.travel.data.TravelBannerGQLQuery
+import com.tokopedia.common.travel.data.QueryTravelBanner
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -21,8 +21,10 @@ import javax.inject.Inject
  * @author by jessica on 2019-08-26
  */
 
-class GetTravelCollectiveBannerUseCase @Inject constructor(private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase,
-                                                           private val graphqlUseCase: GraphqlUseCase) {
+class GetTravelCollectiveBannerUseCase @Inject constructor(
+    private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase,
+    private val graphqlUseCase: GraphqlUseCase
+) {
 
     suspend fun execute(product: TravelType, isFromCloud: Boolean)
             : Result<TravelCollectiveBannerModel> {
@@ -34,7 +36,7 @@ class GetTravelCollectiveBannerUseCase @Inject constructor(private val multiRequ
 
         return try {
             val params = mapOf(PARAM_BANNER_PRODUCT_KEY to getProductString(product))
-            val graphqlRequest = GraphqlRequest(TravelBannerGQLQuery.QUERY_COLLECTIVE_BANNER,
+            val graphqlRequest = GraphqlRequest(QueryTravelBanner(),
                     TravelCollectiveBannerModel.Response::class.java, params)
             multiRequestGraphqlUseCase.addRequest(graphqlRequest)
             val travelCollectiveBannerModel = multiRequestGraphqlUseCase.executeOnBackground().getSuccessData<TravelCollectiveBannerModel.Response>().response

@@ -2,13 +2,15 @@ package com.tokopedia.play.broadcaster.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
-import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
+import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
@@ -16,22 +18,18 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
+import com.tokopedia.play.broadcaster.util.TestUriParser
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.yield
 import java.io.Closeable
 
 /**
@@ -40,7 +38,6 @@ import java.io.Closeable
 internal class PlayBroadcastViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     handle: SavedStateHandle = SavedStateHandle(),
-    livePusherMediator: PusherMediator = mockk(relaxed = true),
     mDataStore: PlayBroadcastDataStore = mockk(relaxed = true),
     hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
     sharedPref: HydraSharedPreferences = mockk(relaxed = true),
@@ -49,16 +46,16 @@ internal class PlayBroadcastViewModelRobot(
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastWebSocket: PlayWebSocket = mockk(relaxed = true),
-    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer()),
+    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser()),
     playInteractiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(TestHtmlTextTransformer()),
     productMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
+    broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),
 ) : Closeable {
 
     private val viewModel = PlayBroadcastViewModel(
         handle,
-        livePusherMediator,
         mDataStore,
         hydraConfigStore,
         sharedPref,
@@ -73,6 +70,7 @@ internal class PlayBroadcastViewModelRobot(
         playInteractiveMapper,
         channelRepo,
         logger,
+        broadcastTimer,
     )
 
     fun recordState(fn: suspend PlayBroadcastViewModelRobot.() -> Unit): PlayBroadcastUiState {
@@ -111,9 +109,19 @@ internal class PlayBroadcastViewModelRobot(
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
 
-    fun getConfig() = viewModel.getConfiguration()
+    fun getAccountConfiguration(authorType: String = TYPE_UNKNOWN) = viewModel.submitAction(PlayBroadcastAction.GetAccountList(authorType))
 
-    fun startLive() = viewModel.startLiveStream()
+    fun startLive() = viewModel.submitAction(
+        PlayBroadcastAction.BroadcastStateChanged(
+            PlayBroadcasterState.Started
+        )
+    )
+
+    fun stopLive() = viewModel.submitAction(
+        PlayBroadcastAction.BroadcastStateChanged(
+            PlayBroadcasterState.Stopped
+        )
+    )
 
     suspend fun setPinned(message: String) = act {
         viewModel.submitAction(PlayBroadcastAction.SetPinnedMessage(message))
@@ -125,6 +133,10 @@ internal class PlayBroadcastViewModelRobot(
 
     suspend fun cancelEditPinned() = act {
         viewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
+    }
+
+    suspend fun inputQuizOption(order: Int, text: String) = act {
+        viewModel.submitAction(PlayBroadcastAction.InputQuizOption(order, text))
     }
 
     private suspend fun act(fn: () -> Unit) {

@@ -7,18 +7,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/goto_seamless_main_img"
         android:layout_width="280dp"
         android:layout_height="210dp"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_url="@string/lottie_goto_seamless_illustration"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/goto_seamless_title_txt"
-        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"

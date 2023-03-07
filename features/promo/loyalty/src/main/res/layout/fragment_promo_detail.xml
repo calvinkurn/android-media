@@ -20,7 +20,7 @@
             android:background="@color/Unify_G400"
             android:gravity="center"
             android:textColor="@color/Unify_N0"
-            android:textSize="@dimen/sp_16"
+            android:textSize="16sp"
             tools:text="Belanja Sekarang" />
     </LinearLayout>
 

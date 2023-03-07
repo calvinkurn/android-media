@@ -1,10 +1,8 @@
 package com.tokopedia.contactus.inboxticket2.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
-import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers

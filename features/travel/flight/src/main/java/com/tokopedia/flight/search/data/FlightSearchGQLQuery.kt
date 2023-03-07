@@ -1,10 +1,16 @@
 package com.tokopedia.flight.search.data
 
+import com.tokopedia.flight.search.data.FlightSearchSingleQuery.QUERY_SINGLE
+import com.tokopedia.flight.search.data.FlightSearchCombineQuery.QUERY_COMBINE
+import com.tokopedia.gql_query_annotation.GqlQuery
+
 /**
  * @author by furqan on 03/09/2020
  */
-object FlightSearchGQLQuery {
-    val SEARCH_SINGLE = """
+
+@GqlQuery("QueryFlightSearchSingle", QUERY_SINGLE)
+internal object FlightSearchSingleQuery{
+    const val QUERY_SINGLE = """
         query Searching(${'$'}data:SearchSingleArgs) {
           flightSearch(input:${'$'}data) {
             data {
@@ -92,9 +98,12 @@ object FlightSearchGQLQuery {
             }
           }
         }
-    """.trimIndent()
+    """
+}
 
-    val SEARCH_COMBINE = """
+@GqlQuery("QueryFlightSearchCombine", QUERY_COMBINE)
+internal object FlightSearchCombineQuery{
+    const val QUERY_COMBINE = """
         query searchCombineV3(${'$'}data: SearchCombineArgs!) {
           flightSearchCombineV3(input: ${'$'}data) {
             data {
@@ -133,5 +142,5 @@ object FlightSearchGQLQuery {
             }
           }
         }
-    """.trimIndent()
+    """
 }

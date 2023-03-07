@@ -4,14 +4,19 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
+import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.SpannedString
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -26,14 +31,17 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.reflect.KProperty1
 
 /**
@@ -176,7 +184,12 @@ suspend inline fun View.awaitPreDraw() = suspendCancellableCoroutine<Unit> { con
             return true
         }
     }
-    cont.invokeOnCancellation { vto.removeOnPreDrawListener(listener) }
+    cont.invokeOnCancellation {
+        when {
+            vto.isAlive -> vto.removeOnPreDrawListener(listener)
+            else -> viewTreeObserver.removeOnPreDrawListener(listener)
+        }
+    }
     vto.addOnPreDrawListener(listener)
 }
 
@@ -298,7 +311,6 @@ val List<GraphqlError>.defaultErrorMessage: String
 
 
 fun dismissToaster() {
-    try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 }
 
 fun SpannableStringBuilder.append(
@@ -316,20 +328,53 @@ fun SpannableStringBuilder.append(
     return this
 }
 
+@Deprecated(
+    message = "please use hideKeyboard() from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "hideKeyboard()",
+        imports = ["com.tokopedia.content.common.util.hideKeyboard"]
+    )
+)
 fun Activity.hideKeyboard() {
     val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
 }
 
+@Deprecated(
+    message = "please use hideKeyboard() from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "hideKeyboard()",
+        imports = ["com.tokopedia.content.common.util.hideKeyboard"]
+    )
+)
 fun Fragment.hideKeyboard() {
     activity?.hideKeyboard()
 }
 
+@Deprecated(
+    message = "please use showKeyboard() from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "showKeyboard()",
+        imports = ["com.tokopedia.content.common.util.showKeyboard"]
+    )
+)
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
 
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
+@Deprecated(
+    message = "please use showKeyboard(isShow: Boolean) from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "showKeyboard(isShow)",
+        imports = ["com.tokopedia.content.common.util.showKeyboard"]
+    )
+)
 fun EditText.showKeyboard(isShow: Boolean) {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     if (isShow) imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
@@ -371,4 +416,65 @@ fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
 fun <T: Any> MutableStateFlow<T?>.setValueIfNotNull(fn: T.() -> T) {
     val value = this.value ?: return
     this.value = value.fn()
+}
+
+fun Boolean.switch() : Boolean = !this
+
+inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit): SpannedString {
+    val builder = SpannableStringBuilder()
+    builder.builderAction()
+    return SpannedString(builder)
+}
+
+inline fun SpannableStringBuilder.inSpans(
+    span: Any,
+    builderAction: SpannableStringBuilder.() -> Unit
+): SpannableStringBuilder {
+    val start = length
+    builderAction()
+    setSpan(span, start, length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+    return this
+}
+
+inline fun SpannableStringBuilder.bold(builderAction: SpannableStringBuilder.() -> Unit) =
+    inSpans(StyleSpan(Typeface.BOLD), builderAction = builderAction)
+
+suspend fun getBitmapFromUrl(
+    context: Context,
+    url: String,
+): Bitmap = suspendCancellableCoroutine { cont ->
+    val target = object : CustomTarget<Bitmap>() {
+        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+            if (cont.isActive) cont.resume(resource)
+        }
+
+        override fun onLoadCleared(placeholder: Drawable?) {
+            if (!cont.isActive || cont.isCompleted) return
+            cont.resumeWithException(
+                IllegalStateException("Failed to load image from url: $url")
+            )
+        }
+    }
+
+    Glide.with(context)
+        .asBitmap()
+        .load(url)
+        .into(target)
+
+    cont.invokeOnCancellation {
+        Glide.with(context).clear(target)
+    }
+}
+
+inline fun View.updateLayoutParams(block: ViewGroup.LayoutParams.() -> Unit) {
+    updateLayoutParams<ViewGroup.LayoutParams>(block)
+}
+
+@JvmName("updateLayoutParamsTyped")
+inline fun <reified T : ViewGroup.LayoutParams> View.updateLayoutParams(
+    block: T.() -> Unit
+) {
+    val params = layoutParams as T
+    block(params)
+    layoutParams = params
 }

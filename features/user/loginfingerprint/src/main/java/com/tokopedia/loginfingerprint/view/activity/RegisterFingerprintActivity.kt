@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.di.DaggerLoginFingerprintComponent
 import com.tokopedia.loginfingerprint.di.LoginFingerprintSettingModule
@@ -95,7 +96,7 @@ class RegisterFingerprintActivity: BaseActivity() {
     }
 
     private fun goToVerification() {
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
         intent.putExtra(

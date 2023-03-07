@@ -16,14 +16,14 @@
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/topTicker"
-                app:closeButtonVisibility="gone"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
-                tools:visibility="visible"
+                app:closeButtonVisibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"/>
+                tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvDeadlineHeading"
@@ -33,42 +33,43 @@
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:text="@string/thank_payment_deadline"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/topTicker"
-                app:typographyType="body_3" />
+                app:typographyType="paragraph_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvDeadlineTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/thank_dp_10"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintEnd_toStartOf="@+id/tvDeadlineTimer"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvDeadlineHeading"
-                app:typographyType="body_3"
+                app:typographyType="paragraph_3"
                 app:typographyWeight="bold"
                 tools:text="Minggu, 25 Des 2019, 23:59 WIB" />
 
-            <com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
+            <com.tokopedia.unifycomponents.timer.TimerUnifySingle
                 android:id="@+id/tvDeadlineTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvDeadlineTime" />
-
+                app:layout_constraintTop_toTopOf="@+id/tvDeadlineHeading"
+                app:timer_unify_single_showClockIcon="true"
+                app:timer_unify_single_type="hour"
+                app:timer_unify_single_variant="main" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/view_divider_1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/spacing_lvl4"
+                android:background="@color/Unify_NN50"
                 app:layout_constraintTop_toBottomOf="@+id/tvDeadlineTime" />
 
 
@@ -79,11 +80,11 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintEnd_toStartOf="@+id/ivPaymentGatewayImage"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_1"
-                app:typographyType="heading_5"
+                app:typographyType="display_2"
                 app:typographyWeight="bold"
                 tools:text="Name of Payment Gateway" />
 
@@ -95,10 +96,10 @@
                 android:layout_marginRight="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/unify_space_12"
                 android:paddingBottom="@dimen/unify_space_12"
-                app:unify_image_corner_radius="0"
-                app:unify_image_type="rect"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_divider_1" />
+                app:layout_constraintTop_toBottomOf="@+id/view_divider_1"
+                app:unify_image_corner_radius="0"
+                app:unify_image_type="rect" />
 
 
             <com.tokopedia.unifycomponents.DividerUnify
@@ -117,11 +118,11 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_2"
-                app:typographyType="body_3"
+                app:typographyType="paragraph_3"
                 tools:text="Kode Pembayaran"
                 tools:visibility="visible" />
 
@@ -130,10 +131,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/tvAccountNumberTypeTag"
-                app:typographyType="body_2"
+                app:typographyType="paragraph_2"
                 app:typographyWeight="bold"
                 tools:text="KDSLDNFS4759834759"
                 tools:visibility="visible" />
@@ -157,25 +158,25 @@
                 android:id="@+id/tvAccountNumberCopy"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/thank_copy"
                 android:layout_marginEnd="@dimen/unify_space_8"
-                android:textColor="@color/Unify_G500"
+                android:text="@string/thank_copy"
+                android:textColor="@color/Unify_GN500"
                 app:layout_constraintBottom_toBottomOf="@+id/tvAccountNumber"
                 app:layout_constraintEnd_toStartOf="@+id/icCopyAccountNumber"
                 app:layout_constraintTop_toTopOf="@+id/tvAccountNumber"
-                app:typographyType="heading_6"
+                app:typographyType="paragraph_3"
                 app:typographyWeight="bold" />
-            
+
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/icCopyAccountNumber"
-                app:icon_name="COPY"
+                android:layout_width="@dimen/unify_font_16"
+                android:layout_height="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_font_16"
+                app:icon_name="COPY"
                 app:layout_constraintBottom_toBottomOf="@+id/tvAccountNumber"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvAccountNumber"
-                app:icon_color_light_enable="@color/Unify_G500"
-                android:layout_width="@dimen/unify_font_16"
-                android:layout_height="@dimen/unify_space_16"/>
+                app:icon_color_light_enable="@color/Unify_G500"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTotalAmountLabel"
@@ -183,10 +184,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:text="@string/thank_total_amount_label"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintStart_toStartOf="@+id/tvBankName"
                 app:layout_constraintTop_toBottomOf="@+id/tvBankName"
-                app:typographyType="body_3" />
+                app:typographyType="paragraph_3" />
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -194,12 +195,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                app:layout_constraintHorizontal_bias="0"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintEnd_toStartOf="@+id/tvSeeDetail"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="@+id/tvTotalAmountLabel"
                 app:layout_constraintTop_toBottomOf="@+id/tvTotalAmountLabel"
-                app:typographyType="heading_5"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="bold"
                 tools:text="RP 43.434.434.434" />
 
 
@@ -223,11 +225,11 @@
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"
                 android:text="@string/thank_see_detail"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTotalAmount"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTotalAmountLabel"
-                app:typographyType="body_3"
+                app:typographyType="paragraph_3"
                 app:typographyWeight="bold" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
@@ -262,11 +264,11 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:gravity="center"
                 android:text="@string/thank_see_payment_methods"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_3"
-                app:typographyType="body_3"
+                app:typographyType="display_2"
                 app:typographyWeight="bold" />
 
             <com.tokopedia.unifycomponents.DividerUnify
@@ -274,6 +276,7 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/spacing_lvl4"
+                android:background="@color/Unify_NN50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvSeePaymentMethods" />
@@ -287,11 +290,11 @@
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:gravity="center"
                 android:text="@string/thank_processing_payment_check_order"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_divider_4"
-                app:typographyType="body_3" />
+                app:typographyType="paragraph_3" />
 
 
             <com.tokopedia.unifycomponents.UnifyButton
@@ -331,6 +334,7 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/spacing_lvl4"
+                android:background="@color/Unify_N50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnCheckPaymentStatus" />
@@ -367,8 +371,8 @@
         android:id="@+id/loadingLayout"
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl7"
-        android:padding="@dimen/thank_dp_10"
         android:layout_gravity="center"
+        android:padding="@dimen/thank_dp_10"
         android:visibility="gone" />
 
 </FrameLayout>

@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black_70">@color/Unify_N700_68</color>
-    <color name="grey_hint">@color/Unify_N100</color>
-    <color name="medium_green">@color/Unify_G500</color>
-    <color name="black_54">@color/Unify_N700_44</color>
-    <color name="tkpd_dark_gray">@color/Unify_N200</color>
-    <color name="orange_red">@color/Unify_Y500</color>
-    <color name="countdown_background">@color/Unify_Y500</color>
-    <color name="grey_hint_full">@color/Unify_N100</color>
-
-    <color name="home_beauty_fest_light_dms">#FF70A6</color>
-    <color name="home_beauty_fest_dark_dms">#D74B83</color>
-
     <color name="home_dms_gradient_action_play">#00000000</color>
     <color name="home_dms_color_pending_tokocash">#B3000000</color>
     <color name="home_dms_color_pending_tokocash_disabled">#61000000</color>
     <color name="home_dms_color_banner_label_type">#31353b</color>
+
+    <color name="home_dms_header_background_top">#1BB56D</color>
+    <color name="home_dms_header_background_bottom">#089855</color>
+    <color name="home_dms_color_transparent">#00000000</color>
 </resources>

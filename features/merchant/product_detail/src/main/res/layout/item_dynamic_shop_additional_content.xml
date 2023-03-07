@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shop_additional_content_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_begin"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
+
+    <ImageView
+        android:id="@+id/shop_additional_image"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:contentDescription="custom_image"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/shop_additional_title"
+        app:layout_constraintStart_toEndOf="@id/guideline_begin"
+        app:layout_constraintTop_toTopOf="@id/shop_additional_title"
+        tools:ignore="HardcodedText"
+        tools:src="@drawable/ic_power_merchant"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_additional_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toStartOf="@+id/shop_additional_action_label"
+        app:layout_constraintStart_toEndOf="@+id/shop_additional_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Bangga Buatan Indonesiaa"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_additional_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/pdp_dp_3"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_begin"
+        app:layout_constraintTop_toBottomOf="@+id/shop_additional_title"
+        app:typographyType="display_2"
+        tools:text="Buktikan kamu bangga beli produk dalam negeri.Bacass SK untuk dapat cashback."
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_additional_action_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="0dp"
+        android:text="@string/pdp_general_info_see"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="@id/shop_additional_title"
+        app:layout_constraintEnd_toStartOf="@id/guideline_end"
+        app:layout_constraintTop_toTopOf="@id/shop_additional_title"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold"
+        tools:visibility="visible" />
+
+    <HorizontalScrollView
+        android:id="@+id/shop_additional_scrollview_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingHorizontal="16dp"
+        android:scrollbars="none"
+        android:clipToPadding="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shop_additional_description">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/shop_additional_container_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipSpacingHorizontal="4dp"
+            app:chipSpacingVertical="4dp" />
+    </HorizontalScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

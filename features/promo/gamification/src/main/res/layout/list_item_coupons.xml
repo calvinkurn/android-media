@@ -9,7 +9,7 @@
         android:id="@+id/appCompatImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/colorGray"
+        android:background="@color/Unify_N150"
         app:layout_constraintDimensionRatio="h,3:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -41,14 +41,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/gami_min_transaction"
-                android:textColor="@color/gf_loader_title_color"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="small" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSubTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/gf_loader_title_color"
+                android:textColor="@color/Unify_N700_96"
                 android:textSize="14sp"
                 app:typographyType="heading_5"
                 tools:text="Rp100.000" />

@@ -12,7 +12,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.pms.analytics.PmsIdlingResource
 import com.tokopedia.pms.analytics.actionTest
 import com.tokopedia.pms.paymentlist.presentation.activity.PaymentListActivity
@@ -40,7 +40,6 @@ class PaymentListActivityTest {
     var cassavaTestRule = CassavaTestRule(false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val idlingRes = PmsIdlingResource.getIdlingResource()
 
     @Before
     fun setUp() {
@@ -52,7 +51,6 @@ class PaymentListActivityTest {
             )
         )
 
-        IdlingRegistry.getInstance().register(idlingRes)
         login()
         setupGraphqlMockResponse {
             addMockResponse(
@@ -85,26 +83,28 @@ class PaymentListActivityTest {
     @After
     fun finish() {
         Intents.release()
-        IdlingRegistry.getInstance().unregister(idlingRes)
     }
 
     @Test
     fun validatePaymentListEvents() {
         actionTest {
+            Thread.sleep(5000)
             testChevronClick(0)
+            Thread.sleep(5000)
             clickItemOnActionBottomSheet(0)
+            Thread.sleep(5000)
             clickItemOnDetailBottomSheet(0, com.tokopedia.pms.R.id.tvCancelTransaction)
+            Thread.sleep(5000)
             clickDialogButton(false)
-            Thread.sleep(3000)
-
+            Thread.sleep(5000)
             testCardClick(0)
-            Thread.sleep(3000)
+            Thread.sleep(5000)
             clickItemOnDetailBottomSheet(0, com.tokopedia.pms.R.id.goToHowToPay)
-            Thread.sleep(3000)
+            Thread.sleep(5000)
             pressBack()
 
             clickHtpTest(0)
-            Thread.sleep(3000)
+            Thread.sleep(5000)
             pressBack()
 
         } assertTest {
@@ -116,23 +116,29 @@ class PaymentListActivityTest {
     @Test
     fun validateChangeBankAccountEvents() {
         actionTest {
-            // change klic bca id
+           //  change klic bca id
+            Thread.sleep(5000)
             testChevronClick(1)
+            Thread.sleep(5000)
             clickItemOnActionBottomSheet(0)
-            Thread.sleep(3000)
-            actionClickView(R.id.button_use)
-            Thread.sleep(3000)
+            Thread.sleep(5000)
+            actionClickString("Terapkan")
 
             // change bank account details
+            Thread.sleep(5000)
             testChevronClick(2)
+            Thread.sleep(5000)
             clickItemOnActionBottomSheet(0)
-            Thread.sleep(3000)
-            actionClickView(R.id.button_use)
-            Thread.sleep(3000)
+            Thread.sleep(5000)
+            actionClickString("Terapkan")
+            Thread.sleep(5000)
 
             testChevronClick(2)
+            Thread.sleep(5000)
             clickItemOnActionBottomSheet(1)
+            Thread.sleep(5000)
             pressBack()
+
 
         } assertTest {
             validate(cassavaTestRule, PAYMENT_EDIT_TRACKER_PATH)

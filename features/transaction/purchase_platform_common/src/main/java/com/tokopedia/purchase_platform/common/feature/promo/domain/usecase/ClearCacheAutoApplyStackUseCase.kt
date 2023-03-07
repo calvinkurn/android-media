@@ -1,10 +1,11 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
@@ -13,31 +14,30 @@ import javax.inject.Inject
 
 class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) : UseCase<ClearPromoUiModel>() {
 
-    private var queryString: String = ""
+    private var params: Map<String, Any> = emptyMap()
 
     companion object {
         const val PARAM_VALUE_MARKETPLACE = "marketplace"
 
-        const val PARAM_PLACEHOLDER_SERVICE_ID = "#serviceId"
-        const val PARAM_PLACEHOLDER_PROMO_CODE = "#promoCode"
-        const val PARAM_PLACEHOLDER_IS_OCC = "#isOCC"
+        const val PARAM_PLACEHOLDER_SERVICE_ID = "serviceID"
+        const val PARAM_PLACEHOLDER_IS_OCC = "isOCC"
+        const val PARAM_PLACEHOLDER_ORDER_DATA = "orderData"
+
+        const val QUERY_CLEAR_CACHE_AUTO_APPLY = "ClearCacheAutoApplyQuery"
     }
 
-    fun setParams(serviceId: String, promoCodeList: ArrayList<String>, isOcc: Boolean = false): ClearCacheAutoApplyStackUseCase {
-        queryString = query()
-                .replace(PARAM_PLACEHOLDER_SERVICE_ID, serviceId)
-                .replace(PARAM_PLACEHOLDER_PROMO_CODE, Gson().toJson(promoCodeList))
-                .replace(PARAM_PLACEHOLDER_IS_OCC, isOcc.toString())
+    fun setParams(request: ClearPromoRequest): ClearCacheAutoApplyStackUseCase {
+        params = mapOf(
+                PARAM_PLACEHOLDER_SERVICE_ID to request.serviceId,
+                PARAM_PLACEHOLDER_IS_OCC to request.isOcc,
+                PARAM_PLACEHOLDER_ORDER_DATA to request.orderData,
+        )
         return this
     }
 
+    @GqlQuery(QUERY_CLEAR_CACHE_AUTO_APPLY, CLEAR_CACHE_AUTO_APPLY_QUERY)
     override suspend fun executeOnBackground(): ClearPromoUiModel {
-        val query = queryString
-        if (query.isEmpty()) {
-            throw RuntimeException("Query has not been initialized!")
-        }
-
-        val request = GraphqlRequest(query, ClearCacheAutoApplyStackResponse::class.java)
+        val request = GraphqlRequest(ClearCacheAutoApplyQuery(), ClearCacheAutoApplyStackResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<ClearCacheAutoApplyStackResponse>()
         return ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -47,12 +47,4 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext pr
                 )
         )
     }
-
-    private fun query() = """
-            mutation {
-                clearCacheAutoApplyStack(serviceID: "#serviceId", promoCode: #promoCode, isOCC: #isOCC) {
-                    Success
-                    ticker_message
-                }
-            }""".trimIndent()
 }

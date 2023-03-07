@@ -12,7 +12,7 @@
             "tracking": [
               {
                 "action": "impression",
-                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression lego banners\",\"eventLabel\":\"\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"4\",\"item_name\":\"SMM PTN \",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/f245ec4c-821b-4082-beea-d22ef01ad819.jpg\",\"creative_slot\":\"0\"},{\"item_id\":\"3\",\"item_name\":\"BPJS\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/a1fd8f20-5c59-4176-a5d7-5449e7bf976d.jpg\",\"creative_slot\":\"1\"},{\"item_id\":\"1\",\"item_name\":\"E-money\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/de698f4e-46b2-43b5-90fe-2cc232955183.jpg\",\"creative_slot\":\"2\"},{\"item_id\":\"5\",\"item_name\":\"INDOSAT\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/5204db35-efcb-4e37-bbb1-38167958df0a.jpg\",\"creative_slot\":\"3\"},{\"item_id\":\"7\",\"item_name\":\"IPL\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/0162c88d-1a89-4cbf-95c8-9c57df3736d4.jpg\",\"creative_slot\":\"4\"},{\"item_id\":\"6\",\"item_name\":\"MANDIRI KARTU KREDIT\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/d35228cd-49fc-41d9-b27b-9014578f71aa.jpg\",\"creative_slot\":\"5\"}]}"
+                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression lego banners\",\"eventLabel\":\"\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"4\",\"item_name\":\"SMM PTN \",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/f245ec4c-821b-4082-beea-d22ef01ad819.jpg\",\"creative_slot\":\"0\"},{\"item_id\":\"3\",\"item_name\":\"BPJS\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/a1fd8f20-5c59-4176-a5d7-5449e7bf976d.jpg\",\"creative_slot\":\"1\"},{\"item_id\":\"1\",\"item_name\":\"E-money\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/de698f4e-46b2-43b5-90fe-2cc232955183.jpg\",\"creative_slot\":\"2\"},{\"item_id\":\"5\",\"item_name\":\"INDOSAT\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/5204db35-efcb-4e37-bbb1-38167958df0a.jpg\",\"creative_slot\":\"3\"},{\"item_id\":\"7\",\"item_name\":\"IPL\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/0162c88d-1a89-4cbf-95c8-9c57df3736d4.jpg\",\"creative_slot\":\"4\"},{\"item_id\":\"6\",\"item_name\":\"MANDIRI KARTU KREDIT\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/d35228cd-49fc-41d9-b27b-9014578f71aa.jpg\",\"creative_slot\":\"5\"}]}"
               }
             ],
             "items": [
@@ -23,14 +23,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"0 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"4\",\"item_name\":\"SMM PTN \",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/f245ec4c-821b-4082-beea-d22ef01ad819.jpg\",\"creative_slot\":\"0\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"0 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"4\",\"item_name\":\"SMM PTN \",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/f245ec4c-821b-4082-beea-d22ef01ad819.jpg\",\"creative_slot\":\"0\"}]}"
                   }
                 ],
                 "content": "",
                 "app_link": "tokopedia://digital/form?category_id=52&menu_id=153&template=general",
                 "web_link": "https://www.tokopedia.com/pendidikan/smm-ptn-barat/",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/f245ec4c-821b-4082-beea-d22ef01ad819.jpg",
+                "media_url": "https://images.tokopedia.net/img/AtBaCW/2020/9/2/f245ec4c-821b-4082-beea-d22ef01ad819.jpg",
                 "template": "",
                 "button_type": "",
                 "label_1": "",
@@ -46,14 +46,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"1 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"3\",\"item_name\":\"BPJS\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/a1fd8f20-5c59-4176-a5d7-5449e7bf976d.jpg\",\"creative_slot\":\"1\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"1 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"3\",\"item_name\":\"BPJS\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/a1fd8f20-5c59-4176-a5d7-5449e7bf976d.jpg\",\"creative_slot\":\"1\"}]}"
                   }
                 ],
                 "content": "",
                 "app_link": "tokopedia://webview?url=https://www.tokopedia.com/langganan/add?menu_id=126&operator_id=13&product_id=279&label=&name=BPJS&repeat_type=3",
                 "web_link": "https://www.tokopedia.com/langganan/add?menu_id=126&operator_id=13&product_id=279&label=&name=BPJS&repeat_type=3",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/a1fd8f20-5c59-4176-a5d7-5449e7bf976d.jpg",
+                "media_url": "https://images.tokopedia.net/img/AtBaCW/2020/9/2/a1fd8f20-5c59-4176-a5d7-5449e7bf976d.jpg",
                 "template": "",
                 "button_type": "",
                 "label_1": "",
@@ -69,14 +69,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"2 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"1\",\"item_name\":\"E-money\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/de698f4e-46b2-43b5-90fe-2cc232955183.jpg\",\"creative_slot\":\"2\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"2 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"1\",\"item_name\":\"E-money\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/de698f4e-46b2-43b5-90fe-2cc232955183.jpg\",\"creative_slot\":\"2\"}]}"
                   }
                 ],
                 "content": "",
                 "app_link": "tokopedia://webview?url=https://www.tokopedia.com/discovery/digital-e-money",
                 "web_link": "https://www.tokopedia.com/discovery/digital-e-money",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/de698f4e-46b2-43b5-90fe-2cc232955183.jpg",
+                "media_url": "https://images.tokopedia.net/img/AtBaCW/2020/9/2/de698f4e-46b2-43b5-90fe-2cc232955183.jpg",
                 "template": "",
                 "button_type": "",
                 "label_1": "",
@@ -92,14 +92,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"3 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"5\",\"item_name\":\"INDOSAT\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/5204db35-efcb-4e37-bbb1-38167958df0a.jpg\",\"creative_slot\":\"3\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"3 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"5\",\"item_name\":\"INDOSAT\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/5204db35-efcb-4e37-bbb1-38167958df0a.jpg\",\"creative_slot\":\"3\"}]}"
                   }
                 ],
                 "content": "",
                 "app_link": "tokopedia://webview?url=https://www.tokopedia.com/discovery/digital-telco-2",
                 "web_link": "https://www.tokopedia.com/discovery/digital-telco-2",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/5204db35-efcb-4e37-bbb1-38167958df0a.jpg",
+                "media_url": "https://images.tokopedia.net/img/AtBaCW/2020/9/2/5204db35-efcb-4e37-bbb1-38167958df0a.jpg",
                 "template": "",
                 "button_type": "",
                 "label_1": "",
@@ -115,14 +115,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"4 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7\",\"item_name\":\"IPL\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/0162c88d-1a89-4cbf-95c8-9c57df3736d4.jpg\",\"creative_slot\":\"4\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"4 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"7\",\"item_name\":\"IPL\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/0162c88d-1a89-4cbf-95c8-9c57df3736d4.jpg\",\"creative_slot\":\"4\"}]}"
                   }
                 ],
                 "content": "",
                 "app_link": "tokopedia://digital/form?category_id=53&menu_id=151&template=general",
                 "web_link": "https://www.tokopedia.com/tagihan/ipl",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/0162c88d-1a89-4cbf-95c8-9c57df3736d4.jpg",
+                "media_url": "https://images.tokopedia.net/img/AtBaCW/2020/9/2/0162c88d-1a89-4cbf-95c8-9c57df3736d4.jpg",
                 "template": "",
                 "button_type": "",
                 "label_1": "",
@@ -138,14 +138,14 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"5 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"6\",\"item_name\":\"MANDIRI KARTU KREDIT\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/d35228cd-49fc-41d9-b27b-9014578f71aa.jpg\",\"creative_slot\":\"5\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click lego banners\",\"eventLabel\":\"5 - Yang Baru Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"6\",\"item_name\":\"MANDIRI KARTU KREDIT\",\"creative_name\":\"https://images.tokopedia.net/img/AtBaCW/2020/9/2/d35228cd-49fc-41d9-b27b-9014578f71aa.jpg\",\"creative_slot\":\"5\"}]}"
                   }
                 ],
                 "content": "",
                 "app_link": "tokopedia://digital/form?category_id=26&menu_id=169&template=tagihancc",
                 "web_link": "https://www.tokopedia.com/tagihan/kartu-kredit/",
                 "text_link": "",
-                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/d35228cd-49fc-41d9-b27b-9014578f71aa.jpg",
+                "media_url": "https://images.tokopedia.net/img/AtBaCW/2020/9/2/d35228cd-49fc-41d9-b27b-9014578f71aa.jpg",
                 "template": "",
                 "button_type": "",
                 "label_1": "",

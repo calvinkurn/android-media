@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
@@ -55,7 +56,7 @@ class ActivePushNotifFragment : BaseOtpFragment() {
             viewBound.ticker?.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     analytics.trackClickChangePasswordSettingButton()
-                    context?.startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.HAS_PASSWORD))
+                    context?.startActivity(RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.HAS_PASSWORD))
                 }
 
                 override fun onDismiss() {}

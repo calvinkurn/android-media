@@ -30,16 +30,19 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
+import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 
-class ShopPageActivity : BaseSimpleActivity(),
-        HasComponent<ShopComponent>,
-        HasSharedViewModel,
-        ShopPagePerformanceMonitoringListener {
+class ShopPageActivity :
+    BaseSimpleActivity(),
+    HasComponent<ShopComponent>,
+    HasSharedViewModel,
+    ShopPagePerformanceMonitoringListener,
+    ShopPageSharedListener {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -49,10 +52,10 @@ class ShopPageActivity : BaseSimpleActivity(),
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageActivity::class.java)
-                .apply {
-                    putExtra(SHOP_ID, shopId)
-                    putExtra(SHOP_REF, shopRef)
-                }
+            .apply {
+                putExtra(SHOP_ID, shopId)
+                putExtra(SHOP_REF, shopRef)
+            }
     }
 
     private val sellerMigrationDestinationApplink by lazy {
@@ -114,9 +117,9 @@ class ShopPageActivity : BaseSimpleActivity(),
 
     private fun initPerformanceMonitoring() {
         performanceMonitoringShop = PageLoadTimePerformanceCallback(
-                SHOP_TRACE_PREPARE,
-                SHOP_TRACE_MIDDLE,
-                SHOP_TRACE_RENDER
+            SHOP_TRACE_PREPARE,
+            SHOP_TRACE_MIDDLE,
+            SHOP_TRACE_RENDER
         )
         performanceMonitoringShop?.startMonitoring(SHOP_TRACE)
         performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
@@ -130,13 +133,13 @@ class ShopPageActivity : BaseSimpleActivity(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode){
+        when (requestCode) {
             MvcView.REQUEST_CODE -> {
-                if (resultCode == MvcView.RESULT_CODE_OK){
+                if (resultCode == MvcView.RESULT_CODE_OK) {
                     (fragment as? NewShopPageFragment)?.refreshData()
                 }
             }
-            else ->{
+            else -> {
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
@@ -205,4 +208,21 @@ class ShopPageActivity : BaseSimpleActivity(),
     override fun getParentViewResourceID(): Int {
         return R.id.parent_view
     }
+
+    override fun createPdpAffiliateLink(basePdpAppLink: String): String {
+        return (fragment as? NewShopPageFragment)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
+    }
+
+    override fun createAffiliateCookieAtcProduct(
+        productId: String,
+        isVariant: Boolean,
+        stockQty: Int
+    ) {
+        (fragment as? NewShopPageFragment)?.createAffiliateCookieAtcProduct(
+            productId,
+            isVariant,
+            stockQty
+        )
+    }
+
 }

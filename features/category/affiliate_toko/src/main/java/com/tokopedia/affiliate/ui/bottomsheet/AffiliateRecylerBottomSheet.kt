@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetAdapterFactory
 import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetAdapter
+import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetAdapterFactory
 import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetDiffcallback
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
@@ -27,8 +27,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -89,7 +89,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     }
 
     private fun initDivider() {
-        if((listItem as? List<*>)?.isNotEmpty() == true && type == TYPE_HOME && viewModel?.isFeatureWhiteListed() == true) {
+        if((listItem as? List<*>)?.isNotEmpty() == true && type == TYPE_HOME ) {
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.show()
             setTicker()
         }else{
@@ -99,15 +99,15 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
 
     private fun setTicker() {
         if(tickerDesc.isNotEmpty()){
-            contentView?.findViewById<Ticker>(R.id.affiliate_metric_announcement_ticker)?.apply {
-                isVisible = true
-                setTextDescription(tickerDesc)
+            contentView?.findViewById<CardUnify2>(R.id.affiliate_metric_announcement_ticker_cv)?.isVisible = true
+            contentView?.findViewById<Typography>(R.id.affiliate_metric_announcement_ticker)?.apply {
+                text = tickerDesc
             }
         }
     }
 
     private fun initList(listItem: Any?) {
-        if(type == TYPE_HOME && viewModel?.isFeatureWhiteListed() == true){
+        if(type == TYPE_HOME){
             var metricList = (listItem as? List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>)
             metricList =  metricList?.sortedBy { subMetrics -> subMetrics?.order  }
             metricList?.forEachIndexed { index, subMetrics ->

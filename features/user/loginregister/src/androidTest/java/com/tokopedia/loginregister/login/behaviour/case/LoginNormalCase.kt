@@ -22,14 +22,15 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
-import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.LoginToken
@@ -56,7 +57,7 @@ class LoginNormalCase : LoginBase() {
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWith(
                 Instrumentation.ActivityResult(
                     Activity.RESULT_OK,
                     Intent()
@@ -64,7 +65,7 @@ class LoginNormalCase : LoginBase() {
             )
             inputEmailOrPhone("082242454504")
             clickSubmit()
-            intended(hasData(ApplinkConstInternalGlobal.COTP))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 
@@ -98,7 +99,7 @@ class LoginNormalCase : LoginBase() {
     fun showSocialMediaBottomSheet_True() {
         runTest {
             clickSocmedButton()
-            shouldBeDisplayed(R.id.socmed_container)
+            shouldBeDisplayed(R.id.providerName)
         }
     }
 
@@ -150,7 +151,7 @@ class LoginNormalCase : LoginBase() {
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWith(
                 Instrumentation.ActivityResult(
                     Activity.RESULT_OK,
                     Intent().apply {
@@ -171,7 +172,7 @@ class LoginNormalCase : LoginBase() {
                 .perform(click())
 
 
-            intended(hasData(ApplinkConstInternalGlobal.COTP))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 
@@ -245,11 +246,10 @@ class LoginNormalCase : LoginBase() {
     @Test
     fun whenForgotPasswordIsClicked_TheApplinkPageIsLaunched() {
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD)).respondWith(
-                Instrumentation.ActivityResult(Activity.RESULT_OK, Intent())
+            intending(hasData(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)).respondWith(
+                Instrumentation.ActivityResult(Activity.RESULT_OK, null)
             )
             clickForgotPass()
-            intended(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD))
         }
     }
 
@@ -266,7 +266,7 @@ class LoginNormalCase : LoginBase() {
         checkEmailExtensionShownAfterAddAt()
         onView(withId(R.id.input_email_phone))
             .perform(pressKey(KeyEvent.KEYCODE_DEL))
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo")
+        isDisplayingGivenText("yoris.prayogo")
         isEmailExtensionDismissed()
         inputEmailOrPhone("@")
         isEmailExtensionDisplayed()
@@ -284,7 +284,7 @@ class LoginNormalCase : LoginBase() {
                         clickOnViewChild(R.id.textEmailExtension)
                     )
             )
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@gmail.com")
+        isDisplayingGivenText("yoris.prayogo@gmail.com")
     }
 
     @Test
@@ -303,7 +303,7 @@ class LoginNormalCase : LoginBase() {
                         clickOnViewChild(R.id.textEmailExtension)
                     )
             )
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@outlook.com")
+        isDisplayingGivenText("yoris.prayogo@outlook.com")
     }
 
     @Test

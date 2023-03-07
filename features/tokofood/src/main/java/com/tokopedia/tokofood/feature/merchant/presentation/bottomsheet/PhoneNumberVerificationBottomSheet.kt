@@ -68,6 +68,8 @@ class PhoneNumberVerificationBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
-        showNow(fragmentManager, TAG)
+        if (!isVisible) {
+            show(fragmentManager, TAG)
+        }
     }
 }

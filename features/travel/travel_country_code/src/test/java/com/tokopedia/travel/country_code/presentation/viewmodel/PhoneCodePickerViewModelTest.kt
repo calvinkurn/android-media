@@ -1,9 +1,9 @@
 package com.tokopedia.travel.country_code.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.travel.country_code.DummyGqlQueryInterface
 import com.tokopedia.travel.country_code.domain.TravelCountryCodeUseCase
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
-import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -25,6 +25,7 @@ class PhoneCodePickerViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val coroutineDispatcher = CoroutineTestDispatchers
+    private val fakeGqlQueryInterface = DummyGqlQueryInterface()
 
     private lateinit var phoneCodePickerViewModel: PhoneCodePickerViewModel
 
@@ -44,7 +45,7 @@ class PhoneCodePickerViewModelTest {
         coEvery { travelCountryCodeUseCase.execute(any()) } returns Success(expected)
 
         //when
-        phoneCodePickerViewModel.getCountryList(TravelCountryCodeGqlQuery.ALL_COUNTRY)
+        phoneCodePickerViewModel.getCountryList(fakeGqlQueryInterface)
 
         //then
         val result = phoneCodePickerViewModel.countryList.value
@@ -70,7 +71,7 @@ class PhoneCodePickerViewModelTest {
         coEvery { travelCountryCodeUseCase.execute(any()) } returns Success(expected)
 
         //when
-        phoneCodePickerViewModel.getCountryList(TravelCountryCodeGqlQuery.ALL_COUNTRY)
+        phoneCodePickerViewModel.getCountryList(fakeGqlQueryInterface)
 
         //then
         val result = phoneCodePickerViewModel.filteredCountryList.value
@@ -95,7 +96,7 @@ class PhoneCodePickerViewModelTest {
         coEvery { travelCountryCodeUseCase.execute(any()) } returns Fail(expected)
 
         //when
-        phoneCodePickerViewModel.getCountryList(TravelCountryCodeGqlQuery.ALL_COUNTRY)
+        phoneCodePickerViewModel.getCountryList(fakeGqlQueryInterface)
 
         //then
         val result = phoneCodePickerViewModel.countryList.value
@@ -115,7 +116,7 @@ class PhoneCodePickerViewModelTest {
         coEvery { travelCountryCodeUseCase.execute(any()) } returns Fail(expected)
 
         //when
-        phoneCodePickerViewModel.getCountryList(TravelCountryCodeGqlQuery.ALL_COUNTRY)
+        phoneCodePickerViewModel.getCountryList(fakeGqlQueryInterface)
 
         //then
         val result = phoneCodePickerViewModel.filteredCountryList.value
@@ -131,7 +132,7 @@ class PhoneCodePickerViewModelTest {
     @Test
     fun `filter country list with valid countryName keyword when country list success fetched should be success`(){
         //given
-        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val rawQuery = fakeGqlQueryInterface
         val keyword = "Korea"
         val expected = listOf(TravelCountryPhoneCode(countryId = "ID", countryName = "Indonesia", countryPhoneCode = 62),
             TravelCountryPhoneCode(countryId = "KR", countryName = "Korea Selatan", countryPhoneCode = 82),
@@ -167,7 +168,7 @@ class PhoneCodePickerViewModelTest {
     @Test
     fun `filter country list with valid countryId keyword when country list success fetched should be success`(){
         //given
-        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val rawQuery = fakeGqlQueryInterface
         val keyword = "JP"
         val expected = listOf(TravelCountryPhoneCode(countryId = "ID", countryName = "Indonesia", countryPhoneCode = 62),
             TravelCountryPhoneCode(countryId = "KR", countryName = "Korea Selatan", countryPhoneCode = 82),
@@ -203,7 +204,7 @@ class PhoneCodePickerViewModelTest {
     @Test
     fun `filter country list with valid countryPhoneCode keyword when country list success fetched should be success`() {
         //given
-        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val rawQuery = fakeGqlQueryInterface
         val keyword = "81"
         val expected = listOf(TravelCountryPhoneCode(countryId = "ID", countryName = "Indonesia", countryPhoneCode = 62),
             TravelCountryPhoneCode(countryId = "KR", countryName = "Korea Selatan", countryPhoneCode = 82),
@@ -239,7 +240,7 @@ class PhoneCodePickerViewModelTest {
     @Test
     fun `filter country list with empty keyword when country list success fetched should be success`(){
         //given
-        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val rawQuery = fakeGqlQueryInterface
         val keyword = ""
         val expected = listOf(TravelCountryPhoneCode(countryId = "ID", countryName = "Indonesia", countryPhoneCode = 62),
             TravelCountryPhoneCode(countryId = "KR", countryName = "Korea Selatan", countryPhoneCode = 82),
@@ -273,7 +274,7 @@ class PhoneCodePickerViewModelTest {
     @Test
     fun `filter country list with invalid keyword when country list success fetched should be success`(){
         //given
-        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val rawQuery = fakeGqlQueryInterface
         val keyword = "*()&"
         val expected = listOf(TravelCountryPhoneCode(countryId = "ID", countryName = "Indonesia", countryPhoneCode = 62),
             TravelCountryPhoneCode(countryId = "KR", countryName = "Korea Selatan", countryPhoneCode = 82),
@@ -307,7 +308,7 @@ class PhoneCodePickerViewModelTest {
     @Test
     fun `filter country list with valid countryName keyword when country list failed fetched should be failed`(){
         //given
-        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val rawQuery = fakeGqlQueryInterface
         val keyword = "Korea"
         val expected = Throwable(message = "fetch failed")
 
@@ -335,7 +336,7 @@ class PhoneCodePickerViewModelTest {
     @Test
     fun `filter country list with valid countryCode keyword when country list failed fetched should be failed`(){
         //given
-        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val rawQuery = fakeGqlQueryInterface
         val keyword = "KR"
         val expected = Throwable(message = "fetch failed")
 
@@ -363,7 +364,7 @@ class PhoneCodePickerViewModelTest {
     @Test
     fun `filter country list with valid number keyword when country list failed fetched should be failed`(){
         //given
-        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val rawQuery = fakeGqlQueryInterface
         val keyword = "82"
         val expected = Throwable(message = "fetch failed")
 
@@ -391,7 +392,7 @@ class PhoneCodePickerViewModelTest {
     @Test
     fun `filter country list with invalid keyword when country list failed fetched should be failed`(){
         //given
-        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val rawQuery = fakeGqlQueryInterface
         val keyword = "&*("
         val expected = Throwable(message = "fetch failed")
 
@@ -419,7 +420,7 @@ class PhoneCodePickerViewModelTest {
     @Test
     fun `filter country list with empty keyword when country list failed fetched should be failed`(){
         //given
-        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val rawQuery = fakeGqlQueryInterface
         val keyword = ""
         val expected = Throwable(message = "fetch failed")
 

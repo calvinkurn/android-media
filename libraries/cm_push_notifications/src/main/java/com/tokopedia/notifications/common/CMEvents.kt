@@ -92,7 +92,7 @@ object IrisAnalyticsEvents {
     fun sendFirstScreenEvent(context: Context?){
         context?.let {
             val map: MutableMap<String, Any> = mutableMapOf(
-                    IRIS_ANALYTICS_EVENT_KEY to IRIS_ANALYTICS_APP_SITE_OPEN
+                IRIS_ANALYTICS_EVENT_KEY to IRIS_ANALYTICS_APP_SITE_OPEN
             )
             IrisAnalytics.Companion.getInstance(context.applicationContext).saveEvent(map)
         }
@@ -132,7 +132,7 @@ object IrisAnalyticsEvents {
         values[SOURCE] = CMNotificationUtils.getApplicationName(context)
         values[PARENT_ID] = baseNotificationModel.parentId.toString()
         values[PUSH_TYPE] = baseNotificationModel.type.let { baseNotificationModel.type }
-                ?: ""
+            ?: ""
         if (CMConstant.NotificationType.SILENT_PUSH != baseNotificationModel.type) {
             values[IS_SILENT] = false
         }
@@ -185,33 +185,33 @@ object IrisAnalyticsEvents {
         if (values.containsKey(CAMPAIGN_ID) && TextUtils.isEmpty(values[CAMPAIGN_ID].toString()))
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
                 mapOf("type" to "validation",
-                        "reason" to "no_campaignId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+                    "reason" to "no_campaignId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         else if (!values.containsKey(CAMPAIGN_ID))
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                    mapOf("type" to "validation",
-                            "reason" to "campaignId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                            "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+                mapOf("type" to "validation",
+                    "reason" to "campaignId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         else if (values.containsKey(PARENT_ID) && TextUtils.isEmpty(values[PARENT_ID].toString()))
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                    mapOf("type" to "validation",
-                            "reason" to "no_parentId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                            "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+                mapOf("type" to "validation",
+                    "reason" to "no_parentId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         else if (!values.containsKey(PARENT_ID))
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
                 mapOf("type" to "validation",
-                        "reason" to "parentId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+                    "reason" to "parentId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         else if (values.containsKey(NOTIFICATION_ID) && TextUtils.isEmpty(values[NOTIFICATION_ID].toString()))
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
                 mapOf("type" to "validation",
-                        "reason" to "no_notificationId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+                    "reason" to "no_notificationId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         else if (!values.containsKey(NOTIFICATION_ID))
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
                 mapOf("type" to "validation",
-                        "reason" to "notificationId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
-                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+                    "reason" to "notificationId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                    "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
     }
 
     private fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {
@@ -303,6 +303,6 @@ object CMEvents {
     fun postGAEvent(event: String, category: String, action: String, label: String) {
         Timber.d("$TAG-$event&$category&$action&$label")
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                event, category, action, label))
+            event, category, action, label))
     }
 }

@@ -51,7 +51,11 @@ class DeveloperOptionActivity : BaseActivity() {
         const val SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE = false
         const val LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle"
         const val LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle"
+        const val LEAK_CANARY_TOGGLE_KEY_SELLER = "key_leakcanary_toggle_seller"
+        const val STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle"
+        const val STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY_SELLER = "key_strict_mode_leak_publisher_toggle_seller"
         const val LEAK_CANARY_DEFAULT_TOGGLE = true
+        const val STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false
         const val REMOTE_CONFIG_PREFIX = "remote_config_prefix"
         const val SHARED_PREF_FILE = "shared_pref_file"
         const val STAGING = "staging"
@@ -82,7 +86,8 @@ class DeveloperOptionActivity : BaseActivity() {
             typeFactory = DeveloperOptionTypeFactoryImpl(
                 accessTokenListener = clickAccessTokenBtn(),
                 resetOnBoardingListener = clickResetOnBoarding(),
-                urlEnvironmentListener = selectUrlEnvironment()
+                urlEnvironmentListener = selectUrlEnvironment(),
+                homeAndNavigationRevampListener = homeAndNavigationListener()
             ),
             differ = DeveloperOptionDiffer()
         )
@@ -232,6 +237,13 @@ class DeveloperOptionActivity : BaseActivity() {
             val editor = sharedPref.edit().clear()
             editor.apply()
             Toast.makeText(this@DeveloperOptionActivity,getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun homeAndNavigationListener() = object : HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener {
+        override fun onClickSkipOnBoardingBtn() {
+            userSession?.setFirstTimeUserOnboarding(false)
+            Toast.makeText(this@DeveloperOptionActivity,getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session), Toast.LENGTH_SHORT).show()
         }
     }
 

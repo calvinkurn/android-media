@@ -80,6 +80,10 @@ class WidgetAdapterFactoryImpl(
         return CalendarViewHolder.RES_LAYOUT
     }
 
+    override fun type(unificationWidgetUiModel: UnificationWidgetUiModel): Int {
+        return UnificationViewHolder.RES_LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, listener)
@@ -98,6 +102,7 @@ class WidgetAdapterFactoryImpl(
             RecommendationViewHolder.RES_LAYOUT -> RecommendationViewHolder(parent, listener)
             MilestoneViewHolder.RES_LAYOUT -> MilestoneViewHolder(parent, listener)
             CalendarViewHolder.RES_LAYOUT -> CalendarViewHolder(parent, listener)
+            UnificationViewHolder.RES_LAYOUT -> UnificationViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

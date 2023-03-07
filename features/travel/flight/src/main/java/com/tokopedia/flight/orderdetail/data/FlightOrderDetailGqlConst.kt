@@ -1,24 +1,39 @@
 package com.tokopedia.flight.orderdetail.data
 
+import com.tokopedia.flight.orderdetail.data.GetOrderETicketQuery.QUERY_GET_ORDER_E_TICKET
+import com.tokopedia.flight.orderdetail.data.GetOrderInvoiceQuery.QUERY_GET_ORDER_INVOICE
+import com.tokopedia.flight.orderdetail.data.OrderDetailQuery.QUERY_ORDER_DETAIL
+import com.tokopedia.gql_query_annotation.GqlQuery
+
 /**
  * @author by furqan on 14/10/2020
  */
-object FlightOrderDetailGqlConst {
-    val QUERY_GET_ORDER_E_TICKET = """
+
+@GqlQuery("QueryGetOrderETicket", QUERY_GET_ORDER_E_TICKET)
+internal object GetOrderETicketQuery{
+    const val QUERY_GET_ORDER_E_TICKET = """
         query FlightGetETicket(${'$'}data: FlightETicketArgs!) {
             flightGetETicket(input:${'$'}data) {
                 data
             }
         }
-    """.trimIndent()
-    val QUERY_GET_ORDER_INVOICE = """
+    """
+}
+
+@GqlQuery("QueryGetOrderInvoice", QUERY_GET_ORDER_INVOICE)
+internal object GetOrderInvoiceQuery{
+    const val QUERY_GET_ORDER_INVOICE = """
         query FlightGetInvoice(${'$'}data: FlightInvoiceArgs!) {
             flightGetInvoice(input:${'$'}data) {
                 data
             }
         }
-    """.trimIndent()
-    val QUERY_ORDER_DETAIL = """
+    """
+}
+
+@GqlQuery("QueryOrderDetail", QUERY_ORDER_DETAIL)
+internal object OrderDetailQuery{
+    const val QUERY_ORDER_DETAIL = """
         query GetOrderDetail(${'$'}data:GetOrderDetailArgs!) {
           flightGetOrderDetail(input:${'$'}data) {
             data {
@@ -260,5 +275,5 @@ object FlightOrderDetailGqlConst {
             }
           }
         }
-    """.trimIndent()
+    """
 }

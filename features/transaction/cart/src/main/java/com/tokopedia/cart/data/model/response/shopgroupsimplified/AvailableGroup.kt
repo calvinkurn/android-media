@@ -1,11 +1,9 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class AvailableGroup(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("user_address_id")
         val userAddressId: String = "",
         @SerializedName("shipment_information")

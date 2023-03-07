@@ -22,7 +22,7 @@ import static com.tkpd.remoteresourcerequest.task.ResourceDownloadManager.MANAGE
 
 public class DeferredResourceInitializer implements DeferredCallback {
     private static String RELATIVE_URL = "/android/res/";
-    private static String CDN_URL = "https://ecs7.tokopedia.net";
+    private static String CDN_URL = "https://images.tokopedia.net";
     public void initializeResourceDownloadManager(Context context){
         Observable.fromCallable(() -> {
 

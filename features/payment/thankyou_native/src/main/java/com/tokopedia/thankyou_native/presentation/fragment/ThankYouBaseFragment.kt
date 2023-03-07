@@ -2,6 +2,7 @@ package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.app.TaskStackBuilder
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,19 +12,24 @@ import androidx.annotation.LayoutRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieCompositionFactory
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLOSE_MEMBERSHIP
@@ -72,10 +78,11 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 import javax.inject.Inject
 
 
-abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener ,
+abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener,
     RegisterMemberShipListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
@@ -220,7 +227,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-    private fun addDigitalRecommendation(pgCategoryIds: List<Int> = listOf(), pageType: DigitalRecommendationPage) {
+    private fun addDigitalRecommendation(
+        pgCategoryIds: List<Int> = listOf(),
+        pageType: DigitalRecommendationPage
+    ) {
         if (::thanksPageData.isInitialized) {
 
             if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
@@ -246,8 +256,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         getLoadingView()?.visible()
         arguments?.let {
             if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
-                thanksPageDataViewModel.getThanksPageData(it.getString(ARG_PAYMENT_ID, ""),
-                        it.getString(ARG_MERCHANT, ""))
+                thanksPageDataViewModel.getThanksPageData(
+                    it.getString(ARG_PAYMENT_ID, ""),
+                    it.getString(ARG_MERCHANT, "")
+                )
             }
         }
     }
@@ -293,7 +305,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             addDataToTopAdsView(it)
         }
 
-        thanksPageDataViewModel.membershipRegisterData.observe(viewLifecycleOwner){
+        thanksPageDataViewModel.membershipRegisterData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.resultStatus?.code == "200") {
@@ -318,11 +330,17 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             context?.let {
                 ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     it,
-                    defaultAddress.address_id, defaultAddress.city_id, defaultAddress.district_id,
-                    defaultAddress.lat, defaultAddress.long, defaultAddress.label,
+                    defaultAddress.address_id,
+                    defaultAddress.city_id,
+                    defaultAddress.district_id,
+                    defaultAddress.lat,
+                    defaultAddress.long,
+                    defaultAddress.label,
                     defaultAddress.postal_code,
-                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString(),
-                    TokonowWarehouseMapper.mapWarehousesResponseToLocal(data.tokonow.warehouses), data.tokonow.serviceType
+                    data.tokonow.shopId.toString(),
+                    data.tokonow.warehouseId.toString(),
+                    TokonowWarehouseMapper.mapWarehousesResponseToLocal(data.tokonow.warehouses),
+                    data.tokonow.serviceType
                 )
             }
         } else {
@@ -330,13 +348,17 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             context?.let {
                 ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     it,
-                    addressData.addressId.toString(), addressData.cityId.toString(),
+                    addressData.addressId.toString(),
+                    addressData.cityId.toString(),
                     addressData.districtId.toString(),
-                    addressData.latitude, addressData.longitude,
+                    addressData.latitude,
+                    addressData.longitude,
                     "${addressData.addressName} ${addressData.receiverName}",
                     addressData.postalCode,
-                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString(),
-                    TokonowWarehouseMapper.mapWarehousesResponseToLocal(data.tokonow.warehouses), data.tokonow.serviceType
+                    data.tokonow.shopId.toString(),
+                    data.tokonow.warehouseId.toString(),
+                    TokonowWarehouseMapper.mapWarehousesResponseToLocal(data.tokonow.warehouses),
+                    data.tokonow.serviceType
                 )
             }
         }
@@ -368,13 +390,16 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             if (!gyroRecommendation.gyroVisitable.isNullOrEmpty()) {
                 getFeatureListingContainer()?.visible()
                 getFeatureListingContainer()?.listener = this
-                getFeatureListingContainer()?.addData(gyroRecommendation, thanksPageData,
-                    gyroRecommendationAnalytics.get())
+                getFeatureListingContainer()?.addData(
+                    gyroRecommendation, thanksPageData,
+                    gyroRecommendationAnalytics.get()
+                )
             } else {
                 getFeatureListingContainer()?.gone()
             }
         }
     }
+
     private fun addDataToTopAdsView(data: TopAdsRequestParams) {
         if (!data.topAdsUIModelList.isNullOrEmpty()) {
             getTopAdsView()?.visible()
@@ -391,14 +416,17 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     fun openHowToPay(thanksPageData: ThanksPageData) {
         thanksPageData.howToPayAPP?.let {
             RouteManager.route(context, thanksPageData.howToPayAPP)
-            thankYouPageAnalytics.get().sendOnHowtoPayClickEvent(thanksPageData.profileCode,
+            thankYouPageAnalytics.get().sendOnHowtoPayClickEvent(
+                thanksPageData.profileCode,
                 thanksPageData.paymentID
             )
         }
     }
 
-    fun showPaymentStatusDialog(isTimerFinished: Boolean,
-                                thanksPageData: ThanksPageData) {
+    fun showPaymentStatusDialog(
+        isTimerFinished: Boolean,
+        thanksPageData: ThanksPageData
+    ) {
         var paymentStatus = PaymentStatusMapper
             .getPaymentStatusByInt(thanksPageData.paymentStatus)
 
@@ -447,10 +475,12 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     fun openInvoiceDetail(thanksPageData: ThanksPageData) {
         InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
-        thankYouPageAnalytics.get().sendLihatDetailClickEvent(thanksPageData.profileCode,
-                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-                thanksPageData.paymentID)
-        
+        thankYouPageAnalytics.get().sendLihatDetailClickEvent(
+            thanksPageData.profileCode,
+            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+            thanksPageData.paymentID
+        )
+
         if (activity is ThankYouPageActivity) {
             (activity as ThankYouPageActivity).cancelGratifDialog()
         }
@@ -458,17 +488,19 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun gotoHomePage() {
         RouteManager.route(context, ApplinkConst.HOME, "")
-        thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(thanksPageData.profileCode,
-                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-                thanksPageData.paymentID)
+        thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(
+            thanksPageData.profileCode,
+            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+            thanksPageData.paymentID
+        )
         activity?.finish()
     }
 
-    private fun openWebLink(urlStr : String?) {
+    private fun openWebLink(urlStr: String?) {
         urlStr?.let {
+            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlStr
             activity?.apply {
-                RouteManager.route(this,
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlStr))
+                RouteManager.route(this, webViewAppLink)
             }
         }
     }
@@ -491,9 +523,11 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 .addNextIntent(intent)
                 .startActivities()
         }
-        thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(thanksPageData.profileCode,
-                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-                thanksPageData.paymentID)
+        thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(
+            thanksPageData.profileCode,
+            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+            thanksPageData.paymentID
+        )
         activity?.finish()
     }
 
@@ -513,8 +547,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     override fun gotoOrderList() {
         try {
             thankYouPageAnalytics.get()
-                    .sendCheckTransactionListEvent(thanksPageData.profileCode,
-                            thanksPageData.paymentID)
+                .sendCheckTransactionListEvent(
+                    thanksPageData.profileCode,
+                    thanksPageData.paymentID
+                )
             val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
             val orderListListIntent = getOrderListPageIntent()
             orderListListIntent?.let {
@@ -534,8 +570,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 gotoOrderList()
             } else {
                 thankYouPageAnalytics.get()
-                        .sendCheckTransactionListEvent(thanksPageData.profileCode,
-                                thanksPageData.paymentID)
+                    .sendCheckTransactionListEvent(
+                        thanksPageData.profileCode,
+                        thanksPageData.paymentID
+                    )
                 val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
                 val orderListListIntent = RouteManager.getIntent(context, applink)
                 orderListListIntent?.let {
@@ -613,12 +651,12 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         this.membershipBottomSheetData = bottomSheetContentItem
         if (bottomSheetContentItem.membershipType == OPEN_MEMBERSHIP) {
             thanksPageDataViewModel.registerTokomember(memberShipCardId)
-        }else if (bottomSheetContentItem.membershipType == CLOSE_MEMBERSHIP){
+        } else if (bottomSheetContentItem.membershipType == CLOSE_MEMBERSHIP) {
             openTokomemberBottomsheet()
         }
     }
 
-    private fun openTokomemberBottomsheet(){
+    private fun openTokomemberBottomsheet() {
         view?.context?.apply {
             startActivityForResult(
                 TokomemberActivity.getIntent(this, membershipBottomSheetData),
@@ -627,7 +665,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-    private fun showErrorToasterRegister(){
+    private fun showErrorToasterRegister() {
         Toaster.build(
             requireView(),
             getString(R.string.thank_tokomember_register_fail),
@@ -637,6 +675,79 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         ) {
             thanksPageDataViewModel.registerTokomember(memberShipCardId)
         }.show()
+    }
+
+    fun setUpIllustration() {
+        thanksPageData.customDataOther?.let {
+            it.customIllustration?.let { img ->
+                if (img.isNotEmpty()) {
+                    loadGlideImage(img)
+                } else {
+                    showCharacterAnimation()
+                }
+            } ?: run {
+                showCharacterAnimation()
+            }
+        }
+    }
+
+    private fun loadGlideImage(imageUrl: String) {
+        setIllustrationVisibility(true)
+        context?.let {
+            try {
+                if (ivIllustrationView?.context?.isValidGlideContext() == true) {
+                    GlideApp.with(it)
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        .listener(object : RequestListener<Drawable?> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable?>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                showCharacterAnimation()
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable?>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                return false
+                            }
+                        }).into(ivIllustrationView)
+                }
+            } catch (e: Throwable) {
+            }
+        }
+    }
+
+    private fun showCharacterAnimation() {
+        setIllustrationVisibility(false)
+        context?.let {
+            val lottieTask =
+                LottieCompositionFactory.fromAsset(context, CHARACTER_LOADER_JSON_ZIP_FILE)
+            lottieTask?.addListener { result: LottieComposition? ->
+                result?.let {
+                    lottieAnimationView?.setComposition(result)
+                    lottieAnimationView?.playAnimation()
+                }
+            }
+        }
+    }
+
+    private fun setIllustrationVisibility(showImage: Boolean = false) {
+        if (showImage) {
+            lottieAnimationView.gone()
+            ivIllustrationView.visible()
+        } else {
+            lottieAnimationView.visible()
+            ivIllustrationView.gone()
+        }
     }
 
     companion object {
@@ -651,5 +762,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         const val TOP_ADS_HEADLINE_ABOVE_RECOM = "variant1"
         const val TOP_ADS_HEADLINE_BELOW_RECOM = "variant2"
         const val REQUEST_CODE_TOKOMEMBER = 7
+
+        const val CARD_NUMBER_MASKING_UNICODE = "\u25CF\u25CF\u25CF\u25CF "
+        const val LAST_NUMBERS = 4
     }
 }

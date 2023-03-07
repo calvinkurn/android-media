@@ -1,17 +1,17 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage.adapter
 
-import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemManageProductBinding
-import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
+import com.tokopedia.shop.flashsale.common.extension.convertRupiah
+import com.tokopedia.shop.flashsale.common.util.DiscountUtil
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList.*
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType
 import com.tokopedia.unifyprinciples.Typography
 
 class ManageProductListAdapter(
@@ -89,19 +89,7 @@ class ManageProductListAdapter(
 
                 when {
                     product.isInfoComplete -> {
-                        when {
-                            product.errorMessage.isNotEmpty() -> {
-                                labelBelumLengkap.invisible()
-                                tpgErrorCopy.visible()
-                                tpgErrorCopy.text = product.errorMessage
-                                tpgCompleteProductInfoDesc.visible()
-                            }
-                            else -> {
-                                labelBelumLengkap.gone()
-                                tpgErrorCopy.gone()
-                                tpgCompleteProductInfoDesc.gone()
-                            }
-                        }
+                        setErrorMessage(product)
                     }
                     else -> {
                         labelBelumLengkap.visible()
@@ -124,8 +112,79 @@ class ManageProductListAdapter(
             }
         }
 
+        private fun setErrorMessage(product: Product) {
+            var errorMsg = ""
+            val maxDiscountedPriceInCurrency =
+                DiscountUtil.getProductMaxDiscountedPrice(product.productMapData.originalPrice).convertRupiah()
+            val minDiscountedPriceInCurrency =
+                DiscountUtil.getProductMinDiscountedPrice(product.productMapData.originalPrice).convertRupiah()
+            when (product.errorType) {
+                ManageProductErrorType.MAX_DISCOUNT_PRICE -> {
+                    errorMsg = String.format(
+                        itemView.context.getString(R.string.error_msg_max_discounted_price),
+                        maxDiscountedPriceInCurrency
+                    )
+                }
+                ManageProductErrorType.MAX_DISCOUNT_PRICE_AND_OTHER -> {
+                    errorMsg = String.format(
+                        itemView.context.getString(R.string.error_msg_max_discounted_price),
+                        maxDiscountedPriceInCurrency
+                    ) + itemView.context.getString(R.string.error_msg_other)
+                }
+                ManageProductErrorType.MAX_STOCK -> {
+                    errorMsg = String.format(
+                        itemView.context.getString(R.string.error_msg_max_campaign_stock),
+                        product.productMapData.originalStock
+                    )
+                }
+                ManageProductErrorType.MAX_STOCK_AND_OTHER -> {
+                    errorMsg = String.format(
+                        itemView.context.getString(R.string.error_msg_max_campaign_stock),
+                        product.productMapData.originalStock
+                    ) + itemView.context.getString(R.string.error_msg_other)
+                }
+                ManageProductErrorType.MIN_DISCOUNT_PRICE -> {
+                    errorMsg = String.format(
+                        itemView.context.getString(R.string.error_msg_min_discounted_price),
+                        minDiscountedPriceInCurrency
+                    )
+                }
+                ManageProductErrorType.MIN_DISCOUNT_PRICE_AND_OTHER -> {
+                    errorMsg = String.format(
+                        itemView.context.getString(R.string.error_msg_min_discounted_price),
+                        minDiscountedPriceInCurrency
+                    ) + itemView.context.getString(R.string.error_msg_other)
+                }
+                ManageProductErrorType.MIN_STOCK -> {
+                    errorMsg = itemView.context.getString(R.string.error_msg_min_campaign_stock)
+                }
+                ManageProductErrorType.MIN_STOCK_AND_OTHER -> {
+                    errorMsg =
+                        itemView.context.getString(R.string.error_msg_min_campaign_stock) + itemView.context.getString(
+                            R.string.error_msg_other
+                        )
+                }
+                ManageProductErrorType.MAX_ORDER -> {
+                    errorMsg = itemView.context.getString(R.string.error_msg_max_campaign_order)
+                }
+                else -> {}
+            }
+            binding.apply {
+                if (errorMsg.isNotEmpty()) {
+                    labelBelumLengkap.invisible()
+                    tpgErrorCopy.visible()
+                    tpgErrorCopy.text = errorMsg
+                    tpgCompleteProductInfoDesc.visible()
+                } else {
+                    labelBelumLengkap.gone()
+                    tpgErrorCopy.gone()
+                    tpgCompleteProductInfoDesc.gone()
+                }
+            }
+        }
+
         private fun Typography.setOriginalStock(product: Product) {
-            this.text = if (product.warehouseList.isNullOrEmpty()) {
+            this.text = if (product.warehouseList.isEmpty()) {
                 MethodChecker.fromHtml(
                     context.getString(
                         R.string.manage_product_item_stock_at_single_location_label,
