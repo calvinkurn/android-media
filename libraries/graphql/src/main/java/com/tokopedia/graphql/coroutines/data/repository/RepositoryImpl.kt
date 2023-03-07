@@ -87,14 +87,25 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
                 if (data != null && !data.isJsonNull) {
                     //Lookup for data03-19 00:06:47.537 32115-32488/com.tokopedia.tkpd D/OkHttp: x-tkpd-clc: AddToken-291ac79f54b52aa73eb4413dbe00703a,
-                    results[typeOfT] = CommonUtils.fromJson(data, typeOfT, this@RepositoryImpl.javaClass)
+                    results[typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()){
+                        CommonUtils.fromJson(data, typeOfT, this@RepositoryImpl.javaClass)
+                    } else {
+                        CommonUtils.fromJson(data, typeOfT)
+                    }
                     isCachedData.put(typeOfT, false)
                 }
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
                 if (error != null && !error.isJsonNull) {
-                    errors[typeOfT] =
-                        CommonUtils.fromJson(error, Array<GraphqlError>::class.java, this@RepositoryImpl.javaClass).toList()
+                    errors[typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()) {
+                        CommonUtils.fromJson(
+                            error,
+                            Array<GraphqlError>::class.java,
+                            this@RepositoryImpl.javaClass
+                        ).toList()
+                    } else {
+                        CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
+                    }
                 }
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
                 LoggingUtils.logGqlSuccessRateBasedOnStatusCode(operationName, httpStatusCode)
@@ -154,7 +165,11 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 }
 
                 //Lookup for data
-                results[copyRequests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT, this@RepositoryImpl.javaClass)
+                results[copyRequests[i].typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()){
+                    CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT, this@RepositoryImpl.javaClass)
+                } else {
+                    CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
+                }
                 isCachedData[copyRequests[i].typeOfT] = true
                 copyRequests[i].isNoCache = true
                 refreshRequests.add(copyRequests[i])

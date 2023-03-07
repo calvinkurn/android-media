@@ -90,7 +90,12 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                         if (data != null && !data.isJsonNull()) {
                             Type type = requests.get(i).getTypeOfT();
-                            Object object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT(), this.getClass());
+                            Object object;
+                            if (RemoteConfigHelper.INSTANCE.isEnableGqlParseErrorLoggingImprovement()) {
+                                object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT(), this.getClass());
+                            } else {
+                                object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT());
+                            }
                             checkForNull(object, requests.get(i).getQuery(), requests.get(i).isShouldThrow());
                             //Lookup for data
                             mResults.put(type, object);
@@ -100,8 +105,15 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         JsonElement error = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.ERROR);
                         if (error != null && !error.isJsonNull()) {
                             //Lookup for error
-                            errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
-                            }.getType(), this.getClass()));
+                            List<GraphqlError> listGqlError;
+                            if(RemoteConfigHelper.INSTANCE.isEnableGqlParseErrorLoggingImprovement()){
+                                listGqlError = CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
+                                }.getType(), this.getClass());
+                            }else {
+                                listGqlError = CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
+                                }.getType());
+                            }
+                            errors.put(requests.get(i).getTypeOfT(), listGqlError);
                         }
                         LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
                         LoggingUtils.logGqlSuccessRate(operationName, "1");
@@ -149,7 +161,12 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                     continue;
                 }
 
-                Object object = CommonUtils.fromJson(cachesResponse, copyRequests.get(i).getTypeOfT(), this.getClass());
+                Object object;
+                if(RemoteConfigHelper.INSTANCE.isEnableGqlParseErrorLoggingImprovement()){
+                    object = CommonUtils.fromJson(cachesResponse, copyRequests.get(i).getTypeOfT(), this.getClass());
+                } else {
+                    object = CommonUtils.fromJson(cachesResponse, copyRequests.get(i).getTypeOfT());
+                }
                 checkForNull(object, copyRequests.get(i).getQuery(), copyRequests.get(i).isShouldThrow());
                 //Lookup for data
                 mResults.put(copyRequests.get(i).getTypeOfT(), object);

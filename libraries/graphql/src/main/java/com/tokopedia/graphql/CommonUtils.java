@@ -26,51 +26,61 @@ import java.lang.reflect.Type;
 import retrofit2.Response;
 
 public class CommonUtils {
+    public static <T> T fromJson(String json, Type typeOfT) throws JsonSyntaxException {
+        if (json == null) {
+            return null;
+        }
+        StringReader reader = new StringReader(json);
+        T target = (T) new Gson().fromJson(reader, typeOfT);
+        return target;
+    }
+
     public static <T> T fromJson(String json, Type typeOfT, Class<? extends Object> sourceClass) throws JsonSyntaxException {
         if (json == null) {
             return null;
         }
         StringReader reader = new StringReader(json);
-        if (RemoteConfigHelper.INSTANCE.isEnableGqlParseErrorLoggingImprovement()) {
-            Gson gson = new GsonBuilder().setLenient().registerTypeAdapterFactory(
-                    new CheckParseErrorTypeAdapterFactory(sourceClass)
-            ).create();
-            T target = (T) gson.fromJson(reader, typeOfT);
-            return target;
-        }
-        else {
-            T target = (T) new Gson().fromJson(reader, typeOfT);
-            return target;
-        }
+        Gson gson = new GsonBuilder().setLenient().registerTypeAdapterFactory(
+                new CheckParseErrorTypeAdapterFactory(sourceClass)
+        ).create();
+        T target = (T) gson.fromJson(reader, typeOfT);
+        return target;
     }
 
-    public static <T> T fromJson(JsonElement json, Type typeOfT, Class<Object> sourceClass) throws JsonSyntaxException {
+    public static <T> T fromJson(JsonElement json, Type typeOfT) throws JsonSyntaxException {
         if (json == null) {
             return null;
         }
-        if (RemoteConfigHelper.INSTANCE.isEnableGqlParseErrorLoggingImprovement()) {
-            Gson gson = new GsonBuilder().setLenient().registerTypeAdapterFactory(
-                    new CheckParseErrorTypeAdapterFactory(sourceClass)
-            ).create();
-            return (T) gson.fromJson(new JsonTreeReader(json), typeOfT);
-        } else {
-            return (T) new Gson().fromJson(new JsonTreeReader(json), typeOfT);
-        }
+        return (T) new Gson().fromJson(new JsonTreeReader(json), typeOfT);
     }
 
-    public static <T> T fromJson(JsonElement json, Class<T> classOfT, Class<Object> sourceClass) throws JsonSyntaxException {
+    public static <T> T fromJson(JsonElement json, Type typeOfT, Class<? extends Object> sourceClass) throws JsonSyntaxException {
         if (json == null) {
             return null;
         }
-        if (RemoteConfigHelper.INSTANCE.isEnableGqlParseErrorLoggingImprovement()) {
-            Gson gson = new GsonBuilder().setLenient().registerTypeAdapterFactory(
-                    new CheckParseErrorTypeAdapterFactory(sourceClass)
-            ).create();
-            return (T) gson.fromJson(new JsonTreeReader(json), classOfT);
-        } else {
-            T t = (T) new Gson().fromJson(new JsonTreeReader(json), classOfT);
-            return t;
+        Gson gson = new GsonBuilder().setLenient().registerTypeAdapterFactory(
+                new CheckParseErrorTypeAdapterFactory(sourceClass)
+        ).create();
+        return (T) gson.fromJson(new JsonTreeReader(json), typeOfT);
+    }
+
+    public static <T> T fromJson(JsonElement json, Class<T> classOfT) throws JsonSyntaxException {
+        if (json == null) {
+            return null;
         }
+
+        T t = (T) new Gson().fromJson(new JsonTreeReader(json), classOfT);
+        return t;
+    }
+
+    public static <T> T fromJson(JsonElement json, Class<T> classOfT, Class<? extends Object> sourceClass) throws JsonSyntaxException {
+        if (json == null) {
+            return null;
+        }
+        Gson gson = new GsonBuilder().setLenient().registerTypeAdapterFactory(
+                new CheckParseErrorTypeAdapterFactory(sourceClass)
+        ).create();
+        return (T) gson.fromJson(new JsonTreeReader(json), classOfT);
     }
 
     public static String toJson(Object src) {

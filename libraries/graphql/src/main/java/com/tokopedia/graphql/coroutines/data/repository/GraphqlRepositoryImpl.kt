@@ -110,14 +110,25 @@ class GraphqlRepositoryImpl @Inject constructor(
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
                 if (data != null && !data.isJsonNull) {
                     //Lookup for data
-                    results[typeOfT] = CommonUtils.fromJson(data, typeOfT, this@GraphqlRepositoryImpl.javaClass)
+                    results[typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()) {
+                        CommonUtils.fromJson(data, typeOfT, this@GraphqlRepositoryImpl.javaClass)
+                    } else {
+                        CommonUtils.fromJson(data, typeOfT)
+                    }
                     isCachedData[typeOfT] = false
                 }
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
                 if (error != null && !error.isJsonNull) {
-                    errors[typeOfT] =
-                        CommonUtils.fromJson(error, Array<GraphqlError>::class.java, this@GraphqlRepositoryImpl.javaClass).toList()
+                    errors[typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()) {
+                        CommonUtils.fromJson(
+                            error,
+                            Array<GraphqlError>::class.java,
+                            this@GraphqlRepositoryImpl.javaClass
+                        ).toList()
+                    } else {
+                        CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
+                    }
                 }
                 LoggingUtils.logGqlSuccessRateBasedOnStatusCode(operationName, httpStatusCode)
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
@@ -177,8 +188,11 @@ class GraphqlRepositoryImpl @Inject constructor(
                 }
 
                 //Lookup for data
-                results[copyRequests[i].typeOfT] =
+                results[copyRequests[i].typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()){
                     CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT, this@GraphqlRepositoryImpl.javaClass)
+                } else {
+                    CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
+                }
                 isCachedData[copyRequests[i].typeOfT] = true
                 copyRequests[i].isNoCache = true
                 refreshRequests.add(copyRequests[i])
