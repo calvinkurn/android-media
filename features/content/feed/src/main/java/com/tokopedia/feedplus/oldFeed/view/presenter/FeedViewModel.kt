@@ -24,6 +24,7 @@ import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderU
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetFollowingUseCase
 import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.domain.usecase.SCREEN_NAME_UPDATE_TAB
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
@@ -115,7 +116,7 @@ class FeedViewModel @Inject constructor(
     private val doFollowUseCase: ProfileFollowUseCase,
     private val doUnfollowUseCase: ProfileUnfollowedUseCase,
     private val profileMutationMapper: ProfileMutationMapper,
-    private val getFollowingUseCase: GetFollowingUseCase,
+    private val getFollowingUseCase: GetFollowingUseCase
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
@@ -221,7 +222,7 @@ class FeedViewModel @Inject constructor(
 
     fun updateFollowStatus() {
         val authorIds = currentFollowState.map { item -> Pair(item.key, item.value.first) }.toList()
-        if (authorIds.isNotEmpty())
+        if (authorIds.isNotEmpty()) {
             viewModelScope.launchCatchError(block = {
                 val shopIdsToUpdate = mutableMapOf<String, Boolean>()
                 val response = withContext(baseDispatcher.io) {
@@ -244,7 +245,8 @@ class FeedViewModel @Inject constructor(
                     ) {
                         shopIdsToUpdate[item.userId] = item.status
                         currentFollowState[item.userId] = Pair(
-                            currentFollowState[item.userId]?.first ?: 0, item.status
+                            currentFollowState[item.userId]?.first ?: 0,
+                            item.status
                         )
                     }
                 }
@@ -252,13 +254,14 @@ class FeedViewModel @Inject constructor(
             }) {
                 _shopIdsFollowStatusToUpdateData.value = Fail(it)
             }
+        }
     }
 
     fun processFollowStatusUpdate(
         currentList: MutableList<Visitable<*>>,
         data: Map<String, Boolean>
     ): MutableList<Visitable<*>> {
-        var newList = mutableListOf<Visitable<*>>();
+        var newList = mutableListOf<Visitable<*>>()
 
         if (data.isNotEmpty()) {
             newList = currentList.map { item ->
@@ -363,7 +366,6 @@ class FeedViewModel @Inject constructor(
                                 )
 
                                 else -> item
-
                             }
                         } ?: item
                     } else {

@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.oldFeed.view.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.di.FeedComponentModule
 import com.tokopedia.feedcomponent.di.FeedComponentViewModelModule
 import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
@@ -41,7 +40,6 @@ interface FeedPlusComponent {
     @ApplicationContext
     fun context(): Context
 
-    fun coroutineDispatchers(): CoroutineDispatchers?
     fun retrofitBuilder(): Retrofit.Builder
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
     fun userSessionUserSessionInterface(): UserSessionInterface
