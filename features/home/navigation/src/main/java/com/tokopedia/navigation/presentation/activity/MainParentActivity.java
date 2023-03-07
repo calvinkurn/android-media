@@ -207,7 +207,7 @@ public class MainParentActivity extends BaseActivity implements
 
     public static final String WISHLIST_COLLECTION_PAGE = "WishlistCollectionFragment";
     private static final String DISCOVERY_APPLINK = "discovery_applink";
-    private static final String DISCOVERY_APPLINK_TARGET = "tokopedia://discovery/serbu-official-store";
+    private static final String DISCOVERY_APPLINK_TARGET = "tokopedia://discovery/sos";
     private static final String DISCOVERY_PAGE_SOURCE = "discovery_page_source";
     private static final String DISCOVERY_END_POINT = "end_point";
     private static final String SOS_END_POINT = "sos";
