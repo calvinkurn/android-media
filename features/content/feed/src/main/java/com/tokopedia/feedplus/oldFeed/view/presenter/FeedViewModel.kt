@@ -684,7 +684,8 @@ class FeedViewModel @Inject constructor(
 
     private suspend fun getFeedDataResult(): DynamicFeedDomainModel {
         try {
-            return getDynamicFeedNewUseCase.execute(
+            return getDynamicFeedNewUseCase.
+            execute(
                 cursor = currentCursor,
                 screenName = SCREEN_NAME_UPDATE_TAB
             )

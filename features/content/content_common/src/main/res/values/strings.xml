@@ -12,6 +12,7 @@
     <string name="play_bro_tnc_ok">Oke, Mengerti</string>
 
     <string name="play_cancel_live_stream" tools:ignore="UnusedResources">Batalkan</string>
+    <string name="content_zero">0</string>
 
     <!--CONTENT-->
     <string name="feed_content_position_text" tools:ignore="UnusedResources">Tag produk pada postingan ini %s</string>

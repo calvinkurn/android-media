@@ -6,6 +6,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 /**
  * Created By : Shruti Agarwal on 10/02/23
  */
-data class FeedModel(val id: String = "1", val text: String) : Visitable<FeedAdapterTypeFactory> {
-    override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
-}
+data class FeedModel(
+    val items: List<Visitable<FeedAdapterTypeFactory>>,
+    val pagination: FeedPaginationModel
+)
