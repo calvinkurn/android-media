@@ -111,4 +111,6 @@ object Constant {
     object TopAdsSdk{
         const val TOP_ADS_GSLP_TDN = "topads gslp"
     }
+
+    const val RESETTING_SELECTED_TAB = -1
 }

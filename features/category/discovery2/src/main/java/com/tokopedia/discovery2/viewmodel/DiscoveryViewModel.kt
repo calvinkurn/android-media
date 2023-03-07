@@ -23,10 +23,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.discovery2.CONSTANT_0
-import com.tokopedia.discovery2.CONSTANT_11
-import com.tokopedia.discovery2.ComponentNames
-import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.*
 import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
 import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
@@ -668,6 +665,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     override fun doOnStop() {
         super.doOnStop()
-        preSelectedTab = -1
+        preSelectedTab = Constant.RESETTING_SELECTED_TAB
     }
 }

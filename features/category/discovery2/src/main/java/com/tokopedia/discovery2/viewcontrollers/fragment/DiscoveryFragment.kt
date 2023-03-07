@@ -199,10 +199,7 @@ open class DiscoveryFragment :
     private var isTabPresentToDoubleScroll: Boolean = false
 
     private val isFromCategory: Boolean by lazy {
-        provideCategorySource()
-    }
-    open fun provideCategorySource(): Boolean {
-        return (context as DiscoveryActivity).isFromCategory()
+        (context as? DiscoveryActivity)?.isFromCategory() ?: false
     }
 
     private val analytics: BaseDiscoveryAnalytics by lazy {

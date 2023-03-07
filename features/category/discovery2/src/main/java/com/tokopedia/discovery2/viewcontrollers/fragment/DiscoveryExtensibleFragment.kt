@@ -45,10 +45,6 @@ class DiscoveryExtensibleFragment : DiscoveryFragment() {
         return trackingQueueInjected
     }
 
-    override fun provideCategorySource(): Boolean {
-        return false
-    }
-
     //Todo::
     fun injectionComponent() {
 //        After you inject this fragment
