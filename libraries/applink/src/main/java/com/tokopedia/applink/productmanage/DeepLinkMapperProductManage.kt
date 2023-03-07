@@ -1,6 +1,8 @@
 package com.tokopedia.applink.productmanage
 
 import android.net.Uri
+import android.util.Log
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -9,6 +11,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant.QUERY_PARAM_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.QUERY_PARAM_MODE
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
@@ -93,17 +97,21 @@ object DeepLinkMapperProductManage {
         }
     }
 
+    fun isStockReminderPattern(deepLink: String): Boolean {
+        val uriAppLink = Uri.parse(deepLink)
+        return UriUtil.matchWithPattern(ApplinkConst.SellerApp.STOCK_REMINDER, uriAppLink) != null
+    }
+
     fun getStockReminderInternalAppLink(deepLink: String): String {
-        val productId = deepLink.substringBefore(SLASH_CHAR).toLongOrZero()
-        val informationUriString =
-            deepLink.substringAfter(SLASH_CHAR).substringBeforeLast(SLASH_CHAR)
-        val isVariant = informationUriString.substringAfterLast(SLASH_CHAR).toBoolean()
-        val productName = informationUriString.substringBeforeLast(SLASH_CHAR)
+        val segments = Uri.parse(deepLink).pathSegments
+        val productId = segments[Int.ZERO]
+        val isVariant = segments[2]
+        val productName = segments[Int.ONE]
         return UriUtil.buildUri(
             ApplinkConstInternalMarketplace.STOCK_REMINDER,
             productId.toString(),
             productName,
-            isVariant.toString()
+            isVariant
         )
     }
 

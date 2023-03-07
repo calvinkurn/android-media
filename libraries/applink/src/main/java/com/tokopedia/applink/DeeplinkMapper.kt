@@ -350,7 +350,6 @@ object DeeplinkMapper {
             DeepLinkMapperEtalase.getEtalaseListInternalAppLink(idList?.getOrNull(0) ?: "")
         },
         DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink, _ -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
-        DLP.startWith(ApplinkConst.STOCK_REMINDER) { _, _, deeplink, _ -> DeepLinkMapperProductManage.getStockReminderInternalAppLink(deeplink) },
         DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, uri, _, _ -> getRegisteredNavigationProductReview(uri) },
         DLP.startWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW) { _, _, _, _ -> ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW },
         DLP.host(ApplinkConst.REVIEW_HOST) { _, _, deeplink, _ -> getRegisteredNavigationReputation(deeplink) },
@@ -755,7 +754,6 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.ADMIN_ACCEPTED -> ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(uri)
             ApplinkConst.SellerApp.ADMIN_REDIRECTION -> ApplinkConstInternalMarketplace.ADMIN_REDIRECTION
             ApplinkConst.SellerApp.PRODUCT_MANAGE -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
-            ApplinkConst.SellerApp.STOCK_REMINDER -> DeepLinkMapperProductManage.getStockReminderInternalAppLink(deeplink)
             ApplinkConst.SellerApp.TOPCHAT_BUBBLE_ACTIVATION -> DeeplinkMapperCommunication.getRegisteredNavigationBubbleActivation(deeplink)
             ApplinkConst.SellerApp.SELLER_MVC_LIST -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST
             ApplinkConst.SellerApp.SELLER_MVC_LIST_ACTIVE -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE
@@ -764,6 +762,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.SELLER_MVC_LIST_ONGOING -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ONGOING
             ApplinkConst.SellerApp.SELLER_MVC_REDIRECTION_PAGE -> ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
             else -> when {
+                DeepLinkMapperProductManage.isStockReminderPattern(deeplink) -> DeepLinkMapperProductManage.getStockReminderInternalAppLink(deeplink)
                 DeeplinkMapperMerchant.isShopPageFeedDeeplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(deeplink)
                 DeeplinkMapperMerchant.isShopPageSettingSellerApp(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopPageSettingSellerApp(deeplink)
                 DeeplinkMapperMerchant.isCreateShowcaseApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForCreateShowcase(deeplink)
