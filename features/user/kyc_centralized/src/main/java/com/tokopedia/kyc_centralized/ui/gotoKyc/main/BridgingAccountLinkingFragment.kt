@@ -31,7 +31,6 @@ import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycBridgingAccountL
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
-import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.url.TokopediaUrl

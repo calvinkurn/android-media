@@ -71,7 +71,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             viewModel.setSource(source.orEmpty())
 
             // please, make sure project id already set in viewModel
-            viewModel.getProjectInfo(viewModel.projectId)
+            viewModel.getProjectInfo(viewModel.projectId.toInt())
         }
     }
 
@@ -79,18 +79,17 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         viewModel.projectInfo.observe(viewLifecycleOwner) {
             binding?.gotoKycLoader?.invisible()
 
-            val parameter = GotoKycMainParam(
-                projectId = viewModel.projectId,
-                sourcePage = viewModel.source,
-                status = it.status,
-                listReason = it.listReason
-            )
-
             when (it) {
                 is ProjectInfoResult.TokoKyc -> {
                     gotoTokoKyc(viewModel.projectId)
                 }
                 is ProjectInfoResult.StatusSubmission -> {
+                    val parameter = GotoKycMainParam(
+                        projectId = viewModel.projectId,
+                        sourcePage = viewModel.source,
+                        status = it.status,
+                        listReason = it.listReason
+                    )
                     gotoStatusSubmission(parameter)
                 }
                 is ProjectInfoResult.NotVerified -> {

@@ -37,10 +37,10 @@ class GotoKycTransparentViewModel @Inject constructor(
         this.source = source
     }
 
-    fun getProjectInfo(projectId: String) {
+    fun getProjectInfo(projectId: Int) {
         launchCatchError(
             block = {
-                _projectInfo.value = projectInfoUseCase(projectId.toInt())
+                _projectInfo.value = projectInfoUseCase(projectId)
             }, onError = {
                 _projectInfo.value = ProjectInfoResult.Failed(it)
             }
