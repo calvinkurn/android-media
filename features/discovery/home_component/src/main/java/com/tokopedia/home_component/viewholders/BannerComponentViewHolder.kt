@@ -87,7 +87,7 @@ class BannerComponentViewHolder(
     }
 
     init {
-        itemView.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
+        itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewDetachedFromWindow(p0: View) {
                 pauseAutoScroll()
             }
@@ -147,7 +147,7 @@ class BannerComponentViewHolder(
             rvBanner.smoothScrollBy(width - paddings, 0, autoScrollInterpolator, FLING_DURATION)
         } else {
             pauseAutoScroll()
-            if(position == 0) {
+            if (position == 0) {
                 rvBanner.smoothScrollToPosition(position)
             } else {
                 rvBanner.smoothScrollBy(width - paddings, 0, null, FLING_DURATION_OLD)
@@ -265,6 +265,10 @@ class BannerComponentViewHolder(
 
     override fun onRelease() {
         resumeAutoScroll()
+    }
+
+    override fun isDrag(): Boolean {
+        return false
     }
 
     private fun onPageDragStateChanged(isDrag: Boolean) {

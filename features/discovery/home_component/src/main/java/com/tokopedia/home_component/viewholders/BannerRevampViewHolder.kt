@@ -16,7 +16,6 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.bannerindicator.BannerIndicatorListener
 import com.tokopedia.home_component.databinding.HomeComponentBannerRevampBinding
 import com.tokopedia.home_component.listener.BannerComponentListener
-import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
@@ -35,8 +34,7 @@ import kotlin.coroutines.CoroutineContext
 
 class BannerRevampViewHolder(
     itemView: View,
-    private val bannerListener: BannerComponentListener?,
-    private val homeComponentListener: HomeComponentListener?
+    private val bannerListener: BannerComponentListener?
 ) :
     AbstractViewHolder<BannerRevampDataModel>(itemView),
     BannerItemListener,
@@ -53,6 +51,7 @@ class BannerRevampViewHolder(
     private var totalBanner = 0
     private var currentPosition: Int = 0
     private var isFromDrag = false
+    private var isPauseAnimation = false
 
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(element: BannerRevampDataModel) {
@@ -98,20 +97,18 @@ class BannerRevampViewHolder(
 
     private fun setScrollListener() {
         binding?.rvBannerRevamp?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (isFromDrag && kotlin.math.abs(dx) == Int.ONE) {
-                    val currentPagePosition = if (dx > Int.ZERO) layoutManager.findLastVisibleItemPosition() % totalBanner else layoutManager.findFirstVisibleItemPosition() % totalBanner
-                    currentPosition = currentPagePosition
-                    if (currentPagePosition != RecyclerView.NO_POSITION) {
-                        binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
-                        isFromDrag = false
-                    }
-                }
-            }
-
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 when (newState) {
+                    RecyclerView.SCROLL_STATE_IDLE -> {
+                        if (isFromDrag) {
+                            val currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                            currentPosition = currentPagePosition
+                            if (currentPagePosition != RecyclerView.NO_POSITION) {
+                                binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
+                                isFromDrag = false
+                            }
+                        }
+                    }
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
                         isFromDrag = true
                     }
@@ -191,6 +188,10 @@ class BannerRevampViewHolder(
 
     override fun onRelease() {
         binding?.bannerIndicator?.continueAnimation()
+    }
+
+    override fun isDrag(): Boolean {
+        return isFromDrag
     }
 
     private fun ChannelModel.convertToBannerItemModel(): List<BannerItemModel> {

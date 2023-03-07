@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.viewholders.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -32,29 +33,20 @@ class BannerRevampChannelAdapter(
 }
 
 class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerItemListener) : RecyclerView.ViewHolder(itemView) {
-    var y0 = 0f
-    var y1 = 0f
-
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: BannerItemModel) {
         itemView.findViewById<ImageUnify>(R.id.image_banner_revamp).setImageUrl(item.url)
-        itemView.setOnTouchListener { _, motionEvent ->
+        itemView.setOnTouchListener { t, motionEvent ->
+            Log.d("dhabalog", "${motionEvent.action} ${t.y}")
             when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                     listener.onLongPress()
                 }
-                MotionEvent.ACTION_MOVE -> {
-                    listener.onLongPress()
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    if (!listener.isDrag()) {
+                        listener.onRelease()
+                    }
                 }
-                MotionEvent.ACTION_UP -> {
-                    listener.onRelease()
-                }
-//                MotionEvent.ACTION_CANCEL -> {
-//                    if (isFromMove) {
-//                        listener.onRelease()
-//                        isFromMove = false
-//                    }
-//                }
             }
             return@setOnTouchListener true
         }
