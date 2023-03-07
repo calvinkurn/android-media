@@ -80,4 +80,6 @@ sealed interface PlayBroadcastAction {
 
     data class SelectPresetOption(val preset: FaceFilterUiModel) : PlayBroadcastAction
     data class ChangePresetValue(val newValue: Int) : PlayBroadcastAction
+
+    object ResetBeautification : PlayBroadcastAction
 }

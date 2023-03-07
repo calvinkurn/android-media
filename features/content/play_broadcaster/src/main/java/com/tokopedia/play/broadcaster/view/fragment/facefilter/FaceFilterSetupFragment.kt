@@ -12,12 +12,14 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.databinding.FragmentFaceFilterSetupBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.view.adapter.FaceFilterPagerAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
@@ -27,7 +29,8 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.unifycomponents.RangeSliderUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
-import com.tokopedia.unifyprinciples.R
+import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.play.broadcaster.R
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -69,7 +72,7 @@ class FaceFilterSetupFragment @Inject constructor(
     }
 
     private val offset16 by lazyThreadSafetyNone {
-        requireContext().resources.getDimensionPixelOffset(R.dimen.spacing_lvl4)
+        requireContext().resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl4)
     }
 
     private val pagerAdapter by lazyThreadSafetyNone {
@@ -173,6 +176,23 @@ class FaceFilterSetupFragment @Inject constructor(
         }
 
         bottomSheetBehavior.addBottomSheetCallback(bottomSheetBehaviorCallback)
+
+        binding.tvBottomSheetAction.setOnClickListener {
+            requireContext().getDialog(
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                title = getString(R.string.play_broadcaster_reset_filter_confirmation_title),
+                desc = getString(R.string.play_broadcaster_reset_filter_confirmation_description),
+                primaryCta = getString(R.string.play_broadcaster_reset_filter_confirm),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    viewModel.submitAction(PlayBroadcastAction.ResetBeautification)
+                },
+                secondaryCta = getString(R.string.play_broadcaster_reset_filter_cancel),
+                secondaryListener = { dialog ->
+                    dialog.dismiss()
+                }
+            ).show()
+        }
     }
 
     private fun setupObserver() {

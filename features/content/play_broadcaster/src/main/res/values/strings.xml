@@ -307,4 +307,8 @@
     <string name="play_broadcaster_reset_filter">Reset Filter</string>
     <string name="play_broadcaster_face_tab">Wajah</string>
     <string name="play_broadcaster_makeup_tab">Makeup</string>
+    <string name="play_broadcaster_reset_filter_confirmation_title">Yakin mau reset filter?</string>
+    <string name="play_broadcaster_reset_filter_confirmation_description">Jika di-reset, maka akan kembali ke pengaturan filter semula.</string>
+    <string name="play_broadcaster_reset_filter_cancel">Batal</string>
+    <string name="play_broadcaster_reset_filter_confirm">Reset</string>
 </resources>

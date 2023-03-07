@@ -533,6 +533,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             /** Beautification */
             is PlayBroadcastAction.FaceFilterBottomSheetShown -> handleFaceFilterBottomSheetShown(event.bottomSheetHeight)
             is PlayBroadcastAction.FaceFilterBottomSheetDismissed -> handleFaceFilterBottomSheetDismissed()
+            is PlayBroadcastAction.ResetBeautification -> handleResetBeautification()
 
             is PlayBroadcastAction.SelectFaceFilterOption -> handleSelectFaceFilterOption(event.faceFilter)
             is PlayBroadcastAction.ChangeFaceFilterValue -> handleChangeFaceFilterValue(event.newValue)
@@ -1664,6 +1665,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleFaceFilterBottomSheetDismissed() {
         viewModelScope.launch {
             _uiEvent.emit(PlayBroadcastEvent.FaceFilterBottomSheetDismissed)
+        }
+    }
+
+    private fun handleResetBeautification() {
+        _beautificationConfig.update {
+            it.copy(
+                faceFilters = it.faceFilters.map { faceFilter ->
+                    faceFilter.copy(
+                        value = faceFilter.defaultValue
+                    )
+                },
+                presets = it.presets.map { preset ->
+                    preset.copy(
+                        value = preset.defaultValue
+                    )
+                }
+            )
         }
     }
 
