@@ -13,6 +13,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
@@ -23,6 +24,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
@@ -186,6 +188,14 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(error)
         }
+    }
+
+    protected fun onCheckAtcAffiliateCookie_thenReturn(error: Throwable) {
+        coEvery { affiliateService.checkAtcAffiliateCookie(any()) } throws error
+    }
+
+    protected fun verifyCheckAtcAffiliateCookieCalled(expectedAffiliateData: NowAffiliateAtcData) {
+        coVerify { affiliateService.checkAtcAffiliateCookie(expectedAffiliateData) }
     }
 
     protected fun mockProductModels() {

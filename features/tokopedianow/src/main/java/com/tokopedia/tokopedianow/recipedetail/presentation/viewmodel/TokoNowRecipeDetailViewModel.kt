@@ -98,7 +98,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         initAffiliateCookie()
     }
 
-    fun checkAddressData() {
+    private fun checkAddressData() {
         val shopId = addressData.getShopId()
 
         if (shopId == INVALID_SHOP_ID) {

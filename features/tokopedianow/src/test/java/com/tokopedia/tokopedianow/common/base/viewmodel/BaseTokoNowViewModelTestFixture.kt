@@ -7,6 +7,7 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
@@ -21,6 +22,7 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
+import org.mockito.ArgumentMatchers.anyString
 
 @ExperimentalCoroutinesApi
 open class BaseTokoNowViewModelTestFixture {
@@ -37,6 +39,7 @@ open class BaseTokoNowViewModelTestFixture {
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
+    private lateinit var affiliateHelper: AffiliateCookieHelper
     private lateinit var affiliateService: NowAffiliateService
     private lateinit var addressData: TokoNowLocalAddress
     private lateinit var userSession: UserSessionInterface
@@ -47,9 +50,11 @@ open class BaseTokoNowViewModelTestFixture {
         updateCartUseCase = mockk(relaxed = true)
         deleteCartUseCase = mockk(relaxed = true)
         getMiniCartUseCase = mockk(relaxed = true)
-        affiliateService = mockk(relaxed = true)
+        affiliateHelper = mockk(relaxed = true)
         addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
+
+        affiliateService = NowAffiliateService(affiliateHelper)
 
         viewModel = BaseTokoNowViewModel(
             addToCartUseCase,
@@ -141,6 +146,10 @@ open class BaseTokoNowViewModelTestFixture {
         every { addressData.isOutOfCoverage() } returns outOfCoverage
     }
 
+    protected fun onInitAffiliateCookie_thenReturn(error: Throwable) {
+        coEvery { affiliateHelper.initCookie(any(), any(), any()) } throws error
+    }
+
     protected fun verifyGetMiniCartUseCaseCalled() {
         coVerify { getMiniCartUseCase.executeOnBackground() }
     }
@@ -171,5 +180,23 @@ open class BaseTokoNowViewModelTestFixture {
 
     protected fun verifyUpdateCartUseCaseNotCalled() {
         verify(exactly = 0) { updateCartUseCase.execute(any(), any()) }
+    }
+
+    protected fun verifyInitAffiliateCookieCalled(
+        affiliateUUID: String,
+        affiliateChannel: String
+    ) {
+        coVerify(exactly = 2) { affiliateHelper.initCookie(affiliateUUID, affiliateChannel, any()) }
+    }
+
+    protected fun verifyInitAffiliateCookieNotCalled(
+        affiliateUUID: String,
+        affiliateChannel: String
+    ) {
+        coVerify(exactly = 0) { affiliateHelper.initCookie(affiliateUUID, affiliateChannel, any()) }
+    }
+
+    protected fun verifyCreateAffiliateLinkCalled(url: String) {
+        verify { affiliateHelper.createAffiliateLink(url, anyString()) }
     }
 }

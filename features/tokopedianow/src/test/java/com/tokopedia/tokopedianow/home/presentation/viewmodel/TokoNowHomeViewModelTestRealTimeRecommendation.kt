@@ -833,7 +833,6 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
     @Test
     fun `given empty channelId when addProductToCart should NOT call get recommendation use case`() {
         viewModel.addProductToCart(
-            channelId = "",
             productId = "2",
             quantity = 1,
             shopId = "5",

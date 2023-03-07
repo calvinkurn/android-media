@@ -175,6 +175,10 @@ open class TokoNowRecipeDetailViewModelTestFixture {
         coVerify { addressData.updateLocalData() }
     }
 
+    protected fun verifyInitAffiliateCookieCalled() {
+        coVerify { affiliateService.initAffiliateCookie() }
+    }
+
     protected fun onGetLayoutItemList_returnNull() {
         viewModel.mockPrivateField("layoutItemList", null)
     }
