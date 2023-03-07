@@ -17,6 +17,7 @@ import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_OFFSET
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ELEVEN_DP
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.FORTY_EIGHT_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ONE_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TEN_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWENTY_DP
@@ -24,6 +25,7 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ZERO_DP
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import java.text.NumberFormat
 import java.util.*
@@ -92,8 +94,9 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
     }
 
     private fun setDefaultComposeBackground() {
-        val paddingTop = ELEVEN_DP.toDp()
-        val paddingBottom = TEN_DP.toDp()
+        val paddingTop = ELEVEN_DP.toPx()
+        val paddingBottom = TEN_DP.toPx()
+        val paddingEnd = FORTY_EIGHT_DP.toPx()
         composeArea?.background = bgComposeArea
         composeArea?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }

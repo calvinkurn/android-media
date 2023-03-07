@@ -47,6 +47,7 @@ object TokoChatViewUtil {
     const val TEN_DP = 10
     const val ELEVEN_DP = 11
     const val TWENTY_DP = 20
+    const val FORTY_EIGHT_DP = 48
 
     @Suppress("MagicNumber")
     fun generateBackgroundWithShadow(

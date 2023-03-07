@@ -46,4 +46,9 @@ object TokoChatValueUtil {
     const val MAX_PERCENTAGE = 100
     const val DEFAULT_CENSOR_PERCENTAGE = 40
     const val CENSOR_TEXT = "*"
+
+    /**
+     * Tokochat Attachment Menu
+     */
+    const val ATTACHMENT_IMAGE = "Gambar"
 }

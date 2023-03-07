@@ -1,10 +1,12 @@
 package com.tokopedia.tokochat.view.chatroom
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -33,6 +35,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
@@ -1092,6 +1097,36 @@ open class TokoChatFragment :
         showGlobalErrorLayout(onActionClick = {
             initializeChatRoom(null)
         })
+    }
+
+    override fun onClickImageAttachment() {
+        context?.let {
+            val intent = MediaPicker.intent(it) {
+                pageSource(PageSource.TokoChat)
+                modeType(ModeType.IMAGE_ONLY)
+                singleSelectionMode()
+            }
+            mediaPickerResultLauncher.launch(intent)
+        }
+    }
+
+    /**
+     * Result launcher section
+     */
+    private val mediaPickerResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode != Activity.RESULT_OK || result.data == null) return@registerForActivityResult
+        val imageData = MediaPicker.result(result.data)
+        processImagePathToUpload(imageData.originalPaths)
+    }
+
+    private fun processImagePathToUpload(imagePathList: List<String>): String? {
+        imagePathList.firstOrNull()?.let { imagePath ->
+            if (imagePath.isNotEmpty()) {
+                //TODO: do upload
+            }
+        }
+        return null
     }
 
     companion object {

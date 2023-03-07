@@ -61,7 +61,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tokochat_barrier_reply_chat"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/tokochat_layout_menu" />
 
     <com.tokopedia.tokochat_common.view.customview.TokoChatExpiredInfoView
         android:id="@+id/tokochat_expired_info"
@@ -70,8 +70,16 @@
         android:background="@color/Unify_Background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_barrier_reply_chat"
+        app:layout_constraintBottom_toTopOf="@id/tokochat_layout_menu"/>
+
+    <com.tokopedia.tokochat_common.view.customview.attachment.TokoChatMenuLayout
+        android:id="@+id/tokochat_layout_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tokochat_reply_box"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tokochat_barrier_reply_chat" />
+        android:visibility="visible" />
 
     <include
         layout="@layout/tokochat_global_error"
