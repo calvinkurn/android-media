@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
@@ -48,6 +49,8 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayBroadcastPreparationBannerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
@@ -402,12 +405,32 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
 
+        var lastPosition: Int = -1
         binding.rvBannerPreparation.apply {
             layoutManager = mLayoutManager
             adapter = adapterBanner
             if (itemDecorationCount == 0) addItemDecoration(
                 PlayBroadcastPreparationBannerItemDecoration(context)
             )
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val position = mLayoutManager.findLastVisibleItemPosition()
+                    if (lastPosition == position) return
+                    lastPosition = position
+
+                    // TODO handle the coach mark
+                    when (adapterBanner.getItems()[lastPosition].type) {
+                        TYPE_SHORTS -> {
+
+                        }
+                        TYPE_DASHBOARD -> {
+
+                        }
+                        else -> {}
+                    }
+                }
+            })
         }
         snapHelper.attachToRecyclerView(binding.rvBannerPreparation)
     }
@@ -530,8 +553,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         position = CoachMark2.POSITION_BOTTOM,
                     )
                 )
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+                // TODO un-comment later
+//                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
             }
+
+            // TODO condition for coach mark entry point performance
+            add(
+                CoachMark2Item(
+                    anchorView = binding.rvBannerPreparation,
+                    title = getString(R.string.play_bro_banner_performance_dashboard_coachmark_title),
+                    description = getString(R.string.play_bro_banner_performance_dashboard_coachmark_subtitle),
+                    position = CoachMark2.POSITION_BOTTOM,
+                )
+            )
 
             if(parentViewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
                 add(
@@ -542,7 +576,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         position = CoachMark2.POSITION_BOTTOM,
                     )
                 )
-                viewModel.setNotFirstSwitchAccount()
+                // TODO un-comment later
+//                viewModel.setNotFirstSwitchAccount()
             }
         }
 
@@ -745,7 +780,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         when (data.type) {
             PlayBroadcastPreparationBannerModel.TYPE_SHORTS -> {
                 analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+//                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
                 val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
                 startActivityForResult(intent, REQ_PLAY_SHORTS)
             }

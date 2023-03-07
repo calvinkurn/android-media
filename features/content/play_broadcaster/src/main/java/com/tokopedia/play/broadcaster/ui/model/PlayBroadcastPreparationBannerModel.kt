@@ -22,9 +22,9 @@ data class PlayBroadcastPreparationBannerModel(
         )
 
         fun bannerDashboard(context: Context) = PlayBroadcastPreparationBannerModel(
-            title = context.getString(R.string.play_bro_banner_shorts_title),
-            description = context.getString(R.string.play_bro_banner_shorts_description),
-            icon = IconUnify.SHORT_VIDEO,
+            title = context.getString(R.string.play_bro_banner_performance_title),
+            description = context.getString(R.string.play_bro_banner_performance_subtitle),
+            icon = IconUnify.GRAPH_REPORT,
             type = TYPE_DASHBOARD,
         )
     }
