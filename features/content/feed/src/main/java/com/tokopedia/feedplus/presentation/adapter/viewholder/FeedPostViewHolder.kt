@@ -27,7 +27,7 @@ class FeedPostViewHolder(
     private val listener: FeedListener
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
-    private val authorView: FeedAuthorInfoView = FeedAuthorInfoView(binding.layoutAuthorInfo)
+    private val authorView: FeedAuthorInfoView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
     private val captionView: FeedCaptionView = FeedCaptionView(binding.tvFeedCaption)
 
     private val layoutManager =

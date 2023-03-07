@@ -9,5 +9,5 @@ interface FeedListener {
     fun disableClearView()
     fun inClearViewMode(): Boolean
     fun onSharePostClicked(model: FeedCardImageContentModel)
-
+    fun onFollowClicked(id: String, isShop: Boolean)
 }

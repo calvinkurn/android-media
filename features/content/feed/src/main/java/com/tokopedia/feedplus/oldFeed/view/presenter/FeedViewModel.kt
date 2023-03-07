@@ -110,7 +110,7 @@ class FeedViewModel @Inject constructor(
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
-        private const val ERROR_FOLLOW_MESSAGE = "“Oops, gagal mem-follow."
+        private const val ERROR_FOLLOW_MESSAGE = "Oops, gagal mem-follow."
         private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
         const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"

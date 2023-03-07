@@ -137,6 +137,7 @@ class FeedFragment :
         observePostData()
         observeAddToCart()
         observeReport()
+        observeFollow()
     }
 
     override fun onDestroyView() {
@@ -220,6 +221,10 @@ class FeedFragment :
             shareData = shareDataBuilder.build()
             showUniversalShareBottomSheet(getFeedShareDataModel(model))
         }
+    }
+
+    override fun onFollowClicked(id: String, isShop: Boolean) {
+        feedPostViewModel.doFollow(id, isShop)
     }
 
     override fun onProductTagItemClicked(model: FeedCardImageContentModel) {
@@ -410,6 +415,23 @@ class FeedFragment :
             when (it) {
                 is Success -> {
                     adapter?.addElement(it.data.items)
+                }
+                is Fail -> {}
+            }
+        }
+    }
+
+    private fun observeFollow() {
+        feedPostViewModel.followResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    adapter?.updateList(
+                        feedPostViewModel.updateFollowStatus(
+                            adapter?.list ?: emptyList(),
+                            it.data.id,
+                            it.data.isFollowing
+                        )
+                    )
                 }
                 is Fail -> {}
             }
