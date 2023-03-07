@@ -63,7 +63,8 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
             .copy(
                 streamAllowed = response.authorConfig.streamAllowed,
                 shortVideoAllowed = response.authorConfig.shortVideoAllowed,
-                tnc = response.authorConfig.tnc
+                tnc = response.authorConfig.tnc,
+                beautificationConfig = mapBeautificationConfig(response.authorConfig.beautificationConfig),
             )
         )
     }
@@ -73,6 +74,14 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
             gson.fromJson(config, Config::class.java)
         } catch (e: Exception) {
             Config()
+        }
+    }
+
+    private fun mapBeautificationConfig(beautificationConfig: String): Config.BeautificationConfig {
+        return try {
+            gson.fromJson(beautificationConfig, Config.BeautificationConfig::class.java)
+        } catch (e: Exception) {
+            Config.BeautificationConfig()
         }
     }
 

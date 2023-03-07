@@ -91,7 +91,8 @@ class GetConfigurationUseCase @Inject constructor(
         private const val VALUE_WITH_CHANNEL_STATE = true
 
         const val QUERY_NAME = "GetConfigurationUseCaseQuery"
-        /** TODO: dont forget to add PARAMS_DEVICE_SPECS in this QUERY */
+        /** TODO: dont forget to add PARAMS_DEVICE_SPECS in this QUERY PARAM */
+        /** TODO: dont forget to add beautificationConfig in this QUERY BODY */
         const val QUERY_BROADCASTER_GET_AUTHOR_CONFIG = """
             query BroadcasterGetAuthorConfig(
                 ${"$$PARAMS_AUTHOR_ID"}: Int64!, 
