@@ -152,7 +152,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 val commandString = NFCUtils.toHex(command)
                 val writeResult = isoDep.transceive(command)
                 val writeResultString = NFCUtils.toHex(writeResult)
-                if (true) {
+                if (isCommandFailed(writeResult)) {
                     errorWriteMutable.postValue(Pair(MessageErrorException(NfcCardErrorTypeDef.FAILED_WRITE_CARD_TAPCASH),
                         EmoneyParamMapper.mapParamLog(attributesTapcash, String.format(ERROR_MESSAGE_APDU, writeResultString))))
                 } else {
