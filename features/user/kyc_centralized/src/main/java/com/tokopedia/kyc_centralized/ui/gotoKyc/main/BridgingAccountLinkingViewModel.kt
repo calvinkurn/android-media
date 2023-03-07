@@ -5,24 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityUseCase
-import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
-import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveUseCase
 import javax.inject.Inject
 
 class BridgingAccountLinkingViewModel @Inject constructor(
-    private val projectInfoUseCase: ProjectInfoUseCase,
+    private val accountLinkingStatusUseCase: AccountLinkingStatusUseCase,
     private val checkEligibilityUseCase: CheckEligibilityUseCase,
     private val registerProgressiveUseCase: RegisterProgressiveUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
-
-    private val _projectInfo = MutableLiveData<ProjectInfoResult>()
-    val projectInfo: LiveData<ProjectInfoResult> get() = _projectInfo
 
     private val _checkEligibility = MutableLiveData<CheckEligibilityResult>()
     val checkEligibility: LiveData<CheckEligibilityResult> get() = _checkEligibility
@@ -30,12 +27,16 @@ class BridgingAccountLinkingViewModel @Inject constructor(
     private val _registerProgressive = MutableLiveData<RegisterProgressiveResult>()
     val registerProgressive : LiveData<RegisterProgressiveResult> get() = _registerProgressive
 
-    fun getProjectInfo(projectId: String) {
+    private val _accountLinkingStatus = MutableLiveData<AccountLinkingStatusResult>()
+    val accountLinkingStatus : LiveData<AccountLinkingStatusResult> get() = _accountLinkingStatus
+
+    fun checkAccountLinkingStatus() {
+        _accountLinkingStatus.value = AccountLinkingStatusResult.Loading()
         launchCatchError(
             block = {
-                _projectInfo.value = projectInfoUseCase(projectId.toInt())
+                _accountLinkingStatus.value = accountLinkingStatusUseCase(Unit)
             }, onError = {
-                _projectInfo.value = ProjectInfoResult.Failed(it)
+                _accountLinkingStatus.value = AccountLinkingStatusResult.Failed(it)
             }
         )
     }

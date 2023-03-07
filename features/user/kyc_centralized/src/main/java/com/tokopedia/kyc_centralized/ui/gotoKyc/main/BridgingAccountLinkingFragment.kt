@@ -29,6 +29,7 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycBridgingAccountLinkingBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
@@ -50,7 +51,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
     }
 
     private val startAccountLinkingForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        viewModel.getProjectInfo(args.parameter.projectId)
+        viewModel.checkAccountLinkingStatus()
     }
 
     override fun onCreateView(
@@ -83,16 +84,21 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        viewModel.projectInfo.observe(viewLifecycleOwner) {
+        viewModel.accountLinkingStatus.observe(viewLifecycleOwner) {
             when (it) {
-                is ProjectInfoResult.NotVerified -> {
-                    if (it.isAccountLinked) {
-                        viewModel.checkEligibility()
-                    } else {
-                        gotoAccountLinking()
-                    }
+                is AccountLinkingStatusResult.Loading -> {
+                    showLoadingScreen()
                 }
-                else -> {
+                is AccountLinkingStatusResult.Linked -> {
+                    viewModel.checkEligibility()
+                }
+                is AccountLinkingStatusResult.NotLinked -> {
+                    activity?.setResult(Activity.RESULT_CANCELED)
+                    activity?.finish()
+                }
+                is AccountLinkingStatusResult.Failed -> {
+                    val message = it.throwable?.getMessage(requireContext())
+                    showToaster(message.orEmpty())
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -145,6 +151,20 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     showToaster(message.orEmpty())
                 }
             }
+        }
+    }
+
+    private fun showLoadingScreen() {
+        binding?.apply {
+            loader.show()
+            unifyToolbar.hide()
+            ivBridgingAccountLinking.hide()
+            tvTitle.hide()
+            tvSubtitle.hide()
+            layoutDoneGopay.root.hide()
+            layoutNotDoneGopay.root.hide()
+            btnConfirm.hide()
+            tvTokopediaCare.hide()
         }
     }
 

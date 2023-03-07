@@ -94,7 +94,15 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     gotoStatusSubmission(parameter)
                 }
                 is ProjectInfoResult.NotVerified -> {
-                    viewModel.checkEligibility()
+                    if (!it.isAccountLinked) {
+                        val parameter = GotoKycMainParam(
+                            projectId = viewModel.projectId,
+                            sourcePage = viewModel.source
+                        )
+                        gotoBridgingAccountLinking(parameter)
+                    } else {
+                        viewModel.checkEligibility()
+                    }
                 }
                 is ProjectInfoResult.Failed -> {
                     val message = it.throwable?.getMessage(requireContext())
@@ -156,6 +164,13 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 isKtpTaken = true
             )
         }
+    }
+
+    private fun gotoBridgingAccountLinking(parameter: GotoKycMainParam) {
+        val intent = Intent(activity, GotoKycMainActivity::class.java)
+        intent.putExtra(GotoKycRouterFragment.PARAM_REQUEST_PAGE, GotoKycRouterFragment.PAGE_BRIDGING_ACCOUNT_LINKING)
+        intent.putExtra(GotoKycRouterFragment.PARAM_DATA, parameter)
+        startKycForResult.launch(intent)
     }
 
     private fun gotoTokoKyc(projectId: String) {
