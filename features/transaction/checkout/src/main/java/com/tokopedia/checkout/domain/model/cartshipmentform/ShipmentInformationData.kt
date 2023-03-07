@@ -5,10 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ShipmentInformationData(
-        var shopLocation: String = "",
-        var estimation: String = "",
-        var freeShipping: FreeShippingData = FreeShippingData(),
-        var freeShippingExtra: FreeShippingData = FreeShippingData(),
-        var freeShippingGeneral: FreeShippingGeneralData = FreeShippingGeneralData(),
-        var preorder: PreorderData = PreorderData()
+    var shopLocation: String = "",
+    var estimation: String = "",
+    var freeShipping: FreeShippingData = FreeShippingData(),
+    var freeShippingExtra: FreeShippingData = FreeShippingData(),
+    var freeShippingGeneral: FreeShippingGeneralData = FreeShippingGeneralData(),
+    var preorder: PreorderData = PreorderData()
 ) : Parcelable

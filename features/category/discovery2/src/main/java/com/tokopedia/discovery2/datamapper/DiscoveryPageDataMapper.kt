@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.datamapper
 
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
@@ -227,10 +226,12 @@ class DiscoveryPageDataMapper(
         return listComponents
     }
 
-    private fun getFiltersFromQuery(searchParameter: SearchParameter) {
+    private fun getFiltersFromQuery(component: ComponentsItem) {
         for ((key, v) in queryParameterMapWithRpc) {
             v?.let { value ->
-                searchParameter.set(key, value)
+                val adjustedValue = Utils.isRPCFilterApplicableForTab(value, component)
+                if(adjustedValue.isNotEmpty())
+                    component.searchParameter.set(key, adjustedValue)
             }
         }
     }
@@ -327,6 +328,7 @@ class DiscoveryPageDataMapper(
                                     if (isDynamicTabs) {
                                         handleDynamicTabsComponents(componentId, index, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
+                                            it.tabPosition = index
                                             listComponents.addAll(
                                                 parseComponent(
                                                     it,
@@ -337,6 +339,7 @@ class DiscoveryPageDataMapper(
                                     } else {
                                         handleAvailableComponents(componentId, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
+                                            it.tabPosition = index
                                             listComponents.addAll(
                                                 parseComponent(
                                                     it,
@@ -591,7 +594,7 @@ class DiscoveryPageDataMapper(
         if (!component.isSelectedFiltersFromQueryApplied && !queryParameterMapWithRpc.isNullOrEmpty()) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(
-                component.searchParameter
+                component
             )
         }
         Utils.getTargetComponentOfFilter(component)?.let {

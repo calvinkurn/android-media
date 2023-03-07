@@ -1,16 +1,15 @@
 package com.tokopedia.epharmacy.network.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class EPharmacyDataResponse(
     @SerializedName("getEpharmacyOrderDetails", alternate = ["getEpharmacyCheckoutData"])
-    val detailData : EPharmacyOrderDetailData?
-){
+    val detailData: EPharmacyOrderDetailData?
+) {
     data class EPharmacyOrderDetailData(
         @SerializedName("form", alternate = ["data"])
         val formData: EPharmacyDataForm?
-    ){
+    ) {
         data class EPharmacyDataForm(
             @SerializedName("epharmacy_button")
             val epharmacyButton: EpharmacyButton?,
@@ -43,11 +42,10 @@ data class EPharmacyDataResponse(
             @SerializedName("error_msg")
             val errorMessage: String?,
             @SerializedName("checkoutId")
-            val checkoutId: String?,
+            val checkoutId: String?
         )
     }
 }
-
 
 data class EpharmacyButton(
     @SerializedName("key")
@@ -86,12 +84,12 @@ data class PrescriptionImage(
     var isUploadFailed: Boolean = false,
     @SerializedName("local_path")
     var localPath: String? = "",
-    @SerializedName(value  = "prescription_data" )
+    @SerializedName(value = "prescription_data")
     var prescriptionData: PrescriptionData?
-){
+) {
     data class PrescriptionData(
         @SerializedName("format")
-        var format:String?,
+        var format: String?,
         @SerializedName("value")
         var value: String?
     )
@@ -123,5 +121,12 @@ data class EPharmacyProduct(
     @SerializedName(value = "products")
     val ePharmacyProducts: List<EPharmacyProduct?>?,
     @SerializedName(value = "divider")
-    var divider: Boolean = true,
+    var divider: Boolean = true
+)
+
+data class EPharmacyHeader(
+    @SerializedName("code", alternate = ["error_code"])
+    val code: Int? = null,
+    @SerializedName("server_process_time")
+    val serverProcessTime: String? = ""
 )

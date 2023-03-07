@@ -5,6 +5,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
@@ -57,6 +58,7 @@ import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -113,7 +115,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val infoObatKerasMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.INFO_OBAT_KERAS] as? ProductGeneralInfoDataModel
 
-    val productNewVariantDataModel: VariantDataModel?
+    val productOptionalVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
     val productSingleVariant: ProductSingleVariantDataModel?
@@ -170,10 +172,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productArData: ArButtonDataModel?
         get() = mapOfData[ProductDetailConstant.AR_BUTTON] as? ArButtonDataModel
 
-    private val verticalRecommendationItems = mutableListOf<ProductRecommendationVerticalDataModel>()
+    private val verticalRecommendationItems =
+        mutableListOf<ProductRecommendationVerticalDataModel>()
 
     val otherOffers: ProductCustomInfoTitleDataModel?
         get() = mapOfData[ProductDetailConstant.OTHER_OFFERS] as? ProductCustomInfoTitleDataModel
+
+    val shopReview: ProductShopReviewDataModel?
+        get() = mapOfData[ProductDetailConstant.SHOP_REVIEW] as? ProductShopReviewDataModel
 
     fun updateDataP1(
         dataP1: DynamicProductInfoP1?,
@@ -201,7 +207,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             updateData(ProductDetailConstant.VARIANT_OPTIONS, loadInitialData) {
-                productNewVariantDataModel?.run {
+                productOptionalVariantDataModel?.run {
                     isRefreshing = false
                 }
             }
@@ -217,15 +223,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     isOs = it.data.isOS
                     isPm = it.data.isPowerMerchant
                     shopLocation = it.basic.productMultilocation.cityName
-                }
-            }
-
-            updateData(ProductDetailConstant.MINI_SOCIAL_PROOF, loadInitialData) {
-                miniSocialProofMap?.run {
-                    rating = it.basic.stats.rating
-                    ratingCount = it.basic.stats.countReview.toIntOrZero()
-                    talkCount = it.basic.stats.countTalk.toIntOrZero()
-                    itemSoldFmt = it.basic.txStats.itemSoldFmt
                 }
             }
 
@@ -325,7 +322,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                     context?.getString(
                         com.tokopedia.common_tradein.R.string.text_price_holder,
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true)
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            tradeinResponse.usedPrice.toIntOrZero(),
+                            true
+                        )
                     ).orEmpty()
                     context?.getString(
                         com.tokopedia.common_tradein.R.string.text_price_holder,
@@ -337,7 +337,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
                     tradeinResponse.widgetString
                 } else {
-                    context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange).orEmpty()
+                    context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
+                        .orEmpty()
                 }
             }
         }
@@ -370,6 +371,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     categoryId = productCategoryId
                     idToPriceUrlMap = productIdToPriceURLMap
                     isLoggedIn = loggedIn
+                    shopId = productDetail.basic.shopID
                 }
             }
         }
@@ -386,7 +388,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateVariantError() {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
-            productNewVariantDataModel?.run {
+            productOptionalVariantDataModel?.run {
                 isVariantError = true
             }
         }
@@ -408,8 +410,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
                 shopCredibility?.run {
                     shopLastActive =
-                        if (context == null) ""
-                        else it.shopInfo.shopLastActive.getRelativeDate(context)
+                        if (context == null) {
+                            ""
+                        } else {
+                            it.shopInfo.shopLastActive.getRelativeDate(context)
+                        }
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
                     partnerLabel = it.shopInfo.partnerLabel
@@ -444,14 +449,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF) {
-                miniSocialProofMap?.run {
-                    wishlistCount = it.wishlistCount.toIntOrZero()
-                    viewCount = it.productView.toIntOrZero()
-                    shouldRenderSocialProof = true
-                    buyerPhotosCount = it.imageReview.buyerMediaCount
-                    buyerPhotoStaticText = it.imageReview.staticSocialProofText
-                    setSocialProofData()
-                }
+                updateMiniSocialProof(it)
             }
 
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK) {
@@ -545,6 +543,35 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.OTHER_OFFERS) {
                 updateCustomInfoTitleP2(p2 = it)
             }
+
+            updateData(ProductDetailConstant.SHOP_REVIEW) {
+                updateReviewList(it)
+            }
+        }
+    }
+
+    private fun updateMiniSocialProof(p2Data: ProductInfoP2UiData) {
+        if (p2Data.socialProof.isEmpty()) {
+            removeComponent(ProductDetailConstant.MINI_SOCIAL_PROOF)
+        } else {
+            miniSocialProofMap?.shouldRender = true
+            val previousData = miniSocialProofMap?.items.orEmpty()
+            miniSocialProofMap?.items = p2Data.socialProof.map { uiModel ->
+                uiModel.copy( // retain impress-holder
+                    impressHolder = previousData.find {
+                        it.identifier == uiModel.identifier
+                    }?.impressHolder ?: ImpressHolder()
+                )
+            }
+        }
+    }
+
+    private fun updateReviewList(p2Data: ProductInfoP2UiData) {
+        if (p2Data.shopReview.reviews.isEmpty()) {
+            removeComponent(ProductDetailConstant.SHOP_REVIEW)
+        } else {
+            shopReview?.shouldRender = true
+            shopReview?.data = p2Data.shopReview
         }
     }
 
@@ -688,14 +715,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 PDP_7, PDP_9_TOKONOW -> {
                     (mapOfData[data.pageName] as? ProductRecomWidgetDataModel)?.run {
                         recomWidgetData = data
-                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                        cardModel =
+                            data.recommendationItemList.toProductCardModels(hasThreeDots = true)
                         filterData = mapToAnnotateChip(data)
                     }
                 }
                 else -> {
                     (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
                         recomWidgetData = data
-                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                        cardModel =
+                            data.recommendationItemList.toProductCardModels(hasThreeDots = true)
                         filterData = mapToAnnotateChip(data)
                     }
                 }
@@ -705,7 +734,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateViewToViewData(
         data: RecommendationWidget?,
-        state: Int = RecommendationCarouselData.STATE_READY,
+        state: Int = RecommendationCarouselData.STATE_READY
     ) {
         val pageName = data?.pageName ?: return
         updateData(pageName) {
@@ -810,17 +839,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateVariantData(processedVariant: List<VariantCategory>?) {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
-            productNewVariantDataModel?.listOfVariantCategory = processedVariant
+            productOptionalVariantDataModel?.listOfVariantCategory = processedVariant
         }
 
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-            productSingleVariant?.variantLevelOne = processedVariant?.firstOrNull()
+            val variantLvlOne = processedVariant?.firstOrNull()
+            productSingleVariant?.variantLevelOne = doRetainImpressOfVariantOptions(variantLvlOne)
         }
     }
 
     fun updateVariantSelected(variantId: String, variantKey: String) {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
-            productNewVariantDataModel?.let {
+            productOptionalVariantDataModel?.let {
                 val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
                 copyMap[variantKey] = variantId
                 it.mapOfSelectedVariant = copyMap
@@ -843,6 +873,49 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 it.mapOfSelectedVariant = mapOfSelectedIds
             }
         }
+    }
+
+    fun updateSingleVariant(singleVariant: ProductSingleVariantDataModel?) {
+        if (singleVariant == null) {
+            removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
+        } else {
+            updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+                mapOfData[ProductDetailConstant.MINI_VARIANT_OPTIONS] =
+                    retainImpressOfSingleVariantOptions(newSingleVariant = singleVariant)
+            }
+        }
+    }
+
+    /**
+     * get single variant of variant options`s impress holder object from previous data if available
+     */
+    private fun retainImpressOfSingleVariantOptions(
+        newSingleVariant: ProductSingleVariantDataModel
+    ): ProductSingleVariantDataModel {
+        val variantLevelOne = newSingleVariant.variantLevelOne
+        val variantLevelOneOfImpressRetained = doRetainImpressOfVariantOptions(variantLevelOne)
+
+        return newSingleVariant.copy(variantLevelOne = variantLevelOneOfImpressRetained)
+    }
+
+    /**
+     * do retain for variant options`s impress holder object from previous data if available
+     */
+    private fun doRetainImpressOfVariantOptions(newVariantOptions: VariantCategory?): VariantCategory? {
+        val previousVariantOptions = productSingleVariant?.variantLevelOne?.variantOptions.orEmpty()
+        val variantOptions = newVariantOptions?.variantOptions.orEmpty().map { new ->
+            new.copy(
+                impressHolder = previousVariantOptions
+                    .find { it.variantId == new.variantId }
+                    ?.impressHolder.apply {
+                        this?.invoke()
+                    } ?: ImpressHolder()
+            )
+        }
+
+        return newVariantOptions?.copy(
+            variantOptions = variantOptions
+        )
     }
 
     fun updateDiscussionData(discussionMostHelpful: DiscussionMostHelpful) {

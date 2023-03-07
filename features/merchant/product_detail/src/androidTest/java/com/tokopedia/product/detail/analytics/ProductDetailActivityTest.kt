@@ -31,6 +31,7 @@ import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofTypeViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -253,17 +254,28 @@ class ProductDetailActivityTest {
     }
 
     private fun clickTabDiscussion() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.mini_social_proof_recycler_view))), scrollTo()))
-        onView(allOf(withId(R.id.chipSocialProofItem)))
-                .check(matches(isDisplayed()))
-                .perform(click())
+        onView(
+            allOf(withId(R.id.mini_social_proof_recycler_view))
+        ).check(
+            matches(isDisplayed())
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<SocialProofTypeViewHolder>(
+                3, scrollTo()
+            )
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<SocialProofTypeViewHolder>(
+                3, clickChildViewWithId(
+                    R.id.socialProofChipContainer
+                )
+            )
+        )
     }
 
     private fun setUpTimeoutIdlingResource() {
         IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
         IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
         IdlingRegistry.getInstance().register(idlingResource)
-        waitVariantToLoad()
+        //waitVariantToLoad()
     }
 
     private fun addToCartBottomSheetIsVisible(): Boolean? {

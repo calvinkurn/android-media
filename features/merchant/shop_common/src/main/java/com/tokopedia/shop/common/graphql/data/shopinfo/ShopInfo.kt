@@ -2,121 +2,125 @@ package com.tokopedia.shop.common.graphql.data.shopinfo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 
 data class ShopInfo(
-        @SerializedName("closedInfo")
+    @SerializedName("closedInfo")
         @Expose
         val closedInfo: ClosedInfo = ClosedInfo(),
 
-        @SerializedName("createInfo")
+    @SerializedName("createInfo")
         @Expose
         val createdInfo: CreatedInfo = CreatedInfo(),
 
-        @SerializedName("favoriteData")
+    @SerializedName("favoriteData")
         @Expose
         val favoriteData: FavoriteData = FavoriteData(),
 
-        @SerializedName("goldOS")
+    @SerializedName("goldOS")
         @Expose
         val goldOS: GoldOS = GoldOS(),
 
-        @SerializedName("isAllowManage")
+    @SerializedName("isAllowManage")
         @Expose
         val isAllowManage: Int = 0,
 
-        @SerializedName("location")
+    @SerializedName("location")
         @Expose
         val location: String = "",
 
-        @SerializedName("shipmentInfo")
+    @SerializedName("shipmentInfo")
         @Expose
         val shipments: List<ShopShipment> = listOf(),
 
-        @SerializedName("shopAssets")
+    @SerializedName("shopAssets")
         @Expose
         val shopAssets: ShopAssets = ShopAssets(),
 
-        @SerializedName("shopCore")
+    @SerializedName("shopCore")
         @Expose
         val shopCore: ShopCore = ShopCore(),
 
-        @SerializedName("shopLastActive")
+    @SerializedName("shopLastActive")
         @Expose
         val shopLastActive: String = "",
 
-        @SerializedName("statusInfo")
+    @SerializedName("statusInfo")
         @Expose
         val statusInfo: StatusInfo = StatusInfo(),
 
-        @SerializedName("topContent")
+    @SerializedName("topContent")
         @Expose
         val topContent: TopContent = TopContent(),
 
-        @SerializedName("bbInfo")
+    @SerializedName("bbInfo")
         @Expose
         val bbInfo: List<BBInfo> = listOf(),
 
-        @SerializedName("freeOngkir")
+    @SerializedName("freeOngkir")
         @Expose
         val freeOngkir: FreeOngkir = FreeOngkir(),
 
-        @SerializedName("shopHomeType")
+    @SerializedName("shopHomeType")
         @Expose
         val shopHomeType: String = "",
 
-        @SerializedName("os")
+    @SerializedName("os")
         @Expose
         val os: Os = Os(),
 
-        @SerializedName("gold")
+    @SerializedName("gold")
         @Expose
         val gold: Gold = Gold(),
 
-        @SerializedName("activeProduct")
+    @SerializedName("activeProduct")
         @Expose
         val activeProduct: String = "",
 
-        @SerializedName("shopStats")
+    @SerializedName("shopStats")
         @Expose
         val shopStats: ShopStats = ShopStats(),
 
-        @SerializedName("shopSnippetURL")
+    @SerializedName("shopSnippetURL")
         @Expose
         val shopSnippetUrl: String = "",
 
-        @SerializedName("badgeURL")
+    @SerializedName("badgeURL")
         @Expose
         val shopTierBadgeUrl: String = "",
 
-        @SerializedName("shopTier")
+    @SerializedName("shopTier")
         @Expose
         val shopTier: Int = 0,
 
-        @SerializedName("branchLinkDomain")
+    @SerializedName("branchLinkDomain")
         @Expose
         val branchLinkDomain: String = "",
 
-        @SerializedName("tickerData")
+    @SerializedName("tickerData")
         @Expose
         val tickerData: List<TickerDataResponse> = emptyList(),
 
-        @SerializedName("isGoApotik")
+    @SerializedName("isGoApotik")
         @Expose
         val isGoApotik: Boolean = false,
 
-        @SerializedName("epharmacyInfo")
+    @SerializedName("epharmacyInfo")
         @Expose
         val epharmacyInfo: EPharmacyInfo = EPharmacyInfo(),
 
-        @SerializedName("shopMultilocation")
+    @SerializedName("partnerInfo")
+        @Expose
+        val partnerInfo: List<PartnerInfoData> = listOf(),
+
+    @SerializedName("shopMultilocation")
         @Expose
         val shopMultilocation: ProductShopMultilocation = ProductShopMultilocation(),
 
-        @SerializedName("partnerLabel")
+    @SerializedName("partnerLabel")
         @Expose
         val partnerLabel: String = String.EMPTY
 ) {
@@ -130,23 +134,25 @@ data class ShopInfo(
         }
 
         return ShopInfoData(
-                shopCore.shopID,
-                shopCore.name,
-                shopCore.description,
-                shopCore.url,
-                location,
-                shopAssets.cover,
-                shopCore.tagLine,
-                goldOS.isOfficial,
-                goldOS.isGold,
-                createdInfo.openSince,
-                shipmentsData,
-                shopSnippetUrl,
-                isGoApotik,
-                epharmacyInfo.siaNumber,
-                epharmacyInfo.sipaNumber,
-                epharmacyInfo.apj,
-                partnerLabel = partnerLabel
+            shopId = shopCore.shopID,
+            name = shopCore.name,
+            description = shopCore.description,
+            url = shopCore.url,
+            location = location,
+            imageCover = shopAssets.cover,
+            tagLine = shopCore.tagLine,
+            isOfficial = goldOS.isOfficial,
+            isGold = goldOS.isGold,
+            openSince = createdInfo.openSince,
+            shipments = shipmentsData,
+            shopSnippetUrl = shopSnippetUrl,
+            isGoApotik = isGoApotik,
+            siaNumber = epharmacyInfo.siaNumber,
+            sipaNumber = epharmacyInfo.sipaNumber,
+            apj = epharmacyInfo.apj,
+            partnerLabel = partnerLabel,
+            fsType = partnerInfo.firstOrNull()?.fsType.orZero(),
+            partnerName = partnerInfo.firstOrNull()?.partnerName.orEmpty()
         )
     }
 
@@ -178,6 +184,16 @@ data class ShopInfo(
         @SerializedName("apj")
         @Expose
         val apj: String = "",
+    )
+
+    data class PartnerInfoData(
+        @SerializedName("partnerName")
+        @Expose
+        val partnerName: String = "",
+
+        @SerializedName("fsType")
+        @Expose
+        val fsType: Int = 0,
     )
 
     data class ShopAssets(

@@ -1,0 +1,11 @@
+[
+  {
+    "data": {
+      "getPaymentFee": {
+        "success": true,
+        "errors": [],
+        "data": []
+      }
+    }
+  }
+]

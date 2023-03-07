@@ -5,8 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/picker_page_margin_bottom"
-    tools:layout_marginTop="0dp"
     android:orientation="vertical">
 
     <include
@@ -15,7 +13,17 @@
 
     <include
         android:id="@+id/album_selector"
-        layout="@layout/widget_album_selector" />
+        layout="@layout/ui_component_album_selector" />
+
+    <include
+        android:id="@+id/shimmering"
+        layout="@layout/shimmer_list_item_media"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/drawer_selector"
+        app:layout_constraintTop_toBottomOf="@+id/album_selector"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lst_media"

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+  <com.tokopedia.header.HeaderUnify
+      android:id="@+id/ad_group_header"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:unify_header_title="@string/mp_ad_creation_group_list_header_text"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:unify_header_is_show_shadow="false"
+      />
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/ad_group_search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:search_bar_placeholder="@string/mp_ad_group_list_search_hint"
+        app:search_bar_show_icon="false"
+        android:layout_weight="0.8"
+        app:layout_constraintTop_toBottomOf="@id/ad_group_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ad_group_filter_btn"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="13dp"
+        />
+    
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ad_group_filter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon_name="SORT_FILTER"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="13dp"
+        app:layout_constraintTop_toTopOf="@+id/ad_group_search"
+        app:layout_constraintBottom_toBottomOf="@+id/ad_group_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="19dp"
+        />
+
+    <FrameLayout
+        android:id="@+id/ad_group_cta_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="16dp"
+        android:background="@color/Unify_NN0"
+        >
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/ad_group_cta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mp_ad_creation_grp_list_cta"
+            >
+        </com.tokopedia.unifycomponents.UnifyButton>
+    </FrameLayout>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ad_group_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/ad_group_search"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ad_group_cta_container"
+        android:layout_marginTop="12dp"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

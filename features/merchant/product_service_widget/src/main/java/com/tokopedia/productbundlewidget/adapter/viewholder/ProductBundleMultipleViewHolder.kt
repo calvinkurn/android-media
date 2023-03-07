@@ -162,6 +162,11 @@ class ProductBundleMultipleViewHolder(
                 bundleDetail,
                 adapterPosition
             )
+            listener?.impressionProductBundleMultiple(
+                bundle,
+                bundleDetail,
+                adapterPosition
+            )
         }
 
         buttonAtc?.setOnClickListener {

@@ -7,21 +7,25 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
-@GqlQuery("GQL_FETCH_CHECKOUT_DETAILS_QUERY",GQL_FETCH_CHECKOUT_DETAILS_QUERY)
+@GqlQuery("GqlFetchCheckoutDetailsQuery", GQL_FETCH_CHECKOUT_DETAILS_QUERY)
 class GetEPharmacyCheckoutDetailUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<EPharmacyDataResponse>(graphqlRepository) {
 
-    fun getEPharmacyCheckoutDetail(onSuccess: (EPharmacyDataResponse) -> Unit,
-                           onError: (Throwable) -> Unit,
-                                   checkoutId: String, source: String) {
+    fun getEPharmacyCheckoutDetail(
+        onSuccess: (EPharmacyDataResponse) -> Unit,
+        onError: (Throwable) -> Unit,
+        checkoutId: String,
+        source: String
+    ) {
         try {
             this.setTypeClass(EPharmacyDataResponse::class.java)
-            this.setRequestParams(getRequestParams(checkoutId,source))
-            this.setGraphqlQuery(GQL_FETCH_CHECKOUT_DETAILS_QUERY)
+            this.setRequestParams(getRequestParams(checkoutId, source))
+            this.setGraphqlQuery(GqlFetchCheckoutDetailsQuery())
             this.execute(
                 { result ->
                     onSuccess(result)
-                }, { error ->
+                },
+                { error ->
                     onError(error)
                 }
             )
@@ -30,7 +34,7 @@ class GetEPharmacyCheckoutDetailUseCase @Inject constructor(graphqlRepository: G
         }
     }
 
-    private fun getRequestParams(checkoutId: String,source: String): MutableMap<String, Any?> {
+    private fun getRequestParams(checkoutId: String, source: String): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
         requestMap[PARAM_CHECKOUT_ID] = checkoutId
         requestMap[PARAM_SOURCE] = source
@@ -41,5 +45,4 @@ class GetEPharmacyCheckoutDetailUseCase @Inject constructor(graphqlRepository: G
         const val PARAM_CHECKOUT_ID = "checkout_id"
         const val PARAM_SOURCE = "source"
     }
-
 }

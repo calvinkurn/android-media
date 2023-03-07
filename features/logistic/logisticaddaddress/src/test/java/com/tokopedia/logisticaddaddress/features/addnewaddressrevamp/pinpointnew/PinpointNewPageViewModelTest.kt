@@ -6,7 +6,6 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
-import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
@@ -94,7 +93,6 @@ class PinpointNewPageViewModelTest {
         verify { districtBoundaryObserver.onChanged(match { it is Success }) }
     }
 
-
     @Test
     fun `Get District Boundaries Fail`() {
         coEvery { repo.getDistrictBoundaries(any()) } throws defaultThrowable
@@ -109,7 +107,6 @@ class PinpointNewPageViewModelTest {
         verify { districtCenterObserver.onChanged(match { it is Success }) }
     }
 
-
     @Test
     fun `Get District Center by District ID Fail`() {
         coEvery { repo.getDistrictCenter(any()) } throws defaultThrowable
@@ -118,10 +115,17 @@ class PinpointNewPageViewModelTest {
     }
 
     @Test
-    fun `get save address` () {
+    fun `get save address`() {
         val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
         pinpointNewPageViewModel.setAddress(address)
         Assert.assertEquals(pinpointNewPageViewModel.getAddress(), address)
     }
 
+    @Test
+    fun `verify set gms availability flag is correct`() {
+        val gmsAvailable = true
+        pinpointNewPageViewModel.isGmsAvailable = gmsAvailable
+
+        Assert.assertEquals(pinpointNewPageViewModel.isGmsAvailable, gmsAvailable)
+    }
 }

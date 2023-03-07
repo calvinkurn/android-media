@@ -36,7 +36,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     interface Listener {
         fun getUserName(): String
-        fun showReplyOption(messageUiModel: MessageUiModel)
+        fun showReplyOption(messageUiModel: MessageUiModel, messageBubble: TextView? = null)
         fun goToBubble(parentReply: ParentReply)
         fun resetGuidelineForReplyBubble()
     }

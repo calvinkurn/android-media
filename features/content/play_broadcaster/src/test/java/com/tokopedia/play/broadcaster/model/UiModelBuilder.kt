@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
@@ -82,6 +83,19 @@ class UiModelBuilder {
             croppedCover = croppedCover,
             state = state
     )
+
+    fun buildBroadcastingConfigUiModel(): BroadcastingConfigUiModel {
+        return BroadcastingConfigUiModel(
+            audioRate = "123",
+            bitrateMode = "123",
+            fps = "123",
+            maxRetry = 1,
+            reconnectDelay = 1,
+            videoBitrate = "123",
+            videoWidth = "123",
+            videoHeight = "123",
+        )
+    }
 
     fun buildConfigurationUiModel(
         streamAllowed: Boolean = true,
@@ -204,6 +218,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.shop",
                     badge = "icon.badge",
                     hasUsername = usernameShop,
+                    hasAcceptTnc = tncShop,
                     enable = tncShop
                 )
             )
@@ -215,6 +230,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.buyer",
                     badge = "icon.badge",
                     hasUsername = usernameBuyer,
+                    hasAcceptTnc = tncBuyer,
                     enable = tncBuyer
                 )
             )
@@ -226,6 +242,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.shop",
                     badge = "icon.badge",
                     hasUsername = usernameShop,
+                    hasAcceptTnc = tncShop,
                     enable = tncShop
                 ),
                 ContentAccountUiModel(
@@ -235,6 +252,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.buyer",
                     badge = "icon.badge",
                     hasUsername = usernameBuyer,
+                    hasAcceptTnc = tncBuyer,
                     enable = tncBuyer
                 ),
             )
@@ -282,6 +300,7 @@ class UiModelBuilder {
     fun buildShortsConfig(
         shortsId: String = "123",
         shortsAllowed: Boolean = true,
+        isBanned: Boolean = false,
         tncList: List<TermsAndConditionUiModel> = buildTncList(),
         maxTitleCharacter: Int = 24,
         maxTaggedProduct: Int = 30,
@@ -289,6 +308,7 @@ class UiModelBuilder {
     ) = PlayShortsConfigUiModel(
         shortsId = shortsId,
         shortsAllowed = shortsAllowed,
+        isBanned = isBanned,
         tncList = tncList,
         maxTitleCharacter = maxTitleCharacter,
         maxTaggedProduct = maxTaggedProduct,

@@ -120,9 +120,9 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelSelectDestination(context: Context?, destType: String, destination: String, screenName: String) {
+    fun hotelSelectDestination(context: Context?, destType: String, destination: String, source: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        map.addGeneralEvent(CLICK_HOTEL, SELECT_DESTINATION, "$HOTEL_LABEL - $destType - $destination")
+        map.addGeneralEvent(CLICK_HOTEL, SELECT_DESTINATION, "$HOTEL_LABEL - $destType - $destination - $source")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
@@ -207,6 +207,7 @@ class TrackingHotelUtil {
         searchParam: SearchParam,
         products: List<Property>,
         currentListDataSize: Int,
+        source: String,
         screenName: String
     ) {
         val roomCount = searchParam.room
@@ -214,7 +215,7 @@ class TrackingHotelUtil {
         val duration = DateUtil.getDayDiff(searchParam.checkIn, searchParam.checkOut)
 
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
+        val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration - $source"
         map.addGeneralEvent(PRODUCT_VIEW, VIEW_HOTEL_LIST_IMPRESSION, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
             CURRENCY_LABEL,

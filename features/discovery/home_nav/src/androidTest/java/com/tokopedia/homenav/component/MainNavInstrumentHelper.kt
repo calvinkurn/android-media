@@ -24,7 +24,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_ORDER_TRANSACTION =
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST = "tracker/home_nav/wishlist.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REVIEW = "tracker/home_nav/review.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SHOP_AFFILIATE = "tracker/home_nav/shop_affiliate.json"
-const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MENU_CATEGORY = "tracker/home_nav/menu_category.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VIEW_ALL = "tracker/home_nav/section_title_view_all.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TOKOPEDIA_PLUS = "tracker/home_nav/tokopedia_plus.json"
 
 fun clickOnEachShop(viewHolder: RecyclerView.ViewHolder) {
@@ -165,7 +165,7 @@ fun clickOnTokopediaPlus() {
     )
 }
 
-fun clickMenu(recyclerViewId: Int, cardPosition: Int) {
+fun clickSectionTitle(recyclerViewId: Int, cardPosition: Int) {
     Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
         RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
             cardPosition,
