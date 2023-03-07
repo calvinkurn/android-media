@@ -6,6 +6,7 @@ import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactory
 import com.tokopedia.sellerorder.detail.presentation.model.DividerUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.PofDataUiModel
 import com.tokopedia.unifycomponents.toPx
 
 object SomDetailMapper {
@@ -72,6 +73,16 @@ object SomDetailMapper {
         }
     }
 
+    private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includePofData(
+        pofData: SomDynamicPriceResponse.GetSomDynamicPrice.PofData?
+    ) {
+        SomDynamicPaymentResponseMapper.mapResponseToPofDataUiModel(
+            pofData
+        )?.let {
+            add(it)
+        }
+    }
+
     private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeDivider() {
         add(
             DividerUiModel(
@@ -97,6 +108,7 @@ object SomDetailMapper {
             includeDivider()
             includePayment(somGetSomDynamicPrice)
             includeMvc(somGetSomDynamicPrice)
+            includePofData(somGetSomDynamicPrice?.pofData)
         }
     }
 }
