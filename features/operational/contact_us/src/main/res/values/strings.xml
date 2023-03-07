@@ -1,13 +1,9 @@
 <resources>
     <string name="mail_us">Email</string>
-    <string name="hai_user">Hai %s!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="contact_us_title_home">Tokopedia Care</string>
-    <string name="invoice_list_title">Riwayat Transaksi</string>
-    <string name="order_query_ticket_title">Kendala</string>
-    <string name="submit_ticket_title">Form Bantuan</string>
     <string name="inbox_title_dialog_wrong_scan">Tunggu…</string>
     <string name="inbox_cancel">Batal</string>
     <string name="inbox_exit">Keluar</string>
@@ -18,43 +14,18 @@
     <string name="masih_butuh_bantuan">Masih butuh bantuan?</string>
     <string name="hubungi_kami">Hubungi Tokopedia Care</string>
     <string name="attachment_required">Mohon lampirkan data yang diminta</string>
-    <string name="chat_dengan_toped">Chat dengan Toped</string>
-    <string name="tim_customer_service">Tim Customer Service kami selalu siap untuk melayani Anda selama 24/7</string>
-    <string name="transaksi_bermasalah">Transaksi Bermasalah</string>
-    <string name="subjek">Subjek</string>
     <string name="barang_yang">Barang yang diterima tidak sesuai</string>
     <string name="kendala">Kendala</string>
     <string name="beritahukan_kendala_anda_minimum_30">Beritahukan kendala Anda (Minimum 30 karakter)</string>
     <string name="semakin_detail_">Semakin detail, semakin mudah kami membantu Anda</string>
-    <string name="lampiran">Lampiran</string>
-    <string name="warning_minimu_5mb">Upload hingga 5 gambar dalam format .JPG, .JPEG, .PNG. dengan ukuran maksimum 10 MB.</string>
     <string name="tutup">Tutup</string>
-    <string name="terima_kasih">Terima Kasih</string>
-    <string name="success_msg">Laporan telah masuk ke sistem. Tim Customer Care Tokopedia akan menghubungi Anda.</string>
     <string name="ok">Ok</string>
     <string name="delete">Delete</string>
-    <string name="apa_kendala_anda">Apa Kendala Anda?</string>
-    <string name="chat_bot_message">Kamu ada kendala terkait refund dan promo? Kamu bisa menanyakan hal tersebut ke Toped</string>
-    <string name="chat_dengan_bot">Chat dengan Kami</string>
-    <string name="hai_syefti">Hai Syefti!</string>
-    <string name="butuh_bantuan_lain">Butuh Bantuan Lain?</string>
-    <string name="empty_string">Anda tidak memiliki riwayat transaksi \n untuk sementara ini</string>
     <string name="app_name">contact_us</string>
     <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
-    <string name="thanks_input">Terima kasih atas masukan Anda</string>
     <string name="contact_us_display_a_problem_report_here">Oops, laporanmu tidak ditemukan</string>
 
     <string name="title_help">Bantuan</string>
-    <string name="please_wait">Please Wait...</string>
-    <string name="artikel_populer">Artikel Populer</string>
-    <string name="lihat_selengkapnya">Lihat Selengkapnya</string>
-    <string name="total">Total:</string>
-    <string name="riwayat_transaksi">Riwayat Transaksi</string>
-    <string name="laporkan_kendala_transaksi_di_tokopedia">Laporkan kendala transaksi di Tokopedia</string>
-    <string name="kirim">Kirim</string>
-    <string name="more_items">+ %1$d barang lainnya</string>
-    <string name="belum_ada_transaksi">Belum Ada Transaksi</string>
-    <string name="segera_laporkan">Segera laporkan jika menemukan kendala seputar transaksi di Tokopedia</string>
     <string name="contact_us_type_here">Tulis di sini (Min. 15 karakter)</string>
     <string name="on_going">Dalam Proses</string>
     <string name="closed">Ditutup</string>
@@ -62,23 +33,11 @@
     <string name="need_rating">Beri Penilaian</string>
     <string name="max_image_warning">Maksimal 5 lampiran diizinkan</string>
     <string name="text_satisfied">Seberapa puas kamu dengan layanan Tokopedia Care?</string>
-    <string name="select_bad_reason">Keluhan tentang CS kami</string>
     <string name="cu_no_more_results">Tidak Ada Lagi Hasil</string>
     <string name="hint_attachment">Catatan: Mohon lampirkan data yang diminta</string>
     <string name="no_search_result">Tidak ditemukan hasil untuk pencarian Anda</string>
-    <string name="max_reply_wait">Anda baru saja membalas tiket. Silakan coba beberapa saat lagi.</string>
     <string name="invalid_images">Gambar Tidak Valid</string>
-    <string name="network_error">Maaf terjadi kesalahan teknis, silakan dicoba lagi.</string>
     <string name="abandon_message_warning">Pesan Anda akan hilang jika keluar halaman ini. Anda yakin?</string>
-    <string name="enter_other_reason">Ada hal lain yang bisa diperbaiki?</string>
-    <string name="type_other_reason">Tulis Disini(minimum 15 karakter)</string>
-    <string name="bad_reason_1">Tidak paham masalah</string>
-    <string name="bad_reason_2">Solusi tidak berhasil</string>
-    <string name="bad_reason_3">Respons lambat</string>
-    <string name="bad_reason_4">Tidak kooperatif</string>
-    <string name="bad_reason_5">Jawaban terlalu kaku</string>
-    <string name="bad_reason_6">Kurang ramah</string>
-    <string name="other_reason">Lainnya</string>
     <string name="survey_layanan">Survey Layanan</string>
     <string name="cu_surey_layana">Survey Layana</string>
     <string name="cu_terima_kasih_atas_masukannya">Terima kasih atas masukannya</string>
@@ -97,7 +56,6 @@
     <string name="detail_kendala">Detail Kendala</string>
     <string name="contact_us_inbox">Pesan Bantuan</string>
     <string name="choose_image">Pilih Gambar</string>
-    <string name="contact_us_search_error">Ada Yang Salah</string>
     <string name="title_activity_contact_us">Pusat Bantuan</string>
     <string name="contact_us_error_upload_image">Gagal mengunggah gambar</string>
     <string name="title_contact_finish">Pesan sudah berhasil terkirim. Customer Care Tokopedia akan membalas pesan tersebut ke email kamu. Silakan cek email secara berkala.</string>
@@ -125,7 +83,6 @@
     <string name="title_email">Email</string>
     <string name="contact_us_tool_tip_text">Chat Sekarang</string>
     <string name="contactus_chat_bot_applink">tokopedia://chatbot/%s</string>
-    <string name="contact_us_step_two_response_failure_message">Maaf, permintaan Anda tidak dapat diproses. Silahkan coba beberapa saat lagi.</string>
     <string name="contact_us_sent_error_message">Pesanmu gagal dikirim, coba kirim ulang</string>
     <string name="contact_us_selesai_button">Selesai</string>
 
@@ -170,9 +127,11 @@
     <string name="contact_us_filter">Filter image</string>
     <string name="contact_us_priority_image">priority </string>
     <string name="contact_us_post_item">post item</string>
-    <string name="contact_us_reply_button_gradient">gradient</string>
 
     <string name="contact_us_ok">OK</string>
+    <string name="contact_search_hint">Cari...</string>
+    <string name="delete_image">Delete image</string>
+    <string name="contact_us_close">Tutup</string>
     <string name="contact_us_failed">Terimakasih telah berusaha memberitahu kami, silahkan mencoba kembali</string>
 
 </resources>

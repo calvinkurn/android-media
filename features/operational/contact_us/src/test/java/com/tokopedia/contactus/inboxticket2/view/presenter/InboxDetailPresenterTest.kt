@@ -319,7 +319,7 @@ class InboxDetailPresenterTest {
         coEvery { intent.extras?.getInt(any()) } returns 5
         coEvery { intent.getStringExtra(any()) } returns "5"
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onActivityResult(
             InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
@@ -352,7 +352,7 @@ class InboxDetailPresenterTest {
 
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onActivityResult(
             InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
@@ -385,7 +385,7 @@ class InboxDetailPresenterTest {
 
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onActivityResult(
             InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
@@ -417,7 +417,7 @@ class InboxDetailPresenterTest {
 
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onActivityResult(
             InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
@@ -440,7 +440,7 @@ class InboxDetailPresenterTest {
         coEvery { intent.extras?.getInt(any()) } returns 0
         coEvery { intent.getStringExtra(any()) } returns "0"
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onActivityResult(
             InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
@@ -465,7 +465,7 @@ class InboxDetailPresenterTest {
         coEvery { intent.extras?.getInt(any()) } returns 5
         coEvery { intent.getStringExtra(any()) } returns "5"
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onActivityResult(
             InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
@@ -663,7 +663,7 @@ class InboxDetailPresenterTest {
     fun `check onSearchSubmitted`() {
         presenter.attachView(view)
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onSearchSubmitted("dummy")
 
@@ -675,7 +675,7 @@ class InboxDetailPresenterTest {
     fun `check onSearchSubmitted when input is empty`() {
         presenter.attachView(view)
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onSearchSubmitted("")
 
@@ -694,7 +694,7 @@ class InboxDetailPresenterTest {
         val utils = mockk<Utils>(relaxed = true)
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         every { presenter.mTicketDetail } returns ticketDetail
 
@@ -717,7 +717,7 @@ class InboxDetailPresenterTest {
         val utils = mockk<Utils>(relaxed = true)
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         every { presenter.mTicketDetail } returns ticketDetail
 
@@ -734,7 +734,7 @@ class InboxDetailPresenterTest {
     fun `check invocation of enterSearchMode on invocation onSearchSubmitted`() {
         presenter.attachView(view)
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onSearchSubmitted("dummy")
 
@@ -1083,7 +1083,7 @@ class InboxDetailPresenterTest {
         every { utils.fileSizeValid(any()) } returns false
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onImageSelect(mockk(relaxed = true))
 
@@ -1098,7 +1098,7 @@ class InboxDetailPresenterTest {
         every { utils.fileSizeValid(any()) } returns false
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onImageSelect(mockk(relaxed = true))
 
@@ -1116,7 +1116,7 @@ class InboxDetailPresenterTest {
         every { utils.isBitmapDimenValid(any()) } returns false
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onImageSelect(mockk(relaxed = true))
 
@@ -1134,7 +1134,7 @@ class InboxDetailPresenterTest {
         every { utils.isBitmapDimenValid(any()) } returns true
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onImageSelect(mockk(relaxed = true))
 
@@ -1151,7 +1151,7 @@ class InboxDetailPresenterTest {
         every { utils.isBitmapDimenValid(any()) } returns true
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.onImageSelect(mockk(relaxed = true))
 
@@ -1297,7 +1297,7 @@ class InboxDetailPresenterTest {
         every { view.imageList } returns listOf()
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.isUploadImageValid
 
@@ -1317,7 +1317,7 @@ class InboxDetailPresenterTest {
         every { view.imageList } returns listOf()
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.isUploadImageValid
 
@@ -1337,7 +1337,7 @@ class InboxDetailPresenterTest {
         every { view.imageList } returns listOf()
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.isUploadImageValid
 
@@ -1909,7 +1909,7 @@ class InboxDetailPresenterTest {
 
         mockkStatic(ContactUsTracking::class)
         every {
-            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any())
+            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any())
         } just runs
 
         presenter.showImagePreview(0, listOf(attachmentItem, attachmentItem2, attachmentItem3))
@@ -1925,7 +1925,7 @@ class InboxDetailPresenterTest {
 
         mockkStatic(ContactUsTracking::class)
         every {
-            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any())
+            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any())
         } just runs
 
         presenter.showImagePreview(0, listOf(attachmentItem))
@@ -1940,7 +1940,7 @@ class InboxDetailPresenterTest {
     fun `run and verify of onClickEmoji`() {
         presenter.attachView(view)
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
         presenter.onClickEmoji(1)
         verify { view.getActivity() }
         verify { view.startActivityForResult(any(), any()) }
@@ -1949,7 +1949,7 @@ class InboxDetailPresenterTest {
     @Test
     fun `run and verify of onClickEmoji but view is not available`() {
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
         presenter.onClickEmoji(1)
         verify(exactly = 0) { view.getActivity() }
         verify(exactly = 0) { view.startActivityForResult(any(), any()) }
@@ -1958,7 +1958,7 @@ class InboxDetailPresenterTest {
     @Test
     fun `run and verify of onClickEmoji but no view`() {
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
         presenter.onClickEmoji(1)
         verify(exactly = 0) { viewNullable?.getActivity() }
         verify(exactly = 0) { viewNullable?.startActivityForResult(any(), any()) }
@@ -1967,7 +1967,7 @@ class InboxDetailPresenterTest {
     @Test
     fun `run and verify of onClickEmoji but no view for getcommentId and mTicketDetail badCsatReasonList is null`() {
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
         every { viewNullable?.getCommentID() } returns null
         every { presenter.mTicketDetail?.comments } returns null
         every { presenter.mTicketDetail?.number } returns "1"

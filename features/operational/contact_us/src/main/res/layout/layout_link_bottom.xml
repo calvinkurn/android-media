@@ -4,7 +4,7 @@
     android:id="@+id/link_bottom"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_NN50"
+    android:background="#F0F3F7"
     android:gravity="center_horizontal"
     android:orientation="horizontal">
 
@@ -17,7 +17,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/masih_butuh_bantuan"
-        android:textColor="@color/contact_us_dms_detail_header_text"
+        android:textColor="#F531353B"
         android:textSize="14sp" />
 
     <com.tokopedia.unifyprinciples.Typography

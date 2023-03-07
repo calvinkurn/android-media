@@ -177,7 +177,7 @@ class InboxContactUsFragment :
                     toggleEmptyLayout(View.VISIBLE)
                 } else {
                     hideFilter()
-                    toggleNoTicketLayout(View.VISIBLE, uiEffect.name)
+                    toggleNoTicketLayout(uiEffect.name)
                 }
             }
 
@@ -253,6 +253,7 @@ class InboxContactUsFragment :
                     val ticketId = itemTicket.id.orEmpty()
                     val detailIntent =
                         getIntent(context ?: return, ticketId, isOfficialStore)
+                    @Suppress("DEPRECATION")
                     startActivityForResult(detailIntent, REQUEST_DETAILS)
                     sendTrackingClickToDetailTicketMessage(index)
                 }
@@ -268,11 +269,10 @@ class InboxContactUsFragment :
     fun sendTrackingClickToDetailTicketMessage(positionItem: Int) {
         val itemTicket = viewModel.getItemTicketOnPosition(positionItem)
         ContactUsTracking.sendGTMInboxTicket(
-            context,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventTicketClick,
-            itemTicket.caseNumber
+            itemTicket.caseNumber.orEmpty()
         )
     }
 
@@ -351,16 +351,16 @@ class InboxContactUsFragment :
         servicePrioritiesBottomSheet?.dismiss()
     }
 
-    private fun toggleNoTicketLayout(visibility: Int, name: String) {
+    private fun toggleNoTicketLayout(name: String) {
         ivNoTicket?.loadRemoteImageDrawable("no_messages.png")
-        ivNoTicket?.visibility = visibility
+        ivNoTicket?.visibility = View.VISIBLE
         tvNoTicket?.text = getString(R.string.contact_us_no_ticket_message)
-        tvNoTicket?.visibility = visibility
+        tvNoTicket?.visibility = View.VISIBLE
         tvRaiseTicket?.text = getString(R.string.contact_us_tokopedia_care)
         tvRaiseTicket?.tag = RAISE_TICKET_TAG
-        tvRaiseTicket?.visibility = visibility
+        tvRaiseTicket?.visibility = View.VISIBLE
         tvGreetNoTicket?.text = String.format(getString(R.string.contact_us_greet_user), name)
-        tvGreetNoTicket?.visibility = visibility
+        tvGreetNoTicket?.visibility = View.VISIBLE
     }
 
     private fun toggleEmptyLayout(visibility: Int) {
@@ -417,7 +417,6 @@ class InboxContactUsFragment :
             contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(contactUsHome)
             ContactUsTracking.sendGTMInboxTicket(
-                context ?: return,
                 "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickHubungi,
@@ -434,7 +433,6 @@ class InboxContactUsFragment :
     @SuppressLint("DeprecatedMethod")
     private fun sendGTMClickChatButton() {
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickChatbotButton,
@@ -445,7 +443,6 @@ class InboxContactUsFragment :
     @SuppressLint("DeprecatedMethod")
     private fun sendGtmClickTicketFilter(selected: String) {
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickTicketFilter,
@@ -469,6 +466,7 @@ class InboxContactUsFragment :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_CANCELED && requestCode == REQUEST_DETAILS) {
             if (resultCode == RESULT_FINISH) {
+                @Suppress("DEPRECATION")
                 activity?.startActivityForResult(
                     Intent(
                         context,

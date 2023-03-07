@@ -217,7 +217,7 @@ class InboxListPresenterTest {
 
         mockkStatic(ContactUsTracking::class)
         every {
-            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any())
+            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any())
         } just runs
 
         presenter.setFilter(ALL)
@@ -232,7 +232,7 @@ class InboxListPresenterTest {
         every { presenter.getTicketList(mockk(relaxed = true)) } just runs
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.setFilter(IN_PROGRESS)
 
@@ -246,7 +246,7 @@ class InboxListPresenterTest {
         every { presenter.getTicketList(any()) } just runs
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.setFilter(NEED_RATING)
 
@@ -260,7 +260,7 @@ class InboxListPresenterTest {
         every { presenter.getTicketList(any()) } just runs
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.setFilter(CLOSED)
 
@@ -273,7 +273,7 @@ class InboxListPresenterTest {
         every { presenter.getTicketList(any()) } just runs
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
         presenter.setFilter(CLOSED)
 
