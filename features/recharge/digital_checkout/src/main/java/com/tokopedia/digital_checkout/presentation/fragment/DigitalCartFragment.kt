@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -729,7 +730,7 @@ class DigitalCartFragment :
                 }
             }
         } catch (e: JsonSyntaxException) {
-            // do nothing
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
 
         return CollectionPointMetadata()

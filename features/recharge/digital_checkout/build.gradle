@@ -99,6 +99,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.fragmentKtx
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation(rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     implementation rootProject.ext.debugToolsDependencies.chuck
     testImplementation rootProject.ext.testDependencies.archCoreTesting
