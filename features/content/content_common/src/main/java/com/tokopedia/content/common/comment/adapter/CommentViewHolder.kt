@@ -1,7 +1,6 @@
 package com.tokopedia.content.common.comment.adapter
 
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import androidx.core.view.updateLayoutParams
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -77,7 +76,7 @@ class CommentViewHolder {
                 }
 
                 tvCommentContent.text = TagMentionBuilder
-                    .getMentionTag(item = item, mentionColor, parentColor, mentionListener, parentListener)
+                    .getMentionTag(item = item, mentionColor, parentColor, mentionListener, parentListener, context = itemView.context)
                 tvCommentContent.movementMethod = LinkMovementMethod.getInstance()
                 tvCommentTime.text = item.createdTime
 
@@ -102,16 +101,16 @@ class CommentViewHolder {
     }
 
     internal class Empty(
-        binding: ItemCommentEmptyBinding,
-    ) : BaseViewHolder(binding.root) {}
+        binding: ItemCommentEmptyBinding
+    ) : BaseViewHolder(binding.root)
 
     internal class Shimmering(
-        binding: ItemCommentShimmeringBinding,
-    ) : BaseViewHolder(binding.root) {}
+        binding: ItemCommentShimmeringBinding
+    ) : BaseViewHolder(binding.root)
 
     internal class Expandable(
         private val binding: ItemCommentExpandableBinding,
-        private val listener: Listener,
+        private val listener: Listener
     ) : BaseViewHolder(binding.root) {
         fun bind(item: CommentUiModel.Expandable) {
             if (item.isExpanded) {
