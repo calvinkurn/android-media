@@ -5,11 +5,11 @@ package com.tokopedia.feedplus.presentation.onboarding
  */
 interface OnboardingPreferences {
 
-    fun hasShownCreateContent(userId: String): Boolean
+    fun hasShownCreateContent(): Boolean
 
-    fun hasShownProfileEntryPoint(userId: String): Boolean
+    fun hasShownProfileEntryPoint(): Boolean
 
-    fun setHasShownCreateContent(userId: String)
+    fun setHasShownCreateContent()
 
-    fun setHasShownProfileEntryPoint(userId: String)
+    fun setHasShownProfileEntryPoint()
 }

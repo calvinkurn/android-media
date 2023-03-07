@@ -54,6 +54,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private var liveApplink: String = ""
     private var profileApplink: String = ""
 
+    private var mOnboarding: ImmersiveFeedOnboarding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
@@ -162,6 +164,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         feedMainViewModel.fetchFeedTabs()
     }
 
+    override fun onPause() {
+        super.onPause()
+        mOnboarding?.dismiss()
+        mOnboarding = null
+    }
+
     private fun initView(data: FeedTabsModel) {
         adapter = FeedPagerAdapter(childFragmentManager, lifecycle, data.data)
 
@@ -186,19 +194,42 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
         }
 
-        val onboarding = ImmersiveFeedOnboarding.Builder(requireContext())
+        mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
             .setCreateContentView(
-                if (data.meta.isCreationActive) binding.btnFeedCreatePost
-                else null
+                if (data.meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
+                    binding.btnFeedCreatePost
+                } else {
+                    null
+                }
             )
             .setProfileEntryPointView(
-                if (data.meta.showMyProfile) binding.feedUserProfileImage
-                else null
+                if (data.meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
+                    binding.feedUserProfileImage
+                } else {
+                    null
+                }
             )
+            .setListener(object : ImmersiveFeedOnboarding.Listener {
+                override fun onStarted() {
+                    binding.vOnboardingPreventInteraction.show()
+                }
+
+                override fun onCompleteCreateContentOnboarding() {
+                    feedMainViewModel.setHasShownCreateContent()
+                }
+
+                override fun onCompleteProfileEntryPointOnboarding() {
+                    feedMainViewModel.setHasShownProfileEntryPoint()
+                }
+
+                override fun onDismissed() {
+                    binding.vOnboardingPreventInteraction.hide()
+                }
+            })
             .build()
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            onboarding.show()
+            mOnboarding?.show()
         }
 
         if (firstTabData != null) {

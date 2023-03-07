@@ -6,7 +6,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.feedplus.R
 import com.tokopedia.play_common.util.extension.awaitLayout
-import com.tokopedia.play_common.util.extension.awaitMeasured
 
 /**
  * Created by kenny.hadisaputra on 06/03/23
@@ -15,6 +14,7 @@ class ImmersiveFeedOnboarding private constructor(
     private val context: Context,
     private val createContentView: View?,
     private val profileEntryPointView: View?,
+    private val listener: Listener,
 ) {
 
     private val coachMark = CoachMark2(context)
@@ -33,16 +33,70 @@ class ImmersiveFeedOnboarding private constructor(
 
         if (coachMarkItems.isEmpty()) return
 
+        if (coachMarkItems.size > 1) {
+            coachMark.setStepListener(object : CoachMark2.OnStepListener {
+                var mPrevIndex = 0
+
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    if (mPrevIndex >= currentIndex) {
+                        coachMark.onDismissListener = listener::onDismissed
+                    } else {
+                        val prevItem = coachMarkItems[currentIndex - 1]
+                        triggerListenerForItem(prevItem)
+
+                        coachMark.onDismissListener = {
+                            triggerListenerForItem(coachMarkItem)
+                            listener.onDismissed()
+                        }
+                    }
+
+                    mPrevIndex = currentIndex
+                }
+            })
+        }
+
+        coachMark.onDismissListener = {
+            triggerListenerForItem(coachMarkItems.first())
+            listener.onDismissed()
+        }
+
         coachMarkItems.forEach {
             it.anchorView.awaitLayout()
         }
+
         coachMark.showCoachMark(ArrayList(coachMarkItems), null, 0)
+        listener.onStarted()
+    }
+
+    fun dismiss() {
+        coachMark.onDismissListener = listener::onDismissed
+        coachMark.dismissCoachMark()
+    }
+
+    private fun triggerListenerForItem(item: CoachMark2Item) {
+        when (item.anchorView) {
+            createContentView -> {
+                listener.onCompleteCreateContentOnboarding()
+            }
+            profileEntryPointView -> {
+                listener.onCompleteProfileEntryPointOnboarding()
+            }
+        }
     }
 
     class Builder(private val context: Context) {
 
         private var createContentView: View? = null
         private var profileEntryPointView: View? = null
+        private var listener: Listener = object : Listener {
+            override fun onStarted() {}
+
+            override fun onCompleteCreateContentOnboarding() {}
+
+            override fun onCompleteProfileEntryPointOnboarding() {}
+
+            override fun onDismissed() {}
+        }
 
         fun setCreateContentView(view: View?) = builder {
             createContentView = view
@@ -52,11 +106,16 @@ class ImmersiveFeedOnboarding private constructor(
             profileEntryPointView = view
         }
 
+        fun setListener(listener: Listener) = builder {
+            this.listener = listener
+        }
+
         fun build(): ImmersiveFeedOnboarding {
             return ImmersiveFeedOnboarding(
                 context = context,
                 createContentView = createContentView,
                 profileEntryPointView = profileEntryPointView,
+                listener = listener,
             )
         }
 
@@ -66,21 +125,6 @@ class ImmersiveFeedOnboarding private constructor(
         }
     }
 
-//    fun show(flag: Int) {
-//        buildList {
-//            if (shouldShowCreateContent(flag)) {
-//                //show create content
-//            }
-//
-//        }
-//
-//
-//
-//        if (shouldShowProfileEntryPoint(flag)) {
-//            //show profile entry point
-//        }
-//    }
-//
     private fun createContentCoachMarkItem(view: View): CoachMark2Item {
         return CoachMark2Item(
             anchorView = view,
@@ -98,17 +142,11 @@ class ImmersiveFeedOnboarding private constructor(
             position = CoachMark2.POSITION_BOTTOM,
         )
     }
-//
-//    private fun shouldShowCreateContent(flag: Int): Boolean {
-//        return flag and COACH_MARK_CREATE_CONTENT == COACH_MARK_CREATE_CONTENT
-//    }
-//
-//    private fun shouldShowProfileEntryPoint(flag: Int): Boolean {
-//        return flag and COACH_MARK_PROFILE_ENTRY_POINT == COACH_MARK_PROFILE_ENTRY_POINT
-//    }
-//
-//    companion object {
-//        const val COACH_MARK_CREATE_CONTENT = 0x01
-//        const val COACH_MARK_PROFILE_ENTRY_POINT = 0x02
-//    }
+
+    interface Listener {
+        fun onStarted()
+        fun onCompleteCreateContentOnboarding()
+        fun onCompleteProfileEntryPointOnboarding()
+        fun onDismissed()
+    }
 }

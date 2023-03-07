@@ -27,7 +27,7 @@ object MapperFeedTabs {
                 showMyProfile = header.data.userProfile.isShown || !isLoggedIn,
                 isCreationActive = header.data.creation.isActive,
                 showLive = header.data.live.isActive,
-                liveApplink = header.data.live.applink
+                liveApplink = header.data.live.applink,
             ),
             data = header.data.tab.items.sortedBy { it.position }
                 .filter { it.isActive }.map {

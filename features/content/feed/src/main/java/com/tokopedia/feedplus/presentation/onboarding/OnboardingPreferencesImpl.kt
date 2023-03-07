@@ -14,21 +14,21 @@ class OnboardingPreferencesImpl @Inject constructor(
 
     private val sharedPref = context.getSharedPreferences(FEED_ONBOARDING_PREFERENCES, Context.MODE_PRIVATE)
 
-    override fun hasShownCreateContent(userId: String): Boolean {
+    override fun hasShownCreateContent(): Boolean {
         return sharedPref.getBoolean(KEY_CREATE_CONTENT, false)
     }
 
-    override fun hasShownProfileEntryPoint(userId: String): Boolean {
+    override fun hasShownProfileEntryPoint(): Boolean {
         return sharedPref.getBoolean(KEY_PROFILE_ENTRY_POINT, false)
     }
 
-    override fun setHasShownCreateContent(userId: String) {
+    override fun setHasShownCreateContent() {
         sharedPref.edit(true) {
             putBoolean(KEY_CREATE_CONTENT, true)
         }
     }
 
-    override fun setHasShownProfileEntryPoint(userId: String) {
+    override fun setHasShownProfileEntryPoint() {
         sharedPref.edit(true) {
             putBoolean(KEY_PROFILE_ENTRY_POINT, true)
         }
