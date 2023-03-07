@@ -49,7 +49,7 @@ class CommentUiModelMapper @Inject constructor() {
             username = username,
             photo = comment.photo,
             appLink = comment.linkDetail.appLink,
-            content = comment.comment,
+            content = MethodChecker.fromHtml(comment.comment).toString(), //dont escape new line
             createdTime = convertTime(comment.createdTime),
             commentType = parentId.convertToCommentType,
             childCount = comment.repliesCountFmt,
@@ -67,7 +67,7 @@ class CommentUiModelMapper @Inject constructor() {
             username = username,
             photo = comment.userInfo.photo,
             appLink = comment.userInfo.linkDetail.appLink,
-            content = MethodChecker.fromHtml(comment.comment).toString(),
+            content = MethodChecker.fromHtml(comment.comment).toString(), //dont escape new line
             createdTime = convertTime(comment.createdTime),
             commentType = comment.parentId.convertToCommentType.apply {
                 isNewlyAdded = true
@@ -107,7 +107,6 @@ class CommentUiModelMapper @Inject constructor() {
         private const val DAY = "hari"
         private const val HOUR = "jam"
         private const val MINUTE = "minute"
-        private const val SECOND = "detik"
         private const val DEFAULT_WORDING = "Beberapa detik yang lalu"
     }
 }

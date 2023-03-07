@@ -194,7 +194,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 when (it.state) {
                     ResultState.Success -> {
                         showError(false)
-                        commentAdapter.setItemsAndAnimateChanges(it.list)
+                        commentAdapter.setItemsAndAnimateChanges(it.list.ifEmpty { listOf(CommentUiModel.Empty) })
                     }
                     ResultState.Loading -> {
                         showError(false)
@@ -265,6 +265,8 @@ class ContentCommentBottomSheet @Inject constructor(
                         )
                         binding.newComment.tag = event.parentItem.id
                         binding.newComment.setText(mention)
+                        binding.newComment.requestFocus()
+                        showKeyboard(true)
                     }
                 }
             }

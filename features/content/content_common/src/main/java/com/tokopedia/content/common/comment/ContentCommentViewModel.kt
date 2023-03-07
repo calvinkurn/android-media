@@ -70,7 +70,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                     it.copy(
                         cursor = result.cursor,
                         state = result.state,
-                        list = if(it.list == result.list) it.list else it.list + result.list,
+                        list = if (it.list == result.list) it.list else it.list + result.list,
                         commenterType = result.commenterType,
                     )
                 }
@@ -158,7 +158,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             is CommentAction.DeleteComment -> deleteComment(isFromToaster = action.isFromToaster)
             is CommentAction.PermanentRemoveComment -> deleteComment()
             is CommentAction.ReportComment -> reportComment(action.param)
-            CommentAction.RequestReportAction ->  handleOpenReport()
+            CommentAction.RequestReportAction -> handleOpenReport()
             is CommentAction.SelectComment -> _selectedComment.update {
                 val item = action.comment
                 it.copy(first = item, second = _comments.value.list.indexOf(item))
@@ -217,7 +217,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     private fun deleteComment(isFromToaster: Boolean) {
         fun removeComment() {
             _comments.update {
-                it.copy(list = it.list.filterNot { item -> item is CommentUiModel.Item && item.id == _selectedComment.value.first.id })
+                it.copy(list = it.list.filterNot { item -> (item is CommentUiModel.Item && item.id == _selectedComment.value.first.id) || item is CommentUiModel.Expandable && item.commentType.parentId == _selectedComment.value.first.id })
             }
         }
 
@@ -237,6 +237,7 @@ class ContentCommentViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             repo.deleteComment(_selectedComment.value.first.id)
         }) {
+            undoComment()
             _event.emit(
                 CommentEvent.ShowErrorToaster(message = it) {
                     deleteComment(isFromToaster = false)
@@ -282,8 +283,11 @@ class ContentCommentViewModel @AssistedInject constructor(
             val regex = """((www|http)(\W+\S+[^).,:;?\]\} \r\n${'$'}]+))""".toRegex()
             viewModelScope.launchCatchError(block = {
                 _event.emit(CommentEvent.HideKeyboard)
-                if(regex.findAll(comment).count() > 0) throw MessageErrorException("Oops, kamu tidak bisa memberikan komentar dalam bentuk tautan, ya.")
-                val result = repo.replyComment(source, commentType, comment, _comments.value.commenterType)
+                if (regex.findAll(comment)
+                        .count() > 0
+                ) throw MessageErrorException("Oops, kamu tidak bisa memberikan komentar dalam bentuk tautan, ya.")
+                val result =
+                    repo.replyComment(source, commentType, comment, _comments.value.commenterType)
                 _comments.getAndUpdate {
                     val newList = it.list.toMutableList().apply {
                         add(0, result)
