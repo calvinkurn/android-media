@@ -4,40 +4,56 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
+import com.tokopedia.people.databinding.UpFragmentFollowerFollowingListingBinding
 import com.tokopedia.people.views.TotalFollowListener
-import com.tokopedia.people.views.adapter.ProfileFollowUnfollowViewPagerAdapter
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_DISPLAY_NAME
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_IS_FOLLOWERS
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWERS
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWINGS
 import com.tokopedia.people.views.uimodel.FollowListUiModel
-import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.TabsUnifyMediator
+import com.tokopedia.unifycomponents.setCustomText
 import javax.inject.Inject
 
 class FollowerFollowingListingFragment @Inject constructor(
     private var userProfileTracker: UserProfileTracker,
 ) : TkpdBaseV4Fragment(), TotalFollowListener {
 
+    private var _binding: UpFragmentFollowerFollowingListingBinding? = null
+    private val binding: UpFragmentFollowerFollowingListingBinding
+        get() = _binding!!
+
     private var userId = ""
 
-    var tabLayout: TabsUnify? = null
-    var ffViewPager: ViewPager? = null
     var isFollowersTab: Boolean = true
+
+    private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            if (position == 1) {
+                userProfileTracker.openFollowingTab(userId)
+            } else {
+                userProfileTracker.openFollowersTab(userId)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        return inflater.inflate(R.layout.up_fragment_follower_following_listing, container, false)
+    ): View {
+        _binding = UpFragmentFollowerFollowingListingBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,131 +63,74 @@ class FollowerFollowingListingFragment @Inject constructor(
         setMainUi()
     }
 
-    private fun setMainUi() {
-        ffViewPager = view?.findViewById(R.id.view_pager)
-        tabLayout = view?.findViewById(R.id.tp_follow)
-        tabLayout?.apply {
-            tabLayout.setTabTextColors(
-                MethodChecker.getColor(
-                    activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600,
-                ),
-                MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G500),
-            )
-        }
-
-        initViewPager(ffViewPager)
-
-        ffViewPager?.apply {
-            tabLayout?.setupWithViewPager(this)
-            tabLayout?.getUnifyTabLayout()?.setupWithViewPager(this)
-        }
-        tabLayout?.getUnifyTabLayout()?.removeAllTabs()
-
-        val totalFollowers = arguments?.getString(EXTRA_TOTAL_FOLLOWERS).orEmpty()
-        val totalFollowing = arguments?.getString(EXTRA_TOTAL_FOLLOWINGS).orEmpty()
-
-        tabLayout?.addNewTab(
-            String.format(
-                getString(com.tokopedia.people.R.string.up_title_followers),
-                totalFollowers
-            )
-        )
-        tabLayout?.addNewTab(
-            String.format(
-                getString(com.tokopedia.people.R.string.up_title_following),
-                totalFollowing
-            )
-        )
-
-        if (tabLayout != null &&
-            tabLayout?.getUnifyTabLayout() != null &&
-            tabLayout?.getUnifyTabLayout()?.tabCount!! >= DEFAULT_TAB_TOTAL
-        ) {
-            if (isFollowersTab) {
-                tabLayout?.getUnifyTabLayout()?.getTabAt(FOLLOWERS_PAGE_POSITION)?.select()
-            } else {
-                tabLayout?.getUnifyTabLayout()?.getTabAt(FOLLOWING_PAGE_POSITION)?.select()
-            }
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
+        _binding = null
     }
 
-    var adapter: ProfileFollowUnfollowViewPagerAdapter? = null
-    private fun initViewPager(viewPager: ViewPager?) {
-        adapter = ProfileFollowUnfollowViewPagerAdapter(childFragmentManager)
+    private fun setMainUi() {
+        val bundle = arguments ?: return
 
-        arguments?.let {
-            FollowerListingFragment.getFragment(
-                childFragmentManager,
-                requireContext().classLoader,
-                it,
-            )
-        }?.let {
-            adapter?.addFragment(
-                it,
-                arguments?.getString(
-                    EXTRA_TOTAL_FOLLOWERS,
-                    getString(com.tokopedia.people.R.string.up_lb_followers),
-                ) +
-                    " " + getString(com.tokopedia.people.R.string.up_lb_followers),
-            )
-        }
+        val totalFollowers = bundle.getString(EXTRA_TOTAL_FOLLOWERS).orEmpty()
+        val totalFollowing = bundle.getString(EXTRA_TOTAL_FOLLOWINGS).orEmpty()
 
-        arguments?.let {
-            FollowingListingFragment.getFragment(
-                childFragmentManager,
-                requireContext().classLoader,
-                it,
-            )
-        }?.let {
-            adapter?.addFragment(
-                it,
-                arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following)) +
-                    " " + getString(R.string.up_lb_following),
-            )
-        }
 
-        // setting adapter to view pager.
-        viewPager?.adapter = adapter
-
-        viewPager?.addOnPageChangeListener(
-            object : ViewPager.OnPageChangeListener {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int,
-                ) {
-                }
-
-                override fun onPageSelected(position: Int) {
-                    if (position == 1) {
-                        userProfileTracker.openFollowingTab(
-                            userId,
-                        )
-                    } else {
-                        userProfileTracker.openFollowersTab(
-                            userId,
-                        )
-                    }
-                }
-
-                override fun onPageScrollStateChanged(state: Int) {
-                }
-            },
+        binding.tpFollow.getUnifyTabLayout().setTabTextColors(
+            MethodChecker.getColor(
+                activity,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+            ),
+            MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G500),
         )
+
+        val listOfPages = listOf<Pair<String, Fragment>>(
+            Pair(
+                String.format(getString(R.string.up_title_followers), totalFollowers),
+                FollowerListingFragment.getFragment(
+                    childFragmentManager,
+                    requireContext().classLoader,
+                    bundle,
+                )
+            ),
+            Pair(
+                String.format(getString(R.string.up_title_following), totalFollowing),
+                FollowingListingFragment.getFragment(
+                    childFragmentManager,
+                    requireContext().classLoader,
+                    bundle,
+                )
+            )
+        )
+
+        binding.viewPager.adapter = ViewPagerAdapter(this, listOfPages.map(Pair<String, Fragment>::second))
+
+        TabsUnifyMediator(binding.tpFollow, binding.viewPager) { tab, position ->
+            tab.setCustomText(listOfPages[position].first)
+        }
+
+        binding.viewPager.registerOnPageChangeCallback(onPageChangeCallback)
+
+        if (isFollowersTab) {
+            binding.tpFollow.getUnifyTabLayout().getTabAt(FOLLOWERS_PAGE_POSITION)?.select()
+        }
     }
 
     override fun updateFollowCount(followCount: FollowListUiModel.FollowCount) {
-        tabLayout?.getUnifyTabLayout()?.let {
-            if (it.tabCount < DEFAULT_TAB_TOTAL) return
-            it.getTabAt(FOLLOWERS_PAGE_POSITION)?.text = String.format(
-                getString(com.tokopedia.people.R.string.up_title_followers),
-                followCount.totalFollowers
+        binding.tpFollow.getUnifyTabLayout().let { tab ->
+            if (tab.tabCount < DEFAULT_TAB_TOTAL) return
+            tab.getTabAt(FOLLOWERS_PAGE_POSITION)?.setCustomText(
+                String.format(
+                    getString(R.string.up_title_followers),
+                    followCount.totalFollowers
+                )
             )
 
-            it.getTabAt(FOLLOWING_PAGE_POSITION)?.text = String.format(
-                getString(com.tokopedia.people.R.string.up_title_following),
-                followCount.totalFollowing
+            tab.getTabAt(FOLLOWING_PAGE_POSITION)?.setCustomText(
+                String.format(
+                    getString(com.tokopedia.people.R.string.up_title_following),
+                    followCount.totalFollowing
+                )
             )
         }
     }
@@ -190,6 +149,20 @@ class FollowerFollowingListingFragment @Inject constructor(
     }
 
     override fun getScreenName(): String = TAG
+
+    class ViewPagerAdapter(
+        fragment: Fragment,
+        private val pages: List<Fragment>,
+    ): FragmentStateAdapter(fragment) {
+
+        override fun getItemCount(): Int {
+            return pages.size
+        }
+
+        override fun createFragment(position: Int): Fragment {
+            return pages[position]
+        }
+    }
 
     companion object {
         private const val TAG = "FollowerFollowingListingFragment"
