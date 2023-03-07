@@ -17,8 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -31,9 +30,12 @@ import com.tokopedia.people.utils.isInternetAvailable
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
+import com.tokopedia.people.views.TotalFollowListener
 import com.tokopedia.people.views.adapter.ProfileFollowersAdapter
 import com.tokopedia.people.views.adapter.listener.UserFollowListener
-import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.FollowListUiModel
+import com.tokopedia.people.views.uimodel.FollowResultUiModel
+import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
@@ -43,7 +45,31 @@ import javax.inject.Inject
 class FollowerListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val userProfileTracker: UserProfileTracker,
-) : TkpdBaseV4Fragment(), AdapterCallback {
+    private val router: Router,
+) : TkpdBaseV4Fragment(), AdapterCallback, UserFollowListener {
+
+    companion object {
+        const val PAGE_CONTENT = 0
+        const val PAGE_ERROR = 2
+        const val PAGE_LOADING = 1
+        const val PAGE_EMPTY = 3
+
+        private const val TAG = "FollowerListingFragment"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            bundle: Bundle,
+        ): FollowerListingFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerListingFragment
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                FollowerListingFragment::class.java.name,
+            ).apply {
+                arguments = bundle
+            } as FollowerListingFragment
+        }
+    }
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
@@ -58,29 +84,11 @@ class FollowerListingFragment @Inject constructor(
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
     }
 
-    private val mListener = object : UserFollowListener {
-        override fun onItemUserClicked(model: ProfileUiModel.UserUiModel, position: Int) {
-            goToUserProfilePage(model, position)
-        }
-
-        override fun onItemShopClicked(model: ProfileUiModel.ShopUiModel, position: Int) {
-            goToShopPage(model, position)
-        }
-
-        override fun onFollowUserClicked(model: ProfileUiModel.UserUiModel, position: Int) {
-            doFollowUserClicked(model, position)
-        }
-
-        override fun onFollowShopClicked(model: ProfileUiModel.ShopUiModel, position: Int) {
-            doFollowShopClicked(model, position)
-        }
-    }
-
     private val mAdapter: ProfileFollowersAdapter by lazy {
         ProfileFollowersAdapter(
             viewModel,
-            this,
-            mListener,
+            callback = this,
+            followListener = this,
         )
     }
 
@@ -89,7 +97,7 @@ class FollowerListingFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        isLoggedIn = userSessionInterface?.isLoggedIn
+        isLoggedIn = userSessionInterface.isLoggedIn
         return inflater.inflate(R.layout.up_fragment_psger_item, container, false)
     }
 
@@ -147,9 +155,10 @@ class FollowerListingFragment @Inject constructor(
                                     false
                                 isSwipeRefresh = !isSwipeRefresh!!
                                 mAdapter.resetAdapter()
+                                updateFollowCount(it.data.total)
                             }
 
-                            mAdapter.onSuccess(it.data, it.nextCursor)
+                            mAdapter.onSuccess(it.data.followers, it.nextCursor)
                         }
                         is ErrorMessage -> {
                             mAdapter.onError()
@@ -220,26 +229,24 @@ class FollowerListingFragment @Inject constructor(
         )
 
     private fun observeFollowResult() {
-        viewModel.followResult.observe(viewLifecycleOwner, Observer { result ->
-            when(val data = result.first) {
-                is MutationUiModel.Error -> {
-                    val errMessage = data.message.ifBlank {
-                        if (result.second) {
+        viewModel.followResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is FollowResultUiModel.Fail -> {
+                    val errMessage = result.message.ifBlank {
+                        if (result.isFollowed) {
                             getString(com.tokopedia.people.R.string.up_error_unfollow)
                         } else {
                             getString(com.tokopedia.people.R.string.up_error_follow)
                         }
                     }
                     requireView().showErrorToast(errMessage)
-                    updateItemPerPosition(result.third)
+                    updateItemPerPosition(result.itemPosition)
                 }
-                is MutationUiModel.Success -> {
-                    if (data.message.isNotBlank()) {
-                        requireView().showToast(data.message)
-                    }
+                is FollowResultUiModel.Success -> {
+                    if (result.message.isNotBlank()) requireView().showToast(result.message)
                 }
             }
-        })
+        }
     }
 
     override fun getScreenName(): String {
@@ -264,7 +271,7 @@ class FollowerListingFragment @Inject constructor(
             val position = data?.getIntExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, -1)
             data?.getStringExtra(UserProfileFragment.EXTRA_FOLLOW_UNFOLLOW_STATUS)?.let {
                 if (position != null && position != -1) {
-                    if (position != null && position != -1) {
+                    if (position != -1) {
                         if (it == UserProfileFragment.EXTRA_VALUE_IS_FOLLOWED)
                             mAdapter.updateFollowUnfollow(position, true)
                         else
@@ -312,34 +319,11 @@ class FollowerListingFragment @Inject constructor(
     override fun onError(pageNumber: Int) {
     }
 
-    companion object {
-        const val PAGE_CONTENT = 0
-        const val PAGE_ERROR = 2
-        const val PAGE_LOADING = 1
-        const val PAGE_EMPTY = 3
-
-        private const val TAG = "FollowerListingFragment"
-
-        fun getFragment(
-            fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
-            bundle: Bundle,
-        ): FollowerListingFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FollowerListingFragment
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
-                classLoader,
-                FollowerListingFragment::class.java.name,
-            ).apply {
-                arguments = bundle
-            } as FollowerListingFragment
-        }
-    }
-
-    private fun goToUserProfilePage(item: ProfileUiModel.UserUiModel, position: Int) {
-        userProfileTracker.clickUserFollowers(item.id, item.isMySelf)
-        val intent = RouteManager.getIntent(
+    override fun onItemUserClicked(model: PeopleUiModel.UserUiModel, position: Int) {
+        userProfileTracker.clickUserFollowers(model.id, model.isMySelf)
+        val intent = router.getIntent(
             requireContext(),
-            item.appLink,
+            model.appLink,
         ).apply {
             putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
         }
@@ -349,54 +333,44 @@ class FollowerListingFragment @Inject constructor(
         )
     }
 
-    private fun goToShopPage(item: ProfileUiModel.ShopUiModel, position: Int) {
-        userProfileTracker.clickUserFollowers(item.id, false)
-        RouteManager.route(requireContext(), item.appLink)
+    override fun onItemShopClicked(model: PeopleUiModel.ShopUiModel, position: Int) {
+        userProfileTracker.clickUserFollowers(model.id, false)
+        router.route(requireContext(), model.appLink)
     }
 
-    private fun doFollowUserClicked(item: ProfileUiModel.UserUiModel, position: Int) {
-        if (!isInternetAvailable(item.isFollowed)) return
-
-        if (!userSessionInterface.isLoggedIn) {
-            val requestCode = if (item.isFollowed) {
-                FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
-            } else {
-                FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
-            }
-            startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                requestCode
-            )
-        } else {
-            trackFollowPeople(item.id, item.isMySelf, item.isFollowed)
-            viewModel.followUser(item.encryptedId, item.isFollowed, position)
-            mAdapter.items[position] = item.copy(
-                isFollowed = !item.isFollowed
+    override fun onFollowUserClicked(model: PeopleUiModel.UserUiModel, position: Int) {
+        doFollowAction(model.isFollowed) {
+            trackFollowPeople(model.id, model.isMySelf, model.isFollowed)
+            viewModel.followUser(model.encryptedId, model.isFollowed, position)
+            mAdapter.items[position] = model.copy(
+                isFollowed = !model.isFollowed
             )
             mAdapter.notifyItemChanged(position)
         }
     }
 
-    private fun doFollowShopClicked(item: ProfileUiModel.ShopUiModel, position: Int) {
-        if (!isInternetAvailable(item.isFollowed)) return
+    override fun onFollowShopClicked(model: PeopleUiModel.ShopUiModel, position: Int) {
+        doFollowAction(model.isFollowed) {
+            trackFollowPeople(model.id, false, model.isFollowed)
+            viewModel.followShop(model.id, model.isFollowed, position)
+            mAdapter.items[position] = model.copy(
+                isFollowed = !model.isFollowed
+            )
+            mAdapter.notifyItemChanged(position)
+        }
+    }
+
+    private fun doFollowAction(isFollowed: Boolean, callNetworkRequest: () -> Unit) {
+        if (!isInternetAvailable(isFollowed)) return
 
         if (!userSessionInterface.isLoggedIn) {
-            val requestCode = if (item.isFollowed) {
-                FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
-            } else {
-                FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
-            }
+            val requestCode = FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
             startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                router.getIntent(context, ApplinkConst.LOGIN),
                 requestCode
             )
         } else {
-            trackFollowPeople(item.id, false, item.isFollowed)
-            viewModel.followShop(item.id, item.isFollowed, position)
-            mAdapter.items[position] = item.copy(
-                isFollowed = !item.isFollowed
-            )
-            mAdapter.notifyItemChanged(position)
+            callNetworkRequest.invoke()
         }
     }
 
@@ -412,11 +386,11 @@ class FollowerListingFragment @Inject constructor(
         if (mAdapter.itemCount <= position) return
 
         when (val item = mAdapter.getItem(position)) {
-            is ProfileUiModel.ShopUiModel ->
+            is PeopleUiModel.ShopUiModel ->
                 mAdapter.items[position] = item.copy(
                     isFollowed = !item.isFollowed
                 )
-            is ProfileUiModel.UserUiModel ->
+            is PeopleUiModel.UserUiModel ->
                 mAdapter.items[position] = item.copy(
                     isFollowed = !item.isFollowed
                 )
@@ -434,6 +408,12 @@ class FollowerListingFragment @Inject constructor(
             }
             requireView().showErrorToast(errorMessage)
             false
+        }
+    }
+
+    private fun updateFollowCount(followCount: FollowListUiModel.FollowCount) {
+        if (this.parentFragment is TotalFollowListener) {
+            (this.parentFragment as TotalFollowListener).updateFollowCount(followCount)
         }
     }
 }

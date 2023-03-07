@@ -12,17 +12,19 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
+import com.tokopedia.people.views.TotalFollowListener
 import com.tokopedia.people.views.adapter.ProfileFollowUnfollowViewPagerAdapter
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_DISPLAY_NAME
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_IS_FOLLOWERS
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWERS
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWINGS
+import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 
 class FollowerFollowingListingFragment @Inject constructor(
     private var userProfileTracker: UserProfileTracker,
-) : TkpdBaseV4Fragment() {
+) : TkpdBaseV4Fragment(), TotalFollowListener {
 
     private var userId = ""
 
@@ -65,28 +67,31 @@ class FollowerFollowingListingFragment @Inject constructor(
             tabLayout?.getUnifyTabLayout()?.setupWithViewPager(this)
         }
         tabLayout?.getUnifyTabLayout()?.removeAllTabs()
+
+        val totalFollowers = arguments?.getString(EXTRA_TOTAL_FOLLOWERS).orEmpty()
+        val totalFollowing = arguments?.getString(EXTRA_TOTAL_FOLLOWINGS).orEmpty()
+
         tabLayout?.addNewTab(
-            arguments?.getString(
-                EXTRA_TOTAL_FOLLOWERS,
-                getString(com.tokopedia.people.R.string.up_lb_followers),
-            ) +
-                " " +
-                getString(com.tokopedia.people.R.string.up_lb_followers),
+            String.format(
+                getString(com.tokopedia.people.R.string.up_title_followers),
+                totalFollowers
+            )
         )
         tabLayout?.addNewTab(
-            arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following)) +
-                " " +
-                getString(R.string.up_lb_following),
+            String.format(
+                getString(com.tokopedia.people.R.string.up_title_following),
+                totalFollowing
+            )
         )
 
         if (tabLayout != null &&
             tabLayout?.getUnifyTabLayout() != null &&
-            tabLayout?.getUnifyTabLayout()?.tabCount!! >= 2
+            tabLayout?.getUnifyTabLayout()?.tabCount!! >= DEFAULT_TAB_TOTAL
         ) {
             if (isFollowersTab) {
-                tabLayout?.getUnifyTabLayout()?.getTabAt(0)?.select()
+                tabLayout?.getUnifyTabLayout()?.getTabAt(FOLLOWERS_PAGE_POSITION)?.select()
             } else {
-                tabLayout?.getUnifyTabLayout()?.getTabAt(1)?.select()
+                tabLayout?.getUnifyTabLayout()?.getTabAt(FOLLOWING_PAGE_POSITION)?.select()
             }
         }
     }
@@ -156,6 +161,21 @@ class FollowerFollowingListingFragment @Inject constructor(
         )
     }
 
+    override fun updateFollowCount(followCount: FollowListUiModel.FollowCount) {
+        tabLayout?.getUnifyTabLayout()?.let {
+            if (it.tabCount < DEFAULT_TAB_TOTAL) return
+            it.getTabAt(FOLLOWERS_PAGE_POSITION)?.text = String.format(
+                getString(com.tokopedia.people.R.string.up_title_followers),
+                followCount.totalFollowers
+            )
+
+            it.getTabAt(FOLLOWING_PAGE_POSITION)?.text = String.format(
+                getString(com.tokopedia.people.R.string.up_title_following),
+                followCount.totalFollowing
+            )
+        }
+    }
+
     private fun setHeader() {
         val header = view?.findViewById<HeaderUnify>(R.id.header_follower)
         header?.apply {
@@ -174,6 +194,10 @@ class FollowerFollowingListingFragment @Inject constructor(
     companion object {
         private const val TAG = "FollowerFollowingListingFragment"
         const val REQUEST_CODE_LOGIN_TO_FOLLOW = 100
+
+        private const val FOLLOWERS_PAGE_POSITION = 0
+        private const val FOLLOWING_PAGE_POSITION = 1
+        private const val DEFAULT_TAB_TOTAL = 2
 
         fun getFragment(
             fragmentManager: FragmentManager,
