@@ -188,6 +188,10 @@ class FeedFragment :
         feedMainViewModel.reportContent(feedReportRequestParamModel)
     }
 
+    override fun onMenuBottomSheetCloseClick(contentId: String) {
+        // implement bottomsheet close tracker
+    }
+
     override fun disableClearView() {
         feedMainViewModel.toggleClearView(false)
     }

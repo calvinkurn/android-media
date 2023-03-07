@@ -78,6 +78,10 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
         )
         showCloseIcon = true
         setChild(binding.root)
+
+        setCloseClickListener {
+            mListener?.onMenuBottomSheetCloseClick(contentId)
+        }
     }
     fun showReportLayoutWhenLaporkanClicked() {
         binding.let {
@@ -275,5 +279,6 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
     interface Listener {
         fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String)
         fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel)
+        fun onMenuBottomSheetCloseClick(contentId: String)
     }
 }
