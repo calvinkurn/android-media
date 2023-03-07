@@ -22,12 +22,12 @@ object PerformanceTraceDebugger {
         }
     }
 
-    fun Activity.takeScreenshot(name: String) {
+    fun Activity.takeScreenshot(name: String, v1: View) {
         if (DEBUG) {
             val systemCurrentMillis = System.currentTimeMillis()
             try {
                 // create bitmap screen capture
-                val v1: View = this.getWindow().getDecorView().getRootView()
+
                 v1.isDrawingCacheEnabled = true
                 val bitmap: Bitmap = Bitmap.createBitmap(v1.drawingCache)
                 v1.isDrawingCacheEnabled = false

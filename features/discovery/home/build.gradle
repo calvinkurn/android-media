@@ -165,6 +165,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

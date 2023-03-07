@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -64,6 +65,7 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
@@ -153,9 +155,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         PerformanceTraceDebugger.DEBUG = true
         performanceTrace.init(
             v = view.rootView,
-            targetId = R.id.recycler_view
-        ) { summaryModel, type ->
-            activity?.takeScreenshot(type)
+            scope = this.lifecycleScope
+        ) { summaryModel, type, view ->
+            activity?.takeScreenshot(type, view)
+            if (type == PerformanceTrace.TYPE_TTIL) {
+                Toaster.build(view, "" +
+                    "TTFL: ${summaryModel.timeToFirstLayout?.inflateTime} ms \n" +
+                    "TTIL: ${summaryModel.timeToInitialLayout?.inflateTime} ms \n" ).show()
+            }
         }
 
         recyclerView = view.findViewById(R.id.recycler_view)

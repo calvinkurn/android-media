@@ -24,6 +24,7 @@ import androidx.core.util.Pair
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -1284,9 +1285,14 @@ open class HomeRevampFragment :
         PerformanceTraceDebugger.DEBUG = true
         performanceTrace.init(
             v = view.rootView,
-            targetId = R.id.home_fragment_recycler_view
-        ) { summary, type ->
-            activity?.takeScreenshot(type)
+            scope = this.lifecycleScope
+        ) { summaryModel, type, view ->
+            activity?.takeScreenshot(type, view)
+            if (type == PerformanceTrace.TYPE_TTIL) {
+                Toaster.build(view, "" +
+                    "TTFL: ${summaryModel.timeToFirstLayout?.inflateTime} ms \n" +
+                    "TTIL: ${summaryModel.timeToInitialLayout?.inflateTime} ms \n" ).show()
+            }
         }
         observeSearchHint()
     }
