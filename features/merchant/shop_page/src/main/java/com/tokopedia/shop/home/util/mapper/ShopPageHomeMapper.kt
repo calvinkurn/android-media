@@ -860,7 +860,7 @@ object ShopPageHomeMapper {
             header.ctaText,
             header.ctaLink,
             header.cover,
-            header.ratio.toString(),
+            header.ratio,
             header.isAtc,
             header.etalaseId
         )
