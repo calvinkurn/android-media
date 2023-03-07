@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/img_face_filter"
+            android:id="@+id/img_beautification_filter"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_margin="16dp"
@@ -61,7 +61,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_face_filter"
+        android:id="@+id/tv_beautification_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

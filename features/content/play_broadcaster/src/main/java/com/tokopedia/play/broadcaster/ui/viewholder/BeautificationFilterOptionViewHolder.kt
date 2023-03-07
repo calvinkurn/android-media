@@ -6,22 +6,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play.broadcaster.databinding.ItemFaceFilterOptionBinding
 import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.databinding.ItemBeautificationFilterOptionBinding
 
 /**
  * Created By : Jonathan Darwin on February 28, 2023
  */
 class BeautificationFilterOptionViewHolder(
-    private val binding: ItemFaceFilterOptionBinding,
+    private val binding: ItemBeautificationFilterOptionBinding,
     private val listener: Listener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: FaceFilterUiModel) {
         binding.apply {
-            tvFaceFilter.text = item.name
-            imgFaceFilter.setImageUrl(item.iconUrl)
+            tvBeautificationFilter.text = item.name
+            imgBeautificationFilter.setImageUrl(item.iconUrl)
             icChecked.showWithCondition(item.isChecked)
 
             clIcon.setBackgroundResource(
@@ -64,7 +64,7 @@ class BeautificationFilterOptionViewHolder(
             parent: ViewGroup,
             listener: Listener,
         ) = BeautificationFilterOptionViewHolder(
-            ItemFaceFilterOptionBinding.inflate(
+            ItemBeautificationFilterOptionBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false,

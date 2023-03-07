@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.play.broadcaster.databinding.FragmentFaceFilterSetupBinding
+import com.tokopedia.play.broadcaster.databinding.FragmentBeautificationSetupBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BeautificationConfigUiModel
@@ -43,8 +43,8 @@ class BeautificationSetupFragment @Inject constructor(
 
     override fun getScreenName(): String = TAG
 
-    private var _binding: FragmentFaceFilterSetupBinding? = null
-    private val binding: FragmentFaceFilterSetupBinding
+    private var _binding: FragmentBeautificationSetupBinding? = null
+    private val binding: FragmentBeautificationSetupBinding
         get() = _binding!!
 
     private var _bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>? = null
@@ -92,7 +92,7 @@ class BeautificationSetupFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentFaceFilterSetupBinding.inflate(inflater, container, false)
+        _binding = FragmentBeautificationSetupBinding.inflate(inflater, container, false)
         _bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
         return _binding?.root
     }

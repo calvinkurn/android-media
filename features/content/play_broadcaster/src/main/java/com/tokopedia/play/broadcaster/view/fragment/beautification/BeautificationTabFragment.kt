@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroMakeupTabBinding
+import com.tokopedia.play.broadcaster.databinding.FragmentBeautificationTabBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.itemdecoration.FaceFilterOptionItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.BeautificationConfigUiModel
@@ -30,8 +30,8 @@ class BeautificationTabFragment @Inject constructor(
     private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
 ): TkpdBaseV4Fragment() {
 
-    private var _binding: FragmentPlayBroMakeupTabBinding? = null
-    private val binding: FragmentPlayBroMakeupTabBinding
+    private var _binding: FragmentBeautificationTabBinding? = null
+    private val binding: FragmentBeautificationTabBinding
         get() = _binding!!
 
     private val viewModel: PlayBroadcastViewModel by activityViewModels {
@@ -62,7 +62,7 @@ class BeautificationTabFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPlayBroMakeupTabBinding.inflate(inflater, container, false)
+        _binding = FragmentBeautificationTabBinding.inflate(inflater, container, false)
         return _binding?.root
     }
 
