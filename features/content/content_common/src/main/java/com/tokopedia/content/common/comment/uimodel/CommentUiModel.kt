@@ -49,6 +49,7 @@ sealed interface CommentUiModel {
 
 sealed class CommentType {
     open val parentId = "0"
+    open var isNewlyAdded = false
 
     object Parent : CommentType()
 

@@ -53,7 +53,7 @@ class CommentViewHolder {
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
                 root.setPadding(
-                    if (item.commentType is CommentType.Child) 100 else 8,
+                    if (item.commentType is CommentType.Child && !item.commentType.isNewlyAdded) 100 else 8,
                     root.paddingTop,
                     root.paddingTop,
                     root.paddingBottom

@@ -69,7 +69,9 @@ class CommentUiModelMapper @Inject constructor() {
             appLink = comment.userInfo.linkDetail.appLink,
             content = MethodChecker.fromHtml(comment.comment).toString(),
             createdTime = convertTime(comment.createdTime),
-            commentType = comment.parentId.convertToCommentType,
+            commentType = comment.parentId.convertToCommentType.apply {
+                isNewlyAdded = true
+            },
             childCount = "0",
             isOwner = true,
             isReportAllowed = false,
