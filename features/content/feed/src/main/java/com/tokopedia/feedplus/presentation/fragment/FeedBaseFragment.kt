@@ -9,7 +9,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -83,7 +82,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     override fun onDestroyView() {
-        binding = null
+        _binding = null
         adapter = null
         super.onDestroyView()
     }
@@ -145,9 +144,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun observeCreateContentBottomSheetData() {
-        feedMainViewModel.feedCreateContentBottomSheetData.observe(
-            viewLifecycleOwner
-        ) {
+        feedMainViewModel.feedCreateContentBottomSheetData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                 }
@@ -166,131 +163,129 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun initView(data: FeedTabsModel) {
-        binding.let {
-            adapter = FeedPagerAdapter(childFragmentManager, lifecycle, data.data)
+        adapter = FeedPagerAdapter(childFragmentManager, lifecycle, data.data)
 
-            it.vpFeedTabItemsContainer.adapter = adapter
-            it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    onChangeTab(position)
-                }
-            })
-
-            var firstTabData: FeedDataModel? = null
-            var secondTabData: FeedDataModel? = null
-
-            if (data.data.isNotEmpty()) {
-                firstTabData = data.data[TAB_FIRST_INDEX]
-                if (data.data.size > TAB_SECOND_INDEX && data.data[TAB_SECOND_INDEX].isActive) {
-                    secondTabData = data.data[TAB_SECOND_INDEX]
-                }
+        binding.vpFeedTabItemsContainer.adapter = adapter
+        binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                onChangeTab(position)
             }
+        })
 
-            val onboarding = ImmersiveFeedOnboarding.Builder(requireContext())
-                .setCreateContentView(
-                    if (data.meta.createContentAllowed) binding.btnFeedCreatePost
-                    else null
-                )
-                .setProfileEntryPointView(
-                    if (data.meta.shouldShowProfile) binding.feedUserProfileImage
-                    else null
-                )
-                .build()
+        var firstTabData: FeedDataModel? = null
+        var secondTabData: FeedDataModel? = null
 
-            viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-                onboarding.show()
+        if (data.data.isNotEmpty()) {
+            firstTabData = data.data[TAB_FIRST_INDEX]
+            if (data.data.size > TAB_SECOND_INDEX && data.data[TAB_SECOND_INDEX].isActive) {
+                secondTabData = data.data[TAB_SECOND_INDEX]
             }
+        }
 
-            if (firstTabData != null) {
-                it.tyFeedFirstTab.text = firstTabData.title
-                it.tyFeedFirstTab.setOnClickListener { _ ->
-                    it.vpFeedTabItemsContainer.setCurrentItem(TAB_FIRST_INDEX, true)
-                }
-                it.tyFeedFirstTab.show()
-            } else {
-                it.tyFeedFirstTab.hide()
-            }
+        val onboarding = ImmersiveFeedOnboarding.Builder(requireContext())
+            .setCreateContentView(
+                if (data.meta.isCreationActive) binding.btnFeedCreatePost
+                else null
+            )
+            .setProfileEntryPointView(
+                if (data.meta.showMyProfile) binding.feedUserProfileImage
+                else null
+            )
+            .build()
 
-            if (secondTabData != null) {
-                it.tyFeedSecondTab.text = secondTabData.title
-                it.tyFeedSecondTab.setOnClickListener { _ ->
-                    it.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
-                }
-                it.tyFeedSecondTab.show()
-            } else {
-                it.tyFeedSecondTab.hide()
-            }
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            onboarding.show()
+        }
 
-            if (data.meta.showMyProfile) {
-                if (data.meta.profilePhotoUrl.isNotEmpty())
-                    it.feedUserProfileImage.setImageUrl(data.meta.profilePhotoUrl)
-                it.feedUserProfileImage.setOnClickListener { _ ->
-                    RouteManager.route(it.root.context, data.meta.profileApplink)
-                }
-                it.feedUserProfileImage.show()
-            } else {
-                it.feedUserProfileImage.hide()
+        if (firstTabData != null) {
+            binding.tyFeedFirstTab.text = firstTabData.title
+            binding.tyFeedFirstTab.setOnClickListener { _ ->
+                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_FIRST_INDEX, true)
             }
+            binding.tyFeedFirstTab.show()
+        } else {
+            binding.tyFeedFirstTab.hide()
+        }
 
-            it.btnFeedCreatePost.setOnClickListener {
-                onCreatePostClicked()
+        if (secondTabData != null) {
+            binding.tyFeedSecondTab.text = secondTabData.title
+            binding.tyFeedSecondTab.setOnClickListener { _ ->
+                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
             }
+            binding.tyFeedSecondTab.show()
+        } else {
+            binding.tyFeedSecondTab.hide()
+        }
 
-            it.btnFeedLive.setOnClickListener {
-                onNavigateToLive()
+        if (data.meta.showMyProfile) {
+            if (data.meta.profilePhotoUrl.isNotEmpty())
+                binding.feedUserProfileImage.setImageUrl(data.meta.profilePhotoUrl)
+            binding.feedUserProfileImage.setOnClickListener { _ ->
+                RouteManager.route(binding.root.context, data.meta.profileApplink)
             }
+            binding.feedUserProfileImage.show()
+        } else {
+            binding.feedUserProfileImage.hide()
+        }
 
-            it.feedUserProfileImage.setOnClickListener {
-                onNavigateToProfile()
-            }
+        binding.btnFeedCreatePost.setOnClickListener {
+            onCreatePostClicked()
+        }
 
-            if (data.meta.showCreatePost) {
-                it.btnFeedCreatePost.show()
-            } else {
-                it.btnFeedCreatePost.hide()
-            }
+        binding.btnFeedLive.setOnClickListener {
+            onNavigateToLive()
+        }
 
-            if (data.meta.showLive) {
-                it.btnFeedLive.show()
-            } else {
-                it.btnFeedLive.hide()
-            }
+        binding.feedUserProfileImage.setOnClickListener {
+            onNavigateToProfile()
+        }
+
+        if (data.meta.isCreationActive) {
+            binding.btnFeedCreatePost.show()
+        } else {
+            binding.btnFeedCreatePost.hide()
+        }
+
+        if (data.meta.showLive) {
+            binding.btnFeedLive.show()
+        } else {
+            binding.btnFeedLive.hide()
         }
     }
 
     private fun onChangeTab(position: Int) {
-        binding.let {
-            val newTabView =
-                if (position == TAB_FIRST_INDEX) it.tyFeedFirstTab else it.tyFeedSecondTab
-
-            val newConstraintSet = ConstraintSet()
-            newConstraintSet.clone(it.root)
-            newConstraintSet.connect(
-                it.viewFeedTabIndicator.id,
-                ConstraintSet.TOP,
-                newTabView.id,
-                ConstraintSet.BOTTOM
-            )
-            newConstraintSet.connect(
-                it.viewFeedTabIndicator.id,
-                ConstraintSet.START,
-                newTabView.id,
-                ConstraintSet.START
-            )
-            newConstraintSet.connect(
-                it.viewFeedTabIndicator.id,
-                ConstraintSet.END,
-                newTabView.id,
-                ConstraintSet.END
-            )
-
-            newConstraintSet.applyTo(it.root)
+        val newTabView = if (position == TAB_FIRST_INDEX) {
+            binding.tyFeedFirstTab
+        } else {
+            binding.tyFeedSecondTab
         }
+
+        val newConstraintSet = ConstraintSet()
+        newConstraintSet.clone(binding.root)
+        newConstraintSet.connect(
+            binding.viewFeedTabIndicator.id,
+            ConstraintSet.TOP,
+            newTabView.id,
+            ConstraintSet.BOTTOM
+        )
+        newConstraintSet.connect(
+            binding.viewFeedTabIndicator.id,
+            ConstraintSet.START,
+            newTabView.id,
+            ConstraintSet.START
+        )
+        newConstraintSet.connect(
+            binding.viewFeedTabIndicator.id,
+            ConstraintSet.END,
+            newTabView.id,
+            ConstraintSet.END
+        )
+
+        newConstraintSet.applyTo(binding.root)
     }
 
     private fun onCreatePostClicked() {

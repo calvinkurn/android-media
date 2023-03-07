@@ -35,7 +35,6 @@ import javax.inject.Inject
 class FeedMainViewModel @Inject constructor(
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
-    private val getWhiteListUseCase: GetWhiteListUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val onboardingPreferences: OnboardingPreferences,
     private val userSession: UserSessionInterface,
@@ -58,53 +57,17 @@ class FeedMainViewModel @Inject constructor(
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
 
-    fun fetchData() {
-        viewModelScope.launch {
-            val header = async { getFeedHeader() }
-            val whiteList = async { getWhiteList() }
-
-            val feedTabs = MapperFeedTabs.transform(
-                header.await(),
-                whiteList.await(),
-                userSession.isLoggedIn,
-            )
-
-            _feedTabs.value = Success(feedTabs)
-        }
-    }
-
-    fun checkLoginStatus() {
-//        _feedTabs.value = when (val result = _feedTabs.value) {
-//            is Success -> result.copy(
-//                data = result.data.copy(
-//                    meta = result.data.meta.login(userSession.isLoggedIn)
-//                )
-//            )
-//            else -> result
-//        }
-    }
-
-    private suspend fun getWhiteList(): GetCheckWhitelistResponse {
-        if (!userSession.isLoggedIn) return GetCheckWhitelistResponse()
-        return getWhiteListUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
-    }
-
-    private suspend fun getFeedHeader(): FeedXHeader {
-        feedXHeaderUseCase.setRequestParams(
-            FeedXHeaderUseCase.createParam()
-        )
-        return feedXHeaderUseCase.executeOnBackground().feedXHeaderData
-    }
-
     fun fetchFeedTabs() {
-        viewModelScope.launchCatchError(dispatchers.main, block = {
+        viewModelScope.launchCatchError(block = {
             val response = withContext(dispatchers.io) {
                 feedXHeaderUseCase.setRequestParams(
                     FeedXHeaderUseCase.createParam()
                 )
                 feedXHeaderUseCase.executeOnBackground()
             }
-            _feedTabs.value = Success(MapperFeedTabs.transform(response.feedXHeaderData))
+            _feedTabs.value = Success(
+                MapperFeedTabs.transform(response.feedXHeaderData, userSession.isLoggedIn)
+            )
 
             handleCreationData(
                 MapperFeedTabs.getCreationBottomSheetData(
@@ -118,7 +81,7 @@ class FeedMainViewModel @Inject constructor(
     }
 
     fun reportContent(feedReportRequestParamModel: FeedReportRequestParamModel) {
-        viewModelScope.launchCatchError(dispatchers.main, block = {
+        viewModelScope.launchCatchError(block = {
             val response = withContext(dispatchers.io) {
                 submitReportUseCase.setRequestParams(
                     FeedComplaintSubmitReportUseCase.createParam(

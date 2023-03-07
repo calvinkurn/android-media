@@ -14,15 +14,18 @@ import com.tokopedia.iconunify.IconUnify
  * Created By : Muhammad Furqan on 09/02/23
  */
 object MapperFeedTabs {
-    fun transform(header: FeedXHeader): FeedTabsModel =
+    fun transform(
+        header: FeedXHeader,
+        isLoggedIn: Boolean,
+    ): FeedTabsModel =
         FeedTabsModel(
             meta = MetaModel(
                 selectedIndex = 0,
                 profileApplink = header.data.userProfile.applink,
                 profileWeblink = header.data.userProfile.weblink,
                 profilePhotoUrl = header.data.userProfile.image,
-                showMyProfile = header.data.userProfile.isShown,
-                showCreatePost = header.data.creation.isActive,
+                showMyProfile = header.data.userProfile.isShown || !isLoggedIn,
+                isCreationActive = header.data.creation.isActive,
                 showLive = header.data.live.isActive,
                 liveApplink = header.data.live.applink
             ),
