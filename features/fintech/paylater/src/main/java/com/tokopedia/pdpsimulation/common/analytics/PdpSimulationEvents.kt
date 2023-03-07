@@ -58,7 +58,8 @@ sealed class PdpSimulationEvent {
         val tenure: String,
         val quantity: String,
         val limit: String,
-        val variantName: String
+        val variantName: String,
+        val promoName: String,
     ):PdpSimulationEvent()
 
     data class ClickTenureEvent(
@@ -66,7 +67,8 @@ sealed class PdpSimulationEvent {
         val userStatus: String,
         val productPrice:String,
         val tenure: String,
-        val partnerName: String
+        val partnerName: String,
+        val promoName: String,
     ):PdpSimulationEvent()
 }
 
@@ -77,6 +79,7 @@ open class PayLaterAnalyticsBase {
     var payLaterPartnerName: String = ""
     var linkingStatus: String = ""
     var action: String = ""
+    var promoName: String = ""
 }
 
 class PayLaterCtaClick : PayLaterAnalyticsBase() {
@@ -100,5 +103,5 @@ class OccBottomSheetImpression : PayLaterAnalyticsBase(), Parcelable
 
 class PayLaterTenureClick :PayLaterAnalyticsBase()
 {
-    var productPrice:String = ""
+    var productPrice: String = ""
 }

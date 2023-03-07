@@ -2,24 +2,41 @@ package com.tokopedia.plugin
 
 import GraphStr
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 open class PublishCompositeTask : DefaultTask() {
 
-    //input:
+    // input:
+    @Internal
     var dependenciesProjectNameHashSet = HashSet<Pair<String, String>>()
+
+    @Internal
     var projectToArtifactInfoList = hashMapOf<String, ArtifactInfo>()
+
+    @Internal
     var artifactIdToProjectNameList = hashMapOf<String, String>()
+
+    @Internal
     var moduleToPublishList = mutableSetOf<String>()
 
+    @Internal
     lateinit var sortedDependency: List<String>
 
+    @Internal
     var successModuleList: MutableList<String> = mutableListOf()
+
+    @Internal
     var failModuleList: MutableList<String> = mutableListOf()
+
+    @Internal
     var noChangeModuleList: MutableList<String> = mutableListOf()
+
+    @Internal
     var changedModuleList: MutableList<String> = mutableListOf()
 
+    @Internal
     var successPublish = false
 
     companion object {
@@ -33,11 +50,13 @@ open class PublishCompositeTask : DefaultTask() {
     @TaskAction
     fun run() {
         println("Dep Hash Set: $dependenciesProjectNameHashSet")
-        println("Project to Artifact: ${projectToArtifactInfoList.map {
-            it.key + "-" + it.value.groupId + ":" + it.value.artifactId +
+        println(
+            "Project to Artifact: ${projectToArtifactInfoList.map {
+                it.key + "-" + it.value.groupId + ":" + it.value.artifactId +
                     ":" + it.value.versionName + "/" + it.value.maxCurrentVersionName +
                     "/" + it.value.increaseVersionString
-        }}")
+            }}"
+        )
         println("Artifact to Project: $artifactIdToProjectNameList")
         println("Module to Publish: $moduleToPublishList")
 
@@ -72,17 +91,17 @@ open class PublishCompositeTask : DefaultTask() {
         for (it in sortedDependency) {
             // check if it is a candidate for version increase
             if (moduleToPublishList.contains(it)) {
-                //it is a valid candidate; publish to artifactory
+                // it is a valid candidate; publish to artifactory
                 print("\n$it module - Start Updating...\n")
-                val readerFile = File("${it}/build.gradle")
-                val backupFile = File("${it}/.build_backup")
-                val writerFile = File("${it}/build_temp.gradle")
+                val readerFile = File("$it/build.gradle")
+                val backupFile = File("$it/.build_backup")
+                val writerFile = File("$it/build_temp.gradle")
                 backupFile.delete()
                 writerFile.delete()
                 readerFile.copyTo(backupFile, true)
                 print("$it module BACK-UP SUCCESS\n")
 
-                //increase the version
+                // increase the version
                 val artifactInfo = projectToArtifactInfoList[it]
                 if (artifactInfo == null) {
                     print("$it module artifact is not defined in the project. FAILED.\n\n")
@@ -92,7 +111,7 @@ open class PublishCompositeTask : DefaultTask() {
                     var textToPut: String
                     readerFile.forEachLine { line ->
                         textToPut = ""
-                        //search for "versionName =" and change the value, but in the writer file
+                        // search for "versionName =" and change the value, but in the writer file
                         val lineTrim = line.trim()
                         if (lineTrim.startsWith("versionName =")) {
                             textToPut = "    versionName = \"${artifactInfo.increaseVersionString}\""
@@ -131,7 +150,7 @@ open class PublishCompositeTask : DefaultTask() {
 
     private fun backupRootDependencyLibraryFile() {
         if (moduleToPublishList.isNotEmpty()) {
-            //backup rootDependencyFile
+            // backup rootDependencyFile
             val rootDependencyFile = File(LIBRARIES_PATH)
             val backupFile = File(LIBRARIES_BACKUP_PATH)
             backupFile.delete()
@@ -194,8 +213,8 @@ open class PublishCompositeTask : DefaultTask() {
 
     private fun returnBackupForCompositeProject() {
         changedModuleList.forEach {
-            val reader = File("${it}/build.gradle")
-            val backup = File("${it}/.build_backup")
+            val reader = File("$it/build.gradle")
+            val backup = File("$it/.build_backup")
             if (backup.exists()) {
                 reader.delete()
                 backup.renameTo(reader)
@@ -212,7 +231,7 @@ open class PublishCompositeTask : DefaultTask() {
             backupFile.delete()
         }
         changedModuleList.forEach {
-            val backup = File("${it}/.build_backup")
+            val backup = File("$it/.build_backup")
             if (backup.exists()) {
                 backup.delete()
             }
@@ -232,7 +251,7 @@ open class PublishCompositeTask : DefaultTask() {
     }
 
     private fun publishModule(module: String): Boolean {
-        //check if the module is android or not
+        // check if the module is android or not
         val isAndroidProject = projectToArtifactInfoList[module]?.isAndroidProject ?: true
         println("IsAndroidProject: $isAndroidProject")
         val extension = if (isAndroidProject) {
@@ -271,13 +290,13 @@ open class PublishCompositeTask : DefaultTask() {
             gitCommandAssembleString = "gradle $command  -p $module -PhanselEnableDebug --stacktrace --no-build-cache"
             print("$gitCommandAssembleString\n")
             gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
-                    ?: ""
+                ?: ""
         } catch (e: Exception) {
             try {
                 gitCommandAssembleString = "../.././gradlew $command  -p $module  -PhanselEnableDebug --stacktrace --no-build-cache"
                 print("$gitCommandAssembleString\n")
                 gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
-                        ?: ""
+                    ?: ""
             } catch (e: Exception) {
                 println(e.stackTrace.toString())
             }
@@ -301,12 +320,12 @@ open class PublishCompositeTask : DefaultTask() {
         try {
             gitCommandString = "gradle artifactoryPublish  -p $module --stacktrace"
             gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
-                    ?: ""
+                ?: ""
         } catch (e: Exception) {
             try {
                 gitCommandString = "../.././gradlew artifactoryPublish  -p $module --stacktrace"
                 gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
-                        ?: ""
+                    ?: ""
             } catch (e: Exception) {
                 println(e.stackTrace.toString())
             }
@@ -314,5 +333,4 @@ open class PublishCompositeTask : DefaultTask() {
         print(gitResultLog)
         return gitResultLog.contains("BUILD SUCCESSFUL")
     }
-
 }

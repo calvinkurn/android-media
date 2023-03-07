@@ -64,10 +64,12 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataMo
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
@@ -141,6 +143,9 @@ object DynamicProductDetailMapper {
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
                 }
+                ProductDetailConstant.VIEW_TO_VIEW -> {
+                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name = component.componentName, position = index))
+                }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
                     listOfComponent.add(
                         ProductRecommendationVerticalPlaceholderDataModel(
@@ -152,7 +157,14 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.VARIANT -> {
                     if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-                        listOfComponent.add(ProductSingleVariantDataModel(type = component.type, name = component.componentName))
+                        listOfComponent.add(
+                            ProductSingleVariantDataModel(
+                                type = component.type,
+                                name = component.componentName,
+                                thumbnailType = component.componentData.firstOrNull()
+                                    ?.componentType.orEmpty()
+                            )
+                        )
                     } else {
                         listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
                     }
@@ -240,10 +252,10 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
-                            ContentWidgetDataModel(
-                                    type = component.type,
-                                    name = component.componentName
-                            )
+                        ContentWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
                     )
                 }
                 ProductDetailConstant.AR_BUTTON -> {
@@ -270,6 +282,11 @@ object DynamicProductDetailMapper {
                     if (customInfoTitle != null) {
                         listOfComponent.add(customInfoTitle)
                     }
+                }
+                ProductDetailConstant.SHOP_REVIEW -> {
+                    listOfComponent.add(
+                        ProductShopReviewDataModel(type = component.type, name = component.componentName)
+                    )
                 }
             }
         }
@@ -577,7 +594,12 @@ object DynamicProductDetailMapper {
             addressID = localData.address_id.checkIfNumber("address_id"),
             postalCode = localData.postal_code.checkIfNumber("postal_code"),
             latlon = latlong,
-            cityId = localData.city_id.checkIfNumber("city_id")
+            cityId = localData.city_id.checkIfNumber("city_id"),
+            /**
+             * Address Name use to determine we should show "Dikirim ke" when tokonow or no
+             * This validation should be came from backend
+             */
+            addressName = localData.label
         )
     }
 
@@ -656,12 +678,26 @@ object DynamicProductDetailMapper {
 
     fun generateImageGeneratorData(product: DynamicProductInfoP1, bebasOngkir: BebasOngkirImage): PdpParamModel {
         return PdpParamModel(
+            productId = product.basic.productID,
             isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
             bebasOngkirType = mapBebasOngkirType(bebasOngkir.boType),
-            productPrice = product.data.price.value.toLong(),
+            productPrice = getProductPrice(product),
             productRating = product.basic.stats.rating,
-            productTitle = MethodChecker.fromHtml(product.getProductName).toString()
+            productTitle = product.data.name,
+            hasCampaign = product.data.campaign.activeAndHasId.compareTo(false).toString(),
+            campaignName = product.data.campaign.campaignTypeName,
+            campaignDiscount = product.data.campaign.percentageAmount.toInt(),
+            newProductPrice = product.data.campaign.discountedPrice.toLong()
+
         )
+    }
+
+    private fun getProductPrice(product: DynamicProductInfoP1): Long {
+        return if (product.data.campaign.activeAndHasId) {
+            product.data.campaign.originalPrice.toLong()
+        } else {
+            product.data.price.value.toLong()
+        }
     }
 
     private fun isBebasOngkir(type: Int) = type == BebasOngkirType.NON_BO.value
@@ -687,28 +723,30 @@ object DynamicProductDetailMapper {
         val higherThanLollipop = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1
 
         return initialLayoutData.filterNot {
-            (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner))
-                    || (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO)
-                    || (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO)
-                    || (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore)
-                    || (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
-                    || (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
-                    || (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp())
-                    || (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner))
-                    || (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp())
-                    /***
-                     * remove palugada type with name
-                     * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
-                     */
-                    || (it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO)
-                    || (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT)
-                    || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
-                    || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
-                    /**
-                     * Remove when lollipop and product of seller itself
-                     */
-                    || (it.name() == ProductDetailConstant.AR_BUTTON
-                    && (GlobalConfig.isSellerApp() || !higherThanLollipop || isShopOwner))
+            (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner)) ||
+                (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) ||
+                (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) ||
+                (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore) ||
+                (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
+                (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
+                (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp()) ||
+                (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) ||
+                (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp()) ||
+                /***
+                 * remove palugada type with name
+                 * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
+                 */
+                (it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) ||
+                (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT) ||
+                (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO) ||
+                (it.name() == ProductDetailConstant.ORDER_PRIORITY) ||
+                /**
+                 * Remove when lollipop and product of seller itself
+                 */
+                (
+                    it.name() == ProductDetailConstant.AR_BUTTON &&
+                        (GlobalConfig.isSellerApp() || !higherThanLollipop || isShopOwner)
+                    )
         }.toMutableList()
     }
 

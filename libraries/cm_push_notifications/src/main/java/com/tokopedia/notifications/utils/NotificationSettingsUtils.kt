@@ -9,7 +9,6 @@ import com.tokopedia.notifications.common.NotificationSettingsGtmEvents
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-
 class NotificationSettingsUtils(private val context: Context) {
 
     private var notificationManager =
@@ -39,9 +38,8 @@ class NotificationSettingsUtils(private val context: Context) {
     }
 
     fun sendNotificationPromptEvent() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             try {
-                NotificationSettingsGtmEvents(userSession, context).updateFrequency()
                 NotificationSettingsGtmEvents(userSession, context).sendPromptImpressionEvent(context)
             } catch (_: Exception) {
             }

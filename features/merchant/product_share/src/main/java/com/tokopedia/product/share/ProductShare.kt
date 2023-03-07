@@ -455,7 +455,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             UniversalShareBottomSheet.createInstance().apply {
                 getImageFromMedia(true)
                 setupAffiliate(affiliateInput, this)
-                setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.PDP)
+                setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP)
                 setImageGeneratorParam(paramImageGenerator)
                 init(object : ShareBottomsheetListener {
                     override fun onShareOptionClicked(shareModel: ShareModel) {

@@ -7,6 +7,7 @@ import android.view.View
 import java.util.regex.Pattern
 
 class TagConverter {
+
     private val tagPattern = Pattern.compile(HASHTAG_PATTERN)
 
     fun convertToLinkifyHashtag(spanString: SpannableString, hashtagColor: Int, onClick: (String)->Unit): SpannableString{

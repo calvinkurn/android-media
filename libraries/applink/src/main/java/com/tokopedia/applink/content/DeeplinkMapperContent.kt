@@ -68,9 +68,6 @@ object DeeplinkMapperContent {
 
     fun getKolDeepLink(deepLink: String): String {
         when {
-            deepLink.startsWithPattern(ApplinkConst.KOL_COMMENT) -> {
-                return deepLink.replace(ApplinkConst.KOL_COMMENT.substringBefore("{"), ApplinkConstInternalContent.COMMENT.substringBefore("{")).plus(ApplinkConstInternalContent.COMMENT_EXTRA_PARAM)
-            }
             deepLink.startsWithPattern(ApplinkConst.CONTENT_DETAIL) -> {
                 return deepLink.replace(ApplinkConst.CONTENT_DETAIL.substringBefore("{"), ApplinkConstInternalContent.INTERNAL_CONTENT_POST_DETAIL)
             }

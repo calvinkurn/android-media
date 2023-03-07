@@ -22,7 +22,6 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import org.hamcrest.*
 
-
 /**
  * Created by fwidjaja on 08/11/20.
  */
@@ -37,94 +36,119 @@ class UohRobot {
 
     fun clickPrimaryButton() {
         onView(withId(R.id.rv_order_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
-                        clickOnViewChild(R.id.uoh_btn_action)))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    1,
+                    clickOnViewChild(R.id.uoh_btn_action_1)
+                )
+            )
     }
 
     fun clickThreeDotsMenu() {
         onView(withId(R.id.rv_order_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
-                        clickOnViewChild(R.id.iv_kebab_menu)))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    1,
+                    clickOnViewChild(R.id.iv_kebab_menu)
+                )
+            )
     }
 
     fun clickBeliLagi() {
         onView(withId(R.id.rv_kebab))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    0,
+                    clickOnViewChild(R.id.rl_kebab_item)
+                )
+            )
     }
 
     fun clickOrderCard() {
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         onView(withId(R.id.rv_order_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
-                        clickOnViewChild(R.id.cl_data_product)))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    1,
+                    clickOnViewChild(R.id.cl_data_product)
+                )
+            )
     }
 
     fun doSearch(str: String) {
         onView(withId(R.id.et_search))
-                .perform(ViewActions.typeText(str)).perform(ViewActions.pressImeActionButton())
+            .perform(ViewActions.typeText(str)).perform(ViewActions.pressImeActionButton())
         waitForData()
     }
 
     fun doApplyFilter() {
         onView(withId(R.id.btn_apply))
-                .perform(click())
+            .perform(click())
         waitForData()
     }
 
     fun clickFilterStatus() {
-        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),0))
-                .perform(click())
+        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items), 0))
+            .perform(click())
         waitForData()
     }
 
     fun selectFilterStatus() {
         onView(withId(R.id.rv_option))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+            .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         waitForData()
     }
 
     fun clickFilterCategory() {
-        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),1))
-                .perform(click())
+        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items), 1))
+            .perform(click())
         waitForData()
     }
 
     fun selectFilterCategory() {
         onView(withId(R.id.rv_option))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+            .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         waitForData()
     }
 
     fun clickFilterDate() {
-        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),2))
-                .perform(scrollTo(), click())
+        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items), 2))
+            .perform(scrollTo(), click())
         waitForData()
     }
 
     fun selectFilterDate() {
         onView(withId(R.id.rv_option))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+            .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         waitForData()
     }
 
     fun scrollToRecommendationList() {
         onView(withId(R.id.rv_order_list))
-                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(5))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(5))
         waitForData()
     }
 
     fun clickAtcRecommendation() {
         onView(withId(R.id.rv_order_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5,
-                        clickOnViewChild(R.id.buttonAddToCart)))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    5,
+                    clickOnViewChild(R.id.buttonAddToCart)
+                )
+            )
         waitForData()
     }
 
     fun clickRecommendationCard() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         onView(withId(R.id.rv_order_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5,
-                        clickOnViewChild(R.id.uoh_product_item)))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    5,
+                    clickOnViewChild(R.id.uoh_product_item)
+                )
+            )
         waitForData()
     }
 
@@ -142,8 +166,10 @@ class UohRobot {
             override fun matchesSafely(view: View?): Boolean {
                 if (view?.parent !is ViewGroup) return false
                 val parent = view.parent as ViewGroup
-                return (parentMatcher.matches(parent)
-                        && parent.childCount > childPosition && parent.getChildAt(childPosition) == view)
+                return (
+                    parentMatcher.matches(parent) &&
+                        parent.childCount > childPosition && parent.getChildAt(childPosition) == view
+                    )
             }
         }
     }

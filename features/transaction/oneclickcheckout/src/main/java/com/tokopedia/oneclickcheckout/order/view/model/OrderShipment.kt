@@ -98,6 +98,5 @@ data class OrderShipment(
 
 data class OrderInsurance(
     val insuranceData: InsuranceData? = null,
-    var isCheckInsurance: Boolean = false,
-    var isFirstLoad: Boolean = true
+    var isCheckInsurance: Boolean = false
 )

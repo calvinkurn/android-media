@@ -10,5 +10,4 @@ data class Content(
     val imageUrl: String = "",
     @SerializedName("tags")
     val tags: List<Tag> = emptyList()
-) {
-}
+)

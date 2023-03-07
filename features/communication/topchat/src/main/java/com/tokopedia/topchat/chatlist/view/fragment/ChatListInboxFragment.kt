@@ -81,6 +81,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -500,7 +501,7 @@ open class ChatListInboxFragment :
         viewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
             if (it is Success && it.data.showTicker == true) {
                 adapter?.addElement(0, it.data)
-            } else if (viewModel.shouldShowBubbleTicker()) {
+            } else if (viewModel.shouldShowBubbleTicker() && Utils.getShouldBubbleChatEnabled()) {
                 addBubbleChatTicker()
             }
         }
@@ -764,16 +765,30 @@ open class ChatListInboxFragment :
     override fun onChatListTickerClicked(appLink: String) {
         if (appLink.isNotBlank()) {
             context?.let {
-                if (appLink == ApplinkConst.TokoFood.TOKOFOOD_ORDER) {
-                    chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                when (appLink) {
+                    ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
+                        TopChatAnalyticsKt.eventClickBubbleChatRecommendationTicker(userSession.shopId)
+                    }
+                    ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                        chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                    }
                 }
                 RouteManager.route(it, appLink)
             }
         }
     }
 
-    override fun onChatListTickerImpressed() {
-        chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+    override fun onChatListTickerImpressed(appLink: String) {
+        if (appLink.isNotBlank()) {
+            when (appLink) {
+                ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
+                    TopChatAnalyticsKt.eventImpressionBubbleChatRecommendationTicker(userSession.shopId)
+                }
+                ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                    chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+                }
+            }
+        }
     }
 
     protected open fun generateChatListComponent() = DaggerChatListComponent.builder()

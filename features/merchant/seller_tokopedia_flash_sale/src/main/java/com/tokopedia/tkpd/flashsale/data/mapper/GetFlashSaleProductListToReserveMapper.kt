@@ -30,7 +30,7 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor(
         }
     }
 
-    fun mapProduct(response: GetFlashSaleProductListToReserveResponse) = response.getFlashSaleProductListToReserve.productList.map {
+    private fun mapProduct(response: GetFlashSaleProductListToReserveResponse) = response.getFlashSaleProductListToReserve.productList.map {
         ChooseProductItem(
             productId = it.productId.toString(),
             productName = it.name,

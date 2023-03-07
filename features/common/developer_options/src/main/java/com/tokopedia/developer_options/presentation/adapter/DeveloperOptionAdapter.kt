@@ -90,6 +90,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
         const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
         const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
+        const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
     }
 
     /**
@@ -101,7 +102,6 @@ class DeveloperOptionAdapter(
         DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
-        AppAuthSecretUiModel(listOf(KEYWORD_APP_AUTH_SECRET)),
         SystemNonSystemAppsUiModel(
             listOf(
                 KEYWORD_SYSTEM_APPS,
@@ -200,7 +200,8 @@ class DeveloperOptionAdapter(
         ConvertResourceIdUiModel(
             listOf(KEYWORD_CONVERT_RESOURCE_ID)
         ),
-        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST))
+        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST)),
+        TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING))
     )
 
     init {
@@ -226,12 +227,11 @@ class DeveloperOptionAdapter(
     }
 
     private fun removeSellerAppItems() {
-        removeWidget(AppAuthSecretUiModel::class.java)
+        // no-op
     }
 
     private fun removeMainAppItems() {
         removeWidget(SellerAppReviewDebuggingUiModel::class.java)
-        removeWidget(AppAuthSecretUiModel::class.java)
     }
 
     private fun <T> removeWidget(itemClass: Class<T>) {

@@ -1,16 +1,19 @@
 package com.tokopedia.media.editor.data.repository
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.editor.data.entity.EditorDetailEntity
 import javax.inject.Inject
 import com.tokopedia.media.editor.ui.uimodel.EditorWatermarkUiModel
 import com.tokopedia.media.editor.utils.isDark
 import kotlin.math.min
+import com.tokopedia.unifyprinciples.R as principleR
 
 interface WatermarkFilterRepository {
     fun watermark(
@@ -31,7 +34,9 @@ interface WatermarkFilterRepository {
     fun setAsset(logoDrawable: Drawable, textLightColor: Int, textDarkColor: Int)
 }
 
-class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepository {
+class WatermarkFilterRepositoryImpl @Inject constructor(
+    @ApplicationContext val context: Context
+) : WatermarkFilterRepository {
     private var logoDrawable: Drawable? = null
 
     private var shopText = ""
@@ -93,7 +98,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         val watermarkColor = if (!isThumbnail) {
             if (isDark) textDarkColor else textLightColor
         } else {
-            Color.WHITE
+            ContextCompat.getColor(context, principleR.color.Unify_Static_White)
         }
 
         val sourceWidth: Int = source.width

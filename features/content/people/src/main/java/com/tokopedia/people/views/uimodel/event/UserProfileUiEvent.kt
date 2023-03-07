@@ -14,4 +14,8 @@ sealed interface UserProfileUiEvent {
     data class ErrorLoadNextPageShopRecom(val throwable: Throwable) : UserProfileUiEvent
     data class ErrorFeedPosts(val throwable: Throwable): UserProfileUiEvent
     data class ErrorVideoPosts(val throwable: Throwable): UserProfileUiEvent
+
+    data class SuccessBlockUser(val isBlocking: Boolean) : UserProfileUiEvent
+    data class ErrorBlockUser(val isBlocking: Boolean) : UserProfileUiEvent
+    data class BlockingUserState(val throwable: Throwable): UserProfileUiEvent
 }

@@ -2,6 +2,7 @@ package com.tokopedia.content.common.producttag.analytic.product
 
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.*
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 
 /**
  * Created By : Jonathan Darwin on May 23, 2022
@@ -20,7 +21,7 @@ interface ContentProductTagAnalytic {
 
     fun clickBreadcrumb(isOnShop: Boolean)
 
-    fun clickProductTagSource(source: ProductTagSource)
+    fun clickProductTagSource(source: ProductTagSource, authorId: String, authorType: String)
 
     fun impressProductCard(
         source: ProductTagSource,
@@ -69,6 +70,10 @@ interface ContentProductTagAnalytic {
     fun clickSaveAdvancedProductFilter()
 
     fun clickProductFilterChips()
+
+    fun viewProductTagSourceBottomSheet(authorId: String, authorType: String)
+
+    fun clickCloseOnProductTagSourceBottomSheet(authorId: String, authorType: String)
 
     fun sendAll()
 }

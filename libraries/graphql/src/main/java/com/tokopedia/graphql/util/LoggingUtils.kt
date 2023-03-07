@@ -22,7 +22,7 @@ object LoggingUtils {
     fun logGqlSuccessRate(operationName: String, gqlResult: String) {
         if (operationName.isNotBlank()) {
             ServerLogger.log(
-                Priority.SF,
+                Priority.P1,
                 "GP",
                 mapOf(
                     "on" to operationName,

@@ -1,14 +1,14 @@
 package com.tokopedia.kyc_centralized.analytics
 
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.kyc_centralized.common.KYCConstant
 
 /**
  * @author by alvinatin on 26/11/18.
  */
 
-class UserIdentificationAnalytics private constructor(private val projectID: Int) {
+class UserIdentificationAnalytics private constructor(private val projectID: Int, private val kycFlowType: String) {
 
     private object Event {
         const val CLICK_ACCOUNT = "clickAccount"
@@ -68,7 +68,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_KYC_ONBOARDING,
-            "success - $projectID - ${getKycType(projectID.toString())}"
+            "success - $projectID - $kycFlowType"
         ), "35165")
     }
 
@@ -77,7 +77,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelOne} - click - $projectID - ${getKycType(projectID.toString())}"
+                "${Label.labelOne} - click - $projectID - $kycFlowType"
         ), "2619")
     }
 
@@ -86,8 +86,8 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
             Event.CLICK_VERIFICATION,
             Category.KYC_PAGE,
             Action.CLICK_ON_TNC_KYC,
-            if(isChecked) "${Label.LABEL_CHECK} - $projectID - ${getKycType(projectID.toString())}"
-            else "${Label.LABEL_UNCHECK} - $projectID - ${getKycType(projectID.toString())}"
+            if(isChecked) "${Label.LABEL_CHECK} - $projectID - $kycFlowType"
+            else "${Label.LABEL_UNCHECK} - $projectID - $kycFlowType"
         ), "")
     }
 
@@ -100,12 +100,12 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_MULAI_ONBOARDING,
-                "click - $projectID - ${getKycType(projectID.toString())}"
+                "click - $projectID - $kycFlowType"
         ), "2618")
     }
 
     fun eventViewPendingPage() {
-        sendScreenName("${ScreenName.PENDING_VERIFICATION} / $projectID - ${getKycType(projectID.toString())}")
+        sendScreenName("${ScreenName.PENDING_VERIFICATION} / $projectID - $kycFlowType")
     }
 
     fun eventClickBackPendingPage() {
@@ -113,7 +113,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelTwo} - $projectID - ${getKycType(projectID.toString())}"
+                "${Label.labelTwo} - $projectID - $kycFlowType"
         ), "2619")
     }
 
@@ -122,12 +122,12 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_MENGERTI_PENDING_PAGE,
-                "click - $projectID - ${getKycType(projectID.toString())}"
+                "click - $projectID - $kycFlowType"
         ), "2664")
     }
 
     fun eventViewSuccessSnackbarPendingPage() {
-        sendScreenName("${ScreenName.SUCCESS_VERIFICATION} / $projectID - ${getKycType(projectID.toString())}")
+        sendScreenName("${ScreenName.SUCCESS_VERIFICATION} / $projectID - $kycFlowType")
     }
 
     fun eventViewRejectedPage() {
@@ -135,7 +135,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_REJECTED_PAGE,
-            "success - $projectID - ${getKycType(projectID.toString())}"
+            "success - $projectID - $kycFlowType"
         ), "35137")
     }
 
@@ -144,7 +144,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelThree} - $projectID - ${getKycType(projectID.toString())}"
+                "${Label.labelThree} - $projectID - $kycFlowType"
         ), "2619")
     }
 
@@ -153,7 +153,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_NEXT_REJECTED_PAGE,
-                "click - $projectID - ${getKycType(projectID.toString())}"
+                "click - $projectID - $kycFlowType"
         ), "2666")
     }
 
@@ -162,7 +162,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_KEMBALI_BLACKLIST_PAGE,
-                "click - $projectID - ${getKycType(projectID.toString())}"
+                "click - $projectID - $kycFlowType"
         ), "2668")
     }
 
@@ -171,12 +171,12 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelFour} - $projectID - ${getKycType(projectID.toString())}"
+                "${Label.labelFour} - $projectID - $kycFlowType"
         ), "2619")
     }
 
     fun eventViewSuccessPage() {
-        sendScreenName("${ScreenName.SUCCESS_VERIFIED} - $projectID - ${getKycType(projectID.toString())}")
+        sendScreenName("${ScreenName.SUCCESS_VERIFIED} - $projectID - $kycFlowType")
     }
 
     fun eventClickBackSuccessPage() {
@@ -184,7 +184,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_SUCCESS_PAGE,
-            "success - $projectID - ${getKycType(projectID.toString())}"
+            "success - $projectID - $kycFlowType"
         ), "35130")
     }
 
@@ -193,7 +193,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,
-            "click - $projectID - ${getKycType(projectID.toString())}"
+            "click - $projectID - $kycFlowType"
         ), "35136")
     }
 
@@ -204,18 +204,6 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Action,
                 label
         ))
-    }
-
-    private fun getKycType(projectID: String): String {
-        return if (
-                projectID == KYCConstant.HOME_CREDIT_PROJECT_ID ||
-                projectID == KYCConstant.CO_BRAND_PROJECT_ID ||
-                projectID == KYCConstant.GO_CICIL_PROJECT_ID
-        ) {
-            TYPE_ALA_CARTE
-        } else {
-            TYPE_CKYC
-        }
     }
 
     private fun track(data: MutableMap<String, Any>, trackerId: String) {
@@ -232,8 +220,8 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
 
     companion object {
         @JvmStatic
-        fun createInstance(projectID: Int): UserIdentificationAnalytics {
-            return UserIdentificationAnalytics(projectID)
+        fun createInstance(projectID: Int, kycType: String): UserIdentificationAnalytics {
+            return UserIdentificationAnalytics(projectID, kycType)
         }
 
         private const val TYPE_ALA_CARTE = "ala carte"

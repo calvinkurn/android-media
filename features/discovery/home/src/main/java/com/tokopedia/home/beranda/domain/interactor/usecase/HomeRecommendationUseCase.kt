@@ -29,7 +29,7 @@ class HomeRecommendationUseCase @Inject constructor(
                 val recomWidget = recomData.first().copy(
                         recommendationFilterChips = currentBestSellerDataModel.filterChip
                 )
-                val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget, cardInteraction = true)
+                val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget, cardInteraction = true, currentBestSellerDataModel)
                 val newModel = currentBestSellerDataModel.copy(
                         seeMoreAppLink = newBestSellerDataModel.seeMoreAppLink,
                         recommendationItemList = newBestSellerDataModel.recommendationItemList,

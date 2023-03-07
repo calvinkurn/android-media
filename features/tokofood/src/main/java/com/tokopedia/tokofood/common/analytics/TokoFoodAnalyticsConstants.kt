@@ -31,7 +31,7 @@ object TokoFoodAnalyticsConstants {
     const val BEGIN_CHECKOUT = "begin_checkout"
     const val VIEW_PG_IRIS = "viewPGIris"
 
-    //home
+    // home
     const val EMPTY_DATA = "null"
     const val HOME_PAGE = "Tokofood Homepage"
     const val OUT_OF_COVERAGE = "Error State Out of Coverage"
@@ -41,15 +41,16 @@ object TokoFoodAnalyticsConstants {
     const val TRACKER_ID_32007 = "32007"
     const val TRACKER_ID_32008 = "32008"
 
-    //post purchase
+    // post purchase
     const val ORDER_DETAIL_PAGE = "Order detail page"
+    const val VIEW_TOKOFOOD_ORDER_DETAIL_PAGE = "view tokofood order detail page"
     const val CLICK_CALL_ICON = "click call icon"
     const val CLICK_CALL_DRIVER = "click call driver"
     const val CLICK_HELP = "click bantuan"
     const val CLICK_BUY_AGAIN = "click buy again"
     const val TOKOFOOD_ORDER_DETAIL_PAGE = "tokofood order detail page"
 
-    //Merchant Page
+    // Merchant Page
     const val ITEM_LIST = "item_list"
     const val SELECT_CONTENT = "select_content"
     const val VIEW_ITEM_LIST = "view_item_list"
@@ -81,7 +82,7 @@ object TokoFoodAnalyticsConstants {
     const val CLICK_ON_PROMO_BUTTON = "click on promo button"
     const val TRACKER_ID_37403 = "37403"
 
-    //Search Page
+    // Search Page
     const val CLICK_SEARCH_BAR_TOKOFOOD = "click search bar tokofood"
     const val TRACKER_ID_35766 = "35766"
     const val TOKOFOOD_HOME = "tokofood home"
@@ -129,7 +130,7 @@ object TokoFoodAnalyticsConstants {
     const val TITLE_PREFIX = "title:"
     const val SUBTITLE_PREFIX = "subtitle:"
 
-    //tokochat trackers
+    // tokochat trackers
     const val TOKOCHAT_ORDER_DETAIL = "tokochat order detail"
     const val CLICK_CHAT_FROM_ORDER_DETAIL = "click chat from order detail"
 
@@ -137,7 +138,5 @@ object TokoFoodAnalyticsConstants {
     const val BUYER = "buyer"
     const val TOKOFOOD_SOURCE = "Tokofood"
 
-
     const val COMMUNICATION = "communication"
-
 }

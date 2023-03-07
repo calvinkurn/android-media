@@ -6,11 +6,14 @@
     <string name="editor_tool_rotate">Putar</string>
     <string name="editor_tool_remove_background">Hapus Latar</string>
     <string name="editor_tool_watermark">Watermark</string>
+    <string name="editor_tool_add_logo">Logo Toko</string>
 
     <!-- Content description -->
     <string name="cd_img_preview">image preview</string>
     <string name="editor_button_title_cancel">Batal</string>
     <string name="editor_button_title_save">Simpan</string>
+    <string name="editor_add_logo_upload_desc">Upload</string>
+    <string name="editor_add_logo_profile_desc">Shop Logo</string>
 
     <!-- Other -->
     <string name="editor_tool_watermark_label">Logo Tokopedia &amp; Nama Toko</string>
@@ -22,7 +25,10 @@
     <string name="editor_undo_state_format">Undo %s</string>
     <string name="editor_redo_state_format">Redo %s</string>
     <string name="editor_auto_crop_format">Foto berhasil dipotong %d:%d secara otomatis. Untuk mengatur posisinya, pilih editor Crop.</string>
-    
+    <string name="editor_add_logo_toast_text">Yah, koneksi internetmu terputus saat gunakan fitur ini. Coba lagi, ya.</string>
+    <string name="editor_add_logo_toast_cta">Oke</string>
+    <string name="editor_add_logo_toast_final">Tidak ada koneksi internet</string>
+
     <!-- Dialog confirmation text -->
     <string name="editor_detail_activity_dialog_title">Batal simpan edit media?</string>
     <string name="editor_detail_activity_dialog_desc">Hasil editan media kamu bakal hilang kalau nggak disimpan. Mau simpan hasil editanmu?</string>
@@ -46,4 +52,15 @@
     <!-- Tools text -->
     <string name="editor_rotate_text">Putar</string>
     <string name="editor_rotate_miror_text">Balik</string>
+    <string name="editor_add_logo_upload">Ubah Logo</string>
+    <string name="editor_add_logo_first_upload">Tambah Logo</string>
+    <string name="editor_add_logo_last_uploaded">Logo Terakhir</string>
+    <string name="editor_add_logo_profile">Foto Profil Tokomu</string>
+
+    <!-- Bottomsheet text -->
+    <string name="add_logo_tips_list"><Data><![CDATA[ <ul><li>Ukuran min. <b>500x500 pixel</b> dan maks. <b>10 MB</b>.</li><li>Format gambar <b>.png</b>. untuk logo transparan dan format lainnya <b>.jpg</b>, <b>.jpeg</b>.</li><li>Gambar yang ditambahkan di sini tidak akan menjadi foto profil tokomu.</li></ul> ]]></Data></string>
+    <string name="add_logo_tips_more">Buat lihat tips ini lagi, klik %i% di menu depan ya.</string>
+    <string name="add_logo_tips_more_format">%i%</string>
+    <string name="add_logo_tips_upload_text">Upload Logo</string>
+    <string name="add_logo_tips_understand_text">Oke Mengerti</string>
 </resources>

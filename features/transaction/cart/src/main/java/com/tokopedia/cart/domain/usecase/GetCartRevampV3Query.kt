@@ -1,13 +1,20 @@
 package com.tokopedia.cart.domain.usecase
 
 const val CART_REVAMP_V3_QUERY =
-        """
+    """
         query cartRevampV3(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
           cart_revamp_v3(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
             error_message
             status
             data {
+              coachmark {
+                Plus {
+                    is_shown
+                    title
+                    content
+                }
+              }
               errors
               popup_error_message
               pop_up_message
@@ -121,7 +128,11 @@ const val CART_REVAMP_V3_QUERY =
                     ticker_text
                     icon_url
                     add_on_ids
-                 }
+                  }
+                  epharmacy_consultation {
+                    ticker_text
+                    icon_url
+                  }
                   user_address_id
                   shipment_information {
                     shop_location
@@ -144,6 +155,7 @@ const val CART_REVAMP_V3_QUERY =
                       duration
                     }
                     enable_bo_affordability
+                    enable_shop_group_ticker_cart_aggregator
                   }
                   pinned {
                     is_pinned
@@ -203,6 +215,10 @@ const val CART_REVAMP_V3_QUERY =
                         additional_fee
                       }
                       is_dropship_enabled
+                    }
+                    enabler_data {
+                      label_name
+                      show_label
                     }
                   }
                   promo_codes
@@ -371,6 +387,7 @@ const val CART_REVAMP_V3_QUERY =
                         variant_name
                         variant_description
                       }
+                      bundle_ids
                     }
                     errors
                     messages
@@ -472,6 +489,10 @@ const val CART_REVAMP_V3_QUERY =
                       badge
                       badge_svg
                       title
+                    }
+                    enabler_data {
+                      label_name
+                      show_label
                     }
                   }
                   promo_codes

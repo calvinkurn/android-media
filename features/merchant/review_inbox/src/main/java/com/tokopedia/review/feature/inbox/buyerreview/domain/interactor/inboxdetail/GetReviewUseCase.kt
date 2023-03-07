@@ -4,7 +4,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.review.common.ReviewInboxConstants
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReviewReviewListV2
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ProductrevGetInboxDesktop
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDomain
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -21,7 +21,9 @@ class GetReviewUseCase @Inject constructor(
 
     override fun createObservable(requestParams: RequestParams): Observable<ReviewDomain> {
         val graphqlRequest = GraphqlRequest(
-            QUERY, InboxReviewReviewListV2::class.java, requestParams.parameters
+            QUERY,
+            ProductrevGetInboxDesktop::class.java,
+            requestParams.parameters
         )
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
@@ -31,81 +33,70 @@ class GetReviewUseCase @Inject constructor(
 
     private inner class Mapper : Func1<GraphqlResponse, Observable<ReviewDomain>> {
         override fun call(response: GraphqlResponse): Observable<ReviewDomain> {
-            val result = response.getData<InboxReviewReviewListV2>(
-                InboxReviewReviewListV2::class.java
+            val result = response.getData<ProductrevGetInboxDesktop>(
+                ProductrevGetInboxDesktop::class.java
             ).reviewDomain
             return Observable.just(result)
         }
     }
 
     companion object {
-        const val PARAM_REPUTATION_ID: String = "reputationId"
+        const val PARAM_REPUTATION_ID: String = "reputationID"
         const val PARAM_USER_ID: String = "user_id"
 
         private const val PARAM_ROLE: String = "role"
         private const val ROLE_BUYER: Int = 1
         private const val ROLE_SELLER: Int = 2
         private const val QUERY = """
-            query inboxReviewReviewListV2(${'$'}reputationId: String!, ${'$'}role: Int!) {
-              inboxReviewReviewListV2(reputationId: ${'$'}reputationId, role: ${'$'}role) {
-                reputationIdStr
-                reviewList {
-                  inboxIdStr
-                  reviewIdStr
+            query productrevGetInboxDesktop(
+              $$PARAM_REPUTATION_ID: String!, 
+              $$PARAM_ROLE: Int!
+            ) {
+              productrevGetInboxDesktop(
+                $PARAM_REPUTATION_ID: $$PARAM_REPUTATION_ID, 
+                $PARAM_ROLE: $$PARAM_ROLE
+              ) {
+                reputationID
+                orderID
+                reviewsData {
+                  feedbackID
                   hasReviewed
                   isSkipped
                   isEditable
-                  product {
-                    productIdStr
-                    name
-                    imageUrl
-                    url
-                    shopIdStr
-                    status
+                  productData {
+                    productID
+                    productName
+                    productImageURL
+                    productStatus
                   }
-                  reviewData {
-                    reviewIdStr
-                    reputationIdStr
+                  reviewDataInbox {
+                    feedbackID
                     message
                     rating
-                    createTime {
-                      dateTimeFmt
-                    }
-                    updateTime {
-                      dateTimeFmt
-                    }
+                    createTime
+                    updateTime
                     anonymity
-                    attachments {
-                      attachmentId
-                      attachmentIdStr
-                      description
+                    imageAttachments {
+                      attachmentID
                       imageThumbnailUrl
                       imageUrl
                     }
                     videoAttachments {
-                      attachmentId
+                      attachmentID
                       videoUrl
                     }
-                    response {
-                      message
-                      createTime {
-                        dateTimeFmt
-                      }
-                    }
+                    responseMessage
+                    responseTime
                   }
                 }
                 userData {
-                  userIdStr
+                  userID
                   fullName
                 }
                 shopData {
-                  shopIdStr
-                  domain
-                  shopName
+                  shopID
+                  name
                 }
-                invoiceRefNum
-                invoiceTime
-                orderId
               }
             }
         """

@@ -7,6 +7,7 @@ object ReviewInboxConstants {
     const val REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE = "https://images.tokopedia.net/android/others/review_inbox_search_empty.png"
     const val REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION = "https://images.tokopedia.net/img/android/unify/unify_globalerrors_connection.png"
     const val CREATE_REVIEW_MESSAGE = "create_review_message"
+    const val BULK_CREATE_REVIEW_MESSAGE = "bulk_create_review_message"
     const val TAB_WAITING_REVIEW = 1
     const val TAB_MY_REVIEW = 2
     const val TAB_BUYER_REVIEW = 3
@@ -25,4 +26,5 @@ object ReviewInboxConstants {
     const val RATING_2 = 2
     const val RATING_1 = 1
 
+    const val SOURCE_REVIEW_INBOX = "review inbox"
 }

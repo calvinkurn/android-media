@@ -16,10 +16,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
+import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
@@ -46,7 +46,12 @@ import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
+import com.tokopedia.fcmcommon.SendTokenToCMHandler;
+import com.tokopedia.fcmcommon.common.FcmCacheHandler;
+import com.tokopedia.fcmcommon.domain.SendTokenToCMUseCase;
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
+import com.tokopedia.fcmcommon.utils.FcmRemoteConfigUtils;
+import com.tokopedia.fcmcommon.utils.FcmTokenUtils;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -83,6 +88,7 @@ import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
+import com.tokopedia.sessioncommon.worker.RefreshProfileWorker;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -188,7 +194,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initTetraDebugger();
         initCMDependencies();
         initDataStoreMigration();
+        initRefreshProfileWorker();
         initSeamlessLoginWorker();
+        connectTokoChat(false);
         return true;
     }
 
@@ -202,6 +210,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void initDataStoreMigration() {
         if (userSession.isLoggedIn()) {
             DataStoreMigrationWorker.Companion.scheduleWorker(this);
+        }
+    }
+
+    private void initRefreshProfileWorker() {
+        if (userSession.isLoggedIn()) {
+            RefreshProfileWorker.scheduleWorker(this);
         }
     }
 
@@ -297,6 +311,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void forceLogout() {
         TrackApp.getInstance().getMoEngage().logoutEvent();
         userSession.logoutSession();
+        disconnectTokoChat();
     }
 
     @Override
@@ -488,13 +503,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void newGcmUpdate(SessionRefresh sessionRefresh) {
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                if (!task.isSuccessful() || task.getResult() == null) {
-                    gcmUpdateLegacy(sessionRefresh);
+            public void onComplete(@NonNull Task<String> task) {
+                if (task.isSuccessful()) {
+                    String token = task.getResult();
+                    if (!TextUtils.isEmpty(token)) {
+                        fcmManager.onNewToken(token);
+                    } else {
+                        gcmUpdateLegacy(sessionRefresh);
+                    }
                 } else {
-                    fcmManager.onNewToken(task.getResult().getToken());
+                    gcmUpdateLegacy(sessionRefresh);
                 }
             }
         });
@@ -596,7 +616,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.fcmcommon.R.raw.query_update_fcm_token)
                 ),
                 PreferenceManager.getDefaultSharedPreferences(context),
-                userSession
+                userSession,
+                provideCMHandler()
         );
+    }
+
+    private SendTokenToCMHandler provideCMHandler() {
+        return new SendTokenToCMHandler(
+                new SendTokenToCMUseCase(
+                        GraphqlInteractor.getInstance().getGraphqlRepository()
+                ),
+                getApplicationContext(),
+                userSession,
+                new FcmRemoteConfigUtils(context),
+                new FcmTokenUtils(new FcmCacheHandler(context)),
+                new FcmCacheHandler(context)
+        );
+    }
+
+    @Override
+    public void connectTokoChat(Boolean isFromLoginFlow) {
+        TokoChatConnection.init(getApplicationContext(), isFromLoginFlow);
+    }
+
+    @Override
+    public void disconnectTokoChat() {
+        TokoChatConnection.disconnect();
     }
 }

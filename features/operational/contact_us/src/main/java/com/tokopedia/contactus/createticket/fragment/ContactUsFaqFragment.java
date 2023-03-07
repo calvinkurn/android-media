@@ -2,6 +2,7 @@ package com.tokopedia.contactus.createticket.fragment;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
+import static com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic.ACTION_CREATE_TICKET;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -29,6 +30,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButtonListener;
+import com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic;
 import com.tokopedia.contactus.createticket.utils.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.unifycomponents.LoaderUnify;
@@ -36,6 +38,7 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.TkpdWebView;
+
 
 /**
  * Created by nisie on 8/12/16.
@@ -57,6 +60,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     ContactUsFaqListener listener;
     String url;
     private Bundle savedState;
+    private final LoggingOnNewRelic newRelicLogging= new LoggingOnNewRelic();
 
     @Override
     protected String getScreenName() {
@@ -106,6 +110,7 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
         } else
             url = getArguments().getString(EXTRAS_PARAM_URL);
 
+        newRelicLogging.sendToNewRelicLog(url);
         webView.loadAuthUrlWithFlags(url, session);
     }
 
@@ -257,35 +262,42 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
                         webView.loadAuthUrlWithFlags(URLGenerator.generateURLContactUs(TkpdBaseURL
                                 .BASE_CONTACT_US, mContext), session);
                     }
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("create_ticket")) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID,
-                            url.getQueryParameter(SOLUTION_ID) == null ? "" : url
-                                    .getQueryParameter(SOLUTION_ID));
-                    bundle.putString(ContactUsActivity.PARAM_TAG,
-                            url.getQueryParameter(TAGS) == null ? "" : url.getQueryParameter(TAGS));
+                    String solutionId = url.getQueryParameter(SOLUTION_ID) == null ? "" : url
+                            .getQueryParameter(SOLUTION_ID);
+                    bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID, solutionId);
+                    String tag = url.getQueryParameter(TAGS) == null ? "" : url.getQueryParameter(TAGS);
+                    bundle.putString(ContactUsActivity.PARAM_TAG, tag);
                     bundle.putString(ContactUsActivity.PARAM_ORDER_ID,
                             url.getQueryParameter(ORDER_ID) == null ? "" : url.getQueryParameter
                                     (ORDER_ID));
+                    newRelicLogging.sendToNewRelicLog(url.toString(), ACTION_CREATE_TICKET, solutionId, tag);
                     listener.onGoToCreateTicket(bundle);
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("return")) {
                     Toast.makeText(getActivity(), MethodChecker.fromHtml(getString(R.string.finish_contact_us)), Toast.LENGTH_LONG).show();
                     getActivity().finish();
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return true;
                 } else if (url.toString().contains(CHATBOT_SCHEME)) {
                     String messageId = url.getLastPathSegment();
-                    Intent chatBotIntent = RouteManager.getIntent(getContext(), ApplinkConst.CHATBOT
-                            .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
+                    String chatRoute = ApplinkConst.CHATBOT
+                            .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId);
+                    newRelicLogging.sendToNewRelicLog(url.toString(), chatRoute);
+                    Intent chatBotIntent = RouteManager.getIntent(getContext(), chatRoute);
                     startActivity(chatBotIntent);
                     return true;
                 } else if (url.toString().contains(APPLINK_SCHEME)) {
                     RouteManager.route(getActivity(), url.toString());
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return true;
                 } else {
+                    newRelicLogging.sendToNewRelicLog(url.toString());
                     return false;
                 }
             } catch (NullPointerException e) {

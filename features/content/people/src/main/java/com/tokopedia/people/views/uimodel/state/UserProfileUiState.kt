@@ -21,4 +21,6 @@ data class UserProfileUiState(
     val profileTab: ProfileTabUiModel,
     val feedPostsContent: UserFeedPostsUiModel,
     val videoPostsContent: UserPostModel,
+    val isLoading: Boolean,
+    val error: Throwable?,
 )

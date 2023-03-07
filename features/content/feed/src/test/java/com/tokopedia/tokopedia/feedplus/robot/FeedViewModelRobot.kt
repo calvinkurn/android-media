@@ -7,7 +7,12 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.domain.usecase.*
+import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
+import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetFollowingUseCase
+import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
 import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
@@ -55,6 +60,7 @@ class FeedViewModelRobot(
     doFollowUseCase: ProfileFollowUseCase,
     doUnfollowUseCase: ProfileUnfollowedUseCase,
     profileMutationMapper: ProfileMutationMapper,
+    getFollowingUseCase: GetFollowingUseCase,
 ) : Closeable {
 
     val vm = FeedViewModel(
@@ -80,6 +86,7 @@ class FeedViewModelRobot(
         doFollowUseCase = doFollowUseCase,
         doUnfollowUseCase = doUnfollowUseCase,
         profileMutationMapper = profileMutationMapper,
+        getFollowingUseCase = getFollowingUseCase,
     )
 
     fun setLoggedIn(isUserLoggedIn: Boolean) {
@@ -94,6 +101,7 @@ class FeedViewModelRobot(
         vm.viewModelScope.coroutineContext.cancelChildren()
     }
 }
+
 fun create(
     dispatcher: CoroutineTestDispatchers,
     userSession: UserSessionInterface = mockk(relaxed = true),
@@ -117,8 +125,9 @@ fun create(
     doFollowUseCase: ProfileFollowUseCase = mockk(relaxed = true),
     doUnfollowUseCase: ProfileUnfollowedUseCase = mockk(relaxed = true),
     profileMutationMapper: ProfileMutationMapper = ProfileMutationMapperImpl(mock()),
+    getFollowingUseCase: GetFollowingUseCase = mockk(relaxed = true),
     fn: FeedViewModelRobot.() -> Unit = {}
-) : FeedViewModelRobot{
+): FeedViewModelRobot {
     return FeedViewModelRobot(
         dispatcher = dispatcher,
         userSession = userSession,
@@ -142,5 +151,6 @@ fun create(
         doUnfollowUseCase = doUnfollowUseCase,
         profileMutationMapper = profileMutationMapper,
         getWhitelistNewUseCase = getWhitelistNewUseCase,
+        getFollowingUseCase = getFollowingUseCase,
     ).apply(fn)
 }

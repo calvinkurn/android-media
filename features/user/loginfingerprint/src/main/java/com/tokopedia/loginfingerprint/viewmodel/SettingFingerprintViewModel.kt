@@ -14,7 +14,7 @@ import com.tokopedia.loginfingerprint.di.LoginFingerprintQueryConstant
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RemoveFingerprintUsecase
-import com.tokopedia.loginfingerprint.utils.crypto.RsaSignatureUtils
+import com.tokopedia.loginfingerprint.utils.crypto.KeyPairManager
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,7 +29,7 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
                                                       private val userSession: UserSessionInterface,
                                                       private val registerFingerprintUseCase: RegisterFingerprintUseCase,
                                                       private val removeFingerprintUseCase: RemoveFingerprintUsecase,
-                                                      private val rsaSignatureUtils: Lazy<RsaSignatureUtils?>,
+                                                      private val keyPairManager: Lazy<KeyPairManager?>,
                                                       private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
                                                       private val fingerprintPreference: FingerprintPreference)
     : BaseViewModel(dispatcher.main) {
@@ -68,8 +68,8 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
 
     fun registerFingerprint(){
         launchCatchError(block = {
-            val signatureModel = rsaSignatureUtils.get()?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
-            val publicKey = rsaSignatureUtils.get()?.getPublicKey() ?: ""
+            val publicKey = keyPairManager.get()?.createAndStoreNewKey() ?: ""
+            val signatureModel = keyPairManager.get()?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
             if(publicKey.isNotEmpty() && signatureModel != null) {
                 val params = mapOf(
                     LoginFingerprintQueryConstant.PARAM_PUBLIC_KEY to publicKey,
@@ -80,9 +80,10 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
                 val result = registerFingerprintUseCase(params)
                 onSuccessRegisterFP(result)
             } else {
-                mutableErrorMessageRegister.value = "Terjadi Kesalahan, Silahkan coba lagi"
+                keyPairManager.get()?.removeKeys()
             }
         }, onError = {
+            keyPairManager.get()?.removeKeys()
             mutableErrorMessageRegister.value = it.message
         })
     }
@@ -92,6 +93,7 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
             val result = removeFingerprintUseCase(Unit)
             if(result.data.isSuccess && result.data.error.isEmpty()) {
                 fingerprintPreference.removeUniqueId()
+                keyPairManager.get()?.removeKeys()
                 mutableRemoveFingerprintResult.value = Success(result.data)
             } else {
                 mutableRemoveFingerprintResult.value = Fail(MessageErrorException(result.data.error))

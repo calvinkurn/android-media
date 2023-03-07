@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.destination
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -11,6 +12,7 @@ import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.usecase.GetHotelRecentSearchUseCase
 import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
+import com.tokopedia.hotel.destination.view.mapper.HotelDestinationMapper
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
 import com.tokopedia.hotel.destination.view.viewmodel.Loaded
 import com.tokopedia.locationmanager.DeviceLocation
@@ -33,7 +35,6 @@ import java.lang.reflect.Type
  * @author by jessica on 2020-03-19
  */
 
-
 @RunWith(JUnit4::class)
 class HotelDestinationViewModelTest {
 
@@ -45,6 +46,9 @@ class HotelDestinationViewModelTest {
 
     private val userSessionInterface = mockk<UserSessionInterface>()
     private val graphqlRepository = mockk<GraphqlRepository>()
+    private val hotelDestinationMapper = mockk<HotelDestinationMapper>()
+
+    private val fusedLocationProviderClient = mockk<FusedLocationProviderClient>()
 
     @RelaxedMockK
     lateinit var getPropertyPopularUseCase: GetPropertyPopularUseCase
@@ -55,13 +59,19 @@ class HotelDestinationViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        hotelDestinationViewModel = HotelDestinationViewModel(userSessionInterface, getPropertyPopularUseCase,
-                getHotelRecentSearchUseCase, this.graphqlRepository, dispatcher)
+        hotelDestinationViewModel = HotelDestinationViewModel(
+            userSessionInterface,
+            getPropertyPopularUseCase,
+            getHotelRecentSearchUseCase,
+            hotelDestinationMapper,
+            this.graphqlRepository,
+            dispatcher
+        )
     }
 
     @Test
     fun getHotelRecommendationIsLogin_shouldReturnSuccessWithEmptyData() {
-        //given
+        // given
         coEvery {
             userSessionInterface.isLoggedIn
         } returns true
@@ -73,17 +83,17 @@ class HotelDestinationViewModelTest {
         coEvery { getPropertyPopularUseCase.executeOnBackground() } returns listOf()
         coEvery { getHotelRecentSearchUseCase.executeOnBackground() } returns listOf()
 
-        //when
+        // when
         hotelDestinationViewModel.getHotelRecommendation()
 
-        //then
+        // then
         assert(hotelDestinationViewModel.popularSearch.value == null)
         assert(hotelDestinationViewModel.recentSearch.value == null)
     }
 
     @Test
     fun getHotelRecommendationIsLogin_shouldReturnSuccessWithData() {
-        //given
+        // given
         val popularSearches = mutableListOf<PopularSearch>()
         val recentSearches = mutableListOf<RecentSearch>()
         for (i in 0..3) {
@@ -101,10 +111,10 @@ class HotelDestinationViewModelTest {
         coEvery { getPropertyPopularUseCase.executeOnBackground() } returns popularSearches
         coEvery { getHotelRecentSearchUseCase.executeOnBackground() } returns recentSearches
 
-        //when
+        // when
         hotelDestinationViewModel.getHotelRecommendation()
 
-        //then
+        // then
         assert(hotelDestinationViewModel.popularSearch.value is Success)
         assert((hotelDestinationViewModel.popularSearch.value as Success).data.size == 4)
 
@@ -114,7 +124,7 @@ class HotelDestinationViewModelTest {
 
     @Test
     fun getHotelRecommendationIsLogin_shouldFail() {
-        //given
+        // given
         coEvery {
             userSessionInterface.isLoggedIn
         } returns true
@@ -126,18 +136,17 @@ class HotelDestinationViewModelTest {
         coEvery { getPropertyPopularUseCase.executeOnBackground() } throws Throwable()
         coEvery { getHotelRecentSearchUseCase.executeOnBackground() } throws Throwable()
 
-
-        //when
+        // when
         hotelDestinationViewModel.getHotelRecommendation()
 
-        //then
+        // then
         assert(hotelDestinationViewModel.popularSearch.value is Fail)
         assert(hotelDestinationViewModel.recentSearch.value is Fail)
     }
 
     @Test
     fun getHotelRecommendationIsNotLogin_shouldReturnSuccessWithData() {
-        //given
+        // given
         val popularSearches = mutableListOf<PopularSearch>()
         for (i in 0..3) {
             popularSearches.add(PopularSearch(i.toLong()))
@@ -149,10 +158,10 @@ class HotelDestinationViewModelTest {
 
         coEvery { getPropertyPopularUseCase.executeOnBackground() } returns popularSearches
 
-        //when
+        // when
         hotelDestinationViewModel.getHotelRecommendation()
 
-        //then
+        // then
         assert(hotelDestinationViewModel.popularSearch.value is Success)
         assert((hotelDestinationViewModel.popularSearch.value as Success).data.size == 4)
         assert(hotelDestinationViewModel.recentSearch.value == null)
@@ -160,70 +169,74 @@ class HotelDestinationViewModelTest {
 
     @Test
     fun getHotelRecommendationIsNotLogin_shouldReturnFail() {
-        //given
+        // given
         coEvery {
             userSessionInterface.isLoggedIn
         } returns false
 
         coEvery { getPropertyPopularUseCase.executeOnBackground() } throws Throwable()
 
-        //when
+        // when
         hotelDestinationViewModel.getHotelRecommendation()
 
-        //then
+        // then
         assert(hotelDestinationViewModel.popularSearch.value is Fail)
         assert(hotelDestinationViewModel.recentSearch.value is Fail)
     }
 
     @Test
     fun getHotelSearchDestination_shouldReturnSuccessWithData() {
-        //given
+        // given
         val searchDestinations = mutableListOf<SearchDestination>()
         for (i in 0..3) {
             searchDestinations.add(SearchDestination(i.toString()))
         }
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf<Type, Any>(HotelSuggestion.Response::class.java to HotelSuggestion.Response(HotelSuggestion(searchDestinationList = searchDestinations))),
-                mapOf<Type, List<GraphqlError>>(),
-                false)
+            mapOf<Type, Any>(HotelSuggestion.Response::class.java to HotelSuggestion.Response(HotelSuggestion(searchDestinationList = searchDestinations))),
+            mapOf<Type, List<GraphqlError>>(),
+            false
+        )
         coEvery {
             graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
+        coEvery { hotelDestinationMapper.mapSource(any()) } returns searchDestinations
 
-        //when
+        // when
         hotelDestinationViewModel.getHotelSearchDestination(DummyHotelGqlQueryInterfaceImpl(), "")
 
-        //then
+        // then
         assert(hotelDestinationViewModel.searchDestination.value is Loaded)
         assert((hotelDestinationViewModel.searchDestination.value as Loaded).data is Success)
     }
 
     @Test
     fun getHotelSearchDestination_shouldReturnFail() {
-        //given
+        // given
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf<Type, Any>(),
-                mapOf<Type, List<GraphqlError>>(HotelSuggestion.Response::class.java to listOf(GraphqlError())),
-                false)
+            mapOf<Type, Any>(),
+            mapOf<Type, List<GraphqlError>>(HotelSuggestion.Response::class.java to listOf(GraphqlError())),
+            false
+        )
         coEvery {
             graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
-        //when
+        // when
         hotelDestinationViewModel.getHotelSearchDestination(DummyHotelGqlQueryInterfaceImpl(), "")
 
-        //then
+        // then
         assert(hotelDestinationViewModel.searchDestination.value is Loaded)
         assert((hotelDestinationViewModel.searchDestination.value as Loaded).data is Fail)
     }
 
     @Test
     fun deleteRecentSearch_successInDeleteRecentSearch() {
-        //given
+        // given
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf<Type, Any>(RecentSearch.DeleteResponse::class.java to RecentSearch.DeleteResponse(RecentSearch.DeleteResponse.DeleteResult(true))),
-                mapOf<Type, List<GraphqlError>>(),
-                false)
+            mapOf<Type, Any>(RecentSearch.DeleteResponse::class.java to RecentSearch.DeleteResponse(RecentSearch.DeleteResponse.DeleteResult(true))),
+            mapOf<Type, List<GraphqlError>>(),
+            false
+        )
         coEvery {
             graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
@@ -232,20 +245,21 @@ class HotelDestinationViewModelTest {
             userSessionInterface.userId
         } returns "0"
 
-        //when
+        // when
         hotelDestinationViewModel.deleteRecentSearch(DummyHotelGqlQueryInterfaceImpl(), "")
 
-        //then
+        // then
         assert(hotelDestinationViewModel.deleteSuccess.value as Boolean)
     }
 
     @Test
     fun deleteRecentSearch_failDeleteRecentSearch() {
-        //given
+        // given
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf<Type, Any>(),
-                mapOf<Type, List<GraphqlError>>(RecentSearch.DeleteResponse::class.java to listOf(GraphqlError())),
-                false)
+            mapOf<Type, Any>(),
+            mapOf<Type, List<GraphqlError>>(RecentSearch.DeleteResponse::class.java to listOf(GraphqlError())),
+            false
+        )
         coEvery {
             graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
@@ -254,10 +268,10 @@ class HotelDestinationViewModelTest {
             userSessionInterface.userId
         } returns "0"
 
-        //when
+        // when
         hotelDestinationViewModel.deleteRecentSearch(DummyHotelGqlQueryInterfaceImpl(), "")
 
-        //then
+        // then
         assert(!(hotelDestinationViewModel.deleteSuccess.value as Boolean))
     }
 
@@ -320,12 +334,42 @@ class HotelDestinationViewModelTest {
     }
 
     @Test
-    fun getCurrentLocationFromUpdates_shouldUpdateLongLat() {
+    fun getCurrentLocationFromUpdatesThrowException_latLongShouldNull() {
+        // given
+        coEvery { fusedLocationProviderClient.requestLocationUpdates(any(), any(), any()) } throws SecurityException()
 
+        // when
+        hotelDestinationViewModel.getLocationFromUpdates(fusedLocationProviderClient)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value == null)
     }
 
     @Test
-    fun getCurrentLocationFromUpdates_shouldRepresentFailToFetch() {
+    fun validateLocationWithLatitudeAndLongitudeIsZero_latLongShouldBeFail() {
+        // given
+        val lat = 0.0
+        val long = 0.0
 
+        // when
+        hotelDestinationViewModel.validateLocation(lat, long)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Fail)
+    }
+
+    @Test
+    fun validateLocationWithLatitudeIsNotZeroAndLongitudeZero_latLongShouldBeValid() {
+        // given
+        val lat = 0.0111
+        val long = 0.0
+
+        // when
+        hotelDestinationViewModel.validateLocation(lat, long)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Success)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.first == long)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.second == lat)
     }
 }

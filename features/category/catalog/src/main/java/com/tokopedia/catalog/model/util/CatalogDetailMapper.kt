@@ -5,68 +5,86 @@ import com.tokopedia.catalog.model.raw.*
 
 object CatalogDetailMapper {
 
-    fun mapIntoVisitable(comparedCatalogId : String, catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular): MutableList<BaseCatalogDataModel> {
-        val listOfComponents : MutableList<BaseCatalogDataModel> = mutableListOf()
+    fun mapIntoVisitable(comparedCatalogId: String, catalogGetDetailModular: CatalogResponseData.CatalogGetDetailModular): MutableList<BaseCatalogDataModel> {
+        val listOfComponents: MutableList<BaseCatalogDataModel> = mutableListOf()
 
         val comparisonInfoCatalogId = catalogGetDetailModular.comparisonInfoComponentData?.id ?: ""
         catalogGetDetailModular.basicInfo.run {
-            listOfComponents.add(CatalogInfoDataModel(name = CatalogConstant.CATALOG_INFO_NAME, type= CatalogConstant.CATALOG_INFO,
+            listOfComponents.add(
+                CatalogInfoDataModel(
+                    name = CatalogConstant.CATALOG_INFO_NAME, type = CatalogConstant.CATALOG_INFO,
                     productName = name, productBrand = brand, departmentId = departmentID, tag = tag,
-                    priceRange = "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}" ,
+                    priceRange = "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}",
                     description = description, shortDescription = shortDescription, comparisonInfoCatalogId = comparisonInfoCatalogId,
-                    images = catalogGetDetailModular.basicInfo.catalogImage, url = url))
+                    images = catalogGetDetailModular.basicInfo.catalogImage, url = url
+                )
+            )
         }
 
         var baseCatalogTopSpecs = arrayListOf<TopSpecificationsComponentData>()
 
         catalogGetDetailModular.components?.forEachIndexed { _, component ->
-            when(component.type){
+            when (component.type) {
                 CatalogConstant.TOP_SPECIFICATIONS -> {
                     val crudeTopSpecificationsData = component.data
                     val topSpecsArray = arrayListOf<TopSpecificationsComponentData>()
                     crudeTopSpecificationsData?.forEachIndexed { _, componentData ->
-                        topSpecsArray.add(TopSpecificationsComponentData(componentData.key,
-                                componentData.value, componentData.icon))
+                        topSpecsArray.add(
+                            TopSpecificationsComponentData(
+                                componentData.key,
+                                componentData.value,
+                                componentData.icon
+                            )
+                        )
                     }
                     baseCatalogTopSpecs = topSpecsArray
-                    listOfComponents.add(CatalogTopSpecificationDataModel(name = component.name, type = component.type , topSpecificationsList = topSpecsArray))
+                    listOfComponents.add(CatalogTopSpecificationDataModel(name = component.name, type = component.type, topSpecificationsList = topSpecsArray))
                 }
 
                 CatalogConstant.CATALOG_PRODUCT_LIST -> {
-                    listOfComponents.add(CatalogProductsContainerDataModel(name = component.name, type = component.type,
-                            catalogId = catalogGetDetailModular.basicInfo.id, catalogName = catalogGetDetailModular.basicInfo.name ?: "",
+                    listOfComponents.add(
+                        CatalogProductsContainerDataModel(
+                            name = component.name,
+                            type = component.type,
+                            catalogId = catalogGetDetailModular.basicInfo.id,
+                            catalogName = catalogGetDetailModular.basicInfo.name ?: "",
                             catalogUrl = catalogGetDetailModular.basicInfo.url,
-                            categoryId= catalogGetDetailModular.basicInfo.departmentID,
+                            categoryId = catalogGetDetailModular.basicInfo.departmentID,
                             catalogBrand = catalogGetDetailModular.basicInfo.brand,
                             productSortingStatus = catalogGetDetailModular.basicInfo.productSortingStatus
-                        ))
+                        )
+                    )
                 }
 
                 CatalogConstant.VIDEO -> {
                     val crudeVideoData = component.data
                     val videoArray = arrayListOf<VideoComponentData>()
                     crudeVideoData?.forEachIndexed { _, componentData ->
-                        videoArray.add(VideoComponentData(componentData.url,
-                                componentData.type,componentData.videoId,componentData.thumbnail,componentData.title,componentData.author))
+                        videoArray.add(
+                            VideoComponentData(
+                                componentData.url,
+                                componentData.type,
+                                componentData.videoId,
+                                componentData.thumbnail,
+                                componentData.title,
+                                componentData.author
+                            )
+                        )
                     }
-                    listOfComponents.add(CatalogVideoDataModel(name = component.name, type = component.type , videosList = videoArray ))
+                    listOfComponents.add(CatalogVideoDataModel(name = component.name, type = component.type, videosList = videoArray))
                 }
 
                 CatalogConstant.REVIEW -> {
                     val crudeReviewData = component.data
-                    listOfComponents.addAll(mapIntoReviewDataModel(catalogGetDetailModular.basicInfo.name ?: "",
-                        catalogGetDetailModular.basicInfo.id
-                            , component.name, component.type, crudeReviewData))
-                }
-
-                CatalogConstant.COMPARISON -> {
-                    component.data?.firstOrNull()?.let { comparisonData ->
-                        if(comparedCatalogId.isBlank()) {
-                            listOfComponents.add(getComparisonComponent(comparedCatalogId,catalogGetDetailModular,
-                                baseCatalogTopSpecs,
-                                comparisonData))
-                        }
-                    }
+                    listOfComponents.addAll(
+                        mapIntoReviewDataModel(
+                            catalogGetDetailModular.basicInfo.name ?: "",
+                            catalogGetDetailModular.basicInfo.id,
+                            component.name,
+                            component.type,
+                            crudeReviewData
+                        )
+                    )
                 }
 
                 CatalogConstant.COMPARISON_NEW -> {
@@ -76,92 +94,44 @@ object CatalogDetailMapper {
                 }
             }
         }
-
-        if(comparedCatalogId.isNotBlank()){
-            catalogGetDetailModular.comparisonInfoComponentData?.run {
-                listOfComponents.add(getComparisonComponent(comparedCatalogId,catalogGetDetailModular,
-                    baseCatalogTopSpecs,
-                    this))
-            }
-        }
         return listOfComponents
     }
 
-    private fun getComparisonComponent(comparedCatalogId : String?, catalogGetDetailModular: CatalogResponseData.CatalogGetDetailModular,
-                                       baseCatalogTopSpecs : ArrayList<TopSpecificationsComponentData>,
-                                       comparisonComponentData: ComponentData) : CatalogComparisionDataModel {
-        val keySet = LinkedHashSet<String>()
-        val baseCatalog = HashMap<String, ComparisionModel>()
-        val comparisonCatalog = HashMap<String,ComparisionModel>()
-
-        keySet.add(CatalogConstant.COMPARISION_DETAIL)
-
-        catalogGetDetailModular.basicInfo.run {
-            baseCatalog.put(CatalogConstant.COMPARISION_DETAIL, ComparisionModel(id,brand,name,
-                "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}",
-                catalogImage?.firstOrNull()?.imageURL,null,null))
-        }
-
-        baseCatalogTopSpecs.forEach { topSpec ->
-            if(!topSpec.key.isNullOrEmpty()){
-                keySet.add(topSpec.key)
-                baseCatalog[topSpec.key] = ComparisionModel(null,null,null,null,null,
-                    topSpec.key,topSpec.value)
-            }
-        }
-
-        if(comparedCatalogId.isNullOrBlank()){
-            comparisonComponentData.topSpecifications?.forEach { comparisonTopSpec ->
-                if(keySet.contains(comparisonTopSpec.key)){
-                    comparisonCatalog[comparisonTopSpec.key] = ComparisionModel(null,null,null,null,null,
-                        comparisonTopSpec.key,comparisonTopSpec.value)
-                }
-            }
-        }else {
-            comparisonComponentData.topSpecifications?.forEach { comparisonTopSpec ->
-                if(keySet.contains(comparisonTopSpec.key)){
-                    comparisonCatalog[comparisonTopSpec.key] = ComparisionModel(null,null,null,null,null,
-                        comparisonTopSpec.key,comparisonTopSpec.value)
-                }
-            }
-        }
-
-        comparisonComponentData.run {
-            comparisonCatalog.put(CatalogConstant.COMPARISION_DETAIL, ComparisionModel(id,brand,name,
-                "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}",
-                catalogImage?.firstOrNull()?.imageURL,null,null))
-        }
-
-        return CatalogComparisionDataModel(CatalogConstant.COMPARISON,CatalogConstant.COMPARISON,
-            keySet,baseCatalog,comparisonCatalog)
-    }
-
-    private fun getNewComparisonComponent(catalogGetDetailModular: CatalogResponseData.CatalogGetDetailModular,
-                                          comparisonComponentDataNew: ComponentData) : CatalogComparisonNewDataModel {
-
+    private fun getNewComparisonComponent(
+        catalogGetDetailModular: CatalogResponseData.CatalogGetDetailModular,
+        comparisonComponentDataNew: ComponentData
+    ): CatalogComparisonNewDataModel {
         val specsListCombined = arrayListOf<ComponentData.SpecList>()
         specsListCombined.add(
-            ComponentData.SpecList("", arrayListOf(
-                ComponentData.SpecList.Subcard(
-                "","","",ComparisonNewModel(
-                        catalogGetDetailModular.basicInfo.id,
-                        catalogGetDetailModular.basicInfo.brand,
-                        catalogGetDetailModular.basicInfo.name,
-                        "${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.minFmt} - ${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.maxFmt}",
-                        catalogGetDetailModular.basicInfo.catalogImage?.firstOrNull()?.imageURL
-                ),
-                    ComparisonNewModel(
-                        comparisonComponentDataNew.comparedData?.id ?: "",
-                        comparisonComponentDataNew.comparedData?.brand ?: "",
-                        comparisonComponentDataNew.comparedData?.name ?: "",
-                        "${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.minFmt} - ${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.maxFmt}",
-                        comparisonComponentDataNew.comparedData?.catalogImage?.firstOrNull()?.imageURL ?: "",
+            ComponentData.SpecList(
+                "",
+                arrayListOf(
+                    ComponentData.SpecList.Subcard(
+                        "",
+                        "",
+                        "",
+                        ComparisonNewModel(
+                            catalogGetDetailModular.basicInfo.id,
+                            catalogGetDetailModular.basicInfo.brand,
+                            catalogGetDetailModular.basicInfo.name,
+                            "${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.minFmt} - ${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.maxFmt}",
+                            catalogGetDetailModular.basicInfo.catalogImage?.firstOrNull()?.imageURL
+                        ),
+                        ComparisonNewModel(
+                            comparisonComponentDataNew.comparedData?.id ?: "",
+                            comparisonComponentDataNew.comparedData?.brand ?: "",
+                            comparisonComponentDataNew.comparedData?.name ?: "",
+                            "${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.minFmt} - ${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.maxFmt}",
+                            comparisonComponentDataNew.comparedData?.catalogImage?.firstOrNull()?.imageURL ?: ""
                         )
-            )), false)
+                    )
+                ),
+                false
+            )
         )
 
         comparisonComponentDataNew.specList?.forEachIndexed { index, specList ->
-            if(index == 0){
+            if (index == 0) {
                 specList.isExpanded = true
             }
             specsListCombined.add(specList)
@@ -171,19 +141,33 @@ object CatalogDetailMapper {
         return CatalogComparisonNewDataModel(CatalogConstant.COMPARISON_NEW, CatalogConstant.COMPARISON_NEW, comparisonComponentDataNew.specList)
     }
 
-    private fun mapIntoReviewDataModel(catalogName : String, catalogId : String, componentName : String,
-                                       componentType : String, crudeReviewData: List<ComponentData>?)
-    : List<BaseCatalogDataModel> {
+    private fun mapIntoReviewDataModel(
+        catalogName: String,
+        catalogId: String,
+        componentName: String,
+        componentType: String,
+        crudeReviewData: List<ComponentData>?
+    ): List<BaseCatalogDataModel> {
         val listOfReviewComponents = ArrayList<BaseCatalogDataModel>()
-        crudeReviewData?.firstOrNull()?.let {  componentData ->
-            listOfReviewComponents.add(CatalogReviewDataModel(componentName, type = componentType,
-                    data = ReviewComponentData(catalogName,catalogId,componentData.avgRating,componentData.reviews,
-                            componentData.totalHelpfulReview)))
+        crudeReviewData?.firstOrNull()?.let { componentData ->
+            listOfReviewComponents.add(
+                CatalogReviewDataModel(
+                    componentName,
+                    type = componentType,
+                    data = ReviewComponentData(
+                        catalogName,
+                        catalogId,
+                        componentData.avgRating,
+                        componentData.reviews,
+                        componentData.totalHelpfulReview
+                    )
+                )
+            )
         }
         return listOfReviewComponents
     }
 
-    fun getFullSpecificationsModel(catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular) : CatalogFullSpecificationDataModel{
+    fun getFullSpecificationsModel(catalogGetDetailModular: CatalogResponseData.CatalogGetDetailModular): CatalogFullSpecificationDataModel {
         var catalogFullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
         catalogGetDetailModular.components?.forEachIndexed { _, component ->
             when (component.type) {
@@ -191,15 +175,19 @@ object CatalogDetailMapper {
                     val crudeSpecificationsData = component.data
                     val specifications = arrayListOf<FullSpecificationsComponentData>()
                     crudeSpecificationsData?.forEachIndexed { _, componentData ->
-                        specifications.add(FullSpecificationsComponentData(componentData.name,
-                                componentData.icon, componentData.specificationsRow
-                                ?: arrayListOf()))
+                        specifications.add(
+                            FullSpecificationsComponentData(
+                                componentData.name,
+                                componentData.icon,
+                                componentData.specificationsRow
+                                    ?: arrayListOf()
+                            )
+                        )
                     }
-                    catalogFullSpecificationDataModel =  CatalogFullSpecificationDataModel(fullSpecificationsList = specifications)
+                    catalogFullSpecificationDataModel = CatalogFullSpecificationDataModel(fullSpecificationsList = specifications)
                 }
             }
         }
         return catalogFullSpecificationDataModel
     }
-
 }

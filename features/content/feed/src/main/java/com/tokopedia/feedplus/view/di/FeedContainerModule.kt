@@ -3,12 +3,15 @@ package com.tokopedia.feedplus.view.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -17,7 +20,13 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class FeedContainerModule {
+class FeedContainerModule(
+    private val activityContext: Context
+) {
+
+    @Provides
+    @FeedContainerScope
+    fun provideActivityContext(): Context = activityContext
 
     @Provides
     fun provideGraphQlRepository(@ApplicationContext context: Context): GraphqlRepository {
@@ -42,4 +51,7 @@ class FeedContainerModule {
     @FeedContainerScope
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
+    @Provides
+    @FeedContainerScope
+    fun provideRemoteConfig(@ApplicationContext appContext: Context): RemoteConfig = FirebaseRemoteConfigImpl(appContext)
 }

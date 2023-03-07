@@ -46,6 +46,8 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
                     appLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.applink,
                 ),
             ),
+            isBlocking = response.profileHeader.isBlocking,
+            isBlockedBy = response.profileHeader.isBlockedBy,
         )
     }
 
@@ -62,8 +64,9 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
 
         return ProfileWhitelistUiModel(
             isWhitelist = authorUgc != null,
+            /** hasUsername has the same value across all content creation type (post, livestream, shortvideo) */
             hasUsername = authorUgc?.post?.hasUsername ?: false,
-            hasAcceptTnc = authorUgc?.post?.enable ?: false,
+            hasAcceptTnc = authorUgc?.hasAcceptTnc ?: false,
         )
     }
 
