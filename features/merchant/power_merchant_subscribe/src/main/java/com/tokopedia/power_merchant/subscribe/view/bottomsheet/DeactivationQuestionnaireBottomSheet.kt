@@ -282,10 +282,10 @@ class DeactivationQuestionnaireBottomSheet :
 
         questionnaireAdapter.data.forEach {
             when (it) {
-                is QuestionnaireUiModel.QuestionnaireRatingUiModel -> {
+                is QuestionnaireUiModel.QuestionnaireSingleOptionUiModel -> {
                     val answer = PMCancellationQuestionnaireAnswerModel(
                         question = it.question,
-                        answers = mutableListOf(it.givenRating.toString())
+                        answers = it.getAnswerList().toMutableList()
                     )
                     answers.add(answer)
                 }

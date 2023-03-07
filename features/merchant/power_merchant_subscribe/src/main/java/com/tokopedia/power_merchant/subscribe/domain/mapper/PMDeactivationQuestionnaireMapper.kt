@@ -22,11 +22,13 @@ class PMDeactivationQuestionnaireMapper @Inject constructor() {
     ): List<QuestionnaireUiModel> {
         val numOfQuestions = questionnaireData.data.questionList.size
         return questionnaireData.data.questionList.mapIndexed { index, question ->
-            return@mapIndexed when (question.questionType) {
+             return@mapIndexed when (question.questionType) {
                 QuestionnaireUiModel.TYPE_MULTIPLE_OPTION -> {
                     createMultipleOptionQuestion(question, index != numOfQuestions.minus(1))
                 }
-                else -> QuestionnaireUiModel.QuestionnaireRatingUiModel(question.question)
+                else -> {
+                    createSingleOptionQuestion(question)
+                }
             }
         }
     }
@@ -38,9 +40,20 @@ class PMDeactivationQuestionnaireMapper @Inject constructor() {
         return QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel(
                 question = questionData.question,
                 options = questionData.option.map {
-                    QuestionnaireOptionUiModel(it.value)
+                    QuestionnaireOptionUiModel(it.value, imageURL = it.imageURL)
                 },
                 showItemDivider = showItemDivider
+        )
+    }
+
+    private fun createSingleOptionQuestion(
+        questionData: Question
+    ): QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel {
+        return QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel(
+            question = questionData.question,
+            options = questionData.option.map {
+                QuestionnaireOptionUiModel(text = it.value)
+            }
         )
     }
 }

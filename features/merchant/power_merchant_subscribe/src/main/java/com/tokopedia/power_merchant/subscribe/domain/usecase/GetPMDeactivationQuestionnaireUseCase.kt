@@ -55,6 +55,7 @@ class GetPMDeactivationQuestionnaireUseCase @Inject constructor(
                     question
                     option {
                       value
+                      image_url
                     }
                   }
                 }

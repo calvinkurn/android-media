@@ -36,6 +36,8 @@ data class Option(
         @SerializedName("priority")
         val priority: Int = 0,
         @SerializedName("value")
-        val value: String = ""
+        val value: String = "",
+        @SerializedName("image_url")
+        val imageURL: String = ""
 )
 

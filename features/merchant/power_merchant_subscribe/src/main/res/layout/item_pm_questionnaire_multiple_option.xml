@@ -21,13 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         tools:itemCount="5"
-        tools:listitem="@layout/item_pm_questionnaire_option_item" />
+        tools:listitem="@layout/item_pm_questionnaire_chip_option_item" />
 
-    <View
-        android:id="@+id/horLinePmQuestionnaireOptions"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@color/Unify_N75" />
 </LinearLayout>

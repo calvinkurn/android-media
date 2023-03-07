@@ -6,5 +6,6 @@ package com.tokopedia.power_merchant.subscribe.view.model
 
 data class QuestionnaireOptionUiModel(
         val text: String,
-        var isChecked: Boolean = false
+        var isChecked: Boolean = false,
+        val imageURL: String = ""
 )

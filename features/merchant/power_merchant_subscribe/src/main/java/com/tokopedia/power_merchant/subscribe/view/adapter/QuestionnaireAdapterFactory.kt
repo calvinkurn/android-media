@@ -8,7 +8,7 @@ import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireUiModel
 
 interface QuestionnaireAdapterFactory {
 
-    fun type(model: QuestionnaireUiModel.QuestionnaireRatingUiModel): Int
+    fun type(model: QuestionnaireUiModel.QuestionnaireSingleOptionUiModel): Int
 
     fun type(model: QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel): Int
 }
