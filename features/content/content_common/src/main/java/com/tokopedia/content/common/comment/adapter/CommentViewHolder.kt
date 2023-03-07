@@ -1,6 +1,8 @@
 package com.tokopedia.content.common.comment.adapter
 
 import android.text.method.LinkMovementMethod
+import android.util.Log
+import androidx.core.view.updateLayoutParams
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.content.common.comment.MentionedSpanned
@@ -12,6 +14,7 @@ import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.content.common.R as contentR
@@ -52,12 +55,21 @@ class CommentViewHolder {
 
         fun bind(item: CommentUiModel.Item) {
             with(binding) {
-                root.setPadding(
-                    if (item.commentType is CommentType.Child && !item.commentType.isNewlyAdded) 100 else 8,
-                    root.paddingTop,
-                    root.paddingTop,
-                    root.paddingBottom
-                )
+                val childView = item.commentType is CommentType.Child && !item.commentType.isNewlyAdded
+                val layout32 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl4)
+                val layout24 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl3)
+                root.addOneTimeGlobalLayoutListener {
+                    root.setPadding(
+                        if (childView) ivCommentPhoto.width + 8 else 8,
+                        root.paddingTop,
+                        root.paddingTop,
+                        root.paddingBottom
+                    )
+                    ivCommentPhoto.updateLayoutParams {
+                        width = if (childView) layout24 else layout32
+                        height = if (childView) layout24 else layout32
+                    }
+                }
 
                 ivCommentPhoto.loadImage(item.photo)
                 ivCommentPhoto.setOnClickListener {
