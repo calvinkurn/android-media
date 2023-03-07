@@ -41,6 +41,8 @@ class ShipmentViewHolder(
         private const val TICKER_INFO_TYPE = "info"
         private const val TICKER_WARNING_TYPE = "warning"
         private const val TICKER_ACTION_APPLINK = "applink"
+
+        private const val SHIPMENT_ICON_PADDING = 16
     }
 
     private val context = view.context
@@ -158,7 +160,7 @@ class ShipmentViewHolder(
             setImageUrl(freeOngkirImageUrl)
 
             if (boBadge.isUsingPadding) {
-                updatePadding(right = 16.toPx())
+                updatePadding(right = SHIPMENT_ICON_PADDING.toPx())
             }
 
             val imageHeight = boBadge.imageHeight
