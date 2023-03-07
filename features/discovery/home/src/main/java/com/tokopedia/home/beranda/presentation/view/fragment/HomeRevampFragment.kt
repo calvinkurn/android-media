@@ -1299,6 +1299,9 @@ open class HomeRevampFragment :
                 Toaster.build(view, "" +
                     "TTFL: ${summaryModel.timeToFirstLayout?.inflateTime} ms \n" +
                     "TTIL: ${summaryModel.timeToInitialLayout?.inflateTime} ms \n" ).show()
+                homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(true)
+                homePerformanceMonitoringListener = null
+                onPageLoadTimeEnd()
             }
         }
         observeSearchHint()
@@ -1309,7 +1312,7 @@ open class HomeRevampFragment :
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
                 getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
                 getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
-                setOnRecyclerViewLayoutReady(isCache)
+//                setOnRecyclerViewLayoutReady(isCache)
             }
             this.fragmentCurrentCacheState = isCache
             this.fragmentCurrentVisitableCount = data.size
