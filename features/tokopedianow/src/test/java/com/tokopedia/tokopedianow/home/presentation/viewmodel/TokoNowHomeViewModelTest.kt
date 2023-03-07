@@ -81,13 +81,11 @@ import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponDataModel
-import com.tokopedia.tokopedianow.home.domain.model.GetCatalogCouponListResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
-import com.tokopedia.tokopedianow.home.domain.model.RedeemCouponResponse
 import com.tokopedia.tokopedianow.home.domain.model.ReferralEvaluateJoinResponse
 import com.tokopedia.tokopedianow.home.domain.model.Shop
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
@@ -4243,7 +4241,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val warehouseId = "1"
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
-        var slugText = "ABC;CDE"
+        val slugText = "ABC;CDE"
         var buttonStr = COUPON_STATUS_CLAIM
 
         val localCacheModel = LocalCacheModel(
@@ -4317,7 +4315,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val warehouseId = "1"
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
-        var slugText = "ABC;CDE"
+        val slugText = "ABC;CDE"
         val buttonStr = COUPON_STATUS_CLAIM
 
         val localCacheModel = LocalCacheModel(
@@ -4384,6 +4382,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val userLoggedIn = true
         val widgetId = "1212"
         val catalogId = "2222"
+        val couponStatus = "Klaim"
+        val position = 0
+        val slugText = "ABC;CDE"
+        val couponName = "3% tolong diklaim"
+        val warehouseId = "12322"
 
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = userLoggedIn)
 
@@ -4391,12 +4394,29 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onRedeemCoupon_thenReturn(createRedeemCoupon())
 
         //redeem the coupon
-        viewModel.claimCoupon(widgetId, catalogId)
+        viewModel.claimCoupon(
+            widgetId = widgetId,
+            catalogId = catalogId,
+            couponStatus = couponStatus,
+            position = position,
+            slugText = slugText,
+            couponName = couponName,
+            warehouseId = warehouseId
+        )
 
         //verify use case and the result
         verifyRedeemCouponUseCaseCalled()
         viewModel.couponClaimed
-            .verifySuccessEquals(Success(response.mapToClaimCouponDataModel()))
+            .verifySuccessEquals(Success(
+                response.mapToClaimCouponDataModel(
+                    couponStatus = couponStatus,
+                    position = position,
+                    slugText = slugText,
+                    couponName = couponName,
+                    warehouseId = warehouseId
+                )
+            )
+        )
     }
 
     @Test
@@ -4405,13 +4425,26 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val userLoggedIn = false
         val widgetId = "1212"
         val catalogId = "2222"
+        val couponStatus = "Klaim"
+        val position = 0
+        val slugText = "ABC;CDE"
+        val couponName = "3% tolong diklaim"
+        val warehouseId = "12322"
 
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = userLoggedIn)
 
         onRedeemCoupon_thenReturn(createRedeemCoupon())
 
         //redeem the coupon
-        viewModel.claimCoupon(widgetId, catalogId)
+        viewModel.claimCoupon(
+            widgetId = widgetId,
+            catalogId = catalogId,
+            couponStatus = couponStatus,
+            position = position,
+            slugText = slugText,
+            couponName = couponName,
+            warehouseId = warehouseId
+        )
 
         //verify the result
         viewModel.couponClaimed
@@ -4424,13 +4457,26 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val userLoggedIn = true
         val widgetId = "1212"
         val catalogId = "2222"
+        val couponStatus = "Klaim"
+        val position = 0
+        val slugText = "ABC;CDE"
+        val couponName = "3% tolong diklaim"
+        val warehouseId = "12322"
 
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = userLoggedIn)
 
         onRedeemCoupon_thenReturn(Exception())
 
         //redeem the coupon
-        viewModel.claimCoupon(widgetId, catalogId)
+        viewModel.claimCoupon(
+            widgetId = widgetId,
+            catalogId = catalogId,
+            couponStatus = couponStatus,
+            position = position,
+            slugText = slugText,
+            couponName = couponName,
+            warehouseId = warehouseId
+        )
 
         //verify the result
         assertTrue(viewModel.couponClaimed.value is Fail)

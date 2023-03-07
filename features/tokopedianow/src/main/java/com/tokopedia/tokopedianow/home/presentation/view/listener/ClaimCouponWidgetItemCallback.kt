@@ -12,8 +12,25 @@ class ClaimCouponWidgetItemCallback(
     private val context: Context?,
     private val analytics: HomeAnalytics
 ): HomeClaimCouponWidgetItemListener, HomeClaimCouponWidgetItemTracker {
-    override fun onClickClaimButton(widgetId: String, catalogId: String) {
-        viewModel.claimCoupon(widgetId, catalogId)
+
+    override fun onClickClaimButton(
+        widgetId: String,
+        catalogId: String,
+        couponStatus: String,
+        position: Int,
+        slugText: String,
+        couponName: String,
+        warehouseId: String
+    ) {
+        viewModel.claimCoupon(
+            widgetId = widgetId,
+            catalogId = catalogId,
+            couponStatus = couponStatus,
+            position = position,
+            slugText = slugText,
+            couponName = couponName,
+            warehouseId = warehouseId
+        )
     }
 
     override fun onClickCouponWidget(appLink: String) {

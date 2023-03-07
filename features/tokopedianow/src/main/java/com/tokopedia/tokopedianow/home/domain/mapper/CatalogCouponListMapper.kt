@@ -49,11 +49,22 @@ object CatalogCouponListMapper {
         }
     }
 
-    fun RedeemCouponResponse.mapToClaimCouponDataModel(): HomeClaimCouponDataModel {
+    fun RedeemCouponResponse.mapToClaimCouponDataModel(
+        couponStatus: String,
+        position: Int,
+        slugText: String,
+        couponName: String,
+        warehouseId: String
+    ): HomeClaimCouponDataModel {
         val coupon = hachikoRedeem?.coupons?.firstOrNull()
         return HomeClaimCouponDataModel(
             appLink = coupon?.cta.orEmpty(),
-            code = coupon?.code.orEmpty()
+            code = coupon?.code.orEmpty(),
+            couponStatus = couponStatus,
+            position = position,
+            slugText = slugText,
+            couponName = couponName,
+            warehouseId = warehouseId
         )
     }
 }

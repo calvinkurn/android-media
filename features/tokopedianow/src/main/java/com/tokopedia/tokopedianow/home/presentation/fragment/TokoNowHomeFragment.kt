@@ -1153,6 +1153,13 @@ class TokoNowHomeFragment : Fragment(),
                             actionText = getString(R.string.tokopedianow_claim_coupon_widget_coupon_claimed_toaster_success_cta),
                             type = TYPE_NORMAL,
                             onClickActionBtn = {
+                                analytics.trackClickCouponWidget(
+                                    couponStatus = couponClaimed.couponStatus,
+                                    position = couponClaimed.position,
+                                    slugText = couponClaimed.slugText,
+                                    couponName = couponClaimed.couponName,
+                                    warehouseId = couponClaimed.warehouseId
+                                )
                                 RouteManager.route(context, couponClaimed.appLink)
                             }
                         )

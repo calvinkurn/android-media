@@ -423,12 +423,23 @@ class TokoNowHomeViewModel @Inject constructor(
 
     fun claimCoupon(
         widgetId: String,
-        catalogId: String
+        catalogId: String,
+        couponStatus: String,
+        position: Int,
+        slugText: String,
+        couponName: String,
+        warehouseId: String
     ) {
         launchCatchError(block = {
             if (userSession.isLoggedIn) {
                 val response = redeemCouponUseCase.execute(catalogId)
-                val coupon = response.mapToClaimCouponDataModel()
+                val coupon = response.mapToClaimCouponDataModel(
+                    couponStatus = couponStatus,
+                    position = position,
+                    slugText = slugText,
+                    couponName = couponName,
+                    warehouseId = warehouseId
+                )
                 _couponClaimed.postValue(Success(coupon))
 
                 homeLayoutItemList.mapHomeClaimCouponList(

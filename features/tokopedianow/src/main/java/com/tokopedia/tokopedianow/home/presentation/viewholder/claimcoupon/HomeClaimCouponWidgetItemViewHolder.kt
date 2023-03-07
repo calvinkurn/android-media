@@ -90,7 +90,12 @@ class HomeClaimCouponWidgetItemViewHolder(
             setOnClickListener {
                 listener?.onClickClaimButton(
                     widgetId = item.widgetId,
-                    catalogId = item.id
+                    catalogId = item.id,
+                    couponStatus = item.ctaText,
+                    position = layoutPosition,
+                    slugText = item.slugText,
+                    couponName = item.couponName,
+                    warehouseId = item.warehouseId
                 )
                 tracker?.onClickClaimButtonTracker(
                     couponStatus = item.ctaText,
@@ -106,7 +111,12 @@ class HomeClaimCouponWidgetItemViewHolder(
     interface HomeClaimCouponWidgetItemListener {
         fun onClickClaimButton(
             widgetId: String,
-            catalogId: String
+            catalogId: String,
+            couponStatus: String,
+            position: Int,
+            slugText: String,
+            couponName: String,
+            warehouseId: String
         )
         fun onClickCouponWidget(
             appLink: String
