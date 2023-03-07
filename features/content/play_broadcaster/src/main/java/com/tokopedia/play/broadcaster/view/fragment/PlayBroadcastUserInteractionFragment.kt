@@ -17,7 +17,6 @@ import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -54,8 +53,8 @@ import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
-import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComponent
@@ -338,7 +337,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icFaceFilter.setOnClickListener {
-            FaceFilterSetupFragment.getFragment(
+            BeautificationSetupFragment.getFragment(
                 childFragmentManager,
                 requireActivity().classLoader
             ).showFaceSetupBottomSheet()
@@ -347,8 +346,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         childFragmentManager.commit {
             replace(
                 faceFilterSetupContainer.id,
-                FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                FaceFilterSetupFragment.TAG,
+                BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                BeautificationSetupFragment.TAG,
             )
         }
 
@@ -454,7 +453,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        val faceFilterSetupFragment = FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+        val beautificationSetupFragment = BeautificationSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
 
         return when {
             isPinnedFormVisible() -> {
@@ -465,8 +464,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnQuiz)
                 true
             }
-            faceFilterSetupFragment.isBottomSheetShown -> {
-                parentViewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
+            beautificationSetupFragment.isBottomSheetShown -> {
+                parentViewModel.submitAction(PlayBroadcastAction.BeautificationBottomSheetDismissed)
                 true
             }
             /** TODO: gonna delete this */
@@ -852,10 +851,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.ShowBroadcastError -> handleBroadcastError(event.error)
                     is PlayBroadcastEvent.BroadcastRecovered -> handleBroadcastRecovered()
-                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
+                    is PlayBroadcastEvent.BeautificationBottomSheetShown -> {
                         clInteraction.hide()
                     }
-                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
+                    is PlayBroadcastEvent.BeautificationBottomSheetDismissed -> {
                         clInteraction.show()
                     }
                     else -> {}

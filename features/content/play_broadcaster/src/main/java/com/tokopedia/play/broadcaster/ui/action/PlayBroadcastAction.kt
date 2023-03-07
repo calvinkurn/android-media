@@ -72,14 +72,13 @@ sealed interface PlayBroadcastAction {
     data class BroadcastStateChanged(val state: PlayBroadcasterState) : PlayBroadcastAction
 
     /** Beautification */
-    data class FaceFilterBottomSheetShown(val bottomSheetHeight: Int) : PlayBroadcastAction
-    object FaceFilterBottomSheetDismissed : PlayBroadcastAction
+    data class BeautificationBottomSheetShown(val bottomSheetHeight: Int) : PlayBroadcastAction
+    object BeautificationBottomSheetDismissed : PlayBroadcastAction
+    object ResetBeautification : PlayBroadcastAction
 
     data class SelectFaceFilterOption(val faceFilter: FaceFilterUiModel) : PlayBroadcastAction
     data class ChangeFaceFilterValue(val newValue: Int) : PlayBroadcastAction
 
     data class SelectPresetOption(val preset: FaceFilterUiModel) : PlayBroadcastAction
     data class ChangePresetValue(val newValue: Int) : PlayBroadcastAction
-
-    object ResetBeautification : PlayBroadcastAction
 }

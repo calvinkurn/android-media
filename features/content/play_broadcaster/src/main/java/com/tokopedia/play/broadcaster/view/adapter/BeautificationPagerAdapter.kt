@@ -4,12 +4,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.tokopedia.play.broadcaster.view.fragment.facefilter.PlayBroMakeupTabFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationTabFragment
 
 /**
  * Created By : Jonathan Darwin on February 27, 2023
  */
-class FaceFilterPagerAdapter(
+class BeautificationPagerAdapter(
     private val fragmentManager: FragmentManager,
     private val classLoader: ClassLoader,
     lifecycle: Lifecycle,
@@ -21,20 +21,20 @@ class FaceFilterPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            PlayBroMakeupTabFragment.Companion.Type.FaceFilter.value -> {
-                PlayBroMakeupTabFragment.getFaceFilterFragment(
+            BeautificationTabFragment.Companion.Type.FaceFilter.value -> {
+                BeautificationTabFragment.getFaceFilterFragment(
                     fragmentManager,
                     classLoader
                 )
             }
-            PlayBroMakeupTabFragment.Companion.Type.Preset.value -> {
-                PlayBroMakeupTabFragment.getPresetFragment(
+            BeautificationTabFragment.Companion.Type.Preset.value -> {
+                BeautificationTabFragment.getPresetFragment(
                     fragmentManager,
                     classLoader
                 )
             }
             else -> {
-                PlayBroMakeupTabFragment.getUnknownFragment(
+                BeautificationTabFragment.getUnknownFragment(
                     fragmentManager,
                     classLoader
                 )

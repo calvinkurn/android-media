@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.fragment.facefilter
+package com.tokopedia.play.broadcaster.view.fragment.beautification
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,8 +15,8 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.itemdecoration.FaceFilterOptionItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
-import com.tokopedia.play.broadcaster.ui.viewholder.FaceFilterOptionViewHolder
-import com.tokopedia.play.broadcaster.view.adapter.FaceFilterOptionAdapter
+import com.tokopedia.play.broadcaster.ui.viewholder.BeautificationFilterOptionViewHolder
+import com.tokopedia.play.broadcaster.view.adapter.BeautificationFilterOptionAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.util.extension.withCache
@@ -26,7 +26,7 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on February 27, 2023
  */
-class PlayBroMakeupTabFragment @Inject constructor(
+class BeautificationTabFragment @Inject constructor(
     private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
 ): TkpdBaseV4Fragment() {
 
@@ -41,7 +41,7 @@ class PlayBroMakeupTabFragment @Inject constructor(
     }
 
     private val adapter by lazyThreadSafetyNone {
-        FaceFilterOptionAdapter(object : FaceFilterOptionViewHolder.Listener {
+        BeautificationFilterOptionAdapter(object : BeautificationFilterOptionViewHolder.Listener {
             override fun onClick(item: FaceFilterUiModel) {
                 when(type) {
                     Type.FaceFilter -> viewModel.submitAction(PlayBroadcastAction.SelectFaceFilterOption(item))
@@ -111,21 +111,21 @@ class PlayBroMakeupTabFragment @Inject constructor(
         fun getUnknownFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): PlayBroMakeupTabFragment{
+        ): BeautificationTabFragment{
             return getFragment(fragmentManager, classLoader, Type.Unknown)
         }
 
         fun getFaceFilterFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): PlayBroMakeupTabFragment{
+        ): BeautificationTabFragment{
             return getFragment(fragmentManager, classLoader, Type.FaceFilter)
         }
 
         fun getPresetFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): PlayBroMakeupTabFragment{
+        ): BeautificationTabFragment{
             return getFragment(fragmentManager, classLoader, Type.Preset)
         }
 
@@ -133,16 +133,16 @@ class PlayBroMakeupTabFragment @Inject constructor(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             type: Type,
-        ): PlayBroMakeupTabFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayBroMakeupTabFragment
+        ): BeautificationTabFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? BeautificationTabFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                PlayBroMakeupTabFragment::class.java.name
+                BeautificationTabFragment::class.java.name
             ).apply {
                 arguments = Bundle().apply {
                     putInt(KEY_TYPE, type.value)
                 }
-            } as PlayBroMakeupTabFragment
+            } as BeautificationTabFragment
         }
 
         enum class Type(val value: Int) {
@@ -160,3 +160,4 @@ class PlayBroMakeupTabFragment @Inject constructor(
         }
     }
 }
+

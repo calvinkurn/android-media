@@ -52,7 +52,6 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
-import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
@@ -68,7 +67,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPreparationFrag
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
@@ -76,15 +75,10 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
-import com.tokopedia.play_common.util.extension.withCache
-import com.tokopedia.play_common.view.doOnApplyWindowInsets
-import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.unifycomponents.RangeSliderUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
@@ -328,13 +322,13 @@ class PlayBroadcastActivity : BaseActivity(),
                         initBroadcaster(event.data)
                         createBroadcaster()
                     }
-                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
+                    is PlayBroadcastEvent.BeautificationBottomSheetShown -> {
                         val fullPageHeight = findViewById<ViewGroup>(android.R.id.content).rootView.height
                         val bottomSheetHeight = event.bottomSheetHeight
 
                         broadcasterFrameScalingManager.scaleDown(aspectFrameLayout, bottomSheetHeight, fullPageHeight)
                     }
-                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
+                    is PlayBroadcastEvent.BeautificationBottomSheetDismissed -> {
                         broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
                         supportFragmentManager.popBackStack()
                     }
@@ -378,13 +372,13 @@ class PlayBroadcastActivity : BaseActivity(),
 
         aspectFrameLayout.setOnClickListener {
             getCurrentFragment()?.let {
-                val isFaceFilterBottomSheetShown = FaceFilterSetupFragment.getFragment(
+                val isFaceFilterBottomSheetShown = BeautificationSetupFragment.getFragment(
                     it.childFragmentManager,
                     classLoader
                 ).isBottomSheetShown
 
                 if(isFaceFilterBottomSheetShown) {
-                    viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
+                    viewModel.submitAction(PlayBroadcastAction.BeautificationBottomSheetDismissed)
                 }
             }
         }

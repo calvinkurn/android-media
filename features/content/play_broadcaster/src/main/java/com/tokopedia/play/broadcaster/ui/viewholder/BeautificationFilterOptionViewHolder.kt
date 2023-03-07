@@ -13,7 +13,7 @@ import com.tokopedia.play.broadcaster.R
 /**
  * Created By : Jonathan Darwin on February 28, 2023
  */
-class FaceFilterOptionViewHolder(
+class BeautificationFilterOptionViewHolder(
     private val binding: ItemFaceFilterOptionBinding,
     private val listener: Listener,
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -63,7 +63,7 @@ class FaceFilterOptionViewHolder(
         fun create(
             parent: ViewGroup,
             listener: Listener,
-        ) = FaceFilterOptionViewHolder(
+        ) = BeautificationFilterOptionViewHolder(
             ItemFaceFilterOptionBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,

@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.fragment.facefilter
+package com.tokopedia.play.broadcaster.view.fragment.beautification
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,7 +20,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.util.extension.getDialog
-import com.tokopedia.play.broadcaster.view.adapter.FaceFilterPagerAdapter
+import com.tokopedia.play.broadcaster.view.adapter.BeautificationPagerAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.util.extension.withCache
@@ -30,7 +30,6 @@ import com.tokopedia.unifycomponents.RangeSliderUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifyprinciples.R as unifyR
-import com.tokopedia.play.broadcaster.R
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -38,7 +37,7 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on March 01, 2023
  */
-class FaceFilterSetupFragment @Inject constructor(
+class BeautificationSetupFragment @Inject constructor(
     private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
 ) : TkpdBaseV4Fragment() {
 
@@ -56,7 +55,7 @@ class FaceFilterSetupFragment @Inject constructor(
         override fun onStateChanged(bottomSheet: View, newState: Int) {
             when(newState) {
                 BottomSheetBehavior.STATE_HIDDEN -> {
-                    viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
+                    viewModel.submitAction(PlayBroadcastAction.BeautificationBottomSheetDismissed)
                 }
                 else -> {}
             }
@@ -76,7 +75,7 @@ class FaceFilterSetupFragment @Inject constructor(
     }
 
     private val pagerAdapter by lazyThreadSafetyNone {
-        FaceFilterPagerAdapter(
+        BeautificationPagerAdapter(
             childFragmentManager,
             requireContext().classLoader,
             lifecycle
@@ -126,8 +125,8 @@ class FaceFilterSetupFragment @Inject constructor(
 
         TabsUnifyMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when(position) {
-                PlayBroMakeupTabFragment.Companion.Type.FaceFilter.value -> tab.setCustomText(getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_face_tab))
-                PlayBroMakeupTabFragment.Companion.Type.Preset.value -> tab.setCustomText(getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_makeup_tab))
+                BeautificationTabFragment.Companion.Type.FaceFilter.value -> tab.setCustomText(getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_face_tab))
+                BeautificationTabFragment.Companion.Type.Preset.value -> tab.setCustomText(getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_makeup_tab))
                 else -> {}
             }
         }
@@ -164,10 +163,10 @@ class FaceFilterSetupFragment @Inject constructor(
             override fun onSliderMove(p0: Pair<Int, Int>) {
 
                 when(selectedTabIdx) {
-                    PlayBroMakeupTabFragment.Companion.Type.FaceFilter.value -> {
+                    BeautificationTabFragment.Companion.Type.FaceFilter.value -> {
                         viewModel.submitAction(PlayBroadcastAction.ChangeFaceFilterValue(p0.first))
                     }
-                    PlayBroMakeupTabFragment.Companion.Type.Preset.value -> {
+                    BeautificationTabFragment.Companion.Type.Preset.value -> {
                         viewModel.submitAction(PlayBroadcastAction.ChangePresetValue(p0.first))
                     }
                     else -> {}
@@ -180,14 +179,14 @@ class FaceFilterSetupFragment @Inject constructor(
         binding.tvBottomSheetAction.setOnClickListener {
             requireContext().getDialog(
                 actionType = DialogUnify.HORIZONTAL_ACTION,
-                title = getString(R.string.play_broadcaster_reset_filter_confirmation_title),
-                desc = getString(R.string.play_broadcaster_reset_filter_confirmation_description),
-                primaryCta = getString(R.string.play_broadcaster_reset_filter_confirm),
+                title = getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_reset_filter_confirmation_title),
+                desc = getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_reset_filter_confirmation_description),
+                primaryCta = getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_reset_filter_confirm),
                 primaryListener = { dialog ->
                     dialog.dismiss()
                     viewModel.submitAction(PlayBroadcastAction.ResetBeautification)
                 },
-                secondaryCta = getString(R.string.play_broadcaster_reset_filter_cancel),
+                secondaryCta = getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_reset_filter_cancel),
                 secondaryListener = { dialog ->
                     dialog.dismiss()
                 }
@@ -205,7 +204,7 @@ class FaceFilterSetupFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when(event) {
-                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
+                    is PlayBroadcastEvent.BeautificationBottomSheetDismissed -> {
                         hideFaceSetupBottomSheet()
                         hideSlider()
                     }
@@ -226,8 +225,8 @@ class FaceFilterSetupFragment @Inject constructor(
 
     private fun setupSlider() {
         val selectedFilter = when(selectedTabIdx) {
-            PlayBroMakeupTabFragment.Companion.Type.FaceFilter.value -> viewModel.selectedFaceFilter
-            PlayBroMakeupTabFragment.Companion.Type.Preset.value -> viewModel.selectedPreset
+            BeautificationTabFragment.Companion.Type.FaceFilter.value -> viewModel.selectedFaceFilter
+            BeautificationTabFragment.Companion.Type.Preset.value -> viewModel.selectedPreset
             else -> null
         }
 
@@ -260,7 +259,7 @@ class FaceFilterSetupFragment @Inject constructor(
     fun showFaceSetupBottomSheet() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-        viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetShown(binding.bottomSheet.height))
+        viewModel.submitAction(PlayBroadcastAction.BeautificationBottomSheetShown(binding.bottomSheet.height))
         setupSlider()
     }
 
@@ -271,17 +270,17 @@ class FaceFilterSetupFragment @Inject constructor(
         private const val SLIDER_STEP_SIZE = 10
         private const val PERCENTAGE_MULTIPLIER = 100
 
-        const val TAG = "FaceFilterSetupFragment"
+        const val TAG = "BeautificationSetupFragment"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): FaceFilterSetupFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FaceFilterSetupFragment
+        ): BeautificationSetupFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? BeautificationSetupFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                FaceFilterSetupFragment::class.java.name,
-            ) as FaceFilterSetupFragment
+                BeautificationSetupFragment::class.java.name,
+            ) as BeautificationSetupFragment
         }
     }
 }
