@@ -210,6 +210,7 @@ public class MainParentActivity extends BaseActivity implements
     private static final String DISCOVERY_APPLINK_TARGET = "tokopedia://discovery/serbu-official-store";
     private static final String DISCOVERY_PAGE_SOURCE = "discovery_page_source";
     private static final String DISCOVERY_END_POINT = "end_point";
+    private static final String SOS_END_POINT = "sos";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -783,7 +784,7 @@ public class MainParentActivity extends BaseActivity implements
             }
             bundleSosDisco.putString(DISCOVERY_APPLINK, DISCOVERY_APPLINK_TARGET);
             bundleSosDisco.putString(DISCOVERY_PAGE_SOURCE, PARAM_HOME);
-            bundleSosDisco.putString("end_point", "serbu-official-store");
+            bundleSosDisco.putString(DISCOVERY_END_POINT, SOS_END_POINT);
             fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.DISCOVERY_FRAGMENT, bundleSosDisco));
         }
 
