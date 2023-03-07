@@ -11,14 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -26,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.databinding.FragmentShopEditAddressBinding
 import com.tokopedia.editshipping.di.shopeditaddress.DaggerShopEditAddressComponent
 import com.tokopedia.editshipping.domain.model.shopeditaddress.ShopEditAddressState
 import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_ERROR_MESSAGE
@@ -46,11 +43,10 @@ import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -72,28 +68,30 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var currentLong: Double = 0.0
     private var detailAddressHelper: String = ""
 
-    private var swipeRefreshLayout: SwipeRefreshLayout? = null
-    private var etShopLocationWrapper: TextInputLayout? = null
-    private var etShopLocation: TextInputEditText? = null
-    private var etKotaKecamatanWrapper: TextInputLayout? = null
-    private var etKotaKecamatan: TextInputEditText? = null
-    private var etZipCodeWrapper: TextInputLayout? = null
-    private var etZipCode: AutoCompleteTextView? = null
-    private var etShopDetailWrapper: TextInputLayout? = null
-    private var etShopDetail: TextInputEditText? = null
-    private var tvPinpointText: Typography? = null
-    private var btnSave: UnifyButton? = null
-    private var helperShopDetail: Typography? = null
-    private var txtShopLocationWatcher: Typography? = null
-    private var tvUserConsent: Typography? = null
+//    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+//    private var etShopLocationWrapper: TextInputLayout? = null
+//    private var etShopLocation: TextInputEditText? = null
+//    private var etKotaKecamatanWrapper: TextInputLayout? = null
+//    private var etKotaKecamatan: TextInputEditText? = null
+//    private var etZipCodeWrapper: TextInputLayout? = null
+//    private var etZipCode: AutoCompleteTextView? = null
+//    private var etShopDetailWrapper: TextInputLayout? = null
+//    private var etShopDetail: TextInputEditText? = null
+//    private var tvPinpointText: Typography? = null
+//    private var btnSave: UnifyButton? = null
+//    private var helperShopDetail: Typography? = null
+//    private var txtShopLocationWatcher: Typography? = null
+//    private var tvUserConsent: Typography? = null
 
-    private var mapView: MapView? = null
-    private var btnOpenMap: UnifyButton? = null
+//    private var mapView: MapView? = null
+//    private var btnOpenMap: UnifyButton? = null
 
     private var getSavedInstanceState: Bundle? = null
     private var googleMap: GoogleMap? = null
     private var validate: Boolean = true
     private var uncoveredCourierFlag: Boolean = false
+
+    private var binding by autoClearedNullable<FragmentShopEditAddressBinding>()
 
     override fun getScreenName(): String = ""
 
@@ -117,7 +115,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_shop_edit_address, container, false)
+        binding = FragmentShopEditAddressBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -140,8 +139,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     val address = data?.getParcelableExtra<DistrictRecommendationAddress>(
                         RESULT_INTENT_DISTRICT_RECOMMENDATION
                     )
-                    etKotaKecamatan?.setText(address?.districtName + ", " + address?.cityName)
-                    etZipCode?.setText("")
+                    binding?.etKotaKecamatanShop?.setText(address?.districtName + ", " + address?.cityName)
+                    binding?.etKodePosShop?.setText("")
 
                     if (address?.zipCodes != null) {
                         zipCodes = ArrayList(address.zipCodes)
@@ -177,64 +176,63 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             )
         }
 
-        etZipCode?.setAdapter(zipCodeAdapter)
+        binding?.etKodePosShop?.setAdapter(zipCodeAdapter)
     }
 
     override fun onResume() {
         super.onResume()
-        mapView?.onResume()
+        binding?.layoutMapsPreview?.mapViewDetail?.onResume()
     }
 
     override fun onStart() {
         super.onStart()
-        mapView?.onStart()
+        binding?.layoutMapsPreview?.mapViewDetail?.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-        mapView?.onStop()
+        binding?.layoutMapsPreview?.mapViewDetail?.onStop()
     }
 
     override fun onPause() {
-        mapView?.onPause()
+        binding?.layoutMapsPreview?.mapViewDetail?.onPause()
         super.onPause()
     }
 
     override fun onDestroyView() {
-        mapView?.onDestroy()
-        mapView = null
+        binding?.layoutMapsPreview?.mapViewDetail?.onDestroy()
         super.onDestroyView()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView?.onLowMemory()
+        binding?.layoutMapsPreview?.mapViewDetail?.onLowMemory()
     }
 
     private fun initViews() {
-        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
-        etShopLocationWrapper = view?.findViewById(R.id.et_nama_lokasi_shop_wrapper)
-        etShopLocation = view?.findViewById(R.id.et_nama_lokasi_shop)
-        etKotaKecamatanWrapper = view?.findViewById(R.id.et_kota_kecamatan_shop_wrapper)
-        etKotaKecamatan = view?.findViewById(R.id.et_kota_kecamatan_shop)
-        etZipCodeWrapper = view?.findViewById(R.id.et_kode_pos_shop_wrapper)
-        etZipCode = view?.findViewById(R.id.et_kode_pos_shop)
-        etShopDetailWrapper = view?.findViewById(R.id.et_detail_alamat_shop_wrapper)
-        etShopDetail = view?.findViewById(R.id.et_detail_alamat_shop)
-        tvPinpointText = view?.findViewById(R.id.tv_pinpoint_text)
-        btnSave = view?.findViewById(R.id.btn_save_warehouse)
-        helperShopDetail = view?.findViewById(R.id.tv_detail_alamat_helper)
-        txtShopLocationWatcher = view?.findViewById(R.id.tv_nama_lokasi_watcher)
-        tvUserConsent = view?.findViewById(R.id.tv_user_consent)
-        mapView = view?.findViewById(R.id.map_view_detail)
-        btnOpenMap = view?.findViewById(R.id.btn_open_map)
+//        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
+//        etShopLocationWrapper = view?.findViewById(R.id.et_nama_lokasi_shop_wrapper)
+//        etShopLocation = view?.findViewById(R.id.et_nama_lokasi_shop)
+//        etKotaKecamatanWrapper = view?.findViewById(R.id.et_kota_kecamatan_shop_wrapper)
+//        etKotaKecamatan = view?.findViewById(R.id.et_kota_kecamatan_shop)
+//        etZipCodeWrapper = view?.findViewById(R.id.et_kode_pos_shop_wrapper)
+//        etZipCode = view?.findViewById(R.id.et_kode_pos_shop)
+//        etShopDetailWrapper = view?.findViewById(R.id.et_detail_alamat_shop_wrapper)
+//        etShopDetail = view?.findViewById(R.id.et_detail_alamat_shop)
+//        tvPinpointText = view?.findViewById(R.id.tv_pinpoint_text)
+//        btnSave = view?.findViewById(R.id.btn_save_warehouse)
+//        helperShopDetail = view?.findViewById(R.id.tv_detail_alamat_helper)
+//        txtShopLocationWatcher = view?.findViewById(R.id.tv_nama_lokasi_watcher)
+//        tvUserConsent = view?.findViewById(R.id.tv_user_consent)
+//        mapView = view?.findViewById(R.id.map_view_detail)
+//        btnOpenMap = view?.findViewById(R.id.btn_open_map)
         initMaps()
     }
 
     private fun initMaps() {
         context?.let {
             if (!MapsAvailabilityHelper.isMapsAvailable(it)) {
-                mapView?.gone()
+                binding?.layoutMapsPreview?.mapViewDetail?.gone()
             }
         }
     }
@@ -246,7 +244,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     zipCodes = ArrayList(it.data.district[0].zipCode)
                     initZipCode()
                     if (zipCodes.isEmpty()) {
-                        etZipCode?.apply {
+                        binding?.etKodePosShop?.apply {
                             isFocusableInTouchMode = true
                             isFocusable = true
                             setOnClickListener(null)
@@ -271,7 +269,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     val long = it.data.longitude.toDouble()
                     adjustMap(lat, long)
                     detailAddressHelper = it.data.formattedAddress
-                    val addressDetailUser = etShopDetail?.text.toString()
+                    val addressDetailUser = binding?.etDetailAlamatShop?.text.toString()
                     checkValidateAddressDetail(detailAddressHelper, addressDetailUser)
                 }
                 is Fail -> Timber.d(it.throwable)
@@ -288,7 +286,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         viewModel.saveEditShop.observe(viewLifecycleOwner) {
             when (it) {
                 is ShopEditAddressState.Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
+                    binding?.swipeRefresh?.isRefreshing = false
                     view?.let { view ->
                         Toaster.build(
                             view,
@@ -310,7 +308,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     activity?.finish()
                 }
                 is ShopEditAddressState.Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
+                    binding?.swipeRefresh?.isRefreshing = false
                     view?.let { view ->
                         Toaster.build(
                             view,
@@ -321,7 +319,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
 
-                else -> swipeRefreshLayout?.isRefreshing = true
+                else -> binding?.swipeRefresh?.isRefreshing = true
             }
         }
 
@@ -332,7 +330,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
 
                 is ShopEditAddressState.Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
+                    binding?.swipeRefresh?.isRefreshing = false
                     view?.let { view ->
                         Toaster.build(
                             view,
@@ -343,7 +341,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
 
-                else -> swipeRefreshLayout?.isRefreshing = true
+                else -> binding?.swipeRefresh?.isRefreshing = true
             }
         }
     }
@@ -357,10 +355,10 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             )
         ) {
             validate = true
-            helperShopDetail?.text = ""
+            binding?.tvDetailAlamatHelper?.text = ""
         } else {
             validate = false
-            helperShopDetail?.text =
+            binding?.tvDetailAlamatHelper?.text =
                 getString(R.string.detail_alamat_error_helper, detailAddressHelper)
         }
     }
@@ -370,13 +368,13 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             val latLong = "$currentLat,$currentLong"
             warehouseModel?.let {
                 viewModel.saveEditShopLocation(
-                    userSession.shopId.toLong(), it.warehouseId, etShopLocation?.text.toString(),
-                    it.districtId, latLong, userSession.email, etShopDetail?.text.toString(),
-                    etZipCode?.text.toString(), userSession.phoneNumber
+                    userSession.shopId.toLong(), it.warehouseId, binding?.etNamaLokasiShop?.text.toString(),
+                    it.districtId, latLong, userSession.email, binding?.etDetailAlamatShop?.text.toString(),
+                    binding?.etKodePosShop?.text.toString(), userSession.phoneNumber
                 )
             }
         } else {
-            swipeRefreshLayout?.isRefreshing = false
+            binding?.swipeRefresh?.isRefreshing = false
             showDialog()
         }
     }
@@ -395,12 +393,12 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     viewModel.saveEditShopLocation(
                         userSession.shopId.toLong(),
                         it.warehouseId,
-                        etShopLocation?.text.toString(),
+                        binding?.etNamaLokasiShop?.text.toString(),
                         it.districtId,
                         latLong,
                         userSession.email,
-                        etShopDetail?.text.toString(),
-                        etZipCode?.text.toString(),
+                        binding?.etDetailAlamatShop?.text.toString(),
+                        binding?.etKodePosShop?.text.toString(),
                         userSession.phoneNumber
                     )
                 }
@@ -414,8 +412,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun prepareMap() {
-        mapView?.onCreate(getSavedInstanceState)
-        mapView?.getMapAsync(this)
+        binding?.layoutMapsPreview?.mapViewDetail?.onCreate(getSavedInstanceState)
+        binding?.layoutMapsPreview?.mapViewDetail?.getMapAsync(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -428,26 +426,26 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun prepareLayout() {
-        etShopLocation?.setText(warehouseModel?.warehouseName)
-        etKotaKecamatan?.setText(warehouseModel?.districtName)
-        etZipCode?.setText(warehouseModel?.postalCode)
-        etShopDetail?.setText(warehouseModel?.addressDetail)
+        binding?.etNamaLokasiShop?.setText(warehouseModel?.warehouseName)
+        binding?.etKotaKecamatanShop?.setText(warehouseModel?.districtName)
+        binding?.etKodePosShop?.setText(warehouseModel?.postalCode)
+        binding?.etDetailAlamatShop?.setText(warehouseModel?.addressDetail)
 
-        tvPinpointText?.text =
+        binding?.tvPinpointText?.text =
             context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_desc)).spannedString }
 
-        btnOpenMap?.setOnClickListener {
+        binding?.layoutMapsPreview?.btnOpenMap?.setOnClickListener {
             goToPinpointActivity(currentLat, currentLong, warehouseModel)
         }
 
         LogisticUserConsentHelper.displayUserConsent(
             activity as Context,
             userSession.userId,
-            tvUserConsent,
+            binding?.tvUserConsent,
             getString(R.string.save_changes)
         )
 
-        btnSave?.setOnClickListener {
+        binding?.btnSaveWarehouse?.setOnClickListener {
             warehouseModel?.let { it ->
                 if (validate) {
                     viewModel.checkCouriersAvailability(userSession.shopId.toLong(), it.districtId)
@@ -466,11 +464,11 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setViewListener() {
-        etShopLocation?.apply {
+        binding?.etNamaLokasiShop?.apply {
             addTextChangedListener(setShopLocationWatcher())
         }
 
-        etKotaKecamatan?.apply {
+        binding?.etKotaKecamatanShop?.apply {
             setOnClickListener {
                 val intent = RouteManager.getIntent(
                     activity,
@@ -480,18 +478,18 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             }
         }
 
-        etZipCode?.apply {
+        binding?.etKodePosShop?.apply {
             setOnTouchListener(
                 View.OnTouchListener { _, _ ->
-                    if (etZipCode?.isPopupShowing == false) {
-                        etZipCode?.showDropDown()
+                    if (binding?.etKodePosShop?.isPopupShowing == false) {
+                        binding?.etKodePosShop?.showDropDown()
                     }
                     false
                 }
             )
         }
 
-        etShopDetail?.apply {
+        binding?.etDetailAlamatShop?.apply {
             addTextChangedListener(setAlamatWatcher())
         }
     }
@@ -505,7 +503,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val strLength = s.toString().length
                 val info = "$strLength/25"
-                txtShopLocationWatcher?.text = info
+                binding?.tvNamaLokasiWatcher?.text = info
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -526,7 +524,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     when {
                         strLength < 20 -> {
                             validate = false
-                            helperShopDetail?.text = getString(R.string.helper_shop_detail)
+                            binding?.tvDetailAlamatHelper?.text = getString(R.string.helper_shop_detail)
                         }
                         else -> {
                             checkValidateAddressDetail(s.toString(), detailAddressHelper)
