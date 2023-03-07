@@ -28,7 +28,6 @@ abstract class HomeFeedEndlessScrollListener(layoutManager: RecyclerView.LayoutM
 
     init {
         resetState()
-        resetState()
         if (layoutManager is GridLayoutManager) {
             visibleThreshold *= layoutManager.spanCount
         } else if (layoutManager is StaggeredGridLayoutManager) {
@@ -41,8 +40,11 @@ abstract class HomeFeedEndlessScrollListener(layoutManager: RecyclerView.LayoutM
     }
 
     private fun getLayoutManager(): RecyclerView.LayoutManager? {
-        return if (endlessLayoutManagerListener != null && endlessLayoutManagerListener?.currentLayoutManager != null)
-            endlessLayoutManagerListener?.currentLayoutManager else layoutManager
+        return if (endlessLayoutManagerListener != null && endlessLayoutManagerListener?.currentLayoutManager != null) {
+            endlessLayoutManagerListener?.currentLayoutManager
+        } else {
+            layoutManager
+        }
     }
 
     private fun getLastVisibleItem(lastVisibleItemPositions: IntArray): Int {
@@ -119,5 +121,4 @@ abstract class HomeFeedEndlessScrollListener(layoutManager: RecyclerView.LayoutM
     fun setHasNextPage(hasNextPage: Boolean) {
         this.hasNextPage = hasNextPage
     }
-
 }
