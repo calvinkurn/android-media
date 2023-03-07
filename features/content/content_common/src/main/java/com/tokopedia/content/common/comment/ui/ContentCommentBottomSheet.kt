@@ -394,6 +394,10 @@ class ContentCommentBottomSheet @Inject constructor(
         )
     }
 
+    override fun onMenuBottomSheetCloseClick(contentId: String) {
+        sheetMenu.dismiss()
+    }
+
     @OptIn(ExperimentalStdlibApi::class)
     private fun getMenuItems(item: CommentUiModel.Item): List<FeedMenuItem> = buildList {
         if (item.isOwner) {
