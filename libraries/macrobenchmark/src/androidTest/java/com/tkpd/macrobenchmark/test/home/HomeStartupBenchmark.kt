@@ -10,10 +10,8 @@ import com.tkpd.macrobenchmark.base.BaseStartupBenchmark
 import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
-import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import kotlinx.coroutines.delay
 
 /**
  * Created by DevAra
@@ -46,7 +44,7 @@ class HomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(start
                 MacroIntent.TKPD_PACKAGE_NAME,
                 MacroIntent.Home.RV_RESOURCE_ID
         )
-        delay(4000L)
+        Thread.sleep(4000)
     }
 
     override fun traceName() = "mp_home"
