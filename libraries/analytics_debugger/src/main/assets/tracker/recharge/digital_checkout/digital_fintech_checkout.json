@@ -38,6 +38,7 @@
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "item_list": "/checkout - .+ - crossell icon",
+      "item_list_name": "/checkout - .+ - crossell icon",
       "sessionIris": ".+",
       "items": [
         {
@@ -147,6 +148,7 @@
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "item_list": "/checkout - .+ - tebus murah",
+      "item_list_name": "/checkout - .+ - tebus murah",
       "sessionIris": ".+",
       "items": [
         {
