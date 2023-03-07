@@ -19,7 +19,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.lang.Exception
 
 object TokoChatConnection {
 
@@ -106,6 +105,15 @@ object TokoChatConnection {
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }
+    }
+
+    fun getComponent(context: Context): TokoChatConfigComponent {
+        return tokoChatConfigComponent
+            ?: DaggerTokoChatConfigComponent.builder()
+                .tokoChatConfigContextModule(TokoChatConfigContextModule(context.applicationContext))
+                .build().also {
+                    tokoChatConfigComponent = it
+                }
     }
 
     fun isTokoChatActive(): Boolean {
