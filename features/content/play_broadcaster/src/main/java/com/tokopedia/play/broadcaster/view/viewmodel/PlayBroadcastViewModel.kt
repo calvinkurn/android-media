@@ -534,6 +534,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.BeautificationBottomSheetShown -> handleBeautificationBottomSheetShown(event.bottomSheetHeight)
             is PlayBroadcastAction.BeautificationBottomSheetDismissed -> handleBeautificationBottomSheetDismissed()
             is PlayBroadcastAction.ResetBeautification -> handleResetBeautification()
+            is PlayBroadcastAction.SaveBeautificationConfig -> handleSaveBeautificationConfig()
 
             is PlayBroadcastAction.SelectFaceFilterOption -> handleSelectFaceFilterOption(event.faceFilter)
             is PlayBroadcastAction.ChangeFaceFilterValue -> handleChangeFaceFilterValue(event.newValue)
@@ -1683,6 +1684,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
             )
         }
+    }
+
+    private fun handleSaveBeautificationConfig() {
+        viewModelScope.launchCatchError(block = {
+            repo.saveBeautificationConfig(
+                authorId = authorId,
+                authorType = authorType,
+                beautificationConfig = _beautificationConfig.value
+            )
+        }) {}
     }
 
     private fun handleSelectFaceFilterOption(faceFilter: FaceFilterUiModel) {

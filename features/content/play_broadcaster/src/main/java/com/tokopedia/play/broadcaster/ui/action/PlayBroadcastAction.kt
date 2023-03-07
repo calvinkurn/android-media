@@ -75,6 +75,7 @@ sealed interface PlayBroadcastAction {
     data class BeautificationBottomSheetShown(val bottomSheetHeight: Int) : PlayBroadcastAction
     object BeautificationBottomSheetDismissed : PlayBroadcastAction
     object ResetBeautification : PlayBroadcastAction
+    object SaveBeautificationConfig : PlayBroadcastAction
 
     data class SelectFaceFilterOption(val faceFilter: FaceFilterUiModel) : PlayBroadcastAction
     data class ChangeFaceFilterValue(val newValue: Int) : PlayBroadcastAction
