@@ -90,7 +90,12 @@ dari Feed.</string>
     <!-- New Immersive Feed -->
     <string name="feed_report">Laporkan</string>
     <string name="feed_clear_mode">Mode Nonton</string>
-    <string name="feed_report_login_success_toaster_text">Kamu berhasil masuk sebagai Dianthi.</string>
+    <string name="feed_report_login_success_toaster_text">Kamu berhasil masuk sebagai %s.</string>
+    <string name="feeds_tag_product_text">Cek %s Produk</string>
+    <string name="feeds_add_to_cart_success_text">1 barang berhasil ditambahkan ke keranjang</string>
+    <string name="feeds_add_to_cart_toaster_action_text">Lihat</string>
+    <string name="feed_share_title">%s post</string>
+    <string name="feed_share_desc_text">Eh, %s baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
 
 
 </resources>

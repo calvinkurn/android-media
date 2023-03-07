@@ -1,21 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="@color/black">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_feed"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_feed_post_image_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/indicator_feed_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N0"
-        app:typographyType="display_2"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="24dp"
+        app:indicator_type="CIRCLE"
+        app:layout_constraintBottom_toTopOf="@id/layout_author_info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <include
+        android:id="@+id/product_tag_view"
+        layout="@layout/feed_product_tag_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/layout_author_info"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+
+    <include
+        android:id="@+id/layout_author_info"
+        layout="@layout/layout_feed_author_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_feed_caption"
+        app:layout_constraintEnd_toStartOf="@id/like_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_feed_caption"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/like_button"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/layout_author_info"
+        app:typographyType="paragraph_2"
+        tools:text="Post Caption" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/like_button"
@@ -23,14 +70,15 @@
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_color_night_enable="@color/Unify_N0"
         app:icon_name="THUMB"
-        app:unify_image_type="circle"
+        app:layout_constraintBottom_toTopOf="@id/comment_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/comment_button"/>
+        app:unify_image_type="circle"
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/comment_button"
@@ -38,29 +86,15 @@
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_color_night_enable="@color/Unify_N0"
         app:icon_name="CHAT"
-        app:unify_image_type="circle"
+        app:layout_constraintBottom_toTopOf="@id/share_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/menu_button"/>
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/menu_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="16dp"
-        app:icon_color_light_enable="@color/Unify_N0"
-        app:icon_color_night_enable="@color/Unify_N0"
-        app:icon_name="MENU_KEBAB_HORIZONTAL"
         app:unify_image_type="circle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/share_button"/>
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/share_button"
@@ -68,28 +102,62 @@
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_color_night_enable="@color/Unify_N0"
         app:icon_name="SHARE"
-        app:unify_image_type="circle"
+        app:layout_constraintBottom_toTopOf="@id/menu_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/product_tag_button"/>
+        app:unify_image_type="circle"
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/product_tag_button"
+        android:id="@+id/menu_button"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_color_night_enable="@color/Unify_N0"
-        app:icon_name="PRODUCT"
-        app:unify_image_type="circle"
+        app:icon_name="MENU_KEBAB_HORIZONTAL"
+        app:layout_constraintBottom_toTopOf="@id/product_tag_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:unify_image_type="circle"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/product_tag_button"
+        layout="@layout/view_product_see_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_disable_clear_mode"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btn_disable_clear_mode"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/circle_overlay"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="VISIBILITY_OFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unify_image_type="circle"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

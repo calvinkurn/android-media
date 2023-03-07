@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.oldFeed.view.util;
+package com.tokopedia.feedcomponent.presentation.utils;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;

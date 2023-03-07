@@ -34,6 +34,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsRespo
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
+import com.tokopedia.feedcomponent.presentation.utils.EndlessScrollRecycleListener
 import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.oldFeed.view.activity.FeedPlusDetailActivity

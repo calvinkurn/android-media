@@ -8,6 +8,9 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
     BaseAdapter<FeedAdapterTypeFactory>(typeFactory) {
 
-    // TODO : Later to use DiffUtil
+    fun onToggleClearView() {
+        notifyDataSetChanged()
+    }
 
+    // TODO : Later to use DiffUtil
 }
