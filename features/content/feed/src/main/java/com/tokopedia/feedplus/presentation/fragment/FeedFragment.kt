@@ -105,9 +105,9 @@ class FeedFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            data = it.getParcelable(ARGUMENT_DATA)
+            data = it.getParcelable(ARGUMENT_DATA, FeedDataModel::class.java)
         } ?: savedInstanceState?.let {
-            data = it.getParcelable(ARGUMENT_DATA)
+            data = it.getParcelable(ARGUMENT_DATA, FeedDataModel::class.java)
         }
     }
 
@@ -129,7 +129,7 @@ class FeedFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        feedPostViewModel.fetchFeedPosts()
+        feedPostViewModel.fetchFeedPosts(data?.type ?: "")
 
         initView()
         observeClearViewData()
@@ -390,7 +390,7 @@ class FeedFragment :
                     if (newState == RecyclerView.SCROLL_STATE_IDLE &&
                         layoutManager!!.findLastVisibleItemPosition() >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL)
                     ) {
-                        feedPostViewModel.fetchFeedPosts()
+                        feedPostViewModel.fetchFeedPosts(data?.type ?: "")
                     }
                 }
             })

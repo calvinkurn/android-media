@@ -242,8 +242,10 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
             if (data.meta.showLive) {
                 it.btnFeedLive.show()
+                it.labelFeedLive.show()
             } else {
                 it.btnFeedLive.hide()
+                it.labelFeedLive.hide()
             }
         }
     }

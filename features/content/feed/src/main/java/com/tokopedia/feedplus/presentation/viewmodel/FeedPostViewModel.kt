@@ -27,8 +27,6 @@ class FeedPostViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
-    var source: String = ""
-
     private val _feedHome = MutableLiveData<Result<FeedModel>>()
     val feedHome: LiveData<Result<FeedModel>>
         get() = _feedHome
@@ -37,7 +35,7 @@ class FeedPostViewModel @Inject constructor(
     val atcRespData: LiveData<FeedResult<Boolean>>
         get() = _atcResp
 
-    fun fetchFeedPosts() {
+    fun fetchFeedPosts(source: String) {
         launchCatchError(dispatchers.main, block = {
             val cursor = feedHome.value?.let {
                 if (it is Success) {
