@@ -1,16 +1,18 @@
 package com.tokopedia.people.model.followerfollowing
 
-import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.FollowListUiModel
+import com.tokopedia.people.views.uimodel.PeopleUiModel
 
 /**
  * Created By : Jonathan Darwin on July 06, 2022
  */
 class FollowerListModelBuilder {
 
-    fun build(cursor: String, size: Int): Pair<List<ProfileUiModel.PeopleUiModel>, String> {
-        return Pair(
-            List(size) {
-                ProfileUiModel.UserUiModel(
+    fun build(cursor: String, size: Int): FollowListUiModel.Follower {
+        return FollowListUiModel.Follower(
+            total = FollowListUiModel.FollowCount("", ""),
+            followers = List(size) {
+                PeopleUiModel.UserUiModel(
                     id = it.toString(),
                     encryptedId = "",
                     photoUrl = "",
@@ -21,7 +23,7 @@ class FollowerListModelBuilder {
                     appLink = ""
                 )
             },
-            cursor
+            nextCursor = cursor
         )
     }
 }
