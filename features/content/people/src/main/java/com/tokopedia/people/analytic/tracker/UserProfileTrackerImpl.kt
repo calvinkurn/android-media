@@ -75,7 +75,7 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Function.isSelfOrVisit
 import com.tokopedia.people.analytic.UserProfileAnalytics.ScreenName.FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.people.analytic.UserProfileAnalytics.Variable.analyticTracker
 import com.tokopedia.people.analytic.UserProfileAnalytics.Variable.currentSite
-import com.tokopedia.track.TrackApp
+import com.tokopedia.people.analytic.UserProfileAnalytics.Variable.sessionIris
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -94,7 +94,7 @@ class UserProfileTrackerImpl @Inject constructor(
         map[CURRENT_SITE] = currentSite
         map[IS_LOGGED_IN_STATUS] = "${userSession.isLoggedIn.not()}"
         map[SCREEN_NAME] = "/$FEED_USER_PROFILE - ${isLiveOrNotLive(live)}"
-        map[SESSION_IRIS] = TrackApp.getInstance().gtm.irisSessionId
+        map[SESSION_IRIS] = sessionIris
         map[USER_ID] = userId
         map[KEY_TRACKER_ID] = "24604"
 
@@ -111,7 +111,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24605",
@@ -129,7 +129,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24606",
@@ -147,7 +147,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24607",
@@ -165,7 +165,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24608",
@@ -183,7 +183,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24609",
@@ -201,7 +201,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24610",
@@ -219,7 +219,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24611",
@@ -237,7 +237,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24612"
@@ -255,7 +255,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24613",
@@ -273,7 +273,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24614",
@@ -307,7 +307,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24615",
@@ -330,7 +330,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24616",
@@ -348,7 +348,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24617",
@@ -382,7 +382,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24619",
@@ -405,7 +405,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24620",
@@ -435,7 +435,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24622",
@@ -453,7 +453,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24623",
@@ -471,7 +471,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24638",
@@ -501,7 +501,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24640",
@@ -519,7 +519,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24641",
@@ -537,7 +537,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "24642",
@@ -555,7 +555,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "26372",
@@ -573,7 +573,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "26373",
@@ -609,7 +609,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "26374",
@@ -630,7 +630,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "26375",
@@ -648,7 +648,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "26376",
@@ -666,7 +666,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "26377",
@@ -684,7 +684,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "26378",
@@ -702,7 +702,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "26379",
@@ -720,7 +720,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "26380",
@@ -738,7 +738,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "26381",
@@ -756,7 +756,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT,
                 KEY_TRACKER_ID to "33771",
@@ -777,7 +777,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT
             )
@@ -794,7 +794,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT
             )
@@ -811,7 +811,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT
             )
@@ -828,7 +828,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT
             )
@@ -845,7 +845,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT
             )
@@ -862,7 +862,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT
             )
@@ -879,7 +879,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT
             )
@@ -896,7 +896,7 @@ class UserProfileTrackerImpl @Inject constructor(
             ),
             hashMapOf(
                 CURRENT_SITE to currentSite,
-                SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                SESSION_IRIS to sessionIris,
                 USER_ID to userId,
                 BUSINESS_UNIT to CONTENT
             )
@@ -918,7 +918,7 @@ class UserProfileTrackerImpl @Inject constructor(
             .setCustomProperty(TRACKER_ID, "37593")
             .setBusinessUnit(PLAY)
             .setCurrentSite(currentSite)
-            .setCustomProperty(SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(SESSION_IRIS, sessionIris)
             .setUserId(userSession.userId)
             .build()
             .send()
@@ -936,7 +936,7 @@ class UserProfileTrackerImpl @Inject constructor(
             .setCustomProperty(TRACKER_ID, "37604")
             .setBusinessUnit(PLAY)
             .setCurrentSite(currentSite)
-            .setCustomProperty(SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setCustomProperty(SESSION_IRIS, sessionIris)
             .setUserId(userSession.userId)
             .build()
             .send()
