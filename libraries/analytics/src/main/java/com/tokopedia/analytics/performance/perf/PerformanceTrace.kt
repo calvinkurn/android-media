@@ -15,7 +15,7 @@ class PerformanceTrace(val traceName: String) {
     companion object {
         const val TYPE_TTFL = "TTFL"
         const val TYPE_TTIL = "TTIL"
-        const val GLOBAL_LAYOUT_DEBOUNCE = 1000L
+        const val GLOBAL_LAYOUT_DEBOUNCE = 500L
     }
     private var startCurrentTimeMillis = 0L
     var summaryModel: AtomicReference<SummaryModel> = AtomicReference(SummaryModel())
