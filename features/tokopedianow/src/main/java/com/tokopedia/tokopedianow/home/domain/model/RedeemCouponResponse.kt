@@ -13,8 +13,8 @@ data class RedeemCouponResponse(
         val redeemMessage: String = ""
     ) {
         data class Coupon(
-            @SerializedName("appLink")
-            val appLink: String = "",
+            @SerializedName("cta")
+            val cta: String = "",
             @SerializedName("code")
             val code: String = ""
         )

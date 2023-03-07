@@ -85,7 +85,7 @@ object ClaimCouponDataFactory {
             hachikoRedeem = RedeemCouponResponse.HachikoRedeem(
                 coupons = listOf(
                     RedeemCouponResponse.HachikoRedeem.Coupon(
-                        appLink = "tokopedia://now",
+                        cta = "tokopedia://now",
                         code = "BAC"
                     )
                 )

@@ -52,7 +52,7 @@ object CatalogCouponListMapper {
     fun RedeemCouponResponse.mapToClaimCouponDataModel(): HomeClaimCouponDataModel {
         val coupon = hachikoRedeem?.coupons?.firstOrNull()
         return HomeClaimCouponDataModel(
-            appLink = coupon?.appLink.orEmpty(),
+            appLink = coupon?.cta.orEmpty(),
             code = coupon?.code.orEmpty()
         )
     }
