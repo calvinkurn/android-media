@@ -12,7 +12,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
@@ -123,6 +124,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
         PlayBroadcastPreparationBannerAdapter(this)
     }
+    private val mLayoutManager by lazyThreadSafetyNone {
+        LinearLayoutManager(context, HORIZONTAL, false)
+    }
+    private val snapHelper = PagerSnapHelper()
+
     private val fragmentViewContainer = FragmentViewContainer()
 
     private var earlyLiveStreamDialog: DialogUnify? = null
@@ -397,12 +403,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
 
         binding.rvBannerPreparation.apply {
-            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            layoutManager = mLayoutManager
             adapter = adapterBanner
             if (itemDecorationCount == 0) addItemDecoration(
                 PlayBroadcastPreparationBannerItemDecoration(context)
             )
         }
+        snapHelper.attachToRecyclerView(binding.rvBannerPreparation)
     }
 
     private fun setupInsets() {
@@ -1184,6 +1191,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     companion object {
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
+        private const val HALF_DIVED = 2
 
         private const val REQ_PLAY_SHORTS = 12323
     }
