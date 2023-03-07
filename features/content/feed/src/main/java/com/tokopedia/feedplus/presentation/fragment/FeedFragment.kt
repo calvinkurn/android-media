@@ -139,18 +139,9 @@ class FeedFragment :
 
     override fun onDestroyView() {
         binding = null
-        (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)?.let {
-            it.dismiss()
-            it.onDestroy()
-        }
-        (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.let {
-            it.dismiss()
-            it.onDestroy()
-        }
-        (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.let {
-            it.dismiss()
-            it.onDestroy()
-        }
+        (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)?.dismiss()
+        (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
+        (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
         super.onDestroyView()
     }
 
