@@ -2,11 +2,7 @@ package com.tokopedia.graphql.util
 
 import android.util.Log
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.util.Const.GQL_LONG_RESPONSE_LOG_MAX_LENGTH
-import com.tokopedia.graphql.util.Const.GQL_REQUEST_LOG_MAX_LENGTH
-import com.tokopedia.graphql.util.Const.GQL_SHORTENED_ERROR_LOG_MAX_LENGTH
 import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.Priority
 
 object LoggingUtils {
@@ -46,33 +42,15 @@ object LoggingUtils {
     }
 
     @JvmStatic
-    fun oldLogGqlParseError(type: String, err: String, request: String) {
+    fun logGqlParseError(type: String, err: String, request: String) {
         ServerLogger.log(
-            Priority.P1, "GQL_PARSE_ERROR",
+            Priority.P1,
+            "GQL_PARSE_ERROR",
             mapOf(
                 "type" to type,
                 "err" to err.take(Const.GQL_ERROR_MAX_LENGTH).trim(),
                 "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()
             )
-        )
-    }
-
-    @JvmStatic
-    fun logGqlParseError(type: String, err: String, request: GraphqlRequest, response: String) {
-        val regex = ".*(?=\\)).+\\n.*".toRegex()
-        val requestWithParam = regex.find(request.query)?.value.orEmpty() to request.variables.toString()
-        ServerLogger.log(
-            Priority.P1, "GQL_PARSE_ERROR",
-            mutableMapOf(
-                "type" to type,
-                "err" to err.take(GQL_SHORTENED_ERROR_LOG_MAX_LENGTH).trim(),
-                "req" to requestWithParam.toString().take(GQL_REQUEST_LOG_MAX_LENGTH).trim(),
-            ).apply {
-                response.take(GQL_LONG_RESPONSE_LOG_MAX_LENGTH).chunked(Constants.MAX_LENGTH_PER_ITEM)
-                    .forEachIndexed { index, chunk ->
-                        put("response_${index + 1}", chunk)
-                    }
-            }
         )
     }
 

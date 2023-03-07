@@ -77,7 +77,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         );
             } else {
                 return Observable.concat(getCachedResponse(requests, cacheStrategy).subscribeOn(Schedulers.computation()),
-                        getCloudResponse(requests, cacheStrategy).subscribeOn(Schedulers.io()))
+                                getCloudResponse(requests, cacheStrategy).subscribeOn(Schedulers.io()))
                         .first(data -> data != null);
             }
         }).map(response -> {
@@ -90,7 +90,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                         if (data != null && !data.isJsonNull()) {
                             Type type = requests.get(i).getTypeOfT();
-                            Object object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT());
+                            Object object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT(), this.getClass());
                             checkForNull(object, requests.get(i).getQuery(), requests.get(i).isShouldThrow());
                             //Lookup for data
                             mResults.put(type, object);
@@ -101,27 +101,14 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         if (error != null && !error.isJsonNull()) {
                             //Lookup for error
                             errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
-                            }.getType()));
+                            }.getType(), this.getClass()));
                         }
                         LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
                         LoggingUtils.logGqlSuccessRate(operationName, "1");
                     } catch (JsonSyntaxException jse) {
                         LoggingUtils.logGqlSuccessRate(operationName, "0");
                         jse.printStackTrace();
-                        if (RemoteConfigHelper.INSTANCE.isEnableGqlParseErrorLoggingImprovement()) {
-                            String firstStackTrace = "";
-                            if (jse.getStackTrace().length > 0) {
-                                firstStackTrace = jse.getStackTrace()[0].toString();
-                            }
-                            LoggingUtils.logGqlParseError(
-                                    "json",
-                                    jse.getMessage() + "at" + firstStackTrace,
-                                    requests.get(i),
-                                    response.getOriginalResponse().toString()
-                            );
-                        } else {
-                            LoggingUtils.oldLogGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
-                        }
+                        LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
                     } catch (Exception e) {
                         e.printStackTrace();
                         //Just to avoid any accidental data loss
@@ -161,39 +148,25 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 if (TextUtils.isEmpty(cachesResponse)) {
                     continue;
                 }
-                try {
-                    Object object = CommonUtils.fromJson(cachesResponse, copyRequests.get(i).getTypeOfT());
-                    checkForNull(object, copyRequests.get(i).getQuery(), copyRequests.get(i).isShouldThrow());
-                    //Lookup for data
-                    mResults.put(copyRequests.get(i).getTypeOfT(), object);
 
-                    LoggingUtils.logGqlSizeCached("java", requests.toString(), cachesResponse);
+                Object object = CommonUtils.fromJson(cachesResponse, copyRequests.get(i).getTypeOfT(), this.getClass());
+                checkForNull(object, copyRequests.get(i).getQuery(), copyRequests.get(i).isShouldThrow());
+                //Lookup for data
+                mResults.put(copyRequests.get(i).getTypeOfT(), object);
 
-                    mIsCachedData.put(copyRequests.get(i).getTypeOfT(), true);
-                    copyRequests.get(i).setNoCache(true);
-                    mRefreshRequests.add(copyRequests.get(i));
-                    requests.remove(copyRequests.get(i));
+                LoggingUtils.logGqlSizeCached("java", requests.toString(), cachesResponse);
 
-                    LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
-                    LoggingUtils.logGqlSuccessRate(operationName, "1");
-                } catch (JsonSyntaxException jse) {
-                    LoggingUtils.logGqlSuccessRate(operationName, "0");
-                    if (RemoteConfigHelper.INSTANCE.isEnableGqlParseErrorLoggingImprovement()) {
-                        String firstStackTrace = "";
-                        if(jse.getStackTrace().length > 0) {
-                            firstStackTrace = jse.getStackTrace()[0].toString();
-                        }
-                        LoggingUtils.logGqlParseError(
-                                "json",
-                                jse.getMessage() + "at" + firstStackTrace,
-                                requests.get(i),
-                                cachesResponse
-                        );
-                    } else {
-                        LoggingUtils.oldLogGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
-                    }
-                }
+                mIsCachedData.put(copyRequests.get(i).getTypeOfT(), true);
+                copyRequests.get(i).setNoCache(true);
+                mRefreshRequests.add(copyRequests.get(i));
+                requests.remove(copyRequests.get(i));
+
+                LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
+                LoggingUtils.logGqlSuccessRate(operationName, "1");
             }
+        } catch (JsonSyntaxException jse) {
+            LoggingUtils.logGqlSuccessRate(operationName, "0");
+            LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
         } catch (Exception e) {
             e.printStackTrace();
         }
