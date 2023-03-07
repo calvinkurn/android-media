@@ -875,7 +875,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             )
             parentViewModel.submitAction(
                 PlayBroadcastAction.AddBannerPreparation(
-                    PlayBroadcastPreparationBannerModel.bannerDashboard(requireContext())
+                    PlayBroadcastPreparationBannerModel.bannerPerformanceEntryPoint(requireContext())
                 )
             )
             analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
