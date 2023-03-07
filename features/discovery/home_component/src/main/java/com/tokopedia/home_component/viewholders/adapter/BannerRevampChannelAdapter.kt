@@ -32,6 +32,9 @@ class BannerRevampChannelAdapter(
 }
 
 class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerItemListener) : RecyclerView.ViewHolder(itemView) {
+    var y0 = 0f
+    var y1 = 0f
+
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: BannerItemModel) {
         itemView.findViewById<ImageUnify>(R.id.image_banner_revamp).setImageUrl(item.url)
@@ -46,6 +49,12 @@ class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerIte
                 MotionEvent.ACTION_UP -> {
                     listener.onRelease()
                 }
+//                MotionEvent.ACTION_CANCEL -> {
+//                    if (isFromMove) {
+//                        listener.onRelease()
+//                        isFromMove = false
+//                    }
+//                }
             }
             return@setOnTouchListener true
         }

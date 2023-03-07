@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,7 +46,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         const val SCROLLABLE_ITEM_MACRO = 6
         const val SCROLLABLE_ITEM_MACRO_REVAMP = 4
         private const val MARGIN_TOP_MACRO = 6
-        private const val MARGIN_BOTTOM_MACRO = 4
+        private const val MARGIN_BOTTOM_MACRO = 8
         private const val MARGIN_VERTICAL_DEFAULT = 12
         private const val MARGIN_VERTICAL_REVAMP = 8
         private const val MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO = 0
@@ -95,12 +96,12 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                                 itemView.context
                             )
                         }
-                    val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
+                    val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
                     layoutParams.height = maximalTitleHeight
                     iconRecyclerView?.layoutParams = layoutParams
                 }
                 adapterMacro.submitList(element)
-                val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
+                val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
                 if (isRevamp) {
                     layoutParams.setMargins(
                         Int.ZERO,
@@ -134,7 +135,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 adapter.submitList(element)
                 adapter.updatePosition(absoluteAdapterPosition)
                 adapter.setType(element.type)
-                val layoutParams = iconRecyclerView?.layoutParams as RecyclerView.LayoutParams
+                val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
                 layoutParams.setMargins(
                     Int.ZERO,
                     MARGIN_VERTICAL_DEFAULT,
