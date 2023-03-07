@@ -34,7 +34,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
-import androidx.window.FoldingFeature
+import androidx.window.layout.FoldingFeature
 import com.airbnb.lottie.LottieCompositionFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -42,7 +42,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -67,18 +66,7 @@ import com.tokopedia.foldable.FoldableInfo
 import com.tokopedia.foldable.FoldableSupportManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isValidGlideContext
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -245,7 +233,7 @@ class NewShopPageFragment :
         ScreenShotListener,
         PermissionListener,
         MiniCartWidgetListener,
-    FoldableSupportManager.FoldableInfoCallback
+        FoldableSupportManager.FoldableInfoCallback
 {
 
     companion object {
@@ -794,12 +782,12 @@ class NewShopPageFragment :
                 shopPageFragmentHeaderViewHolder?.updateShopTicker(
                     result.data,
                     isMyShop
-                ){ tickerVisibilityState ->
+                ) { tickerVisibilityState ->
                     shopTickerVisibilityState = tickerVisibilityState
                     configShopHeaderForFoldableScreen()
                 }
             }
-        )
+        })
 
         shopViewModel?.shopPageShopShareData?.observe(
             owner,
@@ -3221,7 +3209,7 @@ class NewShopPageFragment :
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
         ShopUtil.isFoldable = foldableInfo.isFoldableDevice()
-        if (foldableInfo.isFoldableDevice() && foldableInfo.isHalfOpen() && foldableInfo.foldingFeature?.orientation == FoldingFeature.ORIENTATION_HORIZONTAL) {
+        if (foldableInfo.isFoldableDevice() && foldableInfo.isHalfOpen() && foldableInfo.foldingFeature?.orientation == FoldingFeature.Orientation.HORIZONTAL) {
             foldableScreenHorizontalBottomBound =
                 foldableInfo.foldingFeature?.bounds?.bottom.orZero()
             ShopUtil.isFoldableAndHorizontalScreen = true
