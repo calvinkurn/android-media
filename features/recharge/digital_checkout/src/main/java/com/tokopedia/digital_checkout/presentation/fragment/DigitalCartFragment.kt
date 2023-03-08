@@ -394,9 +394,13 @@ class DigitalCartFragment :
             )
         }
 
-        val subscriptionProduct = cartInfo.attributes.fintechProduct.firstOrNull {
+        val ifSubscriptionCheckboxDisabled = cartInfo.attributes.fintechProduct.firstOrNull {
             it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
+        }?.checkBoxDisabled
+        if (ifSubscriptionCheckboxDisabled == true) {
+            binding?.checkoutBottomViewWidget?.hideCrossSellConsent()
         }
+
         renderMyBillsLayout(cartInfo)
 
         binding?.let {
