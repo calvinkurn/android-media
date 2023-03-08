@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
@@ -131,7 +132,7 @@ class FeedFragment :
 
         feedPostViewModel.fetchFeedPosts(
             isNewData = true,
-            postId = arguments?.getString(ARGUMENT_RELEVANT_POST_ID)
+            postId = arguments?.getString(UF_EXTRA_FEED_RELEVANT_POST)
         )
 
         initView()
@@ -537,7 +538,6 @@ class FeedFragment :
 
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
-        private const val ARGUMENT_RELEVANT_POST_ID = "ARGUMENT_RELEVANT_POST_ID"
 
         private const val MINIMUM_ENDLESS_CALL = 1
 

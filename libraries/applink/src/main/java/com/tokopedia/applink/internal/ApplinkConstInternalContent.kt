@@ -46,5 +46,11 @@ object ApplinkConstInternalContent {
     const val EXTRA_FEED_TAB_POSITION = "FEED_TAB_POSITION"
     const val ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab"
 
+    /**
+     * Unified Feed
+     */
+    const val UF_TAB_POSITION_FOR_YOU = 0
+    const val UF_EXTRA_FEED_RELEVANT_POST = "FEED_RELEVANT_POST"
+
     internal const val INTERNAL_FEATURE_PREVENTION = "$INTERNAL_CONTENT/content-prevention"
 }
