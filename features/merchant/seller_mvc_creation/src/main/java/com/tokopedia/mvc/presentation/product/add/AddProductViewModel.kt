@@ -144,7 +144,7 @@ class AddProductViewModel @Inject constructor(
                     categoryIds = currentState.selectedCategories.map { it.id.toLong() },
                     showcaseIds = currentState.selectedShopShowcase.map { it.id },
                     page = currentState.page,
-                    pageSize = AddProductFragment.PAGE_SIZE,
+                    pageSize = 20,
                     sortId = currentState.selectedSort.id,
                     sortDirection = currentState.selectedSort.value
                 )
