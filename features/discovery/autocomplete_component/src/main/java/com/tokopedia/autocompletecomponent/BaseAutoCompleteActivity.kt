@@ -98,10 +98,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         findViewById<View>(R.id.activity_container)
     }
 
-    private val handler by lazy {
-        Handler(Looper.getMainLooper())
-    }
-
     var viewModelFactory: ViewModelProvider.Factory? = null
         @Inject set
 
@@ -287,8 +283,10 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     private fun renderSearchBarKeywords(searchBarKeywords: List<SearchBarKeyword>) {
         searchBarKeywordAdapter?.submitList(searchBarKeywords) {
             // need to invalidate the item decorations after list successfully updated
-            handler.post {
-                rvSearchBarKeyword?.invalidateItemDecorations()
+            rvSearchBarKeyword?.let {
+                it.handler?.post {
+                    it.invalidateItemDecorations()
+                }
             }
         }
         if (searchBarKeywords.isNotEmpty()) {
