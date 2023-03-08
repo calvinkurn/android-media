@@ -8,9 +8,13 @@ import com.tokopedia.people.views.uimodel.PeopleUiModel
  */
 class FollowingListModelBuilder {
 
-    fun build(cursor: String, size: Int): FollowListUiModel.Following {
+    fun build(
+        cursor: String = "",
+        size: Int = 0,
+        followCount: FollowListUiModel.FollowCount = FollowListUiModel.FollowCount("", "")
+    ): FollowListUiModel.Following {
         return FollowListUiModel.Following(
-            total = FollowListUiModel.FollowCount("", ""),
+            total = followCount,
             followingList = List(size) {
                 PeopleUiModel.UserUiModel(
                     id = it.toString(),

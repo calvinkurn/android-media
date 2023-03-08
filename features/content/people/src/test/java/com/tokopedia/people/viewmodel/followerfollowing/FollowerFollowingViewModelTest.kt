@@ -11,6 +11,7 @@ import com.tokopedia.people.model.userprofile.MutationUiModelBuilder
 import com.tokopedia.people.robot.FollowerFollowingViewModelRobot
 import com.tokopedia.people.util.equalTo
 import com.tokopedia.people.util.getOrAwaitValue
+import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.FollowResultUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -378,6 +379,32 @@ class FollowerFollowingViewModelTest {
             viewModel.username = expectedResult
 
             viewModel.username equalTo expectedResult
+        }
+    }
+
+    @Test
+    fun `whenever get followers triggered, and it success, then there will be a value for total follow`() {
+        val expectedValue = FollowListUiModel.FollowCount("10", "10")
+        coEvery { repo.getMyFollowers(any(), any(), any()) } returns FollowerListModelBuilder().build(followCount = expectedValue)
+
+        robot.start {
+            this.getFollowers()
+
+            val result = robot.viewModel.followCount.getOrAwaitValue()
+            result equalTo expectedValue
+        }
+    }
+
+    @Test
+    fun `whenever get following list triggered, and it success, then there will be a value for total follow`() {
+        val expectedValue = FollowListUiModel.FollowCount("10", "10")
+        coEvery { repo.getMyFollowing(any(), any(), any()) } returns FollowingListModelBuilder().build(followCount = expectedValue)
+
+        robot.start {
+            this.getFollowings()
+
+            val result = robot.viewModel.followCount.getOrAwaitValue()
+            result equalTo expectedValue
         }
     }
 }
