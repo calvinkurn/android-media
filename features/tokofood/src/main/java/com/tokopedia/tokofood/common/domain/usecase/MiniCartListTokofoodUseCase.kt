@@ -62,6 +62,8 @@ private const val QUERY = """
                       product_id
                       shop_id
                       quantity
+                      price
+                      price_fmt
                       metadata
                       custom_response
                     }

@@ -30,11 +30,11 @@ class ProductCardViewHolder(
     interface OnProductCardItemClickListener {
         fun onProductCardClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
         fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
-        fun onAddNoteButtonClicked(cartId: String, orderNote: String, cardPositions: Pair<Int, Int>)
-        fun onDeleteButtonClicked(cartId: String, cardPositions: Pair<Int, Int>)
-        fun onUpdateProductQty(cartId: String, quantity: Int, cardPositions: Pair<Int, Int>)
-        fun onIncreaseQtyButtonClicked(cartId: String, quantity: Int, cardPositions: Pair<Int, Int>)
-        fun onDecreaseQtyButtonClicked(cartId: String, quantity: Int, cardPositions: Pair<Int, Int>)
+        fun onAddNoteButtonClicked(productId: String, orderNote: String, cardPositions: Pair<Int, Int>)
+        fun onDeleteButtonClicked(cartId: String, productId: String, cardPositions: Pair<Int, Int>)
+        fun onUpdateProductQty(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
+        fun onIncreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
+        fun onDecreaseQtyButtonClicked(productId: String, quantity: Int, cardPositions: Pair<Int, Int>)
         fun onImpressProductCard(productListItem: ProductListItem, position: Int)
     }
 
@@ -66,7 +66,7 @@ class ProductCardViewHolder(
             val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
             val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
             clickListener.onAddNoteButtonClicked(
-                cartId = productUiModel.cartId,
+                productId = productUiModel.id,
                 orderNote = productUiModel.orderNote,
                 cardPositions = Pair(dataSetPosition, adapterPosition)
             )
@@ -76,6 +76,7 @@ class ProductCardViewHolder(
             val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
             clickListener.onDeleteButtonClicked(
                 cartId = productUiModel.cartId,
+                productId = productUiModel.id,
                 cardPositions = Pair(dataSetPosition, adapterPosition)
             )
         }
@@ -92,7 +93,7 @@ class ProductCardViewHolder(
                 val quantity = binding.qeuProductQtyEditor.getValue().orZero()
                 if (quantity != productUiModel.orderQty && quantity >= Int.ONE) {
                     clickListener.onUpdateProductQty(
-                            cartId = productUiModel.cartId,
+                            productId = productUiModel.id,
                             quantity = quantity,
                             cardPositions = Pair(dataSetPosition, adapterPosition)
                     )
@@ -108,7 +109,7 @@ class ProductCardViewHolder(
             val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
             val quantity = binding.qeuProductQtyEditor.getValue()
             clickListener.onIncreaseQtyButtonClicked(
-                cartId = productUiModel.cartId,
+                productId = productUiModel.id,
                 quantity = quantity,
                 cardPositions = Pair(dataSetPosition, adapterPosition)
             )
@@ -119,7 +120,7 @@ class ProductCardViewHolder(
             val quantity = binding.qeuProductQtyEditor.getValue()
             binding.qeuProductQtyEditor.subtractButton.isEnabled = quantity != Int.ONE
             clickListener.onDecreaseQtyButtonClicked(
-                    cartId = productUiModel.cartId,
+                    productId = productUiModel.id,
                     quantity = quantity,
                     cardPositions = Pair(dataSetPosition, adapterPosition)
             )

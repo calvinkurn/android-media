@@ -121,6 +121,7 @@ class MultipleFragmentsViewModel @Inject constructor(
     }
 
     fun deleteProduct(cartId: String,
+                      productId: String,
                       source: String,
                       shouldRefreshCart: Boolean = true) {
         launchCatchError(block = {
@@ -136,7 +137,7 @@ class MultipleFragmentsViewModel @Inject constructor(
                     UiEvent(
                         state = UiEvent.EVENT_SUCCESS_DELETE_PRODUCT,
                         source = source,
-                        data = cartId
+                        data = productId to cartId
                     )
                 )
             }

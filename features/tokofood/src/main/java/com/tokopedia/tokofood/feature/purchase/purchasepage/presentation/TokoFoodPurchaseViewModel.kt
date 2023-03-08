@@ -27,7 +27,6 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.Check
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getProductByCartId
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getProductById
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getProductByUpdateParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getProductWithChangedQuantity
@@ -298,10 +297,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun deleteProduct(cartId: String) {
+    fun deleteProduct(productId: String, cartId: String) {
         refreshPartialCartInformation()
         val dataList = getVisitablesValue()
-        val toBeDeletedProduct = dataList.getProductByCartId(cartId)
+        val toBeDeletedProduct = dataList.getProductById(productId, cartId)
         if (toBeDeletedProduct != null) {
             val toBeDeleteItems = mutableListOf<Visitable<*>>()
             toBeDeleteItems.add(toBeDeletedProduct.second)

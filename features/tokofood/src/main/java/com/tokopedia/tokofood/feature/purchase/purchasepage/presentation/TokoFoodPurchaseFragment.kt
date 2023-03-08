@@ -494,9 +494,13 @@ class TokoFoodPurchaseFragment :
                     }
                     UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
                         if (it.source == SOURCE) {
-                            (it.data as? String)?.let { cartId ->
-                                viewBinding?.recyclerViewPurchase?.post {
-                                    viewModel.deleteProduct(cartId)
+                            (it.data as? Pair<*,*>)?.let { pair ->
+                                (pair.first as? String)?.let { productId ->
+                                    (pair.second as? String)?.let { cartId ->
+                                        viewBinding?.recyclerViewPurchase?.post {
+                                            viewModel.deleteProduct(productId, cartId)
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1035,6 +1039,7 @@ class TokoFoodPurchaseFragment :
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         activityViewModel?.deleteProduct(
             cartId = element.cartId,
+            productId = element.id,
             source = SOURCE,
             shouldRefreshCart = false
         )

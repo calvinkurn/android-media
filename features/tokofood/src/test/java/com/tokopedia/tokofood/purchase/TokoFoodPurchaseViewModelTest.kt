@@ -257,7 +257,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                     data = successResponse.data.copy(
                         businessData = listOf(
                             successResponse.data.getTokofoodBusinessData().copy(
-                                customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
+                                nullableCustomResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     userAddress = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.copy(
                                         addressId = addressId.toLongOrZero()
                                     )
@@ -305,7 +305,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                     data = successResponse.data.copy(
                         businessData = listOf(
                             successResponse.data.getTokofoodBusinessData().copy(
-                                customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
+                                nullableCustomResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     userAddress = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.copy(
                                         addressId = addressId.toLongOrZero()
                                     )
@@ -350,7 +350,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                     data = successResponse.data.copy(
                         businessData = listOf(
                             successResponse.data.getTokofoodBusinessData().copy(
-                                customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
+                                nullableCustomResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     userAddress = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.copy(
                                         addressId = addressId.toLongOrZero()
                                     )
@@ -426,7 +426,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                         businessData = successResponse.data.businessData.map {
                             it.copy(
                                 businessId = TokoFoodCartUtil.getBusinessId(),
-                                customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
+                                nullableCustomResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     popupMessageType = "not promo type"
                                 )
                             )
@@ -470,7 +470,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                     data = successResponse.data.copy(
                         businessData = listOf(
                             successResponse.data.getTokofoodBusinessData().copy(
-                                customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
+                                nullableCustomResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     popupMessageType = "not promo type",
                                     userAddress = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.copy(
                                         addressId = addressId.toLongOrZero()
@@ -522,7 +522,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                     data = successResponse.data.copy(
                         businessData = listOf(
                             successResponse.data.getTokofoodBusinessData().copy(
-                                customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
+                                nullableCustomResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     popupMessageType = "promo",
                                     userAddress = successResponse.data.getTokofoodBusinessData().customResponse.userAddress.copy(
                                         addressId = addressId.toLongOrZero()
@@ -768,7 +768,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
                     data = successResponse.data.copy(
                         businessData = listOf(
                             successResponse.data.getTokofoodBusinessData().copy(
-                                customResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
+                                nullableCustomResponse = successResponse.data.getTokofoodBusinessData().customResponse.copy(
                                     popupMessageType = "not promo type"
                                 )
                             )
@@ -916,7 +916,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             viewModel.setIsHasPinpoint("123", true)
             viewModel.loadData()
-            viewModel.deleteProduct(deletedCartId)
+            viewModel.deleteProduct(deletedProductId, deletedCartId)
 
             assert(
                 viewModel.visitables.value?.any {
@@ -957,7 +957,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             viewModel.setIsHasPinpoint("123", true)
             viewModel.loadData()
-            viewModel.deleteProduct(deletedCartId)
+            viewModel.deleteProduct(deletedProductId, deletedCartId)
 
             val expectedState = PurchaseUiEvent.EVENT_EMPTY_PRODUCTS
 
@@ -994,7 +994,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             viewModel.setIsHasPinpoint("123", true)
             viewModel.loadData()
-            viewModel.deleteProduct(deletedCartId)
+            viewModel.deleteProduct(deletedProductId, deletedCartId)
 
             assert(viewModel.visitables.value?.any {
                 it is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel
@@ -1025,7 +1025,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             viewModel.setIsHasPinpoint("123", true)
             viewModel.loadData()
-            viewModel.deleteProduct(deletedCartId)
+            viewModel.deleteProduct(deletedProductId, deletedCartId)
 
             val expectedTotalProducts =
                 successResponse.data.getTokofoodBusinessData().cartGroups?.getOrNull(0)?.carts?.size.orZero()
@@ -1058,7 +1058,7 @@ class TokoFoodPurchaseViewModelTest : TokoFoodPurchaseViewModelTestFixture() {
 
             viewModel.setIsHasPinpoint("123", true)
             viewModel.loadData()
-            viewModel.deleteProduct(anyString())
+            viewModel.deleteProduct(anyString(), anyString())
 
             val expectedTotalProducts =
                 successResponse.data.getTokofoodBusinessData().cartGroups?.getOrNull(0)?.carts?.size.orZero()

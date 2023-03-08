@@ -164,7 +164,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
                 businessData = listOf(
                     CartListBusinessData(
                         businessId = TokoFoodCartUtil.getBusinessId(),
-                        customResponse = CartListBusinessDataCustomResponse(
+                        nullableCustomResponse = CartListBusinessDataCustomResponse(
                             shop = CartListBusinessDataShop(
                                 shopId = shopId
                             )
@@ -200,7 +200,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
 
             collectFromSharedFlow(
                 whenAction = {
-                    viewModel.deleteProduct(cartId, SOURCE, true)
+                    viewModel.deleteProduct(cartId, anyString(),  SOURCE, true)
                 },
                 then = {
                     coVerify(exactly = 1) {
@@ -221,7 +221,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
 
             collectFromSharedFlow(
                 whenAction = {
-                    viewModel.deleteProduct(cartId, SOURCE, false)
+                    viewModel.deleteProduct(cartId, anyString(),  SOURCE, false)
                 },
                 then = {
                     coVerify(exactly = 0) {
@@ -243,7 +243,7 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
 
             collectFromSharedFlow(
                 whenAction = {
-                    viewModel.deleteProduct(cartId, SOURCE)
+                    viewModel.deleteProduct(cartId, anyString(),  SOURCE)
                 },
                 then = {
                     val expectedUiModelState = UiEvent.EVENT_FAILED_DELETE_PRODUCT

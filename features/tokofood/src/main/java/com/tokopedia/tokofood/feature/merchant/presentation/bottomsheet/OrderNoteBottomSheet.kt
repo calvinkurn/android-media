@@ -13,12 +13,12 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class OrderNoteBottomSheet : BottomSheetUnify() {
 
-    private var selectedCartId: String = ""
+    private var selectedProductId: String = ""
     private var orderNote: String = ""
     private var clickListener: OnSaveNoteButtonClickListener? = null
 
     interface OnSaveNoteButtonClickListener {
-        fun onSaveNoteButtonClicked(cartId: String, orderNote: String)
+        fun onSaveNoteButtonClicked(productId: String, orderNote: String)
     }
 
     companion object {
@@ -71,13 +71,13 @@ class OrderNoteBottomSheet : BottomSheetUnify() {
             this.saveNotesButton.isEnabled = binding.notesInput.editText.text.isNotBlank()
             this.saveNotesButton.setOnClickListener {
                 val orderNote = binding.notesInput.editText.text.toString()
-                clickListener?.onSaveNoteButtonClicked(selectedCartId, orderNote)
+                clickListener?.onSaveNoteButtonClicked(selectedProductId, orderNote)
             }
         }
     }
 
-    fun setSelectedCartId(cartId: String) {
-        this.selectedCartId = cartId
+    fun setSelectedProductId(productId: String) {
+        this.selectedProductId = productId
     }
 
     fun setOrderNote(orderNote: String) {
