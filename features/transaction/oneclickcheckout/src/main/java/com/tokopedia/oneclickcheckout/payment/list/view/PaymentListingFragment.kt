@@ -139,8 +139,11 @@ class PaymentListingFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentPaymentMethodBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -245,8 +248,12 @@ class PaymentListingFragment : BaseDaggerFragment() {
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.build(it, throwable?.message
-                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        it,
+                        throwable?.message
+                            ?: DEFAULT_ERROR_MESSAGE,
+                        type = Toaster.TYPE_ERROR
+                    ).show()
                 }
             }
         }
@@ -274,10 +281,13 @@ class PaymentListingFragment : BaseDaggerFragment() {
 
     private fun goToNextStep(gatewayCode: String, metadata: String) {
         val parent = activity ?: return
-        parent.setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(PaymentListingActivity.EXTRA_RESULT_GATEWAY, gatewayCode)
-            putExtra(PaymentListingActivity.EXTRA_RESULT_METADATA, metadata)
-        })
+        parent.setResult(
+            Activity.RESULT_OK,
+            Intent().apply {
+                putExtra(PaymentListingActivity.EXTRA_RESULT_GATEWAY, gatewayCode)
+                putExtra(PaymentListingActivity.EXTRA_RESULT_METADATA, metadata)
+            }
+        )
         parent.finish()
     }
 
@@ -347,7 +357,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
                         try {
                             map[key] = JsonParser().parse(value)
                         } catch (e: Exception) {
-                            //failed parse json string
+                            // failed parse json string
                             map[key] = value
                         }
                     }

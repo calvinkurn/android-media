@@ -381,6 +381,9 @@ open class TokoChatFragment :
                     ) {
                         viewModel.updateOrderStatusParam(Pair(viewModel.tkpdOrderId, viewModel.source))
                     }
+                    tokoChatAnalytics.sendPendingImpressionOnImageAttachment(
+                        it.data.tokochatOrderProgress.state
+                    )
                 }
                 is Fail -> {
                     logExceptionTokoChat(
@@ -987,13 +990,24 @@ open class TokoChatFragment :
         imageView: ImageView
     ) {
         imageView.addOnImpressionListener(element.impressHolder) {
-            tokoChatAnalytics.impressOnImageAttachment(
-                element.imageId,
-                getOrderState(),
-                viewModel.tkpdOrderId,
-                TokoChatAnalyticsConstants.BUYER,
-                viewModel.source
-            )
+            val state = getOrderState()
+            if (state.isNotEmpty()) {
+                tokoChatAnalytics.impressOnImageAttachment(
+                    attachmentId = element.imageId,
+                    orderStatus = state,
+                    orderId = viewModel.tkpdOrderId,
+                    role = TokoChatAnalyticsConstants.BUYER,
+                    source = viewModel.source
+                )
+            } else {
+                tokoChatAnalytics.saveImpressionOnImageAttachment(
+                    attachmentId = element.imageId,
+                    orderStatus = state,
+                    orderId = viewModel.tkpdOrderId,
+                    role = TokoChatAnalyticsConstants.BUYER,
+                    source = viewModel.source
+                )
+            }
         }
     }
 

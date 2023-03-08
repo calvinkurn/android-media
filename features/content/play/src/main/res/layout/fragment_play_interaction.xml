@@ -237,7 +237,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_offset_12"
-        android:layout_marginEnd="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/play_offset_12"
         app:layout_constraintEnd_toStartOf="@id/view_explore_widget"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/view_toolbar_room"

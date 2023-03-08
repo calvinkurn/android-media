@@ -134,6 +134,7 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
+import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultilocation
@@ -168,6 +169,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
+import com.tokopedia.product.detail.data.model.social_proof.SocialProofUiModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
@@ -213,6 +215,8 @@ import com.tokopedia.product.detail.tracking.ProductArTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
+import com.tokopedia.product.detail.tracking.ProductShopReviewTracking
+import com.tokopedia.product.detail.tracking.ProductSocialProofTracking
 import com.tokopedia.product.detail.tracking.ProductThumbnailVariantTracking
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
@@ -1835,15 +1839,9 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onReviewClick() {
-        viewModel.getDynamicProductInfoP1?.run {
-            DynamicProductDetailTracking.Iris.eventReviewClickedIris(
-                this,
-                deeplinkUrl,
-                basic.shopName
-            )
-            DynamicProductDetailTracking.Moengage.sendMoEngageClickReview(this)
-            goToReviewDetail(basic.productID, getProductName)
-        }
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        socialProofRatingTracking()
+        goToReviewDetail(productInfo.basic.productID, productInfo.getProductName)
     }
 
     override fun onSeeReviewCredibility(
@@ -2258,16 +2256,7 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?) {
-        viewModel.getDynamicProductInfoP1?.run {
-            DynamicProductDetailTracking.Iris.eventDiscussionClickedIris(
-                this,
-                deeplinkUrl,
-                basic.shopName,
-                componentTrackDataModel ?: ComponentTrackDataModel()
-            )
-            DynamicProductDetailTracking.Moengage.sendMoEngageClickDiskusi(this)
-        }
-
+        socialProofTalkTracking(trackData = componentTrackDataModel)
         disscussionClicked()
     }
 
@@ -3634,20 +3623,27 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showAddToCartDoneBottomSheet(cartId: String) {
-        val isNewPostATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
-        if (isNewPostATC) {
-            val productInfo = viewModel.getDynamicProductInfoP1 ?: return
-            val context = context ?: return
-            PostAtcHelper.start(
-                context,
-                productInfo.basic.productID,
-                cartId = cartId,
-                pageSource = PostAtcHelper.Source.PDP,
-                layoutId = productInfo.basic.postAtcLayout.layoutId
-            )
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        val basicInfo = productInfo.basic
+        val postATCLayoutId = basicInfo.postAtcLayout.layoutId
+
+        val remoteNewATC = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_POST_ATC_PDP, true)
+        if (postATCLayoutId.isNotBlank() && remoteNewATC) {
+            showGlobalPostATC(cartId, basicInfo)
         } else {
             showOldPostATC(cartId)
         }
+    }
+
+    private fun showGlobalPostATC(cartId: String, basicInfo: BasicInfo) {
+        val context = context ?: return
+        PostAtcHelper.start(
+            context,
+            basicInfo.productID,
+            cartId = cartId,
+            pageSource = PostAtcHelper.Source.PDP,
+            layoutId = basicInfo.postAtcLayout.layoutId
+        )
     }
 
     private fun showOldPostATC(cartId: String) {
@@ -4034,11 +4030,7 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onBuyerPhotosClicked(componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventClickBuyerPhotosClicked(
-            viewModel.getDynamicProductInfoP1,
-            viewModel.userId,
-            componentTrackDataModel ?: ComponentTrackDataModel()
-        )
+        socialProofMediaTracking(trackData = componentTrackDataModel)
         goToReviewImagePreview()
     }
 
@@ -5929,6 +5921,88 @@ open class DynamicProductDetailFragment :
             labels,
             common,
             componentTrackDataModel
+        )
+    }
+
+    override fun onSocialProofItemImpression(socialProof: SocialProofUiModel) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        ProductSocialProofTracking.onImpression(uiModel = socialProof, productInfo = productInfo)
+    }
+
+    override fun onSocialProofItemClickTracking(
+        identifier: SocialProofUiModel.Identifier,
+        trackData: ComponentTrackDataModel?
+    ) {
+        when (identifier) {
+            SocialProofUiModel.Identifier.Talk -> socialProofTalkTracking(trackData = trackData)
+            SocialProofUiModel.Identifier.Media -> socialProofMediaTracking(trackData = trackData)
+            SocialProofUiModel.Identifier.NewProduct -> socialProofNewProductTracking(trackData = trackData)
+            SocialProofUiModel.Identifier.Rating -> socialProofRatingTracking()
+            SocialProofUiModel.Identifier.ShopRating -> socialProofShopRatingTracking(trackData = trackData)
+            else -> {
+                // no-ops
+            }
+        }
+    }
+
+    private fun socialProofTalkTracking(trackData: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        ProductSocialProofTracking.onTalkClicked(
+            deepLink = deeplinkUrl,
+            productInfo = productInfo,
+            trackDataModel = trackData
+        )
+    }
+
+    private fun socialProofMediaTracking(trackData: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        ProductSocialProofTracking.onMediaClicked(
+            productInfo = productInfo,
+            userId = viewModel.userId,
+            trackDataModel = trackData ?: ComponentTrackDataModel()
+        )
+    }
+
+    private fun socialProofNewProductTracking(trackData: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        ProductSocialProofTracking.onNewProductClicked(
+            productInfo = productInfo,
+            trackDataModel = trackData
+        )
+    }
+
+    private fun socialProofRatingTracking() {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        ProductSocialProofTracking.onRatingClicked(
+            deepLink = deeplinkUrl,
+            productInfo = productInfo
+        )
+    }
+
+    private fun socialProofShopRatingTracking(trackData: ComponentTrackDataModel?) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        ProductSocialProofTracking.onShopRatingClicked(
+            productInfo = productInfo,
+            trackDataModel = trackData
+        )
+    }
+
+    override fun onShopReviewSeeMore(
+        appLink: String,
+        eventLabel: String,
+        trackData: ComponentTrackDataModel?
+    ) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+
+        goToApplink(url = appLink)
+        ProductShopReviewTracking.onItemClicked(
+            productInfo = productInfo,
+            trackDataModel = trackData,
+            eventLabel = eventLabel
         )
     }
 }
