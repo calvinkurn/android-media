@@ -27,15 +27,19 @@
             android:gravity="right"
             tools:ignore="RtlHardcoded">
 
-            <com.tokopedia.unifycomponents.ImageUnify
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/tokochat_icon_msg_censor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="13dp"
-                android:layout_marginTop="14dp"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/tokochat_ic_image_warning" />
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="14dp"
+                app:icon_color_light_enable="@color/Unify_NN500"
+                app:icon_color_light_disabled="@color/Unify_NN500"
+                app:icon_color_night_enable="@color/Unify_NN500"
+                app:icon_color_night_disabled="@color/Unify_NN500"
+                app:icon_name="WARNING" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tokochat_tv_msg_censor"
@@ -82,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:paddingBottom="10dp"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:layout_constraintStart_toStartOf="@id/tokochat_tv_msg_censor"
                 app:layout_constraintTop_toBottomOf="@+id/tokochat_tv_msg_censor"
                 app:typographyType="display_3"

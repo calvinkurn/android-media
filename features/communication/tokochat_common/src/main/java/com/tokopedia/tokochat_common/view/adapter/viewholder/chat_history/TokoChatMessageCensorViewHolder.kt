@@ -1,6 +1,5 @@
 package com.tokopedia.tokochat_common.view.adapter.viewholder.chat_history
 
-import android.graphics.Typeface
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -25,7 +24,6 @@ class TokoChatMessageCensorViewHolder(
     }
 
     private fun bindCensorText() {
-        binding?.tokochatTvMsgCensor?.setTypeface(null, Typeface.ITALIC)
         binding?.tokochatTvMsgCensor?.setText(R.string.tokochat_message_censored)
     }
 

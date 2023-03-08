@@ -25,7 +25,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:typographyType="paragraph_2"
-        android:text="Supaya ngobrolnya makin lancar, ikuti tips di bawah ini:"/>
+        android:text="@string/tokochat_message_censored_bottomsheet_subtitle"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokochat_tv_desc_guide_chat_number_one"
@@ -137,6 +137,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tokochat_tv_terms_condition_guide_chat"
         app:layout_constraintVertical_bias="1"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:background="@color/Unify_NN50"/>
 
@@ -149,6 +150,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="22dp"
         android:gravity="center"
+        app:typographyType="display_3"
+        android:textColor="@color/Unify_NN600"
         tools:text="@string/tokochat_message_censored_terms_condition"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

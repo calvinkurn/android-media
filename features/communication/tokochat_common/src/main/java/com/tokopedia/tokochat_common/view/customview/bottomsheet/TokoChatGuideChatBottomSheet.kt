@@ -1,11 +1,14 @@
 package com.tokopedia.tokochat_common.view.customview.bottomsheet
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +26,10 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class TokoChatGuideChatBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TokochatGuideChatBottomsheetBinding>()
+
+    init {
+        clearContentPadding = true
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +63,12 @@ class TokoChatGuideChatBottomSheet: BottomSheetUnify() {
         try {
             val startPosition = completeString.indexOf(TERMS_CONDITION_SPAN)
             val endPosition = completeString.lastIndexOf(TERMS_CONDITION_SPAN) + TERMS_CONDITION_SPAN.length
+            spannableString.setSpan(
+                StyleSpan(Typeface.BOLD),
+                startPosition,
+                endPosition,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             spannableString.setSpan(
                 getTermsConditionClick(),
                 startPosition,

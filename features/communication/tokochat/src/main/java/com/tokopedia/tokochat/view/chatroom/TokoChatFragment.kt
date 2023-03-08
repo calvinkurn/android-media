@@ -26,6 +26,7 @@ import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -1100,6 +1101,7 @@ open class TokoChatFragment :
 
 
     override fun onClickCheckGuide() {
+        view?.hideKeyboard()
         TokoChatGuideChatBottomSheet().show(childFragmentManager)
     }
 
