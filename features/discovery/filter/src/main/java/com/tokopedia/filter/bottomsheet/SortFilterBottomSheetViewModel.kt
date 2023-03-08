@@ -21,6 +21,7 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackAppUtils
 import kotlin.math.max
 
@@ -470,7 +471,7 @@ internal class SortFilterBottomSheetViewModel {
     private fun createPriceRangeClickTrackingEventAction(priceOptionViewModel: PriceOptionViewModel): String {
         return String.format(
                 FilterEventTracking.Action.CLICK_FILTER_PRICE_RANGE,
-                priceOptionViewModel.option.valMin.toInt(), priceOptionViewModel.option.valMax.toInt(), priceOptionViewModel.position
+                priceOptionViewModel.option.valMin.toIntOrZero(), priceOptionViewModel.option.valMax.toIntOrZero(), priceOptionViewModel.position
         )
     }
 

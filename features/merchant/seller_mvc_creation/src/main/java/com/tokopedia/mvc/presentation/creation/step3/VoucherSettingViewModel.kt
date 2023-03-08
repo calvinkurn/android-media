@@ -23,7 +23,6 @@ import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStep
 import com.tokopedia.mvc.presentation.creation.step3.uimodel.VoucherCreationStepThreeUiState
 import com.tokopedia.mvc.util.constant.CommonConstant
 import com.tokopedia.mvc.util.constant.TickerConstant
-import com.tokopedia.mvc.util.extension.firstTickerMessage
 import com.tokopedia.mvc.util.extension.isCashback
 import com.tokopedia.mvc.util.extension.isDiscount
 import com.tokopedia.mvc.util.extension.isFreeShipping
@@ -80,6 +79,26 @@ class VoucherSettingViewModel @Inject constructor(
         pageMode: PageMode,
         voucherConfiguration: VoucherConfiguration
     ) {
+        val voucherServiceType =
+            getVoucherServiceType(voucherConfiguration.isVoucherProduct)
+        val voucherTarget = getVoucherTarget(voucherConfiguration.isVoucherPublic)
+        val availableTargetBuyer = findBuyerTarget(voucherServiceType, voucherTarget, voucherConfiguration.promoType)
+
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                pageMode = pageMode,
+                voucherConfiguration = voucherConfiguration.copy(
+                    isFinishFilledStepTwo = true
+                ),
+                availableTargetBuyer = availableTargetBuyer
+            )
+        }
+
+        getVoucherCreationMetadata(pageMode, currentState.voucherConfiguration)
+    }
+
+    private fun getVoucherCreationMetadata(pageMode: PageMode, voucherConfiguration: VoucherConfiguration) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -94,34 +113,24 @@ class VoucherSettingViewModel @Inject constructor(
                 val isDiscountPromoTypeEnabled = voucherCreationMetadata.discountActive
 
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        pageMode = pageMode,
-                        voucherConfiguration = voucherConfiguration.copy(
-                            isFinishFilledStepTwo = true
-                        ),
-                        isDiscountPromoTypeEnabled = isDiscountPromoTypeEnabled
-                    )
+                    it.copy(isDiscountPromoTypeEnabled = isDiscountPromoTypeEnabled)
                 }
 
-                getTickerWording()
+                getTickers()
                 handleVoucherInputValidation()
             },
             onError = {}
         )
     }
 
-    private fun getTickerWording() {
+    private fun getTickers() {
         launchCatchError(
             dispatchers.io,
             block = {
-                val tickerWordingParam = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_VOUCHER_CREATION_PAGE)
-                val tickerWordings = getTargetedTickerUseCase.execute(tickerWordingParam)
-                val tickerWording = tickerWordings.getTargetedTicker.list.firstTickerMessage()
+                val tickersParams = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_VOUCHER_CREATION_PAGE)
+                val tickers = getTargetedTickerUseCase.execute(tickersParams)
 
-                _uiState.update {
-                    it.copy(discountPromoTypeDisabledReason = tickerWording)
-                }
+                _uiState.update { it.copy(tickers = tickers) }
             },
             onError = {}
         )
@@ -148,11 +157,13 @@ class VoucherSettingViewModel @Inject constructor(
                 getVoucherServiceType(currentState.voucherConfiguration.isVoucherProduct)
             val voucherTarget = getVoucherTarget(currentState.voucherConfiguration.isVoucherPublic)
             val availableTargetBuyer = findBuyerTarget(voucherServiceType, voucherTarget, promoType)
+
             _uiState.update {
                 it.copy(
                     isLoading = false,
                     voucherConfiguration = it.voucherConfiguration.copy(
-                        promoType = promoType
+                        promoType = promoType,
+                        targetBuyer = VoucherTargetBuyer.ALL_BUYER
                     ),
                     spendingEstimation = 0,
                     availableTargetBuyer = availableTargetBuyer

@@ -61,34 +61,33 @@ class OrderSummaryPageActivityCreditCardRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp("Bayar Penuh")
 
             assertPayment("Rp116.725", "Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp116.725",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1725.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp15.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp116.725",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1725.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -101,7 +100,6 @@ class OrderSummaryPageActivityCreditCardRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp("Bayar Penuh")
 
             clickAddProductQuantity(times = 4)
@@ -116,27 +114,27 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp500.000",
-                        shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp527.875",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 12875.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp500.000",
+                    shippingPrice = "Rp15.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp527.875",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 12875.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -149,7 +147,6 @@ class OrderSummaryPageActivityCreditCardRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp(null)
 
             assertProfilePaymentErrorRevamp("Kedaluwarsa", "Ubah")
@@ -166,7 +163,6 @@ class OrderSummaryPageActivityCreditCardRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp(null)
 
             assertProfilePaymentErrorRevamp("Kartu Kredit telah dihapus", "Ubah")
@@ -183,7 +179,6 @@ class OrderSummaryPageActivityCreditCardRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp(null)
 
             assertPayment("Rp116.725", "Ganti Metode Bayar")
@@ -200,7 +195,6 @@ class OrderSummaryPageActivityCreditCardRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp("Bayar Penuh")
 
             clickAddProductQuantity(times = 4)
@@ -219,19 +213,19 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp400.000",
-                        shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp425.375",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 10375.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp400.000",
+                    shippingPrice = "Rp15.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp425.375",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 10375.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
@@ -241,8 +235,8 @@ class OrderSummaryPageActivityCreditCardRevampTest {
             assertPaymentButtonEnable(false)
 
             assertInstallmentErrorRevamp(
-                    errorMessage = "Cicilan tidak tersedia.",
-                    errorAction = "Ubah"
+                errorMessage = "Cicilan tidak tersedia.",
+                errorAction = "Ubah"
             )
 
             clickInstallmentErrorActionRevamp {
@@ -257,9 +251,9 @@ class OrderSummaryPageActivityCreditCardRevampTest {
             Thread.sleep(1000)
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -272,34 +266,33 @@ class OrderSummaryPageActivityCreditCardRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertPayment("Rp25.375", "Ganti Metode Bayar")
 
             assertProfilePaymentErrorRevamp("Belanjaanmu kurang dari min. transaksi Kartu Kredit.", "Ubah")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp10.000",
-                        shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp25.375",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 375.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp10.000",
+                    shippingPrice = "Rp15.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp25.375",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 375.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
@@ -312,34 +305,33 @@ class OrderSummaryPageActivityCreditCardRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             assertInstallmentRevamp(null)
 
             assertPayment("Rp116.725", "Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp100.000",
-                        shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
-                        totalPrice = "Rp116.725",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1725.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp100.000",
+                    shippingPrice = "Rp15.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp116.725",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1725.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
         } pay {
             assertGoToPayment(
-                    redirectUrl = "https://www.tokopedia.com/payment",
-                    queryString = "transaction_id=123",
-                    method = "POST"
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }

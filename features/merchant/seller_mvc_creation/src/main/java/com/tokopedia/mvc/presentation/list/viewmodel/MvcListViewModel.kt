@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.mvc.R
 import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadataWithRemoteTickerMessage
@@ -32,12 +33,10 @@ import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.constant.TickerConstant
-import com.tokopedia.mvc.util.extension.firstTickerMessage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.mvc.R
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -183,6 +182,7 @@ class MvcListViewModel @Inject constructor(
 
     fun getFilterCount(): Int {
         var count = 0
+        if (isFilterReseted()) return count
         filter.apply {
             if (status.isNotEmpty()) count = count.inc()
             if (voucherType.isNotEmpty()) count = count.inc()
@@ -192,6 +192,10 @@ class MvcListViewModel @Inject constructor(
             if (targetBuyer.isNotEmpty()) count = count.inc()
         }
         return count
+    }
+
+    fun isFilterReseted(): Boolean {
+        return filter == FilterModel()
     }
 
     fun stopVoucher(voucher: Voucher) {
@@ -287,15 +291,14 @@ class MvcListViewModel @Inject constructor(
                 val voucherCreationMetadataDeferred = async { getInitiateVoucherPageUseCase.execute() }
 
 
-                val tickerWordingParam = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_VOUCHER_LIST_PAGE)
-                val tickerWordingDeferred = async { getTargetedTickerUseCase.execute(tickerWordingParam) }
+                val tickersParam = GetTargetedTickerUseCase.Param(TickerConstant.REMOTE_TICKER_KEY_VOUCHER_LIST_PAGE)
+                val tickersDeferred = async { getTargetedTickerUseCase.execute(tickersParam) }
 
                 val voucherCreationMetadata = voucherCreationMetadataDeferred.await()
 
-                val tickerWordings = tickerWordingDeferred.await()
-                val tickerWording = tickerWordings.getTargetedTicker.list.firstTickerMessage()
+                val tickers = tickersDeferred.await()
 
-                val data = VoucherCreationMetadataWithRemoteTickerMessage(voucherCreationMetadata, tickerWording)
+                val data = VoucherCreationMetadataWithRemoteTickerMessage(voucherCreationMetadata, tickers)
                 _voucherCreationMetadata.postValue(Success(data))
             },
             onError = { error ->

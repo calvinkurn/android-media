@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetBuyerOrderDetailUseCase @Inject constructor(
-    dispatchers: CoroutineDispatchers, private val repository: GraphqlRepository
+    dispatchers: CoroutineDispatchers,
+    private val repository: GraphqlRepository
 ) : BaseGraphqlUseCase<GetBuyerOrderDetailParams, GetBuyerOrderDetailRequestState>(dispatchers) {
 
     override fun graphqlQuery() = QUERY
@@ -127,6 +128,28 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   payment_amount {
                     label
                     value
+                  }
+                  payment_refund {
+                    summary_info {
+                      details {
+                        label
+                        value
+                      }
+                      total_amount {
+                        label
+                        value
+                      }
+                      footer
+                    }
+                    estimate_info {
+                      title
+                      info
+                    }
+                    total_amount {
+                      label
+                      value
+                    }
+                    is_refunded
                   }
                 }
                 button {
@@ -290,6 +313,87 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       total_quantity
                     }
                   }
+                  partial_fulfillment {
+                    fulfilled {
+                      header {
+                        title
+                        quantity
+                      }
+                    }
+                    unfulfilled {
+                      header {
+                        title
+                        quantity
+                      }
+                      details {
+                        order_detail_id
+                        product_id
+                        product_name
+                        product_url
+                        thumbnail
+                        price
+                        price_text
+                        quantity
+                        total_price
+                        total_price_text
+                        notes
+                        category_id
+                        category
+                        button {
+                          key
+                          display_name
+                          type
+                          variant
+                          url
+                          popup {
+                            title
+                            body
+                            action_button {
+                              key
+                              display_name
+                              color
+                              type
+                              uri
+                            }
+                          }
+                        }
+                        addon_summary {
+                          addons {
+                            order_id
+                            id
+                            level
+                            name
+                            price_str
+                            subtotal_price
+                            subtotal_price_str
+                            quantity
+                            type
+                            image_url
+                            metadata {
+                              add_on_note {
+                                from
+                                to
+                                notes
+                                short_notes
+                              }
+                            }
+                            create_time
+                          }
+                          total
+                          total_price
+                          total_price_str
+                          total_quantity
+                        }
+                      }
+                    }
+                  }
+                  ticker_info {
+                    text
+                    action_text
+                    action_key
+                    action_url
+                    type
+                  }
                 }
                 addon_info {
                   label
@@ -332,6 +436,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     consultation_patient_name
                   }
                 }
+                is_pof
                 has_ppp
               }
             }
