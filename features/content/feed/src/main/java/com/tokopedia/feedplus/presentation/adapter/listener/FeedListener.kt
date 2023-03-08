@@ -10,4 +10,5 @@ interface FeedListener {
     fun inClearViewMode(): Boolean
     fun onSharePostClicked(model: FeedCardImageContentModel)
     fun onFollowClicked(id: String, isShop: Boolean)
+    fun changeTab(type: String)
 }

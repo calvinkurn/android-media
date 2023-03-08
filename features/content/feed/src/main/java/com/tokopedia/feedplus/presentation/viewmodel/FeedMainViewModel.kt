@@ -47,6 +47,25 @@ class FeedMainViewModel @Inject constructor(
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
 
+    private val _currentTabIndex = MutableLiveData<Int>()
+    val currentTabIndex: LiveData<Int>
+        get() = _currentTabIndex
+
+    fun changeCurrentTabByIndex(index: Int) {
+        _currentTabIndex.value = index
+    }
+
+    fun changeCurrentTabByType(type: String) {
+        feedTabs.value?.let {
+            if (it is Success) {
+                it.data.data.forEachIndexed { index, tab ->
+                    if (tab.type == type && tab.isActive) {
+                        _currentTabIndex.value = index
+                    }
+                }
+            }
+        }
+    }
 
     fun fetchFeedTabs() {
         launchCatchError(dispatchers.main, block = {

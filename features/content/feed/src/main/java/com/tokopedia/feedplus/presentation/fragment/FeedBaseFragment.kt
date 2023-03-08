@@ -76,6 +76,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
         observeFeedTabData()
         observeCreateContentBottomSheetData()
+        observeCurrentTabPosition()
     }
 
     override fun onDestroyView() {
@@ -127,6 +128,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        feedMainViewModel.fetchFeedTabs()
+    }
+
     private fun observeFeedTabData() {
         feedMainViewModel.feedTabs.observe(
             viewLifecycleOwner
@@ -158,9 +164,10 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        feedMainViewModel.fetchFeedTabs()
+    private fun observeCurrentTabPosition() {
+        feedMainViewModel.currentTabIndex.observe(viewLifecycleOwner) {
+            onChangeTab(it)
+        }
     }
 
     private fun initView(data: FeedTabsModel) {
@@ -169,15 +176,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
             it.vpFeedTabItemsContainer.adapter = adapter
             it.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    onChangeTab(position)
-                }
-            })
+                    OnPageChangeCallback() {
+                    override fun onPageScrolled(
+                        position: Int,
+                        positionOffset: Float,
+                        positionOffsetPixels: Int
+                    ) {
+                        onChangeTab(position)
+                    }
+                })
 
             var firstTabData: FeedDataModel? = null
             var secondTabData: FeedDataModel? = null
@@ -210,8 +217,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
 
             if (data.meta.showMyProfile) {
-                if (data.meta.profilePhotoUrl.isNotEmpty())
+                if (data.meta.profilePhotoUrl.isNotEmpty()) {
                     it.feedUserProfileImage.setImageUrl(data.meta.profilePhotoUrl)
+                }
 
                 it.feedUserProfileImage.setOnClickListener { _ ->
                     RouteManager.route(it.root.context, data.meta.profileApplink)

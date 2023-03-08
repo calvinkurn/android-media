@@ -225,6 +225,10 @@ class FeedFragment :
         feedPostViewModel.doFollow(id, isShop)
     }
 
+    override fun changeTab(type: String) {
+        feedMainViewModel.changeCurrentTabByType(type)
+    }
+
     override fun onProductTagItemClicked(model: FeedCardImageContentModel) {
         openProductTagBottomSheet(model)
     }
