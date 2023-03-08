@@ -177,35 +177,33 @@ object VariantTwoLevelByOneLevelSelectedUseCase {
         var isFlashSale = false
         var stock = 0
 
-        if (option.id in selectedVariant) {
-            for (child in variantData.children) {
-                // if variant option into variant selected and variant selected ids into child optionIds
-                if (child.optionIds == selectedVariant) {
-                    isFlashSale = child.isFlashSale
-                    stock = child.stock?.stock.orZero()
-                    state = if (child.isBuyable) { // selected and can to buy
-                        VariantConstant.STATE_SELECTED
-                    } else { // selected and can not to buy
-                        VariantConstant.STATE_SELECTED_EMPTY
-                    }
-                    break
+        // looping the children for set state, flash sale and stock
+        for (child in variantData.children) {
+            if (option.id in selectedVariant && child.optionIds == selectedVariant) {
+                // this condition is the currently selected variant option
+                // when variant option is in variant selected and child options ids equals selected variant
+
+                isFlashSale = child.isFlashSale
+                stock = child.stock?.stock.orZero()
+                state = if (child.isBuyable) { // selected and can to buy
+                    VariantConstant.STATE_SELECTED
+                } else { // selected and can not to buy
+                    VariantConstant.STATE_SELECTED_EMPTY
                 }
-            }
-        } else {
-            for (child in variantData.children) {
+                break
+            } else if (option.id == child.optionIds.lastOrNull() && selectedVariant.firstOrNull() == child.optionIds.firstOrNull()) {
                 // match variant id from
                 // [0] is variant on one level -> from variant selected get first item
                 // [1] is variant on two level -> from option id
-                if (option.id == child.optionIds.lastOrNull() && selectedVariant.firstOrNull() == child.optionIds.firstOrNull()) {
-                    isFlashSale = child.isFlashSale
-                    stock = child.stock?.stock.orZero()
-                    state = if (child.isBuyable) { // un-selected and can to buy
-                        VariantConstant.STATE_UNSELECTED
-                    } else { // un-selected and can not to buy because stock is empty
-                        VariantConstant.STATE_EMPTY
-                    }
-                    break
+
+                isFlashSale = child.isFlashSale
+                stock = child.stock?.stock.orZero()
+                state = if (child.isBuyable) { // un-selected and can to buy
+                    VariantConstant.STATE_UNSELECTED
+                } else { // un-selected and can not to buy because stock is empty
+                    VariantConstant.STATE_EMPTY
                 }
+                break
             }
         }
 
