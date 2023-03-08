@@ -102,7 +102,8 @@ object ChannelMapper {
                         LabelGroup(
                             title = label.title,
                             position = label.position,
-                            type = label.type
+                            type = label.type,
+                            url = label.url
                         )
                     },
                     rating = it.rating,
