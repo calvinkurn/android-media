@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.speech.RecognizerIntent
 import android.text.Editable
 import android.view.View
@@ -94,6 +96,10 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
     private val container by lazy {
         findViewById<View>(R.id.activity_container)
+    }
+
+    private val handler by lazy {
+        Handler(Looper.getMainLooper())
     }
 
     var viewModelFactory: ViewModelProvider.Factory? = null
@@ -279,7 +285,12 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
 
     private fun renderSearchBarKeywords(searchBarKeywords: List<SearchBarKeyword>) {
-        searchBarKeywordAdapter?.submitList(searchBarKeywords)
+        searchBarKeywordAdapter?.submitList(searchBarKeywords) {
+            // need to invalidate the item decorations after list successfully updated
+            handler.post {
+                rvSearchBarKeyword?.invalidateItemDecorations()
+            }
+        }
         if (searchBarKeywords.isNotEmpty()) {
             rvSearchBarKeyword.visible()
         } else {
