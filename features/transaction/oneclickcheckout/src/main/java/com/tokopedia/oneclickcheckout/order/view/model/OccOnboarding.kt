@@ -1,11 +1,11 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 data class OccOnboarding(
-        val isForceShowCoachMark: Boolean = false,
-        val isShowOnboardingTicker: Boolean = false,
-        val coachmarkType: Int = 0,
-        val onboardingTicker: OccOnboardingTicker = OccOnboardingTicker(),
-        val onboardingCoachMark: OccOnboardingCoachMark = OccOnboardingCoachMark()
+    val isForceShowCoachMark: Boolean = false,
+    val isShowOnboardingTicker: Boolean = false,
+    val coachmarkType: Int = 0,
+    val onboardingTicker: OccOnboardingTicker = OccOnboardingTicker(),
+    val onboardingCoachMark: OccOnboardingCoachMark = OccOnboardingCoachMark()
 ) {
     companion object {
         internal const val COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE = 5
@@ -13,20 +13,20 @@ data class OccOnboarding(
 }
 
 data class OccOnboardingTicker(
-        val title: String = "",
-        val message: String = "",
-        val image: String = "",
-        val showActionButton: Boolean = false,
-        val actionText: String = ""
+    val title: String = "",
+    val message: String = "",
+    val image: String = "",
+    val showActionButton: Boolean = false,
+    val actionText: String = ""
 )
 
 data class OccOnboardingCoachMark(
-        val skipButtonText: String = "",
-        val details: List<OccOnboardingCoachMarkDetail> = emptyList()
+    val skipButtonText: String = "",
+    val details: List<OccOnboardingCoachMarkDetail> = emptyList()
 )
 
 data class OccOnboardingCoachMarkDetail(
-        val step: Int = 0,
-        val title: String = "",
-        val message: String = ""
+    val step: Int = 0,
+    val title: String = "",
+    val message: String = ""
 )

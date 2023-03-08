@@ -28,7 +28,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.secUtilObs
     implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     implementation rootProject.ext.miscDependencies.dagger

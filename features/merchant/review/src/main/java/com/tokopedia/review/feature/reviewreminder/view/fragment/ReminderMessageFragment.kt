@@ -36,6 +36,9 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReminderMessageFragment : BaseDaggerFragment() {
@@ -86,8 +89,8 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     override fun initInjector() {
         val component = activity?.run {
             DaggerReviewReminderComponent.builder()
-                    .reviewComponent(ReviewInstance.getComponent(application))
-                    .build()
+                .reviewComponent(ReviewInstance.getComponent(application))
+                .build()
         }
         component?.inject(this)
     }
@@ -114,7 +117,6 @@ class ReminderMessageFragment : BaseDaggerFragment() {
     }
 
     private fun initView() {
-
         rvProducts?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = reviewProductAdapter
@@ -134,28 +136,19 @@ class ReminderMessageFragment : BaseDaggerFragment() {
 
         buttonSend?.setOnClickListener {
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-
                 setTitle(getString(R.string.review_reminder_dialog_send_title))
                 val stringEstimation = getString(
-                        R.string.review_reminder_dialog_description,
-                        estimation?.totalBuyer ?: 0,
-                        estimation?.totalProduct ?: 0
+                    R.string.review_reminder_dialog_description,
+                    estimation?.totalBuyer ?: 0,
+                    estimation?.totalProduct ?: 0
                 )
                 setDescription(HtmlCompat.fromHtml(stringEstimation, HtmlCompat.FROM_HTML_MODE_COMPACT))
 
                 setPrimaryCTAText(getString(R.string.review_reminder_dialog_send_button_primary))
                 setPrimaryCTAClickListener {
+                    buttonSend?.isLoading = true
                     viewModel?.sendReminder(textSampleMessage?.text?.toString())
                     dismiss()
-                    view?.let {
-                        Toaster.build(
-                                it,
-                                getString(R.string.review_reminder_snackbar_sending),
-                                Snackbar.LENGTH_LONG,
-                                Toaster.TYPE_NORMAL,
-                                "Oke"
-                        ).show()
-                    }
                 }
 
                 setSecondaryCTAText(getString(R.string.review_reminder_dialog_send_button_secondary))
@@ -177,21 +170,21 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         prefs?.let { prefs ->
             if (!prefs.getBoolean(ReviewConstants.HAS_COACHMARK_REMINDER_MESSAGE, false)) {
                 val coachMarkItems = arrayListOf(
-                        CoachMark2Item(
-                                textSampleMessage as View,
-                                getString(R.string.review_reminder_coachmark_1_title),
-                                getString(R.string.review_reminder_coachmark_1_description)
-                        ),
-                        CoachMark2Item(
-                                buttonEditMessage as View,
-                                getString(R.string.review_reminder_coachmark_2_title),
-                                getString(R.string.review_reminder_coachmark_2_description)
-                        ),
-                        CoachMark2Item(
-                                cardProducts as View,
-                                getString(R.string.review_reminder_coachmark_3_title),
-                                getString(R.string.review_reminder_coachmark_3_description)
-                        )
+                    CoachMark2Item(
+                        textSampleMessage as View,
+                        getString(R.string.review_reminder_coachmark_1_title),
+                        getString(R.string.review_reminder_coachmark_1_description)
+                    ),
+                    CoachMark2Item(
+                        buttonEditMessage as View,
+                        getString(R.string.review_reminder_coachmark_2_title),
+                        getString(R.string.review_reminder_coachmark_2_description)
+                    ),
+                    CoachMark2Item(
+                        cardProducts as View,
+                        getString(R.string.review_reminder_coachmark_3_title),
+                        getString(R.string.review_reminder_coachmark_3_description)
+                    )
                 )
                 val coachMark = CoachMark2(requireContext())
                 coachMark.setOnDismissListener { prefs.edit().putBoolean(ReviewConstants.HAS_COACHMARK_REMINDER_MESSAGE, true).apply() }
@@ -205,7 +198,6 @@ class ReminderMessageFragment : BaseDaggerFragment() {
                             coachMark.showCoachMark(coachMarkItems, null, currentIndex)
                         }
                     }
-
                 })
                 coachMark.showCoachMark(coachMarkItems)
             }
@@ -219,6 +211,7 @@ class ReminderMessageFragment : BaseDaggerFragment() {
             getProducts().observe(viewLifecycleOwner, observerProducts)
             getError().observe(viewLifecycleOwner, observerError)
             getFetchingStatus().observe(viewLifecycleOwner, observerFetchingStatus)
+            getSendReminderResult().observe(viewLifecycleOwner, observerSendReminderResult)
         }
     }
 
@@ -245,9 +238,9 @@ class ReminderMessageFragment : BaseDaggerFragment() {
 
     private val observerEstimation = Observer<ProductrevGetReminderCounter> { reminderCounter ->
         val stringEstimation = getString(
-                R.string.review_reminder_estimation,
-                reminderCounter.totalBuyer,
-                reminderCounter.totalProduct
+            R.string.review_reminder_estimation,
+            reminderCounter.totalBuyer,
+            reminderCounter.totalProduct
         )
         textEstimation?.text = HtmlCompat.fromHtml(stringEstimation, HtmlCompat.FROM_HTML_MODE_COMPACT)
         estimation = reminderCounter
@@ -277,28 +270,65 @@ class ReminderMessageFragment : BaseDaggerFragment() {
         buttonSend?.isEnabled = products.isNotEmpty()
 
         isLoadProducts = false
-
     }
 
     private val observerError = Observer<Throwable> { throwable ->
         view?.let {
             Toaster.build(
-                    it,
-                    throwable.getErrorMessage(
-                        context,
-                        getString(R.string.review_reminder_snackbar_error)
-                    ),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    getString(R.string.review_reminder_snackbar_error_action),
-                    View.OnClickListener {
-                        refreshData()
-                    }).show()
+                it,
+                throwable.getErrorMessage(
+                    context,
+                    getString(R.string.review_reminder_snackbar_error)
+                ),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(R.string.review_reminder_snackbar_error_action),
+                View.OnClickListener {
+                    refreshData()
+                }
+            ).show()
         }
     }
 
     private val observerFetchingStatus = Observer<Boolean> {
         swipeRefreshLayout?.isRefreshing = it
+    }
+
+    private val observerSendReminderResult = Observer<Result<Boolean>> { result ->
+        val success = result is Success && result.data
+        if (success) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    getString(R.string.review_reminder_snackbar_sending),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.review_oke)
+                ).show()
+            }
+            refreshData()
+        } else {
+            val message = if (result is Fail) {
+                result.throwable.getErrorMessage(
+                    context,
+                    getString(R.string.review_reminder_snackbar_error)
+                )
+            } else {
+                getString(R.string.review_reminder_snackbar_error)
+            }
+            view?.let {
+                Toaster.build(
+                    it,
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(R.string.review_reminder_snackbar_error_action)
+                ) {
+                    refreshData()
+                }.show()
+            }
+        }
+        buttonSend?.isLoading = false
     }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {

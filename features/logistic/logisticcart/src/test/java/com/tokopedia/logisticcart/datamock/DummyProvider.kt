@@ -7,47 +7,52 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Estim
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
 import com.tokopedia.logisticcart.FileUtils
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
 
 internal object DummyProvider {
 
-    val fileUtils: FileUtils by lazy { FileUtils() }
+    private val FILE_UTILS: FileUtils by lazy { FileUtils() }
 
     fun getShippingParam(): ShippingParam =
-        Gson().fromJson(shippingParamJson, ShippingParam::class.java)
+        Gson().fromJson(SHIPPING_PARAM_JSON, ShippingParam::class.java)
 
     fun getShopShipments(): List<ShopShipment> =
-        Gson().fromJson(shopShipmentsJson, object : TypeToken<List<ShopShipment>>() {}.type)
+        Gson().fromJson(SHOP_SHIPMENTS_JSON, object : TypeToken<List<ShopShipment>>() {}.type)
 
     fun getProducts(): List<Product> =
-        Gson().fromJson(productsJson, object : TypeToken<List<Product>>() {}.type)
+        Gson().fromJson(PRODUCTS_JSON, object : TypeToken<List<Product>>() {}.type)
 
     fun getShippingRecommendationDataNoState(): ShippingRecommendationData =
         Gson().fromJson(
-            fileUtils.getJsonFromAsset("rates.json"),
+            FILE_UTILS.getJsonFromAsset("rates.json"),
             ShippingRecommendationData::class.java
         )
 
     fun getShippingRecommendationDataWithState(): ShippingRecommendationData =
         Gson().fromJson(
-            fileUtils.getJsonFromAsset("ratesWithState.json"),
+            FILE_UTILS.getJsonFromAsset("ratesWithState.json"),
             ShippingRecommendationData::class.java
         )
 
     fun getShipmentDetailData(): ShipmentDetailData =
         Gson().fromJson(
-            fileUtils.getJsonFromAsset("shipment_detail_data.json"),
+            FILE_UTILS.getJsonFromAsset("shipment_detail_data.json"),
             ShipmentDetailData::class.java
         )
 
     fun getAddress(): RecipientAddressModel =
         Gson().fromJson(
-            fileUtils.getJsonFromAsset("address.json"),
+            FILE_UTILS.getJsonFromAsset("address.json"),
             RecipientAddressModel::class.java
         )
 
     fun getRatesResponseWithPromo(): RatesGqlResponse = Gson().fromJson(
-        fileUtils.getJsonFromAsset("rates_with_promo_response.json"),
+        FILE_UTILS.getJsonFromAsset("rates_with_promo_response.json"),
         RatesGqlResponse::class.java
     )
 

@@ -35,6 +35,8 @@ import com.tokopedia.product.detail.util.ProductIdlingInterface
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofTypeViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -263,15 +265,21 @@ class ProductDetailActivityTest {
     }
 
     private fun clickTabDiscussion() {
-        onView(withId(R.id.rv_pdp)).perform(
-            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                hasDescendant(allOf(withId(R.id.mini_social_proof_recycler_view))),
-                scrollTo()
+        onView(
+            allOf(withId(R.id.mini_social_proof_recycler_view))
+        ).check(
+            matches(isDisplayed())
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<SocialProofTypeViewHolder>(
+                3, scrollTo()
+            )
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<SocialProofTypeViewHolder>(
+                3, clickChildViewWithId(
+                    R.id.socialProofChipContainer
+                )
             )
         )
-        onView(allOf(withId(R.id.chipSocialProofItem)))
-            .check(matches(isDisplayed()))
-            .perform(click())
     }
 
     private fun setUpTimeoutIdlingResource() {
