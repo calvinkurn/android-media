@@ -2287,13 +2287,6 @@ class CartFragment :
             }
             updateStateAfterCheckChanged()
         }
-//        cartShopHolderData?.let {
-//            it.productUiModelList.forEachIndexed { index, data ->
-//                if (data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId && data.bundleGroupId == cartItemHolderData.bundleGroupId) {
-//                    cartAdapter.setItemSelected(index, cartItemHolderData)
-//                }
-//            }
-//        }
     }
 
     private fun setCheckboxGlobalState() {
