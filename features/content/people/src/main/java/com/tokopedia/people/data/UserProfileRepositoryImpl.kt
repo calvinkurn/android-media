@@ -1,8 +1,7 @@
 package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.content.common.usecase.GetWhiteListUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -25,7 +24,6 @@ import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -43,7 +41,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val doUnfollowUseCase: ProfileUnfollowedUseCase,
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
-    private val getWhitelistNewUseCase: GetWhiteListNewUseCase,
+    private val getWhitelistUseCase: GetWhiteListUseCase,
     private val shopRecomUseCase: ShopRecomUseCase,
     private val shopFollowUseCase: ShopFollowUseCase,
     private val getFollowerListUseCase: GetFollowerListUseCase,
@@ -71,7 +69,7 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getWhitelist(): ProfileWhitelistUiModel {
         return withContext(dispatcher.io) {
-            val result = getWhitelistNewUseCase.execute(WHITELIST_ENTRY_POINT)
+            val result = getWhitelistUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
 
             mapper.mapUserWhitelist(result)
         }
