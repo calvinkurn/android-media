@@ -71,8 +71,6 @@ public class RemoteConfigKey {
     public static final String OVO_QR_MAX_AMOUNT = "app_ovo_max_balance";
     public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
 
-
-
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 
     public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
@@ -115,6 +113,8 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
+
+    public static final String RECOMMENDATION_ENABLE_COMPARISON_WIDGET = "android_customer_recom_enable_comparison_widget";
 
     public static final String ENABLE_SEQ1_ASYNC = "android_exec_seq1_async";
     public static final String ENABLE_SEQ2_ASYNC = "android_exec_seq2_async";
