@@ -203,9 +203,12 @@ class EditorViewModelTest {
 
         // When
         every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>) -> Unit).invoke(pathSampleList)
+            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
         }
-        viewModel.saveToGallery(dataList) {}
+        viewModel.saveToGallery(
+            dataList,
+            onFinish = { _, _ -> }
+        )
 
         // Then
         verify { saveImageRepo.saveToGallery(any(), any()) }
@@ -232,9 +235,9 @@ class EditorViewModelTest {
         // When
         every { addLogoRepository.flattenImage(any(), any(), any()) } returns addLogoPath
         every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>) -> Unit).invoke(pathSampleList)
+            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
         }
-        viewModel.saveToGallery(dataList) {}
+        viewModel.saveToGallery(dataList) { _,_ -> }
 
         // Then
         verify { saveImageRepo.saveToGallery(any(), any()) }
@@ -251,9 +254,12 @@ class EditorViewModelTest {
         mockkStatic(FileUtil::class)
         every { getTokopediaCacheDir() } returns tokopediaCacheDir
         every { saveImageRepo.saveToGallery(any(), any()) }.answers {
-            (args[1] as (List<String>) -> Unit).invoke(pathSampleList)
+            (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
         }
-        viewModel.saveToGallery(dataList) {}
+        viewModel.saveToGallery(
+            dataList,
+            onFinish = { _, _ -> }
+        )
 
         // Then
         verify { saveImageRepo.saveToGallery(any(), any()) }
