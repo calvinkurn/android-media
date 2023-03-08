@@ -1,7 +1,6 @@
 package com.tokopedia.applink.productmanage
 
 import android.net.Uri
-import android.util.Log
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -13,7 +12,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * Created By @ilhamsuaib on 01/04/20

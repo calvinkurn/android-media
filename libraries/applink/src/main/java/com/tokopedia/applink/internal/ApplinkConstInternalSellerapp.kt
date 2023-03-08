@@ -146,7 +146,6 @@ object ApplinkConstInternalSellerapp {
     //Seller Persona
     const val SELLER_PERSONA = "$INTERNAL_SELLERAPP/seller-persona"
 
-
     //Stock Reminder
     const val SELLER_STOCK_REMINDER = "$INTERNAL_SELLERAPP/stock-reminder/{productId}/{productName}/{isVariant}/"
 
