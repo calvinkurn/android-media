@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.model
+package com.tokopedia.play.broadcaster.ui.model.beautification
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
@@ -16,16 +16,9 @@ data class FaceFilterUiModel(
     val iconUrl: String,
     val assetLink: String,
     val isSelected: Boolean,
-    val assetStatus: AssetStatus,
+    val assetStatus: BeautificationAssetStatus,
 ) : Parcelable {
 
     val isChecked: Boolean
         get() = value != 0.0
-
-    enum class AssetStatus {
-        Available,
-        Downloading,
-        NotDownloaded,
-        Unknown
-    }
 }

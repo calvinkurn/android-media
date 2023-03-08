@@ -13,8 +13,9 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.databinding.FragmentBeautificationTabBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.itemdecoration.FaceFilterOptionItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.BeautificationConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.BeautificationFilterOptionViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.BeautificationFilterOptionAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -41,15 +42,18 @@ class BeautificationTabFragment @Inject constructor(
     }
 
     private val adapter by lazyThreadSafetyNone {
-        BeautificationFilterOptionAdapter(object : BeautificationFilterOptionViewHolder.Listener {
-            override fun onClick(item: FaceFilterUiModel) {
-                when(type) {
-                    Type.FaceFilter -> viewModel.submitAction(PlayBroadcastAction.SelectFaceFilterOption(item))
-                    Type.Preset -> viewModel.submitAction(PlayBroadcastAction.SelectPresetOption(item))
-                    else -> {}
+        BeautificationFilterOptionAdapter(
+            faceFilterListener = object : BeautificationFilterOptionViewHolder.FaceFilter.Listener {
+                override fun onClick(item: FaceFilterUiModel) {
+                    viewModel.submitAction(PlayBroadcastAction.SelectFaceFilterOption(item))
+                }
+            },
+            presetListener = object : BeautificationFilterOptionViewHolder.Preset.Listener {
+                override fun onClick(item: PresetFilterUiModel) {
+                    viewModel.submitAction(PlayBroadcastAction.SelectPresetOption(item))
                 }
             }
-        })
+        )
     }
 
     private val type: Type
@@ -97,11 +101,13 @@ class BeautificationTabFragment @Inject constructor(
     ) {
         if(prev == curr) return
 
-        when(type) {
-            Type.FaceFilter -> adapter.setItemsAndAnimateChanges(curr.faceFilters)
-            Type.Preset -> adapter.setItemsAndAnimateChanges(curr.presets)
-            else -> {}
+        val finalList = when(type) {
+            Type.FaceFilter -> curr.faceFilters.map { BeautificationFilterOptionAdapter.Model.FaceFilter(it) }
+            Type.Preset -> curr.presets.map { BeautificationFilterOptionAdapter.Model.Preset(it) }
+            else -> emptyList()
         }
+
+        adapter.setItemsAndAnimateChanges(finalList)
     }
 
     companion object {

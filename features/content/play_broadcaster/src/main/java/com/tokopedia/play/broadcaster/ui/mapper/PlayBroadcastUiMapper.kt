@@ -18,6 +18,10 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
@@ -164,20 +168,20 @@ class PlayBroadcastUiMapper @Inject constructor(
                         iconUrl = "",
                         assetLink = "asset link $it",
                         isSelected = false,
-                        assetStatus = FaceFilterUiModel.AssetStatus.Available,
+                        assetStatus = BeautificationAssetStatus.Available,
                     )
                 },
                 presets = List(5) {
-                    FaceFilterUiModel(
+                    PresetFilterUiModel(
                         name = "Preset $it",
+                        active = false,
                         minValue = it * 0.1,
                         maxValue = it * 0.1,
                         defaultValue = it * 0.1,
                         value = it * 0.1,
                         iconUrl = "",
                         assetLink = "asset link $it",
-                        isSelected = false,
-                        assetStatus = FaceFilterUiModel.AssetStatus.Available,
+                        assetStatus = BeautificationAssetStatus.Available,
                     )
                 }
 //                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
@@ -190,20 +194,20 @@ class PlayBroadcastUiMapper @Inject constructor(
 //                        iconUrl = "", /** TODO: handle this */
 //                        assetLink = config.beautificationConfig.customFace.assetAndroid,
 //                        isSelected = false,
-//                        assetStatus = FaceFilterUiModel.AssetStatus.Available, /** TODO: handle this */
+//                        assetStatus = BeautificationAssetStatus.Available, /** TODO: handle this */
 //                    )
 //                },
 //                presets = config.beautificationConfig.presets.map { preset ->
-//                    FaceFilterUiModel(
+//                    PresetFilterUiModel(
 //                        name = preset.name,
+//                        active = preset.active,
 //                        minValue = preset.minValue,
 //                        maxValue = preset.maxValue,
 //                        defaultValue = preset.defaultValue,
 //                        value = preset.value,
 //                        iconUrl = preset.urlIcon,
 //                        assetLink = preset.assetLink,
-//                        isSelected = false,
-//                        assetStatus = FaceFilterUiModel.AssetStatus.Available, /** TODO: handle this */
+//                        assetStatus = BeautificationAssetStatus.Available, /** TODO: handle this */
 //                    )
 //                }
             )

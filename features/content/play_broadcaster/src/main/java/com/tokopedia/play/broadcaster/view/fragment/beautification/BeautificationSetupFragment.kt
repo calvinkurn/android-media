@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.databinding.FragmentBeautificationSetupBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
-import com.tokopedia.play.broadcaster.ui.model.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.view.adapter.BeautificationPagerAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -224,14 +224,14 @@ class BeautificationSetupFragment @Inject constructor(
     }
 
     private fun setupSlider() {
-        val selectedFilter = when(selectedTabIdx) {
-            BeautificationTabFragment.Companion.Type.FaceFilter.value -> viewModel.selectedFaceFilter
-            BeautificationTabFragment.Companion.Type.Preset.value -> viewModel.selectedPreset
+        val currentValue = when(selectedTabIdx) {
+            BeautificationTabFragment.Companion.Type.FaceFilter.value -> viewModel.selectedFaceFilter?.value
+            BeautificationTabFragment.Companion.Type.Preset.value -> viewModel.selectedPreset?.value
             else -> null
         }
 
-        selectedFilter?.let {
-            binding.sliderBeautification.updateValue((selectedFilter.value * PERCENTAGE_MULTIPLIER).toInt(), null)
+        currentValue?.let {
+            binding.sliderBeautification.updateValue((currentValue * PERCENTAGE_MULTIPLIER).toInt(), null)
             showSlider()
         }
     }

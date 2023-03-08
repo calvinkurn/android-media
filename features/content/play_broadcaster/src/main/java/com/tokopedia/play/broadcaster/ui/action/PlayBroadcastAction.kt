@@ -2,14 +2,14 @@ package com.tokopedia.play.broadcaster.ui.action
 
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
-import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import java.util.*
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
-import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 
 /**
@@ -80,6 +80,6 @@ sealed interface PlayBroadcastAction {
     data class SelectFaceFilterOption(val faceFilter: FaceFilterUiModel) : PlayBroadcastAction
     data class ChangeFaceFilterValue(val newValue: Int) : PlayBroadcastAction
 
-    data class SelectPresetOption(val preset: FaceFilterUiModel) : PlayBroadcastAction
+    data class SelectPresetOption(val preset: PresetFilterUiModel) : PlayBroadcastAction
     data class ChangePresetValue(val newValue: Int) : PlayBroadcastAction
 }
