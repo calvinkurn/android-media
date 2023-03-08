@@ -3,10 +3,8 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceAtf2DividerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BaseBalanceViewHolder
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.util.HomeServerLogger.TYPE_ERROR_SUBMIT_WALLET
 
@@ -26,9 +24,9 @@ class BalanceAtf2Adapter(
         try {
             itemList.balanceDrawerItemModels.forEach {
                 balanceModelList.add(it)
-                if(HomeRollenceController.isUsingAtf2Variant()) {
-                    balanceModelList.add(BalanceAtf2DividerModel())
-                }
+//                if(HomeRollenceController.isUsingAtf2Variant()) {
+//                    balanceModelList.add(BalanceAtf2DividerModel())
+//                }
             }
             submitList(balanceModelList)
         } catch (e: Exception) {

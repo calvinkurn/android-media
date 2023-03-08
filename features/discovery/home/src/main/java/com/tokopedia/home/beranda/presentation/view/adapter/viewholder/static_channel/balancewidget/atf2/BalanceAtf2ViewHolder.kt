@@ -1,7 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.BalanceWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -21,7 +23,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by frenzel
  */
-class BalanceAtf2ViewHolder(v: View) : BaseBalanceViewHolder<BalanceDrawerItemModel>(v) {
+class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceViewHolder<BalanceDrawerItemModel>(v) {
     companion object {
         val LAYOUT = R.layout.item_balance_widget_atf2
         private const val TITLE_HEADER_WEBSITE = "Tokopedia"
@@ -35,11 +37,35 @@ class BalanceAtf2ViewHolder(v: View) : BaseBalanceViewHolder<BalanceDrawerItemMo
         listener: HomeCategoryListener?
     ) {
         this.listener = listener
+        setWidth()
         renderDrawerItem(drawerItem)
         this.itemView.tag = String.format(
             itemView.context.getString(R.string.tag_balance_widget),
             drawerItem?.drawerItemType.toString()
         )
+    }
+
+    private fun setWidth() {
+        val cardLayoutParams = binding?.cardContainerBalance?.layoutParams
+        val containerLayoutParams = binding?.containerBalance?.layoutParams
+
+        cardLayoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        containerLayoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        cardLayoutParams?.width = if(DeviceScreenInfo.isTablet(itemView.context) || totalItems <= 2) {
+            ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+
+        containerLayoutParams?.width = if(DeviceScreenInfo.isTablet(itemView.context) || totalItems <= 2) {
+            ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            itemView.context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_atf2_item_width)
+        }
+
+        binding?.cardContainerBalance?.layoutParams = cardLayoutParams
+        binding?.containerBalance?.layoutParams = containerLayoutParams
     }
 
     private fun renderDrawerItem(element: BalanceDrawerItemModel?) {

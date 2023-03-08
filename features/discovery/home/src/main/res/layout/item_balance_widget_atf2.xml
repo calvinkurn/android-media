@@ -11,7 +11,8 @@
     app:card_type="clear">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="160dp"
+        android:id="@+id/container_balance"
+        android:layout_width="@dimen/balance_atf2_item_width"
         android:layout_height="wrap_content">
 
         <include

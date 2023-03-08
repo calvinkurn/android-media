@@ -24,8 +24,8 @@ class BalanceTypeFactoryImpl(private val totalItems: Int) : BalanceTypeFactory {
             .inflate(viewType, viewGroup, false)
         return when(viewType) {
             BalanceAtf2DividerViewHolder.LAYOUT -> BalanceAtf2DividerViewHolder(view)
-            BalanceAtf2ViewHolder.LAYOUT -> BalanceAtf2ViewHolder(view)
-            else -> BalanceAtf2ViewHolder(view)
+            BalanceAtf2ViewHolder.LAYOUT -> BalanceAtf2ViewHolder(view, totalItems)
+            else -> BalanceAtf2ViewHolder(view, totalItems)
         } as BaseBalanceViewHolder<BalanceVisitable>
     }
 }

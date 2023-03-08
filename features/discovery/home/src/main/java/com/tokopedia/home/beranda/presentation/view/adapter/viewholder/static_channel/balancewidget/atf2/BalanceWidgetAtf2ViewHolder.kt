@@ -2,10 +2,12 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaGridLayoutManager
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaLinearLayoutManager
 import com.tokopedia.home.databinding.LayoutBalanceWidgetAtf2Binding
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -27,7 +29,6 @@ class BalanceWidgetAtf2ViewHolder(itemView: View, val listener: HomeCategoryList
 
     private fun setLayout(element: HomeBalanceModel) {
         val totalData = element.balanceDrawerItemModels.size
-        val totalDataWithDivider = (totalData * 2) - 1
 
         if (binding?.rvBalanceWidgetData?.adapter == null) {
             balanceAdapter =
@@ -38,10 +39,21 @@ class BalanceWidgetAtf2ViewHolder(itemView: View, val listener: HomeCategoryList
             binding?.rvBalanceWidgetData?.adapter = balanceAdapter
         }
         val layoutManager = binding?.rvBalanceWidgetData?.layoutManager
-        if (layoutManager != null && layoutManager is NpaGridLayoutManager && layoutManager.itemCount != totalData) {
-            binding?.rvBalanceWidgetData?.layoutManager = NpaGridLayoutManager(itemView.context, totalDataWithDivider)
-        } else if (layoutManager == null) {
-            binding?.rvBalanceWidgetData?.layoutManager = NpaGridLayoutManager(itemView.context, totalDataWithDivider)
+
+        if (binding?.rvBalanceWidgetData?.itemDecorationCount == 0) {
+            binding?.rvBalanceWidgetData?.addItemDecoration(
+                BalanceSpacingItemDecoration()
+            )
+        }
+
+        if (layoutManager == null || layoutManager.itemCount != totalData) {
+            val fillWidthLayoutManager = NpaGridLayoutManager(itemView.context, totalData)
+            val scrollableLinearLayoutManager = NpaLinearLayoutManager(itemView.context)
+            if(DeviceScreenInfo.isTablet(itemView.context) || totalData <= 2) {
+                binding?.rvBalanceWidgetData?.layoutManager = fillWidthLayoutManager
+            } else {
+                binding?.rvBalanceWidgetData?.layoutManager = scrollableLinearLayoutManager
+            }
         }
         balanceAdapter?.setItemList(element)
     }

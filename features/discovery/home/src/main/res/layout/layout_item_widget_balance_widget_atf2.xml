@@ -2,8 +2,5 @@
 <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rv_balance_widget"
-    android:orientation="horizontal"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    android:layout_marginHorizontal="@dimen/home_component_margin_default"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content" />
