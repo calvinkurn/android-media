@@ -24,10 +24,17 @@
                 android:id="@+id/ticker_smart_bills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:closeButtonVisibility="gone"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tickerType="announcement" />
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:tickerType="announcement"
+                app:tickerShapeType="loose"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                />
 
             <com.tokopedia.smartbills.presentation.widget.SmartBillsHighlightCategoryWidget
                 android:id="@+id/highlight_category"

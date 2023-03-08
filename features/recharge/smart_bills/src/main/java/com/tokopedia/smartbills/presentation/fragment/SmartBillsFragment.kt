@@ -471,11 +471,12 @@ class SmartBillsFragment :
             binding?.run {
                 context?.let { context ->
                     // Setup ticker
+                    tickerSmartBills.tickerTitle = getString(R.string.smart_bills_ticker_title)
                     tickerSmartBills.setTextDescription(String.format(getString(R.string.smart_bills_ticker), LANGGANAN_URL))
                     tickerSmartBills.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             smartBillsAnalytics.clickSubscription()
-                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
+                            RouteManager.route(context, linkUrl.toString())
                         }
 
                         override fun onDismiss() {
@@ -1006,7 +1007,7 @@ class SmartBillsFragment :
         const val EXTRA_ADD_BILLS_CATEGORY = "CATEGORY"
         const val EXTRA_ADD_BILLS_IS_FROM_SBM = "IS_FROM_SBM"
 
-        const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
+        const val LANGGANAN_URL = "tokopedia://webview?titlebar=false&url=https://www.tokopedia.com/mybills"
         const val HELP_SBM_URL = "https://www.tokopedia.com/help/article/bayar-sekaligus"
 
         fun newInstance(sourceType: String = "", message: String = "", category: String = ""): SmartBillsFragment {
