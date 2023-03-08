@@ -1,24 +1,41 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycDobChallengeBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeResult
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
+import javax.inject.Inject
 
 class DobChallengeFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentGotoKycDobChallengeBinding>()
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[DobChallengeViewModel::class.java]
+    }
+
+    private val args: DobChallengeFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -30,8 +47,12 @@ class DobChallengeFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getChallenge(args.parameter.challengeId)
+
         initView()
         initListener()
+        initObserver()
     }
 
     private fun initView() {
@@ -50,6 +71,56 @@ class DobChallengeFragment : BaseDaggerFragment() {
 
         binding?.fieldDob?.editText?.setOnClickListener {
             showDatePicker()
+        }
+
+        binding?.btnConfirmation?.setOnClickListener {
+            viewModel.submitChallenge(
+                viewModel.getChallenge.value?.questionId.orEmpty()
+            )
+        }
+    }
+
+    private fun initObserver() {
+        viewModel.getChallenge.observe(viewLifecycleOwner) {
+            when (it) {
+                is GetChallengeResult.Loading -> {
+                    showLoadingScreen()
+                }
+                is GetChallengeResult.Success -> {
+                    showChallengeQuestion()
+                }
+                is GetChallengeResult.Failed -> {
+                    val message = it.throwable?.getMessage(requireContext())
+                    showToaster(message.orEmpty())
+                    activity?.setResult(Activity.RESULT_CANCELED)
+                    activity?.finish()
+                }
+            }
+        }
+    }
+
+    private fun showLoadingScreen() {
+        binding?.apply {
+            loader.show()
+            unifyToolbar.hide()
+            ivDobChallenge.hide()
+            tvHeader.hide()
+            tvDescription.hide()
+            btnConfirmation.hide()
+            fieldDob.hide()
+        }
+    }
+
+    private fun showChallengeQuestion() {
+        binding?.apply {
+            loader.hide()
+            unifyToolbar.show()
+            ivDobChallenge.show()
+            tvHeader.show()
+            tvDescription.show()
+            btnConfirmation.show()
+            btnConfirmation.isEnabled = false
+            fieldDob.show()
         }
     }
 
@@ -90,6 +161,10 @@ class DobChallengeFragment : BaseDaggerFragment() {
         }
 
         datePicker.show(childFragmentManager, TAG_BOTTOM_SHEET_DATE_PICKER)
+    }
+
+    private fun showToaster(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
     private fun formatDateParam(dayOfMonth: Int, month: Int, year: Int): String {
