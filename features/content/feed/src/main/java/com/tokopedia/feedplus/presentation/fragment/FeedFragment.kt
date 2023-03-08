@@ -393,6 +393,9 @@ class FeedFragment :
         binding?.let {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = FeedPostAdapter(FeedAdapterTypeFactory(this))
+            if (adapter!!.itemCount == 0) {
+                adapter?.showLoading()
+            }
 
             LinearSnapHelper().attachToRecyclerView(it.rvFeedPost)
             it.rvFeedPost.layoutManager = layoutManager
@@ -420,6 +423,7 @@ class FeedFragment :
         feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    adapter?.hideLoading()
                     if (it.data.items.isEmpty()) {
                         adapter?.addElement(FeedNoContentModel())
                     } else {
