@@ -57,7 +57,6 @@ object VariantTwoLevelByOneLevelSelectedUseCase {
         val hasCustomImagesOneLevel = variantOneLevel.options.all {
             it.picture?.url100?.isNotEmpty() == true
         }
-        // loop each variant options in the variant data for checking to their children
         val uiVariantOption = processVariantOptionOneLevel(
             variantOneLevel,
             variantData,
@@ -77,6 +76,9 @@ object VariantTwoLevelByOneLevelSelectedUseCase {
         )
     }
 
+    /**
+     * Loop each variant options in the variant data for checking to their children
+     */
     private fun processVariantOptionOneLevel(
         variantOneLevel: Variant,
         variantData: ProductVariant,
@@ -163,6 +165,9 @@ object VariantTwoLevelByOneLevelSelectedUseCase {
         )
     }
 
+    /**
+     * Loop each variant options in the variant data for checking to their children
+     */
     private fun processVariantOptionTwoLevel(
         variantTwoLevel: Variant,
         selectedVariant: List<String>,

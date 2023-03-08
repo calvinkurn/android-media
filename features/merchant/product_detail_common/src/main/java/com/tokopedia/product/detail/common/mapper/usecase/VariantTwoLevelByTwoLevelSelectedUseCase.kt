@@ -42,6 +42,12 @@ object VariantTwoLevelByTwoLevelSelectedUseCase {
         return listOf(uiVariantOneLevel, uiVariantTwoLevel)
     }
 
+    /***
+     * Process variant two level after process variant one level
+     * @param variantTwoLevel is variant level two data
+     * @param selectedVariant is variant option one and two level selected
+     * @param variantData is all variant data
+     */
     private fun processVariantTwoLevel(
         variantTwoLevel: Variant,
         variantData: ProductVariant,
@@ -68,6 +74,9 @@ object VariantTwoLevelByTwoLevelSelectedUseCase {
         )
     }
 
+    /**
+     * Loop each variant options in the variant data for checking to their children
+     */
     private fun processVariantOptionTwoLevel(
         variantTwoLevel: Variant,
         variantData: ProductVariant,
@@ -145,6 +154,9 @@ object VariantTwoLevelByTwoLevelSelectedUseCase {
         )
     }
 
+    /**
+     * Loop each variant options in the variant data for checking to their children
+     */
     private fun processVariantOptionOneLevel(
         variantOneLevel: Variant,
         selectedVariant: List<String>,
