@@ -166,6 +166,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun observeCurrentTabPosition() {
         feedMainViewModel.currentTabIndex.observe(viewLifecycleOwner) {
+            binding.vpFeedTabItemsContainer.setCurrentItem(it, true)
             onChangeTab(it)
         }
     }
