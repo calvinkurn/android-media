@@ -45,9 +45,9 @@ class FeedAdapterTypeFactory(private val context: FeedFragment) : BaseAdapterTyp
                     LayoutInflater.from(parent.context),
                     parent as ViewGroup,
                     false
-                )
+                ),
+                feedListener
             )
             else -> super.createViewHolder(parent, type)
         }
-
 }
