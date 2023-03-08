@@ -178,19 +178,10 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   shop {
                     shop_id
                     shop_name
-                    shop_image
-                    shop_url
-                    shop_status
                     postal_code
                     latitude
                     longitude
                     district_id
-                    district_name
-                    origin
-                    address_street
-                    province_id
-                    city_id
-                    city_name
                     shop_alert_message
                     is_tokonow
                     is_gold
@@ -231,19 +222,12 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   cart_details {
                     errors
                     bundle_detail {
-                      bundle_description
                       bundle_group_id
                       bundle_id
-                      bundle_max_order
-                      bundle_min_order
                       bundle_name
                       bundle_original_price
-                      bundle_original_price_fmt
                       bundle_price
-                      bundle_price_fmt
                       bundle_qty
-                      bundle_quota
-                      bundle_status
                       bundle_type                     
                       slash_price_label
                       bundle_icon_url
@@ -287,23 +271,15 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                       cart_id
                       product_id
                       product_name
-                      product_price_fmt
                       product_price
                       product_original_price
                       product_wholesale_price
-                      product_wholesale_price_fmt
                       product_weight_fmt
                       product_weight
                       product_weight_actual
-                      product_condition
-                      product_url
-                      product_returnable
                       product_is_free_returns
                       product_is_preorder
                       product_cashback
-                      product_min_order
-                      product_invenage_value
-                      product_switch_invenage
                       product_price_currency
                       product_image_src_200_square
                       product_notes
@@ -365,7 +341,6 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                         message
                       }
                       variant_description_detail {
-                        variant_name
                         variant_description
                       }
                       product_alert_message
@@ -476,9 +451,6 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   }
                 }
               }
-              disabled_features_detail {
-                disabled_multi_address_message
-              }
               promo {
                 error_default {
                   title
@@ -489,58 +461,19 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   data {
                     codes
                     promo_code_id
-                    cashback_advocate_referral_amount
-                    cashback_wallet_amount
-                    discount_amount
-                    discount_amount
-                    title_description
-                    is_tokopedia_gerai
-                    global_success
-                    gateway_id
-                    is_coupon
                     success
-                    invoice_description
                     voucher_orders {
-                      cashback_wallet_amount
                       code
                       unique_id
-                      discount_amount
                       address_id
-                      title_description
-                      is_po
                       type
                       cart_id
                       shop_id
-                      success
-                      invoice_description
                       message {
                         color
                         state
                         text
                       }
-                      benefit_details {
-                        code
-                        unique_id
-                        cashback_amount
-                        discount_amount
-                        type
-                        order_id
-                        benefit_product_details {
-                          cashback_amount
-                          discount_amount
-                          product_id
-                          is_bebas_ongkir
-                        }
-                        promo_type {
-                          is_exclusive_shipping
-                          is_bebas_ongkir
-                        }
-                      }
-                    }
-                    clashing_info_detail {
-                      is_clashed_promos
-                      clash_reason
-                      clash_message
                     }
                     tracking_details {
                       product_id
@@ -584,33 +517,6 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                       bebas_ongkir_info {
                         is_bo_unstack_enabled
                       }
-                    }
-                    benefit_summary_info {
-                      final_benefit_amount_str
-                      final_benefit_amount
-                      final_benefit_text
-                      summaries {
-                        amount
-                        section_name
-                        description
-                        section_description
-                        type
-                        amount_str
-                        details {
-                          amount
-                          section_name
-                          description
-                          type
-                          amount_str
-                          points
-                          points_str
-                        }
-                      }
-                    }
-                    ticker_info {
-                      unique_id
-                      status_code
-                      message
                     }
                   }
                 }
