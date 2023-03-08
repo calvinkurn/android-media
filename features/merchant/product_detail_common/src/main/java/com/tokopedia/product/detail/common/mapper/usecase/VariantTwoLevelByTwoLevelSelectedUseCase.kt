@@ -1,0 +1,146 @@
+package com.tokopedia.product.detail.common.mapper.usecase
+
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.mapper.AtcVariantNewMapper
+
+/**
+ * Created by yovi.putra on 08/03/23"
+ * Project name: android-tokopedia-core
+ **/
+
+object VariantTwoLevelByTwoLevelSelectedUseCase {
+
+    fun process(
+        variantData: ProductVariant,
+        mapOfSelectedVariant: Map<String, String>
+    ): List<VariantCategory>? {
+        val selectedVariant = mapOfSelectedVariant.values.toList()
+        // update variant state on one level
+        val variantTwoLevel = variantData.variants.getOrNull(AtcVariantNewMapper.VARIANT_LEVEL_TWO_SELECTED) ?: return null
+        val hasCustomImagesOneLevel = variantTwoLevel.options.all {
+            it.picture?.url100?.isNotEmpty() == true
+        }
+        val uiTwoLevel = variantTwoLevel.options.map { option ->
+            var state = VariantConstant.STATE_EMPTY
+            var isFlashSale = false
+            var stock = 0
+
+            for (child in variantData.children) {
+                // if variant option in selected variant and child options ids equals selected variant
+                if (option.id in selectedVariant && child.optionIds == selectedVariant) {
+                    isFlashSale = child.isFlashSale
+                    stock = child.stock?.stock.orZero()
+                    state = if (child.isBuyable) { // selected and can to buy
+                        VariantConstant.STATE_SELECTED
+                    } else { // selected and can not to buy
+                        VariantConstant.STATE_SELECTED_EMPTY
+                    }
+                    break
+                } else if (option.id == child.optionIds.lastOrNull() && selectedVariant.firstOrNull() == child.optionIds.firstOrNull()) {
+                    isFlashSale = child.isFlashSale
+                    stock = child.stock?.stock.orZero()
+                    state = if (child.isBuyable) { // un-selected and can to buy
+                        VariantConstant.STATE_UNSELECTED
+                    } else { // un-selected and can not to buy because stock is empty
+                        VariantConstant.STATE_EMPTY
+                    }
+                    break
+                }
+            }
+
+            // create variant options ui model
+            VariantOptionWithAttribute.create(
+                variantOption = option,
+                variant = variantTwoLevel,
+                state = state,
+                stock = stock,
+                hasCustomImages = hasCustomImagesOneLevel,
+                isFlashSale = isFlashSale,
+                level = AtcVariantNewMapper.VARIANT_LEVEL_TWO_SELECTED
+            )
+        }
+
+        // update variant state on two level
+        val variantOneLevel = variantData.variants.getOrNull(AtcVariantNewMapper.VARIANT_LEVEL_ONE_SELECTED) ?: return null
+        val hasCustomImagesTwoLevel = variantOneLevel.options.all {
+            it.picture?.url100?.isNotEmpty() == true
+        }
+        val uiOneLevel = variantOneLevel.options.map { option ->
+            var state = VariantConstant.STATE_EMPTY
+            var isFlashSale = false
+            var stock = 0
+
+            if (option.id in selectedVariant) {
+                for (child in variantData.children) {
+                    // if variant option into variant selected and variant selected ids into child optionIds
+                    if (child.optionIds == selectedVariant) {
+                        isFlashSale = child.isFlashSale
+                        stock = child.stock?.stock.orZero()
+                        state = if (child.isBuyable) { // selected and can to buy
+                            VariantConstant.STATE_SELECTED
+                        } else { // selected and can not to buy
+                            VariantConstant.STATE_SELECTED_EMPTY
+                        }
+                        break
+                    }
+                }
+            } else {
+                for (child in variantData.children) {
+                    // match variant id from
+                    // [0] is variant on one level -> from variant selected get first item
+                    // [1] is variant on two level -> from option id
+                    if (option.id == child.optionIds.firstOrNull() && selectedVariant.lastOrNull() == child.optionIds.lastOrNull()) {
+                        isFlashSale = child.isFlashSale
+                        stock = child.stock?.stock.orZero()
+                        state = if (child.isBuyable) { // un-selected and can to buy
+                            VariantConstant.STATE_UNSELECTED
+                        } else { // un-selected and can not to buy because stock is empty
+                            VariantConstant.STATE_EMPTY
+                        }
+                        break
+                    }
+                }
+            }
+
+            // create variant options ui model
+            VariantOptionWithAttribute.create(
+                variantOption = option,
+                variant = variantOneLevel,
+                state = state,
+                stock = stock,
+                hasCustomImages = hasCustomImagesTwoLevel,
+                isFlashSale = isFlashSale,
+                level = AtcVariantNewMapper.VARIANT_LEVEL_ONE_SELECTED
+            )
+        }
+
+        return listOf(
+            // create variant ui model
+            VariantCategory(
+                name = variantOneLevel.name.orEmpty(),
+                identifier = variantOneLevel.identifier.orEmpty(),
+                variantGuideline = variantData.getVariantGuideline(
+                    sizeIdentifier = variantOneLevel.isSizeIdentifier
+                ),
+                isLeaf = false,
+                hasCustomImage = hasCustomImagesOneLevel,
+                variantOptions = uiOneLevel
+            ),
+            // create variant ui model
+            VariantCategory(
+                name = variantTwoLevel.name.orEmpty(),
+                identifier = variantTwoLevel.identifier.orEmpty(),
+                variantGuideline = variantData.getVariantGuideline(
+                    sizeIdentifier = variantTwoLevel.isSizeIdentifier
+                ),
+                isLeaf = true,
+                hasCustomImage = hasCustomImagesTwoLevel,
+                variantOptions = uiTwoLevel
+            )
+        )
+    }
+}
