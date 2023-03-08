@@ -10,6 +10,17 @@
       "eventAction": "create new collection on wishlist page",
       "sessionIris" : ".*",
       "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "purchase platform",
+      "eventCategory": "all wishlist page",
+      "trackerId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": "wishlist page",
+      "event": "clickPP",
+      "eventAction": "click buat koleksi on create new collection bottomsheet",
+      "sessionIris" : ".*",
+      "eventLabel": ".*"
     }
   ],
   "readme": "Wishlist Collection Summary"

@@ -1,0 +1,15 @@
+[
+  {
+    "data": {
+      "create_wishlist_collection": {
+        "status": "OK",
+        "error_message": [],
+        "data": {
+          "success": true,
+          "id": "3116529",
+          "message": "Koleksi \"test koleksi baru\" berhasil dibuat."
+        }
+      }
+    }
+  }
+]

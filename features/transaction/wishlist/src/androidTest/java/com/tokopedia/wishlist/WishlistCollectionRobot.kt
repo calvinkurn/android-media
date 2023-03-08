@@ -5,10 +5,12 @@ import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import org.hamcrest.MatcherAssert
@@ -20,15 +22,25 @@ class WishlistCollectionRobot {
     }
 
     fun clickWishlistRecyclerViewItem(index: Int) {
-        onView(ViewMatchers.withId(R.id.rv_wishlist_collection))
+        onView(withId(R.id.rv_wishlist_collection))
             .perform(
                 RecyclerViewActions
                     .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
             )
     }
 
-    fun createNewCollection() {
-        onView(ViewMatchers.withId(R.id.rv_wishlist_collection))
+    fun clickSemuaWishlist() {
+        onView(withId(R.id.rv_wishlist_collection))
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    0,
+                    ViewActions.click()
+                )
+            )
+    }
+
+    fun clickCreateNewCollection() {
+        onView(withId(R.id.rv_wishlist_collection))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     3,
@@ -37,14 +49,35 @@ class WishlistCollectionRobot {
             )
     }
 
+    fun submitNewCollectionName() {
+        onView(withId(R.id.collection_create_name_input_text_field))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(ViewActions.click())
+        typeNewCollection()
+    }
+
+    fun typeNewCollection() {
+        onView(withId(R.id.text_field_input))
+            .perform(
+                ViewActions.typeText("test new collection name"),
+                ViewActions.closeSoftKeyboard()
+            )
+    }
+
+    fun clickBuatKoleksiButton() {
+        onView(withId(R.id.collection_create_button))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(ViewActions.click())
+    }
+
     fun scrollWishlistRecyclerViewToIndex(index: Int) {
-        onView(ViewMatchers.withId(R.id.rv_wishlist_collection))
+        onView(withId(R.id.rv_wishlist_collection))
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(index))
     }
 
     fun clickFirstCollectionItem() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        onView(ViewMatchers.withId(R.id.rv_wishlist_collection))
+        onView(withId(R.id.rv_wishlist_collection))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     1,

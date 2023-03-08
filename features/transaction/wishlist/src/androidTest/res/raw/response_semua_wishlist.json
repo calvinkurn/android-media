@@ -1,0 +1,2509 @@
+[
+  {
+    "data": {
+      "get_wishlist_collection_items": {
+        "add_wishlist_bulk_config": {
+          "max_bulk": 20,
+          "toaster": {
+            "message": "Oops, kamu hanya bisa pilih maks. 20 barang untuk disimpan sekaligus."
+          }
+        },
+        "page": 1,
+        "limit": 20,
+        "offset": 0,
+        "query": "",
+        "has_next_page": true,
+        "total_data": 2322,
+        "count_removable_items": 0,
+        "description": "",
+        "show_empty_state_on_bottomsheet": false,
+        "collection_type": 0,
+        "empty_state": {
+          "type": "",
+          "messages": [],
+          "buttons": []
+        },
+        "ticker": {
+          "message": "",
+          "type": "",
+          "button": {
+            "text": "",
+            "action": ""
+          }
+        },
+        "storage_cleaner_bottomsheet": {
+          "title": "",
+          "description": "",
+          "options": [],
+          "button": {
+            "text": ""
+          }
+        },
+        "show_delete_progress": false,
+        "has_collection": true,
+        "setting": {
+          "buttons": [
+            {
+              "text": "Hapus",
+              "action": "DELETE_WISHLIST",
+              "url": ""
+            }
+          ]
+        },
+        "header_title": "Semua Wishlist",
+        "sort_filters": [
+          {
+            "id": 1,
+            "name": "sort",
+            "title": "Urutkan",
+            "text": "Urutkan",
+            "is_active": false,
+            "selection_type": 1,
+            "options": [
+              {
+                "option_id": "1",
+                "text": "Terbaru Disimpan",
+                "description": "",
+                "is_selected": true
+              },
+              {
+                "option_id": "6",
+                "text": "Terlama Disimpan",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "2",
+                "text": "Ulasan Terbanyak",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "3",
+                "text": "Harga Tertinggi",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "4",
+                "text": "Harga Terendah",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "5",
+                "text": "Pembelian Terbanyak",
+                "description": "",
+                "is_selected": false
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "name": "offers",
+            "title": "Penawaran",
+            "text": "Penawaran",
+            "is_active": false,
+            "selection_type": 2,
+            "options": [
+              {
+                "option_id": "1",
+                "text": "Cashback",
+                "description": "Dapatkan uang kembalian untuk bayar belanja berikutnya.",
+                "is_selected": false
+              },
+              {
+                "option_id": "2",
+                "text": "Diskon",
+                "description": "Belanja apa saja bisa lebih murah dengan diskon spesial.",
+                "is_selected": false
+              },
+              {
+                "option_id": "3",
+                "text": "COD",
+                "description": "Bayar melalui kurir saat pesanan tiba",
+                "is_selected": false
+              },
+              {
+                "option_id": "4",
+                "text": "Harga Grosir",
+                "description": "Beli banyak lebih murah, tersedia layanan pengiriman beragam.",
+                "is_selected": false
+              },
+              {
+                "option_id": "6",
+                "text": "Bebas Ongkir",
+                "description": "Nikmati potongan ongkir untuk toko bertanda khusus.",
+                "is_selected": false
+              },
+              {
+                "option_id": "7",
+                "text": "PLUS",
+                "description": "Nikmati potongan ongkir untuk toko bertanda khusus.",
+                "is_selected": false
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "name": "stock",
+            "title": "Stok",
+            "text": "Stok",
+            "is_active": false,
+            "selection_type": 1,
+            "options": [
+              {
+                "option_id": "1",
+                "text": "Preorder",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "2",
+                "text": "Tersedia",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "3",
+                "text": "Tidak Tersedia",
+                "description": "",
+                "is_selected": false
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "name": "categories",
+            "title": "Kategori",
+            "text": "Kategori",
+            "is_active": false,
+            "selection_type": 1,
+            "options": [
+              {
+                "option_id": "578",
+                "text": "Audio, Kamera \u0026 Elektronik Lainnya",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "8",
+                "text": "Buku",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "983",
+                "text": "Dapur",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "60",
+                "text": "Elektronik",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "78",
+                "text": "Fashion Anak \u0026 Bayi",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "1760",
+                "text": "Fashion Muslim",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "1759",
+                "text": "Fashion Pria",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "1758",
+                "text": "Fashion Wanita",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "57",
+                "text": "Film \u0026 Musik",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "2099",
+                "text": "Gaming",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "65",
+                "text": "Handphone \u0026 Tablet",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "56",
+                "text": "Ibu \u0026 Bayi",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "61",
+                "text": "Kecantikan",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "715",
+                "text": "Kesehatan",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "297",
+                "text": "Komputer \u0026 Laptop",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "4396",
+                "text": "Logam Mulia",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "55",
+                "text": "Mainan \u0026 Hobi",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "35",
+                "text": "Makanan \u0026 Minuman",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "642",
+                "text": "Office \u0026 Stationery",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "62",
+                "text": "Olahraga",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "63",
+                "text": "Otomotif",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "4030",
+                "text": "Perawatan Hewan",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "2133",
+                "text": "Perawatan Tubuh",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "54",
+                "text": "Perlengkapan Pesta \u0026 Craft",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "4029",
+                "text": "Pertukangan",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "36",
+                "text": "Produk Lainnya",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "4561",
+                "text": "Properti",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "984",
+                "text": "Rumah Tangga",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "4568",
+                "text": "Tour \u0026 Travel",
+                "description": "",
+                "is_selected": false
+              },
+              {
+                "option_id": "4392",
+                "text": "Wedding",
+                "description": "",
+                "is_selected": false
+              }
+            ]
+          }
+        ],
+        "items": [
+          {
+            "id": "940020170",
+            "name": "Minyak kayu putih CAP LANG 30/60/120/210 ml - 60ml",
+            "url": "https://www.tokopedia.com/mitrasana/minyak-kayu-putih-cap-lang-30-60-120-210-ml-60ml?extParam\u003dwhid%3D11560374",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/9/26/0bac3933-fc05-4afd-8925-cd1059de7d2b.png",
+            "price": "24400",
+            "price_fmt": "Rp24.400",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "5.0",
+            "sold_count": "Terjual 5.2 rb",
+            "min_order": "1",
+            "shop": {
+              "id": "1389513",
+              "name": "Mitrasana Indonesia",
+              "url": "https://www.tokopedia.com/mitrasana",
+              "location": "Kota Surabaya",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Official Store",
+                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "2028",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "Sisa 4 lagi!",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 5.2 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "gimmick",
+                "title": "Sisa 4 lagi!",
+                "type": "textDarkRed",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/940020170/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/mitrasana"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2728540961",
+            "variant_name": "60ml",
+            "category": [
+              {
+                "category_id": 56,
+                "category_name": "Ibu \u0026 Bayi"
+              },
+              {
+                "category_id": 2027,
+                "category_name": "Perawatan Bayi"
+              },
+              {
+                "category_id": 2028,
+                "category_name": "Minyak Telon"
+              }
+            ]
+          },
+          {
+            "id": "6840410779",
+            "name": "[NEW]_KOPI_SUSU",
+            "url": "https://www.tokopedia.com/10973651-serba-kopi/new-kopi-susu?extParam\u003dwhid%3D10983402",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/10/28/ddad56f8-a7b3-4dd0-849e-592ee08d9e6f.jpg",
+            "price": "100000",
+            "price_fmt": "Rp100.000",
+            "available": false,
+            "label_status": "Stok Habis",
+            "preorder": false,
+            "rating": "",
+            "sold_count": "",
+            "min_order": "1",
+            "shop": {
+              "id": "10973651",
+              "name": "10973651_serba_kopi",
+              "url": "https://www.tokopedia.com/10973651-serba-kopi",
+              "location": "Jakarta Pusat",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Official Store",
+                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "2786",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 0,
+              "title": "",
+              "image_url": ""
+            },
+            "label_group": [
+              {
+                "position": "status",
+                "title": "Stok Habis",
+                "type": "transparentBlack",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "Lihat Barang Serupa",
+                "action": "CHECK_SIMILAR_PRODUCT",
+                "url": "tokopedia://rekomendasi/6840410779/?ref\u003dwishlist_oos"
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/10973651-serba-kopi"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2727679923",
+            "variant_name": "",
+            "category": [
+              {
+                "category_id": 35,
+                "category_name": "Makanan \u0026 Minuman"
+              },
+              {
+                "category_id": 1173,
+                "category_name": "Minuman"
+              },
+              {
+                "category_id": 2786,
+                "category_name": "Kopi"
+              }
+            ]
+          },
+          {
+            "id": "2186081308",
+            "name": "Panci Masak Kaca Borosilicate Glass Cooking Pot 15cm - KC008 Biru",
+            "url": "https://www.tokopedia.com/kcheck/panci-masak-kaca-borosilicate-glass-cooking-pot-15cm-kc008-biru?extParam\u003dwhid%3D7149690",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/hDjmkQ/2023/2/2/6eea825d-86a0-4d07-8445-75834511b46f.jpg",
+            "price": "89200",
+            "price_fmt": "Rp89.200",
+            "available": false,
+            "label_status": "Stok Habis",
+            "preorder": false,
+            "rating": "5.0",
+            "sold_count": "Terjual 30",
+            "min_order": "1",
+            "shop": {
+              "id": "6941803",
+              "name": "K Check",
+              "url": "https://www.tokopedia.com/kcheck",
+              "location": "Jakarta Barat",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Power Merchant PRO",
+                "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "948",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 30",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "status",
+                "title": "Stok Habis",
+                "type": "transparentBlack",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "Lihat Barang Serupa",
+                "action": "CHECK_SIMILAR_PRODUCT",
+                "url": "tokopedia://rekomendasi/2186081308/?ref\u003dwishlist_oos"
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/kcheck"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2620563174",
+            "variant_name": "",
+            "category": [
+              {
+                "category_id": 983,
+                "category_name": "Dapur"
+              },
+              {
+                "category_id": 908,
+                "category_name": "Peralatan Masak"
+              },
+              {
+                "category_id": 948,
+                "category_name": "Panci"
+              }
+            ]
+          },
+          {
+            "id": "2101839250",
+            "name": "2101839250 b4124n9 t35t1n9",
+            "url": "https://www.tokopedia.com/11083158mg05/2101839250-b4124n9-t35t1n9?extParam\u003dwhid%3D11086937",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2021/8/24/0710dcad-abbf-4de3-a254-d0224d59a963.jpg",
+            "price": "100",
+            "price_fmt": "Rp100",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "5.0",
+            "sold_count": "Terjual 4",
+            "min_order": "1",
+            "shop": {
+              "id": "11083158",
+              "name": "11083158mg05",
+              "url": "https://www.tokopedia.com/11083158mg05",
+              "location": "Jakarta Selatan",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Official Store",
+                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "4105",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 0,
+              "title": "",
+              "image_url": ""
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 4",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/2101839250/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/11083158mg05"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2620515137",
+            "variant_name": "",
+            "category": [
+              {
+                "category_id": 4029,
+                "category_name": "Pertukangan"
+              },
+              {
+                "category_id": 4075,
+                "category_name": "Hand Tools"
+              },
+              {
+                "category_id": 4105,
+                "category_name": "Kunci T"
+              }
+            ]
+          },
+          {
+            "id": "1859490075",
+            "name": "Nike Air Jordan Low Black Toe 100% BNIB ORIGINAL MATERIAL GUARANTE - 37",
+            "url": "https://www.tokopedia.com/hanskyfootwear/nike-air-jordan-low-black-toe-100-bnib-original-material-guarante-37?extParam\u003dwhid%3D11449370",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2023/1/24/8c0291c8-5a5f-4b02-9e1e-a1a9369837a3.jpg",
+            "price": "1050000",
+            "price_fmt": "Rp1.050.000",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "4.0",
+            "sold_count": "Terjual 1",
+            "min_order": "1",
+            "shop": {
+              "id": "11470094",
+              "name": "Hansky Footwear",
+              "url": "https://www.tokopedia.com/hanskyfootwear",
+              "location": "Kota Tangerang",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Power Merchant",
+                "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "1845",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "Sisa 2 lagi!",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 1",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "gimmick",
+                "title": "Sisa 2 lagi!",
+                "type": "textDarkRed",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/1859490075/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/hanskyfootwear"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2620479372",
+            "variant_name": "37",
+            "category": [
+              {
+                "category_id": 1759,
+                "category_name": "Fashion Pria"
+              },
+              {
+                "category_id": 1800,
+                "category_name": "Sepatu Pria"
+              },
+              {
+                "category_id": 1845,
+                "category_name": "Sneakers Pria"
+              }
+            ]
+          },
+          {
+            "id": "1851521727",
+            "name": "Nespresso Essenza Plus Coffee Machine, Black (Mesin Kopi)",
+            "url": "https://www.tokopedia.com/nespressoid/nespresso-essenza-plus-coffee-machine-black-mesin-kopi?extParam\u003dwhid%3D8297442",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/9/12/9dd88e2c-4ad8-4b6a-b8c3-5a4cc53612f3.jpg",
+            "price": "4999000",
+            "price_fmt": "Rp4.999.000",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "5.0",
+            "sold_count": "Terjual 19",
+            "min_order": "1",
+            "shop": {
+              "id": "8102541",
+              "name": "Nespresso Official Store",
+              "url": "https://www.tokopedia.com/nespressoid",
+              "location": "Kab. Bogor",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Official Store",
+                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "3486",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "Sisa 3 lagi!",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 19",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "gimmick",
+                "title": "Sisa 3 lagi!",
+                "type": "textDarkRed",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/1851521727/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/nespressoid"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2599251802",
+            "variant_name": "",
+            "category": [
+              {
+                "category_id": 983,
+                "category_name": "Dapur"
+              },
+              {
+                "category_id": 3440,
+                "category_name": "Alat Masak Khusus"
+              },
+              {
+                "category_id": 3486,
+                "category_name": "Coffee \u0026 Tea Maker"
+              }
+            ]
+          },
+          {
+            "id": "4927382839",
+            "name": "Sticker Pewangi Masker Patch Masker Aroma Masker Aroma Therapy Masker",
+            "url": "https://www.tokopedia.com/nameurneeds/sticker-pewangi-masker-patch-masker-aroma-masker-aroma-therapy-masker?extParam\u003dwhid%3D12843290",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/9/28/28e7dc08-d848-44cb-ac91-01f7ed5e9f13.jpg",
+            "price": "5450",
+            "price_fmt": "Rp5.450",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "4.9",
+            "sold_count": "Terjual 5.5 rb",
+            "min_order": "1",
+            "shop": {
+              "id": "12925111",
+              "name": "nameurneeds_id",
+              "url": "https://www.tokopedia.com/nameurneeds",
+              "location": "Jakarta Utara",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Power Merchant PRO",
+                "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "2520",
+            "original_price": "7950",
+            "original_price_fmt": "Rp7.950",
+            "discount_percentage": 32,
+            "discount_percentage_fmt": "32%",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 5.5 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/4927382839/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/nameurneeds"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2599251799",
+            "variant_name": "",
+            "category": [
+              {
+                "category_id": 715,
+                "category_name": "Kesehatan"
+              },
+              {
+                "category_id": 1742,
+                "category_name": "Perlengkapan Medis"
+              },
+              {
+                "category_id": 2520,
+                "category_name": "Disposable Consumable"
+              }
+            ]
+          },
+          {
+            "id": "829481523",
+            "name": "NESPRESSO Inissia M105 Coffee Machine, Red (Mesin Kopi)",
+            "url": "https://www.tokopedia.com/nespressoid/nespresso-inissia-m105-coffee-machine-red-mesin-kopi?extParam\u003dwhid%3D8297442",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/12/15/ceb954a8-dcc3-4551-9fa7-354c179440ea.jpg",
+            "price": "2999000",
+            "price_fmt": "Rp2.999.000",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "5.0",
+            "sold_count": "Terjual 175",
+            "min_order": "1",
+            "shop": {
+              "id": "8102541",
+              "name": "Nespresso Official Store",
+              "url": "https://www.tokopedia.com/nespressoid",
+              "location": "Kab. Bogor",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Official Store",
+                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "3486",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 175",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/829481523/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/nespressoid"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2599251798",
+            "variant_name": "",
+            "category": [
+              {
+                "category_id": 983,
+                "category_name": "Dapur"
+              },
+              {
+                "category_id": 3440,
+                "category_name": "Alat Masak Khusus"
+              },
+              {
+                "category_id": 3486,
+                "category_name": "Coffee \u0026 Tea Maker"
+              }
+            ]
+          },
+          {
+            "id": "2388653884",
+            "name": "Nike Air Jordan 1 Low Black Toe BNIB ORIGINAL MATERIAL GUARANTEE - 38",
+            "url": "https://www.tokopedia.com/gudangbubu/nike-air-jordan-1-low-black-toe-bnib-original-material-guarantee-38?extParam\u003dwhid%3D1383835",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/4/17/50ff514a-89a4-4a85-990b-f956ed47937b.jpg",
+            "price": "1399000",
+            "price_fmt": "Rp1.399.000",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "5.0",
+            "sold_count": "Terjual 2.2 rb",
+            "min_order": "1",
+            "shop": {
+              "id": "1743742",
+              "name": "Gudang Bubu",
+              "url": "https://www.tokopedia.com/gudangbubu",
+              "location": "Kota Tangerang",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Power Merchant PRO",
+                "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "1845",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "Sisa 2 lagi!",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 2.2 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "gimmick",
+                "title": "Sisa 2 lagi!",
+                "type": "textDarkRed",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/2388653884/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/gudangbubu"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2599251797",
+            "variant_name": "38",
+            "category": [
+              {
+                "category_id": 1759,
+                "category_name": "Fashion Pria"
+              },
+              {
+                "category_id": 1800,
+                "category_name": "Sepatu Pria"
+              },
+              {
+                "category_id": 1845,
+                "category_name": "Sneakers Pria"
+              }
+            ]
+          },
+          {
+            "id": "1693267426",
+            "name": "b4r4n9 t35t1n9 n1ch j4n9an d1b3l1",
+            "url": "https://www.tokopedia.com/m3rh4ntgr0wth01/b4r4n9-t35t1n9-n1ch-j4n9an-d1b3l1?extParam\u003dwhid%3D11087031",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2021/3/22/bb3a944d-f29a-49e4-95a9-273d32a1c179.jpg",
+            "price": "123",
+            "price_fmt": "Rp123",
+            "available": false,
+            "label_status": "Tidak Aktif",
+            "preorder": false,
+            "rating": "4.7",
+            "sold_count": "Terjual 28",
+            "min_order": "1",
+            "shop": {
+              "id": "11083259",
+              "name": "m3rh4nt_gr0wTh01",
+              "url": "https://www.tokopedia.com/m3rh4ntgr0wth01",
+              "location": "Kota Yogyakarta",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Regular Merchant",
+                "image_url": ""
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "3408",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 0,
+              "title": "",
+              "image_url": ""
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 28",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "status",
+                "title": "Tidak Aktif",
+                "type": "transparentBlack",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "Lihat Barang Serupa",
+                "action": "CHECK_SIMILAR_PRODUCT",
+                "url": "tokopedia://rekomendasi/1693267426/?ref\u003dwishlist_oos"
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/m3rh4ntgr0wth01"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2599251796",
+            "variant_name": "",
+            "category": [
+              {
+                "category_id": 8,
+                "category_name": "Buku"
+              },
+              {
+                "category_id": 3318,
+                "category_name": "Teknik \u0026 Sains"
+              },
+              {
+                "category_id": 3408,
+                "category_name": "Buku Elektro"
+              }
+            ]
+          },
+          {
+            "id": "3796531967",
+            "name": "Pexio Russell Kursi Kantor Ergonomis Hitam",
+            "url": "https://www.tokopedia.com/pexio/pexio-russell-kursi-kantor-ergonomis-hitam?extParam\u003dwhid%3D2521076",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/10/5/2e2ca656-e28b-46d3-b42c-a4b660a7b896.png",
+            "price": "3150000",
+            "price_fmt": "Rp3.150.000",
+            "available": false,
+            "label_status": "Stok Habis",
+            "preorder": false,
+            "rating": "4.3",
+            "sold_count": "Terjual 12",
+            "min_order": "1",
+            "shop": {
+              "id": "3167097",
+              "name": "PEXIO",
+              "url": "https://www.tokopedia.com/pexio",
+              "location": "Jakarta Barat",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Official Store",
+                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "5191",
+            "original_price": "3500000",
+            "original_price_fmt": "Rp3.500.000",
+            "discount_percentage": 10,
+            "discount_percentage_fmt": "10%",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 12",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "status",
+                "title": "Stok Habis",
+                "type": "transparentBlack",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "Lihat Barang Serupa",
+                "action": "CHECK_SIMILAR_PRODUCT",
+                "url": "tokopedia://rekomendasi/3796531967/?ref\u003dwishlist_oos"
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/pexio"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2589634310",
+            "variant_name": "",
+            "category": [
+              {
+                "category_id": 984,
+                "category_name": "Rumah Tangga"
+              },
+              {
+                "category_id": 992,
+                "category_name": "Furniture"
+              },
+              {
+                "category_id": 5191,
+                "category_name": "Kursi Kantor"
+              }
+            ]
+          },
+          {
+            "id": "5465776739",
+            "name": "Deli Office Chair/Kursi Kantor/Kursi Kerja Ada Bantalan Tangan E4930 - Putih",
+            "url": "https://www.tokopedia.com/vusign-home/deli-office-chair-kursi-kantor-kursi-kerja-ada-bantalan-tangan-e4930-putih?extParam\u003dwhid%3D13379137",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/16/bae3ac13-cdf3-43d7-adbe-2235618d603b.jpg",
+            "price": "682000",
+            "price_fmt": "Rp682.000",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "4.8",
+            "sold_count": "Terjual 13",
+            "min_order": "1",
+            "shop": {
+              "id": "13478185",
+              "name": "Vusign Home",
+              "url": "https://www.tokopedia.com/vusign-home",
+              "location": "Kab. Tangerang",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Power Merchant PRO",
+                "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "5191",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 13",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/5465776739/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/vusign-home"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2589632320",
+            "variant_name": "Putih",
+            "category": [
+              {
+                "category_id": 984,
+                "category_name": "Rumah Tangga"
+              },
+              {
+                "category_id": 992,
+                "category_name": "Furniture"
+              },
+              {
+                "category_id": 5191,
+                "category_name": "Kursi Kantor"
+              }
+            ]
+          },
+          {
+            "id": "808866384",
+            "name": "Pexio Oslo Kursi Kantor Ergonomis Hitam",
+            "url": "https://www.tokopedia.com/pexio/pexio-oslo-kursi-kantor-ergonomis-hitam?extParam\u003dwhid%3D2521076",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/10/5/7df13522-60b1-4104-ad1b-918e8c7d1198.png",
+            "price": "2835000",
+            "price_fmt": "Rp2.835.000",
+            "available": false,
+            "label_status": "Stok Habis",
+            "preorder": false,
+            "rating": "4.9",
+            "sold_count": "Terjual 519",
+            "min_order": "1",
+            "shop": {
+              "id": "3167097",
+              "name": "PEXIO",
+              "url": "https://www.tokopedia.com/pexio",
+              "location": "Jakarta Barat",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Official Store",
+                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "5191",
+            "original_price": "3500000",
+            "original_price_fmt": "Rp3.500.000",
+            "discount_percentage": 19,
+            "discount_percentage_fmt": "19%",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 519",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "status",
+                "title": "Stok Habis",
+                "type": "transparentBlack",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "Lihat Barang Serupa",
+                "action": "CHECK_SIMILAR_PRODUCT",
+                "url": "tokopedia://rekomendasi/808866384/?ref\u003dwishlist_oos"
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/pexio"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2589625456",
+            "variant_name": "",
+            "category": [
+              {
+                "category_id": 984,
+                "category_name": "Rumah Tangga"
+              },
+              {
+                "category_id": 992,
+                "category_name": "Furniture"
+              },
+              {
+                "category_id": 5191,
+                "category_name": "Kursi Kantor"
+              }
+            ]
+          },
+          {
+            "id": "5467758595",
+            "name": "Deli Office Chair / Kursi Kantor / Kursi Kerja Dengan Sandaran E4930 - Hitam",
+            "url": "https://www.tokopedia.com/delioa/deli-office-chair-kursi-kantor-kursi-kerja-dengan-sandaran-e4930-hitam?extParam\u003dwhid%3D8108753",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/16/42c740f3-02e8-40a9-8723-64191d97c63a.jpg",
+            "price": "598000",
+            "price_fmt": "Rp598.000",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "4.9",
+            "sold_count": "Terjual 495",
+            "min_order": "1",
+            "shop": {
+              "id": "7905649",
+              "name": "Deli office automative",
+              "url": "https://www.tokopedia.com/delioa",
+              "location": "Kab. Tangerang",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Official Store",
+                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "5191",
+            "original_price": "1500000",
+            "original_price_fmt": "Rp1.500.000",
+            "discount_percentage": 61,
+            "discount_percentage_fmt": "61%",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 495",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/5467758595/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/delioa"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2572005253",
+            "variant_name": "Hitam",
+            "category": [
+              {
+                "category_id": 984,
+                "category_name": "Rumah Tangga"
+              },
+              {
+                "category_id": 992,
+                "category_name": "Furniture"
+              },
+              {
+                "category_id": 5191,
+                "category_name": "Kursi Kantor"
+              }
+            ]
+          },
+          {
+            "id": "3540337154",
+            "name": "Vusign Office Chair / Kursi Kantor / Kursi Kerja Minimalis E4928 E4929 - Putih",
+            "url": "https://www.tokopedia.com/vusign-home/vusign-office-chair-kursi-kantor-kursi-kerja-minimalis-e4928-e4929-putih?extParam\u003dwhid%3D13379137",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/4/13/c02aae65-7a08-493b-b26d-7efa6e078b9f.jpg",
+            "price": "482000",
+            "price_fmt": "Rp482.000",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "5.0",
+            "sold_count": "Terjual 7",
+            "min_order": "1",
+            "shop": {
+              "id": "13478185",
+              "name": "Vusign Home",
+              "url": "https://www.tokopedia.com/vusign-home",
+              "location": "Kab. Tangerang",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Power Merchant PRO",
+                "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "5191",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 7",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/3540337154/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/vusign-home"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2572004491",
+            "variant_name": "Putih",
+            "category": [
+              {
+                "category_id": 984,
+                "category_name": "Rumah Tangga"
+              },
+              {
+                "category_id": 992,
+                "category_name": "Furniture"
+              },
+              {
+                "category_id": 5191,
+                "category_name": "Kursi Kantor"
+              }
+            ]
+          },
+          {
+            "id": "5467758605",
+            "name": "Deli Office Chair / Kursi Kantor / Kursi Kerja Dengan Sandaran E4930 - Putih",
+            "url": "https://www.tokopedia.com/delioa/deli-office-chair-kursi-kantor-kursi-kerja-dengan-sandaran-e4930-putih?extParam\u003dwhid%3D8108753",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/16/a1464512-d072-4480-9c39-6b1d5e06e3dc.jpg",
+            "price": "682000",
+            "price_fmt": "Rp682.000",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "4.9",
+            "sold_count": "Terjual 495",
+            "min_order": "1",
+            "shop": {
+              "id": "7905649",
+              "name": "Deli office automative",
+              "url": "https://www.tokopedia.com/delioa",
+              "location": "Kab. Tangerang",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Official Store",
+                "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "5191",
+            "original_price": "1500000",
+            "original_price_fmt": "Rp1.500.000",
+            "discount_percentage": 55,
+            "discount_percentage_fmt": "55%",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 495",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/5467758605/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/delioa"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2572003925",
+            "variant_name": "Putih",
+            "category": [
+              {
+                "category_id": 984,
+                "category_name": "Rumah Tangga"
+              },
+              {
+                "category_id": 992,
+                "category_name": "Furniture"
+              },
+              {
+                "category_id": 5191,
+                "category_name": "Kursi Kantor"
+              }
+            ]
+          },
+          {
+            "id": "6320319163",
+            "name": "Meja Belajar Nordic / Meja Lipat / Meja Kerja / Meja Laptop Makan Cafe - White Nor 70",
+            "url": "https://www.tokopedia.com/shoeking/meja-belajar-nordic-meja-lipat-meja-kerja-meja-laptop-makan-cafe-white-nor-70?extParam\u003dwhid%3D14121659",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/9/21/0ea728f3-f198-477f-a90f-7f109706e503.png",
+            "price": "195000",
+            "price_fmt": "Rp195.000",
+            "available": false,
+            "label_status": "Tidak Aktif",
+            "preorder": false,
+            "rating": "4.8",
+            "sold_count": "Terjual 63",
+            "min_order": "1",
+            "shop": {
+              "id": "14245305",
+              "name": "ShoeKing",
+              "url": "https://www.tokopedia.com/shoeking",
+              "location": "Jakarta Barat",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Regular Merchant",
+                "image_url": ""
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "3904",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 63",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "status",
+                "title": "Tidak Aktif",
+                "type": "transparentBlack",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "Lihat Barang Serupa",
+                "action": "CHECK_SIMILAR_PRODUCT",
+                "url": "tokopedia://rekomendasi/6320319163/?ref\u003dwishlist_oos"
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/shoeking"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2572003071",
+            "variant_name": "White Nor 70",
+            "category": [
+              {
+                "category_id": 297,
+                "category_name": "Komputer \u0026 Laptop"
+              },
+              {
+                "category_id": 338,
+                "category_name": "Aksesoris Komputer \u0026 Laptop"
+              },
+              {
+                "category_id": 3904,
+                "category_name": "Meja Laptop"
+              }
+            ]
+          },
+          {
+            "id": "6286282370",
+            "name": "Bangku Gaming Kursi Gaming Gaming Chair Kursi Kerja Kursi Kantor Kursi - 888 ORANGE",
+            "url": "https://www.tokopedia.com/shoeking/bangku-gaming-kursi-gaming-gaming-chair-kursi-kerja-kursi-kantor-kursi-888-orange?extParam\u003dwhid%3D14121659",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/9/20/11b2a34a-b39a-46af-8dc4-d3539abf5910.png",
+            "price": "310000",
+            "price_fmt": "Rp310.000",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "4.4",
+            "sold_count": "Terjual 70",
+            "min_order": "1",
+            "shop": {
+              "id": "14245305",
+              "name": "ShoeKing",
+              "url": "https://www.tokopedia.com/shoeking",
+              "location": "Jakarta Barat",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Regular Merchant",
+                "image_url": ""
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "4645",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 70",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/6286282370/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/shoeking"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2572002269",
+            "variant_name": "888 ORANGE",
+            "category": [
+              {
+                "category_id": 297,
+                "category_name": "Komputer \u0026 Laptop"
+              },
+              {
+                "category_id": 3848,
+                "category_name": "Aksesoris PC Gaming"
+              },
+              {
+                "category_id": 4645,
+                "category_name": "Kursi Gaming"
+              }
+            ]
+          },
+          {
+            "id": "6796787044",
+            "name": "Meja Laptop Lipat Portable Meja Laptop Roda Meja Belajar Makan Anak - RODA Hitam",
+            "url": "https://www.tokopedia.com/shoeking/meja-laptop-lipat-portable-meja-laptop-roda-meja-belajar-makan-anak-roda-hitam?extParam\u003dwhid%3D14121659",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/10/21/5eb450b4-30eb-48f7-b60f-d7b14d581111.png",
+            "price": "128000",
+            "price_fmt": "Rp128.000",
+            "available": false,
+            "label_status": "Tidak Aktif",
+            "preorder": false,
+            "rating": "4.7",
+            "sold_count": "Terjual 226",
+            "min_order": "1",
+            "shop": {
+              "id": "14245305",
+              "name": "ShoeKing",
+              "url": "https://www.tokopedia.com/shoeking",
+              "location": "Jakarta Barat",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Regular Merchant",
+                "image_url": ""
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "3904",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 5,
+              "title": "Bebas Ongkir Plus",
+              "image_url": "https://images.tokopedia.net/img/plus/logo/plus_badge_default.png"
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 226",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "status",
+                "title": "Tidak Aktif",
+                "type": "transparentBlack",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "Lihat Barang Serupa",
+                "action": "CHECK_SIMILAR_PRODUCT",
+                "url": "tokopedia://rekomendasi/6796787044/?ref\u003dwishlist_oos"
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/shoeking"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2572002024",
+            "variant_name": "RODA Hitam",
+            "category": [
+              {
+                "category_id": 297,
+                "category_name": "Komputer \u0026 Laptop"
+              },
+              {
+                "category_id": 338,
+                "category_name": "Aksesoris Komputer \u0026 Laptop"
+              },
+              {
+                "category_id": 3904,
+                "category_name": "Meja Laptop"
+              }
+            ]
+          },
+          {
+            "id": "1123894743",
+            "name": "Hiasan Dinding Interior Home Decor Laundry - Mk008",
+            "url": "https://www.tokopedia.com/gilang-wicaksono/hiasan-dinding-interior-home-decor-laundry-mk008?extParam\u003dwhid%3D9572088",
+            "image_url": "https://images.tokopedia.net/img/cache/250-square/product-1/2020/8/25/112190149/112190149_bf1977de-9e23-4e3a-8f54-a19ef4ec80f5_684_684.jpg",
+            "price": "34000",
+            "price_fmt": "Rp34.000",
+            "available": true,
+            "label_status": "",
+            "preorder": false,
+            "rating": "5.0",
+            "sold_count": "Terjual 1",
+            "min_order": "1",
+            "shop": {
+              "id": "9451415",
+              "name": "gilang wicaksono",
+              "url": "https://www.tokopedia.com/gilang-wicaksono",
+              "location": "Kota Tangerang Selatan",
+              "fulfillment": {
+                "is_fulfillment": false,
+                "text": ""
+              },
+              "is_tokonow": false
+            },
+            "badges": [
+              {
+                "title": "Regular Merchant",
+                "image_url": ""
+              }
+            ],
+            "labels": [],
+            "wholesale_price": [],
+            "default_child_id": "3739",
+            "original_price": "0",
+            "original_price_fmt": "",
+            "discount_percentage": 0,
+            "discount_percentage_fmt": "",
+            "label_stock": "",
+            "bebas_ongkir": {
+              "type": 0,
+              "title": "",
+              "image_url": ""
+            },
+            "label_group": [
+              {
+                "position": "integrity",
+                "title": "Terjual 1",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "buttons": {
+              "primary_button": {
+                "text": "+ Keranjang",
+                "action": "ADD_TO_CART",
+                "url": ""
+              },
+              "additional_buttons": [
+                {
+                  "text": "Lihat Barang Serupa",
+                  "action": "CHECK_SIMILAR_PRODUCT",
+                  "url": "tokopedia://rekomendasi/1123894743/?ref\u003dwishlist"
+                },
+                {
+                  "text": "Lihat Toko",
+                  "action": "CHECK_SHOP",
+                  "url": "https://www.tokopedia.com/gilang-wicaksono"
+                },
+                {
+                  "text": "Bagikan Link Barang",
+                  "action": "SHARE_LINK_PRODUCT",
+                  "url": ""
+                },
+                {
+                  "text": "Simpan ke Koleksi",
+                  "action": "ADD_ITEM_TO_COLLECTION",
+                  "url": ""
+                },
+                {
+                  "text": "Hapus",
+                  "action": "DELETE_WISHLIST",
+                  "url": ""
+                }
+              ]
+            },
+            "wishlist_id": "2563149472",
+            "variant_name": "",
+            "category": [
+              {
+                "category_id": 984,
+                "category_name": "Rumah Tangga"
+              },
+              {
+                "category_id": 993,
+                "category_name": "Dekorasi"
+              },
+              {
+                "category_id": 3739,
+                "category_name": "Hiasan Dinding"
+              }
+            ]
+          }
+        ],
+        "error_message": ""
+      }
+    }
+  }
+]
