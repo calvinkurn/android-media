@@ -8,6 +8,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class PresetFilterUiModel(
+    val id: String,
     val name: String,
     val active: Boolean,
     val minValue: Double,
@@ -17,4 +18,12 @@ data class PresetFilterUiModel(
     val iconUrl: String,
     val assetLink: String,
     val assetStatus: BeautificationAssetStatus,
-) : Parcelable
+) : Parcelable {
+
+    val isRemoveEffect: Boolean
+        get() = id == OPTION_NONE
+
+    companion object {
+        private const val OPTION_NONE = "none"
+    }
+}

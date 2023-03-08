@@ -8,6 +8,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class FaceFilterUiModel(
+    val id: String,
     val name: String,
     val minValue: Double,
     val maxValue: Double,
@@ -21,4 +22,11 @@ data class FaceFilterUiModel(
 
     val isChecked: Boolean
         get() = value != 0.0
+
+    val isRemoveEffect: Boolean
+        get() = id == OPTION_NONE
+
+    companion object {
+        private const val OPTION_NONE = "none"
+    }
 }

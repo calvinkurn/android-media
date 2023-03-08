@@ -160,7 +160,8 @@ class PlayBroadcastUiMapper @Inject constructor(
                 /** TODO: mocking purpose */
                 faceFilters = List(5) {
                     FaceFilterUiModel(
-                        name = "Custom Face $it",
+                        id = if(it == 0) "none" else "Custom Face id $it",
+                        name = if(it == 0) "Tidak Ada" else "Custom Face $it",
                         minValue = it * 0.1,
                         maxValue = it * 0.1,
                         defaultValue = it * 0.1,
@@ -173,7 +174,8 @@ class PlayBroadcastUiMapper @Inject constructor(
                 },
                 presets = List(5) {
                     PresetFilterUiModel(
-                        name = "Preset $it",
+                        id = if(it == 0) "none" else "Preset id $it",
+                        name = if(it == 0) "Tidak Ada" else "Preset $it",
                         active = false,
                         minValue = it * 0.1,
                         maxValue = it * 0.1,
@@ -186,6 +188,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 }
 //                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
 //                    FaceFilterUiModel(
+//                        id = menu.id,
 //                        name = menu.name,
 //                        minValue = menu.minValue,
 //                        maxValue = menu.maxValue,
@@ -199,6 +202,7 @@ class PlayBroadcastUiMapper @Inject constructor(
 //                },
 //                presets = config.beautificationConfig.presets.map { preset ->
 //                    PresetFilterUiModel(
+//                        id = preset.id,
 //                        name = preset.name,
 //                        active = preset.active,
 //                        minValue = preset.minValue,

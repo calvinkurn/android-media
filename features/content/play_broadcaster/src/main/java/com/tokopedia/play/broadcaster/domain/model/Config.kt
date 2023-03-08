@@ -74,6 +74,8 @@ data class Config(
             ) {
 
                 data class Menu(
+                    @SerializedName("id")
+                    val id: String = "",
                     @SerializedName("name")
                     val name: String = "",
                     @SerializedName("minValue")
@@ -88,6 +90,8 @@ data class Config(
             }
 
             data class Preset(
+                @SerializedName("id")
+                val id: String = "",
                 @SerializedName("name")
                 val name: String = "",
                 @SerializedName("active")

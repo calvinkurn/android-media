@@ -22,9 +22,9 @@ class BeautificationFilterOptionAdapter(
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
         return if(oldItem is Model.FaceFilter && newItem is Model.FaceFilter)
-            oldItem.data.name == newItem.data.name
+            oldItem.data.id == newItem.data.id
         else if(oldItem is Model.Preset && newItem is Model.Preset)
-            oldItem.data.name == newItem.data.name
+            oldItem.data.id == newItem.data.id
         else oldItem == newItem
     }
 
