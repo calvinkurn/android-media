@@ -145,7 +145,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                         maxValue = it * 0.1,
                         defaultValue = it * 0.1,
                         value = it * 0.1,
-                        iconUrl = "",
                         assetLink = "asset link $it",
                         isSelected = false,
                         assetStatus = BeautificationAssetStatus.Available,

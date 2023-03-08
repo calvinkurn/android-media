@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.ui.viewholder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -25,7 +26,12 @@ class BeautificationFilterOptionViewHolder private constructor() {
         fun bind(item: FaceFilterUiModel) {
             binding.apply {
                 tvBeautificationFilter.text = item.name
-                imgBeautificationFilter.setImageUrl(item.iconUrl)
+
+                imgBeautificationFilter.hide()
+
+                icBeautificationFilter.setImage(item.iconUnifyId)
+                icBeautificationFilter.show()
+
                 icChecked.showWithCondition(item.isChecked)
 
                 clIcon.setBackgroundResource(
@@ -86,8 +92,21 @@ class BeautificationFilterOptionViewHolder private constructor() {
         fun bind(item: PresetFilterUiModel) {
             binding.apply {
                 tvBeautificationFilter.text = item.name
-                imgBeautificationFilter.setImageUrl(item.iconUrl)
+
                 icChecked.hide()
+
+                if(item.isRemoveEffect) {
+                    imgBeautificationFilter.hide()
+
+                    icBeautificationFilter.setImage(IconUnify.BLOCK)
+                    icBeautificationFilter.show()
+                }
+                else {
+                    imgBeautificationFilter.setImageUrl(item.iconUrl)
+                    imgBeautificationFilter.show()
+
+                    icBeautificationFilter.hide()
+                }
 
                 clIcon.setBackgroundResource(
                     if(item.active) R.drawable.bg_face_filter_option_selected

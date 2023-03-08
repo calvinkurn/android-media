@@ -158,21 +158,61 @@ class PlayBroadcastUiMapper @Inject constructor(
                 license = config.beautificationConfig.license,
                 model = config.beautificationConfig.model,
                 /** TODO: mocking purpose */
-                faceFilters = List(5) {
+                faceFilters = listOf(
                     FaceFilterUiModel(
-                        id = if(it == 0) "none" else "Custom Face id $it",
-                        name = if(it == 0) "Tidak Ada" else "Custom Face $it",
-                        minValue = it * 0.1,
-                        maxValue = it * 0.1,
-                        defaultValue = it * 0.1,
-                        value = it * 0.1,
-                        iconUrl = "",
-                        assetLink = "asset link $it",
+                        id = FaceFilterUiModel.Type.None.id,
+                        name = "Tidak Ada",
+                        minValue = 0.0,
+                        maxValue = 1.0,
+                        defaultValue = 0.0,
+                        value = 0.0,
+                        assetLink = "asset link",
+                        isSelected = false,
+                        assetStatus = BeautificationAssetStatus.Available,
+                    ),
+                    FaceFilterUiModel(
+                        id = FaceFilterUiModel.Type.Blur.id,
+                        name = "Halus",
+                        minValue = 0.0,
+                        maxValue = 1.0,
+                        defaultValue = 0.7,
+                        value = 0.7,
+                        assetLink = "asset link",
+                        isSelected = false,
+                        assetStatus = BeautificationAssetStatus.Available,
+                    ),
+                    FaceFilterUiModel(
+                        id = FaceFilterUiModel.Type.Sharpen.id,
+                        name = "Tajam",
+                        minValue = 0.0,
+                        maxValue = 1.0,
+                        defaultValue = 0.5,
+                        value = 0.5,
+                        assetLink = "asset link",
+                        isSelected = false,
+                        assetStatus = BeautificationAssetStatus.Available,
+                    ),
+                    FaceFilterUiModel(
+                        id = FaceFilterUiModel.Type.Clarity.id,
+                        name = "Cerah",
+                        minValue = 0.0,
+                        maxValue = 1.0,
+                        defaultValue = 0.4,
+                        value = 0.4,
+                        assetLink = "asset link",
                         isSelected = false,
                         assetStatus = BeautificationAssetStatus.Available,
                     )
-                },
+                ),
                 presets = List(5) {
+                    val iconUrl = when(it) {
+                        1 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/idol.jpg"
+                        2 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/energetic.jpg"
+                        3 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/gangnam.jpg"
+                        4 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/elegant.jpg"
+                        else -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/sweety.jpg"
+                    }
+
                     PresetFilterUiModel(
                         id = if(it == 0) "none" else "Preset id $it",
                         name = if(it == 0) "Tidak Ada" else "Preset $it",
@@ -181,7 +221,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                         maxValue = it * 0.1,
                         defaultValue = it * 0.1,
                         value = it * 0.1,
-                        iconUrl = "",
+                        iconUrl = iconUrl,
                         assetLink = "asset link $it",
                         assetStatus = BeautificationAssetStatus.Available,
                     )
@@ -194,7 +234,6 @@ class PlayBroadcastUiMapper @Inject constructor(
 //                        maxValue = menu.maxValue,
 //                        defaultValue = menu.defaultValue,
 //                        value = menu.value,
-//                        iconUrl = "", /** TODO: handle this */
 //                        assetLink = config.beautificationConfig.customFace.assetAndroid,
 //                        isSelected = false,
 //                        assetStatus = BeautificationAssetStatus.Available, /** TODO: handle this */
