@@ -142,7 +142,7 @@ class PerformanceTrace(val traceName: String) {
         )
         onLaunchTimeFinished.invoke(summaryModel.get(), TYPE_TTIL, it)
         viewgroup.viewTreeObserver.removeOnGlobalLayoutListener(onGlobalLayoutTTIL)
-        performanceMonitoring.putMetric(TYPE_TTFL, summaryModel.get().timeToInitialLayout?.inflateTime?:0L)
+        performanceMonitoring.putMetric(TYPE_TTIL, summaryModel.get().timeToInitialLayout?.inflateTime?:0L)
         performanceMonitoring.stopTrace()
     }
 
