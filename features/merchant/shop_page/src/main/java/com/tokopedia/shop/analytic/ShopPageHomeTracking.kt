@@ -513,12 +513,12 @@ class ShopPageHomeTracking(
         val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
         val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
         val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginEventValue, NOT_SEARCH_RESULT)
-        val eventLabel = joinDash(ALL_ETALASE, loginNonLoginEventValue, NOT_SEARCH_RESULT)
+        val eventAction = joinDash(ALL_PRODUCT_IMPRESSION, etalaseChip, loginNonLoginEventValue, NOT_SEARCH_RESULT)
         val eventMap = createMap(
             PRODUCT_VIEW,
             SHOP_PAGE_BUYER,
-            ALL_PRODUCT_IMPRESSION,
-            eventLabel,
+            eventAction,
+            "",
             customDimensionShopPage
         )
         eventMap[TRACKER_ID] = TRACKER_ID_ALL_PRODUCT_IMPRESSION
@@ -624,12 +624,12 @@ class ShopPageHomeTracking(
         val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
         val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
         val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginEventValue, NOT_SEARCH_RESULT)
-        val eventLabel = joinDash(ALL_ETALASE, loginNonLoginEventValue, NOT_SEARCH_RESULT)
+        val eventAction = joinDash(ALL_PRODUCT_CLICKED, etalaseChip, loginNonLoginEventValue, NOT_SEARCH_RESULT)
         val eventMap = createMap(
             PRODUCT_CLICK,
             SHOP_PAGE_BUYER,
-            ALL_PRODUCT_CLICKED,
-            eventLabel,
+            eventAction,
+            "",
             customDimensionShopPage
         )
         eventMap[TRACKER_ID] = TRACKER_ID_ALL_PRODUCT_CLICKED
