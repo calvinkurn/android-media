@@ -152,7 +152,7 @@ class BannerRevampViewHolder(
 
         binding?.rvBannerRevamp?.layoutManager = getLayoutManager()
         val adapter = BannerRevampChannelAdapter(list, this)
-        val halfIntegerSize = Integer.MAX_VALUE / DIVIDE_HALF_BANNER
+        val halfIntegerSize = Integer.MAX_VALUE / DIVIDE_HALF_BANNER_SIZE_INT_SIZE
         binding?.rvBannerRevamp?.layoutManager?.scrollToPosition(halfIntegerSize - halfIntegerSize % totalBanner)
         binding?.rvBannerRevamp?.adapter = adapter
     }
@@ -204,7 +204,7 @@ class BannerRevampViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_banner_revamp
-        private const val DIVIDE_HALF_BANNER = 2
+        private const val DIVIDE_HALF_BANNER_SIZE_INT_SIZE = 2
         private const val MULTIPLY_NO_BOUNCE_BANNER = 2
     }
 }

@@ -110,7 +110,6 @@ class BannerIndicator : LinearLayout {
                 animateIndicatorBanner(progressIndicator, position)
             }
         }
-
         val maxAnimatorSet = AnimatorSet()
         maxAnimatorSet.play(maximizeAnimator)
         maxAnimatorSet.interpolator = BannerComponentViewHolder.autoScrollInterpolator
@@ -121,7 +120,6 @@ class BannerIndicator : LinearLayout {
         val layoutParams = progressIndicator.layoutParams
         layoutParams.width = WIDTH_MAXIMUM_PROGRESS.toPx()
         progressIndicator.layoutParams = layoutParams
-
         animateIndicatorBanner(progressIndicator, position)
     }
 
