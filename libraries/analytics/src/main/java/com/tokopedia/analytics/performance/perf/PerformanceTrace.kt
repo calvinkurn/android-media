@@ -1,10 +1,14 @@
 package com.tokopedia.analytics.performance.perf
 
+import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
+import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
@@ -19,15 +23,27 @@ class PerformanceTrace(val traceName: String) {
     }
     private var startCurrentTimeMillis = 0L
     var summaryModel: AtomicReference<SummaryModel> = AtomicReference(SummaryModel())
+    var outputSharedFlow: SharedFlow<Unit> = MutableSharedFlow<Unit>(1, 0, BufferOverflow.SUSPEND)
 
     val sharedFlow = MutableSharedFlow<View>(1, 0, BufferOverflow.SUSPEND)
-    var outputSharedFlow: SharedFlow<Unit> = MutableSharedFlow<Unit>(1, 0, BufferOverflow.SUSPEND)
+    val performanceMonitoring = PerformanceMonitoring()
 
     init {
         startCurrentTimeMillis = System.currentTimeMillis()
+        performanceMonitoring.startTrace(traceName)
     }
 
     var performanceTraceJob: Job? = null
+
+    fun debugPerformanceTrace(activity: Activity?, summaryModel: SummaryModel, type: String, view: View) {
+        activity?.takeScreenshot(type, view)
+        if (type == TYPE_TTIL) {
+            Toaster.build(view, "" +
+                "TTFL: ${summaryModel.timeToFirstLayout?.inflateTime} ms \n" +
+                "TTIL: ${summaryModel.timeToInitialLayout?.inflateTime} ms \n" ).show()
+        }
+    }
+
     fun init(
         v: View,
         scope: LifecycleCoroutineScope,
@@ -70,11 +86,7 @@ class PerformanceTrace(val traceName: String) {
         viewgroup.viewTreeObserver.addOnGlobalLayoutListener(onGlobalLayoutTTIL)
 
         outputSharedFlow = sharedFlow.debounce(GLOBAL_LAYOUT_DEBOUNCE).map {
-            onLaunchTimeFinished.invoke(summaryModel.get(), TYPE_TTIL, it)
-            viewgroup.viewTreeObserver.removeOnGlobalLayoutListener(onGlobalLayoutTTIL)
-            PerformanceTraceDebugger.logTrace(
-                "TTIL Captured: ${summaryModel.get().timeToInitialLayout?.inflateTime} ms"
-            )
+            onTTILFinished(onLaunchTimeFinished, it, viewgroup, onGlobalLayoutTTIL)
         }.shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
         outputSharedFlow.launchIn(scope)
     }
@@ -96,16 +108,39 @@ class PerformanceTrace(val traceName: String) {
         viewgroup.viewTreeObserver.addOnGlobalLayoutListener(
             object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    val perfModel = createViewPerformanceModel(viewgroup)
-                    validateTTFL(perfModel)
-                    PerformanceTraceDebugger.logTrace(
-                        "TTFL Captured: ${perfModel.inflateTime} ms"
-                    )
-                    onLaunchTimeFinished.invoke(summaryModel.get(), TYPE_TTFL, viewgroup)
-                    viewgroup.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    onTTFLFinished(viewgroup, onLaunchTimeFinished)
                 }
             }
         )
+    }
+
+    private fun OnGlobalLayoutListener.onTTFLFinished(
+        viewgroup: ViewGroup,
+        onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit
+    ) {
+        val perfModel = createViewPerformanceModel(viewgroup)
+        validateTTFL(perfModel)
+        PerformanceTraceDebugger.logTrace(
+            "TTFL Captured: ${perfModel.inflateTime} ms"
+        )
+        onLaunchTimeFinished.invoke(summaryModel.get(), TYPE_TTFL, viewgroup)
+        viewgroup.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        performanceMonitoring.putMetric(TYPE_TTFL, perfModel.inflateTime)
+    }
+
+    private fun onTTILFinished(
+        onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit,
+        it: View,
+        viewgroup: ViewGroup,
+        onGlobalLayoutTTIL: OnGlobalLayoutListener
+    ) {
+        PerformanceTraceDebugger.logTrace(
+            "TTIL Captured: ${summaryModel.get().timeToInitialLayout?.inflateTime} ms"
+        )
+        onLaunchTimeFinished.invoke(summaryModel.get(), TYPE_TTIL, it)
+        viewgroup.viewTreeObserver.removeOnGlobalLayoutListener(onGlobalLayoutTTIL)
+        performanceMonitoring.putMetric(TYPE_TTFL, summaryModel.get().timeToInitialLayout?.inflateTime?:0L)
+        performanceMonitoring.stopTrace()
     }
 
     private fun createViewPerformanceModel(view: View) = ViewPerformanceModel(

@@ -1288,17 +1288,13 @@ open class HomeRevampFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         PerformanceTraceDebugger.DEBUG = true
-
         performanceTrace.init(
             v = view.rootView,
             scope = this.lifecycleScope,
             touchListenerActivity = activity as? TouchListenerActivity
         ) { summaryModel, type, view ->
-            activity?.takeScreenshot(type, view)
+            performanceTrace.debugPerformanceTrace(activity, summaryModel, type, view)
             if (type == PerformanceTrace.TYPE_TTIL) {
-                Toaster.build(view, "" +
-                    "TTFL: ${summaryModel.timeToFirstLayout?.inflateTime} ms \n" +
-                    "TTIL: ${summaryModel.timeToInitialLayout?.inflateTime} ms \n" ).show()
                 homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(true)
                 homePerformanceMonitoringListener = null
                 onPageLoadTimeEnd()
@@ -1310,9 +1306,7 @@ open class HomeRevampFragment :
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if (data.isNotEmpty()) {
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
-                getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
-//                setOnRecyclerViewLayoutReady(isCache)
+                finishPageLoadTime(isCache)
             }
             this.fragmentCurrentCacheState = isCache
             this.fragmentCurrentVisitableCount = data.size
@@ -1326,6 +1320,12 @@ open class HomeRevampFragment :
             )
             adapter?.submitList(data)
         }
+    }
+
+    private fun finishPageLoadTime(isCache: Boolean) {
+        getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
+        getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
+        setOnRecyclerViewLayoutReady(isCache)
     }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
