@@ -383,7 +383,11 @@ class FeedFragment :
     }
 
     private fun initView() {
-        binding?.let {
+        binding.let {
+            it.swipeRefreshFeedLayout.setOnRefreshListener {
+                feedPostViewModel.fetchFeedPosts(isNewData = true)
+            }
+
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = FeedPostAdapter(FeedAdapterTypeFactory(this))
 
@@ -411,9 +415,10 @@ class FeedFragment :
 
     private fun observePostData() {
         feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
+            binding.swipeRefreshFeedLayout.isRefreshing = false
             when (it) {
                 is Success -> {
-                    adapter?.addElement(it.data.items)
+                    adapter?.setElements(it.data.items)
                 }
                 is Fail -> {}
             }

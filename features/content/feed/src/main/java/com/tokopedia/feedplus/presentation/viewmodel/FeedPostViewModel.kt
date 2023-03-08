@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
+import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -66,7 +68,9 @@ class FeedPostViewModel @Inject constructor(
                 val feedPosts = feedPostsDeferred.await()
                 Success(
                     feedPosts.copy(
-                        items = relevantPostsDeferred.await() + feedPosts.items
+                        items = relevantPostsDeferred.await() +
+                            _feedHome.value?.items.orEmpty() +
+                            feedPosts.items
                     )
                 )
             } catch (e: Throwable) {
@@ -136,6 +140,12 @@ class FeedPostViewModel @Inject constructor(
         get() = when (this) {
             is Success -> data.pagination.cursor
             else -> ""
+        }
+
+    private val Result<FeedModel>.items: List<Visitable<FeedAdapterTypeFactory>>
+        get() = when (this) {
+            is Success -> data.items
+            else -> emptyList()
         }
 
 }
