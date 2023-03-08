@@ -251,25 +251,30 @@ object AtcVariantMapper {
         level: Int
     ): List<VariantCategory>? {
         val variants = variantData ?: return null
-        if (variantData.variants.isEmpty()) return null
+        if (variants.variants.isEmpty()) return null
         val variantSize = variants.variants.size
+        // for new logic, initialize value by default is level one selected
         val selectedLevel = if (level == VARIANT_LEVEL_INITIALIZE) {
             VARIANT_LEVEL_ONE_SELECTED
         } else {
             level
         }
 
-        return if (variantSize == VARIANT_HAVE_ONE_LEVEL) {
-            processVariantOneLevel(
-                variantData = variantData,
-                selectedVariant = selectedVariant.orEmpty()
-            )
-        } else {
-            processVariantTwoLevel(
-                variantData = variantData,
-                selectedVariant = selectedVariant.orEmpty(),
-                selectedLevel = selectedLevel
-            )
+        return when (variantSize) {
+            VARIANT_HAVE_ONE_LEVEL -> {
+                processVariantOneLevel(
+                    variantData = variantData,
+                    selectedVariant = selectedVariant.orEmpty()
+                )
+            }
+            VARIANT_HAVE_TWO_LEVEL -> {
+                processVariantTwoLevel(
+                    variantData = variantData,
+                    selectedVariant = selectedVariant.orEmpty(),
+                    selectedLevel = selectedLevel
+                )
+            }
+            else -> null
         }
     }
 
@@ -285,16 +290,17 @@ object AtcVariantMapper {
         val variantGuideline = variantData.getVariantGuideline(
             sizeIdentifier = variant.isSizeIdentifier
         )
-        // loop each variant options in the variant for checking to their children
+        // loop each variant options in the variant data for checking to their children
         val uiVariantOptions = variant.options.map { option ->
             // default state is stock empty
             var state = VariantConstant.STATE_EMPTY
             var isFlashSale = false
             var stock = 0
 
-            // check each variant options to children
+            // looping the children and find the child containing the option id
             // set state, flash sale and stock
             for (child in variantData.children) {
+                // update state when variant option id equal by child option id
                 if (option.id == child.optionIds.firstOrNull()) {
                     isFlashSale = child.isFlashSale
                     stock = child.stock?.stock.orZero()
@@ -357,19 +363,23 @@ object AtcVariantMapper {
         mapOfSelectedVariant: Map<String, String>
     ): List<VariantCategory>? {
         val selectedVariant = mapOfSelectedVariant.values.toList()
-        // update variant state on one level
+        // process variant state on level one
         val variantOneLevel = variantData.variants.getOrNull(VARIANT_LEVEL_ONE_SELECTED) ?: return null
         val hasCustomImagesOneLevel = variantOneLevel.options.all {
             it.picture?.url100?.isNotEmpty() == true
         }
+        // loop each variant options in the variant data for checking to their children
         val uiOneLevel = variantOneLevel.options.map { option ->
             var state = VariantConstant.STATE_EMPTY
             var isFlashSale = false
             var stock = 0
 
+            // looping the children for set state, flash sale and stock
             for (child in variantData.children) {
-                // if variant option in selected variant and child options ids equals selected variant
                 if (option.id in selectedVariant && child.optionIds == selectedVariant) {
+                    // this condition is the currently selected variant option
+                    // when variant option is in variant selected and child options ids equals selected variant
+
                     isFlashSale = child.isFlashSale
                     stock = child.stock?.stock.orZero()
                     state = if (child.isBuyable) { // selected and can to buy
@@ -378,7 +388,12 @@ object AtcVariantMapper {
                         VariantConstant.STATE_SELECTED_EMPTY
                     }
                     break
-                } else if (option.id == child.optionIds.firstOrNull() && selectedVariant.lastOrNull() == child.optionIds.lastOrNull()) {
+                } else if (option.id == child.optionIds.firstOrNull() && child.optionIds.lastOrNull() == selectedVariant.lastOrNull()) {
+                    // this condition is the un-selected variant option
+                    // validate base on index. index 0 is level one and index 1 is level two
+                    // if variant option in level one equals by child option id index 0 and
+                    // child option id last position (index 1) equals by selected variant last position (index 1)
+
                     isFlashSale = child.isFlashSale
                     stock = child.stock?.stock.orZero()
                     state = if (child.isBuyable) { // un-selected and can to buy
@@ -402,11 +417,12 @@ object AtcVariantMapper {
             )
         }
 
-        // update variant state on two level
+        // process variant state on two level
         val variantTwoLevel = variantData.variants.getOrNull(VARIANT_LEVEL_TWO_SELECTED) ?: return null
         val hasCustomImagesTwoLevel = variantTwoLevel.options.all {
             it.picture?.url100?.isNotEmpty() == true
         }
+        // loop each variant options in the variant data for checking to their children
         val uiTwoLevel = variantTwoLevel.options.map { option ->
             var state = VariantConstant.STATE_EMPTY
             var isFlashSale = false
