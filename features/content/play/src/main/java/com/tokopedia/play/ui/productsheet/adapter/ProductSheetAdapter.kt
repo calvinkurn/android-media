@@ -14,12 +14,13 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 class ProductSheetAdapter(
     sectionListener: ProductSheetSectionViewHolder.Listener,
     productListener: ProductLineViewHolder.Listener,
+    dataSource: ProductLineViewHolder.DataSource,
 ) : BaseDiffUtilAdapter<ProductSheetAdapter.Item>() {
 
     init {
         delegatesManager
             .addDelegate(ProductSheetAdapterDelegate.Section(sectionListener))
-            .addDelegate(ProductSheetAdapterDelegate.Product(productListener))
+            .addDelegate(ProductSheetAdapterDelegate.Product(productListener, dataSource))
             .addDelegate(ProductSheetAdapterDelegate.Loading())
     }
 

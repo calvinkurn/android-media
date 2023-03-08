@@ -124,7 +124,7 @@ class ProductBottomSheetCardView(
         binding.btnProductSecond.generateButton(lastButton.color)
 
         binding.lblProductNumber.showWithCondition(channelType.isLive)
-        if(!channelType.isLive) return
+        if (!channelType.isLive) return
         val labelColor = "#${Integer.toHexString(MethodChecker.getColor(context, R.color.play_dms_explore_widget_icon_bg))}"
         binding.lblProductNumber.unlockFeature = true
         binding.lblProductNumber.setLabelType(labelColor)

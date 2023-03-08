@@ -17,6 +17,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 class ProductLineViewHolder(
     private val binding: ItemProductLineBinding,
     private val listener: Listener,
+    private val source: DataSource,
 ) : BaseViewHolder(binding.root) {
 
     init {
@@ -50,7 +51,7 @@ class ProductLineViewHolder(
     }
 
     fun bind(item: ProductSheetAdapter.Item.Product) {
-        binding.root.setItem(item.product, item.section, listener.getChannelType())
+        binding.root.setItem(item.product, item.section, source.getChannelType())
     }
 
     companion object {
@@ -58,6 +59,7 @@ class ProductLineViewHolder(
         fun create(
             parent: ViewGroup,
             listener: Listener,
+            source: DataSource,
         ) = ProductLineViewHolder(
             ItemProductLineBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -65,6 +67,7 @@ class ProductLineViewHolder(
                 false,
             ),
             listener,
+            source,
         )
     }
 
@@ -80,7 +83,9 @@ class ProductLineViewHolder(
             section: ProductSectionUiModel.Section,
             action: ProductAction,
         )
+    }
 
+    interface DataSource {
         fun getChannelType() : PlayChannelType
     }
 }

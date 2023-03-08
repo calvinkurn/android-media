@@ -74,7 +74,8 @@ class PlayBottomSheetFragment @Inject constructor(
     ProductSheetViewComponent.Listener,
     VariantSheetViewComponent.Listener,
     PlayGameLeaderboardViewComponent.Listener,
-    ShopCouponSheetViewComponent.Listener {
+    ShopCouponSheetViewComponent.Listener,
+    ProductSheetViewComponent.DataSource {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
@@ -83,7 +84,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private val productSheetView by viewComponent {
-        ProductSheetViewComponent(it, this, viewLifecycleOwner.lifecycleScope)
+        ProductSheetViewComponent(it, this, viewLifecycleOwner.lifecycleScope, this)
     }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
     private val leaderboardSheetView by viewComponent { PlayGameLeaderboardViewComponent(it, this) }
