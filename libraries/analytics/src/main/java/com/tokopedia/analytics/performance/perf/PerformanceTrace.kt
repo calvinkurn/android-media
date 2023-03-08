@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
@@ -51,14 +52,16 @@ class PerformanceTrace(val traceName: String) {
         onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit,
         ) {
 
-        performanceTraceJob = scope.launch(Dispatchers.IO) {
-            PerformanceTraceDebugger.logTrace(
-                "Initialize performance trace for: $traceName"
-            )
-            val viewgroup = v as ViewGroup
-            setTTFLInflateTrace(viewgroup, onLaunchTimeFinished)
-            setTTILInflateTrace(v, viewgroup, onLaunchTimeFinished, scope)
-            touchListenerActivity?.addListener { cancelPerformancetrace() }
+        performanceTraceJob = scope.launchCatchError(
+            Dispatchers.IO, block = {
+                PerformanceTraceDebugger.logTrace(
+                    "Initialize performance trace for: $traceName"
+                )
+                val viewgroup = v as ViewGroup
+                setTTFLInflateTrace(viewgroup, onLaunchTimeFinished)
+                setTTILInflateTrace(v, viewgroup, onLaunchTimeFinished, scope)
+                touchListenerActivity?.addListener { cancelPerformancetrace() }
+            }) {
         }
     }
 
