@@ -127,6 +127,7 @@
     <string name="shop_page_play_widget_sgc_copy_link">Salin link</string>
     <string name="shop_page_play_widget_sgc_link_copied">Link disalin!</string>
     <string name="shop_page_play_widget_sgc_performance">Lihat Performa</string>
+    <string name="shop_page_play_widget_sgc_performance_dashboard">Pelajari Wawasan Video</string>
     <string name="shop_page_broadcast_creation_label">Buat Live</string>
     <string name="shop_page_shorts_creation_label">Buat Shorts Video</string>
     <string name="shop_page_start_create_content">Yuk, Mulai</string>

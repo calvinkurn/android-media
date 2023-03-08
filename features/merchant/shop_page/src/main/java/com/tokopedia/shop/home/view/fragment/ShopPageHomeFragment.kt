@@ -60,7 +60,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetShopAnalyticModel
@@ -85,7 +84,6 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.ShopPageHomeTrackingMapper
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -101,9 +99,6 @@ import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
-import com.tokopedia.shop.common.util.ShopProductViewGridType
-import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
@@ -4249,6 +4244,22 @@ open class ShopPageHomeFragment :
                 }
             )
         }
+        bottomSheetActionList.add(
+            PlayWidgetSellerActionBottomSheet.Action(
+                R.drawable.ic_play_widget_sgc_performance_dashboard,
+                MethodChecker.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_N400
+                ),
+                context?.getString(R.string.shop_page_play_widget_sgc_performance_dashboard).orEmpty()
+            ) {
+                // TODO direct to performance dashboard page
+                showToast("direct to performance dashboard page")
+//                shopPlayWidgetAnalytic.onClickMoreActionDeleteChannel(channelUiModel.channelId)
+//                showDeleteWidgetConfirmationDialog(channelUiModel.channelId)
+//                playWidgetActionBottomSheet.dismiss()
+            }
+        )
         bottomSheetActionList.add(
             PlayWidgetSellerActionBottomSheet.Action(
                 com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
