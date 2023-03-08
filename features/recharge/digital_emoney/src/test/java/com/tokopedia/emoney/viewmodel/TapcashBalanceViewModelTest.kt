@@ -15,6 +15,7 @@ import com.tokopedia.emoney.util.TapcashObjectMapper.mapTapcashtoEmoney
 import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel.Companion.COMMAND_GET_CHALLENGE
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlError.Extensions
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -380,6 +381,97 @@ class TapcashBalanceViewModelTest {
 
         val errorGql = GraphqlError()
         errorGql.message = "Error get balance"
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[BalanceTapcash::class.java] = listOf(errorGql)
+
+        val gqlResponseWriteBalanceFailed = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceFailed
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.message, "Error get balance")
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_FailedGRPC() {
+        //given
+        initSuccessData()
+        val secureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+        val secureByteResult =
+            NFCUtils.stringToByteArrayRadix(secureResult)
+
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
+        every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
+        every { isoDep.transceive(secureByteRequest) } returns secureByteResult
+
+        val errorGql = GraphqlError().apply {
+            message = "Error get balance"
+            extensions = Extensions().apply {
+                developerMessage = "GRPC timeout"
+            }
+        }
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[BalanceTapcash::class.java] = listOf(errorGql)
+
+        val gqlResponseWriteBalanceFailed = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceFailed
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.message, "Error get balance")
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_DeveloperMessageNull() {
+        //given
+        initSuccessData()
+        val secureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+        val secureByteResult =
+            NFCUtils.stringToByteArrayRadix(secureResult)
+
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
+        every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
+        every { isoDep.transceive(secureByteRequest) } returns secureByteResult
+
+        val errorGql = GraphqlError().apply {
+            message = "Error get balance"
+            extensions = Extensions().apply {
+                developerMessage = null
+            }
+        }
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[BalanceTapcash::class.java] = listOf(errorGql)
+
+        val gqlResponseWriteBalanceFailed = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceFailed
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.message, "Error get balance")
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_ExtensionNull() {
+        //given
+        initSuccessData()
+        val secureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+        val secureByteResult =
+            NFCUtils.stringToByteArrayRadix(secureResult)
+
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
+        every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
+        every { isoDep.transceive(secureByteRequest) } returns secureByteResult
+
+        val errorGql = GraphqlError().apply {
+            message = "Error get balance"
+            extensions = null
+        }
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[BalanceTapcash::class.java] = listOf(errorGql)
 
