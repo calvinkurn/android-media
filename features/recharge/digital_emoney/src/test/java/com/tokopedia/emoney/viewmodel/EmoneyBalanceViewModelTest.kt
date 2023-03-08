@@ -67,7 +67,7 @@ class EmoneyBalanceViewModelTest {
 
         val result = HashMap<Type, Any>()
         result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(
-                EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))
+                EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "1")))
         val gqlResponseGetInquirySuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         val result1 = HashMap<Type, Any>()
@@ -95,7 +95,7 @@ class EmoneyBalanceViewModelTest {
 
         val result = HashMap<Type, Any>()
         result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(
-                EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))
+                EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "1")))
         val gqlResponseGetInquirySuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         val errorGql = GraphqlError()
