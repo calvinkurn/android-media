@@ -1,7 +1,9 @@
 package com.tokopedia.thankyou_native.presentation.adapter.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
+import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentFactory
 
 data class TopAdsRequestParams(
     @SerializedName("type")
@@ -24,4 +26,9 @@ data class TopAdsRequestParams(
     var dimen: String,
     @SerializedName("data")
     var topAdsUIModelList: List<TopAdsUIModel>?,
-)
+): Visitable<BottomContentFactory> {
+
+    override fun type(typeFactory: BottomContentFactory): Int {
+        return typeFactory.type(this)
+    }
+}

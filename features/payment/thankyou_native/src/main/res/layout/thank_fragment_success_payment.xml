@@ -266,12 +266,18 @@
                 android:background="@color/Unify_NN50"
                 app:layout_constraintTop_toBottomOf="@id/btn_see_transaction_list" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBottomContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/view_divider_2" />
+
             <com.tokopedia.thankyou_native.presentation.views.TopAdsView
                 android:id="@+id/topAdsView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/view_divider_2" />
+                app:layout_constraintTop_toBottomOf="@id/rvBottomContent" />
 
             <com.tokopedia.thankyou_native.presentation.views.GyroView
                 android:id="@+id/featureListingContainer"

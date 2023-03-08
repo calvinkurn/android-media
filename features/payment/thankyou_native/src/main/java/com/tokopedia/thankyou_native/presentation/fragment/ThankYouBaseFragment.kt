@@ -62,6 +62,7 @@ import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewMo
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
+import com.tokopedia.thankyou_native.presentation.views.listener.RecommendationItemListener
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -83,7 +84,7 @@ import javax.inject.Inject
 
 
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener,
-    RegisterMemberShipListener {
+    RegisterMemberShipListener, RecommendationItemListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
@@ -104,7 +105,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     @Inject
     lateinit var gyroRecommendationAnalytics: dagger.Lazy<GyroRecommendationAnalytics>
 
-    private var iRecommendationView: IRecommendationView? = null
+    override var iRecommendationView: IRecommendationView? = null
 
     private val marketRecommendationPlaceLayout = R.layout.thank_layout_market_place_recom
 
@@ -148,7 +149,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     }
 
-
     override fun onPause() {
         super.onPause()
         digitalRecomTrackingQueue?.sendAll()
@@ -164,7 +164,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             bindThanksPageDataToUI(thanksPageData)
             observeViewModel()
             getFeatureRecommendationData()
-            addRecommendation()
+            addRecommendation(getRecommendationContainer())
             getTopTickerData()
             thanksPageDataViewModel.resetAddressToDefault()
             topadsHeadlineView.getHeadlineAds(
@@ -182,7 +182,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-    private fun addRecommendation() {
+    override fun addRecommendation(containerView: LinearLayout?) {
         val pgCategoryIds = mutableListOf<Int>()
         when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
             is MarketPlaceThankPage -> {
@@ -194,23 +194,30 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                         }
                     }
                 }
-                addMarketPlaceRecommendation()
-                addDigitalRecommendation(pgCategoryIds, DigitalRecommendationPage.PG_THANK_YOU_PAGE)
+                addMarketPlaceRecommendation(containerView)
+                addDigitalRecommendation(
+                    containerView,
+                    pgCategoryIds,
+                    DigitalRecommendationPage.PG_THANK_YOU_PAGE,
+                )
             }
             is DigitalThankPage -> {
-                addDigitalRecommendation(pgCategoryIds, DigitalRecommendationPage.DG_THANK_YOU_PAGE)
-                addMarketPlaceRecommendation()
+                addDigitalRecommendation(
+                    containerView,
+                    pgCategoryIds,
+                    DigitalRecommendationPage.DG_THANK_YOU_PAGE,
+                )
+                addMarketPlaceRecommendation(containerView)
             }
         }
     }
 
-    private fun addMarketPlaceRecommendation() {
+    private fun addMarketPlaceRecommendation(containerView: LinearLayout?) {
         if (::thanksPageData.isInitialized) {
 
             if (thanksPageData.configFlagData?.shouldHideProductRecom == true) return
 
-            val recomContainer = getRecommendationContainer()
-            iRecommendationView = recomContainer?.let { container ->
+            iRecommendationView = containerView?.let { container ->
                 val view = getRecommendationView(marketRecommendationPlaceLayout)
 
                 //container 1 to display top ads recommendation view
@@ -228,6 +235,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun addDigitalRecommendation(
+        containerView: LinearLayout?,
         pgCategoryIds: List<Int> = listOf(),
         pageType: DigitalRecommendationPage
     ) {
@@ -235,8 +243,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
             if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
 
-            val recomContainer = getRecommendationContainer()
-            iDigitalRecommendationView = recomContainer?.let { container ->
+            iDigitalRecommendationView = containerView?.let { container ->
                 val view = getRecommendationView(digitalRecommendationLayout)
                 container.addView(view)
                 view.findViewById<DigitalRecommendation>(R.id.digitalRecommendationView)
@@ -636,7 +643,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         topadsHeadlineView.displayAds(cpmModel)
 
         getRecommendationContainer()?.attachTopAdsHeadlinesView(
-            cpmModel.data?.get(0)?.cpm?.position == 1,
+            cpmModel.data[0].cpm.position == 1,
             topadsHeadlineView
         )
     }

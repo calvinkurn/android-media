@@ -2,6 +2,7 @@ package com.tokopedia.thankyou_native.presentation.adapter.model
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentFactory
 import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommendationFactory
 import com.tokopedia.tokomember.model.BottomSheetContentItem
 import com.tokopedia.tokomember.model.WidgetContentItem
