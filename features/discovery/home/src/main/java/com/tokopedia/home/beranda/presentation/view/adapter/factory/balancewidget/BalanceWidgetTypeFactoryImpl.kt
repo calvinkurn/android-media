@@ -11,11 +11,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetFailedViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetShimmerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceWidgetAtf2ShimmerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceWidgetAtf2ViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 
 /**
- * Created by dhaba
+ * Created by frenzel
  */
 class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAdapterTypeFactory(), BalanceWidgetTypeFactory {
     override fun type(dataModel: HomeBalanceModel): Int {
@@ -25,7 +26,9 @@ class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAd
     }
 
     override fun type(dataModel: BalanceShimmerModel): Int {
-        return BalanceWidgetShimmerViewHolder.LAYOUT
+        return if(HomeRollenceController.isUsingAtf2Variant()) {
+            BalanceWidgetAtf2ShimmerViewHolder.LAYOUT
+        } else BalanceWidgetShimmerViewHolder.LAYOUT
     }
 
     override fun type(dataModel: BalanceWidgetFailedModel): Int {
@@ -37,6 +40,7 @@ class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAd
             BalanceWidgetViewHolder.LAYOUT -> BalanceWidgetViewHolder(view, listener)
             BalanceWidgetAtf2ViewHolder.LAYOUT -> BalanceWidgetAtf2ViewHolder(view, listener)
             BalanceWidgetShimmerViewHolder.LAYOUT -> BalanceWidgetShimmerViewHolder(view, listener)
+            BalanceWidgetAtf2ShimmerViewHolder.LAYOUT -> BalanceWidgetAtf2ShimmerViewHolder(view, listener)
             BalanceWidgetFailedViewHolder.LAYOUT -> BalanceWidgetFailedViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         } as AbstractViewHolder<BalanceWidgetVisitable>

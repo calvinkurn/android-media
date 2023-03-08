@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BaseBalanceViewHolder
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.util.HomeServerLogger.TYPE_ERROR_SUBMIT_WALLET
@@ -16,19 +15,10 @@ class BalanceAtf2Adapter(
     private val balanceTypeFactory: BalanceTypeFactory
 ) : ListAdapter<BalanceVisitable, BaseBalanceViewHolder<BalanceVisitable>>(BalanceDiffCallback()) {
 
-    private var itemList: HomeBalanceModel = HomeBalanceModel()
-
     @Suppress("TooGenericExceptionCaught")
-    fun setItemList(itemList: HomeBalanceModel) {
-        val balanceModelList = mutableListOf<BalanceVisitable>()
+    fun setItemList(itemList: List<BalanceVisitable>) {
         try {
-            itemList.balanceDrawerItemModels.forEach {
-                balanceModelList.add(it)
-//                if(HomeRollenceController.isUsingAtf2Variant()) {
-//                    balanceModelList.add(BalanceAtf2DividerModel())
-//                }
-            }
-            submitList(balanceModelList)
+            submitList(itemList)
         } catch (e: Exception) {
             HomeServerLogger.logWarning(
                 type = TYPE_ERROR_SUBMIT_WALLET,
@@ -37,10 +27,6 @@ class BalanceAtf2Adapter(
             )
             e.printStackTrace()
         }
-    }
-
-    fun getItemList(): HomeBalanceModel {
-        return itemList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseBalanceViewHolder<BalanceVisitable> {

@@ -51,15 +51,12 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
 
         cardLayoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
         containerLayoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        cardLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
 
-        cardLayoutParams?.width = if(DeviceScreenInfo.isTablet(itemView.context) || totalItems <= 2) {
+        containerLayoutParams?.width = if(totalItems == 1) {
             ViewGroup.LayoutParams.MATCH_PARENT
-        } else {
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        }
-
-        containerLayoutParams?.width = if(DeviceScreenInfo.isTablet(itemView.context) || totalItems <= 2) {
-            ViewGroup.LayoutParams.MATCH_PARENT
+        } else if(DeviceScreenInfo.isTablet(itemView.context) || totalItems <= 2) {
+            BalanceAtf2Util.getBalanceItemWidth(itemView.context, totalItems)
         } else {
             itemView.context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_atf2_item_width)
         }
@@ -123,9 +120,9 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
         binding?.shimmerItemBalanceWidget?.root?.show()
         binding?.homeContainerBalance?.homeContainerBalance?.invisible()
         if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
-            listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
+            listener?.onRetryWalletApp(element.position, element.headerTitle)
         } else if (element.drawerItemType == TYPE_REWARDS) {
-            listener?.onRetryMembership(adapterPosition, element.headerTitle)
+            listener?.onRetryMembership(element.position, element.headerTitle)
         }
     }
 
@@ -182,10 +179,10 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
         binding?.homeContainerBalance?.homeContainerBalance?.invisible()
         if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
             element.state = BalanceDrawerItemModel.STATE_LOADING
-            listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
+            listener?.onRetryWalletApp(element.position, element.headerTitle)
         } else if (element.drawerItemType == TYPE_REWARDS) {
             element.state = BalanceDrawerItemModel.STATE_LOADING
-            listener?.onRetryMembership(adapterPosition, element.headerTitle)
+            listener?.onRetryMembership(element.position, element.headerTitle)
         }
     }
 

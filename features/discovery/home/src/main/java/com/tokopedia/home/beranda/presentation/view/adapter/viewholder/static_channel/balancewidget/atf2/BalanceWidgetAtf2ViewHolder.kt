@@ -5,9 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceAtf2DividerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaGridLayoutManager
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaLinearLayoutManager
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.databinding.LayoutBalanceWidgetAtf2Binding
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -28,7 +29,9 @@ class BalanceWidgetAtf2ViewHolder(itemView: View, val listener: HomeCategoryList
     }
 
     private fun setLayout(element: HomeBalanceModel) {
+        val itemList = getUiModelList(element)
         val totalData = element.balanceDrawerItemModels.size
+        val spanCount = itemList.size
 
         if (binding?.rvBalanceWidgetData?.adapter == null) {
             balanceAdapter =
@@ -46,15 +49,20 @@ class BalanceWidgetAtf2ViewHolder(itemView: View, val listener: HomeCategoryList
             )
         }
 
-        if (layoutManager == null || layoutManager.itemCount != totalData) {
-            val fillWidthLayoutManager = NpaGridLayoutManager(itemView.context, totalData)
-            val scrollableLinearLayoutManager = NpaLinearLayoutManager(itemView.context)
-            if(DeviceScreenInfo.isTablet(itemView.context) || totalData <= 2) {
-                binding?.rvBalanceWidgetData?.layoutManager = fillWidthLayoutManager
-            } else {
-                binding?.rvBalanceWidgetData?.layoutManager = scrollableLinearLayoutManager
+        if (layoutManager == null || layoutManager.itemCount != spanCount) {
+            binding?.rvBalanceWidgetData?.layoutManager = NpaLinearLayoutManager(itemView.context)
+        }
+        balanceAdapter?.setItemList(itemList)
+    }
+
+    private fun getUiModelList(element: HomeBalanceModel) : List<BalanceVisitable> {
+        val balanceModelList = mutableListOf<BalanceVisitable>()
+        element.balanceDrawerItemModels.forEachIndexed { idx, it ->
+            balanceModelList.add(it)
+            if(HomeRollenceController.isUsingAtf2Variant() && idx < element.balanceDrawerItemModels.size - 1) {
+                balanceModelList.add(BalanceAtf2DividerModel())
             }
         }
-        balanceAdapter?.setItemList(element)
+        return balanceModelList
     }
 }

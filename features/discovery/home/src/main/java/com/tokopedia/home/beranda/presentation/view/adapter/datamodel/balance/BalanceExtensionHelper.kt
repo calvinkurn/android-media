@@ -23,7 +23,7 @@ private const val TAG_ATTRIBUTE_SECOND = 1
 private const val EMPTY_AMOUNT_RESERVE_BALANCE = 0
 private const val RESERVE_BALANCE_FORMAT = "%s Coins"
 
-fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconRes: Int? = null, state: Int, headerTitle: String): BalanceDrawerItemModel {
+fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconRes: Int? = null, state: Int, headerTitle: String, position: Int): BalanceDrawerItemModel {
     val balanceTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_FIRST)?.textAttributes?.mapToBalanceTextAttributes()
     val balanceSubTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_SECOND)?.textAttributes?.mapToBalanceTextAttributes()
 
@@ -43,11 +43,12 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
         drawerItemType = drawerItemType,
         state = state,
         mainPageTitle = mainPageTitle,
-        headerTitle = headerTitle
+        headerTitle = headerTitle,
+        position = position
     )
 }
 
-fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String): BalanceDrawerItemModel? {
+fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String, position: Int): BalanceDrawerItemModel? {
     val selectedBalance = walletappGetBalance.balances.getOrNull(FIRST_WALLET_DATA)
 
     selectedBalance?.let { balances ->
@@ -97,13 +98,14 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String): Ba
             balanceTitleTextAttribute = balanceTitle,
             balanceSubTitleTextAttribute = balanceSubtitle,
             state = state,
-            headerTitle = headerTitle
+            headerTitle = headerTitle,
+            position = position
         )
     }
     return null
 }
 
-fun SubscriptionsDrawerList.mapToHomeBalanceItemModel(state: Int, headerTitle: String, isSubscriber: Boolean, drawerItemType: Int): BalanceDrawerItemModel {
+fun SubscriptionsDrawerList.mapToHomeBalanceItemModel(state: Int, headerTitle: String, isSubscriber: Boolean, drawerItemType: Int, position: Int): BalanceDrawerItemModel {
     val balanceTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_FIRST)?.subscriptionsTextAttributes?.mapToBalanceTextAttributes()
     val balanceSubTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_SECOND)?.subscriptionsTextAttributes?.mapToBalanceTextAttributes()
 
@@ -122,7 +124,8 @@ fun SubscriptionsDrawerList.mapToHomeBalanceItemModel(state: Int, headerTitle: S
         state = state,
         headerTitle = headerTitle,
         isSubscriberGoToPlus = isSubscriber,
-        drawerItemType = drawerItemType
+        drawerItemType = drawerItemType,
+        position = position
     )
 }
 
@@ -131,7 +134,8 @@ private fun buildWalletAppBalanceDrawerModel(
     balanceTitleTextAttribute: BalanceTextAttribute,
     balanceSubTitleTextAttribute: BalanceTextAttribute,
     state: Int,
-    headerTitle: String
+    headerTitle: String,
+    position: Int
 ) = BalanceDrawerItemModel(
     applinkContainer = selectedBalance.redirectUrl,
     applinkActionText = selectedBalance.redirectUrl,
@@ -141,7 +145,8 @@ private fun buildWalletAppBalanceDrawerModel(
     balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
     drawerItemType = if (selectedBalance.isLinked) BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED else BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED,
     state = state,
-    headerTitle = headerTitle
+    headerTitle = headerTitle,
+    position = position
 )
 
 fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {

@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 class BalanceSpacingItemDecoration : RecyclerView.ItemDecoration() {
     companion object {
         private const val FIRST_POSITION = 0
-        private var OUTSIDE_MARGIN = 16f.toDpInt()
     }
 
     override fun getItemOffsets(
@@ -21,14 +20,15 @@ class BalanceSpacingItemDecoration : RecyclerView.ItemDecoration() {
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
+        val margin = view.context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_atf2_outer_margin)
         when (parent.getChildAdapterPosition(view)) {
             FIRST_POSITION -> {
-                outRect.left = OUTSIDE_MARGIN
+                outRect.left = margin
                 outRect.right = Int.ZERO
             }
             //last position of card
             state.itemCount - 1 -> {
-                outRect.right = OUTSIDE_MARGIN
+                outRect.right = margin
                 outRect.left = Int.ZERO
             }
             //card between first and last

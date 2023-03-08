@@ -38,5 +38,8 @@
     <dimen name="corner_radius_shimmering">10dp</dimen>
 
     <!-- Balance Widget -->
-    <dimen name="balance_atf2_item_width">160dp</dimen>
+    <dimen name="balance_atf2_item_width">156dp</dimen>
+    <dimen name="balance_atf2_outer_margin">8dp</dimen>
+    <dimen name="balance_atf2_shimmer_outer_margin">8dp</dimen>
+    <dimen name="balance_atf2_shimmer_inner_margin">16dp</dimen>
 </resources>

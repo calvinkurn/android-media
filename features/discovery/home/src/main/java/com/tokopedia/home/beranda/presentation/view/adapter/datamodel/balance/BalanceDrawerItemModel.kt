@@ -24,7 +24,8 @@ data class BalanceDrawerItemModel(
     var alternateBalanceDrawerItem: List<BalanceDrawerItemModel>? = null,
     var balanceCoachmark: BalanceCoachmark? = null,
     val headerTitle: String = "",
-    val isSubscriberGoToPlus: Boolean = false
+    val isSubscriberGoToPlus: Boolean = false,
+    val position: Int
 ) : BalanceVisitable {
     companion object {
         const val TYPE_REWARDS = 4
