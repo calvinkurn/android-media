@@ -81,18 +81,21 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
                 dismiss()
             }
 
-            imgAffectPmDeactivation.loadImage(if (context.isDarkMode()) Constant.Image.BG_AFFECT_PM_DEACTIVATION_DM else Constant.Image.BG_AFFECT_PM_DEACTIVATION)
+            imgAffectPmDeactivation.setImageUrl(if (context.isDarkMode()) Constant.Image.BG_AFFECT_PM_DEACTIVATION_DM else Constant.Image.BG_AFFECT_PM_DEACTIVATION, 0.3F)
             tvPmDeactivationTnC.movementMethod = LinkMovementMethod.getInstance()
             tvPmDeactivationTnC.text = getString(R.string.pm_pm_deactivation_be_rm_tnc)
         }
     }
 
     private fun setupAffectPmDeactivation(isPmPro: Boolean) {
+        val lostBenefitPmDeactivationAdapter = LostBenefitPmDeactivationAdapter(
+            if (isPmPro) getPmProDeactivationList() else getPmDeactivationList()
+        )
         binding?.rvLostBenefitPmDeactivation?.run {
+            setHasFixedSize(false)
             layoutManager = LinearLayoutManager(context)
-            adapter = LostBenefitPmDeactivationAdapter(
-                if (isPmPro) getPmProDeactivationList() else getPmDeactivationList()
-            )
+            isNestedScrollingEnabled = false
+            adapter = lostBenefitPmDeactivationAdapter
         }
     }
 
@@ -137,7 +140,9 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, TAG)
+        if (!isVisible) {
+            show(fm, TAG)
+        }
     }
 
     interface BottomSheetCancelListener {

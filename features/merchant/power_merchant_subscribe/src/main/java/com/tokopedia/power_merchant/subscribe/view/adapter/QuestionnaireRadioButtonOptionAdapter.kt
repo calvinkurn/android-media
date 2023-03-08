@@ -11,14 +11,14 @@ class QuestionnaireRadioButtonOptionAdapter(
     private val onAnswerSelected: () -> Unit
 ) : RecyclerView.Adapter<QuestionnaireRadioButtonOptionAdapter.QuestionnaireRadioButtonOptionViewHolder>() {
 
-    fun updateRadioButton(newItem: QuestionnaireOptionUiModel, position: Int) {
+    fun updateRadioButton(position: Int) {
         items.mapIndexed { index, item ->
             if (item.isChecked) {
                 item.isChecked = false
-                notifyItemChanged(position)
+                notifyItemChanged(index, PAYLOAD_TOGGLE_RB)
             } else if (index == position) {
-                newItem.isChecked = true
-                notifyItemChanged(position)
+                item.isChecked = true
+                notifyItemChanged(index, PAYLOAD_TOGGLE_RB)
             }
         }
     }
@@ -43,6 +43,21 @@ class QuestionnaireRadioButtonOptionAdapter(
         }
     }
 
+    override fun onBindViewHolder(
+        holder: QuestionnaireRadioButtonOptionViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            val keyPayload = payloads.getOrNull(0) as? Int
+            if (keyPayload == PAYLOAD_TOGGLE_RB) {
+                holder.bindPayload(items[position])
+            }
+        }
+    }
+
     inner class QuestionnaireRadioButtonOptionViewHolder(private val binding: ItemPmQuestionnaireRadiobuttonOptionItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -50,18 +65,26 @@ class QuestionnaireRadioButtonOptionAdapter(
             with(binding) {
                 rbQuestionnaireOption.run {
                     setOnCheckedChangeListener(null)
+                    text = item.text
                     isChecked = item.isChecked
                     skipAnimation()
 
-                    setOnCheckedChangeListener { _, _ ->
-                        updateRadioButton(item, bindingAdapterPosition)
+                    setOnClickListener {
+                        updateRadioButton(bindingAdapterPosition)
                         onAnswerSelected()
-                    }
-                    root.setOnClickListener {
-                        isChecked = isChecked.not()
                     }
                 }
             }
         }
+
+        fun bindPayload(item: QuestionnaireOptionUiModel) {
+            with(binding) {
+                rbQuestionnaireOption.isChecked = item.isChecked
+            }
+        }
+    }
+
+    companion object {
+        const val PAYLOAD_TOGGLE_RB = 565
     }
 }

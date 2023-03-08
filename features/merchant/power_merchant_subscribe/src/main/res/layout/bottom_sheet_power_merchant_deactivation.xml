@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -44,26 +44,35 @@
             app:layout_constraintStart_toStartOf="@id/textTitle"
             app:layout_constraintEnd_toEndOf="@id/textTitle"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvLostBenefitPmDeactivation"
+        <RelativeLayout
+            android:id="@+id/list_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_lost_benefit_pm_deactivation"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toTopOf="@id/imgAffectPmDeactivation"
             app:layout_constraintTop_toBottomOf="@id/dividerPmDeactivation"
             app:layout_constraintStart_toStartOf="@id/textTitle"
-            app:layout_constraintEnd_toEndOf="@id/textTitle" />
+            app:layout_constraintEnd_toEndOf="@id/textTitle">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvLostBenefitPmDeactivation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_lost_benefit_pm_deactivation"/>
+
+        </RelativeLayout>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgAffectPmDeactivation"
             android:layout_width="0dp"
-            android:layout_height="92dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="12dp"
             android:adjustViewBounds="true"
-            android:scaleType="fitXY"
             app:layout_constraintBottom_toTopOf="@id/tvPmDeactivationMessage"
-            app:layout_constraintTop_toBottomOf="@id/rvLostBenefitPmDeactivation"
-            app:layout_constraintStart_toStartOf="@id/textTitle"
+            app:layout_constraintTop_toBottomOf="@id/list_container"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="@id/textTitle"/>
 
         <com.tokopedia.unifyprinciples.Typography

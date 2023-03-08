@@ -48,8 +48,8 @@ class PMDeactivationQuestionnaireMapper @Inject constructor() {
 
     private fun createSingleOptionQuestion(
         questionData: Question
-    ): QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel {
-        return QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel(
+    ): QuestionnaireUiModel.QuestionnaireSingleOptionUiModel {
+        return QuestionnaireUiModel.QuestionnaireSingleOptionUiModel(
             question = questionData.question,
             options = questionData.option.map {
                 QuestionnaireOptionUiModel(text = it.value)
