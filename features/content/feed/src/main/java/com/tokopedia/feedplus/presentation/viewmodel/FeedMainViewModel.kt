@@ -11,6 +11,7 @@ import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
 import com.tokopedia.feedplus.domain.usecase.FeedXHeaderUseCase
 import com.tokopedia.feedplus.presentation.model.ContentCreationItem
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
+import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -121,13 +122,48 @@ class FeedMainViewModel @Inject constructor(
         _isInClearView.value = clearView
     }
 
+    /**
+     * Creation Button Position is Static :
+     * 1. Short
+     * 2. Post
+     * 3. Live
+     */
     private fun handleCreationData(creationDataList: List<ContentCreationItem>) {
         val authorUserdataList = creationDataList.find { it.type == CreatorType.USER }?.items
         val authorShopDataList = creationDataList.find { it.type == CreatorType.SHOP }?.items
 
-        val creatorList =
-            (authorUserdataList?.filter { it.isActive ?: false } ?: emptyList()) +
-                (authorShopDataList?.filter { it.isActive ?: false } ?: emptyList()).distinct()
+        val creatorList = mutableListOf<ContentCreationTypeItem>()
+
+        authorShopDataList?.find {
+            it.type == CreateContentType.CREATE_SHORT_VIDEO && it.isActive
+        }?.let {
+            creatorList.add(it)
+        } ?: authorUserdataList?.find {
+            it.type == CreateContentType.CREATE_SHORT_VIDEO && it.isActive
+        }?.let {
+            creatorList.add(it)
+        }
+
+        authorShopDataList?.find {
+            it.type == CreateContentType.CREATE_POST && it.isActive
+        }?.let {
+            creatorList.add(it)
+        } ?: authorUserdataList?.find {
+            it.type == CreateContentType.CREATE_POST && it.isActive
+        }?.let {
+            creatorList.add(it)
+        }
+
+        authorShopDataList?.find {
+            it.type == CreateContentType.CREATE_LIVE && it.isActive
+        }?.let {
+            creatorList.add(it)
+        } ?: authorUserdataList?.find {
+            it.type == CreateContentType.CREATE_LIVE && it.isActive
+        }?.let {
+            creatorList.add(it)
+        }
+
         _feedCreateContentBottomSheetData.value = Success(creatorList)
     }
 }
