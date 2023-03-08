@@ -791,18 +791,18 @@ open class ProductManageFragment :
     }
 
     override fun editMultipleProductsEtalase() {
-            goToEtalasePicker()
-            ProductManageTracking.eventBulkSettingsMoveEtalase()
+        goToEtalasePicker()
+        ProductManageTracking.eventBulkSettingsMoveEtalase()
     }
 
     override fun editMultipleProductsInActive() {
-            showEditProductsInActiveConfirmationDialog()
-            ProductManageTracking.eventBulkSettingsDeactive()
+        showEditProductsInActiveConfirmationDialog()
+        ProductManageTracking.eventBulkSettingsDeactive()
     }
 
     override fun deleteMultipleProducts() {
-            viewModel.onDeleteMultipleProducts()
-            ProductManageTracking.eventBulkSettingsDeleteBulk()
+        viewModel.onDeleteMultipleProducts()
+        ProductManageTracking.eventBulkSettingsDeleteBulk()
     }
 
     override fun onFinish(selectedData: FilterOptionWrapper) {
@@ -1224,13 +1224,13 @@ open class ProductManageFragment :
                 !it.isTobacco
             }.isNotEmpty()
 
-            if (textMultipleSelect?.text.toString() == getString(R.string.product_manage_multiple_select)){
+            if (textMultipleSelect?.text.toString() == getString(R.string.product_manage_multiple_select)) {
                 if (isNotAllTobacco) {
                     viewModel.toggleMultiSelect()
                 } else {
                     showErrorToast(getString(R.string.product_tobacco_message_not_allow_bulk_edit_all))
                 }
-            }else{
+            } else {
                 viewModel.toggleMultiSelect()
             }
             ProductManageTracking.eventMultipleSelect()
@@ -1260,7 +1260,7 @@ open class ProductManageFragment :
                 if (isChecked) {
                     productManageListAdapter.checkAllProducts(itemsChecked) {
                         itemsChecked = it.filter { !it.isTobacco }.toMutableList()
-                        if (itemsChecked.isEmpty()){
+                        if (itemsChecked.isEmpty()) {
                             viewModel.toggleMultiSelect()
                             showErrorToast(getString(R.string.product_tobacco_message_not_allow_bulk_edit_all))
                         }
@@ -2284,7 +2284,7 @@ open class ProductManageFragment :
     }
 
     private fun onPromoTopAdsClicked(productId: String) {
-        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_MP_ADS_CREATION,productId)
+        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_MP_ADS_CREATION, productId)
     }
 
     private fun onSeeTopAdsClicked(productId: String) {
@@ -2843,10 +2843,19 @@ open class ProductManageFragment :
             String.EMPTY
         )
         val tabs = data.tabs.map { tab ->
-            return@map if (tabName.equals(tab.status?.name, true) &&
-                tab is FilterTabUiModel.Violation
+            return@map if (tabName.equals(tab.status?.name, true)
             ) {
-                tab.copy(isSelected = true)
+                when (tab){
+                    is FilterTabUiModel.Violation ->{
+                        tab.copy(isSelected = true)
+                    }
+                    is FilterTabUiModel.InActive ->{
+                        tab.copy(isSelected = true)
+                    }
+                    else ->{
+                        tab
+                    }
+                }
             } else {
                 tab
             }
