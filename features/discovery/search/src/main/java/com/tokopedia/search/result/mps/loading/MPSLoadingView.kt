@@ -51,7 +51,7 @@ class MPSLoadingView: ConstraintLayout {
 
     private fun initLoadingAnimationResource(context: Context) {
         loadingAnimation =
-            AnimatedVectorDrawableCompat.create(context, R.drawable.search_loading_state_mps)
+            AnimatedVectorDrawableCompat.create(context, R.drawable.search_mps_loading_state)
 
         loadingAnimation?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
             override fun onAnimationEnd(drawable: Drawable?) {

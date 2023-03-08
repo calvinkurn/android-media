@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.mps
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.utils.ChooseAddressWrapper
@@ -24,6 +25,9 @@ abstract class MultiProductSearchTestFixtures {
 
     val MPSViewModel.stateValue: MPSState
         get() = this.stateFlow.value
+
+    val MPSViewModel.stateData: List<Visitable<*>>?
+        get() = this.stateValue.result.data
 
     protected fun `Given MPS Use Case success`(
         mpsModel: MPSModel,

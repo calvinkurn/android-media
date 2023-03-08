@@ -11,12 +11,12 @@ import com.tokopedia.search.result.mps.domain.usecase.MPSUseCaseModule
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 
-@Module(
-    includes = [
-        MPSUseCaseModule::class
-    ]
-)
+@Module
 class FakeMPSViewModelModule(
     private val mpsState: MPSState
 ) {
@@ -35,5 +35,11 @@ class FakeMPSViewModelModule(
     @IntoMap
     @ViewModelKey(MPSViewModel::class)
     @SearchScope
-    fun providesMPSViewModel(viewModel: MPSViewModel): ViewModel = viewModel
+    fun providesMPSViewModel(): ViewModel {
+        val mutableStateFlow = MutableStateFlow(mpsState)
+
+        return mockk<MPSViewModel>(relaxed = true) {
+            every { stateFlow } returns mutableStateFlow
+        }
+    }
 }

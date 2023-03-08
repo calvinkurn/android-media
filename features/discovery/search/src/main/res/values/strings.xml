@@ -132,4 +132,13 @@
     <string name="search_mps_query_bottomsheet_title">Mau cari produk yang mana, nih?</string>
     <string name="search_mps_query_bottomsheet_choose_query">Pilih satu produk yang ingin kamu cari di halaman pencarian.</string>
     <string name="search_mps_query_bottomsheet_find_product">Cari Produk</string>
+
+    <string name="search_mps_empty_state_keyword_title">Oops, tokonya nggak ketemu</string>
+    <string name="search_mps_empty_state_keyword_description">Kami tidak menemukan toko yang menjual barang yang kamu cari.</string>
+    <string name="search_mps_empty_state_keyword_button_text">Periksa Kata Kunci</string>
+
+    <string name="search_mps_empty_state_filter_title">Nggak ada toko yang sesuai dari filter ini</string>
+    <string name="search_mps_empty_state_filter_description">Coba kurangi filter yang lagi aktif atau reset filter.</string>
+    <string name="search_mps_empty_state_filter_reset_button_text">Reset Filter</string>
+
 </resources>

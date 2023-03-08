@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.State
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.mps.domain.model.MPSModel
+import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateKeywordDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
 import com.tokopedia.search.utils.mvvm.SearchUiState
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel as ChooseAddressModel
@@ -20,9 +21,12 @@ data class MPSState(
         )
     )
 
-    private fun successData(mpsModel: MPSModel) =
-        listOf(ChooseAddressDataView) +
-            mpsShopWidgetList(mpsModel)
+    private fun successData(mpsModel: MPSModel): List<Visitable<MPSTypeFactory>> =
+        if (mpsModel.shopList.isNotEmpty())
+            listOf(ChooseAddressDataView) +
+                mpsShopWidgetList(mpsModel)
+        else
+            listOf(MPSEmptyStateKeywordDataView)
 
     private fun mpsShopWidgetList(mpsModel: MPSModel) =
         mpsModel.shopList.map(MPSShopWidgetDataView::create)

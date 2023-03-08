@@ -5,11 +5,11 @@
     },
     "data": [
       {
-        "id": 0,
-        "name": "Tokopedia NOW!",
-        "location": "",
+        "id": 12345,
+        "name": "Syehunthings",
+        "location": "Palembang",
         "applink": "",
-        "image_url": "https://images.tokopedia.net/img/cache/215-square/shops-1/2021/3/1/10968363/10968363_c0f00aca-7ea3-4fa0-93c9-befd9bf02b22.jpg",
+        "image_url": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/10/17/67b992e4-32f8-4176-b8a3-4da1fb222ed9.jpg",
         "component_id": "03.45.01.00",
         "tracking_option": 3,
         "ticker": {
@@ -19,20 +19,20 @@
         "badges": [
           {
             "title": "Tokopedia NOW!",
-            "image_url": "https://images.tokopedia.net/img/now/now-clock-badge.png",
+            "image_url": "https://images.tokopedia.net/img/official_store_badge.png",
             "show": true
           }
         ],
         "products": [
           {
-            "id": 2150334345,
-            "name": "Anmum Materna Coklat Susu Bubuk 200 g",
-            "applink": "tokopedia:///tokonow/anmum-materna-coklat-susu-bubuk-200-g",
-            "image_url": "https://images.tokopedia.net/img/hDjmkQ/2022/5/31/a0511e30-d3b0-4d79-92fb-51745a24757a.jpg",
-            "price": 150,
-            "price_format": "Rp 150",
+            "id": 7220273272,
+            "name": "Lem Sepatu 60 ml Super Kuat/Lem Cair Tidak Berbau",
+            "applink": "tokopedia://product/7220273272",
+            "price": 10500,
+            "price_format": "Rp 10.500",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/12/14/9c68560f-cbeb-453a-bb32-cf7c7502fc05.jpg",
             "original_price": "",
-            "discount_percentage": 0,
+            "discount_percentage": "",
             "rating_average": 0,
             "parent_id": 0,
             "stock": 1008,
@@ -49,7 +49,7 @@
               },
               {
                 "position": "campaign",
-                "title": "Waktu Indonesia Belanja",
+                "title": "Campaign",
                 "type": "",
                 "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
               }
@@ -74,14 +74,14 @@
             ]
           },
           {
-            "id": 2150334235,
-            "name": "Prenagen Mommy Coklat Susu Bubuk 400 g",
-            "applink": "tokopedia:///tokonow/prenagen-mommy-coklat-susu-bubuk-400-g",
-            "image_url": "https://images.tokopedia.net/img/hDjmkQ/2022/5/31/33162bb9-5473-43c6-b1ba-a45fe9708506.jpg",
-            "price": 150,
-            "price_format": "Rp 150",
+            "id": 6770038562,
+            "name": "Mesin Jam Dinding Detak Original Berkualitas",
+            "applink": "tokopedia://product/6770038562",
+            "price": 8000,
+            "price_format": "Rp 8.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/10/17/2e1dfda1-3d04-4b50-bfd8-326b313a7bb0.jpg",
             "original_price": "",
-            "discount_percentage": 0,
+            "discount_percentage": "",
             "rating_average": 0,
             "parent_id": 0,
             "stock": 1009,
@@ -98,7 +98,7 @@
               },
               {
                 "position": "campaign",
-                "title": "Waktu Indonesia Belanja",
+                "title": "Campaign",
                 "type": "",
                 "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
               }
@@ -123,12 +123,12 @@
             ]
           },
           {
-            "id": 2150335110,
-            "name": "Mamasuka Tepung Roti 100 g",
-            "applink": "tokopedia:///tokonow/mamasuka-tepung-roti-100-g",
-            "image_url": "https://images.tokopedia.net/img/hDjmkQ/2022/5/31/a4eef0b1-6e14-4202-aa63-3826fa45625f.jpg",
-            "price": 150,
-            "price_format": "Rp 150",
+            "id": 6924584089,
+            "name": "Tambal Panci Bocor Cair/ Patri Timah Cair/ Lem Panci Cair Timah",
+            "applink": "tokopedia://product/6924584089",
+            "price": 3500,
+            "price_format": "Rp 3.500",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/9/dcf347b6-8c95-4823-8e41-b3b690600922.jpg",
             "original_price": "",
             "discount_percentage": 0,
             "rating_average": 0,
@@ -147,7 +147,7 @@
               },
               {
                 "position": "campaign",
-                "title": "Waktu Indonesia Belanja",
+                "title": "Campaign",
                 "type": "",
                 "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
               }
@@ -170,145 +170,6 @@
                 "tracking_option": 2
               }
             ]
-          },
-          {
-            "id": 2147818941,
-            "name": "tokonow susu 1 kg",
-            "applink": "tokopedia:///tokonow/tokonow-susu-1-kg",
-            "image_url": "https://images.tokopedia.net/img/VqbcmM/2021/5/27/f69a4be6-4011-4cc6-a06f-3d7b2697fce8.jpg",
-            "price": 150,
-            "price_format": "Rp 150",
-            "original_price": "",
-            "discount_percentage": 0,
-            "rating_average": 0,
-            "parent_id": 0,
-            "stock": 12,
-            "min_order": 1,
-            "count_sold": "0",
-            "component_id": "03.45.01.04",
-            "tracking_option": 3,
-            "label_groups": [
-              {
-                "position": "integrity",
-                "title": "Terjual 10",
-                "type": "textDarkGrey",
-                "url": ""
-              },
-              {
-                "position": "campaign",
-                "title": "Waktu Indonesia Belanja",
-                "type": "",
-                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
-              }
-            ],
-            "buttons": [
-              {
-                "name": "primary",
-                "applink": "",
-                "text": "+ Keranjang",
-                "is_cta": false,
-                "component_id": "03.46.01.04",
-                "tracking_option": 2
-              },
-              {
-                "name": "secondary",
-                "applink": "tokopedia://now/search?q=susu&source=Search-SRP.46.01.04",
-                "text": "Lihat Lainnya",
-                "is_cta": false,
-                "component_id": "03.46.01.04",
-                "tracking_option": 2
-              }
-            ]
-          },
-          {
-            "id": 2147822293,
-            "name": "tokonow Susu kaleng indomilk",
-            "applink": "tokopedia:///tokonow/tokonow-susu-kaleng-indomilk",
-            "image_url": "https://images.tokopedia.net/img/VqbcmM/2021/6/2/bdd026c4-a3db-464e-8fc5-fb7451d6acab.jpg",
-            "price": 150,
-            "price_format": "Rp 150",
-            "original_price": "",
-            "discount_percentage": 0,
-            "rating_average": 0,
-            "parent_id": 0,
-            "stock": 1000,
-            "min_order": 1,
-            "count_sold": "0",
-            "component_id": "03.45.01.05",
-            "tracking_option": 3,
-            "label_groups": [
-              {
-                "position": "integrity",
-                "title": "Terjual 10",
-                "type": "textDarkGrey",
-                "url": ""
-              },
-              {
-                "position": "campaign",
-                "title": "Waktu Indonesia Belanja",
-                "type": "",
-                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
-              }
-            ],
-            "buttons": [
-              {
-                "name": "primary",
-                "applink": "",
-                "text": "+ Keranjang",
-                "is_cta": false,
-                "component_id": "03.46.01.05",
-                "tracking_option": 2
-              },
-              {
-                "name": "secondary",
-                "applink": "tokopedia://now/search?q=susu&source=Search-SRP.46.01.05",
-                "text": "Lihat Lainnya",
-                "is_cta": false,
-                "component_id": "03.46.01.05",
-                "tracking_option": 2
-              }
-            ]
-          },
-          {
-            "id": 0,
-            "name": "",
-            "applink": "tokopedia://",
-            "image_url": "https://images.tokopedia.net/img/",
-            "price": 0,
-            "price_format": "Rp 0",
-            "original_price": "",
-            "discount_percentage": 0,
-            "rating_average": 0,
-            "parent_id": 0,
-            "stock": 0,
-            "min_order": 0,
-            "count_sold": "0",
-            "component_id": "03.45.01.06",
-            "tracking_option": 3,
-            "label_groups": [
-              {
-                "position": "integrity",
-                "title": "Terjual 10",
-                "type": "textDarkGrey",
-                "url": ""
-              },
-              {
-                "position": "campaign",
-                "title": "Waktu Indonesia Belanja",
-                "type": "",
-                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
-              }
-            ],
-            "buttons": [
-              {
-                "name": "primary",
-                "applink": "",
-                "text": "Cek juga roti lainya di Tokopedia NOW!",
-                "is_cta": true,
-                "component_id": "03.46.01.06",
-                "tracking_option": 2
-              }
-            ]
           }
         ],
         "buttons": [
@@ -324,23 +185,23 @@
       },
       {
         "id": 6550478,
-        "name": "KirinStarOS",
+        "name": "SUMATERA SAFETY",
         "location": "Senen",
         "applink": "tokopedia://shop/6550478",
-        "image_url": "https://images.tokopedia.net/img/cache/215-square/default_v3-shopnophoto.png",
+        "image_url": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/11/93f086b3-6776-486c-9c0e-263509d10fa7.jpg",
         "component_id": "03.45.02.00",
         "tracking_option": 3,
         "badges": [],
         "products": [
           {
-            "id": 2150685064,
-            "name": "Boneka_Beruang_Besar - Coklat",
-            "applink": "tokopedia:///kirinstaros/boneka-beruang-besar-coklat",
-            "image_url": "https://images.tokopedia.net/img/VqbcmM/2022/9/23/821f274e-3518-4cbb-8dc3-345342c5d5aa.jpg",
-            "price": 350000,
-            "price_format": "Rp 350,000",
+            "id": 6166648794,
+            "name": "sepatu safety king 805 cx by Safetykings",
+            "applink": "tokopedia://product/6166648794",
+            "price": 375000,
+            "price_format": "Rp 375.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/12/20/519dfff9-4b6c-45fd-84de-17ed210f1991.jpg",
             "original_price": "",
-            "discount_percentage": 0,
+            "discount_percentage": "",
             "rating_average": 0,
             "parent_id": 0,
             "stock": 50,
@@ -357,7 +218,7 @@
               },
               {
                 "position": "campaign",
-                "title": "Waktu Indonesia Belanja",
+                "title": "Campaign",
                 "type": "",
                 "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
               }
@@ -382,14 +243,14 @@
             ]
           },
           {
-            "id": 2150685049,
-            "name": "Kalender_Tembok_Besar_Variant_Produk - coklat",
-            "applink": "tokopedia:///kirinstaros/kalender-tembok-besar-variant-produk-coklat",
-            "image_url": "https://images.tokopedia.net/img/hDjmkQ/2022/9/23/c790ae7f-ba56-4f8c-9ca8-0cbe94dcebb8.jpg",
-            "price": 500000,
-            "price_format": "Rp 500,000",
+            "id": 2037896246,
+            "name": "safety shoes king 706 by safetykings",
+            "applink": "tokopedia://product/2037896246",
+            "price": 360000,
+            "price_format": "Rp 360.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/13/768ccdea-5637-484d-bce8-ec2e25bf3561.jpg",
             "original_price": "",
-            "discount_percentage": 0,
+            "discount_percentage": "",
             "rating_average": 0,
             "parent_id": 0,
             "stock": 100,
@@ -406,7 +267,7 @@
               },
               {
                 "position": "campaign",
-                "title": "Waktu Indonesia Belanja",
+                "title": "Campaign",
                 "type": "",
                 "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
               }
@@ -431,14 +292,14 @@
             ]
           },
           {
-            "id": 0,
-            "name": "",
-            "applink": "",
-            "image_url": "",
-            "price": 0,
-            "price_format": "",
+            "id": 3018185920,
+            "name": "helm safety proyek push on",
+            "applink": "tokopedia://product/3018185920",
+            "price": 30000,
+            "price_format": "Rp 30.000",
+            "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/12/21/7efa8b76-0ba8-44b2-b0ba-9477449be153.jpg",
             "original_price": "",
-            "discount_percentage": 0,
+            "discount_percentage": "",
             "rating_average": 0,
             "parent_id": 0,
             "stock": 0,
@@ -455,7 +316,7 @@
               },
               {
                 "position": "campaign",
-                "title": "Waktu Indonesia Belanja",
+                "title": "Campaign",
                 "type": "",
                 "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
               }

@@ -9,10 +9,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.discovery.common.State
 import com.tokopedia.search.R
 import com.tokopedia.search.result.mps.MPSFragment
 import com.tokopedia.search.result.mps.MPSState
 import com.tokopedia.search.result.mps.domain.model.MPSModel
+import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 import com.tokopedia.search.utils.createFakeBaseAppComponent
 import com.tokopedia.search.utils.rawToObject
@@ -69,7 +71,27 @@ class MPSFragmentTest {
     }
 
     @Test
-    fun mps_empty_state() {
+    fun mps_empty_state_keyword() {
+        val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_empty_state)
+        val mpsStateSuccess = MPSState().success(mpsModel)
 
+        launchFragmentInContainer {
+            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
+        }
+
+        onView(withId(R.id.mpsEmptyStateKeywordImage)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun mps_empty_state_filter() {
+        val mpsStateSuccess = MPSState(
+            result = State.Success(listOf(MPSEmptyStateFilterDataView))
+        )
+
+        launchFragmentInContainer {
+            MPSFragment.newInstance(searchComponent(mpsStateSuccess))
+        }
+
+        onView(withId(R.id.mpsEmptyStateFilterImage)).check(matches(isDisplayed()))
     }
 }

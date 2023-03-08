@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -21,7 +20,6 @@ import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.mvvm.SearchView
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import kotlin.LazyThreadSafetyMode.NONE
 
 class MPSFragment:
     TkpdBaseV4Fragment(),
