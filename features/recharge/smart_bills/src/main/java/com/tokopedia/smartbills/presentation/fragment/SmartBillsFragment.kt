@@ -36,7 +36,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.RechargeBills
@@ -470,18 +472,22 @@ class SmartBillsFragment :
 
             binding?.run {
                 context?.let { context ->
-                    // Setup ticker
-                    tickerSmartBills.tickerTitle = getString(R.string.smart_bills_ticker_title)
-                    tickerSmartBills.setTextDescription(String.format(getString(R.string.smart_bills_ticker), LANGGANAN_URL))
-                    tickerSmartBills.setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            smartBillsAnalytics.clickSubscription()
-                            RouteManager.route(context, linkUrl.toString())
-                        }
+                    if (sbmTransitionStatus()) {
+                        tickerSmartBills.show()
+                        tickerSmartBills.tickerTitle = getString(R.string.smart_bills_ticker_title)
+                        tickerSmartBills.setTextDescription(String.format(getString(R.string.smart_bills_ticker), LANGGANAN_URL))
+                        tickerSmartBills.setDescriptionClickEvent(object : TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                smartBillsAnalytics.clickSubscription()
+                                RouteManager.route(context, linkUrl.toString())
+                            }
 
-                        override fun onDismiss() {
-                        }
-                    })
+                            override fun onDismiss() {
+                            }
+                        })
+                    } else {
+                        tickerSmartBills.hide()
+                    }
 
                     tvSbmAddBills.apply {
                         show()
@@ -976,6 +982,13 @@ class SmartBillsFragment :
             val intent = RouteManager.getIntent(it, uiModel.applink)
             startActivityForResult(intent, REQUEST_CODE_ADD_BILLS)
         }
+    }
+
+    private fun sbmTransitionStatus(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT,
+            ""
+        ) == RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
     }
 
     companion object {
