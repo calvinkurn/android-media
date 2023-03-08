@@ -51,7 +51,6 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         private const val MARGIN_VERTICAL_REVAMP = 8
         private const val MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO = 0
         private const val MARGIN_HORIZONTAL_BETWEEN_CARD = 8
-        private const val MARGIN_HORIZONTAL_BETWEEN_CARD_REVAMP = 0
         private const val PADDING_HORIZONTAL_REVAMP = 8
         private const val PADDING_HORIZONTAL_OLD = 12
     }
@@ -105,29 +104,23 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 if (isRevamp) {
                     layoutParams.setMargins(
                         Int.ZERO,
-                        MARGIN_VERTICAL_REVAMP,
+                        MARGIN_VERTICAL_REVAMP.toPx(),
                         Int.ZERO,
-                        MARGIN_VERTICAL_REVAMP
+                        MARGIN_VERTICAL_REVAMP.toPx()
                     )
                 } else {
                     layoutParams.setMargins(
                         Int.ZERO,
-                        MARGIN_TOP_MACRO,
+                        MARGIN_TOP_MACRO.toPx(),
                         Int.ZERO,
-                        MARGIN_BOTTOM_MACRO
+                        MARGIN_BOTTOM_MACRO.toPx()
                     )
                 }
                 iconRecyclerView?.layoutParams = layoutParams
 
                 if (iconRecyclerView?.itemDecorationCount == Int.ZERO) {
                     iconRecyclerView?.addItemDecoration(
-                        CommonSpacingDecoration(
-                            if (isRevamp) {
-                                MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx()
-                            } else {
-                                MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx()
-                            }
-                        )
+                        CommonSpacingDecoration(MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO.toPx())
                     )
                 }
                 iconRecyclerView?.adapter = adapterMacro
@@ -144,13 +137,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 )
                 iconRecyclerView?.layoutParams = layoutParams
                 iconRecyclerView?.addItemDecoration(
-                    CommonSpacingDecoration(
-                        if (isRevamp) {
-                            MARGIN_HORIZONTAL_BETWEEN_CARD_REVAMP.toPx()
-                        } else {
-                            MARGIN_HORIZONTAL_BETWEEN_CARD.toPx()
-                        }
-                    )
+                    CommonSpacingDecoration(MARGIN_HORIZONTAL_BETWEEN_CARD.toPx())
                 )
                 iconRecyclerView?.adapter = adapter
                 setRecyclerView(icons)
