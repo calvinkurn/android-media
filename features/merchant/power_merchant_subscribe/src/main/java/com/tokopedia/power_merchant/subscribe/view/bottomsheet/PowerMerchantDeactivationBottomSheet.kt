@@ -7,19 +7,18 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantDateFormatter
 import com.tokopedia.power_merchant.subscribe.databinding.BottomSheetPowerMerchantDeactivationBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.LostBenefitPmDeactivationAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.LostBenefitPmDeactivationUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
 
@@ -48,7 +47,8 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
         clearContentPadding = true
         val itemView = View.inflate(
             context,
-            R.layout.bottom_sheet_power_merchant_deactivation, null
+            R.layout.bottom_sheet_power_merchant_deactivation,
+            null
         )
         binding = BottomSheetPowerMerchantDeactivationBinding.bind(itemView)
         setChild(itemView)
@@ -81,7 +81,7 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
                 dismiss()
             }
 
-            imgAffectPmDeactivation.loadImage(Constant.Image.BG_AFFECT_PM_DEACTIVATION)
+            imgAffectPmDeactivation.loadImage(if (context.isDarkMode()) Constant.Image.BG_AFFECT_PM_DEACTIVATION_DM else Constant.Image.BG_AFFECT_PM_DEACTIVATION)
             tvPmDeactivationTnC.movementMethod = LinkMovementMethod.getInstance()
             tvPmDeactivationTnC.text = getString(R.string.pm_pm_deactivation_be_rm_tnc)
         }
@@ -135,7 +135,6 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
             )
         )
     }
-
 
     fun show(fm: FragmentManager) {
         show(fm, TAG)
