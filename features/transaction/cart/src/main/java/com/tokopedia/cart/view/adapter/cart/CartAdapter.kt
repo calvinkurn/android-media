@@ -674,14 +674,14 @@ class CartAdapter constructor(
         }
     }
 
-    fun setItemSelected(position: Int, cartItemHolderData: CartItemHolderData) {
+    fun setItemSelected(position: Int, cartItemHolderData: CartItemHolderData, selected: Boolean) {
         var updatedShopData: CartShopHolderData? = null
         var shopBottomIndex: Int? = null
         for ((id, data) in cartDataList.withIndex()) {
             if (data is CartShopHolderData && data.cartString == cartItemHolderData.cartString && data.isError == cartItemHolderData.isError) {
                 data.productUiModelList.forEachIndexed { index, item ->
                     if ((id + 1 + index) == position) {
-                        item.isSelected = !cartItemHolderData.isSelected
+                        item.isSelected = selected
                     }
                 }
 

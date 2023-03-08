@@ -2256,7 +2256,7 @@ class CartFragment :
     }
 
     override fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData) {
-        cartAdapter.setItemSelected(position, cartItemHolderData)
+        cartAdapter.setItemSelected(position, cartItemHolderData, !cartItemHolderData.isSelected)
         updateStateAfterCheckChanged()
     }
 
@@ -2277,16 +2277,23 @@ class CartFragment :
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
-        val cartShopHolderData =
-            cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
-        cartShopHolderData?.let {
-            it.productUiModelList.forEachIndexed { index, data ->
-                if (data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId && data.bundleGroupId == cartItemHolderData.bundleGroupId) {
-                    cartAdapter.setItemSelected(index, cartItemHolderData)
+        val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString)
+        if (index > 0) {
+            val selected = !cartItemHolderData.isSelected
+            groupData.forEachIndexed { position, data ->
+                if (data is CartItemHolderData && data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId && data.bundleGroupId == cartItemHolderData.bundleGroupId) {
+                    cartAdapter.setItemSelected(index + position, cartItemHolderData, selected)
                 }
             }
             updateStateAfterCheckChanged()
         }
+//        cartShopHolderData?.let {
+//            it.productUiModelList.forEachIndexed { index, data ->
+//                if (data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId && data.bundleGroupId == cartItemHolderData.bundleGroupId) {
+//                    cartAdapter.setItemSelected(index, cartItemHolderData)
+//                }
+//            }
+//        }
     }
 
     private fun setCheckboxGlobalState() {

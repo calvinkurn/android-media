@@ -9,8 +9,6 @@ data class ShopTypeInfo(
     val shopGrade: Int = 0,
     @SerializedName("badge")
     val shopBadge: String = "",
-    @SerializedName("badge_svg")
-    val badgeSvg: String = "",
     @SerializedName("title")
     val title: String = "",
     @SerializedName("title_fmt")

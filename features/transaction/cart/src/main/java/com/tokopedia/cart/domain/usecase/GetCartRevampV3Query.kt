@@ -108,14 +108,9 @@ const val CART_REVAMP_V3_QUERY =
                     ticker_text
                     icon_url
                   }
-                  user_address_id
                   shipment_information {
                     shop_location
                     estimation
-                    free_shipping {
-                      eligible
-                      badge_url
-                    }
                     free_shipping_extra {
                       eligible
                       badge_url
@@ -150,25 +145,11 @@ const val CART_REVAMP_V3_QUERY =
                     is_tokonow
                     shop_alert_message
                     shop_id
-                    admin_ids
                     shop_name
-                    shop_image
-                    shop_url
-                    shop_status
                     postal_code
                     latitude
                     longitude
-                    district_name
                     district_id
-                    origin
-                    address_street
-                    city_name
-                    province_name
-                    country_name
-                    is_allow_manage
-                    shop_domain
-                    is_gold
-                    is_official
                     shop_type_info {
                       shop_tier
                       shop_grade
@@ -200,19 +181,15 @@ const val CART_REVAMP_V3_QUERY =
                   cart_string
                   cart_details {
                     bundle_detail {
-                      bundle_description
                       bundle_group_id
                       bundle_id
                       bundle_max_order
                       bundle_min_order
                       bundle_name
                       bundle_original_price
-                      bundle_original_price_fmt
                       bundle_price
-                      bundle_price_fmt
                       bundle_qty
                       bundle_quota
-                      bundle_status
                       bundle_type
                       edit_app_link
                       slash_price_label
@@ -367,32 +344,9 @@ const val CART_REVAMP_V3_QUERY =
                     errors
                     messages
                   }
-                  total_cart_details_error
-                  total_cart_price
-                  errors
-                  sort_key
                   is_fulfillment_service
                   warehouse {
                     warehouse_id
-                    partner_id
-                    shop_id
-                    warehouse_name
-                    district_id
-                    district_name
-                    city_id
-                    city_name
-                    province_id
-                    province_name
-                    status
-                    postal_code
-                    is_default
-                    latlon
-                    latitude
-                    longitude
-                    email
-                    address_detail
-                    country_name
-                    is_fulfillment
                   }
                   checkbox_state
                 }
@@ -412,14 +366,9 @@ const val CART_REVAMP_V3_QUERY =
                   message
                 }
                 unavailable_group {
-                  user_address_id
                   shipment_information {
                     shop_location
                     estimation
-                    free_shipping {
-                      eligible
-                      badge_url
-                    }
                     free_shipping_extra {
                       eligible
                       badge_url
@@ -630,32 +579,9 @@ const val CART_REVAMP_V3_QUERY =
                     errors
                     messages
                   }
-                  total_cart_details_error
-                  total_cart_price
-                  errors
-                  sort_key
                   is_fulfillment_service
                   warehouse {
                     warehouse_id
-                    partner_id
-                    shop_id
-                    warehouse_name
-                    district_id
-                    district_name
-                    city_id
-                    city_name
-                    province_id
-                    province_name
-                    status
-                    postal_code
-                    is_default
-                    latlon
-                    latitude
-                    longitude
-                    email
-                    address_detail
-                    country_name
-                    is_fulfillment
                   }
                   checkbox_state
                 }

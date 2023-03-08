@@ -10,10 +10,6 @@ data class Shop(
     val shopId: String = "",
     @SerializedName("shop_name")
     val shopName: String = "",
-    @SerializedName("shop_image")
-    val shopImage: String = "",
-    @SerializedName("shop_url")
-    val shopUrl: String = "",
     @SerializedName("shop_status")
     val shopStatus: Int = 0,
     @SerializedName("postal_code")
@@ -22,23 +18,10 @@ data class Shop(
     val latitude: String = "",
     @SerializedName("longitude")
     val longitude: String = "",
-    @SerializedName("district_name")
-    val districtName: String = "",
     @SerializedName("district_id")
     val districtId: String = "",
-    @SerializedName("origin")
-    val origin: Int = 0,
-    @SerializedName("address_street")
-    val addressStreet: String = "",
-    @SerializedName("city_name")
-    val cityName: String = "",
     @SerializedName("shop_type_info")
     val shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
-    @SerializedName("is_gold")
-    val isGold: Int = 0,
-    @SerializedName("is_official")
-    val isOfficial: Int = 0,
-
     @SerializedName("shop_ticker")
     val shopTicker: String = "",
     @SerializedName("maximum_weight_wording")

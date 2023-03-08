@@ -7,8 +7,6 @@ data class ShipmentInformation(
     val shopLocation: String = "",
     @SerializedName("estimation")
     val estimation: String = "",
-    @SerializedName("free_shipping")
-    val freeShipping: FreeShipping = FreeShipping(),
     @SerializedName("free_shipping_extra")
     val freeShippingExtra: FreeShipping = FreeShipping(),
     @SerializedName("free_shipping_general")
