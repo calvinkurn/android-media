@@ -3,8 +3,7 @@ package com.tokopedia.product.detail.common.mapper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.mapper.usecase.VariantOneLevelUseCase
-import com.tokopedia.product.detail.common.mapper.usecase.VariantTwoLevelByOneLevelSelectedUseCase
-import com.tokopedia.product.detail.common.mapper.usecase.VariantTwoLevelByTwoLevelSelectedUseCase
+import com.tokopedia.product.detail.common.mapper.usecase.VariantTwoLevelUseCase
 
 /**
  * Created by yovi.putra on 08/03/23"
@@ -35,13 +34,13 @@ object AtcVariantNewMapper {
 
         return when (variantSize) {
             VARIANT_HAVE_ONE_LEVEL -> {
-                VariantOneLevelUseCase.byLevelOneSelected(
+                VariantOneLevelUseCase.process(
                     variantData = variantData,
                     selectedVariant = selectedVariant.orEmpty()
                 )
             }
             VARIANT_HAVE_TWO_LEVEL -> {
-                processVariantTwoLevel(
+                VariantTwoLevelUseCase.process(
                     variantData = variantData,
                     selectedVariant = selectedVariant.orEmpty(),
                     selectedLevel = selectedLevel
@@ -49,21 +48,5 @@ object AtcVariantNewMapper {
             }
             else -> null
         }
-    }
-
-    private fun processVariantTwoLevel(
-        variantData: ProductVariant,
-        selectedVariant: Map<String, String>,
-        selectedLevel: Int
-    ): List<VariantCategory>? = when (selectedLevel) {
-        VARIANT_LEVEL_ONE_SELECTED -> VariantTwoLevelByOneLevelSelectedUseCase.process(
-            variantData = variantData,
-            mapOfSelectedVariant = selectedVariant
-        )
-        VARIANT_LEVEL_TWO_SELECTED -> VariantTwoLevelByTwoLevelSelectedUseCase.process(
-            variantData = variantData,
-            mapOfSelectedVariant = selectedVariant
-        )
-        else -> null
     }
 }

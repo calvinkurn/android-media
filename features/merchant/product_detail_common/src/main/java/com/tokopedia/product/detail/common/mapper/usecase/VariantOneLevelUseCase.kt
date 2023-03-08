@@ -14,7 +14,7 @@ import com.tokopedia.product.detail.common.mapper.AtcVariantNewMapper
 
 object VariantOneLevelUseCase {
 
-    fun byLevelOneSelected(
+    fun process(
         variantData: ProductVariant,
         selectedVariant: Map<String, String>
     ): List<VariantCategory>? {
