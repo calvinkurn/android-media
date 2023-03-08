@@ -328,6 +328,7 @@ object DeeplinkMapper {
         DLP.exact(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
         DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
         DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
+        DLP.startWith(ApplinkConst.TELKOMSEL_OMNI) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
         DLP.startWith(ApplinkConst.DISCOVERY_SEARCH) { _, _, deeplink, _ -> getRegisteredNavigationSearch(deeplink) },
         DLP.startWith(ApplinkConst.CART) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
         DLP.startWith(ApplinkConst.CHECKOUT) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
@@ -761,6 +762,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.SELLER_MVC_LIST_UPCOMING -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_UPCOMING
             ApplinkConst.SellerApp.SELLER_MVC_LIST_ONGOING -> ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ONGOING
             ApplinkConst.SellerApp.SELLER_MVC_REDIRECTION_PAGE -> ApplinkConstInternalSellerapp.SELLER_MVC_REDIRECTION_PAGE
+            ApplinkConst.SellerApp.SELLER_PERSONA -> ApplinkConstInternalSellerapp.SELLER_PERSONA
             else -> when {
                 DeeplinkMapperMerchant.isShopPageFeedDeeplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(deeplink)
                 DeeplinkMapperMerchant.isShopPageSettingSellerApp(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationShopPageSettingSellerApp(deeplink)

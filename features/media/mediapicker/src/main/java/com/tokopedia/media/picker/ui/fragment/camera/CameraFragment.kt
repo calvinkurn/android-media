@@ -195,6 +195,7 @@ open class CameraFragment @Inject constructor(
 
     override fun onTakeMediaClicked() {
         if (controller.isVideoMode() && cameraView.isTakingVideo()) {
+            pickerViewModel.isOnVideoRecording(false)
             cameraView.stopVideo()
             return
         }
@@ -208,6 +209,7 @@ open class CameraFragment @Inject constructor(
                 controller.onVideoDurationChanged()
                 cameraAnalytics.clickRecord()
                 cameraViewModel.onVideoTaken()
+                pickerViewModel.isOnVideoRecording(true)
             }
         }
     }
@@ -266,6 +268,10 @@ open class CameraFragment @Inject constructor(
             } else {
                 loaderDialog?.dismiss()
             }
+        }
+
+        pickerViewModel.isOnVideoRecording.observe(viewLifecycleOwner) {
+            controller.setThumbnailVisibility(!it)
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
