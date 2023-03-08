@@ -1,14 +1,10 @@
 package com.tokopedia.home_component.viewholders
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -51,7 +47,6 @@ class BannerRevampViewHolder(
     private var totalBanner = 0
     private var currentPosition: Int = 0
     private var isFromDrag = false
-    private var isPauseAnimation = false
 
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(element: BannerRevampDataModel) {
@@ -88,7 +83,7 @@ class BannerRevampViewHolder(
         if (!element.isCache) {
             itemView.addOnImpressionListener(holder = element, onView = {
                 element.channelModel?.let {
-                    bannerListener?.onChannelBannerImpressed(it, absoluteAdapterPosition)
+                    bannerListener?.onChannelBannerImpressed(it, element.channelModel.verticalPosition)
                 }
             })
             setScrollListener()
@@ -132,8 +127,8 @@ class BannerRevampViewHolder(
             binding?.rvBannerRevamp?.smoothScrollBy(
                 width - paddings,
                 Int.ZERO,
-                if (isFromDrag) manualScrollInterpolator else autoScrollInterpolator,
-                FLING_DURATION
+                if (isFromDrag) BannerComponentViewHolder.manualScrollInterpolator else BannerComponentViewHolder.autoScrollInterpolator,
+                BannerComponentViewHolder.FLING_DURATION
             )
         }
     }
@@ -145,7 +140,7 @@ class BannerRevampViewHolder(
 
     private fun initBanner(list: List<BannerItemModel>) {
         if (list.size > Int.ONE) {
-            val snapHelper: SnapHelper = CubicBezierSnapHelper(itemView.context)
+            val snapHelper: SnapHelper = BannerComponentViewHolder.CubicBezierSnapHelper(itemView.context)
             binding?.rvBannerRevamp?.let {
                 it.onFlingListener = null
                 snapHelper.attachToRecyclerView(it)
@@ -164,10 +159,9 @@ class BannerRevampViewHolder(
 
     override fun onImpressed(position: Int) {
         channelModel?.let { channel ->
-            val realPosition = position % channel.channelGrids.size
-            channel.selectGridInPosition(realPosition) {
+            channel.selectGridInPosition(position) {
                 if (bannerListener?.isMainViewVisible() == true && !isCache && !bannerListener.isBannerImpressed(it.id) && position != RecyclerView.NO_POSITION) {
-                    bannerListener.onPromoScrolled(channel, it, realPosition)
+                    bannerListener.onPromoScrolled(channel, it, position)
                 }
             }
         }
@@ -175,9 +169,8 @@ class BannerRevampViewHolder(
 
     override fun onClick(position: Int) {
         channelModel?.let { channel ->
-            val realPosition = position % channel.channelGrids.size
-            channel.selectGridInPosition(realPosition) {
-                bannerListener?.onBannerClickListener(realPosition, it, channel)
+            channel.selectGridInPosition(position) {
+                bannerListener?.onBannerClickListener(position, it, channel)
             }
         }
     }
@@ -196,7 +189,7 @@ class BannerRevampViewHolder(
 
     private fun ChannelModel.convertToBannerItemModel(): List<BannerItemModel> {
         return try {
-            this.channelGrids.map { BannerItemModel(it.id.toIntOrZero(), it.imageUrl) }
+            this.channelGrids.mapIndexed { index, channelGrid -> BannerItemModel(channelGrid.id.toIntOrZero(), channelGrid.imageUrl, index) }
         } catch (e: NumberFormatException) {
             listOf()
         }
@@ -211,38 +204,7 @@ class BannerRevampViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_banner_revamp
-        val autoScrollInterpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
-        val manualScrollInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
-        const val FLING_DURATION = 600
         private const val DIVIDE_HALF_BANNER = 2
         private const val MULTIPLY_NO_BOUNCE_BANNER = 2
-    }
-
-    class CubicBezierSnapHelper(private val context: Context) : PagerSnapHelper() {
-        companion object {
-            private const val DX_POS = 0
-            private const val DY_POS = 1
-        }
-
-        override fun createScroller(layoutManager: RecyclerView.LayoutManager): RecyclerView.SmoothScroller? {
-            if (layoutManager !is RecyclerView.SmoothScroller.ScrollVectorProvider) {
-                return null
-            }
-            return object : LinearSmoothScroller(context) {
-                override fun onTargetFound(
-                    targetView: View,
-                    state: RecyclerView.State,
-                    action: Action
-                ) {
-                    val snapDistances = calculateDistanceToFinalSnap(layoutManager, targetView)
-                    val dx = snapDistances?.get(DX_POS) ?: 0
-                    val dy = snapDistances?.get(DY_POS) ?: 0
-                    val time = FLING_DURATION
-                    action.dx = dx
-                    action.dy = dy
-                    action.update(dx, dy, time, manualScrollInterpolator)
-                }
-            }
-        }
     }
 }

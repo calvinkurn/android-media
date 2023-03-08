@@ -1,7 +1,6 @@
 package com.tokopedia.home_component.viewholders.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -22,7 +21,7 @@ class BannerRevampChannelAdapter(
 
     override fun onBindViewHolder(holder: BannerRevampChannelImageViewHolder, position: Int) {
         val index = position % itemList.size
-        if (position != RecyclerView.NO_POSITION) {
+        if (index != RecyclerView.NO_POSITION && itemList.size > index) {
             holder.bind(itemList[index])
         }
     }
@@ -35,9 +34,9 @@ class BannerRevampChannelAdapter(
 class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerItemListener) : RecyclerView.ViewHolder(itemView) {
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: BannerItemModel) {
-        itemView.findViewById<ImageUnify>(R.id.image_banner_revamp).setImageUrl(item.url)
-        itemView.setOnTouchListener { t, motionEvent ->
-            Log.d("dhabalog", "${motionEvent.action} ${t.y}")
+        val imageBanner = itemView.findViewById<ImageUnify>(R.id.image_banner_revamp)
+        imageBanner.setImageUrl(item.url)
+        imageBanner.setOnTouchListener { _, motionEvent ->
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                     listener.onLongPress()
@@ -48,11 +47,13 @@ class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerIte
                     }
                 }
             }
-            return@setOnTouchListener true
+            return@setOnTouchListener false
         }
-        itemView.setOnClickListener { listener.onClick(layoutPosition) }
-        itemView.addOnImpressionListener(item) {
-            listener.onImpressed(layoutPosition)
+        imageBanner.setOnClickListener {
+            listener.onClick(item.position)
+        }
+        imageBanner.addOnImpressionListener(item) {
+            listener.onImpressed(item.position)
         }
     }
 }

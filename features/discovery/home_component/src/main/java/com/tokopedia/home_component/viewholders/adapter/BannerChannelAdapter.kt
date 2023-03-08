@@ -99,4 +99,4 @@ interface BannerItemListener {
     fun isDrag(): Boolean
 }
 
-data class BannerItemModel(val id: Int, val url: String) : ImpressHolder()
+data class BannerItemModel(val id: Int, val url: String, val position: Int = 0) : ImpressHolder()

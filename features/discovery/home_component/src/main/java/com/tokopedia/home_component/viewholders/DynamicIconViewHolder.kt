@@ -131,9 +131,9 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 val layoutParams = iconRecyclerView?.layoutParams as ConstraintLayout.LayoutParams
                 layoutParams.setMargins(
                     Int.ZERO,
-                    MARGIN_VERTICAL_DEFAULT,
+                    MARGIN_VERTICAL_DEFAULT.toPx(),
                     Int.ZERO,
-                    MARGIN_VERTICAL_DEFAULT
+                    MARGIN_VERTICAL_DEFAULT.toPx()
                 )
                 iconRecyclerView?.layoutParams = layoutParams
                 iconRecyclerView?.addItemDecoration(

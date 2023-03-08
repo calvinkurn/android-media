@@ -352,15 +352,15 @@ class BannerComponentViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_banner
+        val autoScrollInterpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
+        val manualScrollInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
+        const val FLING_DURATION = 600
         private const val STATE_RUNNING = 0
         private const val STATE_PAUSED = 1
         private const val INITIAL_PAGE_POSITION = 0
         private const val MARGIN_ZERO = 0
         private const val DOTS_SIZE = 6f
         private const val DOTS_MARGIN = 2f
-        private val autoScrollInterpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
-        private val manualScrollInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
-        private const val FLING_DURATION = 600
         private const val FLING_DURATION_OLD = 300
     }
 
