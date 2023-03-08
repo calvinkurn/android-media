@@ -66,7 +66,8 @@ class FeedFragment :
     ProductItemInfoBottomSheet.Listener,
     ShareBottomsheetListener {
 
-    private var binding: FragmentFeedImmersiveBinding? = null
+    private var _binding: FragmentFeedImmersiveBinding? = null
+    private val binding get() = _binding!!
 
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
@@ -121,8 +122,8 @@ class FeedFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFeedImmersiveBinding.inflate(inflater, container, false)
-        return binding?.root
+        _binding = FragmentFeedImmersiveBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -138,7 +139,7 @@ class FeedFragment :
     }
 
     override fun onDestroyView() {
-        binding = null
+        _binding = null
         (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
