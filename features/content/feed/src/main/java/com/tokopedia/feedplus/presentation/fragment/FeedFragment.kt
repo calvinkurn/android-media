@@ -129,7 +129,10 @@ class FeedFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        feedPostViewModel.fetchFeedPosts(isNewData = true, postId = "209528039")
+        feedPostViewModel.fetchFeedPosts(
+            isNewData = true,
+            postId = arguments?.getString(ARGUMENT_RELEVANT_POST_ID)
+        )
 
         initView()
         observeClearViewData()
@@ -529,6 +532,7 @@ class FeedFragment :
 
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
+        private const val ARGUMENT_RELEVANT_POST_ID = "ARGUMENT_RELEVANT_POST_ID"
 
         private const val MINIMUM_ENDLESS_CALL = 1
 
@@ -538,6 +542,7 @@ class FeedFragment :
         fun createFeedFragment(data: FeedDataModel): FeedFragment = FeedFragment().also {
             it.arguments = Bundle().apply {
                 putParcelable(ARGUMENT_DATA, data)
+//                putString(ARGUMENT_RELEVANT_POST_ID, "209528039")
             }
         }
     }
