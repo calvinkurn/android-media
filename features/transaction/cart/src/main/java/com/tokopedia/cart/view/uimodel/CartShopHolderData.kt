@@ -144,7 +144,7 @@ data class CartShopGroupTickerData(
 class CartShopCoachmarkPlusData(
     val isShown: Boolean = false,
     val title: String = "",
-    val content: String = "",
+    val content: String = ""
 )
 
 enum class CartShopGroupTickerState {
