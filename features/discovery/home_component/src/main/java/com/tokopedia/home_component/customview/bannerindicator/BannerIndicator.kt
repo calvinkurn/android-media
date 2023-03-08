@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.view.ContextThemeWrapper
 import com.tokopedia.home_component.util.toDpInt
-import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
+import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.toPx
@@ -101,7 +101,7 @@ class BannerIndicator : LinearLayout {
     private fun maximizeAnimator(progressIndicator: ProgressBar, position: Int) {
         val maximizeAnimator = ValueAnimator
             .ofInt(WIDTH_MINIMUM_PROGRESS, WIDTH_MAXIMUM_PROGRESS)
-            .setDuration(BannerRevampViewHolder.FLING_DURATION.toLong())
+            .setDuration(BannerComponentViewHolder.FLING_DURATION.toLong())
         maximizeAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
             progressIndicator.layoutParams?.width = value.toPx()
@@ -110,10 +110,9 @@ class BannerIndicator : LinearLayout {
                 animateIndicatorBanner(progressIndicator, position)
             }
         }
-
         val maxAnimatorSet = AnimatorSet()
         maxAnimatorSet.play(maximizeAnimator)
-        maxAnimatorSet.interpolator = BannerRevampViewHolder.autoScrollInterpolator
+        maxAnimatorSet.interpolator = BannerComponentViewHolder.autoScrollInterpolator
         maxAnimatorSet.start()
     }
 
@@ -121,7 +120,6 @@ class BannerIndicator : LinearLayout {
         val layoutParams = progressIndicator.layoutParams
         layoutParams.width = WIDTH_MAXIMUM_PROGRESS.toPx()
         progressIndicator.layoutParams = layoutParams
-
         animateIndicatorBanner(progressIndicator, position)
     }
 
@@ -158,7 +156,7 @@ class BannerIndicator : LinearLayout {
     private fun minimizeIndicatorBanner(progressIndicator: ProgressBar) {
         val minimizeAnimator = ValueAnimator
             .ofInt(WIDTH_MAXIMUM_PROGRESS, WIDTH_MINIMUM_PROGRESS)
-            .setDuration(BannerRevampViewHolder.FLING_DURATION.toLong())
+            .setDuration(BannerComponentViewHolder.FLING_DURATION.toLong())
         minimizeAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
             val alpha =
@@ -173,7 +171,7 @@ class BannerIndicator : LinearLayout {
         }
         val minAnimatorSet = AnimatorSet()
         minAnimatorSet.play(minimizeAnimator)
-        minAnimatorSet.interpolator = BannerRevampViewHolder.autoScrollInterpolator
+        minAnimatorSet.interpolator = BannerComponentViewHolder.autoScrollInterpolator
         minAnimatorSet.start()
     }
 
