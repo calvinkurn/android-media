@@ -3,5 +3,6 @@
 
     <application>
         <activity android:name="com.tokopedia.feed.component.sample.FeedCaptionTestActivity" />
+        <activity android:name="com.tokopedia.feed.component.sample.FeedPostCampaignTestActivity" />
     </application>
 </manifest>

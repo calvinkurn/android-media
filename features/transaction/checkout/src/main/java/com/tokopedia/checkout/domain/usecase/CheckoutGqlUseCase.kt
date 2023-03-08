@@ -14,10 +14,12 @@ import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
 
-class CheckoutGqlUseCase @Inject constructor(@Named(CHECKOUT_MUTATION) private val queryString: String,
-                                             private val graphqlUseCase: GraphqlUseCase,
-                                             private val checkoutMapper: CheckoutMapper,
-                                             private val schedulers: ExecutorSchedulers) : UseCase<CheckoutData>() {
+class CheckoutGqlUseCase @Inject constructor(
+    @Named(CHECKOUT_MUTATION) private val queryString: String,
+    private val graphqlUseCase: GraphqlUseCase,
+    private val checkoutMapper: CheckoutMapper,
+    private val schedulers: ExecutorSchedulers
+) : UseCase<CheckoutData>() {
 
     companion object {
         const val CHECKOUT_MUTATION = "CHECKOUT_MUTATION"
@@ -42,16 +44,15 @@ class CheckoutGqlUseCase @Inject constructor(@Named(CHECKOUT_MUTATION) private v
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map {
-                    val gqlResponse = it.getData<CheckoutGqlResponse>(CheckoutGqlResponse::class.java)
-                    if (gqlResponse != null) {
-                        checkoutMapper.convertCheckoutData(gqlResponse.checkout)
-                    } else {
-                        throw CartResponseErrorException(CART_ERROR_GLOBAL)
-                    }
+            .map {
+                val gqlResponse = it.getData<CheckoutGqlResponse>(CheckoutGqlResponse::class.java)
+                if (gqlResponse != null) {
+                    checkoutMapper.convertCheckoutData(gqlResponse.checkout)
+                } else {
+                    throw CartResponseErrorException(CART_ERROR_GLOBAL)
                 }
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
+            }
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.main)
     }
-
 }

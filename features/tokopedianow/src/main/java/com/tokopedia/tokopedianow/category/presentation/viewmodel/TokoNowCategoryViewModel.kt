@@ -41,7 +41,6 @@ import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
@@ -57,17 +56,17 @@ import javax.inject.Named
 class TokoNowCategoryViewModel @Inject constructor (
     baseDispatcher: CoroutineDispatchers,
     @param:Named(TOKONOW_CATEGORY_L1)
-        val categoryL1: String,
+    val categoryL1: String,
     @param:Named(TOKONOW_CATEGORY_L2)
-        val categoryL2: String,
+    val categoryL2: String,
     @param:Named(TOKONOW_CATEGORY_SERVICE_TYPE)
-        val externalServiceType: String,
+    val externalServiceType: String,
     @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
-        queryParamMap: Map<String, String>,
+    queryParamMap: Map<String, String>,
     @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
-        private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
+    private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
     @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
-        private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
+    private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
     getFilterUseCase: UseCase<DynamicFilterModel>,
     getProductCountUseCase: UseCase<String>,
     getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
@@ -76,20 +75,18 @@ class TokoNowCategoryViewModel @Inject constructor (
     private val getCategoryListUseCase: GetCategoryListUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
     chooseAddressWrapper: ChooseAddressWrapper,
-    abTestPlatformWrapper: ABTestPlatformWrapper,
     userSession: UserSessionInterface,
 ): BaseSearchCategoryViewModel(
-        baseDispatcher,
-        queryParamMap,
-        getFilterUseCase,
-        getProductCountUseCase,
-        getMiniCartListSimplifiedUseCase,
-        cartService,
-        getWarehouseUseCase,
-        setUserPreferenceUseCase,
-        chooseAddressWrapper,
-        abTestPlatformWrapper,
-        userSession,
+    baseDispatcher,
+    queryParamMap,
+    getFilterUseCase,
+    getProductCountUseCase,
+    getMiniCartListSimplifiedUseCase,
+    cartService,
+    getWarehouseUseCase,
+    setUserPreferenceUseCase,
+    chooseAddressWrapper,
+    userSession,
 ) {
 
     private val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<CategoryTrackerModel>()
@@ -254,7 +251,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     private suspend fun getCategoryList() =
-            getCategoryListUseCase.execute(warehouseId, CATEGORY_LIST_DEPTH)?.data
+            getCategoryListUseCase.execute(warehouseId, CATEGORY_LIST_DEPTH).data
 
     private suspend fun updateCategoryUIModel(
             categoryItemListUIModel: List<Visitable<*>>?,

@@ -6,7 +6,7 @@
       "event": "view_item",
       "eventAction": "impression on banner dynamic channel mission widget",
       "eventCategory": "homepage",
-      "eventLabel": "",
+      "eventLabel": ".* - .*",
       "trackerId": "40379",
       "businessUnit": "home & browse",
       "channelId": ".*",
@@ -15,9 +15,8 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*_.*_.*",
-          "item_name": "/ - p.* - dynamic channel mission widget - banner - .*",
-          "creative_url": ""
+          "item_id": ".*_.*_.*_.*",
+          "item_name": "/ - p.* - dynamic channel mission widget - banner - .* - .* - .*"
         }
       ],
       "userId": ".*",
@@ -37,8 +36,8 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*_.*_.*",
-          "item_name": "/ - p.* - dynamic channel mission widget - banner - .*"
+          "item_id": ".*_.*_.*_.*",
+          "item_name": "/ - p.* - dynamic channel mission widget - banner - .* - .* - .*"
         }
       ],
       "userId": ".*",
@@ -61,7 +60,7 @@
           "dimension96": ".*_.*",
           "index": ".*",
           "item_brand": ".*",
-          "item_category": ".* / .* / .*",
+          "item_category": ".*",
           "item_id": ".*",
           "item_name": ".*",
           "item_variant": ".*",
@@ -76,7 +75,7 @@
       "event": "view_item_list",
       "eventAction": "impression on product dynamic channel mission widget",
       "eventCategory": "homepage",
-      "eventLabel": "",
+      "eventLabel": ".* - .*",
       "trackerId": "40378",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
@@ -86,10 +85,9 @@
           "dimension40": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",
           "dimension84": ".*",
           "dimension96": ".*_.*",
-          "dimension83": ".*",
           "index": ".*",
           "item_brand": ".*",
-          "item_category": ".* / .* / .*",
+          "item_category": ".*",
           "item_id": ".*",
           "item_name": ".*",
           "item_variant": ".*",

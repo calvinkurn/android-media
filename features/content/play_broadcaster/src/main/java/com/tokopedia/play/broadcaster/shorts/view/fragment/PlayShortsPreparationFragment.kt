@@ -502,6 +502,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 }
                 binding.formTitle.setLoading(false)
                 binding.formTitle.setMaxCharacter(viewModel.maxTitleCharacter)
+                binding.formTitle.setPlaceholder(getString(R.string.play_shorts_title_form_hint))
             }
             PlayShortsTitleFormUiState.State.Loading -> {
                 hideKeyboard()

@@ -14,11 +14,18 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_IS_LOGGED_IN_STATUS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_NAME
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PROMOTIONS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_USER_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.TrackAppUtils.EVENT
+import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
+import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
+import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.track.interfaces.Analytics
 
 object TokoNowCommonAnalytics {
@@ -88,16 +95,16 @@ object TokoNowCommonAnalytics {
         userId: String
     ): Bundle {
         return Bundle().apply {
-            putString(TrackAppUtils.EVENT, event)
-            putString(TrackAppUtils.EVENT_ACTION, action)
-            putString(TrackAppUtils.EVENT_CATEGORY, category)
-            putString(TrackAppUtils.EVENT_LABEL, label)
-            putString(TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID, trackerId)
+            putString(EVENT, event)
+            putString(EVENT_ACTION, action)
+            putString(EVENT_CATEGORY, category)
+            putString(EVENT_LABEL, label)
+            putString(KEY_TRACKER_ID, trackerId)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            putParcelableArrayList(TokoNowCommonAnalyticConstants.KEY.KEY_PROMOTIONS, promotions)
+            putParcelableArrayList(KEY_PROMOTIONS, promotions)
             putString(KEY_USER_ID, userId)
-            putString(TokoNowCommonAnalyticConstants.KEY.KEY_WAREHOUSE_ID, warehouseId)
+            putString(KEY_WAREHOUSE_ID, warehouseId)
         }
     }
 
@@ -125,12 +132,22 @@ object TokoNowCommonAnalytics {
         getTracker().sendGeneralEvent(dataLayer.getCommonGeneralTracker())
     }
 
-    fun getDataLayer(event: String, action: String, category: String, label: String = ""): MutableMap<String, Any> {
-        return DataLayer.mapOf(
-            TrackAppUtils.EVENT, event,
-            TrackAppUtils.EVENT_ACTION, action,
-            TrackAppUtils.EVENT_CATEGORY, category,
-            TrackAppUtils.EVENT_LABEL, label,
-        )
+    fun getDataLayer(event: String, action: String, category: String, label: String = "", trackerId: String = ""): MutableMap<String, Any> {
+        return if (trackerId.isBlank()) {
+            DataLayer.mapOf(
+                EVENT, event,
+                EVENT_ACTION, action,
+                EVENT_CATEGORY, category,
+                EVENT_LABEL, label,
+            )
+        } else {
+            DataLayer.mapOf(
+                EVENT, event,
+                EVENT_ACTION, action,
+                EVENT_CATEGORY, category,
+                EVENT_LABEL, label,
+                KEY_TRACKER_ID, trackerId
+            )
+        }
     }
 }

@@ -6,12 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
 import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
-import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
-import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
@@ -21,6 +24,8 @@ import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManag
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.model.UploadStatusModel
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
@@ -35,11 +40,21 @@ import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCas
 import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToUiModels
-import com.tokopedia.product.manage.feature.list.view.model.*
-import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
+import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType
+import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.MultipleProduct
+import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.SingleProduct
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
+import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
+import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
+import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
+import com.tokopedia.product.manage.feature.list.view.model.ViewState
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideLoadingDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowLoadingDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
@@ -48,14 +63,18 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
-import com.tokopedia.shop.common.domain.interactor.*
+import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -68,8 +87,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
@@ -146,8 +165,6 @@ class ProductManageViewModel @Inject constructor(
         get() = _editVariantStockResult
     val productFiltersTab: LiveData<Result<GetFilterTabResult>>
         get() = _productFiltersTab
-    val onClickPromoTopAds: LiveData<TopAdsPage>
-        get() = _onClickPromoTopAds
     val productManageAccess: LiveData<Result<ProductManageAccess>>
         get() = _productManageAccess
     val deleteProductDialog: LiveData<DeleteProductDialogType>
@@ -181,7 +198,6 @@ class ProductManageViewModel @Inject constructor(
     private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
     private val _topAdsInfo = MutableLiveData<TopAdsInfo>()
-    private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
     private val _uploadStatus = MutableLiveData<UploadStatusModel>()
@@ -403,12 +419,16 @@ class ProductManageViewModel @Inject constructor(
             val result = withContext(dispatchers.io) {
                 getTickerUseCase.execute()
             }
-            _tickerData.value = tickerStaticDataProvider.createTicker(
+            _tickerData.value = tickerStaticDataProvider.getTickers(
                 isMultiLocationShop,
+                _shopStatus.value?.shopStatus.orEmpty(),
                 result.getTargetedTicker?.tickers.orEmpty()
             )
         }, onError = {
-            _tickerData.value = tickerStaticDataProvider.createTicker(isMultiLocationShop)
+            _tickerData.value = tickerStaticDataProvider.getTickers(
+                isMultiLocationShop,
+                _shopStatus.value?.shopStatus.orEmpty()
+            )
         })
     }
 
@@ -775,23 +795,6 @@ class ProductManageViewModel @Inject constructor(
     fun toggleMultiSelect() {
         val multiSelectEnabled = _toggleMultiSelect.value == true
         _toggleMultiSelect.value = !multiSelectEnabled
-    }
-
-    fun onPromoTopAdsClicked(productId: String) {
-        val topAdsInfo = _topAdsInfo.value
-
-        if (topAdsInfo != null) {
-            val shopHasTopAds = topAdsInfo.isTopAds
-            val shopHasAutoAds = topAdsInfo.isAutoAds
-
-            _onClickPromoTopAds.value = when {
-                shopHasAutoAds -> TopAdsPage.AutoAds(productId)
-                shopHasTopAds -> TopAdsPage.ManualAds(productId)
-                else -> TopAdsPage.OnBoarding(productId)
-            }
-        } else {
-            _onClickPromoTopAds.value = TopAdsPage.OnBoarding(productId)
-        }
     }
 
     fun onDeleteSingleProduct(productName: String, productId: String) {

@@ -64,7 +64,6 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response;
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response;
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener;
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler;
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil;
 
 import org.jetbrains.annotations.NotNull;
 

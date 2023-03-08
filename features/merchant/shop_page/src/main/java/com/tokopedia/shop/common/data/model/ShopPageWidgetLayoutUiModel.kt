@@ -6,5 +6,6 @@ data class ShopPageWidgetLayoutUiModel(
     val widgetTitle: String = "",
     val widgetType: String = "",
     val widgetName: String = "",
+    val isFestivity: Boolean = false,
     val header: ShopPageHeaderUiModel = ShopPageHeaderUiModel()
 )
