@@ -17,7 +17,8 @@ import com.tokopedia.tokochat_common.view.uimodel.TokoChatAttachmentType
  */
 class TokoChatMenuAttachmentRecyclerView : RecyclerView {
 
-    private val manager = GridLayoutManager(context, getTabCount())
+    private val manager = GridLayoutManager(
+        context, getTabCount(), GridLayoutManager.HORIZONTAL, false)
     private val adapter = AttachmentMenuAdapter()
 
     constructor(context: Context) : super(context)
@@ -34,9 +35,14 @@ class TokoChatMenuAttachmentRecyclerView : RecyclerView {
         setAdapter(adapter)
     }
 
-    fun updateAttachmentMenu(listener: TokoChatAttachmentMenuListener) {
+    fun updateAttachmentMenu(
+        listener: TokoChatAttachmentMenuListener,
+        showImageAttachment: Boolean = false
+    ) {
         adapter.listener = listener
-        adapter.menus.add(getImageAttachmentMenu())
+        if (showImageAttachment) {
+            adapter.menus.add(getImageAttachmentMenu())
+        }
         adapter.notifyDataSetChanged()
     }
 

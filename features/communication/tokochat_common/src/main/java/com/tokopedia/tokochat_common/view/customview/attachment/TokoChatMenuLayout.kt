@@ -17,15 +17,9 @@ import com.tokopedia.tokochat_common.view.listener.TokoChatAttachmentMenuListene
  */
 class TokoChatMenuLayout : ConstraintLayout {
 
-    var isVisible = false
-    var isShowing = false
-    var showDelayed = false
-    var isKeyboardOpened = false
-
     var attachmentMenu: TokoChatMenuAttachmentRecyclerView? = null
     private var previousSelectedMenu: ChatMenuType? = null
-    private var selectedMenu: ChatMenuType? = null
-    private var visibilityListener: VisibilityListener? = null
+    private var listener: TokoChatAttachmentMenuListener? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -36,11 +30,6 @@ class TokoChatMenuLayout : ConstraintLayout {
         bindViewId()
     }
 
-    interface VisibilityListener {
-        fun onShow()
-        fun onHide()
-    }
-
     private fun initViewLayout() {
         View.inflate(context, LAYOUT, this)
     }
@@ -49,73 +38,57 @@ class TokoChatMenuLayout : ConstraintLayout {
         attachmentMenu = findViewById(R.id.tokochat_rv_attachment_menu)
     }
 
-    private fun updateAttachmentMenu(listener: TokoChatAttachmentMenuListener) {
-        attachmentMenu?.updateAttachmentMenu(listener)
+    fun updateAttachmentMenu(
+        listener: TokoChatAttachmentMenuListener,
+        showImageAttachment: Boolean
+    ) {
+        this.listener = listener
+        attachmentMenu?.updateAttachmentMenu(
+            listener = listener,
+            showImageAttachment = showImageAttachment
+        )
     }
 
-    fun toggleAttachmentMenu(menuType: ChatMenuType) {
-        selectedMenu = menuType
-        toggleMenu {
-            previousSelectedMenu = selectedMenu
-            attachmentMenu?.show()
-        }
-    }
-
-    private fun toggleMenu(onShow: () -> Unit) {
-        if (isShowing) return
-        if (isVisible && previousSelectedMenu == selectedMenu) {
+    fun toggleAttachmentMenu(
+        menuType: ChatMenuType,
+        view: View?
+    ) {
+        // If selected menu clicked again, hide the menu view
+        if (previousSelectedMenu == menuType) {
+            showKeyboard(view)
             hideMenu()
+
+            // Reset previous selected menu
+            previousSelectedMenu = null
         } else {
-            onShow()
-            showMenu()
+            hideKeyboard() // Hide keyboard
+            showMenu() // Show Menu
+
+            // Save to previous selected menu
+            previousSelectedMenu = menuType
         }
     }
 
     private fun hideMenu() {
-        if (isVisible && !isShowing) {
-            isVisible = false
-            attachmentMenu?.hide()
-            hide()
-            visibilityListener?.onHide()
-        }
+        attachmentMenu?.hide()
+        hide()
+        listener?.onAttachmentMenuHidden()
     }
 
     private fun showMenu() {
-        isShowing = true
-        if (!isKeyboardOpened) {
-            showMenuImmediately()
-        } else {
-            showDelayed = true
-            hideKeyboard()
-        }
-    }
-
-    private fun showMenuImmediately() {
-        isShowing = false
-        showDelayed = false
-        isVisible = true
+        attachmentMenu?.show()
         show()
-        visibilityListener?.onShow()
+        listener?.onAttachmentShowed()
     }
 
-    fun hideKeyboard() {
+    private fun hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
-    fun showKeyboard(view: View?) {
+    private fun showKeyboard(view: View?) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-    }
-
-    fun showMenuDelayed() {
-        if (showDelayed) {
-            showMenuImmediately()
-        }
-    }
-
-    fun setVisibilityListener(visibilityListener: VisibilityListener) {
-        this.visibilityListener = visibilityListener
     }
 
     enum class ChatMenuType {

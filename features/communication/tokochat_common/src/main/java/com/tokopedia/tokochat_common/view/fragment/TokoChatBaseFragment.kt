@@ -20,7 +20,6 @@ import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.adapter.viewholder.decoration.VerticalSpaceItemDecoration
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatErrorBottomSheet
-import com.tokopedia.tokochat_common.view.listener.TokoChatAttachmentMenuListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatEndlessScrollListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatLoadingUiModel
 import com.tokopedia.unifycomponents.toPx
@@ -30,8 +29,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
  * Use [com.tokopedia.tokochat_common.view.customview.layout.BaseTokoChatFragmentLayout]
  * inside your layout
  */
-abstract class TokoChatBaseFragment<viewBinding : ViewBinding> :
-    BaseDaggerFragment(), TokoChatAttachmentMenuListener {
+abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragment() {
 
     protected var binding: viewBinding? by autoClearedNullable()
     protected var baseBinding: TokochatBaseFragmentBinding? by autoClearedNullable()
@@ -69,7 +67,6 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> :
         setupChatRoomRecyclerView()
         setupRecyclerViewLoadMore()
         addInitialShimmering()
-        setAttachmentMenu()
     }
 
     private fun setupChatRoomRecyclerView() {
@@ -128,10 +125,6 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> :
             adapter.removeItem(shimmerUiModel)
             adapter.notifyItemRemoved(shimmerIndex)
         }
-    }
-
-    private fun setAttachmentMenu() {
-        baseBinding?.tokochatLayoutMenu?.attachmentMenu?.updateAttachmentMenu(this)
     }
 
     protected fun getTokoChatHeader(): HeaderUnify? {

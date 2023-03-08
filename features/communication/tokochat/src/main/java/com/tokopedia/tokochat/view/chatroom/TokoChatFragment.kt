@@ -60,10 +60,13 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
+import com.tokopedia.tokochat_common.view.customview.attachment.TokoChatMenuLayout
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
+import com.tokopedia.tokochat_common.view.listener.TokoChatAttachmentMenuListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatMessageBubbleListener
+import com.tokopedia.tokochat_common.view.listener.TokoChatReplyAreaListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
@@ -93,6 +96,8 @@ open class TokoChatFragment :
     TokoChatTransactionOrderWidget.Listener,
     TokoChatImageAttachmentListener,
     TokoChatMessageBubbleListener,
+    TokoChatReplyAreaListener,
+    TokoChatAttachmentMenuListener,
     MaskingPhoneNumberBottomSheet.AnalyticsListener {
 
     @Inject
@@ -126,10 +131,36 @@ open class TokoChatFragment :
         getComponent(TokoChatComponent::class.java).inject(this)
     }
 
+    override fun onAttachmentShowed() {
+        //TODO: tracker
+    }
+
+    override fun onAttachmentMenuHidden() {
+        //TODO: tracker
+    }
+
+    override fun onClickAttachmentButton() {
+        baseBinding?.tokochatLayoutMenu?.toggleAttachmentMenu(
+            TokoChatMenuLayout.ChatMenuType.ATTACHMENT_MENU,
+            baseBinding?.tokochatReplyBox?.composeArea
+        )
+        baseBinding?.tokochatReplyBox?.composeArea?.clearFocus()
+    }
+
+    override fun onReplyAreaFocusChanged(isFocused: Boolean) {
+        val isAttachmentMenuShown = baseBinding?.tokochatLayoutMenu?.attachmentMenu?.isShown?: false
+        // If focused, keyboard is shown
+        // If attachment is shown when focused, hide the attachment menu with toggle
+        if (isFocused && isAttachmentMenuShown) {
+            onClickAttachmentButton()
+        }
+    }
+
     override fun initViews(view: View, savedInstanceState: Bundle?) {
         super.initViews(view, savedInstanceState)
         setupBackground()
         setupTrackers()
+        setupAttachmentMenu()
         initializeChatRoom(savedInstanceState)
     }
 
@@ -229,6 +260,13 @@ open class TokoChatFragment :
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(it)
         }
+    }
+
+    private fun setupAttachmentMenu() {
+        baseBinding?.tokochatLayoutMenu?.updateAttachmentMenu(
+            listener = this,
+            showImageAttachment = true
+        )
     }
 
     override fun initObservers() {
@@ -710,7 +748,11 @@ open class TokoChatFragment :
     private fun setupReplySection(isShowReplySection: Boolean, expiredMessage: String = "") {
         baseBinding?.tokochatReplyBox?.run {
             shouldShowWithAction(isShowReplySection) {
-                this.initLayout(this@TokoChatFragment, this@TokoChatFragment)
+                this.initLayout(
+                    typingListener = this@TokoChatFragment,
+                    replyTextListener = this@TokoChatFragment,
+                    replyAreaListener = this@TokoChatFragment
+                )
             }
         }
         baseBinding?.tokochatExpiredInfo?.shouldShowWithAction(!isShowReplySection) {
