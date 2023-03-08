@@ -390,6 +390,17 @@ class FeedXHomeUseCase @Inject constructor(
         return mapOf(PARAMS_REQUEST to params)
     }
 
+    fun createPostDetailParams(postId: String): Map<String, Any> {
+        val params = mapOf<String, Any>(
+            PARAMS_SOURCE to SOURCE_DETAIL,
+            PARAMS_SOURCE_ID to postId,
+            PARAMS_CURSOR to "",
+            PARAMS_LIMIT to 1,
+        )
+
+        return mapOf(PARAMS_REQUEST to params)
+    }
+
     companion object {
         private const val PARAMS_REQUEST = "req"
 
@@ -397,5 +408,7 @@ class FeedXHomeUseCase @Inject constructor(
         private const val PARAMS_SOURCE_ID = "sourceID"
         private const val PARAMS_CURSOR = "cursor"
         private const val PARAMS_LIMIT = "limit"
+
+        private const val SOURCE_DETAIL = "detail"
     }
 }

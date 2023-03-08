@@ -2,7 +2,8 @@ package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
@@ -15,6 +16,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -25,7 +28,7 @@ class FeedPostViewModel @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.io) {
+) : ViewModel() {
 
     var source: String = ""
 
@@ -37,25 +40,38 @@ class FeedPostViewModel @Inject constructor(
     val atcRespData: LiveData<FeedResult<Boolean>>
         get() = _atcResp
 
-    fun fetchFeedPosts() {
-        launchCatchError(dispatchers.main, block = {
-            val cursor = feedHome.value?.let {
-                if (it is Success) {
-                    it.data.pagination.cursor
-                } else {
-                    ""
-                }
-            } ?: ""
-            val response = feedXHomeUseCase(
-                feedXHomeUseCase.createParams(
-                    source,
-                    cursor
-                )
-            )
+    fun fetchFeedPosts(
+        isNewData: Boolean = false,
+        postId: String? = null,
+    ) {
+        if (isNewData) _feedHome.value = null
 
-            _feedHome.value = Success(response)
-        }) {
-            _feedHome.value = Fail(it)
+        viewModelScope.launch {
+            val relevantPostsDeferred = async {
+                try {
+                    requireNotNull(postId)
+                    require(isNewData)
+
+                    getRelevantPosts(postId)
+                } catch (e: Throwable) {
+                    FeedModel.Empty
+                }.items
+            }
+
+            val feedPostsDeferred = async {
+                getFeedPosts(cursor = _feedHome.value?.cursor.orEmpty())
+            }
+
+            _feedHome.value = try {
+                val feedPosts = feedPostsDeferred.await()
+                Success(
+                    feedPosts.copy(
+                        items = relevantPostsDeferred.await() + feedPosts.items
+                    )
+                )
+            } catch (e: Throwable) {
+                Fail(e)
+            }
         }
     }
 
@@ -66,12 +82,30 @@ class FeedPostViewModel @Inject constructor(
         shopId: String
     ) {
         _atcResp.value = FeedResult.Loading
-        launchCatchError(dispatchers.main, block = {
+        viewModelScope.launchCatchError(block = {
             val isSuccess = addToCartImplementation(productId, productName, price, shopId)
             _atcResp.value = FeedResult.Success(isSuccess)
         }) {
             _atcResp.value = FeedResult.Failure(it)
         }
+    }
+
+    private suspend fun getRelevantPosts(postId: String): FeedModel {
+        return feedXHomeUseCase(
+            feedXHomeUseCase.createPostDetailParams(postId)
+        )
+    }
+
+    private suspend fun getFeedPosts(
+        source: String = this.source,
+        cursor: String = "",
+    ): FeedModel {
+        return feedXHomeUseCase(
+            feedXHomeUseCase.createParams(
+                source,
+                cursor
+            )
+        )
     }
 
     private suspend fun addToCartImplementation(
@@ -97,5 +131,11 @@ class FeedPostViewModel @Inject constructor(
             else throw e
         }
     }
+
+    private val Result<FeedModel>.cursor: String
+        get() = when (this) {
+            is Success -> data.pagination.cursor
+            else -> ""
+        }
 
 }

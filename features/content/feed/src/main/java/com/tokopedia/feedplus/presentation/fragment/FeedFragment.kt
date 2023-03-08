@@ -128,7 +128,7 @@ class FeedFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        feedPostViewModel.fetchFeedPosts()
+        feedPostViewModel.fetchFeedPosts(isNewData = true, postId = "209528039")
 
         initView()
         observeClearViewData()
