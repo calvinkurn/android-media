@@ -15,7 +15,6 @@ const val CART_REVAMP_V3_QUERY =
                     content
                 }
               }
-              errors
               popup_error_message
               pop_up_message
               placeholder_note
@@ -55,17 +54,6 @@ const val CART_REVAMP_V3_QUERY =
                   service_type
                 }
               }
-              empty_cart {
-                title
-                image
-                description
-                buttons {
-                  id
-                  code
-                  message
-                  color
-                }
-              }
               out_of_service {
                 id
                 code
@@ -81,14 +69,10 @@ const val CART_REVAMP_V3_QUERY =
               }
               shopping_summary {
                 total_wording
-                total_value
                 discount_total_wording
-                discount_value
                 payment_total_wording
                 promo_wording
-                promo_value
                 seller_cashback_wording
-                seller_cashback_value
               }
               promo_summary {
                 title
@@ -100,19 +84,10 @@ const val CART_REVAMP_V3_QUERY =
                     currency_details_str
                 }
               }
-              max_quantity
               max_char_note
               messages {
-                ErrorFieldBetween
-                ErrorFieldMaxChar
-                ErrorFieldRequired
-                ErrorProductAvailableStock
-                ErrorProductAvailableStockDetail
-                ErrorProductMaxQuantity
-                ErrorProductMinQuantity
                 ErrorBOAffordability
               }
-              fulfillment_message
               toko_cabang {
                 message
                 badge_url
@@ -422,7 +397,6 @@ const val CART_REVAMP_V3_QUERY =
                   checkbox_state
                 }
               }
-              unavailable_ticker
               unavailable_section_action {
                 id
                 code
@@ -686,13 +660,6 @@ const val CART_REVAMP_V3_QUERY =
                   checkbox_state
                 }
               }
-              total_product_price
-              total_product_count
-              total_product_error
-              global_coupon_attr {
-                description 
-                quantity_label
-              }
               global_checkbox_state
               tickers {
                 id
@@ -700,7 +667,6 @@ const val CART_REVAMP_V3_QUERY =
                 message
                 page
               }
-              hashed_email
               promo {
                 show_choose_promo_widget
                 ticker {
