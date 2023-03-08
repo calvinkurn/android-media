@@ -61,6 +61,7 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
 
+    public static final String SALDO_PRIORITAS_NATIVE_ANDROID = "mainapp_saldo_prioritas_native_android";
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 
     public static final String NONB1_TTL = "app_nonb_1_ttl";
