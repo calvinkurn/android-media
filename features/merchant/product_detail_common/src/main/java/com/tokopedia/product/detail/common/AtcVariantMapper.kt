@@ -378,7 +378,7 @@ object AtcVariantMapper {
                         VariantConstant.STATE_SELECTED_EMPTY
                     }
                     break
-                } else if (option.id in child.optionIds) {
+                } else if (option.id == child.optionIds.firstOrNull() && selectedVariant.lastOrNull() == child.optionIds.lastOrNull()) {
                     isFlashSale = child.isFlashSale
                     stock = child.stock?.stock.orZero()
                     state = if (child.isBuyable) { // un-selected and can to buy
@@ -508,7 +508,7 @@ object AtcVariantMapper {
                         VariantConstant.STATE_SELECTED_EMPTY
                     }
                     break
-                } else if (option.id in child.optionIds) {
+                } else if (option.id == child.optionIds.lastOrNull() && selectedVariant.firstOrNull() == child.optionIds.firstOrNull()) {
                     isFlashSale = child.isFlashSale
                     stock = child.stock?.stock.orZero()
                     state = if (child.isBuyable) { // un-selected and can to buy
@@ -561,7 +561,7 @@ object AtcVariantMapper {
                     // match variant id from
                     // [0] is variant on one level -> from variant selected get first item
                     // [1] is variant on two level -> from option id
-                    if (option.id == child.optionIds.lastOrNull() && selectedVariant.firstOrNull() == child.optionIds.firstOrNull()) {
+                    if (option.id == child.optionIds.firstOrNull() && selectedVariant.lastOrNull() == child.optionIds.lastOrNull()) {
                         isFlashSale = child.isFlashSale
                         stock = child.stock?.stock.orZero()
                         state = if (child.isBuyable) { // un-selected and can to buy
