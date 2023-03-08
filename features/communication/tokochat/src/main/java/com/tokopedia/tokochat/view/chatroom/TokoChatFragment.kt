@@ -132,11 +132,11 @@ open class TokoChatFragment :
     }
 
     override fun onAttachmentShowed() {
-        //TODO: tracker
+        // TODO: tracker
     }
 
     override fun onAttachmentMenuHidden() {
-        //TODO: tracker
+        // TODO: tracker
     }
 
     override fun onClickAttachmentButton() {
@@ -148,7 +148,7 @@ open class TokoChatFragment :
     }
 
     override fun onReplyAreaFocusChanged(isFocused: Boolean) {
-        val isAttachmentMenuShown = baseBinding?.tokochatLayoutMenu?.attachmentMenu?.isShown?: false
+        val isAttachmentMenuShown = baseBinding?.tokochatLayoutMenu?.attachmentMenu?.isShown ?: false
         // If focused, keyboard is shown
         // If attachment is shown when focused, hide the attachment menu with toggle
         if (isFocused && isAttachmentMenuShown) {
@@ -1156,7 +1156,8 @@ open class TokoChatFragment :
      * Result launcher section
      */
     private val mediaPickerResultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()) { result ->
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
         if (result.resultCode != Activity.RESULT_OK || result.data == null) return@registerForActivityResult
         val imageData = MediaPicker.result(result.data)
         processImagePathToUpload(imageData.originalPaths)
@@ -1165,7 +1166,7 @@ open class TokoChatFragment :
     private fun processImagePathToUpload(imagePathList: List<String>): String? {
         imagePathList.firstOrNull()?.let { imagePath ->
             if (imagePath.isNotEmpty()) {
-                //TODO: do upload
+                viewModel.uploadImage(filePath = imagePath)
             }
         }
         return null

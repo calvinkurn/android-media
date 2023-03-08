@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat.view.chatroom
 
+import android.util.Log
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
@@ -28,6 +29,7 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatUploadImageUseCase
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.getTokoChatPhotoPath
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
@@ -63,6 +65,7 @@ class TokoChatViewModel @Inject constructor(
     private val getTokoChatRoomTickerUseCase: GetTokoChatRoomTickerUseCase,
     private val getTokoChatOrderProgressUseCase: TokoChatOrderProgressUseCase,
     private val getImageUrlUseCase: TokoChatGetImageUseCase,
+    private val uploadImageUseCase: TokoChatUploadImageUseCase,
     private val viewUtil: TokoChatViewUtil,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -376,6 +379,23 @@ class TokoChatViewModel @Inject constructor(
 
     private fun generateImageName(imageId: String, channelId: String): String {
         return "${imageId}_$channelId"
+    }
+
+    fun uploadImage(filePath: String) {
+        viewModelScope.launch {
+            withContext(dispatcher.io) {
+                try {
+                    val params = TokoChatUploadImageUseCase.Param(
+                        filePath = filePath,
+                        channelId = channelId
+                    )
+                    val result = uploadImageUseCase(params)
+                    Log.d("UPLOAD-IMAGE-TEST", result.toString())
+                } catch (throwable: Throwable) {
+                    Log.d("UPLOAD-IMAGE-TEST", throwable.toString())
+                }
+            }
+        }
     }
 
     companion object {
