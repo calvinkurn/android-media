@@ -38,6 +38,7 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import rx.Observable
 import rx.Subscriber
@@ -58,6 +59,8 @@ class SearchBarView constructor(
         private const val LOCALE_INDONESIA = "in_ID"
         const val SEARCH_BAR_DELAY_MS: Long = 200
         private const val AUTO_COMPLETE_ERROR = "AUTO_COMPLETE_ERROR"
+        private const val TEXT_EDIT_PADDING_LEFT_MPS_ENABLED = 60
+        private const val TEXT_EDIT_PADDING_LEFT_MPS_DISABLED = 32
     }
 
     private var mClearingFocus: Boolean = false
@@ -368,11 +371,29 @@ class SearchBarView constructor(
     }
 
     private fun showAddButtonGroup() {
-        binding?.autocompleteAddButtonGroup?.visibility = View.VISIBLE
+        val binding = binding ?: return
+        binding.autocompleteAddButtonGroup.visibility = View.VISIBLE
+        with(binding.searchTextView) {
+            setPadding(
+                paddingLeft,
+                paddingTop,
+                TEXT_EDIT_PADDING_LEFT_MPS_ENABLED.toPx(),
+                paddingBottom,
+            )
+        }
     }
 
     fun hideAddButton() {
-        binding?.autocompleteAddButtonGroup?.visibility = View.GONE
+        val binding = binding ?: return
+        binding.autocompleteAddButtonGroup.visibility = View.GONE
+        with(binding.searchTextView) {
+            setPadding(
+                paddingLeft,
+                paddingTop,
+                TEXT_EDIT_PADDING_LEFT_MPS_DISABLED.toPx(),
+                paddingBottom,
+            )
+        }
     }
 
     fun enableAddButton() {
