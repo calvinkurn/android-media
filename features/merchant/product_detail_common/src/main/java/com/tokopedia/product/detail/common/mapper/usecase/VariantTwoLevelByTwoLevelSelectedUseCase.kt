@@ -57,10 +57,10 @@ object VariantTwoLevelByTwoLevelSelectedUseCase {
             it.picture?.url100?.isNotEmpty() == true
         }
         val uiTwoLevel = processVariantOptionTwoLevel(
-            variantTwoLevel,
-            variantData,
-            selectedVariant,
-            hasCustomImagesTwoLevel
+            variantTwoLevel = variantTwoLevel,
+            variantData = variantData,
+            selectedVariant = selectedVariant,
+            hasCustomImagesTwoLevel = hasCustomImagesTwoLevel
         )
         return VariantCategory(
             name = variantTwoLevel.name.orEmpty(),
@@ -81,7 +81,7 @@ object VariantTwoLevelByTwoLevelSelectedUseCase {
         variantTwoLevel: Variant,
         variantData: ProductVariant,
         selectedVariant: List<String>,
-        hasCustomImagesOneLevel: Boolean
+        hasCustomImagesTwoLevel: Boolean
     ) = variantTwoLevel.options.map { option ->
         var state = VariantConstant.STATE_EMPTY
         var isFlashSale = false
@@ -116,7 +116,7 @@ object VariantTwoLevelByTwoLevelSelectedUseCase {
             variant = variantTwoLevel,
             state = state,
             stock = stock,
-            hasCustomImages = hasCustomImagesOneLevel,
+            hasCustomImages = hasCustomImagesTwoLevel,
             isFlashSale = isFlashSale,
             level = AtcVariantNewMapper.VARIANT_LEVEL_TWO_SELECTED
         )
@@ -137,10 +137,10 @@ object VariantTwoLevelByTwoLevelSelectedUseCase {
             it.picture?.url100?.isNotEmpty() == true
         }
         val uiOneLevel = processVariantOptionOneLevel(
-            variantOneLevel,
-            selectedVariant,
-            variantData,
-            hasCustomImagesOneLevel
+            variantOneLevel = variantOneLevel,
+            selectedVariant = selectedVariant,
+            variantData = variantData,
+            hasCustomImagesOneLevel = hasCustomImagesOneLevel
         )
         return VariantCategory(
             name = variantOneLevel.name.orEmpty(),

@@ -58,10 +58,10 @@ object VariantTwoLevelByOneLevelSelectedUseCase {
             it.picture?.url100?.isNotEmpty() == true
         }
         val uiVariantOption = processVariantOptionOneLevel(
-            variantOneLevel,
-            variantData,
-            selectedVariant,
-            hasCustomImagesOneLevel
+            variantOneLevel = variantOneLevel,
+            variantData = variantData,
+            selectedVariant = selectedVariant,
+            hasCustomImagesOneLevel = hasCustomImagesOneLevel
         )
         // create variant ui model
         return VariantCategory(
@@ -148,10 +148,10 @@ object VariantTwoLevelByOneLevelSelectedUseCase {
         }
         // loop each variant options in the variant data for checking to their children
         val uiTwoLevel = processVariantOptionTwoLevel(
-            variantTwoLevel,
-            selectedVariant,
-            variantData,
-            hasCustomImagesTwoLevel
+            variantTwoLevel = variantTwoLevel,
+            selectedVariant = selectedVariant,
+            variantData = variantData,
+            hasCustomImagesTwoLevel = hasCustomImagesTwoLevel
         )
         return VariantCategory(
             name = variantTwoLevel.name.orEmpty(),
