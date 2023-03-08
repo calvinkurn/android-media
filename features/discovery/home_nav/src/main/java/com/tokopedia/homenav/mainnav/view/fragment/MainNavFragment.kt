@@ -153,18 +153,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        PerformanceTraceDebugger.DEBUG = true
         performanceTrace.init(
             v = view.rootView,
             scope = this.lifecycleScope,
             touchListenerActivity = activity as? BaseActivity
         ) { summaryModel, type, view ->
-            activity?.takeScreenshot(type, view)
-            if (type == PerformanceTrace.TYPE_TTIL) {
-                Toaster.build(view, "" +
-                    "TTFL: ${summaryModel.timeToFirstLayout?.inflateTime} ms \n" +
-                    "TTIL: ${summaryModel.timeToInitialLayout?.inflateTime} ms \n" ).show()
-            }
+
         }
 
         recyclerView = view.findViewById(R.id.recycler_view)
