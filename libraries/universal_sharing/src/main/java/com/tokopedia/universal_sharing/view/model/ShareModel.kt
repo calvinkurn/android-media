@@ -18,68 +18,69 @@ sealed class ShareModel {
     var savedImageFilePath: String = ""
     var subjectName: String = ""
     var isAffiliate: Boolean = false
-    var socialMediaOrderingScore:Int = 100
+    var socialMediaOrderingScore: Int = 100
+
     // this variable is used for personalized campaign that has duration of campaign
     var personalizedMessageFormat: String = ""
-
+    var sharingSource: SharingSource = SharingSource.OTHERS
 
     /* source id from imagenerator contextual image */
     var sourceId: String = ""
 
     data class CopyLink(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShareModel()
 
     data class Instagram(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShareModel()
 
     data class Facebook(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShareModel()
 
     data class Whatsapp(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShareModel()
 
     data class Line(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShareModel()
 
     data class Twitter(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShareModel()
 
     data class Telegram(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShareModel()
 
     data class Others(
-            override var socialMediaIcon: Drawable? = null,
-            override var socialMediaName: String? = "",
-            override var packageName: String? = "",
-            override var appIntent: Intent? = null
+        override var socialMediaIcon: Drawable? = null,
+        override var socialMediaName: String? = "",
+        override var packageName: String? = "",
+        override var appIntent: Intent? = null
     ) : ShareModel()
 
     data class SMS(
@@ -96,4 +97,13 @@ sealed class ShareModel {
         override var appIntent: Intent? = null
     ) : ShareModel()
 
+    /**
+     * if your page has specific case that need to be handled in platforms (ex: instagram, copy link)
+     * then add your page on [SharingSource]
+     * example: sharing the link to Whatsapp from [SharingSource.PDP] has customization copy
+     */
+    enum class SharingSource {
+        PDP,
+        OTHERS
+    }
 }
