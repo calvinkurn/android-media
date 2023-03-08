@@ -224,16 +224,25 @@ class BeautificationSetupFragment @Inject constructor(
     }
 
     private fun setupSlider() {
-        val currentValue = when(selectedTabIdx) {
-            BeautificationTabFragment.Companion.Type.FaceFilter.value -> viewModel.selectedFaceFilter?.value
-            BeautificationTabFragment.Companion.Type.Preset.value -> viewModel.selectedPreset?.value
-            else -> null
+        val (currentValue, isRemoveEffect) = when(selectedTabIdx) {
+            BeautificationTabFragment.Companion.Type.FaceFilter.value -> {
+                val selectedFaceFilter = viewModel.selectedFaceFilter
+                selectedFaceFilter?.value to selectedFaceFilter?.isRemoveEffect
+            }
+            BeautificationTabFragment.Companion.Type.Preset.value -> {
+                val selectedPreset = viewModel.selectedPreset
+                selectedPreset?.value to selectedPreset?.isRemoveEffect
+            }
+            else -> null to false
         }
 
-        currentValue?.let {
-            binding.sliderBeautification.updateValue((currentValue * PERCENTAGE_MULTIPLIER).toInt(), null)
-            showSlider()
+        if(currentValue == null || isRemoveEffect == true) {
+            hideSlider()
+            return
         }
+
+        binding.sliderBeautification.updateValue((currentValue * PERCENTAGE_MULTIPLIER).toInt(), null)
+        showSlider()
     }
 
     private fun showSlider() {

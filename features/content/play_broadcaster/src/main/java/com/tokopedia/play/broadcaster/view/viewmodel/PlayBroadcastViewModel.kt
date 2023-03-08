@@ -1699,7 +1699,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _beautificationConfig.update {
                 it.copy(
                     faceFilters = it.faceFilters.map { item ->
-                        item.copy(isSelected = item.name == faceFilter.name)
+                        item.copy(
+                            isSelected = item.name == faceFilter.name,
+                            value = if(faceFilter.isRemoveEffect) 0.0 else item.value
+                        )
                     }
                 )
             }
