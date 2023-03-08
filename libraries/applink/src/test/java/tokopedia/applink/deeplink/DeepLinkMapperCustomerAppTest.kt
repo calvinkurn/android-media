@@ -25,7 +25,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 217
+        const val SIZE_MAPPER = 219
     }
 
     override fun setup() {
@@ -637,6 +637,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://recharge/home/dynamic?platform_id=31"
         assertEqualsDeepLinkMapper(ApplinkConst.DIGITAL_PRODUCT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check digital telkomsel omni form appLink then should return tokopedia internal digital omni checkout in customerapp`() {
+        val deeplink = "${ApplinkConst.TELKOMSEL_OMNI}?kb=43921686"
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://digital/checkout?category_id=54&operator_id=7654&client_number=43921686&product_id=20159&is_from_widget=true&kb=43921686"
+        assertEqualsDeepLinkMapper(deeplink, expectedDeepLink)
     }
 
     @Test
