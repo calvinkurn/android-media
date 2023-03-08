@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +28,7 @@ import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -50,6 +52,26 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private var liveApplink: String = ""
     private var profileApplink: String = ""
+
+    private val onNonLoginGoToFollowingTab =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (userSession.isLoggedIn) {
+                binding?.let {
+                    Toaster.build(
+                        it.root,
+                        getString(
+                            R.string.feed_report_login_success_toaster_text,
+                            userSession.name
+                        ),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL
+                    ).show()
+                }
+                feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOLLOWING)
+            } else {
+                feedMainViewModel.changeCurrentTabByType(TAB_TYPE_FOR_YOU)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -183,6 +205,14 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                         positionOffset: Float,
                         positionOffsetPixels: Int
                     ) {
+                        if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                            onNonLoginGoToFollowingTab.launch(
+                                RouteManager.getIntent(
+                                    context,
+                                    ApplinkConst.LOGIN
+                                )
+                            )
+                        }
                         onChangeTab(position)
                     }
                 })
@@ -320,5 +350,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     companion object {
         const val TAB_FIRST_INDEX = 0
         const val TAB_SECOND_INDEX = 1
+
+        const val TAB_TYPE_FOR_YOU = "foryou"
+        const val TAB_TYPE_FOLLOWING = "following"
     }
 }

@@ -88,6 +88,15 @@ class FeedMainViewModel @Inject constructor(
         }
     }
 
+    fun getTabType(index: Int): String =
+        feedTabs.value?.let {
+            if (it is Success && it.data.data.size > index) {
+                it.data.data[index].type
+            } else {
+                ""
+            }
+        } ?: ""
+
     fun reportContent(feedReportRequestParamModel: FeedReportRequestParamModel) {
         launchCatchError(dispatchers.main, block = {
             val response = withContext(dispatchers.io) {

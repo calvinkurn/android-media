@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedNoContentBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 
 /**
@@ -17,14 +18,12 @@ class FeedNoContentViewHolder(
 
     override fun bind(element: FeedNoContentModel?) {
         binding.btnShowOtherContent.setOnClickListener {
-            listener.changeTab(TYPE_FOR_YOU)
+            listener.changeTab(FeedBaseFragment.TAB_TYPE_FOR_YOU)
         }
     }
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_feed_no_content
-
-        private const val TYPE_FOR_YOU = "foryou"
     }
 }
