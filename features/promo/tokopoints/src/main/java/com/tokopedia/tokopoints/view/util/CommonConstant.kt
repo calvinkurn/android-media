@@ -167,8 +167,6 @@ interface CommonConstant {
         const val MY_COUPON_TAB = 1
         const val PIN_COUNT = 4
         const val TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S = "tokopoints_catalog_status_auto_refresh_s"
-        const val TOKOPOINTS_NEW_HOME = "tokopoints_homepage_new_ui"
-        const val TOKOPOINTS_NEW_COUPON_LISTING = "tokopoints_coupon_stack_new_ui"
         const val EXTRA_COUPON_COUNT = "extra_coupon_count"
         const val EXTRA_COUPON_CODE = "coupon_code"
         const val EXTRA_CATALOG_CODE = "catalog_code"

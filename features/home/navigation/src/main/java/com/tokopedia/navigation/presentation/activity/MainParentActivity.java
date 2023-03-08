@@ -165,7 +165,6 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
     private static final String SHORTCUT_SHARE_ID = "Share";
     private static final String SHORTCUT_SHOP_ID = "Jual";
-    private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
     private static final String SOURCE_ACCOUNT = "account";
     private static final String HOME_PERFORMANCE_MONITORING_KEY = "mp_home";
     private static final String HOME_PERFORMANCE_MONITORING_PREPARE_METRICS = "home_plt_start_page_metrics";
