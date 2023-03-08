@@ -85,6 +85,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val COACHMARK_SAFE_DELAY = 200L
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
+        private const val PERFORMANCE_TRACE_HOME_NAV = "home_nav"
     }
 
     private var mainNavDataFetched: Boolean = false
@@ -111,7 +112,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     // for coachmark purpose
     private var isOngoingShowOnboarding = false
 
-    private val performanceTrace = PerformanceTrace("HomeNavigation")
+    private val performanceTrace = PerformanceTrace(PERFORMANCE_TRACE_HOME_NAV)
 
     override fun getScreenName(): String {
         return ""
