@@ -105,9 +105,8 @@ object VariantTwoLevelByOneLevelSelectedUseCase {
                 break
             } else if (option.id == child.optionIds.firstOrNull() && child.optionIds.lastOrNull() == selectedVariant.lastOrNull()) {
                 // this condition is the un-selected variant option
-                // validate base on index. index 0 is level one and index 1 is level two
-                // if variant option in level one equals by child option id index 0 and
-                // child option id last position (index 1) equals by selected variant last position (index 1)
+                // [0] is variant on one level -> from variant option id
+                // [1] is variant on two level -> from variant selected get last item
 
                 isFlashSale = child.isFlashSale
                 stock = child.stock?.stock.orZero()
