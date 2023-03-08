@@ -39,5 +39,4 @@ dependencies {
     androidTestImplementation 'androidx.benchmark:benchmark-macro-junit4:1.1.0'
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     implementation projectOrAar(rootProject.ext.libraries.macrobenchmarkUtil)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 }
