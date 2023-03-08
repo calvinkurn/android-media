@@ -1123,7 +1123,15 @@
               "key": "variants",
               "name": "S",
               "value": "24"
-            }
+            },
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "S",
+                "value": "24"
+              }
+            ]
           },
           {
             "text": "M",
@@ -1137,7 +1145,15 @@
               "key": "variants",
               "name": "M",
               "value": "25"
-            }
+            },
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "M",
+                "value": "25"
+              }
+            ]
           },
           {
             "text": "L",
@@ -1151,7 +1167,15 @@
               "key": "variants",
               "name": "L",
               "value": "26"
-            }
+            },
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "L",
+                "value": "26"
+              }
+            ]
           },
           {
             "text": "XL",
@@ -1165,7 +1189,15 @@
               "key": "variants",
               "name": "XL",
               "value": "27"
-            }
+            },
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "XL",
+                "value": "27"
+              }
+            ]
           },
           {
             "text": "XXL",
@@ -1179,7 +1211,15 @@
               "key": "variants",
               "name": "XXL",
               "value": "28"
-            }
+            },
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "XXL",
+                "value": "28"
+              }
+            ]
           }
         ],
         "tracking_option": "3"
@@ -1204,7 +1244,15 @@
               "key": "variants",
               "name": "S",
               "value": "24"
-            }
+            },
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "S",
+                "value": "24"
+              }
+            ]
           },
           {
             "text": "M",
@@ -1218,7 +1266,15 @@
               "key": "variants",
               "name": "M",
               "value": "25"
-            }
+            },
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "M",
+                "value": "25"
+              }
+            ]
           },
           {
             "text": "L",
@@ -1232,7 +1288,15 @@
               "key": "variants",
               "name": "L",
               "value": "26"
-            }
+            },
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "L",
+                "value": "26"
+              }
+            ]
           },
           {
             "text": "XL",
@@ -1246,7 +1310,15 @@
               "key": "variants",
               "name": "XL",
               "value": "27"
-            }
+            },
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "XL",
+                "value": "27"
+              }
+            ]
           },
           {
             "text": "XXL",
@@ -1260,7 +1332,15 @@
               "key": "variants",
               "name": "XXL",
               "value": "28"
-            }
+            },
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "variants",
+                "name": "XXL",
+                "value": "28"
+              }
+            ]
           }
         ],
         "tracking_option": "3"

@@ -24,7 +24,7 @@ class InspirationWidgetListenerDelegate(
     queryKeyProvider: QueryKeyProvider,
     private val filterController: FilterController,
     private val parameterListener: ProductListParameterListener,
-): InspirationCardListener,
+) : InspirationCardListener,
     InspirationFilterListener,
     QueryKeyProvider by queryKeyProvider,
     ContextProvider by WeakReferenceContextProvider(context),
@@ -42,24 +42,33 @@ class InspirationWidgetListenerDelegate(
         InspirationWidgetTracking.trackEventClickInspirationCardOption(label)
     }
 
-    override fun onInspirationFilterOptionClicked(sizeOptionDataView: InspirationFilterOptionDataView) {
-        val option = sizeOptionDataView.option
-        val isFilterSelectedReversed = !isFilterSelected(option)
+    override fun onInspirationFilterOptionClicked(
+        filterOptionDataView: InspirationFilterOptionDataView
+    ) {
+        val optionList = filterOptionDataView.optionList
+        val isFilterSelectedReversed = !isFilterSelected(optionList)
 
-        trackInspirationFilterOptionClick(isFilterSelectedReversed, sizeOptionDataView)
+        trackInspirationFilterOptionClick(isFilterSelectedReversed, filterOptionDataView)
 
         applyInspirationFilter(
-            option,
+            optionList,
             isFilterSelectedReversed,
-            sizeOptionDataView.componentId
+            filterOptionDataView.componentId
         )
     }
 
-    override fun isFilterSelected(option: Option?): Boolean {
-        option ?: return false
-
-        return if (option.isPriceRange) filterController.isPriceRangeFilterSelected(option)
-        else filterController.getFilterViewState(option)
+    override fun isFilterSelected(optionList: List<Option>): Boolean {
+        return if (optionList.isEmpty()) {
+            false
+        } else {
+            optionList.all { option ->
+                if (option.isPriceRange) {
+                    filterController.isPriceRangeFilterSelected(option)
+                } else {
+                    filterController.getFilterViewState(option)
+                }
+            }
+        }
     }
 
     private fun FilterController.isPriceRangeFilterSelected(option: Option) =
@@ -74,18 +83,19 @@ class InspirationWidgetListenerDelegate(
 
     private fun trackInspirationFilterOptionClick(
         isFilterSelected: Boolean,
-        sizeOptionDataView: InspirationFilterOptionDataView,
+        filterOptionDataView: InspirationFilterOptionDataView,
     ) {
-        if (isFilterSelected)
-            sizeOptionDataView.click(TrackApp.getInstance().gtm)
+        if (isFilterSelected) filterOptionDataView.click(TrackApp.getInstance().gtm)
     }
 
     private fun applyInspirationFilter(
-        option: Option,
+        optionList: List<Option>,
         isFilterSelected: Boolean,
         componentId: String,
     ) {
-        applyFilterToFilterController(option, isFilterSelected)
+        optionList.forEach { option ->
+            applyFilterToFilterController(option, isFilterSelected)
+        }
 
         val queryParams = filterController.getParameter() +
             originFilterMap() +
@@ -97,10 +107,11 @@ class InspirationWidgetListenerDelegate(
     }
 
     private fun applyFilterToFilterController(option: Option, isFilterSelected: Boolean) {
-        if (option.isPriceRange)
-            applyPriceRangeFilter(option, isFilterSelected)
-        else
-            applyRegularFilter(option, isFilterSelected)
+        when {
+            option.isPriceRange -> applyPriceRangeFilter(option, isFilterSelected)
+            option.isMinOrMaxPriceOption -> applyPriceFilter(option, isFilterSelected)
+            else -> applyRegularFilter(option, isFilterSelected)
+        }
     }
 
     private fun applyPriceRangeFilter(option: Option, isFilterSelected: Boolean) {
@@ -117,6 +128,15 @@ class InspirationWidgetListenerDelegate(
             Option(name = "", key = Option.KEY_PRICE_MAX, value = valMax),
             isFilterApplied = valMax != "",
             isCleanUpExistingFilterWithSameKey = true
+        )
+    }
+
+    private fun applyPriceFilter(option: Option, isFilterSelected: Boolean) {
+        val priceValue = if (isFilterSelected) option.value else ""
+        filterController.setFilter(
+            Option(name = "", key = option.key, value = priceValue),
+            isFilterApplied = priceValue != "",
+            isCleanUpExistingFilterWithSameKey = true,
         )
     }
 

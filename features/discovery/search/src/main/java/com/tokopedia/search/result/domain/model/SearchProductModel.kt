@@ -1089,8 +1089,9 @@ data class SearchProductModel(
         private fun priceRangeOptions() =
             listOf(Option(key = PMIN), Option(key = PMAX))
 
-        private fun inspirationWidgetAsFilterOption() =
-            inspirationWidgetOptions.map { it.asOption() }
+        private fun inspirationWidgetAsFilterOption() = inspirationWidgetOptions.flatMap {
+            it.asOptionList()
+        }
     }
 
     data class InspirationWidgetOption (
@@ -1118,6 +1119,10 @@ data class SearchProductModel(
         @Expose
         val filters: InspirationWidgetFilter,
 
+        @SerializedName("multi_filters")
+        @Expose
+        val multiFilters: List<InspirationWidgetFilter>? = emptyList(),
+
         @SerializedName("component_id")
         @Expose
         val componentId: String,
@@ -1129,6 +1134,16 @@ data class SearchProductModel(
             valMin = filters.valMin,
             valMax = filters.valMax,
         )
+
+        fun asOptionList() = multiFilters?.map {
+            Option(
+                key = it.key,
+                value = it.value,
+                name = it.name,
+                valMin = it.valMin,
+                valMax = it.valMax,
+            )
+        } ?: emptyList()
     }
 
     data class InspirationWidgetFilter (

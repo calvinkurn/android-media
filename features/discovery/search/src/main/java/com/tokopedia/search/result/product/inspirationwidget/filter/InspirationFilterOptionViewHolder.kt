@@ -30,7 +30,7 @@ class InspirationFilterOptionViewHolder(
     }
 
     private fun getChipType(optionData: InspirationFilterOptionDataView) =
-        if (inspirationFilterListener.isFilterSelected(optionData.option))
+        if (inspirationFilterListener.isFilterSelected(optionData.optionList))
             ChipsUnify.TYPE_SELECTED
         else
             ChipsUnify.TYPE_NORMAL

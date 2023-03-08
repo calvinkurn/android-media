@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductSizeLayoutBinding
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
@@ -72,9 +73,21 @@ internal class InspirationFilterViewHolder(
     private fun getSortedSizeData(
         optionSizeData: List<InspirationFilterOptionDataView>
     ) : List<InspirationFilterOptionDataView> {
-        val selectedSizeData = optionSizeData
-            .filter { inspirationFilterListener.isFilterSelected(it.option) }
-        val nonSelectedSizeData = optionSizeData - selectedSizeData.toSet()
-        return selectedSizeData + nonSelectedSizeData
+        val sortedSelectedSizeData = optionSizeData
+            .filter { inspirationFilterListener.isFilterSelected(it.optionList) }
+            .sortedByOptionValue()
+        val nonSelectedSizeData = optionSizeData - sortedSelectedSizeData.toSet()
+        val sortedNonSelectedSizeData = nonSelectedSizeData.sortedByOptionValue()
+        return sortedSelectedSizeData + sortedNonSelectedSizeData
+    }
+
+    private fun List<InspirationFilterOptionDataView>.sortedByOptionValue() : List<InspirationFilterOptionDataView> {
+        return sortedBy {
+            try {
+                it.optionList.minOf { option -> option.value.toIntOrZero() }
+            } catch (e: Throwable) {
+                0
+            }
+        }
     }
 }
