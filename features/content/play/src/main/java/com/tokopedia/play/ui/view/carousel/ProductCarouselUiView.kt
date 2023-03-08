@@ -34,8 +34,6 @@ class ProductCarouselUiView(
             override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
                 listener.onProductClicked(this@ProductCarouselUiView, product, position)
             }
-
-            override fun getChannelType(): PlayChannelType = listener.getChannelType()
         },
         pinnedProductListener = object : ProductCarouselViewHolder.PinnedProduct.Listener {
             override fun onClicked(
@@ -56,8 +54,6 @@ class ProductCarouselUiView(
             ) {
                 listener.onTransactionClicked(this@ProductCarouselUiView, product, action)
             }
-
-            override fun getChannelType(): PlayChannelType = listener.getChannelType()
         }
     )
 
@@ -169,7 +165,5 @@ class ProductCarouselUiView(
         fun onProductClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product, position: Int)
 
         fun onTransactionClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product, action: ProductAction)
-
-        fun getChannelType() : PlayChannelType
     }
 }

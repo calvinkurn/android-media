@@ -332,7 +332,7 @@ class PlayViewModel @AssistedInject constructor(
                 products.addAll(
                     section.productList.take(
                         (tagItems.maxFeatured - products.size).coerceAtLeast(0)
-                    )
+                    ).map { it.copy (number = if (channelType.isLive) it.number else "") } // for product numeration
                 )
             }
             if (products.size >= tagItems.maxFeatured) return@forEach

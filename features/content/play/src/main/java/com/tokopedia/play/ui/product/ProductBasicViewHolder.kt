@@ -14,6 +14,5 @@ open class ProductBasicViewHolder(
 
     interface Listener {
         fun onClickProductCard(product: PlayProductUiModel.Product, position: Int)
-        fun getChannelType() : PlayChannelType
     }
 }

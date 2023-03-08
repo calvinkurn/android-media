@@ -26,7 +26,6 @@ class ProductCarouselUiComponent(
     binding: ViewProductFeaturedBinding,
     private val bus: EventBus<Any>,
     scope: CoroutineScope,
-    channelType: PlayChannelType,
 ) : UiComponent<PlayViewerNewUiState> {
 
     private val uiView = ProductCarouselUiView(
@@ -53,8 +52,6 @@ class ProductCarouselUiComponent(
             ) {
                 bus.emit(Event.OnTransactionClicked(product, action))
             }
-
-            override fun getChannelType(): PlayChannelType = channelType
         }
     )
 

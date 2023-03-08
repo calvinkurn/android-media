@@ -58,8 +58,7 @@ class ProductFeaturedViewHolder(
             listener.onClickProductCard(item, adapterPosition)
         }
 
-        binding.lblProductNumber.showWithCondition(listener.getChannelType().isLive)
-        if(!listener.getChannelType().isLive) return
+        binding.lblProductNumber.showWithCondition(item.number.isNotBlank())
         val labelColor = "#${Integer.toHexString(MethodChecker.getColor(context, R.color.play_dms_explore_widget_icon_bg))}"
         binding.lblProductNumber.unlockFeature = true
         binding.lblProductNumber.setLabelType(labelColor)
