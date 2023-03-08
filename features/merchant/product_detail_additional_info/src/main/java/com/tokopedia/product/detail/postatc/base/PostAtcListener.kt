@@ -10,5 +10,4 @@ interface PostAtcListener {
     fun refreshPage()
 
     fun fetchRecommendation(pageName: String, uniqueId: Int)
-    fun removeComponent(position: Int)
 }
