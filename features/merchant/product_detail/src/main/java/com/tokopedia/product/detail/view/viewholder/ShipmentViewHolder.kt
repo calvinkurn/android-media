@@ -158,10 +158,10 @@ class ShipmentViewHolder(
         val freeOngkirImageUrl = boBadge.imageUrl
         pdpShipmentIcon.showIfWithBlock(freeOngkirImageUrl.isNotEmpty()) {
 
-            if (!boBadge.isUsingPadding) {
-                updateLayoutParams<MarginLayoutParams> {
-                    this.marginEnd = 0
-                }
+            updateLayoutParams<MarginLayoutParams> {
+                marginEnd = if (boBadge.isUsingPadding)
+                    SHIPMENT_ICON_PADDING.toPx()
+                else 0
             }
 
             setImageUrl(freeOngkirImageUrl)
