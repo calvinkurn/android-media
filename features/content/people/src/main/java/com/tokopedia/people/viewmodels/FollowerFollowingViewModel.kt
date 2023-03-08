@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @UserProfileScope
 class FollowerFollowingViewModel @Inject constructor(
-    private val repo: UserFollowRepository,
+    private val repo: UserFollowRepository
 ) : BaseViewModel(Dispatchers.Main) {
 
     private val profileFollowers = MutableLiveData<Resources<FollowListUiModel.Follower>>()
@@ -37,9 +37,13 @@ class FollowerFollowingViewModel @Inject constructor(
 
     var username: String = ""
 
+    val followCount: LiveData<FollowListUiModel.FollowCount>
+        get() = _followCount
+    private val _followCount = MutableLiveData<FollowListUiModel.FollowCount>()
+
     fun getFollowers(
         cursor: String,
-        limit: Int,
+        limit: Int
     ) {
         launchCatchError(block = {
             var result = FollowListUiModel.emptyFollowers.copy(nextCursor = cursor)
@@ -49,33 +53,34 @@ class FollowerFollowingViewModel @Inject constructor(
             } while (result.followers.isEmpty() && result.nextCursor.isNotEmpty())
 
             profileFollowers.value = Success(result)
+            _followCount.value = result.total
         }, onError = {
                 followersError.value = it
-            },)
+            })
     }
 
     fun getFollowings(
         cursor: String,
-        limit: Int,
+        limit: Int
     ) {
         launchCatchError(block = {
             var result = FollowListUiModel.emptyFollowingList.copy(nextCursor = cursor)
 
             do {
                 result = repo.getMyFollowing(username, result.nextCursor, limit)
-
             } while (result.followingList.isEmpty() && result.nextCursor.isNotEmpty())
 
             profileFollowingsList.value = Success(result)
+            _followCount.value = result.total
         }, onError = {
                 followersError.value = it
-            },)
+            })
     }
 
     fun followUser(id: String, isFollowed: Boolean, position: Int) {
         viewModelScope.launchCatchError(block = {
             val result = repo.followUser(id, !isFollowed)
-            _followResult.value = when(result) {
+            _followResult.value = when (result) {
                 is MutationUiModel.Success -> FollowResultUiModel.Success(result.message)
                 is MutationUiModel.Error -> FollowResultUiModel.Fail(
                     result.message,

@@ -30,10 +30,8 @@ import com.tokopedia.people.utils.isInternetAvailable
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
-import com.tokopedia.people.views.TotalFollowListener
 import com.tokopedia.people.views.adapter.ProfileFollowingAdapter
 import com.tokopedia.people.views.adapter.listener.UserFollowListener
-import com.tokopedia.people.views.uimodel.FollowListUiModel
 import com.tokopedia.people.views.uimodel.FollowResultUiModel
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.unifycomponents.LocalLoad
@@ -147,7 +145,6 @@ class FollowingListingFragment @Inject constructor(
                                     false
                                 isSwipeRefresh = !isSwipeRefresh!!
                                 mAdapter.resetAdapter()
-                                updateFollowCount(it.data.total)
                             }
 
                             mAdapter.onSuccess(it.data.followingList, it.data.nextCursor)
@@ -407,11 +404,5 @@ class FollowingListingFragment @Inject constructor(
                 )
         }
         mAdapter.notifyItemChanged(position)
-    }
-
-    private fun updateFollowCount(followCount: FollowListUiModel.FollowCount) {
-        if (this.parentFragment is TotalFollowListener) {
-            (this.parentFragment as TotalFollowListener).updateFollowCount(followCount)
-        }
     }
 }
