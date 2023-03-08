@@ -27,10 +27,12 @@ import javax.inject.Named
  * Created by Irfan Khoirul on 2019-08-23.
  */
 
-@Module(includes = [
-    RecommendationModule::class,
-    PurchasePlatformBaseModule::class
-])
+@Module(
+    includes = [
+        RecommendationModule::class,
+        PurchasePlatformBaseModule::class
+    ]
+)
 class CartModule {
 
     @Provides

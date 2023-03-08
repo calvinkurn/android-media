@@ -13,7 +13,7 @@ import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistCollectionOnboardingBinding
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 
-class BottomSheetOnboardingWishlistCollection: BottomSheetUnify() {
+class BottomSheetOnboardingWishlistCollection : BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetWishlistCollectionOnboardingBinding>()
     private var actionListener: ActionListener? = null
     private val imageUrl = TokopediaImageUrl.IMAGE_URL_ONBOARDING

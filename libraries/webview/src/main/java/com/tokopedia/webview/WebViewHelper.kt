@@ -12,8 +12,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
-import timber.log.Timber
-import java.net.URLDecoder
+import com.tokopedia.webview.ext.encodeQueryNested
 
 /**
  * Created by Ade Fulki on 2019-06-21.
@@ -29,6 +28,8 @@ object WebViewHelper {
     private const val KEY_PARAM_URL: String = "url"
     private const val PARAM_APPCLIENT_ID = "appClientId"
     private const val HOST_TOKOPEDIA = "tokopedia"
+
+    private const val ANDROID_WEBVIEW_JS_ENCODE = "android_webview_js_encode"
 
     @JvmStatic
     fun isUrlValid(url: String): Boolean {
@@ -57,6 +58,16 @@ object WebViewHelper {
         return uri.getQueryParameter(KEY_PARAM_URL)
     }
 
+    @JvmStatic
+    fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
+        val rc = FirebaseRemoteConfigImpl(context)
+        return if (rc.getBoolean(ANDROID_WEBVIEW_JS_ENCODE, true)) {
+            appendGAClientIdAsQueryParamV2(url, context)
+        } else {
+            appendGAClientIdAsQueryParamLegacy(url, context)
+        }
+    }
+
     /**
      * This function appends GA client ID as a query param for url contains tokopedia as domain
      *
@@ -65,8 +76,7 @@ object WebViewHelper {
      * @return
      */
     @JvmStatic
-    fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
-        Timber.d("WebviewHelper before $url")
+    fun appendGAClientIdAsQueryParamLegacy(url: String?, context: Context): String? {
         var returnURl = url
 
         if (url?.contains("ta.tokopedia.com") == true) {
@@ -83,17 +93,10 @@ object WebViewHelper {
                     val clientID = TrackApp.getInstance().getGTM().getCachedClientIDString()
 
                     if (clientID != null && url.contains("js.tokopedia.com")) {
-                        val tokopediaEncodedUrl = uri.getQueryParameter("url")
+                        val tokopediaDecodedUrl = uri.getQueryParameter("url")
 
-                        if (tokopediaEncodedUrl != null) {
-                            var tokopediaDecodedUrl =
-                                URLDecoder.decode(tokopediaEncodedUrl, "UTF-8")
-                            val tokopediaUri = Uri.parse(tokopediaDecodedUrl)
-                            tokopediaDecodedUrl = tokopediaUri.buildUpon()
-                                .appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build()
-                                .toString()
-
-                            returnURl = replaceUriParameter(uri, "url", tokopediaDecodedUrl)
+                        if (tokopediaDecodedUrl != null) {
+                            returnURl = appendAppClientId(tokopediaDecodedUrl, uri, clientID)
                         }
                     } else if (clientID != null && url.contains(HOST_TOKOPEDIA)) {
                         returnURl =
@@ -105,9 +108,75 @@ object WebViewHelper {
                 // do nothing
             }
         }
-
-        Timber.d("WebviewHelper after $returnURl")
         return returnURl
+    }
+
+    private fun appendAppClientId(url: String, uri: Uri, clientID: String): String {
+        val tokopediaUri = Uri.parse(url)
+        val newUrl = appendAppClientQueryParameter(tokopediaUri, clientID)
+        return replaceUriParameter(uri, "url", newUrl)
+    }
+
+    private fun appendAppClientQueryParameter(uri: Uri, clientID: String): String {
+        return uri.buildUpon()
+            .appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build()
+            .toString()
+    }
+
+    /**
+     * This function appends GA client ID as a query param for url contains tokopedia as domain
+     *
+     * @param url
+     * @param context
+     * @return
+     */
+    @JvmStatic
+    fun appendGAClientIdAsQueryParamV2(url: String?, context: Context): String {
+        var returnURl = url ?: ""
+
+        if (url == null) {
+            return ""
+        }
+
+        if (url.contains("ta.tokopedia.com")) {
+            return url
+        }
+
+        try {
+            val uri = Uri.parse(url)
+            if (uri != null) {
+                if (url.contains("js.tokopedia.com")) {
+                    var urlQueryParam = getEncodedUrlCheckSecondUrl(uri, url)
+                    urlQueryParam = urlQueryParam.encodeQueryNested()
+                    val uriQueryParam = Uri.parse(urlQueryParam)
+                    urlQueryParam = appendGAClientId(context, uriQueryParam)
+                    return replaceUriParameter(uri, "url", urlQueryParam)
+                } else if (url.contains(HOST_TOKOPEDIA)) {
+                    returnURl = appendGAClientId(context, uri)
+                }
+            }
+        } catch (ex: Exception) {
+            // do nothing
+        }
+        return returnURl
+    }
+
+    fun appendGAClientId(context: Context, uri: Uri): String {
+        val clientID = getClientId()
+        if (clientID != null &&
+            uri.getQueryParameter(PARAM_APPCLIENT_ID) == null &&
+            isPassingGAClientIdEnable(context)
+        ) {
+            return uri.buildUpon()
+                .appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build()
+                .toString()
+        } else {
+            return uri.toString()
+        }
+    }
+
+    fun getClientId(): String {
+        return TrackApp.getInstance().gtm.cachedClientIDString
     }
 
     private fun isPassingGAClientIdEnable(context: Context?): Boolean {
@@ -117,7 +186,7 @@ object WebViewHelper {
         return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PASS_GA_CLIENT_ID_WEB, true)
     }
 
-    private fun replaceUriParameter(uri: Uri, key: String, newValue: String): String {
+    fun replaceUriParameter(uri: Uri, key: String, newValue: String): String {
         val params = uri.getQueryParameterNames()
         val newUri = uri.buildUpon().clearQuery()
         for (param in params) {

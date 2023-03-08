@@ -27,5 +27,4 @@ object ProductBundleConstants {
 
     // product bundle types
     const val BUNDLE_TYPE_SINGLE: Int = 1
-    const val BUNDLE_TYPE_MULTIPLE: Int = 2
 }
