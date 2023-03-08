@@ -65,6 +65,8 @@ private const val QUERY = """
                       quantity
                       metadata
                       custom_response
+                      price
+                      price_fmt
                     }
                   }
                 }

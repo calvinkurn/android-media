@@ -61,18 +61,10 @@ data class CartGeneralCartListData(
                 // From cart list gql
                 data.getTokofoodBusinessData().customResponse.shoppingSummary.costBreakdown.totalCartPrice.amount.getCurrencyFormatted()
             }
-        val totalQuantity =
-            if (data.shoppingSummary.getTokofoodBusinessBreakdown().addOns.isEmpty()) {
-                // From mini cart gql
-                data.shoppingSummary.getTokofoodBusinessBreakdown().product.totalQuantity
-            } else {
-                // From cart list gql
-                data.getTokofoodBusinessData().customResponse.shoppingSummary.totalItems
-            }
         return MiniCartUiModel(
             shopName = data.getTokofoodBusinessData().customResponse.shop.name,
             totalPriceFmt = totalPrice,
-            totalProductQuantity = totalQuantity
+            totalProductQuantity = data.shoppingSummary.getTokofoodBusinessBreakdown().product.totalQuantity
         )
     }
 
