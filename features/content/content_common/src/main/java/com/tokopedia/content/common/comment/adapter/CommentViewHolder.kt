@@ -16,6 +16,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.content.common.R as contentR
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -59,7 +60,7 @@ class CommentViewHolder {
                 val layout24 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl3)
                 root.addOneTimeGlobalLayoutListener {
                     root.setPadding(
-                        if (childView) ivCommentPhoto.width + 8 else 8,
+                        if (childView) ivCommentPhoto.width + 8.toPx() else 8.toPx(),
                         root.paddingTop,
                         root.paddingTop,
                         root.paddingBottom

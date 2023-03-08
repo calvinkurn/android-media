@@ -1396,7 +1396,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun isAllowAutoSwipe(state: PlayViewerVideoState) =
-        state == PlayViewerVideoState.End && !playViewModel.bottomInsets.isAnyShown && playNavigation.canNavigateNextPage()
+        state == PlayViewerVideoState.End && !playViewModel.bottomInsets.isAnyShown && playNavigation.canNavigateNextPage() && !playViewModel.isBottomSheetShown
 
     private fun doAutoSwipe() {
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
