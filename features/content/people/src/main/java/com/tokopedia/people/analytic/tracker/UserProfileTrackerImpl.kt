@@ -63,7 +63,6 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.TRACKER_ID
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.USER_ID
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_COMMUNICATION
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_CONTENT
-import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_FEED
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_OPEN_SCREEN
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_COMMUNICATION
@@ -104,7 +103,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickBack(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_BACK,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -122,7 +121,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickShare(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_SHARE,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -158,7 +157,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickProfilePicture(userId: String, self: Boolean, activityId: String) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_PROFILE_PICTURE,
                 label = "$activityId - $userId - ${isSelfOrVisitor(self)} - live"
@@ -176,7 +175,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickFollowers(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FOLLOWER,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -194,7 +193,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickFollowing(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FOLLOWING,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -212,7 +211,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickSelengkapnya(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_SELENGKAPNYA,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -230,7 +229,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickFollow(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FOLLOW,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -248,7 +247,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickUnfollow(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_UNFOLLOW,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -266,7 +265,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickVideoTab(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_VIDEO_TAB,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -341,7 +340,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickFeedTab(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE,
                 action = CLICK_FEED_TAB,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -428,7 +427,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickUserFollowers(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE_FOLLOWER_TAB,
                 action = CLICK_USER,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -446,7 +445,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickFollowFromFollowers(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE_FOLLOWER_TAB,
                 action = CLICK_FOLLOW,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -464,7 +463,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickUnfollowFromFollowers(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE_FOLLOWER_TAB,
                 action = CLICK_UNFOLLOW,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -494,7 +493,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickUserFollowing(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE_FOLLOWING_TAB,
                 action = CLICK_USER,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -512,7 +511,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickFollowFromFollowing(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE_FOLLOWING_TAB,
                 action = CLICK_FOLLOW,
                 label = "$userId - ${isSelfOrVisitor(self)}"
@@ -530,7 +529,7 @@ class UserProfileTrackerImpl @Inject constructor(
     override fun clickUnfollowFromFollowing(userId: String, self: Boolean) {
         trackingQueue.putEETracking(
             EventModel(
-                event = EVENT_CLICK_FEED,
+                event = EVENT_CLICK_CONTENT,
                 category = FEED_USER_PROFILE_FOLLOWING_TAB,
                 action = CLICK_UNFOLLOW,
                 label = "$userId - ${isSelfOrVisitor(self)}"

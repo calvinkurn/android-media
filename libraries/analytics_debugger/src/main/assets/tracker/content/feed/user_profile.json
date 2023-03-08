@@ -13,7 +13,7 @@
       "trackerId": "24604"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - back",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
@@ -24,7 +24,7 @@
       "trackerId": "24605"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - share",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
@@ -46,7 +46,7 @@
       "trackerId": "24607"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - profile picture",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .* - .* - live",
@@ -57,7 +57,7 @@
       "trackerId": "24608"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - follower",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
@@ -68,7 +68,7 @@
       "trackerId": "24609"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - following",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
@@ -79,7 +79,7 @@
       "trackerId": "24610"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - selengkapnya",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
@@ -90,7 +90,7 @@
       "trackerId": "24611"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - follow",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
@@ -101,7 +101,7 @@
       "trackerId": "24612"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - unfollow",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
@@ -112,7 +112,7 @@
       "trackerId": "24613"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - video tab",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
@@ -153,7 +153,7 @@
       "trackerId": "24616"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - feed tab",
       "eventCategory": "feed user profile",
       "eventLabel": ".* - .*",
@@ -204,7 +204,7 @@
       "trackerId": "24621"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - user",
       "eventCategory": "feed user profile - follower tab",
       "eventLabel": ".* - .*",
@@ -215,7 +215,7 @@
       "trackerId": "24622"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - follow",
       "eventCategory": "feed user profile - follower tab",
       "eventLabel": ".* - .*",
@@ -226,7 +226,7 @@
       "trackerId": "24623"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - unfollow",
       "eventCategory": "feed user profile - follower tab",
       "eventLabel": ".* - .*",
@@ -247,7 +247,7 @@
       "trackerId": "24639"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - user",
       "eventCategory": "feed user profile - following tab",
       "eventLabel": ".* - .*",
@@ -258,7 +258,7 @@
       "trackerId": "24640"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - follow",
       "eventCategory": "feed user profile - following tab",
       "eventLabel": ".* - .*",
@@ -269,7 +269,7 @@
       "trackerId": "24641"
     },
     {
-      "event": "clickFeed",
+      "event": "clickContent",
       "eventAction": "click - unfollow",
       "eventCategory": "feed user profile - following tab",
       "eventLabel": ".* - .*",
