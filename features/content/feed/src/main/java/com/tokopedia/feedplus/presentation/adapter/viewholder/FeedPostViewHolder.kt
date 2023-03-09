@@ -27,9 +27,6 @@ class FeedPostViewHolder(
     private val listener: FeedListener
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
 
-    private val authorView: FeedAuthorInfoView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-    private val captionView: FeedCaptionView = FeedCaptionView(binding.tvFeedCaption)
-
     private val layoutManager =
         LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
 
@@ -57,6 +54,10 @@ class FeedPostViewHolder(
     override fun bind(element: FeedCardImageContentModel?) {
         element?.let {
             binding.apply {
+                val authorView =
+                    FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
+                val captionView = FeedCaptionView(binding.tvFeedCaption)
+
                 authorView.bindData(element.author, false, !element.followers.isFollowed)
                 captionView.bind(element.text)
 
@@ -95,6 +96,10 @@ class FeedPostViewHolder(
         }
     }
 
+    override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+    }
+
     private fun setUpProductTagButtonText(feedCardModel: FeedCardImageContentModel) {
         val productData =
             if (feedCardModel.isTypeProductHighlight) feedCardModel.products else feedCardModel.tags
@@ -117,10 +122,6 @@ class FeedPostViewHolder(
                 binding.productTagButton.tvPlayProductCount.text = numberOfTaggedProducts.toString()
             }
         }
-    }
-
-    override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
     }
 
     private fun bindIndicators(imageSize: Int) {
