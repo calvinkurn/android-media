@@ -1743,9 +1743,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
                 viewModelScope.launchCatchError(block = {
                     val isSuccess = assetDownloader.downloadUnzip(
-                        fileUrl = preset.assetLink,
+                        url = preset.assetLink,
                         fileName = preset.id + ".zip",
-                        filePath = assetPathHelper.getPresetFileDir(preset.id)
+                        filePath = assetPathHelper.getPresetFilePath(preset.id),
+                        folderPath = assetPathHelper.presetPathDir
                     )
 
                     if(isSuccess) {

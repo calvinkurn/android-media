@@ -6,8 +6,9 @@ package com.tokopedia.play.broadcaster.util.asset
 interface AssetDownloader {
 
     suspend fun downloadUnzip(
-        fileUrl: String,
+        url: String,
         fileName: String,
         filePath: String,
+        folderPath: String,
     ): Boolean
 }

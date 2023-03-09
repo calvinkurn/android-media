@@ -22,13 +22,12 @@ class AssetPathHelper @Inject constructor(
 
     private val mResourcePath = context.getExternalFilesDir(ASSET_DIR)?.absolutePath + File.separator + EFFECT_DIR
 
-    val presetPathFileDir: String = mResourcePath.apply {
-        appendPath(COMPOSE_BUNDLE)
-        appendPath(COMPOSE_DIR)
-        appendPath(COMPOSE_PRESET_MAKEUP_DIR)
-    }
+    val presetPathDir: String = mResourcePath
+        .appendPath(COMPOSE_BUNDLE)
+        .appendPath(COMPOSE_DIR)
+        .appendPath(COMPOSE_PRESET_MAKEUP_DIR)
 
-    fun getPresetFileDir(presetName: String) = presetPathFileDir.appendPath(presetName)
+    fun getPresetFilePath(presetName: String) = presetPathDir.appendPath(presetName)
 
     private fun String.appendPath(path: String): String {
         return this + File.separator + path

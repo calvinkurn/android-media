@@ -13,18 +13,24 @@ class AssetDownloaderImpl @Inject constructor(
     private val downloadManager: AssetDownloadManager,
 ) : AssetDownloader {
 
-    override suspend fun downloadUnzip(fileUrl: String, fileName: String, filePath: String): Boolean {
+    override suspend fun downloadUnzip(
+        url: String,
+        fileName: String,
+        filePath: String,
+        folderPath: String,
+    ): Boolean {
         return try {
-            val file = File(filePath + File.separator + fileName)
+            val completePath = filePath + File.separator + fileName
+            val file = File(completePath)
             if (!file.exists()) {
                 val responseBody = withContext(dispatchers.io) {
-                    downloadManager.download(fileUrl)
+                    downloadManager.download(url)
                 }
 
                 if(FileUtil.writeResponseBodyToDisk(filePath, fileName, responseBody)) {
-                    val isUnzipSuccess = FileUtil.unzipFile(filePath + File.separator + fileName, filePath)
+                    val isUnzipSuccess = FileUtil.unzipFile(completePath, folderPath)
                     if (isUnzipSuccess) {
-                        FileUtil.deleteFile(filePath + File.separator + fileName)
+                        FileUtil.deleteFile(completePath)
                     }
                     isUnzipSuccess
                 }
