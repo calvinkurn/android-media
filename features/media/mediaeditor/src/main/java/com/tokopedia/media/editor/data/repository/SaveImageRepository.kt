@@ -147,8 +147,6 @@ class SaveImageRepositoryImpl @Inject constructor(
             inChannel = FileInputStream(src).channel
             outChannel = FileOutputStream(dst).channel
             inChannel.transferTo(0, inChannel.size(), outChannel)
-        } catch (e: Exception) {
-            throw e
         } finally {
             inChannel?.close()
             outChannel?.close()
@@ -157,14 +155,10 @@ class SaveImageRepositoryImpl @Inject constructor(
 
     @Throws(IOException::class)
     private fun copy(source: InputStream, target: OutputStream) {
-        try {
-            val buf = ByteArray(source.available())
-            var length: Int
-            while (source.read(buf).also { length = it } > 0) {
-                target.write(buf, 0, length)
-            }
-        } catch (e: Exception) {
-            throw e
+        val buf = ByteArray(source.available())
+        var length: Int
+        while (source.read(buf).also { length = it } > 0) {
+            target.write(buf, 0, length)
         }
     }
 
