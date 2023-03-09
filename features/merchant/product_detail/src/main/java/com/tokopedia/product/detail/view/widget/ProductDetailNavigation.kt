@@ -15,11 +15,21 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 
 class ProductDetailNavigation : FrameLayout, NavigationListener {
-    constructor(context: Context) : super(context)
+    constructor(context: Context) : super(context) {
+        init()
+    }
 
-    constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet)
+    constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet) {
+        init()
+    }
 
-    constructor(context: Context, attrSet: AttributeSet, defStyleAttr: Int) : super(context, attrSet, defStyleAttr)
+    constructor(context: Context, attrSet: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrSet,
+        defStyleAttr
+    ) {
+        init()
+    }
 
     companion object {
         private const val REMOTE_CONFIG_KEY_ENABLE_BLOCKING_TOUCH =
@@ -74,17 +84,19 @@ class ProductDetailNavigation : FrameLayout, NavigationListener {
 
     private var binding : WidgetProductDetailNavigationBinding? = null
 
-    private val navigationTab = binding?.pdpNavigationTab
-    private val backToTop = binding?.pdpBackToTop
+    private var navigationTab : NavigationTab? = null
+    private var backToTop : BackToTopButton? = null
 
     private val remoteConfig = FirebaseRemoteConfigImpl(context)
     private val enableBlockingTouch = getEnableBlockingTouch(remoteConfig)
 
     private var listener: DynamicProductDetailListener? = null
 
-    init {
+    private fun init() {
         WidgetProductDetailNavigationBinding.inflate(LayoutInflater.from(context)).also {
             binding = it
+            navigationTab = it.pdpNavigationTab
+            backToTop = it.pdpBackToTop
             addView(it.root)
         }
     }
