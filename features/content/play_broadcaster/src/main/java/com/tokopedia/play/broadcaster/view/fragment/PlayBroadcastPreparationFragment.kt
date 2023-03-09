@@ -34,7 +34,9 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -904,10 +906,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             binding.formTitle.setPlaceholder(getString(R.string.play_bro_title_form_hint))
             binding.formTitle.setLoading(false)
             binding.formTitle.visibility = View.VISIBLE
+            binding.rvBannerPreparation.gone()
         } else {
             showMainComponent(true)
 
             binding.formTitle.visibility = View.GONE
+            binding.rvBannerPreparation.visible()
         }
     }
 
@@ -917,8 +921,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
             binding.formCover.setTitle(parentViewModel.channelTitle)
             binding.formCover.setAuthorName(parentViewModel.authorName)
+            binding.rvBannerPreparation.gone()
         } else {
             showMainComponent(true)
+            binding.rvBannerPreparation.visible()
         }
         binding.formCover.showWithCondition(isShow)
     }
