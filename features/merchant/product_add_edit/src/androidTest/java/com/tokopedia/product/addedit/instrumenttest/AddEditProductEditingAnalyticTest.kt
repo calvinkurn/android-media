@@ -8,9 +8,9 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.mock.AddEditProductEditingMockResponseConfig
@@ -109,8 +109,6 @@ class AddEditProductEditingAnalyticTest {
         doAnalyticDebuggerTest(PRODUCT_DESCRIPTION_PAGE_CLICK_CONTINUE)
         //shipment
         doAnalyticDebuggerTest(PRODUCT_SHIPPING_PAGE_CLICK_INSURANCE_TOGGLE)
-
-        activityRule.activity.finish()
     }
 
     @Test
@@ -124,8 +122,11 @@ class AddEditProductEditingAnalyticTest {
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_IMAGE)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_VARIANT)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_STATUS)
+    }
 
-        activityRule.activity.finish()
+    @After
+    fun tearDown() {
+        activityRule.activity.finishAndRemoveTask()
     }
 
     private fun testEditDetail() {

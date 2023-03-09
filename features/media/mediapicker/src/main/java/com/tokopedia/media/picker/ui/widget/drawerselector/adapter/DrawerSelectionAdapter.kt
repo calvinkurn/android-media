@@ -53,7 +53,7 @@ class DrawerSelectionAdapter(
                     holder.bind(
                         media,
                         isDraggable,
-                        onClicked = { listener?.onItemClicked(media) },
+                        onClicked = { listener?.onDrawerItemClicked(media) },
                         onRemoved = { removeData(media, true) }
                     )
                 }
@@ -103,7 +103,7 @@ class DrawerSelectionAdapter(
             this.medias.removeAt(index)
 
             if (isPublishedOnListener) {
-                listener?.onDataSetChanged(
+                listener?.onDrawerDataSetChanged(
                     DrawerActionType.Remove(medias, media, null)
                 )
             }
@@ -117,7 +117,7 @@ class DrawerSelectionAdapter(
         if (medias.contains(media)) return
         this.medias.add(media)
 
-        listener?.onDataSetChanged(
+        listener?.onDrawerDataSetChanged(
             DrawerActionType.Add(medias, media, null)
         )
 
@@ -188,7 +188,7 @@ class DrawerSelectionAdapter(
                     medias[dragPosition] = targetImagePath
                     medias[position] = draggedImagePath
 
-                    listener?.onDataSetChanged(
+                    listener?.onDrawerDataSetChanged(
                         DrawerActionType.Reorder(medias, null)
                     )
 

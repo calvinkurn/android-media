@@ -36,6 +36,9 @@ object ApplinkConstInternalContent {
     const val HOST_PLAY_BROADCASTER = "play-broadcaster"
     const val INTERNAL_PLAY_BROADCASTER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_BROADCASTER"
 
+    const val HOST_PLAY_SHORTS = "play-shorts"
+    const val INTERNAL_PLAY_SHORTS = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_SHORTS"
+
     const val INTERNAL_CONTENT_POST_DETAIL = "$INTERNAL_CONTENT/post-detail/"
 
     const val PLAY_PATH_LITE = "play/channel/"

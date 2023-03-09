@@ -48,11 +48,15 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                 val listProductId = productIds.split(",").filter { it.isNotBlank() }
                 val response = atcOccMultiExternalUseCase.get().setParams(listProductId, userId).executeOnBackground()
                 if (response.isStatusError()) {
-                    return@withContext OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage()
-                            ?: "")
+                    return@withContext OccGlobalEvent.AtcError(
+                        errorMessage = response.getAtcErrorMessage()
+                            ?: ""
+                    )
                 }
-                return@withContext OccGlobalEvent.AtcSuccess(response.data.message.firstOrNull()
-                        ?: "")
+                return@withContext OccGlobalEvent.AtcSuccess(
+                    response.data.message.firstOrNull()
+                        ?: ""
+                )
             } catch (t: Throwable) {
                 return@withContext OccGlobalEvent.AtcError(t.cause ?: t)
             }
@@ -67,24 +71,24 @@ class OrderSummaryPageCartProcessor @Inject constructor(
             try {
                 val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source, gatewayCode, tenor))
                 return@withContext ResultGetOccCart(
-                        orderCart = orderData.cart,
-                        orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),
-                        orderProfile = orderData.preference,
-                        orderPayment = orderData.payment,
-                        orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
-                        globalEvent = when {
-                            orderData.prompt.shouldShowPrompt() -> {
-                                OccGlobalEvent.Prompt(orderData.prompt)
-                            }
-                            orderData.popUp.isNeedToShowPopUp() -> {
-                                OccGlobalEvent.PopUp(orderData.popUp)
-                            }
-                            else -> null
-                        },
-                        throwable = null,
-                        addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage),
-                        profileCode = orderData.profileCode,
-                        imageUpload = orderData.imageUpload
+                    orderCart = orderData.cart,
+                    orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),
+                    orderProfile = orderData.preference,
+                    orderPayment = orderData.payment,
+                    orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
+                    globalEvent = when {
+                        orderData.prompt.shouldShowPrompt() -> {
+                            OccGlobalEvent.Prompt(orderData.prompt)
+                        }
+                        orderData.popUp.isNeedToShowPopUp() -> {
+                            OccGlobalEvent.PopUp(orderData.popUp)
+                        }
+                        else -> null
+                    },
+                    throwable = null,
+                    addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage),
+                    profileCode = orderData.profileCode,
+                    imageUpload = orderData.imageUpload
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -132,12 +136,12 @@ class OrderSummaryPageCartProcessor @Inject constructor(
             orderCart.products.forEach {
                 if (!it.isError) {
                     cart.add(
-                            UpdateCartOccCartRequest(
-                                    it.cartId,
-                                    it.orderQuantity,
-                                    it.notes,
-                                it.productId
-                            )
+                        UpdateCartOccCartRequest(
+                            it.cartId,
+                            it.orderQuantity,
+                            it.notes,
+                            it.productId
+                        )
                     )
                 }
             }
@@ -159,15 +163,15 @@ class OrderSummaryPageCartProcessor @Inject constructor(
             val realServiceId = orderShipment.getRealServiceId()
             val selectedGoCicilTerm = orderPayment.walletData.goCicilData.selectedTerm
             val profile = UpdateCartOccProfileRequest(
-                    gatewayCode = orderProfile.payment.gatewayCode,
-                    metadata = metadata,
-                    addressId = orderProfile.address.addressId,
-                    serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId.toIntOrZero() else realServiceId,
-                    shippingId = orderShipment.getRealShipperId().toString(),
-                    spId = orderShipment.getRealShipperProductId().toString(),
-                    isFreeShippingSelected = orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null,
-                    tenureType = selectedGoCicilTerm?.installmentTerm ?: 0,
-                    optionId = selectedGoCicilTerm?.optionId ?: ""
+                gatewayCode = orderProfile.payment.gatewayCode,
+                metadata = metadata,
+                addressId = orderProfile.address.addressId,
+                serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId.toIntOrZero() else realServiceId,
+                shippingId = orderShipment.getRealShipperId().toString(),
+                spId = orderShipment.getRealShipperProductId().toString(),
+                isFreeShippingSelected = orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null,
+                tenureType = selectedGoCicilTerm?.installmentTerm ?: 0,
+                optionId = selectedGoCicilTerm?.optionId ?: ""
             )
             return UpdateCartOccRequest(cart, profile)
         }
@@ -182,15 +186,15 @@ class OrderSummaryPageCartProcessor @Inject constructor(
         withContext(executorDispatchers.io) {
             try {
                 val param = generateUpdateCartParam(orderCart, orderProfile, orderShipment, orderPayment)?.copy(
-                        skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart(orderShipment),
-                        source = SOURCE_UPDATE_QTY_NOTES
+                    skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart(orderShipment),
+                    source = SOURCE_UPDATE_QTY_NOTES
                 )
                 if (param != null) {
                     // ignore result
                     updateCartOccUseCase.executeSuspend(param)
                 }
             } catch (t: Throwable) {
-                //ignore throwable
+                // ignore throwable
             }
         }
     }
@@ -208,8 +212,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                 return@withContext true to OccGlobalEvent.TriggerRefresh()
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
-                    return@withContext false to OccGlobalEvent.TriggerRefresh(errorMessage = t.message
-                            ?: DEFAULT_ERROR_MESSAGE, shouldTriggerAnalytics = true)
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(
+                        errorMessage = t.message
+                            ?: DEFAULT_ERROR_MESSAGE,
+                        shouldTriggerAnalytics = true
+                    )
                 }
                 return@withContext false to OccGlobalEvent.Error(t)
             }
@@ -231,8 +238,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                 return@withContext true to OccGlobalEvent.Normal
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
-                    return@withContext false to OccGlobalEvent.TriggerRefresh(errorMessage = t.message
-                            ?: DEFAULT_ERROR_MESSAGE, shouldTriggerAnalytics = true)
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(
+                        errorMessage = t.message
+                            ?: DEFAULT_ERROR_MESSAGE,
+                        shouldTriggerAnalytics = true
+                    )
                 }
                 return@withContext false to OccGlobalEvent.Error(t)
             }
@@ -254,8 +264,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                 return@withContext true to OccGlobalEvent.Loading
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
-                    return@withContext false to OccGlobalEvent.TriggerRefresh(errorMessage = t.message
-                            ?: DEFAULT_ERROR_MESSAGE, shouldTriggerAnalytics = true)
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(
+                        errorMessage = t.message
+                            ?: DEFAULT_ERROR_MESSAGE,
+                        shouldTriggerAnalytics = true
+                    )
                 }
                 return@withContext false to OccGlobalEvent.TriggerRefresh(throwable = t)
             }

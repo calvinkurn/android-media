@@ -69,6 +69,7 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
         `Then verify view will add product list`()
         val topAdsIndexStart = typoCorrectedTopAdsFirstPage.data.size
         `Then verify topAds products is replaced with typo correction`(
+            searchProductModelFirstPage,
             expectedTopAds,
             topAdsIndexStart
         )
@@ -132,13 +133,19 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
     }
 
     private fun `Then verify topAds products is replaced with typo correction`(
+        searchProductModel: SearchProductModel,
         expectedTopAds: TopAdsModel,
         topAdsPositionStart: Int = 0,
     ) {
         visitableList.filter { it is ProductItemDataView && it.isTopAds }
             .forEachIndexed { index, visitable ->
                 val position = topAdsPositionStart + index + 1
-                visitable.assertTopAdsProduct(expectedTopAds.data[index], position)
+                visitable.assertTopAdsProduct(
+                    expectedTopAds.data[index],
+                    position,
+                    searchProductModel.getProductListType(),
+                    searchProductModel.isShowButtonAtc,
+                )
             }
     }
 

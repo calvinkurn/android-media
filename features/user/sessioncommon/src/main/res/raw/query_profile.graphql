@@ -1,5 +1,5 @@
-query profile() {
-  profile() {
+query profile($skipCache: Boolean!) {
+  profile(skipCache: $skipCache) {
     user_id
     full_name
     first_name

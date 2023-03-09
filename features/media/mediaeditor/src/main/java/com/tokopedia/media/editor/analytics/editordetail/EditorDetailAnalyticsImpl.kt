@@ -1,6 +1,8 @@
 package com.tokopedia.media.editor.analytics.editordetail
 
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
+import com.tokopedia.media.editor.analytics.ACTION_CLICK_LOGO_LOAD_RETRY
+import com.tokopedia.media.editor.analytics.ACTION_CLICK_LOGO_UPLOAD
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_SAVE
 import com.tokopedia.media.editor.analytics.ACTION_ROTATION_FLIP
 import com.tokopedia.media.editor.analytics.ACTION_ROTATION_ROTATE
@@ -16,20 +18,19 @@ import com.tokopedia.media.editor.analytics.KEY_EVENT_CATEGORY
 import com.tokopedia.media.editor.analytics.KEY_EVENT_LABEL
 import com.tokopedia.media.editor.analytics.KEY_TRACKER_ID
 import com.tokopedia.media.editor.analytics.KEY_USER_ID
+import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_LOGO_LOAD_RETRY
+import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_LOGO_UPLOAD
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_SAVE
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_FLIP
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_ROTATE
-import com.tokopedia.media.editor.data.repository.WatermarkType
-import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
-import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.utils.ParamCacheManager
-import com.tokopedia.media.editor.utils.getToolEditorText
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class EditorDetailAnalyticsImpl(
+class EditorDetailAnalyticsImpl @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val cacheManager: ParamCacheManager
+    private val cacheManager: PickerCacheManager
 ) : EditorDetailAnalytics {
     private val userId: String
         get() = userSession.userId.toZeroStringIfNullOrBlank()
@@ -38,7 +39,7 @@ class EditorDetailAnalyticsImpl(
         get() = userSession.shopId.toZeroStringIfNullOrBlank()
 
     private val pageSource: String
-        get() = cacheManager.getPickerParam().pageSourceName()
+        get() = cacheManager.get().pageSourceName()
 
     override fun clickRotationRotate() {
         sendGeneralEvent(
@@ -56,6 +57,22 @@ class EditorDetailAnalyticsImpl(
         )
     }
 
+    override fun clickAddLogoUpload() {
+        sendGeneralEvent(
+            ACTION_CLICK_LOGO_UPLOAD,
+            "$pageSource - $userId - $shopId",
+            TRACKER_ID_CLICK_LOGO_UPLOAD
+        )
+    }
+
+    override fun clickAddLogoLoadRetry() {
+        sendGeneralEvent(
+            ACTION_CLICK_LOGO_LOAD_RETRY,
+            "$pageSource - $userId - $shopId",
+            TRACKER_ID_CLICK_LOGO_LOAD_RETRY
+        )
+    }
+
     override fun clickSave(
         editorText: String,
         brightnessValue: Int,
@@ -63,7 +80,8 @@ class EditorDetailAnalyticsImpl(
         cropText: String,
         rotateValue: Int,
         watermarkText: String,
-        removeBackgroundText: String
+        removeBackgroundText: String,
+        addLogoValue: String
     ) {
 
         val historyList = "{$brightnessValue}, " +
@@ -71,7 +89,8 @@ class EditorDetailAnalyticsImpl(
                 "{$rotateValue}, " +
                 "{$cropText}, " +
                 "{$removeBackgroundText}, " +
-                "{$watermarkText}"
+                "{$watermarkText}, " +
+                "{$addLogoValue}"
 
         sendGeneralEvent(
             ACTION_CLICK_SAVE,

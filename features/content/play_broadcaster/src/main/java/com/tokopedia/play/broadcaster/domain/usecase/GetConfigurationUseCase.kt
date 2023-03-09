@@ -63,6 +63,7 @@ class GetConfigurationUseCase @Inject constructor(
               ) {
                 streamAllowed
                 shortVideoAllowed
+                isBanned
                 config
                 tnc {
                   description

@@ -12,6 +12,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierDri
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DriverTippingInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.EpharmacyInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderInsuranceViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderStatusHeaderViewHolder
@@ -22,8 +23,10 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PaymentInf
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlainHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlatformFeeInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundEstimateBottomSheetViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListHeaderViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThickDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThinDashedDividerViewHolder
@@ -31,6 +34,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThinDivide
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
@@ -38,6 +42,9 @@ import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetU
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofHeaderLabelViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.model.PofRefundInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
@@ -54,6 +61,8 @@ open class BuyerOrderDetailTypeFactory(
     private val digitalRecommendationData: DigitalRecommendationData,
     private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
+    private val productListToggleListener: ProductListToggleViewHolder.Listener,
+    private val pofRefundInfoListener: PofRefundInfoViewHolder.Listener,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
@@ -100,6 +109,10 @@ open class BuyerOrderDetailTypeFactory(
             OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, navigator, orderResolutionListener)
             PlatformFeeInfoViewHolder.LAYOUT -> PlatformFeeInfoViewHolder(parent, navigator)
             OrderInsuranceViewHolder.LAYOUT -> OrderInsuranceViewHolder(parent, navigator)
+            EpharmacyInfoViewHolder.LAYOUT -> EpharmacyInfoViewHolder(parent)
+            ProductListToggleViewHolder.LAYOUT -> ProductListToggleViewHolder(parent, productListToggleListener)
+            PofHeaderLabelViewHolder.LAYOUT -> PofHeaderLabelViewHolder(parent)
+            PofRefundInfoViewHolder.LAYOUT -> PofRefundInfoViewHolder(parent, pofRefundInfoListener)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -192,5 +205,21 @@ open class BuyerOrderDetailTypeFactory(
 
     fun type(orderInsuranceUiModel: OrderInsuranceUiModel): Int {
         return OrderInsuranceViewHolder.LAYOUT
+    }
+
+    fun type(ePharmarcyUiModel: EpharmacyInfoUiModel): Int {
+        return EpharmacyInfoViewHolder.LAYOUT
+    }
+
+    fun type(productListCollapseUiModel: ProductListUiModel.ProductListToggleUiModel): Int {
+        return ProductListToggleViewHolder.LAYOUT
+    }
+
+    fun type(productPofHeaderLabelUiModel: ProductListUiModel.ProductPofHeaderLabelUiModel): Int {
+        return PofHeaderLabelViewHolder.LAYOUT
+    }
+
+    fun type(pofRefundInfoUiModel: PofRefundInfoUiModel): Int {
+        return PofRefundInfoViewHolder.LAYOUT
     }
 }

@@ -46,6 +46,7 @@ internal const val KEY_TRACK_VIEW_TOP_ADS = "viewTopAdsIris"
 internal const val KEY_TRACK_VIEW_CONTENT_IRIS = "viewContentIris"
 internal const val KEY_TRACK_CLICK_CONTENT = "clickContent"
 internal const val KEY_TRACK_TRACKER_ID = "trackerId"
+internal const val KEY_TRACK_PROMO_VIEW = "promoView"
 
 internal const val KEY_EVENT_PRODUCT_VIEW = "productView"
 internal const val KEY_EVENT_PRODUCT_CLICK = "productClick"

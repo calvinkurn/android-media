@@ -77,18 +77,18 @@ import kotlin.collections.ArrayList
 /**
  * @author by furqan on 28/03/19
  */
-class HotelHomepageFragment : HotelBaseFragment(),
-        HotelRoomAndGuestBottomSheets.HotelGuestListener,
-        HotelLastSearchViewHolder.LastSearchListener,
-        TravelVideoBannerWidget.ActionListener,
-        HotelHomepagePopularCitiesWidget.ActionListener {
+class HotelHomepageFragment :
+    HotelBaseFragment(),
+    HotelRoomAndGuestBottomSheets.HotelGuestListener,
+    HotelLastSearchViewHolder.LastSearchListener,
+    TravelVideoBannerWidget.ActionListener,
+    HotelHomepagePopularCitiesWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var homepageViewModel: HotelHomepageViewModel
     private var mbinding: FragmentHotelHomepageBinding? = null
     private val binding get() = mbinding
-
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
@@ -112,9 +112,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
             hotelHomepageModel = savedInstanceState.getParcelable<HotelHomepageModel>(EXTRA_HOTEL_MODEL)
-                    ?: HotelHomepageModel()
+                ?: HotelHomepageModel()
         } else if (arguments != null) {
-            //for applink with param searchId and searchType
+            // for applink with param searchId and searchType
             if (arguments?.containsKey(EXTRA_PARAM_SEARCH_ID) == true) {
                 hotelHomepageModel.searchId = arguments?.getString(EXTRA_PARAM_SEARCH_ID) ?: ""
                 hotelHomepageModel.searchType = arguments?.getString(EXTRA_PARAM_SEARCH_TYPE) ?: ""
@@ -123,7 +123,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 hotelHomepageModel.locType = ""
             }
 
-            //for older applink
+            // for older applink
             if (arguments?.containsKey(EXTRA_PARAM_ID) == true) {
                 hotelHomepageModel.locId = arguments?.getLong(EXTRA_PARAM_ID) ?: 0
                 hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: ""
@@ -136,15 +136,16 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel.checkOutDate = arguments?.getString(EXTRA_PARAM_CHECKOUT) ?: ""
 
             if (hotelHomepageModel.checkInDate.isNotBlank()) {
-                hotelHomepageModel.checkInDateFmt =  hotelHomepageModel.checkInDate
-                        .toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
+                hotelHomepageModel.checkInDateFmt = hotelHomepageModel.checkInDate
+                    .toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             }
             if (hotelHomepageModel.checkOutDate.isNotBlank()) {
                 hotelHomepageModel.checkOutDateFmt = hotelHomepageModel.checkOutDate
-                        .toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
+                    .toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             }
-            if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank())
+            if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank()) {
                 hotelHomepageModel.nightCounter = countRoomDuration()
+            }
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -182,75 +183,95 @@ class HotelHomepageFragment : HotelBaseFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        homepageViewModel.homepageDefaultParam.observe(viewLifecycleOwner, Observer {
-            renderHotelParam(it)
-        })
+        homepageViewModel.homepageDefaultParam.observe(
+            viewLifecycleOwner,
+            Observer {
+                renderHotelParam(it)
+            }
+        )
 
-        homepageViewModel.promoData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.banners.isNotEmpty()) {
-                        renderHotelPromo(it.data.banners)
-                    } else {
-                        hidePromoContainer()
+        homepageViewModel.promoData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (it.data.banners.isNotEmpty()) {
+                            renderHotelPromo(it.data.banners)
+                        } else {
+                            hidePromoContainer()
+                        }
+                    }
+                }
+                stopTrace()
+            }
+        )
+
+        homepageViewModel.recentSearch.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        renderHotelLastSearch(it.data)
                     }
                 }
             }
-            stopTrace()
-        })
+        )
 
-        homepageViewModel.recentSearch.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    renderHotelLastSearch(it.data)
-                }
-            }
-        })
-
-        homepageViewModel.deleteRecentSearch.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data) {
-                        loadRecentSearchData()
+        homepageViewModel.deleteRecentSearch.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (it.data) {
+                            loadRecentSearchData()
+                        }
                     }
                 }
             }
-        })
+        )
 
-        homepageViewModel.popularCitiesLiveData.observe(viewLifecycleOwner, Observer {
-            fetchVideoBannerData()
-            when (it) {
-                is Success -> {
-                    renderPopularCities(it.data)
-                }
-                is Fail -> {
-                    showPopularCitiesWidget(false)
+        homepageViewModel.popularCitiesLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                fetchVideoBannerData()
+                when (it) {
+                    is Success -> {
+                        renderPopularCities(it.data)
+                    }
+                    is Fail -> {
+                        showPopularCitiesWidget(false)
+                    }
                 }
             }
-        })
+        )
 
-        homepageViewModel.videoBannerLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> renderVideoBanner(it.data)
-                is Fail -> showHotelHomepageVideoBanner(false)
+        homepageViewModel.videoBannerLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> renderVideoBanner(it.data)
+                    is Fail -> showHotelHomepageVideoBanner(false)
+                }
             }
+        )
 
-        })
-
-        homepageViewModel.tickerData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.message.isNotEmpty()) {
-                        renderTickerView(it.data)
-                    } else {
+        homepageViewModel.tickerData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (it.data.message.isNotEmpty()) {
+                            renderTickerView(it.data)
+                        } else {
+                            hideTickerView()
+                        }
+                    }
+                    is Fail -> {
                         hideTickerView()
                     }
                 }
-                is Fail -> {
-                    hideTickerView()
-                }
             }
-        })
+        )
     }
 
     override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
@@ -258,8 +279,15 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     override fun onPopularCityClicked(popularSearch: PopularSearch) {
-        RouteManager.route(requireContext(), getString(R.string.hotel_search_result_applink_format,
-                popularSearch.type, popularSearch.searchId, popularSearch.name))
+        RouteManager.route(
+            requireContext(),
+            getString(
+                R.string.hotel_search_result_applink_format,
+                popularSearch.type,
+                popularSearch.searchId,
+                popularSearch.name
+            )
+        )
     }
 
     override fun onErrorRetryClicked() {
@@ -291,15 +319,21 @@ class HotelHomepageFragment : HotelBaseFragment(),
         when (requestCode) {
             REQUEST_CODE_DESTINATION -> if (resultCode == Activity.RESULT_OK && data != null) {
                 if (data.hasExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG)) {
-                    onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
-                            data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
+                    onDestinationNearBy(
+                        data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
+                        data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0)
+                    )
                 } else if (data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)) {
-                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME)
+                    onDestinationChanged(
+                        data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME)
                             ?: "",
-                            searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)
-                                    ?: "",
-                            searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE)
-                                    ?: "")
+                        searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)
+                            ?: "",
+                        searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE)
+                            ?: "",
+                        source = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_RESULT_SOURCE)
+                            ?: ""
+                    )
                 }
             }
         }
@@ -331,7 +365,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
             }
 
             override fun onDismiss() {}
-
         })
         if (travelTickerModel.url.isNotEmpty()) {
             binding?.hotelHomepageTicker?.setOnClickListener {
@@ -348,8 +381,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
         checkCheckInAndCheckOutDate()
         hotelHomepageModel.roomCount = hotelPropertyDefaultHome.totalRoom
         hotelHomepageModel.adultCount = hotelPropertyDefaultHome.totalGuest
-        onDestinationChanged(hotelPropertyDefaultHome.label, searchId = hotelPropertyDefaultHome.searchId,
-                searchType = hotelPropertyDefaultHome.searchType, shouldTrackChanges = false)
+        onDestinationChanged(
+            hotelPropertyDefaultHome.label,
+            searchId = hotelPropertyDefaultHome.searchId,
+            searchType = hotelPropertyDefaultHome.searchType,
+            shouldTrackChanges = false
+        )
     }
 
     private fun measureBannerWidth() {
@@ -429,8 +466,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
             it.tvHotelHomepageCheckinDate.textFieldInput.setText(hotelHomepageModel.checkInDateFmt)
             it.tvHotelHomepageCheckoutDate.textFieldInput.setText(hotelHomepageModel.checkOutDateFmt)
             it.tvHotelHomepageNightCount.text = String.format(getString(R.string.hotel_homepage_night_counter), hotelHomepageModel.nightCounter)
-            it.tvHotelHomepageGuestInfo.textFieldInput.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
-                hotelHomepageModel.roomCount, hotelHomepageModel.adultCount))
+            it.tvHotelHomepageGuestInfo.textFieldInput.setText(
+                String.format(
+                    getString(R.string.hotel_homepage_guest_detail_without_child),
+                    hotelHomepageModel.roomCount,
+                    hotelHomepageModel.adultCount
+                )
+            )
         }
     }
 
@@ -453,13 +495,19 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun showPopularCitiesWidget(show: Boolean) {
-        if (show) binding?.widgetHotelHomepagePopularCities?.show()
-        else binding?.widgetHotelHomepagePopularCities?.hide()
+        if (show) {
+            binding?.widgetHotelHomepagePopularCities?.show()
+        } else {
+            binding?.widgetHotelHomepagePopularCities?.hide()
+        }
     }
 
     private fun showHotelHomepageVideoBanner(show: Boolean) {
-        if (show) binding?.hotelHomepageVideoBanner?.show()
-        else binding?.hotelHomepageVideoBanner?.hide()
+        if (show) {
+            binding?.hotelHomepageVideoBanner?.show()
+        } else {
+            binding?.hotelHomepageVideoBanner?.hide()
+        }
     }
 
     private fun onDestinationChangeClicked() {
@@ -467,8 +515,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
         context?.run {
             startActivityForResult(HotelDestinationActivity.createInstance(this), REQUEST_CODE_DESTINATION)
         }
-        activity?.overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_slide_up_in,
-                com.tokopedia.common.travel.R.anim.travel_anim_stay)
+        activity?.overridePendingTransition(
+            com.tokopedia.common.travel.R.anim.travel_slide_up_in,
+            com.tokopedia.common.travel.R.anim.travel_anim_stay
+        )
     }
 
     private fun configAndRenderCheckInDate() {
@@ -487,7 +537,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelRoomAndGuestBottomSheets.adultCount = hotelHomepageModel.adultCount
             hotelRoomAndGuestBottomSheets.show(it.supportFragmentManager, TAG_GUEST_INFO)
         }
-
     }
 
     private fun onCheckInDateChanged(newCheckInDate: Date) {
@@ -529,11 +578,18 @@ class HotelHomepageFragment : HotelBaseFragment(),
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, id: Long = 0, type: String = "", searchType: String = "",
-                                     searchId: String = "", shouldTrackChanges: Boolean = true) {
+    private fun onDestinationChanged(
+        name: String,
+        id: Long = 0,
+        type: String = "",
+        searchType: String = "",
+        searchId: String = "",
+        source: String = "",
+        shouldTrackChanges: Boolean = true
+    ) {
         if (shouldTrackChanges) {
             val tempType = if (searchType.isNotEmpty()) searchType else type
-            trackingHotelUtil.hotelSelectDestination(context, tempType, name, HOMEPAGE_SCREEN_NAME)
+            trackingHotelUtil.hotelSelectDestination(context, tempType, name, source, HOMEPAGE_SCREEN_NAME)
         }
 
         hotelHomepageModel.locName = name
@@ -547,22 +603,28 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onSearchButtonClicked() {
-        val type = if (hotelHomepageModel.searchType.isNotEmpty()) hotelHomepageModel.searchType
-        else hotelHomepageModel.locType
-        trackingHotelUtil.searchHotel(context,
-                type,
-                hotelHomepageModel.locName,
-                hotelHomepageModel.roomCount,
-                hotelHomepageModel.adultCount,
-                hotelHomepageModel.checkInDate,
-                hotelHomepageModel.nightCounter.toInt(),
-                HOMEPAGE_SCREEN_NAME
+        val type = if (hotelHomepageModel.searchType.isNotEmpty()) {
+            hotelHomepageModel.searchType
+        } else {
+            hotelHomepageModel.locType
+        }
+        trackingHotelUtil.searchHotel(
+            context,
+            type,
+            hotelHomepageModel.locName,
+            hotelHomepageModel.roomCount,
+            hotelHomepageModel.adultCount,
+            hotelHomepageModel.checkInDate,
+            hotelHomepageModel.nightCounter.toInt(),
+            HOMEPAGE_SCREEN_NAME
         )
 
         context?.run {
             when {
                 hotelHomepageModel.locType.equals(HotelTypeEnum.PROPERTY.value, false) -> {
-                    startActivityForResult(HotelDetailActivity.getCallingIntent(this,
+                    startActivityForResult(
+                        HotelDetailActivity.getCallingIntent(
+                            this,
                             hotelHomepageModel.checkInDate,
                             hotelHomepageModel.checkOutDate,
                             hotelHomepageModel.locId,
@@ -570,12 +632,16 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             hotelHomepageModel.adultCount,
                             hotelHomepageModel.locType,
                             hotelHomepageModel.locName,
-                            source = HotelSourceEnum.HOMEPAGE.value),
-                            REQUEST_CODE_DETAIL)
+                            source = HotelSourceEnum.HOMEPAGE.value
+                        ),
+                        REQUEST_CODE_DETAIL
+                    )
                 }
 
                 hotelHomepageModel.searchType.equals(HotelTypeEnum.PROPERTY.value, false) -> {
-                    startActivityForResult(HotelDetailActivity.getCallingIntent(this,
+                    startActivityForResult(
+                        HotelDetailActivity.getCallingIntent(
+                            this,
                             hotelHomepageModel.checkInDate,
                             hotelHomepageModel.checkOutDate,
                             hotelHomepageModel.searchId.toLong(),
@@ -583,22 +649,26 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             hotelHomepageModel.adultCount,
                             hotelHomepageModel.searchType,
                             hotelHomepageModel.locName,
-                            source = HotelSourceEnum.HOMEPAGE.value),
-                            REQUEST_CODE_DETAIL)
+                            source = HotelSourceEnum.HOMEPAGE.value
+                        ),
+                        REQUEST_CODE_DETAIL
+                    )
                 }
 
                 else -> {
-                    val hotelSearchModel = HotelSearchModel(name = hotelHomepageModel.locName,
-                            id = hotelHomepageModel.locId,
-                            type = hotelHomepageModel.locType,
-                            lat = hotelHomepageModel.locLat,
-                            long = hotelHomepageModel.locLong,
-                            checkIn = hotelHomepageModel.checkInDate,
-                            checkOut = hotelHomepageModel.checkOutDate,
-                            room = hotelHomepageModel.roomCount,
-                            adult = hotelHomepageModel.adultCount,
-                            searchType = hotelHomepageModel.searchType,
-                            searchId = hotelHomepageModel.searchId)
+                    val hotelSearchModel = HotelSearchModel(
+                        name = hotelHomepageModel.locName,
+                        id = hotelHomepageModel.locId,
+                        type = hotelHomepageModel.locType,
+                        lat = hotelHomepageModel.locLat,
+                        long = hotelHomepageModel.locLong,
+                        checkIn = hotelHomepageModel.checkInDate,
+                        checkOut = hotelHomepageModel.checkOutDate,
+                        room = hotelHomepageModel.roomCount,
+                        adult = hotelHomepageModel.adultCount,
+                        searchType = hotelHomepageModel.searchType,
+                        searchId = hotelHomepageModel.searchId
+                    )
                     startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
                 }
             }
@@ -698,9 +768,15 @@ class HotelHomepageFragment : HotelBaseFragment(),
         var minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
         if (!(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_BOOK_FOR_TODAY, true))) minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY
 
-        val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(checkIn, checkOut, SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
-                SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH.toLong(),
-                getString(R.string.hotel_min_date_label), getString(R.string.hotel_max_date_label), minSelectDateFromToday)
+        val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(
+            checkIn,
+            checkOut,
+            SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
+            SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH.toLong(),
+            getString(R.string.hotel_min_date_label),
+            getString(R.string.hotel_max_date_label),
+            minSelectDateFromToday
+        )
 
         hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
@@ -780,7 +856,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         const val EXTRA_ADULT = "param_adult"
         const val EXTRA_ROOM = "param_room"
 
-        //for older applink
+        // for older applink
         const val EXTRA_PARAM_ID = "param_id"
         const val EXTRA_PARAM_TYPE = "param_type"
 
@@ -791,30 +867,30 @@ class HotelHomepageFragment : HotelBaseFragment(),
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
         fun getInstance(searchId: String, name: String, searchType: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
-                HotelHomepageFragment().also {
-                    it.arguments = Bundle().apply {
-                        putString(EXTRA_PARAM_SEARCH_ID, searchId)
-                        putString(EXTRA_PARAM_NAME, name)
-                        putString(EXTRA_PARAM_SEARCH_TYPE, searchType)
-                        if (checkIn.isNotBlank()) putString(EXTRA_PARAM_CHECKIN, checkIn)
-                        if (checkOut.isNotBlank()) putString(EXTRA_PARAM_CHECKOUT, checkOut)
-                        if (adult != 0) putInt(EXTRA_ADULT, adult)
-                        if (room != 0) putInt(EXTRA_ROOM, room)
-                    }
+            HotelHomepageFragment().also {
+                it.arguments = Bundle().apply {
+                    putString(EXTRA_PARAM_SEARCH_ID, searchId)
+                    putString(EXTRA_PARAM_NAME, name)
+                    putString(EXTRA_PARAM_SEARCH_TYPE, searchType)
+                    if (checkIn.isNotBlank()) putString(EXTRA_PARAM_CHECKIN, checkIn)
+                    if (checkOut.isNotBlank()) putString(EXTRA_PARAM_CHECKOUT, checkOut)
+                    if (adult != 0) putInt(EXTRA_ADULT, adult)
+                    if (room != 0) putInt(EXTRA_ROOM, room)
                 }
+            }
 
         // for older applink
         fun getInstance(id: Long, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
-                HotelHomepageFragment().also {
-                    it.arguments = Bundle().apply {
-                        putLong(EXTRA_PARAM_ID, id)
-                        putString(EXTRA_PARAM_NAME, name)
-                        putString(EXTRA_PARAM_TYPE, type)
-                        if (checkIn.isNotBlank()) putString(EXTRA_PARAM_CHECKIN, checkIn)
-                        if (checkOut.isNotBlank()) putString(EXTRA_PARAM_CHECKOUT, checkOut)
-                        if (adult != 0) putInt(EXTRA_ADULT, adult)
-                        if (room != 0) putInt(EXTRA_ROOM, room)
-                    }
+            HotelHomepageFragment().also {
+                it.arguments = Bundle().apply {
+                    putLong(EXTRA_PARAM_ID, id)
+                    putString(EXTRA_PARAM_NAME, name)
+                    putString(EXTRA_PARAM_TYPE, type)
+                    if (checkIn.isNotBlank()) putString(EXTRA_PARAM_CHECKIN, checkIn)
+                    if (checkOut.isNotBlank()) putString(EXTRA_PARAM_CHECKOUT, checkOut)
+                    if (adult != 0) putInt(EXTRA_ADULT, adult)
+                    if (room != 0) putInt(EXTRA_ROOM, room)
                 }
+            }
     }
 }

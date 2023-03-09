@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import com.google.gson.Gson
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MANUAL_FILTER
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ORIGIN_FILTER
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
 import com.tokopedia.filter.common.data.DataValue
@@ -31,15 +32,14 @@ internal fun applyQuickFilterElevation(context: Context?, sortFilter: SortFilter
     }
 }
 
-internal fun Map<String, String>.addFilterOrigin(): Map<String, String> =
-    toMutableMap().also {
-        it[ORIGIN_FILTER] = DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
-    }
+internal fun manualFilterToggleMap(): Map<String, String> =
+    mapOf(MANUAL_FILTER to true.toString())
 
-internal fun Map<String, String>.updateComponentId(newComponentId: String) : Map<String, String> =
-    toMutableMap().also {
-        it[SRP_COMPONENT_ID] = newComponentId
-    }
+internal fun originFilterMap(): Map<String, String> =
+    mapOf(ORIGIN_FILTER to DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE)
+
+internal fun componentIdMap(componentId: String): Map<String, String> =
+    mapOf(SRP_COMPONENT_ID to componentId)
 
 fun List<Option>?.joinActiveOptionsToString(): String {
     if (this == null || this.isEmpty()) return ""

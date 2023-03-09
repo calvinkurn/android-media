@@ -1,6 +1,7 @@
 package com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.domain.usecase.DiscussionGetSmartReplyUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -13,7 +14,16 @@ abstract class TalkSmartReplySettingsViewModelTestFixture {
     @RelaxedMockK
     lateinit var discussionGetSmartReplyUseCase: DiscussionGetSmartReplyUseCase
 
-    protected lateinit var viewModel: TalkSmartReplySettingsViewModel
+    @RelaxedMockK
+    lateinit var firebaseRemoteConfig: RemoteConfig
+
+    protected val viewModel by lazy {
+        TalkSmartReplySettingsViewModel(
+            discussionGetSmartReplyUseCase,
+            firebaseRemoteConfig,
+            CoroutineTestDispatchersProvider
+        )
+    }
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -21,6 +31,5 @@ abstract class TalkSmartReplySettingsViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TalkSmartReplySettingsViewModel(discussionGetSmartReplyUseCase, CoroutineTestDispatchersProvider)
     }
 }

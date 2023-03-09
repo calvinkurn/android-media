@@ -70,7 +70,6 @@ class ShopPageActivity :
     private var performanceMonitoringShopHeader: PerformanceMonitoring? = null
     private var performanceMonitoringShopProductTab: PerformanceMonitoring? = null
     private var performanceMonitoringShopHomeTab: PerformanceMonitoring? = null
-    private var performanceMonitoringShopHomeWebViewTab: PerformanceMonitoring? = null
 
     var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
 
@@ -111,10 +110,6 @@ class ShopPageActivity :
         performanceMonitoringShopHomeTab?.stopTrace()
     }
 
-    fun stopShopHomeWebViewTabPerformanceMonitoring() {
-        performanceMonitoringShopHomeWebViewTab?.stopTrace()
-    }
-
     private fun initPerformanceMonitoring() {
         performanceMonitoringShop = PageLoadTimePerformanceCallback(
             SHOP_TRACE_PREPARE,
@@ -128,8 +123,6 @@ class ShopPageActivity :
         performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE)
         performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)
         performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_V2_TRACE)
-
-        performanceMonitoringShopHomeWebViewTab = PerformanceMonitoring.start(SHOP_HOME_WEB_VIEW_TRACE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
