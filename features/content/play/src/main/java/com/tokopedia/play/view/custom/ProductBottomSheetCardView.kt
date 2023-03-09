@@ -7,6 +7,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.common.util.hexToString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -29,7 +30,7 @@ class ProductBottomSheetCardView(
 
     private val binding = ViewProductBottomSheetCardBinding.inflate(
         LayoutInflater.from(context),
-        this,
+        this
     )
 
     private val imageRadius =
@@ -113,7 +114,7 @@ class ProductBottomSheetCardView(
             if (!item.applink.isNullOrEmpty()) mListener?.onClicked(this, item, section)
         }
 
-        //Buttons
+        // Buttons
         binding.btnProductFirst.showWithCondition(item.buttons.isNotEmpty())
         binding.btnProductSecond.showWithCondition(item.buttons.isNotEmpty())
 
@@ -124,9 +125,8 @@ class ProductBottomSheetCardView(
         binding.btnProductSecond.generateButton(lastButton.color)
 
         binding.lblProductNumber.showWithCondition(item.isNumerationShown)
-        val labelColor = "#${Integer.toHexString(MethodChecker.getColor(context, R.color.play_dms_explore_widget_icon_bg))}"
         binding.lblProductNumber.unlockFeature = true
-        binding.lblProductNumber.setLabelType(labelColor)
+        binding.lblProductNumber.setLabelType(R.color.play_dms_explore_widget_icon_bg.hexToString(context))
         binding.lblProductNumber.setLabel(item.number)
     }
 
@@ -139,7 +139,9 @@ class ProductBottomSheetCardView(
 
             if (item.stock !is StockAvailable ||
                 item.stock.stock > STOCK_THRESHOLD
-            ) return@buildSpannedString
+            ) {
+                return@buildSpannedString
+            }
 
             if (item.isPinned) {
                 val separator = context.getString(R.string.play_product_pinned_info_separator)
@@ -161,14 +163,14 @@ class ProductBottomSheetCardView(
         fun onClicked(
             view: ProductBottomSheetCardView,
             product: PlayProductUiModel.Product,
-            section: ProductSectionUiModel.Section,
+            section: ProductSectionUiModel.Section
         )
 
         fun onButtonTransactionProduct(
             view: ProductBottomSheetCardView,
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
-            action: ProductAction,
+            action: ProductAction
         )
     }
 }

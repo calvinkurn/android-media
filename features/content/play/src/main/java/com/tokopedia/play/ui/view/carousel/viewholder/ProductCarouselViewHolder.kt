@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.content.common.util.hexToString
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -28,7 +29,7 @@ class ProductCarouselViewHolder private constructor() {
 
     class PinnedProduct(
         private val binding: ItemPlayPinnedProductBinding,
-        private val listener: Listener,
+        private val listener: Listener
     ) : BaseViewHolder(binding.root) {
 
         private val context: Context
@@ -44,14 +45,14 @@ class ProductCarouselViewHolder private constructor() {
         private val iconCartEnabled = getIconUnifyDrawable(
             context,
             IconUnify.CART,
-            MethodChecker.getColor(context, unifyR.color.Unify_GN500),
+            MethodChecker.getColor(context, unifyR.color.Unify_GN500)
         )
 
         private val iconCartDisabled by lazy {
             getIconUnifyDrawable(
                 context,
                 IconUnify.CART,
-                MethodChecker.getColor(context, unifyR.color.Unify_NN300),
+                MethodChecker.getColor(context, unifyR.color.Unify_NN300)
             )
         }
 
@@ -60,10 +61,10 @@ class ProductCarouselViewHolder private constructor() {
                 binding.tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
-        private fun UnifyButton.configButton(button: ProductButtonUiModel){
-            //Setup Icon if any, for now its only for ATC
+        private fun UnifyButton.configButton(button: ProductButtonUiModel) {
+            // Setup Icon if any, for now its only for ATC
             val isDisabled = button.color == ProductButtonColor.PRIMARY_DISABLED_BUTTON || button.color == ProductButtonColor.SECONDARY_DISABLED_BUTTON
-            val iconType = if(isDisabled) iconCartDisabled else iconCartEnabled
+            val iconType = if (isDisabled) iconCartDisabled else iconCartEnabled
 
             when (button.type) {
                 ProductButtonType.ATC -> {
@@ -102,7 +103,7 @@ class ProductCarouselViewHolder private constructor() {
                     binding.tvDiscount.visibility = View.VISIBLE
                     binding.tvDiscount.text = context.getString(
                         R.string.play_discount_percent,
-                        item.price.discountPercent,
+                        item.price.discountPercent
                     )
                     binding.tvOriginalPrice.visibility = View.VISIBLE
                     binding.tvOriginalPrice.text = item.price.originalPrice
@@ -128,9 +129,8 @@ class ProductCarouselViewHolder private constructor() {
                 listener.onClicked(this, item)
             }
             binding.lblProductNumber.showWithCondition(item.isNumerationShown)
-            val labelColor = "#${Integer.toHexString(MethodChecker.getColor(context, R.color.play_dms_explore_widget_icon_bg))}"
             binding.lblProductNumber.unlockFeature = true
-            binding.lblProductNumber.setLabelType(labelColor)
+            binding.lblProductNumber.setLabelType(R.color.play_dms_explore_widget_icon_bg.hexToString(context))
             binding.lblProductNumber.setLabel(item.number)
         }
 
@@ -139,7 +139,10 @@ class ProductCarouselViewHolder private constructor() {
                 append(getString(R.string.play_product_pinned))
 
                 if (item.stock !is StockAvailable ||
-                    item.stock.stock > MIN_STOCK) return@buildSpannedString
+                    item.stock.stock > MIN_STOCK
+                ) {
+                    return@buildSpannedString
+                }
 
                 append(' ')
                 val separator = getString(R.string.play_product_pinned_info_separator)
@@ -156,14 +159,14 @@ class ProductCarouselViewHolder private constructor() {
 
             fun create(
                 parent: ViewGroup,
-                listener: Listener,
+                listener: Listener
             ) = PinnedProduct(
                 ItemPlayPinnedProductBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false,
+                    false
                 ),
-                listener,
+                listener
             )
         }
 

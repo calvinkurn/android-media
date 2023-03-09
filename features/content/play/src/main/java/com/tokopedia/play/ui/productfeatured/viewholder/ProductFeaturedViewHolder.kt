@@ -5,8 +5,8 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.content.common.util.hexToString
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayProductFeaturedBinding
@@ -21,7 +21,7 @@ import com.tokopedia.play_common.view.loadImage
  */
 class ProductFeaturedViewHolder(
     private val binding: ItemPlayProductFeaturedBinding,
-    private val listener: ProductBasicViewHolder.Listener,
+    private val listener: ProductBasicViewHolder.Listener
 ) : BaseViewHolder(binding.root) {
 
     private val context: Context
@@ -59,23 +59,22 @@ class ProductFeaturedViewHolder(
         }
 
         binding.lblProductNumber.showWithCondition(item.isNumerationShown)
-        val labelColor = "#${Integer.toHexString(MethodChecker.getColor(context, R.color.play_dms_explore_widget_icon_bg))}"
         binding.lblProductNumber.unlockFeature = true
-        binding.lblProductNumber.setLabelType(labelColor)
+        binding.lblProductNumber.setLabelType(R.color.play_dms_explore_widget_icon_bg.hexToString(context))
         binding.lblProductNumber.setLabel(item.number)
     }
 
     companion object {
         fun create(
             parent: ViewGroup,
-            listener: ProductBasicViewHolder.Listener,
+            listener: ProductBasicViewHolder.Listener
         ) = ProductFeaturedViewHolder(
             ItemPlayProductFeaturedBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false,
+                false
             ),
-            listener,
+            listener
         )
     }
 }
