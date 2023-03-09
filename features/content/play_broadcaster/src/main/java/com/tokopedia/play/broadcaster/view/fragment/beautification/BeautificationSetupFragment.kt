@@ -224,6 +224,8 @@ class BeautificationSetupFragment @Inject constructor(
     }
 
     private fun setupSlider() {
+        if(_bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN) return
+
         val (currentValue, isRemoveEffect) = when(selectedTabIdx) {
             BeautificationTabFragment.Companion.Type.FaceFilter.value -> {
                 val selectedFaceFilter = viewModel.selectedFaceFilter
