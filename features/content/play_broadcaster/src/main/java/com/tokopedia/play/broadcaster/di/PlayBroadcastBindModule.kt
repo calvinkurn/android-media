@@ -26,6 +26,8 @@ import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticI
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerImpl
+import com.tokopedia.play.broadcaster.util.asset.AssetChecker
+import com.tokopedia.play.broadcaster.util.asset.AssetCheckerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUp
@@ -138,4 +140,11 @@ abstract class PlayBroadcastBindModule {
     @ActivityRetainedScope
     @Binds
     abstract fun bindPlayDeviceSpec(playDeviceSpec: PlayDeviceSpecImpl): PlayDeviceSpec
+
+    /**
+     * Beautification
+     */
+    @ActivityRetainedScope
+    @Binds
+    abstract fun bindAssetChecker(assetChecker: AssetCheckerImpl): AssetChecker
 }

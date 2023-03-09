@@ -26,6 +26,7 @@ import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnaly
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.util.asset.AssetChecker
 import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
 import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -130,8 +131,8 @@ class PlayShortsModule(
     /** Play Broadcaster Mapper */
     @Provides
     @PlayShortsScope
-    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer, uriParser: UriParser): PlayBroadcastMapper {
-        return PlayBroadcastUiMapper(htmlTextTransformer, uriParser)
+    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer, uriParser: UriParser, assetChecker: AssetChecker): PlayBroadcastMapper {
+        return PlayBroadcastUiMapper(htmlTextTransformer, uriParser, assetChecker)
     }
 
     /** Play Broadcaster Remote Config */

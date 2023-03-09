@@ -33,6 +33,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiM
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.util.asset.AssetChecker
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
@@ -52,6 +53,7 @@ import javax.inject.Inject
 class PlayBroadcastUiMapper @Inject constructor(
     private val textTransformer: HtmlTextTransformer,
     private val uriParser: UriParser,
+    private val assetChecker: AssetChecker,
 ) : PlayBroadcastMapper {
 
     override fun mapBroadcastingConfig(response: GetBroadcastingConfigurationResponse): BroadcastingConfigUiModel {
@@ -111,7 +113,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             )
         }
 
-    override fun mapConfiguration(config: Config): ConfigurationUiModel {
+    override suspend fun mapConfiguration(config: Config): ConfigurationUiModel {
         val channelStatus = ChannelStatus.getChannelType(
             config.activeLiveChannel,
             config.pausedChannel,
@@ -223,7 +225,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                         value = it * 0.1,
                         iconUrl = iconUrl,
                         assetLink = "asset link $it",
-                        assetStatus = BeautificationAssetStatus.Available,
+                        assetStatus = if(assetChecker.isLicenseAvailable()) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
                     )
                 }
 //                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
