@@ -133,8 +133,7 @@ class DigitalPDPDataPlanFragment :
     ClientNumberAutoCompleteListener,
     FilterPDPBottomsheet.FilterBottomSheetListener,
     DigitalHistoryIconListener,
-    DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl()
-{
+    DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl() {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
@@ -216,7 +215,6 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-
     private fun setupDynamicScrollListener() {
         binding?.run {
             rechargePdpPaketDataSvContainer.setupDynamicScrollListener(
@@ -292,7 +290,7 @@ class DigitalPDPDataPlanFragment :
                 }
 
                 if (isOperatorChanged || selectedClientNumber
-                        .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
+                    .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
                 ) {
                     operator = selectedOperator.operator
                     rechargePdpPaketDataClientNumberWidget.run {
@@ -302,7 +300,8 @@ class DigitalPDPDataPlanFragment :
                     onHideBuyWidget()
                     getRecommendations()
                     getCatalogProductInputMultiTab(
-                        selectedOperator.key, isOperatorChanged,
+                        selectedOperator.key,
+                        isOperatorChanged,
                         selectedClientNumber
                     )
                 } else {
@@ -394,7 +393,7 @@ class DigitalPDPDataPlanFragment :
                         digitalPDPAnalytics.impressionFilterChip(
                             DigitalPDPCategoryUtil.getCategoryName(categoryId),
                             operator.attributes.name,
-                            userSession.userId,
+                            userSession.userId
                         )
                         onSuccessSortFilter()
                     }
@@ -446,7 +445,7 @@ class DigitalPDPDataPlanFragment :
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.selectedFullProduct.denomData.title,
                         atcData.data.priceProduct,
-                        atcData.data.channelId,
+                        atcData.data.channelId
                     )
                     navigateToCart(atcData.data.categoryId)
                 }
@@ -462,11 +461,11 @@ class DigitalPDPDataPlanFragment :
             }
         }
 
-        viewModel.errorAtc.observe(viewLifecycleOwner){
+        viewModel.errorAtc.observe(viewLifecycleOwner) {
             hideLoadingDialog()
-            if (it.atcErrorPage.isShowErrorPage){
+            if (it.atcErrorPage.isShowErrorPage) {
                 redirectToCart(viewModel.digitalCheckoutPassData.categoryId ?: "")
-            } else{
+            } else {
                 showErrorUnverifiedPhoneNumber(it)
             }
         }
@@ -501,8 +500,17 @@ class DigitalPDPDataPlanFragment :
 
     private fun renderOmniChannel(applink: String) {
         binding?.rechargePdpPaketDataOmniWidget?.run {
-            renderOmniWidget(this@DigitalPDPDataPlanFragment, applink)
-            show()
+            hideShimmering()
+            if (applink.isNotEmpty()) {
+                digitalPDPAnalytics.impressionOmniChannelWidget(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    operator.attributes.name,
+                    loyaltyStatus,
+                    userSession.userId
+                )
+                renderOmniWidget(this@DigitalPDPDataPlanFragment, applink)
+                show()
+            }
         }
     }
 
@@ -576,7 +584,9 @@ class DigitalPDPDataPlanFragment :
 
     private fun onFailedGetMenuDetail(throwable: Throwable) {
         val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-            activity, throwable, ErrorHandler.Builder().build()
+            activity,
+            throwable,
+            ErrorHandler.Builder().build()
         )
         val errMsgSub = getString(
             R.string.error_message_with_code,
@@ -607,7 +617,9 @@ class DigitalPDPDataPlanFragment :
                     )
                 )
                 setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
-            } else setupDynamicScrollViewPadding()
+            } else {
+                setupDynamicScrollViewPadding()
+            }
         }
     }
 
@@ -680,7 +692,7 @@ class DigitalPDPDataPlanFragment :
                                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                     operator.attributes.name,
                                     sortFilterItem.title.toString(),
-                                    userSession.userId,
+                                    userSession.userId
                                 )
                             }
                             if (filterItems[index].type == ChipsUnify.TYPE_SELECTED) {
@@ -703,7 +715,7 @@ class DigitalPDPDataPlanFragment :
                             DigitalPDPCategoryUtil.getCategoryName(categoryId),
                             operator.attributes.name,
                             getString(R.string.bottom_sheet_filter_title),
-                            userSession.userId,
+                            userSession.userId
                         )
                         childFragmentManager?.let {
                             val filterPDPBottomsheet = FilterPDPBottomsheet.getInstance()
@@ -764,7 +776,6 @@ class DigitalPDPDataPlanFragment :
             it.rechargePdpPaketDataDenomFullWidget.hide()
         }
     }
-
 
     private fun onShimmeringDenomFull() {
         binding?.let {
@@ -856,7 +867,8 @@ class DigitalPDPDataPlanFragment :
             for (item in tickers) {
                 messages.add(
                     TickerData(
-                        item.name, item.content,
+                        item.name,
+                        item.content,
                         when (item.type) {
                             TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
                             TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
@@ -870,8 +882,10 @@ class DigitalPDPDataPlanFragment :
             binding?.rechargePdpPaketDataTicker?.run {
                 addPagerView(
                     TickerPagerAdapter(
-                        this@DigitalPDPDataPlanFragment.requireContext(), messages
-                    ), messages
+                        this@DigitalPDPDataPlanFragment.requireContext(),
+                        messages
+                    ),
+                    messages
                 )
                 show()
             }
@@ -934,7 +948,6 @@ class DigitalPDPDataPlanFragment :
     private fun showEmptyState() {
         binding?.run {
             if (!rechargePdpPaketDataEmptyStateWidget.isVisible) {
-
                 /** hide empty state when imageUrl is empty*/
                 if (rechargePdpPaketDataEmptyStateWidget.imageUrl.isNotEmpty()) {
                     rechargePdpPaketDataEmptyStateWidget.show()
@@ -1056,13 +1069,16 @@ class DigitalPDPDataPlanFragment :
     }
 
     // this function used to redirect to cart if getting error from atc Response
-    private fun redirectToCart(categoryId: String){
+    private fun redirectToCart(categoryId: String) {
         context?.let {
-            RouteManager.route(it, CommonTopupBillsUtil.buildRedirectAppLinkToCheckout(
-                viewModel.digitalCheckoutPassData.productId ?: "",
-                viewModel.digitalCheckoutPassData.clientNumber ?: "",
-                categoryId
-            ))
+            RouteManager.route(
+                it,
+                CommonTopupBillsUtil.buildRedirectAppLinkToCheckout(
+                    viewModel.digitalCheckoutPassData.productId ?: "",
+                    viewModel.digitalCheckoutPassData.clientNumber ?: "",
+                    categoryId
+                )
+            )
         }
     }
 
@@ -1074,7 +1090,8 @@ class DigitalPDPDataPlanFragment :
     ) {
         val isDeniedOnce = localCacheHandler.getBoolean(FAVNUM_PERMISSION_CHECKER_IS_DENIED, false)
         if (!isDeniedOnce && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            permissionCheckerHelper.checkPermission(this,
+            permissionCheckerHelper.checkPermission(
+                this,
                 PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
@@ -1124,7 +1141,7 @@ class DigitalPDPDataPlanFragment :
                 categoryName,
                 isSwitchChecked,
                 loyaltyStatus,
-                FavoriteNumberPageConfig.TELCO,
+                FavoriteNumberPageConfig.TELCO
             )
 
             val requestCode = REQUEST_CODE_DIGITAL_SAVED_NUMBER
@@ -1150,10 +1167,9 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun showErrorUnverifiedPhoneNumber(error: ErrorAtc){
+    private fun showErrorUnverifiedPhoneNumber(error: ErrorAtc) {
         view?.let {
-
-            fun redirectError(error: ErrorAtc){
+            fun redirectError(error: ErrorAtc) {
                 if (error.atcErrorPage.buttons.first().actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION) {
                     RouteManager.getIntent(context, error.appLinkUrl).apply {
                         startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
@@ -1163,7 +1179,7 @@ class DigitalPDPDataPlanFragment :
                 }
             }
 
-            if (error.appLinkUrl.isNotEmpty()){
+            if (error.appLinkUrl.isNotEmpty()) {
                 Toaster.build(
                     it,
                     error.title,
@@ -1173,12 +1189,12 @@ class DigitalPDPDataPlanFragment :
                 ) {
                     redirectError(error)
                 }.show()
-            }else{
+            } else {
                 Toaster.build(
                     it,
                     error.title,
                     Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
+                    Toaster.TYPE_ERROR
                 ).show()
             }
         }
@@ -1208,20 +1224,20 @@ class DigitalPDPDataPlanFragment :
     private fun setupDynamicScrollViewPadding(extraPadding: Int = 0) {
         binding?.rechargePdpPaketDataClientNumberWidget
             ?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    binding?.rechargePdpPaketDataClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(
-                        this
-                    )
-                    binding?.run {
-                        val defaultPadding: Int = context?.resources?.displayMetrics?.let {
-                            rechargePdpPaketDataClientNumberWidget.height.pxToDp(it)
-                        } ?: 0
-                        val dynamicPadding = defaultPadding + extraPadding
-                        rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        binding?.rechargePdpPaketDataClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(
+                            this
+                        )
+                        binding?.run {
+                            val defaultPadding: Int = context?.resources?.displayMetrics?.let {
+                                rechargePdpPaketDataClientNumberWidget.height.pxToDp(it)
+                            } ?: 0
+                            val dynamicPadding = defaultPadding + extraPadding
+                            rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                        }
                     }
-                }
-            })
+                })
     }
 
     //region ClientNumberInputFieldListener
@@ -1255,7 +1271,8 @@ class DigitalPDPDataPlanFragment :
                 TelcoCategoryType.CATEGORY_ROAMING.toString()
             )
             navigateToContact(
-                clientNumber, dgCategoryIds,
+                clientNumber,
+                dgCategoryIds,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 false
             )
@@ -1294,7 +1311,7 @@ class DigitalPDPDataPlanFragment :
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
-                userSession.userId,
+                userSession.userId
             )
         } else {
             digitalPDPAnalytics.clickFavoriteNumberChips(
@@ -1320,7 +1337,8 @@ class DigitalPDPDataPlanFragment :
                 TelcoCategoryType.CATEGORY_ROAMING.toString()
             )
             navigateToContact(
-                clientNumber, dgCategoryIds,
+                clientNumber,
+                dgCategoryIds,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 isSwitchChecked
             )
@@ -1352,7 +1370,8 @@ class DigitalPDPDataPlanFragment :
     //region RechargeBuyWidgetListener
     override fun onClickedButtonLanjutkan(denom: DenomData) {
         viewModel.updateCheckoutPassData(
-            denom, userSession.userId.generateRechargeCheckoutToken(),
+            denom,
+            userSession.userId.generateRechargeCheckoutToken(),
             binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
             operator.id
         )
@@ -1425,13 +1444,16 @@ class DigitalPDPDataPlanFragment :
 
     //region RechargeDenomFullListener
     override fun onDenomFullClicked(
-        denomFull: DenomData, layoutType: DenomWidgetEnum, position: Int,
+        denomFull: DenomData,
+        layoutType: DenomWidgetEnum,
+        position: Int,
         productListTitle: String,
         isShowBuyWidget: Boolean
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
-            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE)
+            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE) {
                 onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
+            }
 
             digitalPDPAnalytics.clickMCCMProduct(
                 productListTitle,
@@ -1446,8 +1468,9 @@ class DigitalPDPDataPlanFragment :
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_TYPE ||
                 viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_FULL_TYPE
-            )
+            ) {
                 onClearSelectedMCCM(viewModel.selectedFullProduct.position)
+            }
             digitalPDPAnalytics.clickProductCluster(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1513,7 +1536,7 @@ class DigitalPDPDataPlanFragment :
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
-                userSession.userId,
+                userSession.userId
             )
         } else {
             digitalPDPAnalytics.clickPromoFullDenomChevron(
@@ -1553,7 +1576,7 @@ class DigitalPDPDataPlanFragment :
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             chipName,
-            userSession.userId,
+            userSession.userId
         )
     }
     //endregion
@@ -1570,6 +1593,12 @@ class DigitalPDPDataPlanFragment :
 
     //region RechargeOmniWidgetListener
     override fun onClickOmniWidget(applink: String) {
+        digitalPDPAnalytics.clickOmniChannelWidget(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
         RouteManager.route(context, applink)
     }
     //endregion
@@ -1627,8 +1656,9 @@ class DigitalPDPDataPlanFragment :
         if (data?.hasExtra(DigitalExtraParam.EXTRA_MESSAGE) == true) {
             val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)
                 as Throwable
-            if (!throwable.message.isNullOrEmpty())
+            if (!throwable.message.isNullOrEmpty()) {
                 showErrorToaster(throwable)
+            }
         }
     }
 

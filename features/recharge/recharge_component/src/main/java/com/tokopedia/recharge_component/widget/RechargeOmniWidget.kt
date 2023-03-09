@@ -10,26 +10,28 @@ import com.tokopedia.recharge_component.databinding.WidgetRechargeOmniBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
 
-class RechargeOmniWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                   defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+class RechargeOmniWidget @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    BaseCustomView(context, attrs, defStyleAttr) {
 
     private val binding = WidgetRechargeOmniBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun renderOmniWidget(listener: RechargeOmniWidgetListener, applink: String) {
-        binding.run {
-            shimmeringOmni.root.hide()
-            if (applink.isNotEmpty()) {
-                imgOmniIcon.show()
-                iconOmniChevron.show()
-                tgOmniTitle.show()
-                tgOmniDesc.show()
-                imgOmniIcon.loadImage(IMG_URL)
-                root.setOnClickListener {
-                    listener.onClickOmniWidget(applink)
-                }
-            }
+        imgOmniIcon.show()
+        iconOmniChevron.show()
+        tgOmniTitle.show()
+        tgOmniDesc.show()
+        imgOmniIcon.loadImage(IMG_URL)
+        root.setOnClickListener {
+            listener.onClickOmniWidget(applink)
         }
+    }
+
+    fun hideShimmering() {
+        binding?.shimmeringOmni?.root?.hide()
     }
 
     fun renderShimmering() {
