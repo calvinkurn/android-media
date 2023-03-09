@@ -23,7 +23,6 @@ data class SomDynamicPriceResponse(
         @Expose
         @SerializedName("promo_shipping")
         val promoShipping: PromoShipping? = null,
-        @Expose
         @SerializedName("pof_data")
         val pofData: PofData? = null
     ) {
@@ -74,7 +73,7 @@ data class SomDynamicPriceResponse(
             @SerializedName("header")
             val header: String = "",
             @SerializedName("footer")
-            val footer: String = "",
+            val footer: String = ""
         )
     }
 }
