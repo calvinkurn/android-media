@@ -359,6 +359,13 @@ class NewShopPageViewModelTest {
     }
 
     @Test
+    fun `when homeWidgetLayoutData value is changed, then should return the new value`() {
+        val mockHomeLayoutData = HomeLayoutData()
+        shopPageViewModel.homeWidgetLayoutData = mockHomeLayoutData
+        assert(shopPageViewModel.homeWidgetLayoutData == mockHomeLayoutData)
+    }
+
+    @Test
     fun `check whether shopImagePath value is set when call saveShopImageToPhoneStorage`() {
         val mockBitmap = mockk<Bitmap>()
         val mockTransition = mockk<Transition<in Bitmap>>()

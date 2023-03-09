@@ -9,6 +9,10 @@ import com.gojek.conversations.courier.BabbleCourierClient
 import com.gojek.conversations.logging.ConversationsLogger
 import com.gojek.conversations.utils.ConversationsConstants
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import timber.log.Timber
 import javax.inject.Inject
@@ -16,8 +20,11 @@ import javax.inject.Inject
 open class TokoChatRepository @Inject constructor(
     @TokoChatQualifier private val retrofit: Retrofit,
     @TokoChatQualifier private val context: Context,
-    @TokoChatQualifier private val babbleCourier: BabbleCourierClient,
-): ConversationsLogger.ILog, ConversationsAnalyticsTracker {
+    @TokoChatQualifier private val babbleCourier: BabbleCourierClient
+) : ConversationsLogger.ILog, ConversationsAnalyticsTracker {
+
+    private val job = Job()
+    private val mainScope = CoroutineScope(job + Dispatchers.Main)
 
     fun getConversationRepository(): ConversationsRepository {
         if (ConversationsRepository.instance == null) {
@@ -26,12 +33,21 @@ open class TokoChatRepository @Inject constructor(
         return ConversationsRepository.instance!!
     }
 
+    /**
+     * Conversation Repository initialisation needs to be in main thread
+     * Because inside the init function, setValue was called
+     */
     fun initConversationRepository() {
-        ConversationsRepository.init(
-            context, retrofit, this, this,
-            conversationsConfig = getConversationsConfig(),
-            courierClient = babbleCourier
-        )
+        mainScope.launch {
+            ConversationsRepository.init(
+                context = context,
+                retrofit = retrofit,
+                logger = this@TokoChatRepository,
+                analyticsTracker = this@TokoChatRepository,
+                conversationsConfig = getConversationsConfig(),
+                courierClient = babbleCourier
+            )
+        }
     }
 
     private fun getConversationsConfig(): ConversationsConfig {
