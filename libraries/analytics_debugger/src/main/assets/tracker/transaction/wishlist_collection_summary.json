@@ -42,6 +42,16 @@
       "eventAction": "click x on create new collection bottomsheet",
       "sessionIris" : ".*",
       "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "purchase platform",
+      "eventCategory": "all wishlist page",
+      "trackerId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickPP",
+      "eventAction": "click three dots on collection folder",
+      "sessionIris" : ".*",
+      "eventLabel": ".*"
     }
   ],
   "readme": "Wishlist Collection Summary"

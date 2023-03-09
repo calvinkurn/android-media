@@ -101,6 +101,9 @@ class WishlistCollectionCassavaTest {
             loading()
             clickCreateNewCollection()
             clickXOnCreateNewCollectionBottomsheet()
+            clickThreeDotsMenuOnCollectionItemCard()
+            loading()
+            pressBackUnconditionally()
 
             // Force TrackingQueue to send trackers
             runBlocking {
