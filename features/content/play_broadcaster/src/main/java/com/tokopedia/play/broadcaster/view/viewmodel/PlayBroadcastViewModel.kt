@@ -2,13 +2,6 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.os.Bundle
 import androidx.lifecycle.*
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
@@ -89,7 +82,6 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -189,6 +181,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
+
+    private val bannerPreparationList = mutableListOf<PlayBroadcastPreparationBannerModel>()
+    val observableBanner = MutableStateFlow<List<PlayBroadcastPreparationBannerModel>>(emptyList())
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -454,7 +449,25 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.ClickRefreshQuizOption -> handleRefreshQuizOptionDetail()
             is PlayBroadcastAction.ClickPinProduct -> handleClickPin(event.product)
             is PlayBroadcastAction.BroadcastStateChanged -> handleBroadcastStateChanged(event.state)
+            is PlayBroadcastAction.AddBannerPreparation -> handleAddBannerPreparation(event.data)
+            is PlayBroadcastAction.RemoveBannerPreparation -> handleRemoveBannerPreparation(event.data)
         }
+    }
+
+    private fun handleAddBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            if (bannerPreparationList.contains(data)) return@launchCatchError
+            bannerPreparationList.add(data)
+            observableBanner.emit(bannerPreparationList)
+        }, onError = {
+        })
+    }
+
+    private fun handleRemoveBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            bannerPreparationList.remove(data)
+            observableBanner.emit(bannerPreparationList)
+        }, onError = {})
     }
 
     private fun handleGetConfiguration(selectedType: String) {

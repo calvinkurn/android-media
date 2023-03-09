@@ -11,6 +11,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
@@ -29,9 +33,10 @@ import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
@@ -42,7 +47,11 @@ import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayBroadcastPreparationBannerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
@@ -51,6 +60,7 @@ import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
@@ -99,7 +109,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     FragmentWithDetachableView,
     PreparationMenuView.Listener,
     TitleFormView.Listener,
-    CoverFormView.Listener {
+    CoverFormView.Listener,
+    PlayBroadcastPreparationBannerAdapter.BannerListener {
 
     /** ViewModel */
     private val viewModel: PlayBroadcastPrepareViewModel by viewModels { viewModelFactory }
@@ -114,6 +125,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val binding get() = _binding!!
 
     /** Others */
+    private val adapterBanner: PlayBroadcastPreparationBannerAdapter by lazyThreadSafetyNone {
+        PlayBroadcastPreparationBannerAdapter(this)
+    }
+    private val mLayoutManager by lazyThreadSafetyNone {
+        LinearLayoutManager(context, HORIZONTAL, false)
+    }
+    private val snapHelper = PagerSnapHelper()
+
     private val fragmentViewContainer = FragmentViewContainer()
 
     private var earlyLiveStreamDialog: DialogUnify? = null
@@ -387,11 +406,34 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
 
-        binding.bannerShorts.apply {
-            title = getString(R.string.play_bro_banner_shorts_title)
-            description = getString(R.string.play_bro_banner_shorts_description)
-            bannerIcon = IconUnify.SHORT_VIDEO
+        var lastPosition: Int = -1
+        binding.rvBannerPreparation.apply {
+            layoutManager = mLayoutManager
+            adapter = adapterBanner
+            if (itemDecorationCount == 0) addItemDecoration(
+                PlayBroadcastPreparationBannerItemDecoration(context)
+            )
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val position = mLayoutManager.findLastVisibleItemPosition()
+                    if (lastPosition == position) return
+                    lastPosition = position
+
+                    // TODO handle the coach mark
+                    when (adapterBanner.getItems()[lastPosition].type) {
+                        TYPE_SHORTS -> {
+
+                        }
+                        TYPE_DASHBOARD -> {
+
+                        }
+                        else -> {}
+                    }
+                }
+            })
         }
+        snapHelper.attachToRecyclerView(binding.rvBannerPreparation)
     }
 
     private fun setupInsets() {
@@ -449,15 +491,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 analytic.clickSwitchCameraOnPreparation()
                 broadcaster.flip()
             }
-
-            bannerShorts.setOnClickListener {
-                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
-
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
-
-                val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
-                startActivityForResult(intent, REQ_PLAY_SHORTS)
-            }
         }
     }
 
@@ -493,6 +526,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeUiState()
         observeUiEvent()
         observeViewEvent()
+        observeBannerPreparation()
     }
 
     private fun setupCoachMark() {
@@ -514,14 +548,25 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             if(isShortsEntryPointCoachMarkShown) {
                 add(
                     CoachMark2Item(
-                        anchorView = binding.bannerShorts,
+                        anchorView = binding.rvBannerPreparation,
                         title = getString(R.string.play_bro_banner_shorts_coachmark_title),
                         description = getString(R.string.play_bro_banner_shorts_coachmark_description),
                         position = CoachMark2.POSITION_BOTTOM,
                     )
                 )
-                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+                // TODO un-comment later
+//                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
             }
+
+            // TODO condition for coach mark entry point performance
+            add(
+                CoachMark2Item(
+                    anchorView = binding.rvBannerPreparation,
+                    title = getString(R.string.play_bro_banner_performance_dashboard_coachmark_title),
+                    description = getString(R.string.play_bro_banner_performance_dashboard_coachmark_subtitle),
+                    position = CoachMark2.POSITION_BOTTOM,
+                )
+            )
 
             if(parentViewModel.isAllowChangeAccount && viewModel.isFirstSwitchAccount) {
                 add(
@@ -532,7 +577,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         position = CoachMark2.POSITION_BOTTOM,
                     )
                 )
-                viewModel.setNotFirstSwitchAccount()
+                // TODO un-comment later
+//                viewModel.setNotFirstSwitchAccount()
             }
         }
 
@@ -722,6 +768,30 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         )
     }
 
+    private fun observeBannerPreparation() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            parentViewModel.observableBanner.collect { banner ->
+                if (banner.isNullOrEmpty()) return@collect
+                adapterBanner.setItems(banner)
+            }
+        }
+    }
+
+    override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
+        when (data.type) {
+            TYPE_SHORTS -> {
+                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
+//                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+                val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
+                startActivityForResult(intent, REQ_PLAY_SHORTS)
+            }
+            TYPE_DASHBOARD -> {
+                // TODO direct to performance dashboard page
+                showToast("direct to performance dashboard page")
+            }
+        }
+    }
+
     private fun renderAccountInfo(
         prevState: ContentAccountUiModel?,
         state: ContentAccountUiModel
@@ -800,14 +870,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         prev: PlayChannelUiState?,
         curr: PlayChannelUiState,
     ) {
-        if(prev?.shortVideoAllowed == curr.shortVideoAllowed) return
+        if (prev?.shortVideoAllowed == curr.shortVideoAllowed) return
 
-        if(curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
-            binding.bannerShorts.show()
+        if (curr.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
+            parentViewModel.submitAction(
+                PlayBroadcastAction.AddBannerPreparation(
+                    PlayBroadcastPreparationBannerModel.bannerShortsEntryPoint(requireContext())
+                )
+            )
+            parentViewModel.submitAction(
+                PlayBroadcastAction.AddBannerPreparation(
+                    PlayBroadcastPreparationBannerModel.bannerPerformanceEntryPoint(requireContext())
+                )
+            )
             analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
-        }
-        else {
-            binding.bannerShorts.gone()
+        } else {
+            parentViewModel.submitAction(
+                PlayBroadcastAction.RemoveBannerPreparation(
+                    PlayBroadcastPreparationBannerModel.bannerShortsEntryPoint(requireContext())
+                )
+            )
         }
     }
 
@@ -1149,6 +1231,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     companion object {
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
+        private const val HALF_DIVED = 2
 
         private const val REQ_PLAY_SHORTS = 12323
     }
