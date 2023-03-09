@@ -22,7 +22,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
-class FeedPostViewHolder(
+class FeedPostImageViewHolder(
     private val binding: ItemFeedPostBinding,
     private val listener: FeedListener
 ) : AbstractViewHolder<FeedCardImageContentModel>(binding.root) {
@@ -101,8 +101,7 @@ class FeedPostViewHolder(
     }
 
     private fun setUpProductTagButtonText(feedCardModel: FeedCardImageContentModel) {
-        val productData =
-            if (feedCardModel.isTypeProductHighlight) feedCardModel.products else feedCardModel.tags
+        val productData = feedCardModel.products
 
         when (val numberOfTaggedProducts = feedCardModel.totalProducts) {
             PRODUCT_COUNT_ZERO -> {

@@ -6,24 +6,31 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_feed_post_image_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/player_feed_video"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:resize_mode="fixed_width"
+        app:show_timeout="3000"
+        app:shutter_background_color="@android:color/transparent"
+        app:surface_type="texture_view"
+        app:use_controller="false" />
 
-    <com.tokopedia.unifycomponents.PageControl
-        android:id="@+id/indicator_feed_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        app:indicator_type="CIRCLE"
-        app:layout_constraintBottom_toTopOf="@id/product_tag_view"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:id="@+id/loader_feed_video"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="decorative_white" />
 
     <include
         android:id="@+id/product_tag_view"

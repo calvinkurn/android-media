@@ -113,8 +113,23 @@ class FeedXCard(
     val maximumDiscountPercentage: Int = 0,
     @SerializedName("maximumDiscountPercentageFmt")
     val maximumDiscountPercentageFmt: String = ""
+) {
+    companion object {
+        const val TYPE_FEED_X_CARD_POST = "FeedXCardPost"
+        const val TYPE_FEED_X_CARD_PLACEHOLDER = "FeedXCardPlaceholder"
+        const val TYPE_FEED_X_CARD_PLAY = "FeedXCardPlay"
+        const val TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT = "FeedXCardProductsHighlight"
+        const val TYPE_FEED_LONG_VIDEO = "long-video"
 
-)
+        const val TYPE_FEED_PLAY_CHANNEL = "sgc_play_channel"
+        const val TYPE_FEED_PLAY_SHORT_VIDEO = "sgc_play_short_video"
+        const val TYPE_FEED_PLAY_LIVE = "sgc_play_livestream"
+
+        const val TYPE_MEDIA_IMAGE = "image"
+        const val TYPE_MEDIA_VIDEO = "video"
+        const val TYPE_MEDIA_YOUTUBE = "youtube"
+    }
+}
 
 class FeedXCardItem(
     @SerializedName("id")
