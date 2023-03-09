@@ -34,6 +34,7 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.exception.MessageErrorException
@@ -778,11 +779,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
         when (data.type) {
-            PlayBroadcastPreparationBannerModel.TYPE_SHORTS -> {
+            TYPE_SHORTS -> {
                 analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
 //                coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
                 val intent = RouteManager.getIntent(requireContext(), PlayShorts.generateApplink())
                 startActivityForResult(intent, REQ_PLAY_SHORTS)
+            }
+            TYPE_DASHBOARD -> {
+                // TODO direct to performance dashboard page
+                showToast("direct to performance dashboard page")
             }
         }
     }
