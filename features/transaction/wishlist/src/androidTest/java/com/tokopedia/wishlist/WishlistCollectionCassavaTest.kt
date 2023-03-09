@@ -99,6 +99,8 @@ class WishlistCollectionCassavaTest {
             submitNewCollectionName()
             clickBuatKoleksiButton()
             loading()
+            clickCreateNewCollection()
+            clickXOnCreateNewCollectionBottomsheet()
 
             // Force TrackingQueue to send trackers
             runBlocking {

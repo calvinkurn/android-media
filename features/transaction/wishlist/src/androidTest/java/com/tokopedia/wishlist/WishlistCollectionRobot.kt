@@ -51,6 +51,12 @@ class WishlistCollectionRobot {
             )
     }
 
+    fun clickXOnCreateNewCollectionBottomsheet() {
+        Intents.intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        onView(withId(R.id.bottom_sheet_close))
+            .perform(ViewActions.click())
+    }
+
     fun submitNewCollectionName() {
         onView(withId(R.id.collection_create_name_input_text_field))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
