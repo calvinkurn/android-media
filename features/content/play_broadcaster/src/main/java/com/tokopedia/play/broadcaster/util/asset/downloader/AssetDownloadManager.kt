@@ -29,6 +29,6 @@ class AssetDownloadManager @Inject constructor() {
     interface AssetResourceApi {
         @Streaming
         @GET
-        suspend fun downloadAsset(@Url fileUrl:String): ResponseBody
+        suspend fun downloadAsset(@Url fileUrl: String): ResponseBody
     }
 }
