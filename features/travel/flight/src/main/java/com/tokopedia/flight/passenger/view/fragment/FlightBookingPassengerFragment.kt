@@ -428,7 +428,11 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         selectedDate = minDate
 
         if (getPassportExpiryDate().isNotBlank()) {
-            selectedDate = getPassportExpiryDate().toDate(DateUtil.DEFAULT_VIEW_FORMAT)
+            try {
+                selectedDate = getPassportExpiryDate().toDate(DateUtil.DEFAULT_VIEW_FORMAT)
+            } catch (parseException: ParseException) {
+                FirebaseCrashlytics.getInstance().recordException(parseException)
+            }
         }
 
         showCalendarPickerDialog(
