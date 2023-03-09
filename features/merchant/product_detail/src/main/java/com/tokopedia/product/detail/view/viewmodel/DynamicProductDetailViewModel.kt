@@ -1426,7 +1426,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
                     it.copy(event = event, impressRestriction = true)
                 }
             }
-            OneTimeMethodEvent.Empty -> {
+            else -> {
                 // noop
             }
         }
