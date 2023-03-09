@@ -81,7 +81,7 @@
                 android:layout_height="40dp"
                 android:contentDescription="@null"
                 android:padding="8dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:visibility="visible"
                 app:srcCompat="@drawable/ic_add_attachment_chatbot" />
         </FrameLayout>

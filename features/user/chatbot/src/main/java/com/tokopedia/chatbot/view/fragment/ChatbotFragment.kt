@@ -50,6 +50,8 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.Attachment
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ChatbotImageMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VideoMenu
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
@@ -288,7 +290,7 @@ class ChatbotFragment :
     var videoUploadOnBoardingHasBeenShow: Boolean = false
     private val coachmarkHandler = Handler(Looper.getMainLooper())
     private var showAddAttachmentMenu: Boolean = false
-    private var showUploadImageButton: Boolean = false
+    private var showUploadImageButton: Boolean = true
     private var showUploadVideoButton: Boolean = false
 
     @Inject
@@ -657,6 +659,7 @@ class ChatbotFragment :
 
         initRecyclerViewListener()
         setupBeforeReplyTime()
+        createAttachmentMenus()
 
         if (savedInstanceState != null) {
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
@@ -1650,11 +1653,17 @@ class ChatbotFragment :
 
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         var list = mutableListOf<AttachmentMenu>()
-        if (showUploadImageButton) {
-            attachmentMenuRecyclerView?.addChatbotImageAttachmentMenu()
-        }
-        if (showUploadVideoButton) {
-            attachmentMenuRecyclerView?.addVideoAttachmentMenu()
+        attachmentMenuRecyclerView?.apply {
+            removeChatbotImageAttachmentMenu()
+            removeVideoAttachmentMenu()
+            if (showUploadImageButton) {
+                list.add(ChatbotImageMenu())
+                addChatbotImageAttachmentMenu()
+            }
+            if(showUploadVideoButton) {
+                list.add(VideoMenu())
+                addVideoAttachmentMenu()
+            }
         }
         return list
     }

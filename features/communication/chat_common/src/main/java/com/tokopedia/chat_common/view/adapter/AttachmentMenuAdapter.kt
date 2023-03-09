@@ -75,4 +75,25 @@ class AttachmentMenuAdapter(
         notifyItemInserted(menus.size - 1)
     }
 
+    fun removeChatbotImageAttachmentMenu() {
+        menus.forEachIndexed { index, menu ->
+            if (menu is ChatbotImageMenu) {
+                menus.remove(menu)
+                notifyItemRemoved(index)
+                return
+            }
+        }
+
+    }
+
+    fun removeVideoAttachmentMenu() {
+        menus.forEachIndexed { index, menu ->
+            if (menu is VideoMenu) {
+                menus.remove(menu)
+                notifyItemRemoved(index)
+                return
+            }
+        }
+    }
+
 }
