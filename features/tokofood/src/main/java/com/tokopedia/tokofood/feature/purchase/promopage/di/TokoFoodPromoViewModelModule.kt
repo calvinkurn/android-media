@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoViewModel
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoViewModelOld
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,5 +23,11 @@ abstract class TokoFoodPromoViewModelModule {
     @IntoMap
     @ViewModelKey(TokoFoodPromoViewModel::class)
     internal abstract fun bindViewModel(viewModel: TokoFoodPromoViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(TokoFoodPromoViewModelOld::class)
+    internal abstract fun bindViewModelOld(viewModel: TokoFoodPromoViewModelOld): ViewModel
 
 }

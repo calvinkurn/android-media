@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.common.di.TokoFoodModule
 import com.tokopedia.tokofood.common.di.TokoFoodScope
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocationFragment
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragment
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragmentOld
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
 import dagger.Component
 
@@ -12,6 +13,7 @@ import dagger.Component
 @Component(modules = [TokoFoodModule::class, MerchantPageViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface MerchantPageComponent {
     fun inject(fragment: MerchantPageFragment)
+    fun inject(fragment: MerchantPageFragmentOld)
     fun inject(fragment: OrderCustomizationFragment)
     fun inject(fragment: ManageLocationFragment)
 }
