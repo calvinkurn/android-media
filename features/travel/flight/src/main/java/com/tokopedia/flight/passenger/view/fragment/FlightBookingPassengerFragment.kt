@@ -189,6 +189,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
             binding?.tilBirthDate?.textFieldInput?.isFocusable = false
             binding?.tilBirthDate?.textFieldInput?.isClickable = true
+            binding?.tilBirthDate?.textFieldInput?.disableLongClick()
+
             binding?.tilBirthDate?.textFieldInput?.setCompoundDrawablesWithIntrinsicBounds(
                 null, null,
                 MethodChecker.getDrawable(
@@ -200,6 +202,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
             binding?.tilPassportExpirationDate?.textFieldInput?.isFocusable = false
             binding?.tilPassportExpirationDate?.textFieldInput?.isClickable = true
+            binding?.tilPassportExpirationDate?.textFieldInput?.disableLongClick()
             binding?.tilPassportExpirationDate?.textFieldInput?.setCompoundDrawablesWithIntrinsicBounds(
                 null, null,
                 MethodChecker.getDrawable(
@@ -258,6 +261,11 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             binding?.rvPassengerTitle?.selectOnlyOneChip(true)
             binding?.rvPassengerTitle?.canDiselectAfterSelect(false)
         }
+    }
+
+    private fun AutoCompleteTextView.disableLongClick() {
+        isLongClickable = false
+        setTextIsSelectable(false)
     }
 
     private fun initFirstNameAutoCompleteTv(context: Context) {
