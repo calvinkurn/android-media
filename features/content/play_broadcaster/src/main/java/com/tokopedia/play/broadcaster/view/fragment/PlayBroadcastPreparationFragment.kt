@@ -34,7 +34,6 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.network.exception.MessageErrorException
@@ -787,7 +786,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             TYPE_DASHBOARD -> {
                 // TODO direct to performance dashboard page
-                showToast("direct to performance dashboard page")
+                //tokopedia://webview?url=https://www.tokopedia.com/help/article/syarat-dan-ketentuan-feed-user-profil
+                val url = "https://tokopedia.com/play/live"
+                val applink = "tokopedia://webview?url=$url"
+                RouteManager.route(requireContext(), applink)
             }
         }
     }

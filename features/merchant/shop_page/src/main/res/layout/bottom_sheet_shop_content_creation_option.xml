@@ -9,37 +9,33 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/ic_shorts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            app:icon_name="SHORT_VIDEO" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="@string/shop_page_shorts_creation_label"
             android:layout_gravity="center_vertical"
-            />
+            android:layout_marginStart="16dp"
+            android:text="@string/shop_page_shorts_creation_label" />
 
     </LinearLayout>
 
     <View
-        android:id="@+id/divider"
+        android:id="@+id/divider1"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="16dp"
         android:background="@color/Unify_N75"
-        app:layout_constraintStart_toStartOf="@id/ll_shorts"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_shorts"
-        />
+        app:layout_constraintStart_toStartOf="@id/ll_shorts"
+        app:layout_constraintTop_toBottomOf="@id/ll_shorts" />
 
     <LinearLayout
         android:id="@+id/ll_broadcaster"
@@ -47,25 +43,56 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintStart_toStartOf="@id/ll_shorts"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="@id/ll_shorts"
+        app:layout_constraintTop_toBottomOf="@id/divider1">
 
         <com.tokopedia.iconunify.IconUnify
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon_name="VIDEO"
-            />
+            app:icon_name="VIDEO" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="@string/shop_page_broadcast_creation_label"
             android:layout_gravity="center_vertical"
-            />
+            android:layout_marginStart="16dp"
+            android:text="@string/shop_page_broadcast_creation_label" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/ll_shorts"
+        app:layout_constraintTop_toBottomOf="@id/ll_broadcaster" />
+
+    <LinearLayout
+        android:id="@+id/ll_performance_dashboard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/ll_shorts"
+        app:layout_constraintTop_toBottomOf="@id/divider2">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon_name="GRAPH_REPORT" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:text="@string/shop_page_play_widget_sgc_performance_dashboard" />
 
     </LinearLayout>
 
