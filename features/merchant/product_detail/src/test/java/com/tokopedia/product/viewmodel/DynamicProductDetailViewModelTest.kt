@@ -43,6 +43,7 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -2663,12 +2664,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
     }
 
-    @Test
-    fun `get play widget data success`() {
-        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
-
-        val expectedResponse = PlayWidget()
-        val expectedState = PlayWidgetState(
+    // region play widget
+    private val playWidgetExpectedState by lazy {
+        PlayWidgetState(
             model = PlayWidgetUiModel(
                 "title",
                 "action title",
@@ -2688,6 +2686,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             ),
             isLoading = false
         )
+    }
+
+    @Test
+    fun `get play widget data success`() {
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
+
+        val expectedResponse = PlayWidget()
 
         coEvery {
             playWidgetTools.getWidgetFromNetwork(
@@ -2699,11 +2704,61 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             playWidgetTools.mapWidgetToModel(
                 expectedResponse
             )
-        } returns expectedState
+        } returns playWidgetExpectedState
 
         viewModel.getPlayWidgetData()
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(expectedState))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(playWidgetExpectedState))
+    }
+
+    @Test
+    fun `get play widget data success with variant data available`() {
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
+        val expectedResponse = PlayWidget()
+        viewModel.variantData = ProductVariant(
+            parentId = "1"
+        )
+        coEvery {
+            playWidgetTools.getWidgetFromNetwork(
+                widgetType = widgetType
+            )
+        } returns expectedResponse
+
+        coEvery {
+            playWidgetTools.mapWidgetToModel(
+                expectedResponse
+            )
+        } returns playWidgetExpectedState
+
+        viewModel.getPlayWidgetData()
+        assert(viewModel.variantData != null)
+    }
+
+    @Test
+    fun `get play widget data success with basic category detail available`() {
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
+        val expectedResponse = PlayWidget()
+        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(
+            basic = BasicInfo(category = Category(detail = listOf(Category.Detail())))
+        )
+        viewModel.variantData = ProductVariant(
+            parentId = "1",
+            children = listOf(VariantChild())
+        )
+        coEvery {
+            playWidgetTools.getWidgetFromNetwork(
+                widgetType = widgetType
+            )
+        } returns expectedResponse
+
+        coEvery {
+            playWidgetTools.mapWidgetToModel(
+                expectedResponse
+            )
+        } returns playWidgetExpectedState
+
+        viewModel.getPlayWidgetData()
+        assert(viewModel.getDynamicProductInfoP1?.basic?.category != null)
     }
 
     @Test
@@ -2918,6 +2973,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.playWidgetReminderSwitch.verifyErrorEquals(Fail(expectedThrowable))
     }
 
+    // endregion playwidget
     @Test
     fun `verify add to wishlistv2 returns success`() {
         val productId = "123"
