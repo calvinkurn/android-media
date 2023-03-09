@@ -60,6 +60,10 @@ object Constant {
         const val FILTER_DESCRIPTION = "Coba kurangi filter yang sedang aktif, atau reset filter buat lanjutkan penjelajahanmu!"
         const val FILTER_BUTTON_TEXT = "Reset Filter"
         const val FILTER_EMPTY_IMAGE = "filtered_product_empty_state.png"
+        const val CONTENT_CARD_EMPTY_TEXT_LAST_COMPONENT = "Saatnya berburu promo paling oke!"
+        const val CONTENT_CARD_EMPTY_TOAST_LAST_COMPONENT = "Promonya bisa dicek lewat halaman ini, yaa"
+        const val CONTENT_CARD_EMPTY_TEXT_NOT_LAST_COMPONENT = "Lanjut intip promo kece di bawah, yuk~"
+        const val CONTENT_CARD_EMPTY_TOAST_NOT_LAST_COMPONENT = "Mau cek promo lainnya, ya? Geser ke bawah aja~"
     }
 
     object ChooseAddressQueryParams{
