@@ -25,7 +25,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 216
+        const val SIZE_MAPPER = 219
     }
 
     override fun setup() {
@@ -637,6 +637,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://recharge/home/dynamic?platform_id=31"
         assertEqualsDeepLinkMapper(ApplinkConst.DIGITAL_PRODUCT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check digital telkomsel omni form appLink then should return tokopedia internal digital omni checkout in customerapp`() {
+        val deeplink = "${ApplinkConst.TELKOMSEL_OMNI}?kb=43921686"
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://digital/checkout?category_id=54&operator_id=7654&client_number=43921686&product_id=20159&is_from_widget=true&kb=43921686"
+        assertEqualsDeepLinkMapper(deeplink, expectedDeepLink)
     }
 
     @Test
@@ -2051,6 +2059,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check marketplace buyer partial order fulfillment appLink then should return tokopedia internal marketplace buyer partial order fulfillment in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-partial-order-fulfillment"
+        assertEqualsDeepLinkMapper(ApplinkConst.BUYER_PARTIAL_ORDER_FULFILLMENT, expectedDeepLink)
+    }
+
+    @Test
     fun `check tokonow home appLink then should return tokopedia internal tokonow home in customerapp`() {
         val expectedDeepLink = ApplinkConstInternalTokopediaNow.HOME
         val actualDeeplink = ApplinkConst.TokopediaNow.HOME
@@ -2552,6 +2567,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check topchat settings bubble activation applink`() {
         val deepLink = ApplinkConst.TOPCHAT_BUBBLE_ACTIVATION
         val expectedDeepLink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
+        assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check product review gallery applink`() {
+        val deepLink = ApplinkConst.PRODUCT_REVIEW_GALLERY
+        val expectedDeepLink = ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
 }

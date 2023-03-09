@@ -9,9 +9,13 @@ import com.tokopedia.kotlin.extensions.view.orZero
 data class ProductListUiModel(
     val productList: List<ProductUiModel>,
     val productBundlingList: List<ProductBundlingUiModel>,
+    val productUnFulfilledList: List<ProductUiModel>?,
+    val productFulfilledHeaderLabel: ProductPofHeaderLabelUiModel?,
+    val productUnfulfilledHeaderLabel: ProductPofHeaderLabelUiModel?,
     val productListHeaderUiModel: ProductListHeaderUiModel,
     val addonsListUiModel: AddonsListUiModel?,
-    val productListToggleUiModel: ProductListToggleUiModel?
+    val productListToggleUiModel: ProductListToggleUiModel?,
+    val tickerInfo: TickerUiModel?
 ) {
 
     fun getAllProduct(): List<ProductUiModel> {
@@ -57,7 +61,8 @@ data class ProductListUiModel(
         val totalPriceText: String,
         val isProcessing: Boolean = false,
         val addonsListUiModel: AddonsListUiModel? = null,
-        val insurance: Insurance? = null
+        val insurance: Insurance? = null,
+        val isPof: Boolean = false
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -104,6 +109,24 @@ data class ProductListUiModel(
 
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
+        }
+    }
+
+    data class ProductPofHeaderLabelUiModel(
+        val title: String,
+        val quantity: String,
+        val isUnfulfilled: Boolean
+    ) : BaseVisitableUiModel {
+        override fun shouldShow(context: Context?): Boolean {
+            return title.isNotBlank() || quantity.isNotBlank()
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
+        }
+
+        override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
+            return typeFactory.type(this)
         }
     }
 }

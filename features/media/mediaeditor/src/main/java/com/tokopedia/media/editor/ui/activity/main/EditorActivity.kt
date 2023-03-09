@@ -3,6 +3,7 @@ package com.tokopedia.media.editor.ui.activity.main
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -111,7 +112,9 @@ class EditorActivity : BaseEditorActivity() {
     }
 
     override fun onHeaderActionClick() {
-        if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+        ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE
