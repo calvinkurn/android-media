@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -19,6 +20,7 @@ import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
+import timber.log.Timber
 import java.io.File
 
 private const val MEDIA_EDITOR_CACHE_DIR = "Editor-Cache"
@@ -168,6 +170,7 @@ fun getImageSize(path: String): Pair<Int, Int> {
         BitmapFactory.decodeFile(path, option)
         return Pair(option.outWidth, option.outHeight)
     } catch (e: Exception) {
+        Timber.d("get image size bound error, ${e.message}")
         Pair(0, 0)
     }
 }
