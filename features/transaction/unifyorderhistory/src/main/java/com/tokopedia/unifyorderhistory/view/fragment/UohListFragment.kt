@@ -754,7 +754,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                         UohAnalytics.viewOrderListPage()
                     } else {
-                        refreshHandler?.finishRefresh()
                         if (currPage == 1) {
                             uohListViewModel.loadTdnBanner()
                             loadRecommendationList()
@@ -762,6 +761,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     }
                 }
                 is Fail -> {
+                    refreshHandler?.finishRefresh()
                     val errorType = when (it.throwable) {
                         is MessageErrorException -> null
                         is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
