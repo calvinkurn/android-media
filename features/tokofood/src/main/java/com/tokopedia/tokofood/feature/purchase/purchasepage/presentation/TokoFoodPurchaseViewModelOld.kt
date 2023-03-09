@@ -47,9 +47,9 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseFragmentUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
@@ -97,7 +97,7 @@ class TokoFoodPurchaseViewModelOld @Inject constructor(
 
     private val _isAddressHasPinpoint = MutableStateFlow("" to false)
 
-    private val _updateQuantityState: MutableSharedFlow<List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>> =
+    private val _updateQuantityState: MutableSharedFlow<List<TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld>> =
         MutableSharedFlow()
 
     private val _updateQuantityStateFlow: MutableStateFlow<UpdateParam?> = MutableStateFlow(null)
@@ -119,11 +119,11 @@ class TokoFoodPurchaseViewModelOld @Inject constructor(
                 .flatMapConcat { productList ->
                     flow {
                         showPartialLoading()
-                        emit(TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateParam(productList, shopId.value))
+                        emit(TokoFoodPurchaseUiModelMapperOld.mapUiModelToUpdateParam(productList, shopId.value))
                     }
                 }
                 .collect {
-                    _visitables.value?.filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()?.forEach { productUiModel ->
+                    _visitables.value?.filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld>()?.forEach { productUiModel ->
                         productUiModel.isQuantityChanged = false
                     }
                     _updateQuantityStateFlow.emit(it)
@@ -312,7 +312,7 @@ class TokoFoodPurchaseViewModelOld @Inject constructor(
     }
 
     private fun List<Visitable<*>>.hasRemainingProduct(): Boolean {
-        return any { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel }
+        return any { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld }
     }
 
     fun validateBulkDelete() {
@@ -546,7 +546,7 @@ class TokoFoodPurchaseViewModelOld @Inject constructor(
 
     fun setPaymentButtonLoading(isLoading: Boolean) {
         val dataList = getVisitablesValue().toMutableList().apply {
-            getUiModel<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>()?.let { pair ->
+            getUiModel<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld>()?.let { pair ->
                 val (totalAmountIndex, uiModel) = pair
                 removeAt(totalAmountIndex)
                 add(totalAmountIndex, uiModel.copy(isButtonLoading = isLoading && uiModel.isEnabled))

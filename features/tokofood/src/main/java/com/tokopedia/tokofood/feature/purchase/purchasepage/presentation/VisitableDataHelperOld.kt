@@ -8,7 +8,7 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.CanLoadPartially
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAddressTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchasePromoTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel
@@ -29,10 +29,10 @@ object VisitableDataHelperOld {
         return null
     }
 
-    fun MutableList<Visitable<*>>.getProductById(productId: String, cartId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
+    fun MutableList<Visitable<*>>.getProductById(productId: String, cartId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld>? {
         loop@ for ((index, data) in this.withIndex()) {
             when {
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.id == productId && data.cartId == cartId -> {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld && data.id == productId && data.cartId == cartId -> {
                     return Pair(index, data)
                 }
                 data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
@@ -43,16 +43,16 @@ object VisitableDataHelperOld {
         return null
     }
 
-    fun MutableList<Visitable<*>>.getProductByUpdateParam(param: UpdateProductParam): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
+    fun MutableList<Visitable<*>>.getProductByUpdateParam(param: UpdateProductParam): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld>? {
         loop@ for ((index, data) in this.withIndex()) {
             val isMatchingProduct =
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
                     && data.id == param.productId
                     && data.cartId == param.cartId
                     && data.variantsParam == param.variants
             when {
                 isMatchingProduct -> {
-                    (data as? TokoFoodPurchaseProductTokoFoodPurchaseUiModel)?.let { productVisitable ->
+                    (data as? TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld)?.let { productVisitable ->
                         return Pair(index, productVisitable)
                     }
                 }
@@ -97,7 +97,7 @@ object VisitableDataHelperOld {
                 is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel -> {
                     return Pair(index, data)
                 }
-                is TokoFoodPurchaseProductTokoFoodPurchaseUiModel -> {
+                is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld -> {
                     break@loop
                 }
             }
@@ -114,12 +114,12 @@ object VisitableDataHelperOld {
         return null
     }
 
-    fun MutableList<Visitable<*>>.getAllUnavailableProducts(): Pair<Int, List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>> {
+    fun MutableList<Visitable<*>>.getAllUnavailableProducts(): Pair<Int, List<TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld>> {
         var firstItemIndex = RecyclerView.NO_POSITION
-        val unavailableProducts = mutableListOf<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
+        val unavailableProducts = mutableListOf<TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld>()
         loop@ for ((index, data) in this.withIndex()) {
             when {
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !data.isAvailable -> {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld && !data.isAvailable -> {
                     if (firstItemIndex == RecyclerView.NO_POSITION) firstItemIndex = index
                     unavailableProducts.add(data)
                 }
@@ -143,17 +143,17 @@ object VisitableDataHelperOld {
         return partiallyLoadedModels
     }
 
-    fun MutableList<Visitable<*>>.getProductWithChangedQuantity(): List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel> {
-        return this.filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
+    fun MutableList<Visitable<*>>.getProductWithChangedQuantity(): List<TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld> {
+        return this.filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld>()
             .filter { it.isAvailable && it.isEnabled && it.isQuantityChanged }
     }
 
     fun MutableList<Visitable<*>>.isLastAvailableProduct(): Boolean {
-        val count = this.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && it.isAvailable }
+        val count = this.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld && it.isAvailable }
         return count == Int.ONE
     }
 
-    fun TokoFoodPurchaseProductTokoFoodPurchaseUiModel.getUpdatedCartId(cartTokoFoodData: CartTokoFoodData): String? {
+    fun TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld.getUpdatedCartId(cartTokoFoodData: CartTokoFoodData): String? {
         return cartTokoFoodData.carts.find { cartData ->
             cartData.productId == this.id && cartData.getMetadata()?.variants?.let { variants ->
                 var isSameVariants = true
@@ -186,7 +186,7 @@ object VisitableDataHelperOld {
     }
 
     fun MutableList<Visitable<*>>?.setCartId(index: Int, cartId: String) {
-        (this?.getOrNull(index) as? TokoFoodPurchaseProductTokoFoodPurchaseUiModel)?.cartId = cartId
+        (this?.getOrNull(index) as? TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld)?.cartId = cartId
     }
 
 }

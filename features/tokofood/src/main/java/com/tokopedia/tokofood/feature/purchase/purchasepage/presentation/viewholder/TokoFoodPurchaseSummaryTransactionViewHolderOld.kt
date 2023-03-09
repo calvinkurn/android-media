@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryItemDetailInfo
-import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionBinding
+import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionOldBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseSummaryTransactionBinding
 import com.tokopedia.tokofood.feature.purchase.goneAllChildren
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
@@ -18,12 +18,12 @@ import com.tokopedia.tokofood.feature.purchase.visibleAllChildren
 import com.tokopedia.unifycomponents.ImageUnify
 
 class TokoFoodPurchaseSummaryTransactionViewHolderOld(
-    private val viewBinding: ItemPurchaseSummaryTransactionBinding,
+    private val viewBinding: ItemPurchaseSummaryTransactionOldBinding,
     private val listener: TokoFoodPurchaseActionListener
 ) : AbstractViewHolder<TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModelOld>(viewBinding.root) {
 
     companion object {
-        val LAYOUT = R.layout.item_purchase_summary_transaction
+        val LAYOUT = R.layout.item_purchase_summary_transaction_old
     }
 
     override fun bind(element: TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModelOld) {

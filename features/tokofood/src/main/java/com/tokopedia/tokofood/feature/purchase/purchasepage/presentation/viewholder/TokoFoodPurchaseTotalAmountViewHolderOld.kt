@@ -2,19 +2,19 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewho
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.databinding.ItemPurchaseTotalAmountBinding
+import com.tokopedia.tokofood.databinding.ItemPurchaseTotalAmountOldBinding
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld
 import com.tokopedia.tokofood.feature.purchase.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class TokoFoodPurchaseTotalAmountViewHolderOld(
-    private val viewBinding: ItemPurchaseTotalAmountBinding,
+    private val viewBinding: ItemPurchaseTotalAmountOldBinding,
     private val listener: TokoFoodPurchaseActionListener
 ) : AbstractViewHolder<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld>(viewBinding.root) {
 
     companion object {
-        val LAYOUT = R.layout.item_purchase_total_amount
+        val LAYOUT = R.layout.item_purchase_total_amount_old
     }
 
     override fun bind(element: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld) {

@@ -20,16 +20,15 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.util.TokofoodExt
-import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
+import com.tokopedia.tokofood.databinding.ItemPurchaseProductOldBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseAddOnBinding
 import com.tokopedia.tokofood.feature.purchase.DISABLED_ALPHA
 import com.tokopedia.tokofood.feature.purchase.ENABLED_ALPHA
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
 
 class TokoFoodPurchaseProductViewHolderOld(
-    private val viewBinding: ItemPurchaseProductBinding,
+    private val viewBinding: ItemPurchaseProductOldBinding,
     private val listener: TokoFoodPurchaseActionListener
 ) : AbstractViewHolder<TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld>(viewBinding.root) {
 
@@ -56,12 +55,12 @@ class TokoFoodPurchaseProductViewHolderOld(
     }
 
     private fun renderBottomDivider(
-        viewBinding: ItemPurchaseProductBinding,
+        viewBinding: ItemPurchaseProductOldBinding,
         element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
     ) {
         with(viewBinding) {
             val nextItem = listener.getNextItems(adapterPosition, Int.ONE).firstOrNull().takeIf {
-                it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                it is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
             }
             if (nextItem == null) {
                 dividerBottom.invisible()
@@ -106,7 +105,7 @@ class TokoFoodPurchaseProductViewHolderOld(
     }
 
     private fun renderProductBasicInformation(
-        viewBinding: ItemPurchaseProductBinding,
+        viewBinding: ItemPurchaseProductOldBinding,
         element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
     ) {
         with(viewBinding) {
@@ -118,7 +117,7 @@ class TokoFoodPurchaseProductViewHolderOld(
     }
 
     private fun renderProductAddOn(
-        viewBinding: ItemPurchaseProductBinding,
+        viewBinding: ItemPurchaseProductOldBinding,
         element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
     ) {
         with(viewBinding) {
@@ -139,7 +138,7 @@ class TokoFoodPurchaseProductViewHolderOld(
     }
 
     private fun renderProductPrice(
-        viewBinding: ItemPurchaseProductBinding,
+        viewBinding: ItemPurchaseProductOldBinding,
         element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
     ) {
         with(viewBinding) {
@@ -168,7 +167,7 @@ class TokoFoodPurchaseProductViewHolderOld(
     }
 
     private fun renderProductNotes(
-        viewBinding: ItemPurchaseProductBinding,
+        viewBinding: ItemPurchaseProductOldBinding,
         element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
     ) {
         with(viewBinding) {
@@ -219,7 +218,7 @@ class TokoFoodPurchaseProductViewHolderOld(
     }
 
     private fun setNotesConstraint(
-        viewBinding: ItemPurchaseProductBinding,
+        viewBinding: ItemPurchaseProductOldBinding,
         element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
     ) {
         with(viewBinding) {
@@ -261,7 +260,7 @@ class TokoFoodPurchaseProductViewHolderOld(
     }
 
     private fun renderProductQuantity(
-        viewBinding: ItemPurchaseProductBinding,
+        viewBinding: ItemPurchaseProductOldBinding,
         element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
     ) {
         with(viewBinding) {
@@ -304,7 +303,7 @@ class TokoFoodPurchaseProductViewHolderOld(
     }
 
     private fun renderDelete(
-        viewBinding: ItemPurchaseProductBinding,
+        viewBinding: ItemPurchaseProductOldBinding,
         element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
     ) {
         with(viewBinding) {
@@ -340,7 +339,7 @@ class TokoFoodPurchaseProductViewHolderOld(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_purchase_product
+        val LAYOUT = R.layout.item_purchase_product_old
 
         private const val SIXTEEN_MARGIN_PX = 16
     }

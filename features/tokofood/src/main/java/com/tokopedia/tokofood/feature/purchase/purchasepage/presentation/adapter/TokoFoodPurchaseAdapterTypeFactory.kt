@@ -14,12 +14,15 @@ import com.tokopedia.tokofood.databinding.ItemPurchaseGeneralTickerBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseLoadingBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductListHeaderBinding
+import com.tokopedia.tokofood.databinding.ItemPurchaseProductOldBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductUnavailableReasonBinding
 import com.tokopedia.tokofood.databinding.ItemPurchasePromoBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseShippingBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionBinding
+import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionOldBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseTickerErrorShopLevelBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseTotalAmountBinding
+import com.tokopedia.tokofood.databinding.ItemPurchaseTotalAmountOldBinding
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAddressTokoFoodPurchaseUiModel
@@ -147,7 +150,7 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
                 TokoFoodPurchaseProductViewHolder(viewBinding, listener)
             }
             TokoFoodPurchaseProductViewHolderOld.LAYOUT -> {
-                val viewBinding = ItemPurchaseProductBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
+                val viewBinding = ItemPurchaseProductOldBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseProductViewHolderOld(viewBinding, listener)
             }
             TokoFoodPurchaseProductUnavailableReasonViewHolder.LAYOUT -> {
@@ -167,7 +170,7 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
                 TokoFoodPurchaseSummaryTransactionViewHolder(viewBinding, listener)
             }
             TokoFoodPurchaseSummaryTransactionViewHolderOld.LAYOUT -> {
-                val viewBinding = ItemPurchaseSummaryTransactionBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
+                val viewBinding = ItemPurchaseSummaryTransactionOldBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseSummaryTransactionViewHolderOld(viewBinding, listener)
             }
             TokoFoodPurchaseTickerErrorShopLevelViewHolder.LAYOUT -> {
@@ -179,7 +182,7 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
                 TokoFoodPurchaseTotalAmountViewHolder(viewBinding, listener)
             }
             TokoFoodPurchaseTotalAmountViewHolderOld.LAYOUT -> {
-                val viewBinding = ItemPurchaseTotalAmountBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
+                val viewBinding = ItemPurchaseTotalAmountOldBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseTotalAmountViewHolderOld(viewBinding, listener)
             }
             TokoFoodPurchaseLoadingViewHolder.LAYOUT -> {

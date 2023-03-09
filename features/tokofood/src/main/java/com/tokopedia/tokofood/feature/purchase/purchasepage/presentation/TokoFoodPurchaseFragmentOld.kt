@@ -59,6 +59,7 @@ import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
+import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragmentOld
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalyticsOld
@@ -839,7 +840,7 @@ class TokoFoodPurchaseFragmentOld :
             globalErrorType = globalErrorType,
             listener = object : TokoFoodPurchaseGlobalErrorBottomSheet.Listener {
                 override fun onGoToHome() {
-                    navigateToNewFragment(TokoFoodHomeFragment.createInstance())
+                    navigateToNewFragment(TokoFoodHomeFragmentOld.createInstance())
                 }
 
                 override fun onRetry() {
@@ -1126,8 +1127,8 @@ class TokoFoodPurchaseFragmentOld :
 
         private const val NO_PINPOINT_URL = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
 
-        fun createInstance(): TokoFoodPurchaseFragment {
-            return TokoFoodPurchaseFragment()
+        fun createInstance(): TokoFoodPurchaseFragmentOld {
+            return TokoFoodPurchaseFragmentOld()
         }
     }
 }

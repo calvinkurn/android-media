@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -19,7 +20,6 @@ import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentInitialStateFoodBinding
-import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.TokofoodSearchErrorStateViewHolder
 import com.tokopedia.tokofood.feature.search.common.util.OnScrollListenerSearch
 import com.tokopedia.tokofood.feature.search.common.util.hideKeyboardOnTouchListener
@@ -119,7 +119,9 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener,
     }
 
     override fun onGoToHome() {
-        navigateToNewFragment(TokoFoodHomeFragment.createInstance())
+        context?.let {
+            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConstInternalTokoFood.HOME)
+        }
         initialStateViewUpdateListener?.hideKeyboard()
     }
 

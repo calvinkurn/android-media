@@ -34,7 +34,6 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseFragmentUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchasePromoTokoFoodPurchaseUiModel
@@ -219,14 +218,14 @@ object TokoFoodPurchaseUiModelMapperOld {
             } else {
                 promoUiModel?.let { promoUiModel ->
                     val hasUnavailableProducts = any { visitable ->
-                        visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !visitable.isAvailable
+                        visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld && !visitable.isAvailable
                     }
                     val futurePromoIndex =
                         if (hasUnavailableProducts) {
                             getUiModelIndex<TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>().let { accordionIndex ->
                                 if (accordionIndex == RecyclerView.NO_POSITION) {
                                     indexOfLast { visitable ->
-                                        visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                                        visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
                                     }
                                 } else {
                                     accordionIndex + Int.ONE
@@ -234,7 +233,7 @@ object TokoFoodPurchaseUiModelMapperOld {
                             }
                         } else {
                             indexOfLast { visitable ->
-                                visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                                visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
                             }
                         }.plus(Int.ONE)
                     add(futurePromoIndex, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
@@ -259,14 +258,14 @@ object TokoFoodPurchaseUiModelMapperOld {
                     val currentPromoIndex = getUiModelIndex<TokoFoodPurchasePromoTokoFoodPurchaseUiModel>()
                     if (currentPromoIndex == RecyclerView.NO_POSITION) {
                         val hasUnavailableProducts = any { visitable ->
-                            visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !visitable.isAvailable
+                            visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld && !visitable.isAvailable
                         }
                         val futureSummaryIndex =
                             if (hasUnavailableProducts) {
                                 getUiModelIndex<TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>().let { accordionIndex ->
                                     if (accordionIndex == RecyclerView.NO_POSITION) {
                                         indexOfLast { visitable ->
-                                            visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                                            visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
                                         }
                                     } else {
                                         accordionIndex
@@ -274,7 +273,7 @@ object TokoFoodPurchaseUiModelMapperOld {
                                 }
                             } else {
                                 indexOfLast { visitable ->
-                                    visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+                                    visitable is TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
                                 }
                             }.plus(Int.ONE)
                         add(futureSummaryIndex, TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
@@ -304,7 +303,7 @@ object TokoFoodPurchaseUiModelMapperOld {
                     removeAt(tickerErrorIndex)
                 }
                 tickerErrorShopLevelUiModel != null && tickerErrorIndex < Int.ZERO -> {
-                    getUiModelIndex<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>().let { firstProductIndex ->
+                    getUiModelIndex<TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld>().let { firstProductIndex ->
                         if (firstProductIndex >= Int.ZERO) {
                             add(firstProductIndex, tickerErrorShopLevelUiModel)
                         }
@@ -328,7 +327,7 @@ object TokoFoodPurchaseUiModelMapperOld {
                 ticker is TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel
             }
             val bottomTickerPosition =
-                getUiModelIndex<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>() - Int.ONE
+                getUiModelIndex<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld>() - Int.ONE
 
             when {
                 firstTickerIndex < Int.ZERO -> {

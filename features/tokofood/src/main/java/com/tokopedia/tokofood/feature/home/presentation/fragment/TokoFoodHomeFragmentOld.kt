@@ -94,7 +94,7 @@ import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHo
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHomeLegoComponentCallbackOld
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeViewModelOld
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragmentOld
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -185,8 +185,8 @@ class TokoFoodHomeFragmentOld :
             "https://images.tokopedia.net/img/gofood_home_og_image.jpg"
         const val SOURCE = "tokofood"
 
-        fun createInstance(): TokoFoodHomeFragment {
-            return TokoFoodHomeFragment()
+        fun createInstance(): TokoFoodHomeFragmentOld {
+            return TokoFoodHomeFragmentOld()
         }
     }
 
@@ -1003,7 +1003,7 @@ class TokoFoodHomeFragmentOld :
     }
 
     private fun goToPurchasePage() {
-        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+        navigateToNewFragment(TokoFoodPurchaseFragmentOld.createInstance())
     }
 
     private fun createShareHome(): TokoFoodHomeShare {

@@ -100,7 +100,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantC
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModelOld
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragmentOld
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragmentOld
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_FULL
@@ -887,7 +887,7 @@ class MerchantPageFragmentOld : BaseMultiFragment(),
                                 merchantId,
                                 merchantName
                             )
-                            navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+                            navigateToNewFragment(TokoFoodPurchaseFragmentOld.createInstance())
                         }
                     }
                 }
@@ -1720,8 +1720,8 @@ class MerchantPageFragmentOld : BaseMultiFragment(),
         private const val REQUEST_CODE_LOGIN = 123
         private const val SOURCE = "merchant_page"
 
-        fun createInstance(): MerchantPageFragment {
-            return MerchantPageFragment()
+        fun createInstance(): MerchantPageFragmentOld {
+            return MerchantPageFragmentOld()
         }
     }
 }

@@ -59,7 +59,7 @@ import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodListDiff
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCategoryViewModelOld
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragmentOld
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -111,8 +111,8 @@ class TokoFoodCategoryFragmentOld: BaseMultiFragment(),
         private const val ITEM_VIEW_CACHE_SIZE = 20
         private const val MINI_CART_SOURCE = "category_page"
 
-        fun createInstance(): TokoFoodCategoryFragment {
-            return TokoFoodCategoryFragment()
+        fun createInstance(): TokoFoodCategoryFragmentOld {
+            return TokoFoodCategoryFragmentOld()
         }
     }
 
@@ -505,7 +505,7 @@ class TokoFoodCategoryFragmentOld: BaseMultiFragment(),
     }
 
     private fun goToPurchasePage() {
-        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
+        navigateToNewFragment(TokoFoodPurchaseFragmentOld.createInstance())
     }
 
     private fun logExceptionTokoFoodCategory(
