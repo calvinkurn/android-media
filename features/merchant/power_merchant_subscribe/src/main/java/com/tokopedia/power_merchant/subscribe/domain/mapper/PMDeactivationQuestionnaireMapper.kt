@@ -18,31 +18,42 @@ class PMDeactivationQuestionnaireMapper @Inject constructor() {
     }
 
     private fun generateQuestionsData(
-            questionnaireData: QuestionnaireData
+        questionnaireData: QuestionnaireData
     ): List<QuestionnaireUiModel> {
         val numOfQuestions = questionnaireData.data.questionList.size
-        return questionnaireData.data.questionList.mapIndexed { index, question ->
-             return@mapIndexed when (question.questionType) {
+        val questionList = mutableListOf<QuestionnaireUiModel>()
+
+        questionnaireData.data.questionList.forEachIndexed { index, question ->
+            when (question.questionType) {
                 QuestionnaireUiModel.TYPE_MULTIPLE_OPTION -> {
-                    createMultipleOptionQuestion(question, index != numOfQuestions.minus(1))
+                    questionList.add(
+                        createMultipleOptionQuestion(
+                            question,
+                            index != numOfQuestions.minus(1)
+                        )
+                    )
+                }
+                QuestionnaireUiModel.TYPE_SINGLE_OPTION -> {
+                    questionList.add(createSingleOptionQuestion(question))
                 }
                 else -> {
-                    createSingleOptionQuestion(question)
+                    return@forEachIndexed
                 }
             }
         }
+        return questionList.toList()
     }
 
     private fun createMultipleOptionQuestion(
-            questionData: Question,
-            showItemDivider: Boolean
+        questionData: Question,
+        showItemDivider: Boolean
     ): QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel {
         return QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel(
-                question = questionData.question,
-                options = questionData.option.map {
-                    QuestionnaireOptionUiModel(it.value, imageURL = it.imageURL)
-                },
-                showItemDivider = showItemDivider
+            question = questionData.question,
+            options = questionData.option.map {
+                QuestionnaireOptionUiModel(it.value, imageURL = it.imageURL)
+            },
+            showItemDivider = showItemDivider
         )
     }
 
