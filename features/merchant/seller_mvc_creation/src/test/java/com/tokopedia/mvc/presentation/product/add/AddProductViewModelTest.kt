@@ -60,8 +60,11 @@ class AddProductViewModelTest {
     @RelaxedMockK
     lateinit var voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 
+    companion object {
+        private const val WAREHOUSE_ID : Long = 1
+    }
     private lateinit var viewModel: AddProductViewModel
-    private val mockedWarehouse = Warehouse(warehouseId = 1, warehouseName = "Bekasi", warehouseType = WarehouseType.WAREHOUSE)
+    private val mockedWarehouse = Warehouse(warehouseId = WAREHOUSE_ID, warehouseName = "Bekasi", warehouseType = WarehouseType.WAREHOUSE)
     private val mockedSortOptions = listOf(ProductSortOptions("price", "Harga Terendah", "ASC"))
     private val mockedCategoryOption = listOf(ProductCategoryOption("electronic", "TV", "Televisi"))
 
@@ -240,7 +243,7 @@ class AddProductViewModelTest {
 
 
             //Then
-            val expectedParam = ProductListMetaUseCase.Param(warehouseId = 1)
+            val expectedParam = ProductListMetaUseCase.Param(warehouseId = WAREHOUSE_ID)
             coVerify(exactly = 0) { getProductListMetaUseCase.execute(expectedParam) }
         }
     }
@@ -258,7 +261,7 @@ class AddProductViewModelTest {
 
             mockShopWarehouseGqlCall()
             mockInitiateVoucherPageGqlCall(maxProductSubmission = expectedMaxProductSubmission)
-            mockGetProductListMetaGqlCall(warehouseId = 1, sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetProductListMetaGqlCall(warehouseId = WAREHOUSE_ID, sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
             mockGetShopShowcasesGqlCall()
             mockGetProductListGqlCall()
             mockVoucherValidationPartialGqlCall()
@@ -365,7 +368,7 @@ class AddProductViewModelTest {
     }
 
     private fun mockGetProductListMetaGqlCall(
-        warehouseId: Long = 1,
+        warehouseId: Long = WAREHOUSE_ID,
         sortOptions: List<ProductSortOptions> = listOf(),
         categoryOptions: List<ProductCategoryOption> = listOf()
     ) {
