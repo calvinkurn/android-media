@@ -52,7 +52,6 @@ import com.tokopedia.feedplus.oldFeed.view.listener.FeedPlusDetailListener
 import com.tokopedia.feedplus.oldFeed.view.presenter.FeedDetailViewModel
 import com.tokopedia.feedplus.oldFeed.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.oldFeed.view.subscriber.FeedDetailViewState
-import com.tokopedia.feedplus.oldFeed.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.oldFeed.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
