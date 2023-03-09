@@ -74,7 +74,7 @@ class AddProductViewModelTest {
     }
 
     @Test
-    fun `when FetchRequiredData function first called, should set the default voucher configuration and previously selected products correctly`() {
+    fun `when FetchRequiredData function first called, should set voucher configuration and previously selected products fields correctly`() {
         runBlockingTest {
             //Given
             val pageMode = PageMode.CREATE
@@ -96,9 +96,9 @@ class AddProductViewModelTest {
                 isEligible = 1,
                 maxProduct = maxProductSelection,
                 prefixVoucherCode = "OFC",
-                shopId = 11,
+                shopId = 1,
                 token = "token",
-                userId = 11,
+                userId = 1,
                 discountActive = true,
                 message = ""
             )
@@ -187,9 +187,10 @@ class AddProductViewModelTest {
 
 
             //Then
-            val actual = emittedValues.last().maxProductSelection
+            val actual = emittedValues.last()
 
-            assertEquals(maxProductSelection, actual)
+            assertEquals(voucherConfiguration, actual.voucherConfiguration)
+            assertEquals(previouslySelectedProducts, actual.previouslySelectedProducts)
 
             job.cancel()
         }
