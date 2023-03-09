@@ -2838,17 +2838,8 @@ open class ProductManageFragment :
         val tabs = data.tabs.map { tab ->
             return@map if (tabName.equals(tab.status?.name, true)
             ) {
-                when (tab){
-                    is FilterTabUiModel.Violation ->{
-                        tab.copy(isSelected = true)
-                    }
-                    is FilterTabUiModel.InActive ->{
-                        tab.copy(isSelected = true)
-                    }
-                    else ->{
-                        tab
-                    }
-                }
+                tab.isSelected = true
+                tab
             } else {
                 tab
             }
