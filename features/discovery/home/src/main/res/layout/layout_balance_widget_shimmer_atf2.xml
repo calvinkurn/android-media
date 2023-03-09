@@ -19,7 +19,7 @@
         android:id="@+id/divider_balance"
         android:layout_width="1dp"
         android:layout_height="32dp"
-        android:background="@color/Unify_NN50"
+        android:background="@color/Unify_NN200"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/layout_shimmer_balance_widget_2"
         app:layout_constraintStart_toEndOf="@id/layout_shimmer_balance_widget_1"

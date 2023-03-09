@@ -9,7 +9,7 @@
         android:id="@+id/divider_balance"
         android:layout_width="1dp"
         android:layout_height="0dp"
-        android:background="@color/Unify_NN50"
+        android:background="@color/Unify_NN200"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
