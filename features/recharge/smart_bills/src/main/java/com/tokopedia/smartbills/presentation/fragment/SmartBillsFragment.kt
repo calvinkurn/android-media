@@ -986,9 +986,9 @@ class SmartBillsFragment :
 
     private fun sbmTransitionStatus(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT,
+            RollenceKey.KEY_SBM_TRANSITION,
             ""
-        ) == RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
+        ) == RollenceKey.KEY_SBM_TRANSITION
     }
 
     companion object {
