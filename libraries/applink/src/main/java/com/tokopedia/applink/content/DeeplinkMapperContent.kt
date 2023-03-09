@@ -70,13 +70,6 @@ object DeeplinkMapperContent {
 
     @OptIn(ExperimentalStdlibApi::class)
     fun getKolDeepLink(deepLink: String): String {
-//        when {
-//            deepLink.startsWithPattern(ApplinkConst.CONTENT_DETAIL) -> {
-//                return deepLink.replace(ApplinkConst.CONTENT_DETAIL.substringBefore("{"), ApplinkConstInternalContent.INTERNAL_CONTENT_POST_DETAIL)
-//            }
-//        }
-//        return getRegisteredNavigation(deepLink)
-
         val uri = Uri.parse(deepLink)
         return UriUtil.buildUriAppendParams(
             ApplinkConsInternalHome.HOME_NAVIGATION,

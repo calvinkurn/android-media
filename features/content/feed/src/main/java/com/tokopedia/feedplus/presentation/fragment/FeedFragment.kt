@@ -544,10 +544,13 @@ class FeedFragment :
         private const val TAG_FEED_MENU_BOTTOMSHEET = "TAG_FEED_MENU_BOTTOMSHEET"
         private const val TAG_FEED_PRODUCT_BOTTOMSHEET = "TAG_FEED_PRODUCT_BOTTOMSHEET"
 
-        fun createFeedFragment(data: FeedDataModel): FeedFragment = FeedFragment().also {
+        fun createFeedFragment(
+            data: FeedDataModel,
+            extras: Bundle,
+        ): FeedFragment = FeedFragment().also {
             it.arguments = Bundle().apply {
                 putParcelable(ARGUMENT_DATA, data)
-//                putString(ARGUMENT_RELEVANT_POST_ID, "209528039")
+                putAll(extras)
             }
         }
     }

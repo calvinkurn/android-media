@@ -21,9 +21,5 @@ class FeedPagerAdapter(
     override fun getItemCount(): Int = tabsList.size
 
     override fun createFragment(position: Int): Fragment =
-        FeedFragment.createFeedFragment(tabsList[position]).apply {
-            arguments = Bundle().apply {
-                putAll(appLinkExtras)
-            }
-        }
+        FeedFragment.createFeedFragment(tabsList[position], appLinkExtras)
 }
