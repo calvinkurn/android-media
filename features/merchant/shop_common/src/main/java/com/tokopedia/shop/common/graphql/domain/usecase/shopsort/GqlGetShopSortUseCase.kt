@@ -31,7 +31,7 @@ class GqlGetShopSortUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): List<ShopProductSort> {
         val request = GraphqlRequest(GQL_QUERY, GqlShopSortProductResponse::class.java)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         val gqlResponse = graphqlRepository.response(listOf(request), cacheStrategy)
         val error = gqlResponse.getError(GqlShopSortProductResponse::class.java)
         if (error == null || error.isEmpty()) {
