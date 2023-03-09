@@ -765,7 +765,8 @@ class MvcListFragment :
         filterList.addAll(quickFilterItems)
         addItem(filterList)
         parentListener = {
-            val bottomSheet = FilterVoucherBottomSheet.newInstance(viewModel.filter)
+            val bottomSheet = FilterVoucherBottomSheet.newInstance(viewModel.filter,
+                enableResetButton = !viewModel.isFilterReseted())
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }

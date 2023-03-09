@@ -40,7 +40,6 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -238,7 +237,7 @@ open class FlightSearchActivity :
         val imageView = ImageView(this)
         val param = LinearLayout.LayoutParams(DIMEN_24_IN_PX, DIMEN_24_IN_PX)
         imageView.layoutParams = param
-        imageView.setImage(R.drawable.ic_flight_edit, CORNER_RADIUS)
+        imageView.setImageResource(R.drawable.ic_flight_edit)
 
         val imageViewShare = IconUnify(this)
         val paramShare = LinearLayout.LayoutParams(DIMEN_24_IN_PX, DIMEN_24_IN_PX)
@@ -617,7 +616,6 @@ open class FlightSearchActivity :
         private val DIMEN_24_IN_PX = 24.toPx()
         private val DIMEN_4_IN_PX = 4.toPx()
         private val DIMEN_14_IN_PX = 14.toPx()
-        private const val CORNER_RADIUS = 8f
         private const val IMG_FLIGHT_SHARE = "https://images.tokopedia.net/img/flight/img/img_flight_thumbnail_share.jpg"
         private const val EEE_DD_MMM_YYYY = "EEE, dd MMM yyyy"
         private const val EEEE_DD_MMM_YY = "EEEE, dd MMM yyyy"
