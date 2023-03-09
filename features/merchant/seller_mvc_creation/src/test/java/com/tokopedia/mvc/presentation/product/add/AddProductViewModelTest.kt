@@ -25,6 +25,7 @@ import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -37,7 +38,6 @@ import java.util.*
 
 @ExperimentalCoroutinesApi
 class AddProductViewModelTest {
-
 
     @RelaxedMockK
     lateinit var getShopWarehouseLocationUseCase: GetShopWarehouseLocationUseCase
@@ -73,6 +73,7 @@ class AddProductViewModelTest {
         )
     }
 
+    //region FetchRequiredData
     @Test
     fun `when FetchRequiredData function first called, should set voucher configuration and previously selected products fields correctly`() {
         runBlockingTest {
@@ -106,6 +107,120 @@ class AddProductViewModelTest {
             job.cancel()
         }
     }
+
+
+    //getProductsAndProductsMetadata success page mode create
+
+    @Test
+    fun `When get voucher metadata in voucher creation mode, action should be VoucherAction CREATE`() = runBlockingTest{
+        val pageMode = PageMode.CREATE
+        val voucherConfiguration = buildVoucherConfiguration()
+        val previouslySelectedProducts = populateProducts()
+
+        mockShopWarehouseGqlCall()
+        mockInitiateVoucherPageGqlCall()
+        mockGetProductListMetaGqlCall()
+        mockGetShopShowcasesGqlCall()
+        mockGetProductListGqlCall()
+        mockVoucherValidationPartialGqlCall()
+
+
+        //When
+        viewModel.processEvent(AddProductEvent.FetchRequiredData(pageMode, voucherConfiguration, previouslySelectedProducts))
+
+
+        //Then
+        val expectedParam = GetInitiateVoucherPageUseCase.Param(VoucherAction.CREATE, PromoType.FREE_SHIPPING, isVoucherProduct = true)
+        coVerify { getInitiateVoucherPageUseCase.execute(expectedParam) }
+    }
+
+    //getProductsAndProductsMetadata success page mode edit
+    @Test
+    fun `When get voucher metadata in edit voucher mode, action should be VoucherAction UPDATE`() {
+        runBlockingTest {
+            val pageMode = PageMode.EDIT
+            val voucherConfiguration = buildVoucherConfiguration()
+            val previouslySelectedProducts = populateProducts()
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall()
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall()
+            mockVoucherValidationPartialGqlCall()
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    previouslySelectedProducts
+                )
+            )
+
+
+            //Then
+            val expectedParam = GetInitiateVoucherPageUseCase.Param(
+                VoucherAction.UPDATE,
+                PromoType.FREE_SHIPPING,
+                isVoucherProduct = true
+            )
+            coVerify { getInitiateVoucherPageUseCase.execute(expectedParam) }
+        }
+    }
+
+    //getProductsAndProductsMetadata success page mode duplicate
+    @Test
+    fun `When get voucher metadata in duplicate voucher mode, action should be VoucherAction UPDATE`() {
+        runBlockingTest {
+            val pageMode = PageMode.EDIT
+            val voucherConfiguration = buildVoucherConfiguration()
+            val previouslySelectedProducts = populateProducts()
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall()
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall()
+            mockVoucherValidationPartialGqlCall()
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    previouslySelectedProducts
+                )
+            )
+
+
+            //Then
+            val expectedParam = GetInitiateVoucherPageUseCase.Param(
+                VoucherAction.UPDATE,
+                PromoType.FREE_SHIPPING,
+                isVoucherProduct = true
+            )
+            coVerify { getInitiateVoucherPageUseCase.execute(expectedParam) }
+        }
+    }
+
+
+    //getProductsAndProductsMetadata success default warehouse is exist
+    //getProductsAndProductsMetadata success default warehouse is null
+
+    //getProductsAndProductsMetadata error, ui effect should emit Error, ui state error should contain throwable
+
+    //getProducts success category ids is not empty
+    //getProducts success showcase ids is not empty
+    //getProducts success currentPageParentProductsIds is not empty
+    //getProducts error ui effect should emit Error, ui state error should contain throwable
+
+    //voucher validation partial success
+    //voucher validation partial error
+
+    //endregion
 
 
     private fun buildVoucherConfiguration(): VoucherConfiguration {
