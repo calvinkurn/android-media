@@ -51,7 +51,7 @@ class QuestionnaireRadioButtonOptionAdapter(
         if (payloads.isEmpty()) {
             super.onBindViewHolder(holder, position, payloads)
         } else {
-            val keyPayload = payloads.getOrNull(0) as? Int
+            val keyPayload = payloads.firstOrNull() as? Int
             if (keyPayload == PAYLOAD_TOGGLE_RB) {
                 holder.bindPayload(items[position])
             }
