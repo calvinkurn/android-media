@@ -274,7 +274,7 @@ class PlayVideoFragment @Inject constructor(
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation2.get(requireActivity())
-        videoView.setOrientation(orientation.orientation, playViewModel.videoOrientation)
+        videoView.setOrientation(orientation, playViewModel.videoOrientation)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -325,7 +325,7 @@ class PlayVideoFragment @Inject constructor(
 
     private fun setupView() {
         videoView.setOrientation(
-            orientation.orientation,
+            orientation,
             playViewModel.videoOrientation,
         )
     }
@@ -363,7 +363,7 @@ class PlayVideoFragment @Inject constructor(
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
             videoView.setOrientation(
-                orientation.orientation,
+                orientation,
                 meta.videoStream.orientation,
             )
 
