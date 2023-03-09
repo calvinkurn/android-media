@@ -16,14 +16,26 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.utils.*
+import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
+import com.tokopedia.topads.sdk.utils.PARAM_EP
+import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.PARAM_ITEM
+import com.tokopedia.topads.sdk.utils.PARAM_PAGE
+import com.tokopedia.topads.sdk.utils.PARAM_SRC
+import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
+import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
+import com.tokopedia.topads.sdk.utils.UrlParamHelper
+import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
+import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
-class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBinding,
-                                   val listener: ActionListener?,
-                                   val userSession: UserSessionInterface) : RecyclerView.ViewHolder(binding.root) {
+class CartTopAdsHeadlineViewHolder(
+    private val binding: ItemCartTopAdsHeadlineBinding,
+    val listener: ActionListener?,
+    val userSession: UserSessionInterface
+) : RecyclerView.ViewHolder(binding.root) {
 
     private var data: CartTopAdsHeadlineData? = null
 
@@ -55,7 +67,8 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
     }
 
     private fun getHeadlineAdsParam(userSession: UserSessionInterface): String {
-        return UrlParamHelper.generateUrlParamString(mutableMapOf(
+        return UrlParamHelper.generateUrlParamString(
+            mutableMapOf(
                 PARAM_DEVICE to VALUE_DEVICE,
                 PARAM_EP to VALUE_CPM,
                 PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
@@ -66,7 +79,8 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
                 PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
                 PARAM_USER_ID to userSession.userId,
                 PARAM_PRODUCT_ID to (data?.cartProductIds?.joinToString(",") ?: "")
-        ))
+            )
+        )
     }
 
     private fun onSuccessResponse(cpmModel: CpmModel) {
@@ -148,7 +162,6 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
                     TopAdsGtmTracker.eventTopAdsHeadlineShopView(position, data, "", userSession.userId)
                 }
             })
-
         }
     }
 }

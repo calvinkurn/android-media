@@ -1,7 +1,8 @@
 package com.tokopedia.mvcwidget.multishopmvc.verticallist
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.GqlUseCaseWrapper
+import com.tokopedia.mvcwidget.TP_CATALOG_MULTISHOP_MVC_LIST_QUERY
 import com.tokopedia.mvcwidget.multishopmvc.data.MerchantCouponResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

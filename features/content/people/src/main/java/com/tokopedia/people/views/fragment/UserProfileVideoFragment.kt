@@ -1,6 +1,5 @@
 package com.tokopedia.people.views.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -17,10 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.people.ErrorMessage
-import com.tokopedia.people.Loading
 import com.tokopedia.people.R
-import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.UserVideoPostImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentVideoBinding
@@ -31,7 +27,6 @@ import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
-import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.LOADING
@@ -261,8 +256,6 @@ class UserProfileVideoFragment @Inject constructor(
             viewModel.isSelfProfile,
             isLive,
             channelID,
-            imageUrl,
-            pos,
         )
         val intent = RouteManager.getIntent(context, appLink)
         startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
