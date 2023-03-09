@@ -20,7 +20,7 @@ class RechargeOmniWidget @JvmOverloads constructor(
     private val binding = WidgetRechargeOmniBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun renderOmniWidget(listener: RechargeOmniWidgetListener, applink: String) {
-        binding?.run {
+        with(binding) {
             imgOmniIcon.show()
             iconOmniChevron.show()
             tgOmniTitle.show()
@@ -33,11 +33,11 @@ class RechargeOmniWidget @JvmOverloads constructor(
     }
 
     fun hideShimmering() {
-        binding?.shimmeringOmni?.root?.hide()
+        binding.shimmeringOmni.root.hide()
     }
 
     fun renderShimmering() {
-        binding?.run {
+        with(binding) {
             imgOmniIcon.hide()
             iconOmniChevron.hide()
             tgOmniTitle.hide()
@@ -51,6 +51,6 @@ class RechargeOmniWidget @JvmOverloads constructor(
     }
 
     companion object {
-        private const val IMG_URL = "https://images.tokopedia.net/img/recharge/telkomsel_omni_icon.png"
+        private const val IMG_URL = "https://images.tokopedia.net/img/recharge/digital_pdp_omni_channel_telkomsel.png"
     }
 }
