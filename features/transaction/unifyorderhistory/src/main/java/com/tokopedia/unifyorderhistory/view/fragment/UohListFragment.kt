@@ -728,6 +728,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    refreshHandler?.finishRefresh()
                     orderList = it.data
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
@@ -753,6 +754,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                         UohAnalytics.viewOrderListPage()
                     } else {
+                        refreshHandler?.finishRefresh()
                         if (currPage == 1) {
                             uohListViewModel.loadTdnBanner()
                             loadRecommendationList()
@@ -1785,8 +1787,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun renderOrderList() {
-        refreshHandler?.finishRefresh()
-
         val listOrder = arrayListOf<UohTypeData>()
 
         if (!onLoadMore && orderList.tickers.isNotEmpty()) {
