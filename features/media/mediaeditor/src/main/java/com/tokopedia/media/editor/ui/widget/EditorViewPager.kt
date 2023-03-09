@@ -9,12 +9,9 @@ import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorViewPagerAdapter
 import com.tokopedia.media.editor.ui.adapter.viewPagerTag
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.LOAD_IMAGE_FAILED
-import com.tokopedia.media.editor.utils.newRelicLog
 import com.tokopedia.media.editor.utils.showErrorLoadToaster
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.utils.MediaException
-import com.tokopedia.unifycomponents.Toaster
 
 class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(context, attrSet),
     EditorViewPagerAdapter.Listener {

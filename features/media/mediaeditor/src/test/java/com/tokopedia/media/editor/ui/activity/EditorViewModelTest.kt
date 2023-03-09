@@ -237,7 +237,7 @@ class EditorViewModelTest {
         every { saveImageRepo.saveToGallery(any(), any()) }.answers {
             (args[1] as (List<String>, Exception?) -> Unit).invoke(pathSampleList, null)
         }
-        viewModel.saveToGallery(dataList) { _,_ -> }
+        viewModel.saveToGallery(dataList) { _, _ -> }
 
         // Then
         verify { saveImageRepo.saveToGallery(any(), any()) }

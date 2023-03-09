@@ -129,7 +129,7 @@ class EditorFragment @Inject constructor(
             var memoryOverflow: Boolean
 
             val imageSize = getImageSize(filePath).apply {
-                val usageEstimation = first * second * 4
+                val usageEstimation = first * second * PIXEL_BYTE_SIZE
                 memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
             }
 
@@ -439,12 +439,14 @@ class EditorFragment @Inject constructor(
             }
         }
     }
+
     companion object {
         private const val SCREEN_NAME = "Main Editor"
         private const val TOAST_UNDO = 0
         private const val TOAST_REDO = 1
         private const val UNDO_REDO_NOTIFY_TIME = 1500L
         private const val NANO_DIVIDER = 1000000
+        private const val PIXEL_BYTE_SIZE = 4
     }
 
 }
