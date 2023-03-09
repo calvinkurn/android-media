@@ -5,10 +5,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
@@ -45,10 +42,10 @@ class PlayUiModelMapper @Inject constructor(
     private val cartMapper: PlayCartMapper
 ) {
 
-    fun mapProductSection(input: List<Section>): List<ProductSectionUiModel.Section> {
+    fun mapProductSection(input: List<Section>, channelType: PlayChannelType): List<ProductSectionUiModel.Section> {
         val controlTime = DateUtil.getCurrentDate()
         return input.map {
-            productTagMapper.mapSection(it, controlTime)
+            productTagMapper.mapSection(it, controlTime, channelType)
         }
     }
 
@@ -152,7 +149,8 @@ class PlayUiModelMapper @Inject constructor(
             isPinned = prevDetail.isPinned,
             isRilisanSpesial = prevDetail.isRilisanSpesial,
             buttons = prevDetail.buttons,
-            number = prevDetail.number
+            number = prevDetail.number,
+            isNumerationShown = prevDetail.isNumerationShown,
         )
     }
 }

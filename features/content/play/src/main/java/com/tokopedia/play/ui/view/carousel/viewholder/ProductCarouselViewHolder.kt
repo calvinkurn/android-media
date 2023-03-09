@@ -127,7 +127,7 @@ class ProductCarouselViewHolder private constructor() {
             binding.root.setOnClickListener {
                 listener.onClicked(this, item)
             }
-            binding.lblProductNumber.showWithCondition(item.number.isNotBlank())
+            binding.lblProductNumber.showWithCondition(item.isNumerationShown)
             val labelColor = "#${Integer.toHexString(MethodChecker.getColor(context, R.color.play_dms_explore_widget_icon_bg))}"
             binding.lblProductNumber.unlockFeature = true
             binding.lblProductNumber.setLabelType(labelColor)

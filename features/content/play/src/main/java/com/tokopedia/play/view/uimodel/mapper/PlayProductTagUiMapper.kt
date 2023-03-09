@@ -20,10 +20,11 @@ class PlayProductTagUiMapper @Inject constructor() {
 
     fun mapSection(
         input: Section,
-        controlTime: Date
+        controlTime: Date,
+        channelType: PlayChannelType,
     ) = ProductSectionUiModel.Section(
         productList = input.listOfProducts.map {
-            mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
+            mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType), channelType)
         },
         config = mapConfig(input, controlTime),
         id = input.id
@@ -51,7 +52,8 @@ class PlayProductTagUiMapper @Inject constructor() {
 
     private fun mapProduct(
         input: Product,
-        sectionType: ProductSectionType = ProductSectionType.Unknown
+        sectionType: ProductSectionType = ProductSectionType.Unknown,
+        channelType: PlayChannelType,
     ): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(
             id = input.id,
@@ -84,7 +86,8 @@ class PlayProductTagUiMapper @Inject constructor() {
             isPinned = input.isPinned,
             isRilisanSpesial = sectionType == ProductSectionType.Active || sectionType == ProductSectionType.Upcoming,
             buttons = mapButtons(input.buttons),
-            number = input.number.toString()
+            number = input.number.toString(),
+            isNumerationShown = channelType.isLive,
         )
     }
 

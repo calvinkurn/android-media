@@ -74,8 +74,7 @@ class PlayBottomSheetFragment @Inject constructor(
     ProductSheetViewComponent.Listener,
     VariantSheetViewComponent.Listener,
     PlayGameLeaderboardViewComponent.Listener,
-    ShopCouponSheetViewComponent.Listener,
-    ProductSheetViewComponent.DataSource {
+    ShopCouponSheetViewComponent.Listener {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
@@ -84,7 +83,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private val productSheetView by viewComponent {
-        ProductSheetViewComponent(it, this, viewLifecycleOwner.lifecycleScope, this)
+        ProductSheetViewComponent(it, this, viewLifecycleOwner.lifecycleScope)
     }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
     private val leaderboardSheetView by viewComponent { PlayGameLeaderboardViewComponent(it, this) }
@@ -217,8 +216,6 @@ class PlayBottomSheetFragment @Inject constructor(
     ) {
         playViewModel.sendUpcomingReminderImpression(section)
     }
-
-    override fun getChannelType(): PlayChannelType = playViewModel.channelType
 
     /**
      * VariantSheet View Component Listener
@@ -432,6 +429,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.sectionInfo, event.position)
+            else -> {}
         }
     }
 
@@ -849,6 +847,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 isConnectionError = variant.error is ConnectException || variant.error is UnknownHostException,
                 onError = { }
             )
+            else -> {}
         }
     }
 

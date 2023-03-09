@@ -58,7 +58,7 @@ class ProductFeaturedViewHolder(
             listener.onClickProductCard(item, adapterPosition)
         }
 
-        binding.lblProductNumber.showWithCondition(item.number.isNotBlank())
+        binding.lblProductNumber.showWithCondition(item.isNumerationShown)
         val labelColor = "#${Integer.toHexString(MethodChecker.getColor(context, R.color.play_dms_explore_widget_icon_bg))}"
         binding.lblProductNumber.unlockFeature = true
         binding.lblProductNumber.setLabelType(labelColor)
@@ -66,8 +66,6 @@ class ProductFeaturedViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_play_product_featured
-
         fun create(
             parent: ViewGroup,
             listener: ProductBasicViewHolder.Listener,

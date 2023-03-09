@@ -38,7 +38,6 @@ class ProductSheetAdapterDelegate private constructor() {
 
     class Product(
         private val listener: ProductLineViewHolder.Listener,
-        private val source: ProductLineViewHolder.DataSource,
     ) : TypedAdapterDelegate<
             ProductSheetAdapter.Item.Product,
             ProductSheetAdapter.Item,
@@ -53,7 +52,7 @@ class ProductSheetAdapterDelegate private constructor() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductLineViewHolder {
-            return ProductLineViewHolder.create(parent, listener, source)
+            return ProductLineViewHolder.create(parent, listener)
         }
     }
 

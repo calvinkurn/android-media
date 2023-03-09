@@ -51,7 +51,6 @@ class ProductSheetViewComponent(
     container: ViewGroup,
     private val listener: Listener,
     private val scope: CoroutineScope,
-    private val source: DataSource,
 ) : ViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
@@ -101,10 +100,6 @@ class ProductSheetViewComponent(
         }
     }
 
-    private val dataSource = object : ProductLineViewHolder.DataSource {
-        override fun getChannelType(): PlayChannelType = source.getChannelType()
-    }
-
     private val productAdapter = ProductSheetAdapter(
         sectionListener = object : ProductSheetSectionViewHolder.Listener {
             override fun onReminderClicked(
@@ -142,7 +137,6 @@ class ProductSheetViewComponent(
             }
         },
         productListener = productCardListener,
-        dataSource = dataSource,
     )
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
@@ -443,9 +437,5 @@ class ProductSheetViewComponent(
         fun onInformationClicked(view: ProductSheetViewComponent)
         fun onInformationImpressed(view: ProductSheetViewComponent)
         fun onInfoVoucherImpressed(view: ProductSheetViewComponent, voucher: PlayVoucherUiModel.Merchant)
-    }
-
-    interface DataSource {
-        fun getChannelType() : PlayChannelType
     }
 }
