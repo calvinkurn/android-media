@@ -78,104 +78,15 @@ class AddProductViewModelTest {
         runBlockingTest {
             //Given
             val pageMode = PageMode.CREATE
-            val voucherConfiguration = VoucherConfiguration().copy(startPeriod = Date(2023, 1, 1, 0,0,0), endPeriod = Date(2023, 2, 1, 0,0,0))
+            val voucherConfiguration = buildVoucherConfiguration()
             val previouslySelectedProducts = populateProducts()
 
-            val maxProductSelection = 100
-            val warehouseId : Long = 2
-
-            val shopWarehouseParam = GetShopWarehouseLocationUseCase.Param()
-            val shopWarehouseResponse = listOf(Warehouse(warehouseId = warehouseId, warehouseName = "Bekasi", WarehouseType.WAREHOUSE))
-
-
-            coEvery { getShopWarehouseLocationUseCase.execute(shopWarehouseParam) } returns shopWarehouseResponse
-
-            val initiateVoucherPageParam = GetInitiateVoucherPageUseCase.Param(VoucherAction.CREATE, PromoType.FREE_SHIPPING, isVoucherProduct = true)
-            val initiateVoucherResponse = VoucherCreationMetadata(
-                accessToken = "accessToken",
-                isEligible = 1,
-                maxProduct = maxProductSelection,
-                prefixVoucherCode = "OFC",
-                shopId = 1,
-                token = "token",
-                userId = 1,
-                discountActive = true,
-                message = ""
-            )
-            coEvery { getInitiateVoucherPageUseCase.execute(initiateVoucherPageParam) } returns initiateVoucherResponse
-
-            val getProductListMetaParam = ProductListMetaUseCase.Param(warehouseId)
-            val getProductListMetaResponse = ProductMetadata(sortOptions = listOf(), categoryOptions = listOf())
-            coEvery { getProductListMetaUseCase.execute(getProductListMetaParam) } returns getProductListMetaResponse
-
-            val showcases = listOf<ShopShowcase>()
-            val getShopShowcasesResponse = showcases
-            coEvery { getShopShowcasesByShopIDUseCase.execute() } returns getShopShowcasesResponse
-
-            val getProductsParam = ProductListUseCase.Param(
-                categoryIds = listOf(),
-                page = 1,
-                pageSize = 20,
-                searchKeyword = "",
-                showcaseIds = listOf(),
-                sortDirection = "DESC",
-                sortId = "DEFAULT",
-                warehouseId = warehouseId
-            )
-            val getProductsResponse = ProductResult(total = maxProductSelection, listOf())
-            coEvery { getProductsUseCase.execute(getProductsParam) } returns getProductsResponse
-
-
-            val voucherValidationParam = VoucherValidationPartialUseCase.Param(
-                benefitIdr = 0,
-                benefitMax = 0,
-                benefitPercent = 0,
-                benefitType = BenefitType.NOMINAL,
-                promoType = PromoType.FREE_SHIPPING,
-                isVoucherProduct = false,
-                minPurchase = 0,
-                productIds = emptyList(),
-                targetBuyer = VoucherTargetBuyer.ALL_BUYER,
-                couponName = "",
-                isPublic = true,
-                code = "",
-                isPeriod = false,
-                periodType = 3,
-                periodRepeat = 0,
-                totalPeriod = 1,
-                startDate = "3923-02-01",
-                endDate = "3923-03-01",
-                startHour = "00:00",
-                endHour = "00:00",
-                quota = 0
-            )
-
-            val voucherValidationResponse = VoucherValidationResult(
-                totalAvailableQuota = 5,
-                validationDate = emptyList(),
-                validationError = VoucherValidationResult.ValidationError(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ),
-                validationProduct = emptyList()
-            )
-            coEvery { voucherValidationPartialUseCase.execute(voucherValidationParam) } returns voucherValidationResponse
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall()
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall()
+            mockVoucherValidationPartialGqlCall()
 
             val emittedValues = arrayListOf<AddProductUiState>()
             val job = launch {
@@ -196,6 +107,13 @@ class AddProductViewModelTest {
         }
     }
 
+
+    private fun buildVoucherConfiguration(): VoucherConfiguration {
+        return VoucherConfiguration().copy(
+            startPeriod = Date(2023, 1, 1, 0, 0, 0),
+            endPeriod = Date(2023, 2, 1, 0, 0, 0)
+        )
+    }
 
     private fun populateProducts(): List<Product> {
         return listOf(
@@ -221,5 +139,112 @@ class AddProductViewModelTest {
             )
         )
     }
+
+
+    private fun mockShopWarehouseGqlCall(warehouseId: Long = 1) {
+        val shopWarehouseParam = GetShopWarehouseLocationUseCase.Param()
+        val shopWarehouseResponse = listOf(Warehouse(warehouseId = warehouseId, warehouseName = "Bekasi", WarehouseType.WAREHOUSE))
+
+        coEvery { getShopWarehouseLocationUseCase.execute(shopWarehouseParam) } returns shopWarehouseResponse
+    }
+
+    private fun mockInitiateVoucherPageGqlCall() {
+        val initiateVoucherPageParam = GetInitiateVoucherPageUseCase.Param(
+            VoucherAction.CREATE,
+            PromoType.FREE_SHIPPING,
+            isVoucherProduct = true
+        )
+        val initiateVoucherResponse = VoucherCreationMetadata(
+            accessToken = "accessToken",
+            isEligible = 1,
+            maxProduct = 100,
+            prefixVoucherCode = "OFC",
+            shopId = 1,
+            token = "token",
+            userId = 1,
+            discountActive = true,
+            message = ""
+        )
+        coEvery { getInitiateVoucherPageUseCase.execute(initiateVoucherPageParam) } returns initiateVoucherResponse
+    }
+
+    private fun mockGetProductListMetaGqlCall(warehouseId: Long = 2) {
+        val getProductListMetaParam = ProductListMetaUseCase.Param(warehouseId)
+        val getProductListMetaResponse = ProductMetadata(sortOptions = listOf(), categoryOptions = listOf())
+        coEvery { getProductListMetaUseCase.execute(getProductListMetaParam) } returns getProductListMetaResponse
+    }
+
+    private fun mockGetShopShowcasesGqlCall(showcases: List<ShopShowcase> = listOf()) {
+        coEvery { getShopShowcasesByShopIDUseCase.execute() } returns showcases
+    }
+
+    private fun mockGetProductListGqlCall(warehouseId: Long = 2) {
+        val getProductsParam = ProductListUseCase.Param(
+            categoryIds = listOf(),
+            page = 1,
+            pageSize = 20,
+            searchKeyword = "",
+            showcaseIds = listOf(),
+            sortDirection = "DESC",
+            sortId = "DEFAULT",
+            warehouseId = warehouseId
+        )
+        val getProductsResponse = ProductResult(total = 20, listOf())
+        coEvery { getProductsUseCase.execute(getProductsParam) } returns getProductsResponse
+    }
+
+    private fun mockVoucherValidationPartialGqlCall() {
+        val voucherValidationParam = VoucherValidationPartialUseCase.Param(
+            benefitIdr = 0,
+            benefitMax = 0,
+            benefitPercent = 0,
+            benefitType = BenefitType.NOMINAL,
+            promoType = PromoType.FREE_SHIPPING,
+            isVoucherProduct = false,
+            minPurchase = 0,
+            productIds = emptyList(),
+            targetBuyer = VoucherTargetBuyer.ALL_BUYER,
+            couponName = "",
+            isPublic = true,
+            code = "",
+            isPeriod = false,
+            periodType = 3,
+            periodRepeat = 0,
+            totalPeriod = 1,
+            startDate = "3923-02-01",
+            endDate = "3923-03-01",
+            startHour = "00:00",
+            endHour = "00:00",
+            quota = 0
+        )
+
+        val voucherValidationResponse = VoucherValidationResult(
+            totalAvailableQuota = 5,
+            validationDate = emptyList(),
+            validationError = VoucherValidationResult.ValidationError(
+                benefitIdr = "",
+                benefitMax = "",
+                benefitPercent = "",
+                benefitType = "",
+                code = "",
+                couponName = "",
+                couponType = "",
+                dateEnd = "",
+                dateStart = "",
+                hourEnd = "",
+                hourStart = "",
+                image = "",
+                imageSquare = "",
+                isPublic = "",
+                minPurchase = "",
+                minPurchaseType = "",
+                minimumTierLevel = "",
+                quota = "",
+            ),
+            validationProduct = emptyList()
+        )
+        coEvery { voucherValidationPartialUseCase.execute(voucherValidationParam) } returns voucherValidationResponse
+    }
+
 
 }
