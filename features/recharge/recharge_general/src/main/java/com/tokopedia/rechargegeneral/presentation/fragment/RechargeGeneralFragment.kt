@@ -11,7 +11,6 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -25,7 +24,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -58,7 +56,6 @@ import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -80,13 +77,11 @@ import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
-import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapterFactory
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputListener
 import com.tokopedia.rechargegeneral.presentation.bottomsheet.RechargeDppoConsentBottomSheet
-import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralDppoConsentUiModel
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
@@ -101,8 +96,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
-import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -113,8 +106,7 @@ class RechargeGeneralFragment :
     OnInputListener,
     RechargeGeneralAdapter.LoaderListener,
     RechargeGeneralCheckoutBottomSheet.CheckoutListener,
-    TopupBillsMenuBottomSheets.MenuListener
-{
+    TopupBillsMenuBottomSheets.MenuListener {
 
     private var binding by autoClearedNullable<FragmentRechargeGeneralBinding>()
 
@@ -1553,7 +1545,7 @@ class RechargeGeneralFragment :
                 val iconUnify = getIconUnifyDrawable(
                     ctx,
                     IconUnify.INFORMATION,
-                    ContextCompat.getColor(ctx, R.color.Unify_NN900)
+                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
                 )
                 iconUnify?.toBitmap()?.let {
                     getItem(0).setOnMenuItemClickListener {
@@ -1563,7 +1555,8 @@ class RechargeGeneralFragment :
                     }
                     getItem(0).icon = BitmapDrawable(
                         resources,
-                        Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true))
+                        Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                    )
                 }
             }
         }
@@ -1574,7 +1567,7 @@ class RechargeGeneralFragment :
             val iconUnify = getIconUnifyDrawable(
                 ctx,
                 IconUnify.MENU_KEBAB_VERTICAL,
-                ContextCompat.getColor(ctx, R.color.Unify_NN900)
+                ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
             )
             iconUnify?.toBitmap()?.let {
                 getItem(1).setOnMenuItemClickListener {
@@ -1583,7 +1576,8 @@ class RechargeGeneralFragment :
                 }
                 getItem(1).icon = BitmapDrawable(
                     resources,
-                    Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true))
+                    Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                )
             }
         }
     }
@@ -1608,7 +1602,6 @@ class RechargeGeneralFragment :
     override fun onHelpClicked() {
         RouteManager.route(context, ApplinkConst.CONTACT_US_NATIVE)
     }
-
 
     companion object {
         private const val PREFIX_LINK = "tokopedia"
