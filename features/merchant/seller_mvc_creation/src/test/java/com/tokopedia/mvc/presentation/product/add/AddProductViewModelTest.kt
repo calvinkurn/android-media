@@ -1,11 +1,8 @@
 package com.tokopedia.mvc.presentation.product.add
 
-import com.tokopedia.mvc.data.response.ProductListResponse
 import com.tokopedia.mvc.domain.entity.Product
-import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductMetadata
 import com.tokopedia.mvc.domain.entity.ProductResult
-import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
@@ -29,33 +26,34 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatcher
-import org.mockito.ArgumentMatchers
 import java.util.*
 
 @ExperimentalCoroutinesApi
-@OptIn(kotlin.time.ExperimentalTime::class)
 class AddProductViewModelTest {
 
 
     @RelaxedMockK
     lateinit var getShopWarehouseLocationUseCase: GetShopWarehouseLocationUseCase
+
     @RelaxedMockK
     lateinit var getShopShowcasesByShopIDUseCase: ShopShowcasesByShopIDUseCase
+
     @RelaxedMockK
     lateinit var getProductListMetaUseCase: ProductListMetaUseCase
+
     @RelaxedMockK
     lateinit var getProductsUseCase: ProductListUseCase
+
     @RelaxedMockK
     lateinit var getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase
+
     @RelaxedMockK
     lateinit var voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 
@@ -75,11 +73,9 @@ class AddProductViewModelTest {
         )
     }
 
-
-
     @Test
     fun `when FetchRequiredData function first called, should set the default voucher configuration and previously selected products correctly`() {
-        runBlocking {
+        runBlockingTest {
             //Given
             val pageMode = PageMode.CREATE
             val voucherConfiguration = VoucherConfiguration().copy(startPeriod = Date(2023, 1, 1, 0,0,0), endPeriod = Date(2023, 2, 1, 0,0,0))
@@ -91,10 +87,6 @@ class AddProductViewModelTest {
             val shopWarehouseParam = GetShopWarehouseLocationUseCase.Param()
             val shopWarehouseResponse = listOf(Warehouse(warehouseId = warehouseId, warehouseName = "Bekasi", WarehouseType.WAREHOUSE))
 
-            val emittedValues = arrayListOf<AddProductUiState>()
-            val job = launch {
-                viewModel.uiState.toList(emittedValues)
-            }
 
             coEvery { getShopWarehouseLocationUseCase.execute(shopWarehouseParam) } returns shopWarehouseResponse
 
@@ -185,18 +177,19 @@ class AddProductViewModelTest {
             )
             coEvery { voucherValidationPartialUseCase.execute(voucherValidationParam) } returns voucherValidationResponse
 
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
 
             //When
             viewModel.processEvent(AddProductEvent.FetchRequiredData(pageMode, voucherConfiguration, previouslySelectedProducts))
 
 
             //Then
-            val actual = emittedValues.last()
+            val actual = emittedValues.last().maxProductSelection
 
-
-
-            assertEquals(maxProductSelection, actual.warehouses)
-
+            assertEquals(maxProductSelection, actual)
 
             job.cancel()
         }
