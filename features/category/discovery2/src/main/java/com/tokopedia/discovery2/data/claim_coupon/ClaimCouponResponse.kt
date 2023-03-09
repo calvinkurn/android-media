@@ -59,7 +59,7 @@ data class CatalogWithCouponList(
     val minimumUsage: String? = "",
     @SerializedName("smallImageUrl")
     val smallImageURL: String? = "",
-    @SerializedName("smallImageURLMobile")
+    @SerializedName("smallImageUrlMobile")
     val smallImageURLMobile: String? = "",
     @SerializedName("buttonStr")
     val buttonStr: String? = null,

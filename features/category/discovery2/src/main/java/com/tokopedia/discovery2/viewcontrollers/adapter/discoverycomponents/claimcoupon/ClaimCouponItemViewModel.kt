@@ -66,7 +66,6 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
         launchCatchError(block = {
             if (userSession.isLoggedIn) {
                 val data = claimCouponClickUseCase.redeemCoupon(getQueryMap())
-                components.claimCouponList?.firstOrNull()?.appLink = data.hachikoRedeem?.coupons?.firstOrNull()?.appLink
                 couponCode.postValue(data.hachikoRedeem?.coupons?.get(0)?.code)
             } else {
                 couponCode.postValue(NOT_LOGGEDIN)
@@ -103,7 +102,7 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
 
     private fun getQueryMap(): Map<String, Any> {
         return mapOf(CATALOG_ID to (try {
-            components.claimCouponList?.get(0)?.id ?: 0
+            components.claimCouponList?.getOrNull(0)?.id ?: 0
         } catch (e: NumberFormatException) {
             0
         }),
