@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util.asset
+package com.tokopedia.play.broadcaster.util.asset.checker
 
 /**
  * Created By : Jonathan Darwin on March 09, 2023

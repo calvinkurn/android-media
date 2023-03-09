@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util.asset
+package com.tokopedia.play.broadcaster.util.asset.downloader
 
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody

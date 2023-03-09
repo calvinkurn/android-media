@@ -1,9 +1,9 @@
-package com.tokopedia.play.broadcaster.util.asset
+package com.tokopedia.play.broadcaster.util.asset.manager
 
 /**
  * Created By : Jonathan Darwin on March 09, 2023
  */
-interface AssetDownloader {
+interface AssetManager {
 
     suspend fun downloadUnzip(
         url: String,

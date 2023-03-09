@@ -59,7 +59,7 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
-import com.tokopedia.play.broadcaster.util.asset.AssetDownloader
+import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
 import com.tokopedia.play.broadcaster.util.asset.AssetPathHelper
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.removeUnusedField
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupAutoAddField
@@ -135,7 +135,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger,
     private val broadcastTimer: PlayBroadcastTimer,
-    private val assetDownloader: AssetDownloader,
+    private val assetManager: AssetManager,
     private val assetPathHelper: AssetPathHelper,
 ) : ViewModel() {
 
@@ -1742,11 +1742,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 updatePresetAssetStatus(preset, BeautificationAssetStatus.Downloading)
 
                 viewModelScope.launchCatchError(block = {
-                    val isSuccess = assetDownloader.downloadUnzip(
+                    val isSuccess = assetManager.downloadUnzip(
                         url = preset.assetLink,
-                        fileName = preset.id + ".zip",
+                        fileName = preset.id,
                         filePath = assetPathHelper.getPresetFilePath(preset.id),
-                        folderPath = assetPathHelper.presetPathDir
+                        folderPath = assetPathHelper.presetDir
                     )
 
                     if(isSuccess) {

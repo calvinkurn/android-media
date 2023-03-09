@@ -35,8 +35,8 @@ import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountMan
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManagerImpl
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsUiMapper
-import com.tokopedia.play.broadcaster.util.asset.AssetChecker
-import com.tokopedia.play.broadcaster.util.asset.AssetCheckerImpl
+import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
+import com.tokopedia.play.broadcaster.util.asset.checker.AssetCheckerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
