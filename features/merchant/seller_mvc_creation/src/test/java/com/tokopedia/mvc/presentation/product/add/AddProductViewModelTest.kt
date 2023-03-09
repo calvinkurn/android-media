@@ -59,6 +59,14 @@ class AddProductViewModelTest {
 
     private lateinit var viewModel: AddProductViewModel
 
+    private val mockedWarehouses = listOf(
+        Warehouse(
+            warehouseId = 1,
+            warehouseName = "Bekasi",
+            WarehouseType.WAREHOUSE
+        )
+    )
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -208,6 +216,37 @@ class AddProductViewModelTest {
 
 
     //getProductsAndProductsMetadata success default warehouse is exist
+    @Test
+    fun `When get seller warehouse location return empty warehouse, should not proceed to get product list metadata to server`() {
+        runBlockingTest {
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+            val previouslySelectedProducts = populateProducts()
+            val emptyWarehouses = emptyList<Warehouse>()
+
+            mockShopWarehouseGqlCall(warehousesResponse = emptyWarehouses)
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall()
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall()
+            mockVoucherValidationPartialGqlCall()
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    previouslySelectedProducts
+                )
+            )
+
+
+            //Then
+            val expectedParam = ProductListMetaUseCase.Param(warehouseId = 1)
+            coVerify(exactly = 0) { getProductListMetaUseCase.execute(expectedParam) }
+        }
+    }
     //getProductsAndProductsMetadata success default warehouse is null
 
     //getProductsAndProductsMetadata error, ui effect should emit Error, ui state error should contain throwable
@@ -256,11 +295,9 @@ class AddProductViewModelTest {
     }
 
 
-    private fun mockShopWarehouseGqlCall(warehouseId: Long = 1) {
+    private fun mockShopWarehouseGqlCall(warehousesResponse : List<Warehouse> = mockedWarehouses)  {
         val shopWarehouseParam = GetShopWarehouseLocationUseCase.Param()
-        val shopWarehouseResponse = listOf(Warehouse(warehouseId = warehouseId, warehouseName = "Bekasi", WarehouseType.WAREHOUSE))
-
-        coEvery { getShopWarehouseLocationUseCase.execute(shopWarehouseParam) } returns shopWarehouseResponse
+        coEvery { getShopWarehouseLocationUseCase.execute(shopWarehouseParam) } returns warehousesResponse
     }
 
     private fun mockInitiateVoucherPageGqlCall() {
