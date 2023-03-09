@@ -241,8 +241,7 @@ class FeedFragment :
 
     override fun onProductTagViewClicked(model: FeedCardImageContentModel) {
         val numberOfTaggedProducts = model.totalProducts
-        val productData =
-            if (model.isTypeProductHighlight) model.products else model.tags
+        val productData = model.products
 
         if (numberOfTaggedProducts == 1) {
             val appLink = productData.firstOrNull()?.applink
