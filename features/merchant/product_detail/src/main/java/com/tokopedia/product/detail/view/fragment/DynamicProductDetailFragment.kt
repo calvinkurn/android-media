@@ -3380,10 +3380,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun getStockWording(): String {
-        return viewModel.getDynamicProductInfoP1?.data?.stock?.stockWording.orEmpty()
-    }
-
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
         goToAtcVariant()
     }
