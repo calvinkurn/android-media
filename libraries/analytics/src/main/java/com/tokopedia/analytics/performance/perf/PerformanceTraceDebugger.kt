@@ -52,8 +52,7 @@ object PerformanceTraceDebugger {
                 try {
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
                     fos?.close()
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                } catch (_: Exception) {
                 } finally {
                     contentValues.clear()
                     contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
@@ -61,7 +60,6 @@ object PerformanceTraceDebugger {
                 }
             } catch (e: Throwable) {
                 // Several error may come out with file handling or DOM
-                e.printStackTrace()
             }
         }
     }
