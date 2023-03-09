@@ -92,7 +92,7 @@ class SwipeCoachMarkViewComponent(container: ViewGroup) : ViewComponent(
             from,
             to,
         ).apply {
-            duration = 400
+            duration = ROOT_FADE_ANIMATION_DURATION
         }
     }
 
@@ -100,10 +100,10 @@ class SwipeCoachMarkViewComponent(container: ViewGroup) : ViewComponent(
         return ObjectAnimator.ofFloat(
             binding.clContent,
             View.TRANSLATION_Y,
-            binding.root.height * 0.3f,
+            binding.root.height * ICON_TRANSLATION_HEIGHT_FROM_CENTER,
             0f
         ).apply {
-            duration = 300
+            duration = ICON_TRANSLATION_ANIMATION_DURATION
         }
     }
 
@@ -114,10 +114,10 @@ class SwipeCoachMarkViewComponent(container: ViewGroup) : ViewComponent(
             0f,
             (binding.imgArrow.top - binding.imgHand.top).toFloat(),
         ).apply {
-            duration = 600
-            repeatCount = 4
+            duration = HAND_SWIPE_ANIMATION_DURATION
+            repeatCount = HAND_SWIPE_REPEAT_COUNT
             repeatMode = ValueAnimator.REVERSE
-        }.withDelayEnd(500)
+        }.withDelayEnd(HAND_SWIPE_ANIMATION_DELAY_END)
     }
 
     private fun ObjectAnimator.withDelayEnd(
@@ -159,5 +159,17 @@ class SwipeCoachMarkViewComponent(container: ViewGroup) : ViewComponent(
         return clone().apply {
             interpolator = timeInterpolator
         }
+    }
+
+    companion object {
+        private const val ROOT_FADE_ANIMATION_DURATION = 400L
+        private const val ICON_TRANSLATION_ANIMATION_DURATION = 300L
+        private const val HAND_SWIPE_ANIMATION_DURATION = 600L
+
+        private const val HAND_SWIPE_ANIMATION_DELAY_END = 500L
+
+        private const val HAND_SWIPE_REPEAT_COUNT = 4
+
+        private const val ICON_TRANSLATION_HEIGHT_FROM_CENTER = 0.3f
     }
 }

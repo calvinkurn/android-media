@@ -333,7 +333,6 @@ class PlayVideoFragment @Inject constructor(
         observeVideoProperty()
         observeBottomInsetsState()
         observePiPEvent()
-        observeOnboarding()
         observeCastState()
 
         observeUiState()
@@ -402,16 +401,6 @@ class PlayVideoFragment @Inject constructor(
         playViewModel.observableEventPiPState.observe(viewLifecycleOwner) {
             if (it.peekContent() == PiPState.Stop) removePiP()
         }
-    }
-
-    private fun observeOnboarding() {
-        val startingChannel = activity?.intent?.data?.lastPathSegment.orEmpty()
-        val isShown = startingChannel == channelId || channelId == "0" // 0 for handling channel recom
-
-//        playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            //TODO("Check if this analytic is still in use or not")
-//            analytic.screenWithSwipeCoachMark(isShown = isShown)
-//        })
     }
 
     private fun observeCastState() {
