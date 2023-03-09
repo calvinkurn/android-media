@@ -100,20 +100,23 @@ class BeautificationFilterOptionViewHolder private constructor() {
 
                     icBeautificationFilter.setImage(IconUnify.BLOCK)
                     icBeautificationFilter.show()
+
+                    binding.icLoader.hide()
+                    binding.icDownload.hide()
                 }
                 else {
                     imgBeautificationFilter.setImageUrl(item.iconUrl)
                     imgBeautificationFilter.show()
 
                     icBeautificationFilter.hide()
+
+                    setAssetStatus(item.assetStatus)
                 }
 
                 clIcon.setBackgroundResource(
                     if(item.active) R.drawable.bg_face_filter_option_selected
                     else R.drawable.bg_face_filter_option
                 )
-
-                setAssetStatus(item.assetStatus)
 
                 root.setOnClickListener {
                     listener.onClick(item)
