@@ -35,9 +35,8 @@ import com.tokopedia.product.detail.util.ProductIdlingInterface
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
-import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofTypeViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.social_proof.adapter.view_holder.SocialProofTypeViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -271,11 +270,13 @@ class ProductDetailActivityTest {
             matches(isDisplayed())
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<SocialProofTypeViewHolder>(
-                3, scrollTo()
+                3,
+                scrollTo()
             )
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<SocialProofTypeViewHolder>(
-                3, clickChildViewWithId(
+                3,
+                clickChildViewWithId(
                     R.id.socialProofChipContainer
                 )
             )
