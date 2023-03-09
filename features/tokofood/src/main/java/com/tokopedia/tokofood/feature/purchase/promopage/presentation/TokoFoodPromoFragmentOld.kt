@@ -93,8 +93,8 @@ class TokoFoodPromoFragmentOld : BaseMultiFragment(),
         private const val MERCHANT_ID_KEY = "merchant_id_key"
 
         fun createInstance(source: String,
-                           merchantId: String? = null): TokoFoodPromoFragment {
-            return TokoFoodPromoFragment().apply {
+                           merchantId: String? = null): TokoFoodPromoFragmentOld {
+            return TokoFoodPromoFragmentOld().apply {
                 arguments = Bundle().apply {
                     putString(SOURCE_KEY, source)
                     merchantId?.let {

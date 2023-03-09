@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodCategoryFragment
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodCategoryFragmentOld
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
@@ -31,12 +34,12 @@ object TokofoodRouteManager {
     private const val PATH_OLD_CATEGORY = "/old-category"
     private const val PATH_OLD_SEARCH = "/old-search"
 
-    fun mapUriToFragment(uri: Uri): Fragment? {
+    fun mapUriToFragment(context: Context, uri: Uri): Fragment? {
         // tokopedia://food
         if (uri.host == HOST_TOKOFOOD) {
             val f: Fragment? =
                 uri.path?.let { uriPath ->
-                    val isGtpMigration = getIsGtpMigration()
+                    val isGtpMigration = getIsGtpMigration(context)
                     when {
                         uriPath.startsWith(PATH_HOME) || uriPath.startsWith(PATH_OLD_HOME) ->
                             if (isGtpMigration) TokoFoodHomeFragment.createInstance() else TokoFoodHomeFragmentOld.createInstance() // tokopedia://food/home
@@ -75,9 +78,9 @@ object TokofoodRouteManager {
             RouteManager.route(context, uriString)
         } else {
             val initialUri = Uri.parse(uriString)
-            val mappedUriString = DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(initialUri)
+            val mappedUriString = DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(activity, initialUri)
             val uri = Uri.parse(mappedUriString)
-            val f = mapUriToFragment(uri)
+            val f = mapUriToFragment(activity, uri)
             if (f == null) {
                 RouteManager.route(activity, mappedUriString)
             } else {
@@ -86,7 +89,7 @@ object TokofoodRouteManager {
         }
     }
 
-    private fun getIsGtpMigration(): Boolean {
-        return false
+    private fun getIsGtpMigration(context: Context): Boolean {
+        return FirebaseRemoteConfigImpl(context).getBoolean(RemoteConfigKey.IS_TOKOFOOD_NEW_GTP_FLOW).orFalse()
     }
 }

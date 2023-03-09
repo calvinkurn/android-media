@@ -323,4 +323,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_CHATBOT_CSAT_NEW_FLOW = "android_chatbot_csat_experiment";
 
     public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
+
+    public static final String IS_TOKOFOOD_NEW_GTP_FLOW = "android_tokofood_new_gtp";
 }
