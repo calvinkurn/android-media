@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.isLessThanEqualZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -78,9 +79,6 @@ internal class ProductSummaryViewHolder private constructor() {
         private val ctx: Context
             get() = itemView.context
 
-        private val baseColor: ForegroundColorSpan
-            get() = ForegroundColorSpan(MethodChecker.getColor(ctx, unifyR.color.Unify_NN950))
-
         private val fgColor: ForegroundColorSpan
             get() = ForegroundColorSpan(MethodChecker.getColor(ctx, unifyR.color.Unify_G500))
 
@@ -92,15 +90,13 @@ internal class ProductSummaryViewHolder private constructor() {
                 text = buildSpannedString {
                     if(item.product.pinStatus.isPinned) {
                         append(ctx.getString(R.string.play_bro_pinned_product_info), fgColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
-                        if (item.product.stock > 0) append(" • ", baseColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                     }
-                    if(item.product.stock > 0) append(ctx.getString(R.string.play_bro_product_chooser_stock, item.product.stock), baseColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                 }
                 visibility = if(text.isNullOrEmpty()) View.GONE else View.VISIBLE
             }
 
-            binding.ivProductSummaryCover.showWithCondition(item.product.stock <= 0)
-            binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock <= 0)
+            binding.ivProductSummaryCover.showWithCondition(item.product.stock.isLessThanEqualZero())
+            binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock.isLessThanEqualZero())
 
             when(item.product.price) {
                 is OriginalPrice -> {

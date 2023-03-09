@@ -11,11 +11,12 @@
         android:id="@+id/view_pin_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_margin="@dimen/spacing_lvl2"
         android:translationZ="@dimen/play_dp_1"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_product_tag"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_goneMarginTop="@dimen/spacing_lvl2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_product_tag_discount" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_product_tag"
@@ -65,6 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl2"
+        android:text="@string/play_bro_product_tag_stock_empty"
         android:background="@drawable/bg_play_product_tag_stock"
         android:padding="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_Static_White"
@@ -72,7 +74,7 @@
         app:layout_constraintStart_toStartOf="@id/iv_product_tag"
         app:typographyType="small"
         app:typographyWeight="bold"
-        tools:text="Stok 450" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_tag_price"
@@ -105,4 +107,14 @@
         android:maxLines="1"
         tools:text="Rp88.888.888" />
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/tv_product_tag_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:layout_marginTop="@dimen/unify_space_4"
+        app:layout_constraintStart_toStartOf="@+id/iv_product_tag"
+        app:layout_constraintTop_toTopOf="@+id/iv_product_tag"
+        tools:labelTitle="1"
+        android:visibility="gone"/>
 </com.tokopedia.play_common.view.RoundedConstraintLayout>
