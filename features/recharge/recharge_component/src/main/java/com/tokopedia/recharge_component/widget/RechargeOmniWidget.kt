@@ -20,13 +20,15 @@ class RechargeOmniWidget @JvmOverloads constructor(
     private val binding = WidgetRechargeOmniBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun renderOmniWidget(listener: RechargeOmniWidgetListener, applink: String) {
-        imgOmniIcon.show()
-        iconOmniChevron.show()
-        tgOmniTitle.show()
-        tgOmniDesc.show()
-        imgOmniIcon.loadImage(IMG_URL)
-        root.setOnClickListener {
-            listener.onClickOmniWidget(applink)
+        binding?.run {
+            imgOmniIcon.show()
+            iconOmniChevron.show()
+            tgOmniTitle.show()
+            tgOmniDesc.show()
+            imgOmniIcon.loadImage(IMG_URL)
+            root.setOnClickListener {
+                listener.onClickOmniWidget(applink)
+            }
         }
     }
 
@@ -35,7 +37,7 @@ class RechargeOmniWidget @JvmOverloads constructor(
     }
 
     fun renderShimmering() {
-        with(binding) {
+        binding?.run {
             imgOmniIcon.hide()
             iconOmniChevron.hide()
             tgOmniTitle.hide()
