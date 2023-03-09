@@ -129,9 +129,11 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CAT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_RECOM_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_ATC_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_LEGO_4
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_REMOVE_ATC_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_VIEW_ALL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_LEGO4
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOME_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LABEL_GROUP_HALAL
@@ -260,6 +262,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val ID_CLICK_ATC_PRODUCT_RECOM = "17136"
         const val ID_IMPRESSION_PRODUCT_RECOM = "17137"
         const val ID_CLICK_REMOVE_ATC_PRODUCT_RECOM = "20148"
+        const val ID_IMPRESSION_LEGO4 = "41955"
+        const val ID_CLICK_LEGO_4 = "41956"
     }
 
     fun onClickSearchBar() {
@@ -906,6 +910,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             action = EVENT_ACTION_IMPRESSION_LEGO_4,
             label = "${channelModel.id} - ${channelModel.channelHeader.name}"
         ).apply {
+            putString(KEY_TRACKER_ID, ID_IMPRESSION_LEGO4)
             putParcelableArrayList(KEY_PROMOTIONS, promotions)
             putString(KEY_USER_ID, userSession.userId)
         }
@@ -941,7 +946,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         ).apply {
             putString(KEY_CAMPAIGN_CODE, channelModel.trackingAttributionModel.campaignCode)
             putString(KEY_CHANNEL_ID, channelModel.id)
-            putString(KEY_TRACKER_ID, "41956")
+            putString(KEY_TRACKER_ID, ID_CLICK_LEGO_4)
             putParcelableArrayList(KEY_PROMOTIONS, promotions)
             putString(KEY_WAREHOUSE_ID, warehouseId)
             putString(KEY_USER_ID, userSession.userId)
