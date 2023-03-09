@@ -1083,8 +1083,9 @@ data class SearchProductModel(
             else Filter(options = inspirationWidgetAsFilterOption())
         }
 
-        private fun isPriceRangeWidget() =
-            inspirationWidgetOptions.any { it.filters.key.contains(KEY_PRICE_RANGE) }
+        private fun isPriceRangeWidget() = inspirationWidgetOptions
+            .flatMap { it.multiFilters.orEmpty() }
+            .any { it.key.contains(KEY_PRICE_RANGE) }
 
         private fun priceRangeOptions() =
             listOf(Option(key = PMIN), Option(key = PMAX))
@@ -1115,10 +1116,6 @@ data class SearchProductModel(
         @Expose
         val applink: String = "",
 
-        @SerializedName("filters")
-        @Expose
-        val filters: InspirationWidgetFilter,
-
         @SerializedName("multi_filters")
         @Expose
         val multiFilters: List<InspirationWidgetFilter>? = emptyList(),
@@ -1127,23 +1124,18 @@ data class SearchProductModel(
         @Expose
         val componentId: String,
     ) {
-        fun asOption() = Option(
-            key = filters.key,
-            value = filters.value,
-            name = filters.name,
-            valMin = filters.valMin,
-            valMax = filters.valMax,
-        )
 
-        fun asOptionList() = multiFilters?.map {
-            Option(
-                key = it.key,
-                value = it.value,
-                name = it.name,
-                valMin = it.valMin,
-                valMax = it.valMax,
+        private fun asOption(filter: InspirationWidgetFilter): Option {
+            return Option(
+                key = filter.key,
+                value = filter.value,
+                name = filter.name,
+                valMin = filter.valMin,
+                valMax = filter.valMax,
             )
-        } ?: emptyList()
+        }
+
+        fun asOptionList() = multiFilters.orEmpty().map { asOption(it) }
     }
 
     data class InspirationWidgetFilter (

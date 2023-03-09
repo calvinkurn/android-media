@@ -57,17 +57,19 @@ class InspirationWidgetListenerDelegate(
         )
     }
 
+    private fun isFilterSelected(option: Option): Boolean {
+        return if (option.isPriceRange) {
+            filterController.isPriceRangeFilterSelected(option)
+        } else {
+            filterController.getFilterViewState(option)
+        }
+    }
+
     override fun isFilterSelected(optionList: List<Option>): Boolean {
         return if (optionList.isEmpty()) {
             false
         } else {
-            optionList.all { option ->
-                if (option.isPriceRange) {
-                    filterController.isPriceRangeFilterSelected(option)
-                } else {
-                    filterController.getFilterViewState(option)
-                }
-            }
+            optionList.all { option -> isFilterSelected(option) }
         }
     }
 
