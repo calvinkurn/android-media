@@ -1,13 +1,9 @@
 package com.tokopedia.wishlist
 
-import android.app.Activity
-import android.app.Instrumentation
 import android.util.Log
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onIdle
+import androidx.test.espresso.Espresso.pressBackUnconditionally
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
@@ -90,18 +86,20 @@ class WishlistCollectionCassavaTest {
     fun test_wishlist_summary() {
         IdlingRegistry.getInstance().register(WishlistIdlingResource.countingIdlingResource)
         activityRule.launchActivity(null)
-        Intents.intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        // Intents.intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         onIdle()
 
         val query = "tracker/transaction/wishlist_collection_summary.json"
 
         runWishlistCollectionBot {
-            val wishlistCollectionRecyclerView =
-                activityRule.activity.findViewById<RecyclerView>(com.tokopedia.wishlist.R.id.rv_wishlist_collection)
+            clickSemuaWishlist()
+            loading()
+            pressBackUnconditionally()
             clickCreateNewCollection()
             submitNewCollectionName()
             clickBuatKoleksiButton()
             loading()
+
             // Force TrackingQueue to send trackers
             runBlocking {
                 suspendCoroutine<Any?> {
@@ -111,6 +109,7 @@ class WishlistCollectionCassavaTest {
                     }
                 }
             }
+
             // Wait for TrackingQueue to finish
             Thread.sleep(1_000)
         } submit {

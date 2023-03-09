@@ -3,6 +3,17 @@
   "query": [
     {
       "businessUnit": "purchase platform",
+      "clientId": ".*",
+      "trackerId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": ".*",
+      "screenName": "Semua Wishlist Page",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris" : ".*"
+    },
+    {
+      "businessUnit": "purchase platform",
       "eventCategory": "all wishlist page",
       "trackerId": ".*",
       "currentSite": "tokopediamarketplace",
