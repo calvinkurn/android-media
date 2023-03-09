@@ -87,7 +87,6 @@
             android:launchMode="singleTop"
             android:exported="false"
             android:allowEmbedded="true"
-            android:documentLaunchMode="always"
             android:resizeableActivity="true">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -121,7 +120,7 @@
         <activity
             android:name=".chatsetting.view.activity.BubbleChatActivationActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
+            android:theme="@style/Theme.White"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

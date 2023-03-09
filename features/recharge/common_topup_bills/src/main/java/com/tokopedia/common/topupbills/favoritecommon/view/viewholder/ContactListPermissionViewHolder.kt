@@ -23,6 +23,6 @@ class ContactListPermissionViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_topup_bills_contact_permission
-        const val CONTACT_PERMISSION_IMG_URL = "https://images.tokopedia.net/img/https:/images.tokopedia.net/img/https:/images.tokopedia.net/img/android/digital/common_topup_bills/common_topup_ic_contact_permission.png"
+        const val CONTACT_PERMISSION_IMG_URL = "https://images.tokopedia.net/img/common_topup_ic_contact_permission.png"
     }
 }

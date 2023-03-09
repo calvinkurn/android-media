@@ -179,6 +179,8 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
         hasBeenSelected = isSelected
     }
 
+    fun getValue() = hasBeenSelected
+
     interface TokoNowWishlistButtonListener {
         fun onWishlistButtonClicked(
             productId: String,

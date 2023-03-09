@@ -27,8 +27,6 @@ import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsProductP
 import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSenderImpl
-import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
-import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManagerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -115,6 +113,10 @@ abstract class PlayShortsBindTestModule {
     @Binds
     @PlayShortsScope
     abstract fun bindTitleConfigStore(configStore: TitleConfigStoreImpl): TitleConfigStore
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindBroadcastingConfigStore(configStore: BroadcastingConfigStoreImpl): BroadcastingConfigStore
 
     @Binds
     @PlayShortsScope

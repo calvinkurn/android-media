@@ -1,5 +1,6 @@
 package com.tokopedia.play.domain.repository
 
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 
 /**
@@ -12,9 +13,10 @@ interface PlayViewerUserReportRepository {
     suspend fun submitReport(
         channelId: Long,
         mediaUrl: String,
-        shopId: Long,
+        partnerId: Long,
         reasonId: Int,
         timestamp: Long,
-        reportDesc: String
+        reportDesc: String,
+        partnerType: PartnerType,
     ): Boolean
 }

@@ -24,8 +24,8 @@ class BuyerOrderDetailTrackerValidationTest450 : BuyerOrderDetailTrackerValidati
             testClickProduct(activityRule.activity)
             testClickShipmentTnC(activityRule.activity)
             testClickCopyAWB(activityRule.activity)
-            testClickPrimaryActionButton()
             testScrollToBottom(activityRule.activity)
+            testClickPrimaryActionButton()
             testClickSecondaryActionButtonRequestComplaint(activityRule.activity)
         } validate {
             clearQueries()

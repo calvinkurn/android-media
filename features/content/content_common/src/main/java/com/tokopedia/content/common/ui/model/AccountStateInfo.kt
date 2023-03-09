@@ -9,5 +9,5 @@ data class AccountStateInfo(
 )
 
 enum class AccountStateInfoType {
-    Live, NoUsername, NotAcceptTNC, Banned, Unknown
+    Live, NoUsername, NotAcceptTNC, Banned, NotWhitelisted, Unknown
 }

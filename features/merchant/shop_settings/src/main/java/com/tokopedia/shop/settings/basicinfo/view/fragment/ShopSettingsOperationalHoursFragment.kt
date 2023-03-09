@@ -321,7 +321,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         autoChatTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 if (linkUrl == getString(R.string.shop_operational_hour_ticker_auto_chat_reply)) {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
+                    RouteManager.route(context, ApplinkConst.TOKOPEDIA_CHAT_AUTO_REPLY_SETTINGS)
                 }
             }
 

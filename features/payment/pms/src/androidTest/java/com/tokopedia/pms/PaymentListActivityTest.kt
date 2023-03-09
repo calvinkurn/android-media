@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
@@ -13,7 +12,6 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.pms.analytics.PmsIdlingResource
 import com.tokopedia.pms.analytics.actionTest
 import com.tokopedia.pms.paymentlist.presentation.activity.PaymentListActivity
 import com.tokopedia.pms.test.R
@@ -27,7 +25,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -105,8 +102,6 @@ class PaymentListActivityTest {
 
             clickHtpTest(0)
             Thread.sleep(5000)
-            pressBack()
-
         } assertTest {
             validate(cassavaTestRule, PAYMENT_LIST_TRACKER_PATH)
             finishTest()
@@ -116,7 +111,7 @@ class PaymentListActivityTest {
     @Test
     fun validateChangeBankAccountEvents() {
         actionTest {
-           //  change klic bca id
+            //  change klic bca id
             Thread.sleep(5000)
             testChevronClick(1)
             Thread.sleep(5000)
@@ -138,14 +133,11 @@ class PaymentListActivityTest {
             clickItemOnActionBottomSheet(1)
             Thread.sleep(5000)
             pressBack()
-
-
         } assertTest {
             validate(cassavaTestRule, PAYMENT_EDIT_TRACKER_PATH)
             finishTest()
         }
     }
-
 
     private fun login() = InstrumentationAuthHelper.loginInstrumentationTestUser1()
 

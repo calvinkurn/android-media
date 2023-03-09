@@ -11,10 +11,6 @@ class ShopProductCampaign {
     @Expose
     var productId: String? = null
 
-    @SerializedName("percentage_amount")
-    @Expose
-    var percentageAmount: String? = null
-
     @SerializedName("discounted_price")
     @Expose
     var discountedPrice: String? = null
@@ -26,12 +22,4 @@ class ShopProductCampaign {
     @SerializedName("original_price")
     @Expose
     var originalPrice: String? = null
-
-    @SerializedName("original_price_idr")
-    @Expose
-    var originalPriceIdr: String? = null
-
-    @SerializedName("discounted_price_idr")
-    @Expose
-    var discountedPriceIdr: String? = null
 }

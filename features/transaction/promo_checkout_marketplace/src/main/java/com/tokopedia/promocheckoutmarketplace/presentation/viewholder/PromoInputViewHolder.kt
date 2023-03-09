@@ -12,8 +12,9 @@ import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketpla
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoInputUiModel
 
-class PromoInputViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding,
-                           private val listener: PromoCheckoutActionListener
+class PromoInputViewHolder(
+    private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding,
+    private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoInputUiModel>(viewBinding.root) {
 
     companion object {
@@ -57,7 +58,6 @@ class PromoInputViewHolder(private val viewBinding: PromoCheckoutMarketplaceModu
                 textFieldInputPromoLayoutParams.rightMargin = 0
             }
         }
-
     }
 
     private fun renderTextField(viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding, element: PromoInputUiModel) {
@@ -141,8 +141,10 @@ class PromoInputViewHolder(private val viewBinding: PromoCheckoutMarketplaceModu
         with(viewBinding) {
             textFieldInputPromo.isInputError = true
             if (element.uiData.exception != null) {
-                textFieldInputPromo.setMessage(element.uiData.exception?.message
-                        ?: itemView.context.getString(com.tokopedia.network.R.string.default_request_error_unknown))
+                textFieldInputPromo.setMessage(
+                    element.uiData.exception?.message
+                        ?: itemView.context.getString(com.tokopedia.network.R.string.default_request_error_unknown)
+                )
             }
         }
     }
@@ -153,5 +155,4 @@ class PromoInputViewHolder(private val viewBinding: PromoCheckoutMarketplaceModu
             textFieldInputPromo.setMessage("")
         }
     }
-
 }

@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ViewItemAlbumPickerBinding
 import com.tokopedia.media.picker.utils.loadPickerImage
-import com.tokopedia.media.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.picker.common.uimodel.AlbumUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+
+internal typealias OnAlbumClickListener = (AlbumUiModel) -> Unit
 
 class AlbumAdapter constructor(
     private val albums: MutableList<AlbumUiModel> = mutableListOf(),
@@ -46,10 +47,7 @@ class AlbumAdapter constructor(
                 R.string.picker_album_subtitle,
                 album.count
             )
-
-            album.preview?.let {
-                binding?.imgPreview?.loadPickerImage(it.toString())
-            }
+            binding?.imgPreview?.loadPickerImage(album.uri.toString())
 
             itemView.setOnClickListener {
                 listener?.invoke(album)

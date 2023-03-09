@@ -7,13 +7,30 @@ import java.io.IOException
 
 class OccPaymentTestInterceptor : BaseOccInterceptor() {
 
+    var customGetPaymentFeeResponsePath: String? = null
+    var customGetPaymentFeeThrowable: IOException? = null
+
     var customGetListingParamResponsePath: String? = null
     var customGetListingParamThrowable: IOException? = null
+
+    var customCreditCardTenorListResponsePath: String? = null
+    var customCreditCardTenorListThrowable: IOException? = null
+
+    var customGoCicilInstallmentOptionResponsePath: String? = null
+    var customGoCicilInstallmentOptionThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()
         val requestString = readRequestString(copy)
 
+        if (requestString.contains(GET_PAYMENT_FEE_QUERY)) {
+            if (customGetPaymentFeeThrowable != null) {
+                throw customGetPaymentFeeThrowable!!
+            } else if (customGetPaymentFeeResponsePath != null) {
+                return mockResponse(copy, getJsonFromResource(customGetPaymentFeeResponsePath!!))
+            }
+            return mockResponse(copy, getJsonFromResource(GET_PAYMENT_FEE_DEFAULT_RESPONSE_PATH))
+        }
         if (requestString.contains(GET_LISTING_PARAM_QUERY)) {
             if (customGetListingParamThrowable != null) {
                 throw customGetListingParamThrowable!!
@@ -23,16 +40,42 @@ class OccPaymentTestInterceptor : BaseOccInterceptor() {
             return mockResponse(copy, getJsonFromResource(GET_LISTING_PARAM_DEFAULT_RESPONSE_PATH))
         }
         if (requestString.contains(GET_OVO_TOP_UP_URL_QUERY)) {
-            return mockResponse(copy, getJsonFromResource(GET_LISTING_PARAM_DEFAULT_RESPONSE_PATH))
+            return mockResponse(copy, getJsonFromResource(GET_OVO_TOP_UP_URL_DEFAULT_RESPONSE_PATH))
+        }
+        if (requestString.contains(CREDIT_CARD_TENOR_LIST_QUERY)) {
+            if (customCreditCardTenorListThrowable != null) {
+                throw customCreditCardTenorListThrowable!!
+            } else if (customCreditCardTenorListResponsePath != null) {
+                return mockResponse(copy, getJsonFromResource(customCreditCardTenorListResponsePath!!))
+            }
+            return mockResponse(copy, getJsonFromResource(CREDIT_CARD_TENOR_LIST_DEFAULT_RESPONSE_PATH))
+        }
+        if (requestString.contains(GOCICIL_INSTALLMENT_OPTION_QUERY)) {
+            if (customGoCicilInstallmentOptionThrowable != null) {
+                throw customGoCicilInstallmentOptionThrowable!!
+            } else if (customGoCicilInstallmentOptionResponsePath != null) {
+                return mockResponse(copy, getJsonFromResource(customGoCicilInstallmentOptionResponsePath!!))
+            }
+            return mockResponse(copy, getJsonFromResource(GOCICIL_INSTALLMENT_OPTION_DEFAULT_RESPONSE_PATH))
         }
         return chain.proceed(chain.request())
     }
 
     override fun resetInterceptor() {
+        customGetPaymentFeeResponsePath = null
+        customGetPaymentFeeThrowable = null
         customGetListingParamResponsePath = null
         customGetListingParamThrowable = null
+        customCreditCardTenorListResponsePath = null
+        customCreditCardTenorListThrowable = null
+        customGoCicilInstallmentOptionResponsePath = null
+        customGoCicilInstallmentOptionThrowable = null
     }
 }
+
+const val GET_PAYMENT_FEE_QUERY = "getPaymentFee"
+const val GET_PAYMENT_FEE_DEFAULT_RESPONSE_PATH = "payment/get_payment_fee_default_response.json"
+const val GET_PAYMENT_FEE_2_THOUSAND_RESPONSE_PATH = "payment/get_payment_fee_2_thousand_response.json"
 
 const val GET_LISTING_PARAM_QUERY = "getListingParams"
 
@@ -41,3 +84,14 @@ const val GET_LISTING_PARAM_DEFAULT_RESPONSE_PATH = "payment/get_payment_listing
 const val GET_OVO_TOP_UP_URL_QUERY = "fetchInstantTopupURL"
 
 const val GET_OVO_TOP_UP_URL_DEFAULT_RESPONSE_PATH = "payment/get_ovo_top_up_url_default_response.json"
+
+const val CREDIT_CARD_TENOR_LIST_QUERY = "creditCardTenorList"
+
+const val CREDIT_CARD_TENOR_LIST_DEFAULT_RESPONSE_PATH = "payment/credit_card_tenor_list_default_response.json"
+const val CREDIT_CARD_TENOR_LIST_ALL_ENABLED_RESPONSE_PATH = "payment/credit_card_tenor_list_all_enabled_response.json"
+
+const val GOCICIL_INSTALLMENT_OPTION_QUERY = "getInstallmentInfo"
+
+const val GOCICIL_INSTALLMENT_OPTION_DEFAULT_RESPONSE_PATH = "payment/gocicil_installment_option_default_response.json"
+const val GOCICIL_INSTALLMENT_OPTION_SOME_INACTIVE_RESPONSE_PATH = "payment/gocicil_installment_option_some_inactive_response.json"
+const val GOCICIL_INSTALLMENT_OPTION_ALL_INACTIVE_RESPONSE_PATH = "payment/gocicil_installment_option_all_inactive_response.json"
