@@ -11,4 +11,5 @@ interface FeedListener {
     fun onSharePostClicked(model: FeedCardImageContentModel)
     fun onFollowClicked(id: String, isShop: Boolean)
     fun changeTab(type: String)
+    fun reload()
 }

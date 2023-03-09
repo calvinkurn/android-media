@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.feedplus.databinding.ItemFeedDecorativeLoaderBinding
 import com.tokopedia.feedplus.databinding.ItemFeedNoContentBinding
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedDecorativeLoaderViewHolder
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedErrorViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedNoContentViewHolder
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostViewHolder
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment
@@ -57,6 +59,14 @@ class FeedAdapterTypeFactory(private val context: FeedFragment) : BaseAdapterTyp
                     parent as ViewGroup,
                     false
                 )
+            )
+            ErrorNetworkViewHolder.LAYOUT -> FeedErrorViewHolder(
+                ItemFeedNoContentBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                ),
+                feedListener
             )
             else -> super.createViewHolder(parent, type)
         }

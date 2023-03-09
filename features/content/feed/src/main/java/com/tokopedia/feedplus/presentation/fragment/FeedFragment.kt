@@ -229,6 +229,12 @@ class FeedFragment :
         feedMainViewModel.changeCurrentTabByType(type)
     }
 
+    override fun reload() {
+        feedPostViewModel.fetchFeedPosts(data?.type ?: "")
+        adapter?.removeErrorNetwork()
+        adapter?.showLoading()
+    }
+
     override fun onProductTagItemClicked(model: FeedCardImageContentModel) {
         openProductTagBottomSheet(model)
     }
@@ -430,7 +436,10 @@ class FeedFragment :
                         adapter?.addElement(it.data.items)
                     }
                 }
-                is Fail -> {}
+                is Fail -> {
+                    adapter?.hideLoading()
+                    adapter?.showErrorNetwork()
+                }
             }
         }
     }

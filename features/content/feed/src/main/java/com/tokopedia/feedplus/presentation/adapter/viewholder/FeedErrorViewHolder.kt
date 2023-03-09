@@ -5,29 +5,28 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedNoContentBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.iconunify.IconUnify
 
 /**
  * Created By : Muhammad Furqan on 08/03/23
  */
-class FeedNoContentViewHolder(
+class FeedErrorViewHolder(
     private val binding: ItemFeedNoContentBinding,
     private val listener: FeedListener
 ) : AbstractViewHolder<FeedNoContentModel>(binding.root) {
 
     override fun bind(element: FeedNoContentModel?) {
         with(binding) {
-            iconFeedNoContent.setImage(IconUnify.IMAGE)
+            iconFeedNoContent.setImage(IconUnify.RELOAD)
             tyFeedNoContentTitle.text =
-                root.context.getString(R.string.feed_label_no_content_title)
+                root.context.getString(R.string.feed_label_error_fetch_title)
             tyFeedNoContentSubtitle.text =
-                root.context.getString(R.string.feed_label_no_content_subtitle)
+                root.context.getString(R.string.feed_label_error_fetch_subtitle)
             btnShowOtherContent.text =
-                root.context.getString(R.string.feed_label_no_content_button)
+                root.context.getString(R.string.feed_label_error_fetch_button)
             btnShowOtherContent.setOnClickListener {
-                listener.changeTab(FeedBaseFragment.TAB_TYPE_FOR_YOU)
+                listener.reload()
             }
         }
     }
