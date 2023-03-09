@@ -145,7 +145,7 @@ class NavigationTab : FrameLayout, CoroutineScope {
         if (isVisible == show) return
 
         val showY = 0f
-        val hideY = -1f * (binding?.root?.height ?: 1)
+        val hideY = -1f * (binding?.root?.height ?: 0)
 
         if (show) {
             binding?.root?.show()
