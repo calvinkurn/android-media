@@ -36,6 +36,9 @@ class ContentCommentViewModel @AssistedInject constructor(
     val userInfo: UserSessionInterface
         get() = userSession
 
+    val isCreator: Boolean
+        get() = _comments.value.commenterType == UserType.Shop
+
     @AssistedFactory
     interface Factory {
         fun create(@Assisted source: PageSource): ContentCommentViewModel

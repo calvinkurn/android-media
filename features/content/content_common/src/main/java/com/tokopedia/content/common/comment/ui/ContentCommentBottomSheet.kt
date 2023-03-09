@@ -402,7 +402,7 @@ class ContentCommentBottomSheet @Inject constructor(
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun getMenuItems(item: CommentUiModel.Item): List<FeedMenuItem> = buildList {
-        if (item.isOwner) {
+        if (item.isOwner || viewModel.isCreator) {
             add(
                 FeedMenuItem(
                     name = getString(R.string.content_common_menu_delete),
