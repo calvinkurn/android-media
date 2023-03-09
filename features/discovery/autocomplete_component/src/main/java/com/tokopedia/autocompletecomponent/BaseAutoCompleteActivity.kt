@@ -413,13 +413,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         return true
     }
 
-    private fun getQueryOrHint(searchParameter: SearchParameter): String {
-        val query = searchParameter.getSearchQuery()
-
-        return if (query.isNotEmpty()) query
-        else searchParameter.get(HINT)
-    }
-
     private fun getQueryOrHint(searchParameter: Map<String, String>) : String {
         val query = searchParameter.getSearchQuery()
 

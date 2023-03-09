@@ -71,6 +71,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data`()
 
         `then verify suggestion API is called`()
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `then verify visitable list`(suggestionUniverse)
     }
@@ -89,10 +90,29 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     private fun `then verify suggestion API is called`() {
         verify { getSuggestionUseCase.execute(any(), any(), any()) }
     }
+    private fun `then verify suggestion API is not called`() {
+        verify(exactly = 0) { getSuggestionUseCase.execute(any(), any(), any()) }
+    }
+
+    private fun `then verify suggestion view will call showExceedKeywordLimit`() {
+        verify {
+            suggestionView.showExceedKeywordLimit()
+        }
+    }
+    private fun `then verify suggestion view will call hideExceedKeywordLimit`() {
+        verify {
+            suggestionView.hideExceedKeywordLimit()
+        }
+    }
 
     private fun `then verify suggestion view will call showSuggestionResult`() {
         verify {
             suggestionView.showSuggestionResult(capture(slotVisitableList))
+        }
+    }
+    private fun `then verify suggestion view will call hideSuggestionResult`() {
+        verify {
+            suggestionView.hideSuggestionResult()
         }
     }
 
@@ -189,6 +209,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     private fun `then verify view not showing anything`() {
         verify {
             suggestionView.chooseAddressData
+            suggestionView.hideExceedKeywordLimit()
         }
         confirmVerified(suggestionView)
     }
@@ -201,6 +222,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data`()
 
         `then verify suggestion API is called`()
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `then verify visitable list with top shop`(suggestionUniverse)
     }
@@ -231,6 +253,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data`(searchParameter)
 
         `then verify suggestion API is called`()
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `then verify visitable list should have SuggestionDoubleLineWithoutImageDataView`(suggestionUniverse)
     }
@@ -262,6 +285,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data`(searchParameter)
 
         `then verify suggestion API is called`()
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `then verify visitable list should only have SuggestionDoubleLineWithoutImageDataView`(suggestionUniverse)
     }
@@ -345,6 +369,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `when presenter get suggestion data`()
 
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `Then verify shop ads double line data view`(suggestionUniverse)
     }
@@ -368,6 +393,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `when presenter get suggestion data`()
 
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `then verify visitable list is empty`()
     }
@@ -383,6 +409,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `when presenter get suggestion data`()
 
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `then verify visitable list is empty`()
     }
@@ -396,6 +423,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `when presenter get suggestion data`()
 
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `Then verify shop ads shown is main ads`(suggestionUniverse)
         `Then verify shops visitable list size`(expectedSize)
@@ -421,6 +449,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `when presenter get suggestion data`()
 
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `Then verify shop ads shown is sub ads`(suggestionUniverse)
         `Then verify shops visitable list size`(expectedSize)
@@ -442,6 +471,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `when presenter get suggestion data`()
 
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `Then verify first visitable list is not shop ads`()
         `Then verify shops visitable list size`(expectedSize)
@@ -463,6 +493,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `when presenter get suggestion data`()
 
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `Then verify shop ads shown is main ads`(suggestionUniverse)
         `Then verify shops visitable list size`(expectedSize)
@@ -486,6 +517,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
 
         `when presenter get suggestion data`()
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `Then verify shop ads shown is sub ads`(suggestionUniverse)
         `Then verify shops visitable list size`(expectedSize)
@@ -499,6 +531,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data`()
 
         `then verify suggestion API is called`()
+        `then verify suggestion view will call hideExceedKeywordLimit`()
         `then verify suggestion view will call showSuggestionResult`()
         `then verify no suggestion title header`()
     }
@@ -506,6 +539,20 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     private fun `then verify no suggestion title header`() {
         val visitableList = slotVisitableList.captured
         visitableList.none { it is SuggestionTitleDataView } shouldBe true
+    }
+
+    @Test
+    fun `mps exceed keyword limit`() {
+        `when presenter get suggestion data`(
+            activeKeyword = SearchBarKeyword(
+                position = 3,
+                keyword = keyword,
+            )
+        )
+
+        `then verify suggestion API is not called`()
+        `then verify suggestion view will call showExceedKeywordLimit`()
+        `then verify suggestion view will call hideSuggestionResult`()
     }
 
 }

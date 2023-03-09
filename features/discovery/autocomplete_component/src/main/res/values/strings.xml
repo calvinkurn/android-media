@@ -65,4 +65,6 @@
 
     <string name="suggestion_keyword_arrow_coach_mark_title">Klik biar nggak capek ngetik</string>
     <string name="suggestion_keyword_arrow_coach_mark_message">Kamu bisa klik ↖ biar kata kunci pilihanmu langsung masuk ke kolom pencarian.</string>
+
+    <string name="suggestion_exceed_keyword_limit_message">Cari maks. 3 produk, jika lebih dari itu nggak akan muncul di hasil pencarianmu.</string>
 </resources>

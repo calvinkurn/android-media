@@ -28,9 +28,13 @@ import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.productcard.utils.findViewById
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class SuggestionFragment :
@@ -88,6 +92,10 @@ class SuggestionFragment :
         view?.findViewById<RecyclerView?>(R.id.recyclerViewSuggestion)
     }
 
+    private val tgExceedKeywordLimit by lazy {
+        view?.findViewById<Typography>(R.id.tg_suggestion_exceed_keyword_limit)
+    }
+
     private var coachMark: CoachMark2? = null
 
     override fun onCreateView(
@@ -124,9 +132,24 @@ class SuggestionFragment :
 
     override fun showSuggestionResult(list: List<Visitable<*>>) {
         stopTracePerformanceMonitoring()
+        recyclerViewSuggestion?.show()
         suggestionAdapter.replaceData(list)
 
         suggestionViewUpdateListener?.showSuggestionView()
+    }
+
+    override fun hideSuggestionResult() {
+        recyclerViewSuggestion?.hide()
+    }
+
+    override fun showExceedKeywordLimit() {
+        stopTracePerformanceMonitoring()
+        tgExceedKeywordLimit?.show()
+        suggestionViewUpdateListener?.showSuggestionView()
+    }
+
+    override fun hideExceedKeywordLimit() {
+        tgExceedKeywordLimit?.hide()
     }
 
     private fun stopTracePerformanceMonitoring() {
