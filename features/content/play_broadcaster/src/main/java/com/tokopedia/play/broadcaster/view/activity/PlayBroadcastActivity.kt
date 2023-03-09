@@ -333,6 +333,9 @@ class PlayBroadcastActivity : BaseActivity(),
                         broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
                         supportFragmentManager.popBackStack()
                     }
+                    is PlayBroadcastEvent.BeautificationDownloadAssetFail -> {
+                        showToaster(err = event.throwable)
+                    }
                     else -> {}
                 }
             }

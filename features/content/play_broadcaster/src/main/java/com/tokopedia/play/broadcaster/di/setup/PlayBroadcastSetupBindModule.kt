@@ -3,6 +3,8 @@ package com.tokopedia.play.broadcaster.di.setup
 import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPickerAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPickerAnalyticImpl
 import com.tokopedia.play.broadcaster.data.datastore.*
+import com.tokopedia.play.broadcaster.util.asset.AssetDownloader
+import com.tokopedia.play.broadcaster.util.asset.AssetDownloaderImpl
 import dagger.Binds
 import dagger.Module
 
@@ -43,4 +45,8 @@ abstract class PlayBroadcastSetupBindModule {
     @Binds
     @PlayBroadcastSetupScope
     abstract fun bindPlayBroCoverPickerAnalytic(analytic: PlayBroCoverPickerAnalyticImpl): PlayBroCoverPickerAnalytic
+
+    @Binds
+    @PlayBroadcastSetupScope
+    abstract fun bindAssetDownloader(assetDownloader: AssetDownloaderImpl): AssetDownloader
 }

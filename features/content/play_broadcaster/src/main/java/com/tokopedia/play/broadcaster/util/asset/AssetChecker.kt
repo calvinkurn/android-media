@@ -5,5 +5,5 @@ package com.tokopedia.play.broadcaster.util.asset
  */
 interface AssetChecker {
 
-    suspend fun isLicenseAvailable(): Boolean
+    suspend fun isPresetFileAvailable(fileName: String): Boolean
 }

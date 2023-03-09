@@ -41,6 +41,7 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
@@ -58,6 +59,8 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
+import com.tokopedia.play.broadcaster.util.asset.AssetDownloader
+import com.tokopedia.play.broadcaster.util.asset.AssetPathHelper
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.removeUnusedField
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupAutoAddField
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupEditable
@@ -131,7 +134,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val interactiveMapper: PlayInteractiveMapper,
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger,
-    private val broadcastTimer: PlayBroadcastTimer
+    private val broadcastTimer: PlayBroadcastTimer,
+    private val assetDownloader: AssetDownloader,
+    private val assetPathHelper: AssetPathHelper,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -1700,7 +1705,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 it.copy(
                     faceFilters = it.faceFilters.map { item ->
                         item.copy(
-                            isSelected = item.name == faceFilter.name,
+                            isSelected = item.id == faceFilter.id,
                             value = if(faceFilter.isRemoveEffect) 0.0 else item.value
                         )
                     }
@@ -1724,12 +1729,35 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleSelectPresetOption(preset: PresetFilterUiModel) {
         viewModelScope.launch {
-            _beautificationConfig.update {
-                it.copy(
-                    presets = it.presets.map { item ->
-                        item.copy(active = item.name == preset.name)
+            if(preset.isRemoveEffect || preset.assetStatus == BeautificationAssetStatus.Available) {
+                _beautificationConfig.update {
+                    it.copy(
+                        presets = it.presets.map { item ->
+                            item.copy(active = item.id == preset.id)
+                        }
+                    )
+                }
+            }
+            else if(preset.assetStatus == BeautificationAssetStatus.NotDownloaded) {
+                updatePresetAssetStatus(preset, BeautificationAssetStatus.Downloading)
+
+                viewModelScope.launchCatchError(block = {
+                    val isSuccess = assetDownloader.downloadUnzip(
+                        fileUrl = preset.assetLink,
+                        fileName = preset.id + ".zip",
+                        filePath = assetPathHelper.getPresetFileDir(preset.id)
+                    )
+
+                    if(isSuccess) {
+                        updatePresetAssetStatus(preset, BeautificationAssetStatus.Available)
                     }
-                )
+                    else {
+                        updatePresetAssetStatus(preset, BeautificationAssetStatus.NotDownloaded)
+                        throw Exception("Something went wrong")
+                    }
+                }) { throwable ->
+                    _uiEvent.emit(PlayBroadcastEvent.BeautificationDownloadAssetFail(throwable))
+                }
             }
         }
     }
@@ -1752,6 +1780,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         if (!beautificationConfig.isUnknown) {
             addPreparationMenu(DynamicPreparationMenu.createFaceFilter(isMandatory = false))
+        }
+    }
+
+    private suspend fun updatePresetAssetStatus(preset: PresetFilterUiModel, assetStatus: BeautificationAssetStatus) {
+        _beautificationConfig.update {
+            it.copy(
+                presets = it.presets.map { item ->
+                    item.copy(
+                        assetStatus = if(preset.id == item.id) assetStatus else item.assetStatus
+                    )
+                }
+            )
         }
     }
 

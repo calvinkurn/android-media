@@ -51,4 +51,5 @@ sealed interface PlayBroadcastEvent {
     /** Beautification */
     data class BeautificationBottomSheetShown(val bottomSheetHeight: Int) : PlayBroadcastEvent
     object BeautificationBottomSheetDismissed : PlayBroadcastEvent
+    data class BeautificationDownloadAssetFail(val throwable: Throwable) : PlayBroadcastEvent
 }

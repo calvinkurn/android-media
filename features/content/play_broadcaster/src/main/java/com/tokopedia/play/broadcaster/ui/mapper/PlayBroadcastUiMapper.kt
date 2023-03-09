@@ -206,26 +206,42 @@ class PlayBroadcastUiMapper @Inject constructor(
                         assetStatus = BeautificationAssetStatus.Available,
                     )
                 ),
-                presets = List(5) {
+                presets = List(3) {
                     val iconUrl = when(it) {
                         1 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/idol.jpg"
                         2 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/energetic.jpg"
-                        3 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/gangnam.jpg"
-                        4 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/elegant.jpg"
                         else -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/sweety.jpg"
                     }
 
+                    val id = when(it) {
+                        1 -> "aidou"
+                        2 -> "palette"
+                        else -> ""
+                    }
+
+                    val name = when(it) {
+                        1 -> "Aidou"
+                        2 -> "Palette"
+                        else -> ""
+                    }
+
+                    val assetLink = when(it) {
+                        1 -> "https://assets.tokopedia.net/asts/android/content/play/aidou.zip"
+                        2 -> "https://assets.tokopedia.net/asts/android/content/play/palette.zip"
+                        else -> ""
+                    }
+
                     PresetFilterUiModel(
-                        id = if(it == 0) "none" else "Preset id $it",
-                        name = if(it == 0) "Tidak Ada" else "Preset $it",
+                        id = if(it == 0) "none" else id,
+                        name = if(it == 0) "Tidak Ada" else name,
                         active = false,
                         minValue = it * 0.1,
                         maxValue = it * 0.1,
                         defaultValue = it * 0.1,
                         value = it * 0.1,
                         iconUrl = iconUrl,
-                        assetLink = "asset link $it",
-                        assetStatus = if(assetChecker.isLicenseAvailable()) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
+                        assetLink = assetLink,
+                        assetStatus = if(assetChecker.isPresetFileAvailable(id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
                     )
                 }
 //                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
