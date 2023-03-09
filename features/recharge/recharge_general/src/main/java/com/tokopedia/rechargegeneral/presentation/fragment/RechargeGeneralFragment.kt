@@ -3,21 +3,29 @@ package com.tokopedia.rechargegeneral.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -34,6 +42,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.bottomsheet.AddSmartBillsInquiryBottomSheet
+import com.tokopedia.common.topupbills.view.bottomsheet.TopupBillsMenuBottomSheets
 import com.tokopedia.common.topupbills.view.bottomsheet.callback.AddSmartBillsInquiryCallBack
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
@@ -47,9 +56,13 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -67,10 +80,13 @@ import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
+import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapterFactory
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputListener
+import com.tokopedia.rechargegeneral.presentation.bottomsheet.RechargeDppoConsentBottomSheet
+import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralDppoConsentUiModel
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
@@ -85,6 +101,8 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -94,7 +112,9 @@ class RechargeGeneralFragment :
     BaseTopupBillsFragment(),
     OnInputListener,
     RechargeGeneralAdapter.LoaderListener,
-    RechargeGeneralCheckoutBottomSheet.CheckoutListener {
+    RechargeGeneralCheckoutBottomSheet.CheckoutListener,
+    TopupBillsMenuBottomSheets.MenuListener
+{
 
     private var binding by autoClearedNullable<FragmentRechargeGeneralBinding>()
 
@@ -169,6 +189,7 @@ class RechargeGeneralFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
         activity?.let {
             viewModel = viewModelFragmentProvider.get(RechargeGeneralViewModel::class.java)
@@ -344,6 +365,15 @@ class RechargeGeneralFragment :
                 }
             }
         }
+
+        observe(viewModel.dppoConsent) {
+            when (it) {
+                is Success -> {
+                    activity?.invalidateOptionsMenu()
+                }
+                is Fail -> {}
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -390,6 +420,8 @@ class RechargeGeneralFragment :
 
             loadData()
         }
+
+        viewModel.getDppoConsent(categoryId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1493,6 +1525,91 @@ class RechargeGeneralFragment :
         return data.firstOrNull()?.products?.firstOrNull()?.id ?: ""
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        val dppoConsentData = viewModel.dppoConsent.value
+        inflater.inflate(R.menu.menu, menu)
+        if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+            menu.showConsentIcon()
+            menu.setupConsentIcon(dppoConsentData.data.description)
+            menu.setupKebabIcon()
+        } else {
+            menu.hideConsentIcon()
+            menu.setupKebabIcon()
+        }
+    }
+
+    private fun Menu.hideConsentIcon() {
+        findItem(R.id.action_dppo_consent).isVisible = false
+    }
+
+    private fun Menu.showConsentIcon() {
+        findItem(R.id.action_dppo_consent).isVisible = true
+    }
+
+    private fun Menu.setupConsentIcon(description: String) {
+        if (description.isNotEmpty()) {
+            context?.let { ctx ->
+                val iconUnify = getIconUnifyDrawable(
+                    ctx,
+                    IconUnify.INFORMATION,
+                    ContextCompat.getColor(ctx, R.color.Unify_NN900)
+                )
+                iconUnify?.toBitmap()?.let {
+                    getItem(0).setOnMenuItemClickListener {
+                        val bottomSheet = RechargeDppoConsentBottomSheet(description)
+                        bottomSheet.show(childFragmentManager)
+                        true
+                    }
+                    getItem(0).icon = BitmapDrawable(
+                        resources,
+                        Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true))
+                }
+            }
+        }
+    }
+
+    private fun Menu.setupKebabIcon() {
+        context?.let { ctx ->
+            val iconUnify = getIconUnifyDrawable(
+                ctx,
+                IconUnify.MENU_KEBAB_VERTICAL,
+                ContextCompat.getColor(ctx, R.color.Unify_NN900)
+            )
+            iconUnify?.toBitmap()?.let {
+                getItem(1).setOnMenuItemClickListener {
+                    showBottomMenus()
+                    true
+                }
+                getItem(1).icon = BitmapDrawable(
+                    resources,
+                    Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true))
+            }
+        }
+    }
+
+    private fun showBottomMenus() {
+        val generalMenuBottomSheet = TopupBillsMenuBottomSheets.newInstance()
+        generalMenuBottomSheet.listener = this
+        generalMenuBottomSheet.setShowListener {
+            generalMenuBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        generalMenuBottomSheet.show(childFragmentManager, TAG_GENERAL_MENU_BOTTOM_SHEET)
+    }
+
+    override fun onOrderListClicked() {
+        RouteManager.route(context, ApplinkConst.DIGITAL_ORDER)
+    }
+
+    override fun onPromoClicked() {
+        RouteManager.route(context, ApplinkConst.PROMO_LIST)
+    }
+
+    override fun onHelpClicked() {
+        RouteManager.route(context, ApplinkConst.CONTACT_US_NATIVE)
+    }
+
+
     companion object {
         private const val PREFIX_LINK = "tokopedia"
         const val EXTRA_PARAM_MENU_ID = "EXTRA_PARAM_MENU_ID"
@@ -1522,6 +1639,10 @@ class RechargeGeneralFragment :
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
 
         const val PLATFORM_ID_ADD_SBM = 48
+
+        private const val TAG_GENERAL_MENU_BOTTOM_SHEET = "GENERAL_MENU_BOTTOM_SHEET"
+        private const val TAG_GENERAL_CONSENT_BOTTOM_SHEET = "GENERAL_CONSENT_BOTTOM_SHEET"
+        private const val TOOLBAR_ICON_SIZE = 64
 
         val ITEM_DECORATOR_SIZE = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
 
