@@ -140,7 +140,7 @@ class FeedPostViewHolder(
 
     private fun showClearView() {
         with(binding) {
-            authorView.showClearView()
+            layoutAuthorInfo.hide()
             tvFeedCaption.hide()
             likeButton.hide()
             commentButton.hide()
@@ -154,7 +154,7 @@ class FeedPostViewHolder(
 
     private fun hideClearView() {
         with(binding) {
-            authorView.hideClearView()
+            layoutAuthorInfo.hideClearView()
             tvFeedCaption.show()
             likeButton.show()
             commentButton.show()
