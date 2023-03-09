@@ -17,6 +17,7 @@ import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2Binding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -108,12 +109,15 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
     }
 
     private fun showFailedImage() {
-        binding?.homeContainerBalance?.homeIvLogoBalance?.setImageDrawable(
-            ContextCompat.getDrawable(
-                itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N75
+        binding?.homeContainerBalance?.homeIvLogoBalance?.run {
+            type = ImageUnify.TYPE_CIRCLE
+            setImageDrawable(
+                ContextCompat.getDrawable(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N75
+                )
             )
-        )
+        }
     }
 
     private fun renderItemLoading(element: BalanceDrawerItemModel) {
@@ -168,7 +172,10 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
 
     private fun showImageSuccess(element: BalanceDrawerItemModel) {
         if (!element.iconImageUrl.isNullOrBlank()) {
-            binding?.homeContainerBalance?.homeIvLogoBalance?.setImageUrl(element.iconImageUrl)
+            binding?.homeContainerBalance?.homeIvLogoBalance?.run {
+                type = ImageUnify.TYPE_RECT
+                setImageUrl(element.iconImageUrl)
+            }
         } else {
             showFailedImage()
         }

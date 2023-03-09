@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetFailedViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetShimmerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceWidgetAtf2FailedViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceWidgetAtf2ShimmerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceWidgetAtf2ViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
@@ -32,7 +33,9 @@ class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAd
     }
 
     override fun type(dataModel: BalanceWidgetFailedModel): Int {
-        return BalanceWidgetFailedViewHolder.LAYOUT
+        return if(HomeRollenceController.isUsingAtf2Variant()) {
+            BalanceWidgetAtf2FailedViewHolder.LAYOUT
+        } else BalanceWidgetFailedViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -42,6 +45,7 @@ class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAd
             BalanceWidgetShimmerViewHolder.LAYOUT -> BalanceWidgetShimmerViewHolder(view, listener)
             BalanceWidgetAtf2ShimmerViewHolder.LAYOUT -> BalanceWidgetAtf2ShimmerViewHolder(view, listener)
             BalanceWidgetFailedViewHolder.LAYOUT -> BalanceWidgetFailedViewHolder(view, listener)
+            BalanceWidgetAtf2FailedViewHolder.LAYOUT -> BalanceWidgetAtf2FailedViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         } as AbstractViewHolder<BalanceWidgetVisitable>
     }
