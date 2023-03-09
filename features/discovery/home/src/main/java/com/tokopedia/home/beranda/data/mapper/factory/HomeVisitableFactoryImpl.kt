@@ -28,8 +28,6 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
@@ -92,10 +90,6 @@ class HomeVisitableFactoryImpl(
     override fun addHomeHeaderOvo(): HomeVisitableFactory {
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS) ?: false
 
-        val atfStyle = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.HOME_COMPONENT_ATF,
-            ""
-        )
         if (HomeRollenceController.isUsingAtf2Variant()) {
             val homeHeaderAtf2 = HomeHeaderAtf2DataModel(needToShowUserWallet = needToShowUserWallet)
             val headerViewModel = HeaderDataModel()
@@ -270,83 +264,83 @@ class HomeVisitableFactoryImpl(
                     visitableList.add(ShimmeringChannelDataModel(""))
                 } else {
                     it.dataList.forEachIndexed { index, data ->
-                    when (data.component) {
-                        TYPE_ICON -> {
-                            data.atfStatusCondition(
-                                onLoading = {
-                                    visitableList.add(ShimmeringIconDataModel(data.id.toString()))
-                                },
-                                onError = {
-                                    visitableList.add(ErrorStateIconModel())
-                                },
-                                onSuccess = {
-                                    val icon = data.getAtfContent<DynamicHomeIcon>()
-                                    addDynamicIconData(data.id.toString(), icon?.type ?: 1, icon?.dynamicIcon ?: listOf())
-                                }
-                            )
-                            iconPosition++
-                        }
+                        when (data.component) {
+                            TYPE_ICON -> {
+                                data.atfStatusCondition(
+                                    onLoading = {
+                                        visitableList.add(ShimmeringIconDataModel(data.id.toString()))
+                                    },
+                                    onError = {
+                                        visitableList.add(ErrorStateIconModel())
+                                    },
+                                    onSuccess = {
+                                        val icon = data.getAtfContent<DynamicHomeIcon>()
+                                        addDynamicIconData(data.id.toString(), icon?.type ?: 1, icon?.dynamicIcon ?: listOf())
+                                    }
+                                )
+                                iconPosition++
+                            }
 
-                        TYPE_BANNER -> {
-                            data.atfStatusCondition(
-                                onLoading = {
+                            TYPE_BANNER -> {
+                                data.atfStatusCondition(
+                                    onLoading = {
 //                                    visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
-                                            visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
-                                },
-                                onError = {
-                                    when (channelPosition) {
-                                        0 -> visitableList.add(ErrorStateChannelOneModel())
-                                        1 -> visitableList.add(ErrorStateChannelTwoModel())
-                                        2 -> visitableList.add(ErrorStateChannelThreeModel())
+                                        visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
+                                    },
+                                    onError = {
+                                        when (channelPosition) {
+                                            0 -> visitableList.add(ErrorStateChannelOneModel())
+                                            1 -> visitableList.add(ErrorStateChannelTwoModel())
+                                            2 -> visitableList.add(ErrorStateChannelThreeModel())
+                                        }
+                                    },
+                                    onSuccess = {
+                                        if (HomeRollenceController.isUsingAtf2Variant()) {
+                                            addHomePageBannerAtf2Data(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(), index)
+                                        } else {
+                                            addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(), index)
+                                        }
                                     }
-                                },
-                                onSuccess = {
-                                    if (HomeRollenceController.isUsingAtf2Variant()) {
-                                        addHomePageBannerAtf2Data(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(), index)
-                                    } else {
-                                        addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>(), index)
-                                    }
-                                }
-                            )
-                            channelPosition++
-                        }
+                                )
+                                channelPosition++
+                            }
 
-                        TYPE_TICKER -> {
-                            data.atfStatusCondition(
-                                onSuccess = {
-                                    addTickerData(data.getAtfContent<Ticker>())
-                                }
-                            )
-                            tickerPosition++
-                        }
+                            TYPE_TICKER -> {
+                                data.atfStatusCondition(
+                                    onSuccess = {
+                                        addTickerData(data.getAtfContent<Ticker>())
+                                    }
+                                )
+                                tickerPosition++
+                            }
 
-                        TYPE_CHANNEL -> {
-                            data.atfStatusCondition(
-                                onLoading = {
-                                    visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
-                                },
-                                onError = {
-                                    when (channelPosition) {
-                                        0 -> visitableList.add(ErrorStateChannelOneModel())
-                                        1 -> visitableList.add(ErrorStateChannelTwoModel())
-                                        2 -> visitableList.add(ErrorStateChannelThreeModel())
+                            TYPE_CHANNEL -> {
+                                data.atfStatusCondition(
+                                    onLoading = {
+                                        visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
+                                    },
+                                    onError = {
+                                        when (channelPosition) {
+                                            0 -> visitableList.add(ErrorStateChannelOneModel())
+                                            1 -> visitableList.add(ErrorStateChannelTwoModel())
+                                            2 -> visitableList.add(ErrorStateChannelThreeModel())
+                                        }
+                                    },
+                                    onSuccess = {
+                                        if (data.getAtfContent<DynamicHomeChannel>() != null) {
+                                            addDynamicChannelData(
+                                                false,
+                                                data.getAtfContent<DynamicHomeChannel>(),
+                                                false,
+                                                index
+                                            )
+                                        }
                                     }
-                                },
-                                onSuccess = {
-                                    if (data.getAtfContent<DynamicHomeChannel>() != null) {
-                                        addDynamicChannelData(
-                                            false,
-                                            data.getAtfContent<DynamicHomeChannel>(),
-                                            false,
-                                            index
-                                        )
-                                    }
-                                }
-                            )
-                            channelPosition++
+                                )
+                                channelPosition++
+                            }
                         }
                     }
-                }
                 }
             }
         } else if (isProcessingAtf) {
@@ -410,6 +404,7 @@ class HomeVisitableFactoryImpl(
         if (!isCache) {
             bannerDataModel?.let {
                 val channelModel = ChannelModel(
+                    verticalPosition = index,
                     channelGrids = it.slides?.map {
                         ChannelGrid(
                             applink = it.applink,
@@ -436,12 +431,7 @@ class HomeVisitableFactoryImpl(
                 visitableList.add(
                     BannerRevampDataModel(
                         channelModel = channelModel,
-                        isCache = isCache,
-                        dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
-                        dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
-                        cardInteraction = true,
-                        enableDotsAndInfiniteScroll = HomeComponentRollenceController.isHPBUsingDotsAndInfiniteScroll(),
-                        scrollTransitionDuration = HomeComponentRollenceController.getHPBDuration()
+                        isCache = isCache
                     )
                 )
             }

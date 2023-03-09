@@ -21,7 +21,7 @@ class BannerRevampChannelAdapter(
 
     override fun onBindViewHolder(holder: BannerRevampChannelImageViewHolder, position: Int) {
         val index = position % itemList.size
-        if (position != RecyclerView.NO_POSITION) {
+        if (index != RecyclerView.NO_POSITION && itemList.size > index) {
             holder.bind(itemList[index])
         }
     }
@@ -34,25 +34,26 @@ class BannerRevampChannelAdapter(
 class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerItemListener) : RecyclerView.ViewHolder(itemView) {
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: BannerItemModel) {
-//        itemView.findViewById<ImageUnify>(R.id.image_banner_revamp).setImageUrl("https://media.istockphoto.com/id/1250331164/id/vektor/latar-belakang-abstrak-titik-setengah-dan-garis-melengkung.jpg?s=612x612&w=0&k=20&c=pNeGGoBuXNNPnoHb624nJR2xi0wOIB_18Ib91rsIKZE=")
-        itemView.findViewById<ImageUnify>(R.id.image_banner_revamp).setImageUrl(item.url)
-        itemView.setOnTouchListener { _, motionEvent ->
+        val imageBanner = itemView.findViewById<ImageUnify>(R.id.image_banner_revamp)
+        imageBanner.setImageUrl(item.url)
+        imageBanner.setOnTouchListener { _, motionEvent ->
             when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                     listener.onLongPress()
                 }
-                MotionEvent.ACTION_MOVE -> {
-                    listener.onLongPress()
-                }
-                MotionEvent.ACTION_UP -> {
-                    listener.onRelease()
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    if (!listener.isDrag()) {
+                        listener.onRelease()
+                    }
                 }
             }
-            return@setOnTouchListener true
+            return@setOnTouchListener false
         }
-        itemView.setOnClickListener { listener.onClick(layoutPosition) }
-        itemView.addOnImpressionListener(item) {
-            listener.onImpressed(layoutPosition)
+        imageBanner.setOnClickListener {
+            listener.onClick(item.position)
+        }
+        imageBanner.addOnImpressionListener(item) {
+            listener.onImpressed(item.position)
         }
     }
 }

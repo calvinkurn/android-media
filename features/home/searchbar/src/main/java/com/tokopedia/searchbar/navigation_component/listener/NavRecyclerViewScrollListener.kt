@@ -69,10 +69,9 @@ class NavRecyclerViewScrollListener(
                 navScrollCallback?.onSwitchToLightToolbar()
             } else {
                 if (switchThemeOnScroll) {
-                    if (isBackgroundColorDefaultColor){
+                    if (isBackgroundColorDefaultColor) {
                         navToolbar.switchToLightToolbar()
-                    }
-                    else {
+                    } else {
                         navToolbar.switchToDarkToolbar()
                     }
                     darkModeCondition(

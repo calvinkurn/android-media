@@ -589,7 +589,7 @@ class HomeAdapterFactory(
             Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, parentRecycledViewPool, cardInteraction = true)
             BannerRevampViewHolder.LAYOUT ->
                 viewHolder =
-                    BannerRevampViewHolder(view, bannerComponentListener, homeComponentListener)
+                    BannerRevampViewHolder(view, bannerComponentListener)
             MixLeftPaddingComponentViewHolder.LAYOUT ->
                 viewHolder =
                     MixLeftPaddingComponentViewHolder(

@@ -40,7 +40,6 @@ class HomeViewModelChooseAddressTest {
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.initFlow()
         homeViewModel.updateChooseAddressData(mockHomeChooseAddressData)
         Assert.assertTrue(homeViewModel.homeDataModel.homeChooseAddressData == mockHomeChooseAddressData)
         Assert.assertTrue(
@@ -60,7 +59,6 @@ class HomeViewModelChooseAddressTest {
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.initFlow()
         homeViewModel.updateChooseAddressData(mockHomeChooseAddressData)
         Assert.assertTrue(homeViewModel.getAddressData() == mockHomeChooseAddressData)
         Assert.assertTrue(
@@ -80,7 +78,6 @@ class HomeViewModelChooseAddressTest {
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.initFlow()
         homeViewModel.removeChooseAddressWidget()
         Assert.assertTrue(!homeViewModel.homeDataModel.homeChooseAddressData.isActive)
         Assert.assertTrue(

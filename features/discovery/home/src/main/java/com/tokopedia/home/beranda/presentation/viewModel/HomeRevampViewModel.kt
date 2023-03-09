@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -12,7 +11,20 @@ import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
-import com.tokopedia.home.beranda.domain.interactor.usecase.*
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetAtf2UseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeListCarouselUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeMissionWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomePlayUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomePopularKeywordUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRechargeBuWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRechargeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
@@ -20,7 +32,18 @@ import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CMHomeWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelLoadingModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelRetryModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderAtf2DataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
@@ -137,18 +160,16 @@ open class HomeRevampViewModel @Inject constructor(
     var homeDataModel = HomeDynamicChannelModel()
     var currentTopAdsBannerPage: String = "1"
     var isFirstLoad = true
-//    private var atfStyle = ""
 
-    //    @FlowPreview
     private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
-        return homeUseCase.get().getHomeDataFlow(HomeRollenceController.rollenceAtfValue).flowOn(homeDispatcher.get().io)
+        return homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
     }
 
     var getHomeDataJob: Job? = null
 
     init {
         _isRequestNetworkLiveData.value = Event(true)
-        HomeRollenceController.fetchAtfRollenceValue()
+        initFlow()
         injectCouponTimeBased()
         homeRateLimit.reset(HOME_LIMITER_KEY)
     }
@@ -354,9 +375,7 @@ open class HomeRevampViewModel @Inject constructor(
     @FlowPreview
     fun initFlow() {
         homeFlowStarted = true
-//        Log.d("dhabalog", "initFlow $atfStyle")
         launchCatchError(coroutineContext, block = {
-            Log.d("dhabalog", "initFlowlaunchcatcherror")
             homeFlowDynamicChannel().collect { homeNewDataModel ->
                 if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))

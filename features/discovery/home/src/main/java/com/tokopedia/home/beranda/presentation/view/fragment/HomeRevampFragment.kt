@@ -1,3 +1,4 @@
+
 package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.annotation.SuppressLint
@@ -55,6 +56,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.NavToolbarMicroInteraction
+import com.tokopedia.discovery.common.microinteraction.navtoolbar.navToolbarMicroInteraction
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -102,7 +104,17 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.helper.*
+import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
+import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
+import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread
+import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
+import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.runAutoRefreshJob
+import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.setSubscriptionCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.stopAutoRefreshJob
 import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetComponentCallback
@@ -181,7 +193,10 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.remoteconfig.*
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -189,7 +204,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
-import com.tokopedia.discovery.common.microinteraction.navtoolbar.navToolbarMicroInteraction
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -546,7 +560,6 @@ open class HomeRevampFragment :
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         isUsingNewPullRefresh = isUseNewPullRefresh()
-        getHomeViewModel().initFlow()
         val view = inflater.inflate(
             if (isUsingNewPullRefresh) R.layout.fragment_home_revamp else R.layout.fragment_home_revamp_old_refresh,
             container,
@@ -569,6 +582,7 @@ open class HomeRevampFragment :
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
+        HomeRollenceController.fetchAtfRollenceValue()
 
         // show nav toolbar
         navToolbar?.visibility = View.VISIBLE
@@ -623,9 +637,7 @@ open class HomeRevampFragment :
             refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
         }
 
-        if (!HomeRollenceController.isUsingAtf2Variant()) {
-            stickyLoginView = view.findViewById(R.id.sticky_login_text)
-        }
+        stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
             scrollToRecommendList = requireArguments().getBoolean(SCROLL_RECOMMEND_LIST)

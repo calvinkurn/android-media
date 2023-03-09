@@ -232,7 +232,6 @@ class HomeViewModelDynamicChannelTest {
         )
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.initFlow()
         homeViewModel.removeViewHolderAtPosition(selectedPosition)
         Assert.assertTrue(homeViewModel.homeDataModel.list.size == mockList.size)
     }
@@ -253,7 +252,6 @@ class HomeViewModelDynamicChannelTest {
         )
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.initFlow()
         homeViewModel.removeViewHolderAtPosition(selectedPosition)
         Assert.assertTrue(homeViewModel.homeDataModel.list.size == mockList.size)
     }

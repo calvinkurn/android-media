@@ -85,7 +85,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
-    private var atfStyle = ""
 
     private var currentHeaderDataModel: HomeHeaderDataModel? = null
     private var previousHeaderDataModel: HomeHeaderDataModel? = null
@@ -138,8 +137,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     @FlowPreview
     @ExperimentalCoroutinesApi
-    fun getHomeDataFlow(atfStyle: String = ""): Flow<HomeDynamicChannelModel?> {
-        this.atfStyle = atfStyle
+    fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
         var isCache = true
         var isCacheDc = true
         val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
@@ -924,6 +922,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             val job = async {
                                 try {
                                     val bannerParam = Bundle().apply {
+                                        putString(
+                                            HomeDynamicChannelsRepository.PARAMS,
+                                            atfData.param
+                                        )
                                         this.putString(
                                             HomePageBannerRepository.BANNER_LOCATION_PARAM,
                                             homeChooseAddressRepository.getRemoteData()

@@ -108,7 +108,6 @@ class HomeViewModelRechargeRecommendationUnitTest {
             getHomeUseCase = getHomeUseCase,
             homeRechargeRecommendationUseCase = getHomeRechargeUseCase
         )
-        homeViewModel.initFlow()
         homeViewModel.declineRechargeRecommendationItem(mapOf())
         Assert.assertTrue(homeViewModel.homeDataModel.list.size == 1)
     }

@@ -113,7 +113,6 @@ class HomeViewModelListCarouselTest {
             getHomeUseCase = getHomeUseCase,
             homeListCarouselUseCase = getListCarouselUseCase
         )
-        homeViewModel.initFlow()
         homeViewModel.onCloseBuyAgain(mockChannelId.toString(), 0)
         homeViewModel.homeDataModel.findWidget<RecommendationListCarouselDataModel>(
             actionOnFound = { model, index ->

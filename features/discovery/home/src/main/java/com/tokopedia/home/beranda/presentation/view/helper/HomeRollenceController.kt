@@ -8,12 +8,14 @@ import com.tokopedia.remoteconfig.RollenceKey
  */
 object HomeRollenceController {
     var rollenceAtfValue: String = ""
+    const val CONTROL_REVAMP_ATF = ""
 
     fun fetchAtfRollenceValue() {
         rollenceAtfValue = try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_ATF)
-        } catch (e: Exception) {
-            ""
+            val rollenceAtf = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_ATF)
+            if (rollenceAtf == RollenceKey.HOME_COMPONENT_ATF_2) rollenceAtf else CONTROL_REVAMP_ATF
+        } catch (_: Exception) {
+            CONTROL_REVAMP_ATF
         }
     }
 
