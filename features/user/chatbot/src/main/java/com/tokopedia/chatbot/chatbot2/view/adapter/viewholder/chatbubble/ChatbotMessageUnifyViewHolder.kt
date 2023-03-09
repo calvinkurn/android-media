@@ -41,11 +41,11 @@ abstract class ChatbotMessageUnifyViewHolder(
         bindReplyBubbleListener()
 
         customChatLayout?.fxChat?.setOnLongClickListener {
-            replyBubbleListener.showReplyOption(message)
+            replyBubbleListener.showReplyOption(message, customChatLayout?.fxChat?.message)
             return@setOnLongClickListener true
         }
         customChatLayout?.fxChat?.message?.setOnLongClickListener {
-            replyBubbleListener.showReplyOption(message)
+            replyBubbleListener.showReplyOption(message, customChatLayout?.fxChat?.message)
             return@setOnLongClickListener true
         }
     }
