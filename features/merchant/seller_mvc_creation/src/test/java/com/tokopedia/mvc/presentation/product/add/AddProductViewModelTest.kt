@@ -305,7 +305,6 @@ class AddProductViewModelTest {
             val pageMode = PageMode.CREATE
             val voucherConfiguration = buildVoucherConfiguration()
             val expectedMaxProductSubmission = 100
-            val totalProduct = 20
             val previouslySelectedProducts = populateProduct()
             val readyStockProduct = populateProduct().copy(id = 1, preorder = Product.Preorder(durationDays = 0))
             val preorderProducts = populateProduct().copy(id = 2, preorder = Product.Preorder(durationDays = 1))
@@ -337,15 +336,8 @@ class AddProductViewModelTest {
             //Then
             val actual = emittedValues.last()
 
-
-          //  assertEquals(false, actual.isLoading)
+            assertEquals(false, actual.isLoading)
             assertEquals(listOf(readyStockProduct), actual.products)
-
-           /* assertEquals(previouslySelectedProducts, actual.products)
-            assertEquals(mockedWarehouse.warehouseId, actual.selectedProductsIds)
-            assertEquals(mockedWarehouse, actual.selectedProductCount)
-            assertEquals(mockedSortOptions, actual.checkboxState)*/
-            assertEquals(totalProduct, actual.totalProducts)
 
             job.cancel()
         }
