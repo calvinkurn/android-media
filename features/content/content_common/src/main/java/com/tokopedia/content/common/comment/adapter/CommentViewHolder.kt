@@ -85,7 +85,7 @@ class CommentViewHolder {
                     listener.onReplyClicked(item)
                 }
 
-                itemTouchHelper.setOnLongClickListener {
+                root.setOnLongClickListener {
                     listener.onLongClicked(item)
                     true
                 }
