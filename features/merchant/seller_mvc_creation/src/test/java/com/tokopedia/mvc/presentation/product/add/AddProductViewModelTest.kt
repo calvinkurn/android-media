@@ -1,8 +1,10 @@
 package com.tokopedia.mvc.presentation.product.add
 
 import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductMetadata
 import com.tokopedia.mvc.domain.entity.ProductResult
+import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
@@ -28,6 +30,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
@@ -58,14 +61,9 @@ class AddProductViewModelTest {
     lateinit var voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 
     private lateinit var viewModel: AddProductViewModel
-
-    private val mockedWarehouses = listOf(
-        Warehouse(
-            warehouseId = 1,
-            warehouseName = "Bekasi",
-            WarehouseType.WAREHOUSE
-        )
-    )
+    private val mockedWarehouse = Warehouse(warehouseId = 1, warehouseName = "Bekasi", warehouseType = WarehouseType.WAREHOUSE)
+    private val mockedSortOptions = listOf(ProductSortOptions("price", "Harga Terendah", "ASC"))
+    private val mockedCategoryOption = listOf(ProductCategoryOption("electronic", "TV", "Televisi"))
 
     @Before
     fun setup() {
@@ -214,10 +212,9 @@ class AddProductViewModelTest {
         }
     }
 
-
-    //getProductsAndProductsMetadata success default warehouse is exist
+    //getProductsAndProductsMetadata success default warehouse is null
     @Test
-    fun `When get seller warehouse location return empty warehouse, should not proceed to get product list metadata to server`() {
+    fun `When get seller warehouse location response return empty warehouse, should not proceed to get product list metadata to server`() {
         runBlockingTest {
             val pageMode = PageMode.CREATE
             val voucherConfiguration = buildVoucherConfiguration()
@@ -247,7 +244,54 @@ class AddProductViewModelTest {
             coVerify(exactly = 0) { getProductListMetaUseCase.execute(expectedParam) }
         }
     }
-    //getProductsAndProductsMetadata success default warehouse is null
+
+
+    //getProductsAndProductsMetadata success, should
+    @Test
+    fun `When get products and its metadata return success, should set the response to ui state correctly`() {
+        runBlockingTest {
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+            val previouslySelectedProducts = populateProducts()
+            val expectedMaxProductSubmission = 100
+
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = expectedMaxProductSubmission)
+            mockGetProductListMetaGqlCall(warehouseId = 1, sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall()
+            mockVoucherValidationPartialGqlCall()
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    previouslySelectedProducts
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(expectedMaxProductSubmission, actual.maxProductSelection)
+            assertEquals(listOf(mockedWarehouse), actual.warehouses)
+            assertEquals(mockedWarehouse.warehouseId, actual.defaultWarehouseLocationId)
+            assertEquals(mockedWarehouse, actual.selectedWarehouseLocation)
+            assertEquals(mockedSortOptions, actual.sortOptions)
+            assertEquals(mockedCategoryOption, actual.categoryOptions)
+            assertEquals(voucherConfiguration.productIds.toSet(), actual.voucherConfiguration.productIds.toSet())
+
+            job.cancel()
+        }
+    }
 
     //getProductsAndProductsMetadata error, ui effect should emit Error, ui state error should contain throwable
 
@@ -295,12 +339,12 @@ class AddProductViewModelTest {
     }
 
 
-    private fun mockShopWarehouseGqlCall(warehousesResponse : List<Warehouse> = mockedWarehouses)  {
+    private fun mockShopWarehouseGqlCall(warehousesResponse: List<Warehouse> = listOf(mockedWarehouse)) {
         val shopWarehouseParam = GetShopWarehouseLocationUseCase.Param()
         coEvery { getShopWarehouseLocationUseCase.execute(shopWarehouseParam) } returns warehousesResponse
     }
 
-    private fun mockInitiateVoucherPageGqlCall() {
+    private fun mockInitiateVoucherPageGqlCall(maxProductSubmission : Int = 100) {
         val initiateVoucherPageParam = GetInitiateVoucherPageUseCase.Param(
             VoucherAction.CREATE,
             PromoType.FREE_SHIPPING,
@@ -309,7 +353,7 @@ class AddProductViewModelTest {
         val initiateVoucherResponse = VoucherCreationMetadata(
             accessToken = "accessToken",
             isEligible = 1,
-            maxProduct = 100,
+            maxProduct = maxProductSubmission,
             prefixVoucherCode = "OFC",
             shopId = 1,
             token = "token",
@@ -320,9 +364,13 @@ class AddProductViewModelTest {
         coEvery { getInitiateVoucherPageUseCase.execute(initiateVoucherPageParam) } returns initiateVoucherResponse
     }
 
-    private fun mockGetProductListMetaGqlCall(warehouseId: Long = 2) {
+    private fun mockGetProductListMetaGqlCall(
+        warehouseId: Long = 1,
+        sortOptions: List<ProductSortOptions> = listOf(),
+        categoryOptions: List<ProductCategoryOption> = listOf()
+    ) {
         val getProductListMetaParam = ProductListMetaUseCase.Param(warehouseId)
-        val getProductListMetaResponse = ProductMetadata(sortOptions = listOf(), categoryOptions = listOf())
+        val getProductListMetaResponse = ProductMetadata(sortOptions = sortOptions, categoryOptions = categoryOptions)
         coEvery { getProductListMetaUseCase.execute(getProductListMetaParam) } returns getProductListMetaResponse
     }
 
