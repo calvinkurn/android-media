@@ -38,6 +38,7 @@ import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
+import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
@@ -65,6 +66,7 @@ import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.updateQui
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
@@ -171,11 +173,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _observableNewChat
     val observableNewMetrics: LiveData<Event<List<PlayMetricUiModel>>>
         get() = _observableNewMetrics
-    val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
-    val observableTitle: LiveData<PlayTitleUiModel.HasTitle> =
-        getCurrentSetupDataStore().getObservableTitle()
-            .filterIsInstance<PlayTitleUiModel.HasTitle>()
-            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
     val observableLeaderboardInfo: LiveData<NetworkResult<List<LeaderboardGameUiModel>>>
@@ -212,9 +209,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
         PinnedMessageUiModel.Empty()
     )
-    private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _isExiting = MutableStateFlow(false)
-    private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
 
     private val _quizFormData = MutableStateFlow(QuizFormDataUiModel())
     private val _quizFormState =
@@ -228,6 +223,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
+
+    /** Preparation */
+    private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
+    private val _title = getCurrentSetupDataStore().getObservableTitle()
+    private val _cover = getCurrentSetupDataStore().getSelectedCoverAsFlow()
+    private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
+    private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
+
     var warningInfoType: WarningType = WarningType.UNKNOWN
     val tncList = mutableListOf<TermsAndConditionUiModel>()
 
@@ -255,6 +258,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val isShortVideoAllowed: Boolean
         get() = _configInfo.value?.shortVideoAllowed.orFalse()
+
+    val isTitleMenuChecked: Boolean
+        get() {
+            val title = getCurrentSetupDataStore().getTitle()
+            return title is PlayTitleUiModel.HasTitle && title.title.isNotEmpty()
+        }
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -303,6 +312,51 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
+    private val _menuListUiState = combine(
+        _menuList,
+        _title,
+        _cover,
+        _productSectionList,
+        _schedule
+    ) { menuList, title, cover, productSectionList, schedule ->
+        menuList.map {
+
+            when (it.menu) {
+                DynamicPreparationMenu.Menu.Title -> {
+                    it.copy(isChecked = isTitleMenuChecked)
+                }
+                DynamicPreparationMenu.Menu.Product -> {
+                    it.copy(
+                        isChecked = productSectionList.isNotEmpty(),
+                        isEnabled = isTitleMenuChecked,
+                    )
+                }
+                DynamicPreparationMenu.Menu.Cover -> {
+                    it.copy(
+                        isChecked = cover.croppedCover is CoverSetupState.Cropped.Uploaded &&
+                            (cover.croppedCover.coverImage.toString().isNotEmpty() || !cover.croppedCover.localImage?.toString().isNullOrEmpty()),
+                        isEnabled = isTitleMenuChecked,
+                    )
+                }
+                DynamicPreparationMenu.Menu.Schedule -> {
+                    it.copy(
+                        isChecked = schedule.schedule is BroadcastScheduleUiModel.Scheduled,
+                        isEnabled = isTitleMenuChecked,
+                    )
+                }
+                DynamicPreparationMenu.Menu.FaceFilter -> {
+                    /** TODO: handle isChecked */
+                    it.copy(
+                        isEnabled = isTitleMenuChecked,
+                    )
+                }
+                else -> {
+                    it
+                }
+            }
+        }
+    }
+
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
@@ -317,7 +371,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _onboarding,
         _quizBottomSheetUiState,
         _selectedAccount,
-        _accountStateInfo
+        _accountStateInfo,
+        _menuListUiState,
+        _title,
+        _cover,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -331,7 +388,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         onBoarding,
         quizBottomSheetUiState,
         selectedFeedAccount,
-        accountStateInfo ->
+        accountStateInfo,
+        menuListUiState,
+        title,
+        cover, ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -346,7 +406,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             onBoarding = onBoarding,
             quizBottomSheetUiState = quizBottomSheetUiState,
             selectedContentAccount = selectedFeedAccount,
-            accountStateInfo = accountStateInfo
+            accountStateInfo = accountStateInfo,
+            menuList = menuListUiState,
+            title = title,
+            cover = cover,
         )
     }.stateIn(
         viewModelScope,
@@ -385,6 +448,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         _observableChatList.value = mutableListOf()
+
+        setupPreparationMenu()
     }
 
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
@@ -1791,6 +1856,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             channelId = channelId
         )
         logger.sendBroadcasterLog(mappedMetric)
+    }
+
+    private fun setupPreparationMenu() {
+        viewModelScope.launchCatchError(block = {
+            val menuList = listOf(
+                DynamicPreparationMenu.createTitle(isMandatory = true),
+                DynamicPreparationMenu.createCover(isMandatory = false),
+                DynamicPreparationMenu.createProduct(isMandatory = false),
+                DynamicPreparationMenu.createSchedule(isMandatory = false),
+                DynamicPreparationMenu.createFaceFilter(isMandatory = false),
+            )
+
+            _menuList.update { menuList }
+        }) { }
     }
 
     companion object {

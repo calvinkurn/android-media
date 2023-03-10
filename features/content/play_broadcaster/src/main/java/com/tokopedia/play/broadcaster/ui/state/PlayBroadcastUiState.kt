@@ -4,6 +4,8 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -13,6 +15,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiMod
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import java.util.*
@@ -35,6 +38,9 @@ data class PlayBroadcastUiState(
     val quizBottomSheetUiState: QuizBottomSheetUiState,
     val selectedContentAccount: ContentAccountUiModel,
     val accountStateInfo: AccountStateInfo,
+    val menuList: List<DynamicPreparationMenu>,
+    val title: PlayTitleUiModel,
+    val cover: PlayCoverUiModel,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -60,6 +66,9 @@ data class PlayBroadcastUiState(
                 quizBottomSheetUiState = QuizBottomSheetUiState.Empty,
                 selectedContentAccount = ContentAccountUiModel.Empty,
                 accountStateInfo = AccountStateInfo(),
+                menuList = emptyList(),
+                title = PlayTitleUiModel.NoTitle,
+                cover = PlayCoverUiModel.empty(),
             )
     }
 }

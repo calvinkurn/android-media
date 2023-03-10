@@ -272,16 +272,16 @@ class PlayShortsPreparationFragment @Inject constructor(
             preparationMenu.setOnMenuClickListener {
                 coachMark?.dismissCoachMark()
 
-                when (it.menuId) {
-                    DynamicPreparationMenu.TITLE -> {
+                when (it.menu) {
+                    DynamicPreparationMenu.Menu.Title -> {
                         analytic.clickMenuTitle(viewModel.selectedAccount)
                         viewModel.submitAction(PlayShortsAction.OpenTitleForm)
                     }
-                    DynamicPreparationMenu.PRODUCT -> {
+                    DynamicPreparationMenu.Menu.Product -> {
                         analytic.clickMenuProduct(viewModel.selectedAccount)
                         openProductPicker()
                     }
-                    DynamicPreparationMenu.COVER -> {
+                    DynamicPreparationMenu.Menu.Cover -> {
                         analytic.clickMenuCover(viewModel.selectedAccount)
                         viewModel.submitAction(PlayShortsAction.OpenCoverForm)
                     }

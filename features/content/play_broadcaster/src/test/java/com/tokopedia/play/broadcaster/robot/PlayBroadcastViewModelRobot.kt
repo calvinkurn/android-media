@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.robot
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
@@ -16,16 +17,23 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.ui.model.CoverSource
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
+import com.tokopedia.play.broadcaster.util.TestDoubleModelBuilder
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
 import com.tokopedia.play.broadcaster.util.TestUriParser
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -38,7 +46,7 @@ import java.io.Closeable
 internal class PlayBroadcastViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     handle: SavedStateHandle = SavedStateHandle(),
-    mDataStore: PlayBroadcastDataStore = mockk(relaxed = true),
+    private val mDataStore: PlayBroadcastDataStore = mockk(relaxed = true),
     hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
     sharedPref: HydraSharedPreferences = mockk(relaxed = true),
     getChannelUseCase: GetChannelUseCase = mockk(relaxed = true),
@@ -53,6 +61,12 @@ internal class PlayBroadcastViewModelRobot(
     logger: PlayLogger = mockk(relaxed = true),
     broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),
 ) : Closeable {
+
+    private val testDoubleModelBuilder = TestDoubleModelBuilder()
+
+    init {
+        coEvery { mDataStore.getSetupDataStore() } returns testDoubleModelBuilder.buildSetupDataStore(dispatcher = dispatchers)
+    }
 
     private val viewModel = PlayBroadcastViewModel(
         handle,
@@ -110,6 +124,36 @@ internal class PlayBroadcastViewModelRobot(
     }
 
     fun getAccountConfiguration(authorType: String = TYPE_UNKNOWN) = viewModel.submitAction(PlayBroadcastAction.GetConfiguration(authorType))
+
+    fun uploadTitle(title: String) {
+        CoroutineScope(dispatchers.coroutineDispatcher).launch {
+            mDataStore.getSetupDataStore().uploadTitle("", "", title)
+        }
+    }
+
+    fun uploadCover() {
+        CoroutineScope(dispatchers.coroutineDispatcher).launch {
+            mDataStore.getSetupDataStore().setFullCover(
+                PlayCoverUiModel(
+                    croppedCover = CoverSetupState.Cropped.Uploaded(
+                        localImage = mockk(relaxed = true),
+                        coverImage = mockk(relaxed = true),
+                        coverSource = CoverSource.None,
+                    ),
+                    state = SetupDataState.Uploaded
+                )
+            )
+            mDataStore.getSetupDataStore().uploadSelectedCover("", "")
+        }
+    }
+
+    fun setProduct(products: List<ProductTagSectionUiModel>) {
+        viewModel.submitAction(PlayBroadcastAction.SetProduct(products))
+    }
+
+    fun setSchedule() {
+        viewModel.submitAction(PlayBroadcastAction.SetSchedule(mockk()))
+    }
 
     fun startLive() = viewModel.submitAction(
         PlayBroadcastAction.BroadcastStateChanged(

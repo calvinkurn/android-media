@@ -16,6 +16,7 @@ import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -37,6 +38,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
@@ -44,9 +46,9 @@ import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
+import com.tokopedia.play.broadcaster.view.custom.PlayBroIconWithGreenDotView
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
-import com.tokopedia.play.broadcaster.view.custom.ProductIconView
 import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
@@ -95,7 +97,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val clInteraction: ConstraintLayout by detachableView(R.id.cl_interaction)
     private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
-    private val iconProduct: ProductIconView by detachableView(R.id.icon_product)
+    private val iconProduct: PlayBroIconWithGreenDotView by detachableView(R.id.icon_product)
+    private val icFaceFilter: PlayBroIconWithGreenDotView by detachableView(R.id.ic_face_filter)
     private val pmvMetrics: PlayMetricsView by detachableView(R.id.pmv_metrics)
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
@@ -299,7 +302,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupView() {
-        observeTitle()
         actionBarLiveView.setAuthorImage(parentViewModel.getAuthorImage())
 
         ivShareLink.setOnClickListener {
@@ -329,6 +331,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     titleChannel = parentViewModel.channelTitle
                 )
             }
+        }
+
+        icFaceFilter.setOnClickListener {
+            /** TODO: handle this */
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -389,12 +395,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 marginLayoutParams.updateMargins(bottom = newBottomMargin)
                 v.parent.requestLayout()
             }
-        }
-    }
-
-    private fun observeTitle() {
-        parentViewModel.observableTitle.observe(viewLifecycleOwner) {
-            actionBarLiveView.setTitle(it.title)
         }
     }
 
@@ -732,6 +732,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderTitle(prevState?.title, state.title)
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
                 renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
                 renderQuizForm(
@@ -850,6 +851,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
     //endregion
+
+    private fun renderTitle(
+        prevState: PlayTitleUiModel?,
+        state: PlayTitleUiModel
+    ) {
+        if(prevState == state) return
+
+        actionBarLiveView.setTitle(
+            when(state) {
+                is PlayTitleUiModel.HasTitle -> state.title
+                else -> ""
+            }
+        )
+    }
 
     private fun renderPinnedMessageView(
         prevState: PinnedMessageUiState?,

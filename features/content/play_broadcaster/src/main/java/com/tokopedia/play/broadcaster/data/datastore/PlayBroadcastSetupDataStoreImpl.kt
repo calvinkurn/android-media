@@ -1,10 +1,8 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
-import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
-import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -75,6 +73,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
      */
     override fun getObservableSelectedCover(): LiveData<PlayCoverUiModel> {
         return coverDataStore.getObservableSelectedCover()
+    }
+
+    override fun getSelectedCoverAsFlow(): Flow<PlayCoverUiModel> {
+        return coverDataStore.getSelectedCoverAsFlow()
     }
 
     override fun getSelectedCover(): PlayCoverUiModel? {
