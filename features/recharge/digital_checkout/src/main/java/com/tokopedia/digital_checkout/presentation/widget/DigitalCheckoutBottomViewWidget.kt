@@ -125,7 +125,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                         is ConsentType.SingleInfo -> true
                         is ConsentType.SingleChecklist -> false
                         is ConsentType.MultipleChecklist -> false
-                        else -> false
+                        else -> true
                     }
                 }
             }
