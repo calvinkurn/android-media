@@ -8,7 +8,7 @@ import com.tokopedia.remoteconfig.RollenceKey
  */
 object HomeRollenceController {
     var rollenceAtfValue: String = ""
-    const val CONTROL_REVAMP_ATF = ""
+    private const val CONTROL_REVAMP_ATF = ""
 
     fun fetchAtfRollenceValue() {
         rollenceAtfValue = try {
