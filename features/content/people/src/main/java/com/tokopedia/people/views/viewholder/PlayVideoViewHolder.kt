@@ -40,8 +40,6 @@ class PlayVideoViewHolder private constructor() {
                         item.appLink,
                         item.channelId,
                         item.video.isLive && item.channelType == PlayWidgetChannelType.Live,
-                        item.video.coverUrl,
-                        layoutPosition + 1,
                     )
                 }
 
@@ -74,7 +72,7 @@ class PlayVideoViewHolder private constructor() {
 
         interface Listener {
             fun onPlayReminderClick(channel: PlayWidgetChannelUiModel)
-            fun onPlayWidgetLargeClick(appLink: String, channelID: String, isLive: Boolean, imageUrl: String, pos: Int)
+            fun onPlayWidgetLargeClick(appLink: String, channelID: String, isLive: Boolean)
             fun onImpressPlayWidgetData(channel: PlayWidgetChannelUiModel, isLive: Boolean, channelId: String, pos: Int)
             fun onMenuActionButtonClicked(channel: PlayWidgetChannelUiModel)
         }
