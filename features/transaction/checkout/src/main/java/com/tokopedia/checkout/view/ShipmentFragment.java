@@ -3327,7 +3327,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 localizingAddressData.getShop_id(),
                                 localizingAddressData.getWarehouse_id(),
                                 localizingAddressData.getWarehouses(),
-                                localizingAddressData.getService_type()
+                                localizingAddressData.getService_type(),
+                                localizingAddressData.getWarehouse_ids()
                         )
                 );
             } else {
@@ -3341,7 +3342,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 localizingAddressData.getShop_id(),
                                 localizingAddressData.getWarehouse_id(),
                                 localizingAddressData.getWarehouses(),
-                                localizingAddressData.getService_type()
+                                localizingAddressData.getService_type(),
+                                localizingAddressData.getWarehouse_ids()
                         )
                 );
             }
