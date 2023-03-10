@@ -1,0 +1,12 @@
+package com.tokopedia.checkout.view.uimodel
+
+import android.os.Parcelable
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class ShipmentProductModel(
+    val cartItem: CartItemModel = CartItemModel(),
+    val addOnWording: AddOnWordingModel? = null,
+) : Parcelable

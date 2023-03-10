@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.utils.WeightFormatterUtil
+import com.tokopedia.checkout.view.uimodel.ShipmentProductModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -35,7 +36,18 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
+@Deprecated("Use disassembled view holders!")
 class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    companion object {
+
+        @JvmField
+        val LAYOUT = R.layout.item_shipment_product
+
+        private const val VIEW_ALPHA_ENABLED = 1.0f
+        private const val VIEW_ALPHA_DISABLED = 0.5f
+    }
+
     private var shipmentItemListener: ShipmentItemListener? = null
     private val productBundlingInfo: ConstraintLayout =
         itemView.findViewById(R.id.product_bundling_info)
@@ -76,7 +88,13 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private val buttonGiftingAddOnProductLevel: ButtonGiftingAddOnView =
         itemView.findViewById(R.id.button_gifting_addon_product_level)
 
-    fun bindViewHolder(
+    fun bind(
+        shipmentProduct: ShipmentProductModel
+    ) {
+        bind(shipmentProduct.cartItem, shipmentProduct.addOnWording!!, null)
+    }
+
+    fun bind(
         cartItem: CartItemModel,
         addOnWordingModel: AddOnWordingModel,
         listener: ShipmentItemListener?
@@ -288,13 +306,13 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     }
 
     private fun enableItemView() {
-        productBundlingInfo.alpha = 1.0f
-        llFrameItemProductContainer.alpha = 1.0f
+        productBundlingInfo.alpha = VIEW_ALPHA_ENABLED
+        llFrameItemProductContainer.alpha = VIEW_ALPHA_ENABLED
     }
 
     private fun disableItemView() {
-        productBundlingInfo.alpha = ALPHA_DISABLED
-        llFrameItemProductContainer.alpha = ALPHA_DISABLED
+        productBundlingInfo.alpha = VIEW_ALPHA_DISABLED
+        llFrameItemProductContainer.alpha = VIEW_ALPHA_DISABLED
     }
 
     private fun renderBundlingInfo(cartItemModel: CartItemModel) {
@@ -304,7 +322,8 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         val productContainerLayoutParams =
             llFrameItemProductContainer.layoutParams as MarginLayoutParams
         val productInfoLayoutParams = rlProductInfo.layoutParams as MarginLayoutParams
-        val bottomMargin = itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
+        val bottomMargin =
+            itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
         if (cartItemModel.isBundlingItem) {
             if (!TextUtils.isEmpty(cartItemModel.bundleIconUrl)) {
                 ImageHandler.loadImage2(
@@ -321,7 +340,8 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             vBundlingProductSeparator.visibility = View.VISIBLE
             val productImageLayoutParams = mIvProductImage.layoutParams as MarginLayoutParams
             val productNameLayoutParams = mTvProductName.layoutParams as MarginLayoutParams
-            val productMarginTop = itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_12)
+            val productMarginTop =
+                itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_12)
             if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
                 productBundlingInfo.visibility = View.VISIBLE
                 productImageLayoutParams.topMargin = 0
@@ -385,17 +405,16 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     }
 
     interface ShipmentItemListener {
+
         fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int)
+
         fun navigateToWebView(cartItem: CartItemModel)
+
         fun openAddOnProductLevelBottomSheet(
             cartItem: CartItemModel,
             addOnWordingModel: AddOnWordingModel
         )
 
         fun addOnProductLevelImpression(productId: String)
-    }
-
-    companion object {
-        private const val ALPHA_DISABLED = 0.5f
     }
 }

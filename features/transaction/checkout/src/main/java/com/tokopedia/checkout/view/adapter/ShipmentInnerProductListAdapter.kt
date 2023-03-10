@@ -9,6 +9,7 @@ import com.tokopedia.checkout.view.viewholder.ShipmentCartItemViewHolder.Shipmen
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 
+@Deprecated("")
 class ShipmentInnerProductListAdapter(private val mCartItemList: MutableList<CartItemModel>, private val addOnWordingModel: AddOnWordingModel, private val mListener: ShipmentItemListener) : RecyclerView.Adapter<ShipmentCartItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShipmentCartItemViewHolder {
         val mContext = parent.context
@@ -18,7 +19,7 @@ class ShipmentInnerProductListAdapter(private val mCartItemList: MutableList<Car
 
     override fun onBindViewHolder(holder: ShipmentCartItemViewHolder, position: Int) {
         val cartItemModel = mCartItemList[position]
-        holder.bindViewHolder(cartItemModel, addOnWordingModel, mListener)
+        holder.bind(cartItemModel, addOnWordingModel, mListener)
     }
 
     override fun getItemCount(): Int {

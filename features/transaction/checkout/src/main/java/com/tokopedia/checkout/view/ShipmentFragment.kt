@@ -628,7 +628,7 @@ class ShipmentFragment :
             shipmentAdapter.addNewUpsellData(shipmentNewUpsellModel)
         }
         isPlusSelected = shipmentNewUpsellModel.isSelected
-        shipmentAdapter.addCartItemDataList(shipmentCartItemModelList)
+         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList)
         val cartIdsStringBuilder = StringBuilder()
         for (i in shipmentCartItemModelList.indices) {
             if (shipmentCartItemModelList[i].cartItemModels.isNotEmpty()) {

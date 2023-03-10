@@ -84,6 +84,7 @@ import java.util.regex.Pattern
 /**
  * @author Irfan Khoirul on 23/04/18.
  */
+@Deprecated("Use disassembled view holders!")
 class ShipmentItemViewHolder(
     itemView: View,
     actionListener: ShipmentAdapterActionListener?,
@@ -1950,8 +1951,8 @@ class ShipmentItemViewHolder(
             tickerError.visibility = View.GONE
             containerOrder.alpha = 1.0f
             llInsurance.isClickable = true
-            llDropshipper.isClickable = true
             mIconTooltip.isClickable = true
+            llDropshipper.isClickable = true
             rlCartSubTotal.isClickable = true
             textInputLayoutShipperName.textFieldInput.isClickable = true
             textInputLayoutShipperName.textFieldInput.isFocusable = true

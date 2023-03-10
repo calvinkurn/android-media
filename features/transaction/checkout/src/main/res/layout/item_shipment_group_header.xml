@@ -2,16 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ll_invoice_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <include
-        android:id="@+id/layout_warning_and_error"
+        android:id="@+id/container_warning_and_error"
         layout="@layout/item_warning_and_error"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/checkout_custom_ticker_error"
@@ -21,7 +20,8 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         android:visibility="gone"
-        app:card_type="clear">
+        app:card_type="clear"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -76,68 +76,22 @@
 
     </com.tokopedia.unifycomponents.CardUnify>
 
-    <LinearLayout
-        android:id="@+id/container_order"
+    <include
+        android:id="@+id/container_seller_info"
+        layout="@layout/item_shipment_seller_info"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_warning_closeable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <include
-            layout="@layout/item_shipment_seller_info"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/ticker_warning_closable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone"
-            app:closeButtonVisibility="visible"
-            app:tickerShapeType="loose"
-            app:tickerType="warning" />
-
-        <include
-            layout="@layout/item_shipment_product"
-            tools:visibility="visible" />
-
-        <include
-            layout="@layout/item_shipment_other_product"
-            tools:visibility="gone" />
-
-        <!--Gifting: Gifting Experience - Order Level-->
-            <LinearLayout
-                android:id="@+id/ll_gifting_addon_order_level"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:visibility="gone">
-
-                <include
-                    layout="@layout/item_shipment_gifting_addon_order_level"
-                    tools:visibility="gone" />
-
-            </LinearLayout>
-
-        <!--Shipping: Shipping Experience-->
-        <com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget
-            android:id="@+id/shipping_widget"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <!--Shipping: Option (Insurance, dropshipper, etc)-->
-        <include
-            layout="@layout/item_shipment_shipping_options"
-            tools:visibility="gone" />
-
-        <include
-            layout="@layout/item_shipment_subtotal"
-            tools:visibility="visible" />
-
-    </LinearLayout>
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:closeButtonVisibility="visible"
+        app:tickerShapeType="loose"
+        app:tickerType="warning"
+        tools:visibility="visible" />
 
 </LinearLayout>
