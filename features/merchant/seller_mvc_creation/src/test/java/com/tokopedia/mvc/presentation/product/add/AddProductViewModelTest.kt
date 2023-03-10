@@ -349,6 +349,7 @@ class AddProductViewModelTest {
         }
     }
 
+    //region UT for getProducts function to test isEligible property
     //getProducts success isEligible = false
     @Test
     fun `When validating two product eligibility to servers, and second product is ineligible then second product isEligible should be false`() {
@@ -374,7 +375,7 @@ class AddProductViewModelTest {
                 VoucherValidationResult.ValidationProduct(
                     isEligible = false, //Second product isEligible should be false
                     isVariant = false,
-                    parentProductId = firstProduct.id,
+                    parentProductId = secondProduct.id,
                     reason = "",
                     variant = emptyList()
                 )
@@ -409,22 +410,30 @@ class AddProductViewModelTest {
             val actual = emittedValues.last()
 
             assertEquals(false, actual.isLoading)
-            assertEquals(listOf(firstProduct, secondProduct), actual.products)
+            assertEquals(listOf(firstProduct, secondProduct.copy(isEligible = false, enableCheckbox = false)), actual.products)
 
             job.cancel()
         }
     }
+    //endregion
 
+    //region UT for getProducts function to test isSelected property
+    //getProducts success: isSelected should be false -> if product not in selection, isSelected should be false
+    //getProducts success: isSelected should be false -> if product is not eligible, isSelected should be false
+    //getProducts success: isSelected should be false -> if checkbox select all is unchecked, isSelected should be false
+    //getProducts success: isSelected should be false -> if selected product count is 90, next loaded product is 20, max product selection 100 and checkbox select all is active, is selected should be false
+    //endregion
 
-    //getProducts success isSelected = false
-    //getProducts success enableCheckbox = false
-
+    //region UT for getProducts function to test enableCheckbox property
+    //getProducts success: enableCheckbox should be false -> if product is not selected, enableCheckbox should be false
+    //getProducts success: enableCheckbox should be true -> if product is eligible, enableCheckbox should be true
+    //getProducts success: enableCheckbox should be false -> if total selected product bigger than max allowed product selection, enableCheckbox should be false
+    //endregion
 
     //getProducts success category ids is not empty
     //getProducts success showcase ids is not empty
-
-
     //getProducts success currentPageParentProductsIds is not empty
+
     //getProducts error ui effect should emit Error, ui state error should contain throwable
 
     //voucher validation partial success
