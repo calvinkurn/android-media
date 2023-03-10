@@ -202,7 +202,7 @@ class AddEditProductDetailFragment :
     private var categoryAlertDialog: DialogUnify? = null
     private var additionalInfoView: Typography? = null
     private var commissionInfoTipsView: TipsUnify? = null
-    private var disabledCategoryInfoView: ImageUnify? = null
+    private var disabledCategoryInfoView: IconUnify? = null
     private var categoryChangeBottomSheet: CategoryChangeBottomSheet? = null
 
     // product specification

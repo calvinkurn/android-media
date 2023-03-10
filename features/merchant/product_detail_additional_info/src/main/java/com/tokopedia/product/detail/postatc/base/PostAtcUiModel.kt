@@ -14,4 +14,5 @@ interface PostAtcUiModel {
     val impressHolder: ImpressHolder
 
     fun equalsWith(newItem: PostAtcUiModel): Boolean
+    fun newInstance(): PostAtcUiModel
 }

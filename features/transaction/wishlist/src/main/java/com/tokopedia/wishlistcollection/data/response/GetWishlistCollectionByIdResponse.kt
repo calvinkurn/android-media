@@ -7,7 +7,7 @@ data class GetWishlistCollectionByIdResponse(
 
     @SuppressLint("Invalid Data Type")
     @SerializedName("get_wishlist_collection_by_id")
-	val getWishlistCollectionById: GetWishlistCollectionById
+    val getWishlistCollectionById: GetWishlistCollectionById
 ) {
     data class GetWishlistCollectionById(
 

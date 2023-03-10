@@ -46,8 +46,8 @@ class BottomSheetCreateNewCollectionViewModel @Inject constructor(
                 _collectionNames.value = Fail(Throwable())
             }
         }, onError = {
-            _collectionNames.value = Fail(it)
-        })
+                _collectionNames.value = Fail(it)
+            })
     }
 
     fun saveNewWishlistCollection(addWishlistParam: AddWishlistCollectionsHostBottomSheetParams) {
@@ -59,8 +59,8 @@ class BottomSheetCreateNewCollectionViewModel @Inject constructor(
                 _addWishlistCollectionItem.value = Fail(Throwable())
             }
         }, onError = {
-            _addWishlistCollectionItem.value = Fail(it)
-        })
+                _addWishlistCollectionItem.value = Fail(it)
+            })
     }
 
     fun createNewWishlistCollection(collectionName: String) {
@@ -72,7 +72,7 @@ class BottomSheetCreateNewCollectionViewModel @Inject constructor(
                 _createWishlistCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _createWishlistCollectionResult.value = Fail(it)
-        })
+                _createWishlistCollectionResult.value = Fail(it)
+            })
     }
 }

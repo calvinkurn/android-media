@@ -26,7 +26,11 @@
         "item_variant": ".+",
         "item_category": ".+"
       }],
-      "eventLabel":".*"
+      "eventLabel":".*",
+      "businessUnit":"physical goods",
+      "userId":".*",
+      "trackerId":".*",
+      "currentSite":"tokopediamarketplace"
     },
     {
       "pageType": "/shoppage",
@@ -52,7 +56,11 @@
         "item_variant": ".+",
         "item_category": ".+"
       }],
-      "eventLabel":".*"
+      "eventLabel":".*",
+      "businessUnit":"physical goods",
+      "userId":".*",
+      "trackerId":".*",
+      "currentSite":"tokopediamarketplace"
     },
     {
       "pageType": "/shoppage",

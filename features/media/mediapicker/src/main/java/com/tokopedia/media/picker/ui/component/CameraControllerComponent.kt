@@ -133,6 +133,10 @@ class CameraControllerComponent(
         }
     }
 
+    fun setThumbnailVisibility(isVisible: Boolean) {
+        imgThumbnail.showWithCondition(isVisible)
+    }
+
     fun scrollToPhotoMode() {
         lstCameraMode.smoothScrollToPosition(CameraMode.Photo.value)
     }
@@ -226,8 +230,7 @@ class CameraControllerComponent(
         try {
             videoDurationTimer?.cancel()
             videoDurationTimer = null
-        } catch (t: Throwable) {
-        }
+        } catch (ignored: Throwable) { }
     }
 
     private fun onTakeCamera() {
@@ -301,6 +304,7 @@ class CameraControllerComponent(
     interface Listener {
         fun onCameraModeChanged(mode: CameraMode)
         fun isFrontCamera(): Boolean
+        fun isCameraOnRecording(): Boolean
 
         fun onCameraThumbnailClicked()
         fun onTakeMediaClicked()

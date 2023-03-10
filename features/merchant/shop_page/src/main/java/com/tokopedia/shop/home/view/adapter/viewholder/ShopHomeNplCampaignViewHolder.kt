@@ -16,10 +16,10 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBinding
 import com.tokopedia.shop.home.util.DateHelper
@@ -108,6 +108,44 @@ class ShopHomeNplCampaignViewHolder(
         setWidgetImpressionListener(model)
         setFollowersOnlyView(model)
         setVoucherPromoOffer(model)
+        checkFestivity(model)
+    }
+
+    private fun checkFestivity(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        if (model.isFestivity) {
+            configFestivity()
+        } else {
+            configNonFestivity()
+        }
+    }
+
+    private fun configFestivity() {
+        val festivityTextColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        textTitle?.setTextColor(festivityTextColor)
+        textTimeDescription?.setTextColor(festivityTextColor)
+        textSeeAll?.setTextColor(festivityTextColor)
+        imageTnc?.setColorFilter(festivityTextColor)
+        timerUnify?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+        timerMoreThanOneDay?.apply {
+            background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_white_rect)
+            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.shop.common.R.color.dms_shop_festivity_timer_text_color))
+        }
+    }
+
+    private fun configNonFestivity() {
+        val defaultTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val defaultSubTitleColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        val defaultCtaColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val defaultInformationIconColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        textTitle?.setTextColor(defaultTitleColor)
+        textTimeDescription?.setTextColor(defaultSubTitleColor)
+        textSeeAll?.setTextColor(defaultCtaColor)
+        imageTnc?.setColorFilter(defaultInformationIconColor)
+        timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+        timerMoreThanOneDay?.apply {
+            background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
+            setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        }
     }
 
     private fun setVoucherPromoOffer(model: ShopHomeNewProductLaunchCampaignUiModel) {
@@ -145,7 +183,7 @@ class ShopHomeNplCampaignViewHolder(
             ShopCampaignCarouselProductAdapterTypeFactory(
                 model,
                 shopHomeCampaignNplWidgetListener,
-                adapterPosition
+                ShopUtil.getActualPositionFromIndex(adapterPosition)
             )
         )
         rvProductCarousel?.apply {
@@ -158,7 +196,9 @@ class ShopHomeNplCampaignViewHolder(
                     val clickableBannerAreaWidth = (getScreenWidth() * PADDING_LEFT_PERCENTAGE).toInt()
                     productListCampaignAdapter?.clearAllElements()
                     if (productList.isNotEmpty())
-                        productListCampaignAdapter?.addElement(ShopHomeCampaignCarouselClickableBannerAreaUiModel(clickableBannerAreaWidth))
+                        productListCampaignAdapter?.addElement(
+                            ShopHomeCampaignCarouselClickableBannerAreaUiModel(clickableBannerAreaWidth)
+                        )
                     productListCampaignAdapter?.addElement(productList)
                     isNestedScrollingEnabled = false
                     adapter = productListCampaignAdapter
@@ -302,7 +342,7 @@ class ShopHomeNplCampaignViewHolder(
     private fun setWidgetImpressionListener(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
             itemView.addOnImpressionListener(model.impressHolder) {
-                shopHomeCampaignNplWidgetListener.onImpressionCampaignNplWidget(adapterPosition, model)
+                shopHomeCampaignNplWidgetListener.onImpressionCampaignNplWidget(ShopUtil.getActualPositionFromIndex(adapterPosition), model)
             }
         }
     }

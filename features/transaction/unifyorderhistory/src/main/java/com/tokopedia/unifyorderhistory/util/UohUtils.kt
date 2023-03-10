@@ -81,7 +81,7 @@ object UohUtils {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
-    fun calendarToStringFormat(dateParam: GregorianCalendar, format: String) : CharSequence {
+    fun calendarToStringFormat(dateParam: GregorianCalendar, format: String): CharSequence {
         return DateFormat.format(format, dateParam.time)
     }
 }

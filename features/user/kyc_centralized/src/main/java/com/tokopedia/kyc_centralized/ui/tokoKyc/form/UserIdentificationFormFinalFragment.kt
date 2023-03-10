@@ -42,6 +42,7 @@ import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.BaseUserIdentificat
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.stepper.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoFragment
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_EMPTY
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
@@ -84,6 +85,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val kycUploadViewModel by lazy { viewModelFragmentProvider.get(KycUploadViewModel::class.java) }
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +108,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
                 UserIdentificationInfoFragment.ALLOW_SELFIE_FLOW_EXTRA,
                 false
             ) ?: false
-            analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
+            val kycFlowType = kycSharedPreference.getStringCache(KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE)
+            analytics = UserIdentificationCommonAnalytics.createInstance(projectId, kycFlowType)
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)

@@ -16,6 +16,7 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.imageassets.TokopediaImageUrl.CC_IMG_VERIFIED
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
@@ -462,6 +463,5 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
 
     companion object {
         private val TICKER_AUTO_SLIDE_DELAY = 5000
-        private const val CC_IMG_VERIFIED = "https://images.tokopedia.net/img/cc_ic_logo_verified.png"
     }
 }

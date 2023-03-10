@@ -23,7 +23,10 @@ import javax.inject.Inject
     DigitalCheckoutGqlUseCase.QUERY_NAME_RECHARGE_CHECKOUT,
     DigitalCheckoutGqlUseCase.QUERY_RECHARGE_CHECKOUT
 )
-class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+class DigitalCheckoutGqlUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository,
+    private val gson: Gson
+) :
     GraphqlUseCase<RechargeCheckoutResponse.Response>(graphqlRepository) {
 
     init {
@@ -36,8 +39,6 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
         requestCheckoutParams: DigitalCheckoutDataParameter,
         digitalIdentifierParams: RequestBodyIdentifier
     ) {
-        val gson = Gson()
-
         val requestParams = RechargeCheckoutRequest(
             voucherCode = requestCheckoutParams.voucherCode,
             transactionAmount = requestCheckoutParams.transactionAmount.toLong(),
@@ -50,10 +51,10 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
             cartType = DigitalCheckoutConst.RequestBodyParams.REQUEST_BODY_CHECKOUT_TYPE,
             cartId = requestCheckoutParams.cartId,
             createSubscription = requestCheckoutParams.isSubscriptionChecked,
-            fintechProducts = requestCheckoutParams.fintechProducts.map {
+            fintechProducts = requestCheckoutParams.crossSellProducts.map {
                 RechargeCheckoutFintechProduct(
-                    transactionType = it.value.transactionType,
-                    checkoutMetadata = gson.toJson(it.value)
+                    transactionType = it.value.product.transactionType,
+                    checkoutMetadata = gson.toJson(it.value.product)
                 )
             }.toList(),
             instant = requestCheckoutParams.isInstantCheckout,

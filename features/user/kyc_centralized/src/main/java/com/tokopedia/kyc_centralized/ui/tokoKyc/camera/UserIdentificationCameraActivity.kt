@@ -6,16 +6,19 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.kyc_centralized.common.KYCConstant.EXTRA_USE_COMPRESSION
 import com.tokopedia.kyc_centralized.common.KYCConstant.EXTRA_USE_CROPPING
+import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
+import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 /**
  * @author by alvinatin on 07/11/18.
  */
-class UserIdentificationCameraActivity : BaseSimpleActivity() {
+class UserIdentificationCameraActivity : BaseSimpleActivity(), HasComponent<UserIdentificationCommonComponent> {
 
     private var viewMode = 0
     private var projectId = -1
@@ -44,6 +47,10 @@ class UserIdentificationCameraActivity : BaseSimpleActivity() {
 
     private fun getAbTestPlatform(): AbTestPlatform {
         return RemoteConfigInstance.getInstance().abTestPlatform
+    }
+
+    override fun getComponent(): UserIdentificationCommonComponent {
+        return ActivityComponentFactory.instance.createActivityComponent(this)
     }
 
     companion object {
