@@ -14,7 +14,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.TodoWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.TodoWidgetAdapter
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -36,8 +35,6 @@ class TodoWidgetViewHolder(
     private var binding: HomeComponentTodoWidgetBinding? by viewBinding()
     private var adapter: TodoWidgetAdapter? = null
     private var visitables = mutableListOf<Visitable<*>>()
-
-    private var dismissingItems = mutableListOf<Pair<Int, Visitable<*>>>()
 
     private fun setHeaderComponent(element: TodoWidgetListDataModel) {
         binding?.homeComponentHeaderView?.setChannel(
@@ -175,16 +172,7 @@ class TodoWidgetViewHolder(
     override fun dismiss(element: CarouselTodoWidgetDataModel, position: Int) {
         visitables.removeAt(position)
         adapter?.notifyItemRemoved(position)
-        dismissingItems.add(Pair(position, element))
         todoWidgetComponentListener.onTodoCloseClicked(element, position, visitables.isEmpty())
-    }
-
-    fun restoreDismissedItem(position: Int) {
-        val todoItem = dismissingItems.firstOrNull { it.first == position }
-        todoItem?.let {
-            visitables.add(it.first, it.second)
-        }
-        dismissingItems.remove(todoItem)
     }
 }
 

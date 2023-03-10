@@ -85,13 +85,13 @@ class TodoWidgetItemViewHolder(
 
     private fun setLayoutWidth(element: CarouselTodoWidgetDataModel) {
         binding?.run {
-            val layoutParams = cardContainerTodoWidget?.layoutParams
+            val layoutParams = cardContainerTodoWidget.layoutParams
             if (element.isCarousel) {
                 layoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
             } else {
                 layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
             }
-            cardContainerTodoWidget?.layoutParams = layoutParams
+            cardContainerTodoWidget.layoutParams = layoutParams
 
             cardLayout.maxWidth = TodoWidgetUtil.measureTodoWidgetCardMaxWidth(itemView.context)
             (descTodoWidget.layoutParams as? ConstraintLayout.LayoutParams)?.matchConstraintMaxWidth = TodoWidgetUtil.measureTodoWidgetContentMaxWidth(itemView.context)

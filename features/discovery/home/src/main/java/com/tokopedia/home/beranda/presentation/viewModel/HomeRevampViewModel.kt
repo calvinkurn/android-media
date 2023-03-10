@@ -749,9 +749,6 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun dismissTodoWidget(horizontalPosition: Int, dataSource: String, param: String, deleteWidget: Boolean) {
-        var todoWidget : TodoWidgetListDataModel? = null
-        var todoWidgetPosition : Int = -1
-
         launch {
             homeDismissTodoWidgetUseCase.get().getTodoWidgetDismissData(
                 horizontalPosition,
@@ -766,23 +763,14 @@ open class HomeRevampViewModel @Inject constructor(
                         homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) { }
                     }
                 },
-                onError = {
-                    todoWidget?.let {
-                        if(todoWidgetPosition != -1) {
-                            addWidget(it, todoWidgetPosition)
-                        }
-                    }
-                }
+                onError = { }
             )
         }
 
-        if(deleteWidget) {
+        if (deleteWidget) {
             findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
-                todoWidget = item
-                todoWidgetPosition = verticalPosition
                 deleteWidget(item, verticalPosition)
             }
         }
     }
-
 }
