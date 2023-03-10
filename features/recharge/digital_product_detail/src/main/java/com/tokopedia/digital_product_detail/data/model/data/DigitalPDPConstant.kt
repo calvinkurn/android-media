@@ -42,5 +42,5 @@ object DigitalPDPConstant {
     const val RECOMMENDATION_GQL_CHANNEL_NAME_DEFAULT = "recharge_pdp_last_trx_client_number"
 
     const val OTHER_COMPONENT_APPLINK_OMNI = "applink_omni"
-    const val APPLINK_OMNI_CODE_DC = "omni_applink_data_code"
+    const val APPLINK_OMNI_CODE_DC = "omni_applink_code_dc"
 }

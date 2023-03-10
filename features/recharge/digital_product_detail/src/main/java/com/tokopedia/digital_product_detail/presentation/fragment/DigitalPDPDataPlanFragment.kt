@@ -487,10 +487,13 @@ class DigitalPDPDataPlanFragment :
     private fun onSuccessOmniChannel(otherComponents: List<TelcoOtherComponent>) {
         otherComponents.forEach {
             if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {
-                it.otherComponentDataCollection.firstOrNull { collection ->
+                val collection = it.otherComponentDataCollection.firstOrNull { collection ->
                     collection.key == APPLINK_OMNI_CODE_DC
-                }?.let { collection ->
+                }
+                if (collection != null) {
                     renderOmniChannel(collection.value)
+                } else {
+                    binding?.rechargePdpPaketDataOmniWidget?.hide()
                 }
             } else {
                 binding?.rechargePdpPaketDataOmniWidget?.hide()
