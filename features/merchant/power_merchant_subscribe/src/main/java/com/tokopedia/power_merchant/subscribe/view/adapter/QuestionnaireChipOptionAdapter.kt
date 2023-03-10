@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 class QuestionnaireChipOptionAdapter(
     private val items: List<QuestionnaireOptionUiModel>,
     private val onAnswerSelected: () -> Unit
-): RecyclerView.Adapter<QuestionnaireChipOptionAdapter.QuestionnaireChipOptionViewHolder>() {
+) : RecyclerView.Adapter<QuestionnaireChipOptionAdapter.QuestionnaireChipOptionViewHolder>() {
 
     fun updateChips(isSelected: Boolean, position: Int) {
         items.mapIndexed { index, item ->
@@ -55,7 +55,7 @@ class QuestionnaireChipOptionAdapter(
                         })
                     }
                     chipText = item.text
-                    chipSize = ChipsUnify.SIZE_MEDIUM
+                    chipSize = ChipsUnify.SIZE_SMALL
                     toggle(item.isChecked)
 
                     setOnClickListener {
