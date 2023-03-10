@@ -13,7 +13,6 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
@@ -240,14 +239,18 @@ class TokoChatViewModel @Inject constructor(
 
     fun doCheckChatConnection() {
         cancelCheckConnection()
-        connectionCheckJob = launchCatchError(context = dispatcher.io, block = {
-            while (true) {
-                delay(DELAY_UPDATE_ORDER_STATE)
-                _isChatConnected.postValue(chatChannelUseCase.isChatConnected())
+        connectionCheckJob = launch {
+            withContext(dispatcher.io) {
+                try {
+                    while (true) {
+                        delay(DELAY_UPDATE_ORDER_STATE)
+                        _isChatConnected.postValue(chatChannelUseCase.isChatConnected())
+                    }
+                } catch (throwable: Throwable) {
+                    _isChatConnected.postValue(false)
+                }
             }
-        }, onError = {
-                _isChatConnected.postValue(false)
-            })
+        }
     }
 
     fun cancelCheckConnection() {
@@ -256,22 +259,28 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun getTokoChatBackground() {
-        launchCatchError(block = {
-            getTokoChatBackgroundUseCase(Unit).collect {
-                _chatBackground.value = Success(it)
+        launch {
+            try {
+                getTokoChatBackgroundUseCase(Unit).collect {
+                    _chatBackground.value = Success(it)
+                }
+            } catch (throwable: Throwable) {
+                _chatBackground.value = Fail(throwable)
             }
-        }, onError = {
-                _chatBackground.value = Fail(it)
-            })
+        }
     }
 
     fun loadChatRoomTicker() {
-        launchCatchError(context = dispatcher.io, block = {
-            val result = getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
-            _chatRoomTicker.postValue(Success(result))
-        }, onError = {
-                _chatRoomTicker.postValue(Fail(it))
-            })
+        launch {
+            withContext(dispatcher.io) {
+                try {
+                    val result = getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
+                    _chatRoomTicker.postValue(Success(result))
+                } catch (throwable: Throwable) {
+                    _chatRoomTicker.postValue(Fail(throwable))
+                }
+            }
+        }
     }
 
     fun getUserId(): String {
@@ -295,14 +304,16 @@ class TokoChatViewModel @Inject constructor(
     * Order Transaction Section
      */
     fun loadOrderCompletedStatus(orderId: String, serviceType: String) {
-        launchCatchError(block = {
-            val result = withContext(dispatcher.io) {
-                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(orderId, serviceType))
+        launch {
+            try {
+                val result = withContext(dispatcher.io) {
+                    getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(orderId, serviceType))
+                }
+                _orderTransactionStatus.value = Success(result)
+            } catch (throwable: Throwable) {
+                _orderTransactionStatus.value = Fail(throwable)
             }
-            _orderTransactionStatus.value = Success(result)
-        }, onError = {
-                _orderTransactionStatus.value = Fail(it)
-            })
+        }
     }
 
     fun updateOrderStatusParam(orderStatusParam: Pair<String, String>) {
@@ -337,41 +348,45 @@ class TokoChatViewModel @Inject constructor(
         imageView: ImageView? = null,
         isFromRetry: Boolean = false
     ) {
-        launchCatchError(context = dispatcher.io, block = {
-            val cachedImage = getTokoChatPhotoPath(generateImageName(imageId, channelId))
-            // If image has never been downloaded, then download
-            if (!cachedImage.exists() || isFromRetry) {
-                delay(DELAY_FETCH_IMAGE)
-                val imageUrlResponse = getImageUrlUseCase(
-                    TokoChatGetImageUseCase.Param(imageId, channelId)
-                )
-                if (imageUrlResponse.success == true) {
-                    imageUrlResponse.data?.url?.let {
-                        viewUtil.downloadAndSaveByteArrayImage(
-                            generateImageName(imageId, channelId),
-                            getImageUrlUseCase.getImage(it).byteStream(),
-                            onImageReady,
-                            onError,
-                            onDirectLoad,
-                            imageView
+        launch {
+            withContext(dispatcher.io) {
+                try {
+                    val cachedImage = getTokoChatPhotoPath(generateImageName(imageId, channelId))
+                    // If image has never been downloaded, then download
+                    if (!cachedImage.exists() || isFromRetry) {
+                        delay(DELAY_FETCH_IMAGE)
+                        val imageUrlResponse = getImageUrlUseCase(
+                            TokoChatGetImageUseCase.Param(imageId, channelId)
                         )
+                        if (imageUrlResponse.success == true) {
+                            imageUrlResponse.data?.url?.let {
+                                viewUtil.downloadAndSaveByteArrayImage(
+                                    generateImageName(imageId, channelId),
+                                    getImageUrlUseCase.getImage(it).byteStream(),
+                                    onImageReady,
+                                    onError,
+                                    onDirectLoad,
+                                    imageView
+                                )
+                            }
+                        } else {
+                            _error.postValue(
+                                Pair(
+                                    Throwable(imageUrlResponse.error?.firstOrNull()?.message),
+                                    ::getImageWithId.name
+                                )
+                            )
+                            onError()
+                        }
+                    } else { // Else use the downloaded image
+                        onImageReady(cachedImage)
                     }
-                } else {
-                    _error.postValue(
-                        Pair(
-                            Throwable(imageUrlResponse.error?.firstOrNull()?.message),
-                            ::getImageWithId.name
-                        )
-                    )
+                } catch (throwable: Throwable) {
+                    _error.postValue(Pair(throwable, ::getImageWithId.name))
                     onError()
                 }
-            } else { // Else use the downloaded image
-                onImageReady(cachedImage)
             }
-        }, onError = {
-                _error.postValue(Pair(it, ::getImageWithId.name))
-                onError()
-            })
+        }
     }
 
     private fun generateImageName(imageId: String, channelId: String): String {
