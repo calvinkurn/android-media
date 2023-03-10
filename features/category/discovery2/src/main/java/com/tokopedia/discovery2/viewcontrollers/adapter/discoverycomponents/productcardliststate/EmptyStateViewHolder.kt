@@ -17,6 +17,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -46,15 +47,19 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 verticalView.hide()
                 horizontalTitle.text = it.title
                 horizontalDecription.text = it.description
-                if(it.isRedirectionState){
+                if (it.isRedirectionState) {
                     horizontalButton.show()
                     horizontalButton.text = it.buttonText
                     horizontalButton.setOnClickListener { _ ->
-                        if(!it.buttonApplink.isNullOrEmpty()) {
+                        if (!it.buttonApplink.isNullOrEmpty()) {
                             RouteManager.route(itemView.context, it.buttonApplink)
                         }
                     }
-                    horizontalImageView.loadRemoteImageDrawable("rac",it.imageURL ?: FILTER_EMPTY_IMAGE)
+                    if (!it.imageURL.isNullOrEmpty()) {
+                        horizontalImageView.loadImage(it.imageURL)
+                    } else {
+                        horizontalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
+                    }
                     return@let
                 }
                 else if (it.isFilterState) {
@@ -78,12 +83,16 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
         verticalView.show()
         verticalTitle.text = emptyStateModel.title
         verticalDecription.text = emptyStateModel.description
-        if(emptyStateModel.isRedirectionState){
+        if (emptyStateModel.isRedirectionState) {
             verticalButton.show()
             verticalButton.text = emptyStateModel.buttonText
-            verticalImageView.loadRemoteImageDrawable("rac",  emptyStateModel.imageURL ?: FILTER_EMPTY_IMAGE)
+            if (!emptyStateModel.imageURL.isNullOrEmpty()) {
+                verticalImageView.loadImage(emptyStateModel.imageURL)
+            } else {
+                verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
+            }
             verticalButton.setOnClickListener { _ ->
-                if(!emptyStateModel.buttonApplink.isNullOrEmpty()) {
+                if (!emptyStateModel.buttonApplink.isNullOrEmpty()) {
                     RouteManager.route(itemView.context, emptyStateModel.buttonApplink)
                 }
             }
