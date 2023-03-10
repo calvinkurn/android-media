@@ -6,6 +6,7 @@ import com.tokopedia.oneclickcheckout.databinding.BottomSheetTransactionInfoBind
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class TransactionFeeInfoBottomSheet {
 
@@ -25,6 +26,6 @@ class TransactionFeeInfoBottomSheet {
 
     private fun setupView(binding: BottomSheetTransactionInfoBinding, orderPaymentFee: OrderPaymentFee) {
         binding.llContainer.setBackgroundResource(R.drawable.background_transaction_fee_info_bottom_sheet)
-        binding.tvInfo.text = orderPaymentFee.tooltipInfo
+        binding.tvInfo.text = HtmlLinkHelper(binding.root.context, orderPaymentFee.tooltipInfo).spannedString
     }
 }

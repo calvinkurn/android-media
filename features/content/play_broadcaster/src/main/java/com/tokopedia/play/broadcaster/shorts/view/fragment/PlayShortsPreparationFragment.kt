@@ -210,7 +210,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                         if (viewModel.isFormFilled) {
                             showSwitchAccountConfirmationDialog(contentAccount)
                         } else {
-                            viewModel.submitAction(PlayShortsAction.SwitchAccount)
+                            viewModel.submitAction(PlayShortsAction.SwitchAccount(isRefreshAccountList = false))
                         }
                     }
 
@@ -502,6 +502,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 }
                 binding.formTitle.setLoading(false)
                 binding.formTitle.setMaxCharacter(viewModel.maxTitleCharacter)
+                binding.formTitle.setPlaceholder(getString(R.string.play_shorts_title_form_hint))
             }
             PlayShortsTitleFormUiState.State.Loading -> {
                 hideKeyboard()
@@ -644,7 +645,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             )
             setSecondaryCTAClickListener {
                 dismiss()
-                viewModel.submitAction(PlayShortsAction.SwitchAccount)
+                viewModel.submitAction(PlayShortsAction.SwitchAccount(isRefreshAccountList = false))
             }
         }
 

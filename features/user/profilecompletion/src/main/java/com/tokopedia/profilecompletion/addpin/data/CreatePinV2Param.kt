@@ -8,5 +8,5 @@ data class CreatePinV2Param(
     val pin_token: String,
     @SerializedName("validate_token")
     val validateToken: String,
-): GqlParam
+) : GqlParam
 

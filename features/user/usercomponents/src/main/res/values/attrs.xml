@@ -14,7 +14,7 @@
 
     <!--  USER CONSENT  -->
     <declare-styleable name="UserConsentWidget">
-        <attr name="actionText" format="string" />
+        <attr name="hide_when_already_have_consent" format="boolean" />
         <attr name="defaultTemplate" format="enum">
             <enum name="NONE" value="-1"/>
             <enum name="TNC_MANDATORY" value="0"/>

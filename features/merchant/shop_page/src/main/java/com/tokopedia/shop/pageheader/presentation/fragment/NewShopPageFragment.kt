@@ -142,7 +142,6 @@ import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
-import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.model.ShopShareModel
@@ -261,7 +260,6 @@ class NewShopPageFragment :
         const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
-        const val TAB_POSITION_FEED = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
@@ -425,7 +423,6 @@ class NewShopPageFragment :
     private val isLogin: Boolean
         get() = shopViewModel?.isUserSessionActive ?: false
 
-    private val feedShopFragmentClassName = Class.forName(FEED_SHOP_FRAGMENT)
     private var isConfettiAlreadyShown = false
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
@@ -605,7 +602,7 @@ class NewShopPageFragment :
                 val intent = SellerMigrationActivity.createIntent(
                     context = requireContext(),
                     featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                    screenName = feedShopFragmentClassName.simpleName.orEmpty(),
+                    screenName = getFeedTabFragmentClassName()?.simpleName.orEmpty(),
                     appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, appLinkShopPageFeed)
                 )
                 startActivity(intent)
@@ -752,15 +749,8 @@ class NewShopPageFragment :
             Observer {
                 shopImageFilePath = it
                 if (shopImageFilePath.isNotEmpty()) {
-                    if (isUsingNewShareBottomSheet(requireContext())) {
-                        isGeneralShareBottomSheet = true
-                        showUniversalShareBottomSheet()
-                    } else {
-                        shopShareBottomSheet = ShopShareBottomSheet.createInstance().apply {
-                            init(this@NewShopPageFragment)
-                        }
-                        shopShareBottomSheet?.show(fragmentManager)
-                    }
+                    isGeneralShareBottomSheet = true
+                    showUniversalShareBottomSheet()
                 }
             }
         )
@@ -1299,33 +1289,18 @@ class NewShopPageFragment :
 
     private fun getShopPageP1Data() {
         if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
-        if (ShopUtil.isEnableShopDynamicTab(context)) {
-            shopViewModel?.getNewShopPageTabData(
-                shopId,
-                shopDomain.orEmpty(),
-                START_PAGE,
-                ShopUtil.getProductPerPage(context),
-                initialProductFilterParameter ?: ShopProductFilterParameter(),
-                "",
-                "",
-                isRefresh,
-                localCacheModel ?: LocalCacheModel(),
-                extParam
-            )
-        } else {
-            shopViewModel?.getShopPageTabData(
-                shopId,
-                shopDomain.orEmpty(),
-                START_PAGE,
-                ShopUtil.getProductPerPage(context),
-                initialProductFilterParameter ?: ShopProductFilterParameter(),
-                "",
-                "",
-                isRefresh,
-                localCacheModel ?: LocalCacheModel(),
-                extParam
-            )
-        }
+        shopViewModel?.getNewShopPageTabData(
+            shopId = shopId,
+            shopDomain = shopDomain.orEmpty(),
+            page = START_PAGE,
+            itemPerPage = ShopUtil.getProductPerPage(context),
+            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
+            keyword = "",
+            etalaseId = "",
+            isRefresh = isRefresh,
+            widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
+            extParam = extParam
+        )
     }
 
     private fun setDataFromAppLinkQueryParam() {
@@ -1399,12 +1374,6 @@ class NewShopPageFragment :
         }
         textYourShop?.show()
         searchBarLayout?.hide()
-    }
-
-    private fun displayToolbarBuyer() {
-        textYourShop?.hide()
-        searchBarLayout?.show()
-        initSearchInputView()
     }
 
     private fun initSearchInputView() {
@@ -1570,17 +1539,9 @@ class NewShopPageFragment :
     }
 
     private fun clickShopShare() {
-        if (isUsingNewShareBottomSheet(requireContext())) {
-            shopPageTracking?.clickShareButtonNewBottomSheet(customDimensionShopPage, userId)
-            if (!isMyShop) {
-                shopPageTracking?.clickGlobalHeaderShareButton(customDimensionShopPage, userId)
-            }
-        } else {
-            if (isMyShop) {
-                shopPageTracking?.clickShareButtonSellerView(customDimensionShopPage)
-            } else {
-                shopPageTracking?.clickShareButton(customDimensionShopPage)
-            }
+        shopPageTracking?.clickShareButtonNewBottomSheet(customDimensionShopPage, userId)
+        if (!isMyShop) {
+            shopPageTracking?.clickGlobalHeaderShareButton(customDimensionShopPage, userId)
         }
         removeTemporaryShopImage(shopImageFilePath)
         saveShopImage()
@@ -1715,7 +1676,7 @@ class NewShopPageFragment :
         swipeToRefresh?.isRefreshing = false
         shopPageFragmentHeaderViewHolder?.setShopHeaderWidgetData(shopPageP1Data.listShopHeaderWidget)
         remoteConfig?.let {
-            shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(it, isMyShop)
+            shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(isMyShop = isMyShop)
         }
         getShopPageP2Data()
         setupTabs()
@@ -1756,11 +1717,7 @@ class NewShopPageFragment :
 
     fun getSelectedTabName(): String {
         return listShopPageTabModel.getOrNull(
-            if (ShopUtil.isEnableShopDynamicTab(context)) {
-                getSelectedDynamicTabPosition()
-            } else {
-                getSelectedTabPosition()
-            }
+            getSelectedDynamicTabPosition()
         )?.tabTitle.orEmpty()
     }
 
@@ -1776,18 +1733,10 @@ class NewShopPageFragment :
     }
 
     private fun setupTabs() {
-        listShopPageTabModel = if (ShopUtil.isEnableShopDynamicTab(context)) {
-            (createListShopPageDynamicTabModel() as? List<ShopPageTabModel>) ?: listOf()
-        } else {
-            (createListShopPageTabModel() as? List<ShopPageTabModel>) ?: listOf()
-        }
+        listShopPageTabModel = (createListShopPageDynamicTabModel() as? List<ShopPageTabModel>) ?: listOf()
         configureTab(listShopPageTabModel.size)
         viewPagerAdapter?.setTabData(listShopPageTabModel)
-        selectedPosition = if (ShopUtil.isEnableShopDynamicTab(context)) {
-            getSelectedDynamicTabPosition()
-        } else {
-            getSelectedTabPosition()
-        }
+        selectedPosition = getSelectedDynamicTabPosition()
         tabLayout?.removeAllTabs()
         listShopPageTabModel.forEach {
             tabLayout?.newTab()?.apply {
@@ -1826,15 +1775,17 @@ class NewShopPageFragment :
                     sendShopPageTabImpressionTracker()
                 }
                 if (isSellerMigrationEnabled(context)) {
-                    if (isMyShop && viewPagerAdapter?.isFragmentObjectExists(feedShopFragmentClassName) == true) {
-                        val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(feedShopFragmentClassName)
-                        if (position == tabFeedPosition) {
-                            showBottomSheetSellerMigration()
+                    getFeedTabFragmentClassName()?.let {
+                        if (isMyShop && viewPagerAdapter?.isFragmentObjectExists(it) == true) {
+                            val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(it)
+                            if (position == tabFeedPosition) {
+                                showBottomSheetSellerMigration()
+                            } else {
+                                hideBottomSheetSellerMigration()
+                            }
                         } else {
                             hideBottomSheetSellerMigration()
                         }
-                    } else {
-                        hideBottomSheetSellerMigration()
                     }
                 }
                 hideScrollToTopButton()
@@ -1849,11 +1800,7 @@ class NewShopPageFragment :
     }
 
     private fun getTabView(index: Int): View? {
-        return if (ShopUtil.isEnableShopDynamicTab(context)) {
-            viewPagerAdapter?.getDynamicTabView(index, selectedPosition)
-        } else {
-            viewPagerAdapter?.getTabView(index, selectedPosition)
-        }
+        return viewPagerAdapter?.getDynamicTabView(index, selectedPosition)
     }
 
     private fun sendShopPageClickTabTracker(position: Int) {
@@ -1880,96 +1827,28 @@ class NewShopPageFragment :
         viewOneTabSeparator?.show()
     }
 
-    private fun checkIfShouldShowOrHideScrollToTopButton(position: Int) {
-        val selectedFragment = viewPagerAdapter?.getRegisteredFragment(position)
-        if (selectedFragment is InterfaceShopPageClickScrollToTop) {
-            if (selectedFragment.isShowScrollToTopButton()) {
-                showScrollToTopButton()
-            } else {
-                hideScrollToTopButton()
-            }
-        } else {
-            hideScrollToTopButton()
-        }
-    }
-
-    private fun checkIfShouldShowOrHideShopPageFab(position: Int) {
-        val selectedFragment = viewPagerAdapter?.getRegisteredFragment(position)
-        if (selectedFragment is InterfaceShopPageFab) {
-            val config = selectedFragment.getShopPageFabConfig()
-            if (selectedFragment.shouldShowShopPageFab() && config != null) {
-                setupShopPageFab(config)
-                showShopPageFab()
-            } else {
-                hideShopPageFab()
-            }
-        } else {
-            hideShopPageFab()
-        }
-    }
-
-    private fun getSelectedTabPosition(): Int {
-        var selectedPosition = viewPager?.currentItem.orZero()
-        if (tabLayout?.tabCount == 0) {
-            if (shouldOverrideTabToHome) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
-                } else {
-                    selectedPosition
-                }
-            }
-            if (shouldOverrideTabToProduct) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ShopPageProductListFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(ShopPageProductListFragment::class.java).orZero()
-                } else {
-                    selectedPosition
-                }
-            }
-            if (shouldOverrideTabToFeed) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(feedShopFragmentClassName) == true) {
-                    viewPagerAdapter?.getFragmentPosition(feedShopFragmentClassName).orZero()
-                } else {
-                    selectedPosition
-                }
-            }
-            if (shouldOverrideTabToReview) {
-                val reviewTabFragmentClassName = getReviewTabFragmentClassName()
-                reviewTabFragmentClassName?.let { reviewTabClass ->
-                    selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(reviewTabClass) == true) {
-                        viewPagerAdapter?.getFragmentPosition(reviewTabClass).orZero()
-                    } else {
-                        selectedPosition
-                    }
-                }
-            }
-        }
-        return selectedPosition
-    }
-
     private fun getSelectedDynamicTabPosition(): Int {
         var selectedPosition = viewPager?.currentItem.orZero()
         if (tabLayout?.tabCount.isZero()) {
-            if (shouldOverrideTabToHome || shouldOverrideTabToProduct || shouldOverrideTabToFeed) {
-                when {
+            if (shouldOverrideTabToHome || shouldOverrideTabToProduct || shouldOverrideTabToFeed || shouldOverrideTabToReview) {
+                val overrideTabName = when {
                     shouldOverrideTabToHome -> {
-                        ShopPageHomeFragment::class.java
+                        ShopPageTabName.HOME
                     }
                     shouldOverrideTabToProduct -> {
-                        ShopPageProductListFragment::class.java
+                        ShopPageTabName.PRODUCT
                     }
                     shouldOverrideTabToFeed -> {
-                        feedShopFragmentClassName
+                        ShopPageTabName.FEED
+                    }
+                    shouldOverrideTabToReview -> {
+                        ShopPageTabName.REVIEW
                     }
                     else -> {
-                        null
-                    }
-                }?.let {
-                    selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(it) == true) {
-                        viewPagerAdapter?.getFragmentPosition(it).orZero()
-                    } else {
-                        selectedPosition
+                        ""
                     }
                 }
+                selectedPosition = getTabPositionBasedOnTabName(overrideTabName)
             } else {
                 val selectedTabData = listShopPageTabModel.firstOrNull {
                     it.isFocus
@@ -1984,6 +1863,14 @@ class NewShopPageFragment :
             }
         }
         return selectedPosition
+    }
+
+    private fun getTabPositionBasedOnTabName(overrideTabName: String): Int {
+        return listShopPageTabModel.indexOfFirst {
+            it.tabTitle == overrideTabName
+        }.takeIf {
+            it >= Int.ZERO
+        } ?: Int.ZERO
     }
 
     private fun createListShopPageTabModel(): List<ShopPageTabModel> {
@@ -2096,6 +1983,9 @@ class NewShopPageFragment :
                             setInitialProductListData(it)
                         }
                         setListWidgetLayoutData(it.data.homeLayoutData)
+                        setHomeTabListBackgroundColor(it.listBackgroundColor)
+                        setHomeTabBackgroundPatternImage(it.backgroundImage)
+                        setHomeTabLottieUrl(it.lottieUrl)
                     }
                 }
                 ShopPageTabName.PRODUCT -> {
@@ -2223,9 +2113,9 @@ class NewShopPageFragment :
         }
     }
 
-    private fun getReviewTabFragmentClassName(): Class<*>? {
+    private fun getFeedTabFragmentClassName(): Class<*>? {
         return try {
-            Class.forName(SHOP_REVIEW_FRAGMENT)
+            Class.forName(FEED_SHOP_FRAGMENT)
         } catch (e: Exception) {
             null
         }
@@ -3020,13 +2910,9 @@ class NewShopPageFragment :
     }
 
     fun isShopWidgetAlreadyShown(): Boolean {
-        return if (ShopUtil.isEnableShopDynamicTab(context)) {
-            shopPageHeaderDataModel?.listDynamicTabData?.any {
-                it.name == ShopPageTabName.HOME || it.name == ShopPageTabName.CAMPAIGN
-            } ?: false
-        } else {
-            shopPageHeaderDataModel?.shopHomeType == ShopHomeType.NATIVE
-        }
+        return shopPageHeaderDataModel?.listDynamicTabData?.any {
+            it.name == ShopPageTabName.HOME || it.name == ShopPageTabName.CAMPAIGN
+        } ?: false
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

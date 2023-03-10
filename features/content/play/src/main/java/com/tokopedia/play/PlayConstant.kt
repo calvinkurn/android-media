@@ -7,6 +7,8 @@ package com.tokopedia.play
 const val PLAY_KEY_CHANNEL_ID = "channelId"
 const val PLAY_KEY_SOURCE_TYPE = "source_type"
 const val PLAY_KEY_SOURCE_ID = "source_id"
+const val PLAY_KEY_CHANNEL_RECOMMENDATION = "channel_recom"
 
 const val HOST_INTERNAL = "tokopedia-android-internal"
 const val PLAY_APP_LINK = "$HOST_INTERNAL://play/{channel_id}?source_type={source_type}&source_id={source_id}"
+const val PLAY_RECOMMENDATION_APP_LINK = "$HOST_INTERNAL://play/$PLAY_KEY_CHANNEL_RECOMMENDATION?source_type={source_type}"

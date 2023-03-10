@@ -3,6 +3,7 @@ package com.tokopedia.play.view.uimodel.state
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.ExploreWidgetUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.WarehouseInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
@@ -37,6 +38,7 @@ data class PlayViewerNewUiState(
     val featuredProducts: List<PlayProductUiModel.Product>,
     val engagement: EngagementUiState,
     val followPopUp: Boolean,
+    val exploreWidget: ExploreWidgetUiState,
 ) {
 
     companion object {
@@ -69,6 +71,7 @@ data class PlayViewerNewUiState(
                 featuredProducts = emptyList(),
                 engagement = EngagementUiState.Empty,
                 followPopUp = false,
+                exploreWidget = ExploreWidgetUiState.Empty,
             )
     }
 }
@@ -138,6 +141,7 @@ data class EngagementUiState(
         val Empty: EngagementUiState get() = EngagementUiState(shouldShow = false, data = emptyList())
     }
 }
+
 data class FollowPopUpUiState(
     val shouldShow: Boolean,
     val partnerId: Long,
@@ -147,6 +151,19 @@ data class FollowPopUpUiState(
             get() = FollowPopUpUiState(
                 shouldShow = false,
                 partnerId = 0L,
+            )
+    }
+}
+
+data class ExploreWidgetUiState(
+    val shouldShow: Boolean,
+    val data: ExploreWidgetUiModel,
+) {
+    companion object {
+        val Empty: ExploreWidgetUiState
+            get() = ExploreWidgetUiState(
+                shouldShow = false,
+                data = ExploreWidgetUiModel.Empty,
             )
     }
 }
