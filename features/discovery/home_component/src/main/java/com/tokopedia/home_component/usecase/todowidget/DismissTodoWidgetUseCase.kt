@@ -31,8 +31,8 @@ class DismissTodoWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRep
         position: Int,
         dataSource: String,
         param: String,
-        onSuccess: (Pair<Int, Boolean>) -> Unit,
-        onError: (Throwable) -> Unit
+        onSuccess: (Pair<Int, Boolean>) -> Unit = { },
+        onError: (Throwable) -> Unit = { }
     ) {
         try {
             this.setRequestParams(

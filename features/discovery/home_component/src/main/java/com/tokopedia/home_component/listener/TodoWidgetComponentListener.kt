@@ -9,7 +9,7 @@ import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 interface TodoWidgetComponentListener {
     fun onTodoCardClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int)
     fun onTodoCTAClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int)
-    fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int, isLastItem: Boolean = false)
+    fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int)
     fun onTodoImpressed(element: CarouselTodoWidgetDataModel, horizontalPosition: Int)
     fun refreshTodowidget(element: TodoWidgetListDataModel)
 }

@@ -30,9 +30,9 @@ class TodoWidgetComponentCallback(
         homeCategoryListener.onDynamicChannelClicked(element.ctaApplink)
     }
 
-    override fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int, isLastItem: Boolean) {
+    override fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
         TodoWidgetTracking.sendTodoWidgetCloseClicked(element)
-        homeRevampViewModel.dismissTodoWidget(horizontalPosition, element.dataSource, element.feParam, isLastItem)
+        homeRevampViewModel.dismissTodoWidget(horizontalPosition, element.dataSource, element.feParam)
     }
 
     override fun onTodoImpressed(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
