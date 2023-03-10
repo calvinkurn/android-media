@@ -79,6 +79,4 @@ interface HomeTypeFactory {
     fun type(cmHomeWidgetDataModel: CMHomeWidgetDataModel): Int
 
     fun type(homePayLaterWidgetDataModel: HomePayLaterWidgetDataModel): Int
-
-    fun type(homeHeaderAtf2DataModel: HomeHeaderAtf2DataModel): Int
 }
