@@ -44,7 +44,7 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.APPLINK_OMNI_CODE_DC
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.APPLINK_OMNI_DATA_CODE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
@@ -488,7 +488,7 @@ class DigitalPDPDataPlanFragment :
         otherComponents.forEach {
             if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {
                 val collection = it.otherComponentDataCollection.firstOrNull { collection ->
-                    collection.key == APPLINK_OMNI_CODE_DC
+                    collection.key == APPLINK_OMNI_DATA_CODE
                 }
                 if (collection != null) {
                     renderOmniChannel(collection.value)
