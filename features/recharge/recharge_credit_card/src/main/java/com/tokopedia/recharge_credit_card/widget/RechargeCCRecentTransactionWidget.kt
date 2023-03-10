@@ -14,7 +14,7 @@ class RechargeCCRecentTransactionWidget @JvmOverloads constructor(@NotNull conte
                                                                   defStyleAttr: Int = 0)
     : TopupBillsRecentTransactionWidget(context, attrs, defStyleAttr) {
 
-    private lateinit var listenerCC: TopupBillsRecentNumberListener
+    private var listenerCC: TopupBillsRecentNumberListener? = null
 
     fun setListenerRecentNumber(listenerBills: TopupBillsRecentNumberListener) {
         this.listenerCC = listenerBills
@@ -26,7 +26,7 @@ class RechargeCCRecentTransactionWidget @JvmOverloads constructor(@NotNull conte
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setListener(object : RechargeCCRecentNumberAdapter.ActionListener {
             override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int) {
-                listenerCC.onClickRecentNumber(topupBillsRecommendation, topupBillsRecommendation.categoryId,
+                listenerCC?.onClickRecentNumber(topupBillsRecommendation, topupBillsRecommendation.categoryId,
                     position)
             }
         })

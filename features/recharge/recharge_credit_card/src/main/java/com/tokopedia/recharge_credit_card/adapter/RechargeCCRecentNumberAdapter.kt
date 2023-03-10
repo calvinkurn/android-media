@@ -14,14 +14,14 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 class RechargeCCRecentNumberAdapter(private val digitalRecentNumbers: List<TopupBillsRecommendation>) :
     RecyclerView.Adapter<RechargeCCRecentNumberAdapter.RecentNumbersItemViewHolder>() {
 
-    private lateinit var listener: ActionListener
+    private var listener: ActionListener? = null
 
     fun setListener(listener: ActionListener) {
         this.listener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentNumbersItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_vertical_recent_numbers, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(com.tokopedia.common.topupbills.R.layout.item_vertical_recent_numbers, parent, false)
         return RecentNumbersItemViewHolder(view)
     }
 
@@ -39,11 +39,13 @@ class RechargeCCRecentNumberAdapter(private val digitalRecentNumbers: List<Topup
         private val textClientNumber: TextView = itemView.findViewById(R.id.common_topup_bills_recent_label)
         private val textProductName: TextView = itemView.findViewById(R.id.common_topup_bills_recent_product_name)
 
-        private lateinit var topupBillsRecommendation: TopupBillsRecommendation
+        private var topupBillsRecommendation: TopupBillsRecommendation? = null
 
         init {
             itemView.setOnClickListener {
-                listener.onClickRecentNumber(topupBillsRecommendation, adapterPosition)
+                topupBillsRecommendation?.let {
+                    listener?.onClickRecentNumber(it, adapterPosition)
+                }
             }
         }
 

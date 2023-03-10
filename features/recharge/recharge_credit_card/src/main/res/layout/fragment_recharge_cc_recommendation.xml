@@ -5,7 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.recharge_credit_card.widget.RechargeCCRecentTransactionWidget
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/recent_transaction_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
