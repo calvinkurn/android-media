@@ -35,7 +35,7 @@
                 android:id="@+id/tvPmDeactivationInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_NN600"
+                android:textColor="@color/Unify_NN950"
                 app:typographyType="body_3"
                 tools:text="Sebelum berhenti, yuk kasih masukan buat layanan ini! Fitur Power Merchant di tokomu akan dinonaktifkan pada 9 Januari 2021, 9:54 WIB" />
 
