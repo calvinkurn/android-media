@@ -47,6 +47,7 @@ kapt {
 dependencies {
 
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.reputationCommon)
     implementation projectOrAar(rootProject.ext.features.reviewCommon)

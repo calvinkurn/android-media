@@ -279,7 +279,7 @@ open class TokoChatFragment :
                 clearReplyBoxMessage()
             } else {
                 tokoChatAnalytics.clickSendMessage(
-                    viewModel.channelId,
+                    viewModel.tkpdOrderId,
                     TokoChatAnalyticsConstants.BUYER,
                     viewModel.source
                 )
@@ -381,6 +381,9 @@ open class TokoChatFragment :
                     ) {
                         viewModel.updateOrderStatusParam(Pair(viewModel.tkpdOrderId, viewModel.source))
                     }
+                    tokoChatAnalytics.sendPendingImpressionOnImageAttachment(
+                        it.data.tokochatOrderProgress.state
+                    )
                 }
                 is Fail -> {
                     logExceptionTokoChat(
@@ -658,7 +661,6 @@ open class TokoChatFragment :
                             tokoChatAnalytics.clickCallButtonFromChatRoom(
                                 getOrderState(),
                                 viewModel.tkpdOrderId,
-                                viewModel.channelId,
                                 viewModel.source,
                                 TokoChatAnalyticsConstants.BUYER
                             )
@@ -708,7 +710,7 @@ open class TokoChatFragment :
         }
         baseBinding?.tokochatExpiredInfo?.shouldShowWithAction(!isShowReplySection) {
             tokoChatAnalytics.impressOnClosedChatroomTicker(
-                viewModel.channelId,
+                viewModel.tkpdOrderId,
                 TokoChatAnalyticsConstants.BUYER,
                 viewModel.source
             )
@@ -774,7 +776,6 @@ open class TokoChatFragment :
     private fun trackFromPushNotif() {
         if (viewModel.pushNotifTemplateKey.isNotBlank()) {
             tokoChatAnalytics.clickChatFromPushNotif(
-                viewModel.channelId,
                 viewModel.tkpdOrderId,
                 viewModel.pushNotifTemplateKey,
                 TokoChatAnalyticsConstants.BUYER,
@@ -843,7 +844,7 @@ open class TokoChatFragment :
 
     override fun trackSeenTicker(element: TokoChatReminderTickerUiModel) {
         tokoChatAnalytics.impressOnTicker(
-            viewModel.channelId,
+            viewModel.tkpdOrderId,
             TokoChatAnalyticsConstants.BUYER,
             viewModel.source
         )
@@ -867,7 +868,7 @@ open class TokoChatFragment :
 
     override fun onTransactionWidgetClosed() {
         tokoChatAnalytics.clickCloseOrderWidget(
-            viewModel.channelId,
+            viewModel.tkpdOrderId,
             TokoChatAnalyticsConstants.BUYER,
             viewModel.source
         )
@@ -925,7 +926,6 @@ open class TokoChatFragment :
         tokoChatAnalytics.clickCloseBottomSheetCallDriver(
             state,
             viewModel.tkpdOrderId,
-            viewModel.channelId,
             viewModel.source,
             TokoChatAnalyticsConstants.BUYER
         )
@@ -936,7 +936,6 @@ open class TokoChatFragment :
         tokoChatAnalytics.clickConfirmCallOnBottomSheetCallDriver(
             state,
             viewModel.tkpdOrderId,
-            viewModel.channelId,
             viewModel.source,
             TokoChatAnalyticsConstants.BUYER
         )
@@ -991,14 +990,24 @@ open class TokoChatFragment :
         imageView: ImageView
     ) {
         imageView.addOnImpressionListener(element.impressHolder) {
-            tokoChatAnalytics.impressOnImageAttachment(
-                element.imageId,
-                getOrderState(),
-                viewModel.tkpdOrderId,
-                viewModel.channelId,
-                TokoChatAnalyticsConstants.BUYER,
-                viewModel.source
-            )
+            val state = getOrderState()
+            if (state.isNotEmpty()) {
+                tokoChatAnalytics.impressOnImageAttachment(
+                    attachmentId = element.imageId,
+                    orderStatus = state,
+                    orderId = viewModel.tkpdOrderId,
+                    role = TokoChatAnalyticsConstants.BUYER,
+                    source = viewModel.source
+                )
+            } else {
+                tokoChatAnalytics.saveImpressionOnImageAttachment(
+                    attachmentId = element.imageId,
+                    orderStatus = state,
+                    orderId = viewModel.tkpdOrderId,
+                    role = TokoChatAnalyticsConstants.BUYER,
+                    source = viewModel.source
+                )
+            }
         }
     }
 
@@ -1007,7 +1016,6 @@ open class TokoChatFragment :
             element.imageId,
             getOrderState(),
             viewModel.tkpdOrderId,
-            viewModel.channelId,
             TokoChatAnalyticsConstants.BUYER,
             viewModel.source
         )
@@ -1021,7 +1029,6 @@ open class TokoChatFragment :
                 element.imageId,
                 getOrderState(),
                 viewModel.tkpdOrderId,
-                viewModel.channelId,
                 TokoChatAnalyticsConstants.BUYER,
                 viewModel.source
             )
@@ -1072,7 +1079,7 @@ open class TokoChatFragment :
             trackOnClickComposeArea = {
                 if (viewModel.channelId.isNotBlank()) {
                     tokoChatAnalytics.clickTextField(
-                        viewModel.channelId,
+                        viewModel.tkpdOrderId,
                         TokoChatAnalyticsConstants.BUYER,
                         viewModel.source
                     )

@@ -43,6 +43,7 @@
     <string name="setting_menu_finance_service">Layanan Keuangan</string>
     <string name="setting_menu_set_activation_page_cod">Layanan bayar di tempat</string>
     <string name="setting_menu_account_setting">Pengaturan akun</string>
+    <string name="setting_seller_persona">Tipe Seller Apakah Kamu?</string>
     <string name="setting_menu_self_profile">Ubah profil diri</string>
     <string name="setting_menu_bank_account">Edit rekening bank</string>
     <string name="setting_menu_password">Edit kata sandi</string>
@@ -237,6 +238,7 @@
     <string name="sah_new_seller_welcoming_coach_mark_description_3">Kamu bisa lihat daftar produk, balas chat, dan proses pesanan.</string>
     <string name="sah_new_seller_welcoming_coach_mark_title_4">Fitur lain yang tidak kalah penting</string>
     <string name="sah_new_seller_welcoming_coach_mark_description_4">Temukan fitur lainnya seperti Statistik, Iklan dan Promosi, Ulasan, Diskusi, Komplain di sini.</string>
+    <string name="sah_i_understang">Saya Mengerti</string>
 
     <string name="centralize_promo_flash_sale_title_coachmark">Buat kupon apa pun di satu tempat</string>
     <string name="centralize_promo_flash_sale_desc_coachmark">Sekarang buat kupon dengan tipe promo dan target pembeli apa pun lebih praktis lewat satu pintu, di satu halaman yang sama.</string>
@@ -248,4 +250,9 @@
     <string name="wearos_install_popup_later">Nanti</string>
     <string name="wearos_toast_install">Kunjungi Playstore via Wear OS untuk download Tokopedia Seller</string>
     <string name="sah_toaster_download_message">File lagi di-download dan akan tersimpan di HP kamu.</string>
+    <string name="sah_seller_persona_bottom_sheet_sub_title">Kamu bisa cek tipe Seller-mu di menu Pengaturan Akun</string>
+    <string name="sah_seller_persona_bottom_sheet_description">Jawaban kuismu dipakai untuk menyesuaikan tampilan Home Tokopedia Seller kamu.</string>
+    <string name="sah_persona_bottom_sheet_title">Akses profil di pengaturan</string>
+    <string name="sah_activate_persona_entry_point_info">Aktifkan personalisasi berdasarkan tipe Seller agar tampilan Home sesuai kebutuhanmu, ya.</string>
+    <string name="menu_setting_persona_coach_mack">Penasaran apa tipe Seller kamu? Cari tahu lewat kuis ini, yuk!</string>
 </resources>
