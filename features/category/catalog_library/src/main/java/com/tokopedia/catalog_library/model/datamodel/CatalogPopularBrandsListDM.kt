@@ -2,13 +2,13 @@ package com.tokopedia.catalog_library.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactory
-import com.tokopedia.catalog_library.model.raw.CatalogRelevantResponse
+import com.tokopedia.catalog_library.model.raw.CatalogBrandsPopularResponse
 
-data class CatalogRelevantDataModel(
+data class CatalogPopularBrandsListDM(
     val name: String = "",
     val type: String = "",
-    val relevantDataList: CatalogRelevantResponse.Catalogs
-) : BaseCatalogLibraryDataModel {
+    val brandsList: CatalogBrandsPopularResponse.CatalogGetBrandPopular.Brands
+) : BaseCatalogLibraryDM {
 
     override fun type() = type
 
@@ -18,11 +18,11 @@ data class CatalogRelevantDataModel(
 
     override fun name() = name
 
-    override fun equalsWith(newData: BaseCatalogLibraryDataModel): Boolean {
+    override fun equalsWith(newData: BaseCatalogLibraryDM): Boolean {
         return false
     }
 
-    override fun getChangePayload(newData: BaseCatalogLibraryDataModel): Bundle? {
+    override fun getChangePayload(newData: BaseCatalogLibraryDM): Bundle? {
         return null
     }
 }

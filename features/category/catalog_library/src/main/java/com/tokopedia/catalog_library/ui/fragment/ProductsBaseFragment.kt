@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_CATALOG
-import com.tokopedia.catalog_library.viewmodels.ProductsBaseViewModel
+import com.tokopedia.catalog_library.viewmodels.ProductsBaseVM
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -29,13 +29,13 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
     @JvmField
     @Inject
     var modelFactory: ViewModelProvider.Factory? = null
-    private val productsBaseViewModel by lazy {
+    private val productsBaseVM by lazy {
         modelFactory?.let {
-            ViewModelProvider(this, it).get(ProductsBaseViewModel::class.java)
+            ViewModelProvider(this, it).get(ProductsBaseVM::class.java)
         }
     }
 
-    abstract fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>)
+    abstract fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDM>)
     abstract fun onShimmerAdded()
     abstract fun onErrorFetchingProducts(throwable: Throwable)
 
@@ -74,17 +74,17 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                productsBaseViewModel?.getCatalogListData(categoryId, sortType, rows, page)
+                productsBaseVM?.getCatalogListData(categoryId, sortType, rows, page)
             }
         }
     }
 
     private fun getProducts() {
-        productsBaseViewModel?.getCatalogListData(categoryId, sortType, rows)
+        productsBaseVM?.getCatalogListData(categoryId, sortType, rows)
     }
 
     private fun setObservers() {
-        productsBaseViewModel?.catalogProductsLiveDataResponse?.observe(viewLifecycleOwner) {
+        productsBaseVM?.catalogProductsLiveDataResponse?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onProductsLoaded(it.data.listOfComponents)
@@ -97,7 +97,7 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
             }
         }
 
-        productsBaseViewModel?.shimmerLiveData?.observe(viewLifecycleOwner) {
+        productsBaseVM?.shimmerLiveData?.observe(viewLifecycleOwner) {
             if (it) {
                 onShimmerAdded()
             }

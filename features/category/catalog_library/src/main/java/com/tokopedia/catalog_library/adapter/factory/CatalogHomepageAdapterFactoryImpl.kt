@@ -14,89 +14,97 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
 
     private val recycledViewPool = RecycledViewPool()
 
-    override fun type(data: CatalogSpecialDataModel): Int {
-        return CatalogSpecialItemViewHolder.LAYOUT
+    override fun type(data: CatalogSpecialDM): Int {
+        return CatalogSpecialItemVH.LAYOUT
     }
 
-    override fun type(data: CatalogRelevantDataModel): Int {
-        return CatalogRelevantItemViewHolder.LAYOUT
+    override fun type(data: CatalogRelevantDM): Int {
+        return CatalogRelevantItemVH.LAYOUT
     }
 
-    override fun type(data: CatalogProductDataModel): Int {
-        return CatalogProductItemViewHolder.LAYOUT
+    override fun type(data: CatalogProductDM): Int {
+        return CatalogProductItemVH.LAYOUT
     }
 
-    override fun type(data: CatalogPopularBrandsDataModel): Int {
-        return CatalogPopularBrandsItemViewHolder.LAYOUT
+    override fun type(data: CatalogPopularBrandsDM): Int {
+        return CatalogPopularBrandsItemVH.LAYOUT
     }
 
-    override fun type(data: CatalogLihatDataModel): Int {
-        return CatalogLihatViewHolder.LAYOUT
+    override fun type(data: CatalogPopularBrandsListDM): Int {
+        return CatalogPopularBrandsWithCatalogsItemVH.LAYOUT
     }
 
-    override fun type(data: CatalogLihatItemDataModel): Int {
-        return CatalogLihatItemViewHolder.LAYOUT
+    override fun type(data: CatalogLihatDM): Int {
+        return CatalogLihatVH.LAYOUT
     }
 
-    override fun type(data: CatalogTopFiveDataModel): Int {
-        return CatalogTopFiveItemViewHolder.LAYOUT
+    override fun type(data: CatalogLihatItemDM): Int {
+        return CatalogLihatItemVH.LAYOUT
     }
 
-    override fun type(data: CatalogMostViralDataModel): Int {
-        return CatalogMostViralItemViewHolder.LAYOUT
+    override fun type(data: CatalogTopFiveDM): Int {
+        return CatalogTopFiveItemVH.LAYOUT
     }
 
-    override fun type(data: CatalogShimmerDataModel): Int {
-        return CatalogShimmerViewHolder.LAYOUT
+    override fun type(data: CatalogMostViralDM): Int {
+        return CatalogMostViralItemVH.LAYOUT
     }
 
-    override fun type(data: CatalogContainerDataModel): Int {
-        return CatalogContainerItemViewHolder.LAYOUT
+    override fun type(data: CatalogShimmerDM): Int {
+        return CatalogShimmerVH.LAYOUT
     }
 
-    override fun type(data: CatalogProductLoadMoreDataModel): Int {
-        return CatalogProductLoadMoreViewHolder.LAYOUT
+    override fun type(data: CatalogContainerDM): Int {
+        return CatalogContainerItemVH.LAYOUT
+    }
+
+    override fun type(data: CatalogProductLoadMoreDM): Int {
+        return CatalogProductLoadMoreVH.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            CatalogTopFiveItemViewHolder.LAYOUT -> CatalogTopFiveItemViewHolder(
+            CatalogTopFiveItemVH.LAYOUT -> CatalogTopFiveItemVH(
                 view,
                 catalogLibraryListener
             )
-            CatalogMostViralItemViewHolder.LAYOUT -> CatalogMostViralItemViewHolder(
+            CatalogMostViralItemVH.LAYOUT -> CatalogMostViralItemVH(
                 view,
                 catalogLibraryListener
             )
-            CatalogSpecialItemViewHolder.LAYOUT -> CatalogSpecialItemViewHolder(
+            CatalogSpecialItemVH.LAYOUT -> CatalogSpecialItemVH(
                 view,
                 catalogLibraryListener
             )
-            CatalogRelevantItemViewHolder.LAYOUT -> CatalogRelevantItemViewHolder(
+            CatalogRelevantItemVH.LAYOUT -> CatalogRelevantItemVH(
                 view,
                 catalogLibraryListener
             )
-            CatalogPopularBrandsItemViewHolder.LAYOUT -> CatalogPopularBrandsItemViewHolder(
+            CatalogPopularBrandsItemVH.LAYOUT -> CatalogPopularBrandsItemVH(
                 view,
                 catalogLibraryListener
             )
-            CatalogLihatViewHolder.LAYOUT -> CatalogLihatViewHolder(view, catalogLibraryListener, recycledViewPool)
-            CatalogLihatItemViewHolder.LAYOUT -> CatalogLihatItemViewHolder(
+            CatalogPopularBrandsWithCatalogsItemVH.LAYOUT -> CatalogPopularBrandsWithCatalogsItemVH(
                 view,
                 catalogLibraryListener
             )
-            CatalogProductItemViewHolder.LAYOUT -> CatalogProductItemViewHolder(
+            CatalogLihatVH.LAYOUT -> CatalogLihatVH(view, catalogLibraryListener, recycledViewPool)
+            CatalogLihatItemVH.LAYOUT -> CatalogLihatItemVH(
                 view,
                 catalogLibraryListener
             )
-            CatalogContainerItemViewHolder.LAYOUT -> CatalogContainerItemViewHolder(
+            CatalogProductItemVH.LAYOUT -> CatalogProductItemVH(
                 view,
                 catalogLibraryListener
             )
-            CatalogProductLoadMoreViewHolder.LAYOUT -> CatalogProductLoadMoreViewHolder(
+            CatalogContainerItemVH.LAYOUT -> CatalogContainerItemVH(
+                view,
+                catalogLibraryListener
+            )
+            CatalogProductLoadMoreVH.LAYOUT -> CatalogProductLoadMoreVH(
                 view
             )
-            CatalogShimmerViewHolder.LAYOUT -> CatalogShimmerViewHolder(view)
+            CatalogShimmerVH.LAYOUT -> CatalogShimmerVH(view)
             else -> super.createViewHolder(view, type)
         }
     }

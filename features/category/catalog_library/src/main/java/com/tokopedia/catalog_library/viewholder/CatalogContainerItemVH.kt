@@ -13,17 +13,17 @@ import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogContainerDataModel
+import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.model.datamodel.CatalogContainerDM
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
-class CatalogContainerItemViewHolder(
+class CatalogContainerItemVH(
     val view: View,
     private val catalogLibraryListener: CatalogLibraryListener
-) : AbstractViewHolder<CatalogContainerDataModel>(view) {
+) : AbstractViewHolder<CatalogContainerDM>(view) {
 
     private val title: Typography by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.container_titile)
@@ -43,7 +43,7 @@ class CatalogContainerItemViewHolder(
         )
     }
     private val containerAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDataModel> =
+        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDM> =
             AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build()
         CatalogLibraryAdapter(asyncDifferConfig, catalogLibraryAdapterFactory)
     }
@@ -52,13 +52,13 @@ class CatalogContainerItemViewHolder(
         val LAYOUT = R.layout.catalog_container_view_item
     }
 
-    override fun bind(element: CatalogContainerDataModel) {
+    override fun bind(element: CatalogContainerDM) {
         renderTitle(element)
         renderLihat(element)
         renderRecyclerView(element)
     }
 
-    private fun renderLihat(element: CatalogContainerDataModel) {
+    private fun renderLihat(element: CatalogContainerDM) {
         if (element.hasMoreButtonEnabled) {
             lihatSemuaText.show()
             lihatSemuaText.setOnClickListener {
@@ -69,7 +69,7 @@ class CatalogContainerItemViewHolder(
         }
     }
 
-    private fun renderTitle(element: CatalogContainerDataModel) {
+    private fun renderTitle(element: CatalogContainerDM) {
         title.displayTextOrHide(element.containerTitle)
 
         val params = LinearLayout.LayoutParams(title.layoutParams)
@@ -83,7 +83,7 @@ class CatalogContainerItemViewHolder(
         title.requestLayout()
     }
 
-    private fun renderRecyclerView(element: CatalogContainerDataModel) {
+    private fun renderRecyclerView(element: CatalogContainerDM) {
         containerRV.apply {
             layoutManager = if (element.isGrid) {
                 GridLayoutManager(itemView.context, element.columnCount)

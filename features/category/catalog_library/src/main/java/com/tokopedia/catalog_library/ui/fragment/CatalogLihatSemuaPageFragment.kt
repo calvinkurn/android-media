@@ -17,13 +17,13 @@ import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
+import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDM
 import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.AnalyticsLihatSemuaPage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
-import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageViewModel
+import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -63,7 +63,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     var viewModelFactory: ViewModelProvider.Factory? = null
     private val lihatViewModel by lazy {
         viewModelFactory?.let {
-            ViewModelProvider(this, it).get(CatalogLihatSemuaPageViewModel::class.java)
+            ViewModelProvider(this, it).get(CatalogLihatSemuaPageVM::class.java)
         }
     }
 
@@ -73,7 +73,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         )
     }
     private val catalogLibraryAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDataModel> =
+        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDM> =
             AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build()
         CatalogLibraryAdapter(asyncDifferConfig, catalogLibraryAdapterFactory)
     }
@@ -182,7 +182,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         submitList(newData)
     }
 
-    private fun submitList(visitable: List<BaseCatalogLibraryDataModel>) {
+    private fun submitList(visitable: List<BaseCatalogLibraryDM>) {
         catalogLibraryAdapter.submitList(visitable)
     }
 
@@ -215,7 +215,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     private fun addShimmer() {
         catalogLibraryUiUpdater.apply {
             updateModel(
-                CatalogShimmerDataModel(
+                CatalogShimmerDM(
                     CatalogLibraryConstant.CATALOG_LIHAT_SEMUA,
                     CatalogLibraryConstant.CATALOG_LIHAT_SEMUA,
                     CatalogLibraryConstant.CATALOG_SHIMMER_LIHAT_SEMUA

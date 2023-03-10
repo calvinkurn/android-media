@@ -4,12 +4,15 @@ import android.os.Bundle
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactory
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse
 
-data class CatalogLihatDataModel(
+data class CatalogLihatItemDM(
     val name: String = "",
     val type: String = "",
-    val catalogLibraryDataList: CatalogLibraryResponse.CategoryListLibraryPage.CategoryData?,
+    val catalogLibraryChildDataListItem: CatalogLibraryResponse.CategoryListLibraryPage.CategoryData.ChildCategoryList,
+    val rootCategoryId: String,
+    val rootCategoryName: String,
+    val isGrid: Boolean,
     val isAsc: Boolean
-) : BaseCatalogLibraryDataModel {
+) : BaseCatalogLibraryDM {
 
     override fun type() = type
 
@@ -19,11 +22,11 @@ data class CatalogLihatDataModel(
 
     override fun name() = name
 
-    override fun equalsWith(newData: BaseCatalogLibraryDataModel): Boolean {
+    override fun equalsWith(newData: BaseCatalogLibraryDM): Boolean {
         return newData == this
     }
 
-    override fun getChangePayload(newData: BaseCatalogLibraryDataModel): Bundle? {
+    override fun getChangePayload(newData: BaseCatalogLibraryDM): Bundle? {
         return null
     }
 }

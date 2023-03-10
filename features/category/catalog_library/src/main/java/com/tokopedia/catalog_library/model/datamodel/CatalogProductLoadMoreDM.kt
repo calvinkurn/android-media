@@ -4,9 +4,9 @@ import android.os.Bundle
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactory
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 
-data class CatalogProductLoadMoreDataModel(
+data class CatalogProductLoadMoreDM(
     val name: String = ""
-) : BaseCatalogLibraryDataModel {
+) : BaseCatalogLibraryDM {
     override fun type() = CatalogLibraryConstant.CATALOG_PRODUCT_LOAD
 
     override fun type(typeFactory: CatalogHomepageAdapterFactory): Int {
@@ -15,11 +15,11 @@ data class CatalogProductLoadMoreDataModel(
 
     override fun name() = name
 
-    override fun equalsWith(newData: BaseCatalogLibraryDataModel): Boolean {
+    override fun equalsWith(newData: BaseCatalogLibraryDM): Boolean {
         return false
     }
 
-    override fun getChangePayload(newData: BaseCatalogLibraryDataModel): Bundle? {
+    override fun getChangePayload(newData: BaseCatalogLibraryDM): Bundle? {
         return null
     }
 }

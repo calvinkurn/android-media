@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactory
-import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 
 class CatalogLibraryAdapter(
-    asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDataModel>,
+    asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDM>,
     private val catalogHomepageAdapterFactory: CatalogHomepageAdapterFactory
-) : ListAdapter<BaseCatalogLibraryDataModel, AbstractViewHolder<*>>(asyncDifferConfig) {
+) : ListAdapter<BaseCatalogLibraryDM, AbstractViewHolder<*>>(asyncDifferConfig) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = onCreateViewItem(parent, viewType)
@@ -21,7 +21,7 @@ class CatalogLibraryAdapter(
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
-        bind(holder as AbstractViewHolder<BaseCatalogLibraryDataModel>, getItem(position))
+        bind(holder as AbstractViewHolder<BaseCatalogLibraryDM>, getItem(position))
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -37,8 +37,8 @@ class CatalogLibraryAdapter(
     }
 
     private fun bind(
-        holder: AbstractViewHolder<BaseCatalogLibraryDataModel>,
-        item: BaseCatalogLibraryDataModel
+        holder: AbstractViewHolder<BaseCatalogLibraryDM>,
+        item: BaseCatalogLibraryDM
     ) {
         holder.bind(item)
     }

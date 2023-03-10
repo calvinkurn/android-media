@@ -16,13 +16,17 @@ import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
-import com.tokopedia.catalog_library.viewmodels.PopularBrandsViewModel
+import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
+import com.tokopedia.catalog_library.viewmodels.PopularBrandsVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class PopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListener{
+class PopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListener {
 
     private var popularBrandsRecyclerView: RecyclerView? = null
     private var globalError: GlobalError? = null
@@ -36,9 +40,9 @@ class PopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListener{
     @JvmField
     @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
-    private val popularBrandsViewModel by lazy {
+    private val popularBrandsVM by lazy {
         viewModelFactory?.let {
-            ViewModelProvider(this, it).get(PopularBrandsViewModel::class.java)
+            ViewModelProvider(this, it).get(PopularBrandsVM::class.java)
         }
     }
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
@@ -47,9 +51,22 @@ class PopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListener{
         )
     }
     private val popularBrandsAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDataModel> =
+        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDM> =
             AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build()
         CatalogLibraryAdapter(asyncDifferConfig, catalogLibraryAdapterFactory)
+    }
+
+    private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
+        CatalogLibraryUiUpdater(mutableMapOf())
+
+    override fun getScreenName(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun initInjector() {
+        DaggerCatalogLibraryComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     override fun onCreateView(
@@ -63,16 +80,8 @@ class PopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews(view)
-    }
-
-    override fun getScreenName(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun initInjector() {
-        DaggerCatalogLibraryComponent.builder()
-            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .build().inject(this)
+        setObservers()
+        getData()
     }
 
     private fun initViews(view: View) {
@@ -96,5 +105,36 @@ class PopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListener{
             adapter = popularBrandsAdapter
             setHasFixedSize(true)
         }
+    }
+
+    private fun getData() {
+        popularBrandsVM?.getBrandsWithCatalogs()
+    }
+
+    private fun setObservers() {
+        popularBrandsVM?.brandsWithCatalogsLiveData?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    it.data.listOfComponents.forEach { component ->
+                        catalogLibraryUiUpdater.updateModel(component)
+                    }
+                    updateUi()
+                }
+
+                is Fail -> {
+//                    onError(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun updateUi() {
+        popularBrandsRecyclerView?.show()
+        val newData = catalogLibraryUiUpdater.mapOfData.values.toList()
+        submitList(newData)
+    }
+
+    private fun submitList(visitable: List<BaseCatalogLibraryDM>) {
+        popularBrandsAdapter.submitList(visitable)
     }
 }

@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.catalog_library.viewmodels.CatalogHomepageViewModel
-import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageViewModel
-import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageViewModel
-import com.tokopedia.catalog_library.viewmodels.ProductsBaseViewModel
+import com.tokopedia.catalog_library.viewmodels.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,24 +19,30 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @CatalogLibraryScope
-    @ViewModelKey(CatalogHomepageViewModel::class)
-    internal abstract fun catalogHomepageViewModel(viewModel: CatalogHomepageViewModel): ViewModel
+    @ViewModelKey(CatalogHomepageVM::class)
+    internal abstract fun catalogHomepageViewModel(viewModel: CatalogHomepageVM): ViewModel
 
     @Binds
     @IntoMap
     @CatalogLibraryScope
-    @ViewModelKey(CatalogLihatSemuaPageViewModel::class)
-    internal abstract fun catalogLihatSemuaPageViewModel(viewModel: CatalogLihatSemuaPageViewModel): ViewModel
+    @ViewModelKey(CatalogLihatSemuaPageVM::class)
+    internal abstract fun catalogLihatSemuaPageViewModel(viewModel: CatalogLihatSemuaPageVM): ViewModel
 
     @Binds
     @IntoMap
     @CatalogLibraryScope
-    @ViewModelKey(CatalogLandingPageViewModel::class)
-    internal abstract fun catalogLandingPageViewModel(viewModel: CatalogLandingPageViewModel): ViewModel
+    @ViewModelKey(CatalogLandingPageVM::class)
+    internal abstract fun catalogLandingPageViewModel(viewModel: CatalogLandingPageVM): ViewModel
 
     @Binds
     @IntoMap
     @CatalogLibraryScope
-    @ViewModelKey(ProductsBaseViewModel::class)
-    internal abstract fun productsBaseViewModel(viewModel: ProductsBaseViewModel): ViewModel
+    @ViewModelKey(ProductsBaseVM::class)
+    internal abstract fun productsBaseViewModel(viewModel: ProductsBaseVM): ViewModel
+
+    @Binds
+    @IntoMap
+    @CatalogLibraryScope
+    @ViewModelKey(PopularBrandsVM::class)
+    internal abstract fun popularBrandsViewModel(viewModel: PopularBrandsVM): ViewModel
 }

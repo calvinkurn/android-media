@@ -14,7 +14,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CatalogLandingPageViewModel @Inject constructor(
+class CatalogLandingPageVM @Inject constructor(
     private val catalogTopFiveUseCase: CatalogProductsUseCase,
     private val catalogMostViralUseCase: CatalogProductsUseCase
 ) : ViewModel() {
@@ -26,7 +26,7 @@ class CatalogLandingPageViewModel @Inject constructor(
     private val _categoryName = MutableLiveData<String>()
     val categoryName: LiveData<String> = _categoryName
 
-    private val listOfComponents = mutableListOf<BaseCatalogLibraryDataModel>()
+    private val listOfComponents = mutableListOf<BaseCatalogLibraryDM>()
 
     fun getCatalogTopFiveData(
         categoryId: String,
@@ -85,7 +85,7 @@ class CatalogLandingPageViewModel @Inject constructor(
 
     private fun mapCatalogTopFiveData(data: CatalogListResponse): CatalogLibraryDataModel {
         val catalogTopFiveDataModel =
-            CatalogContainerDataModel(
+            CatalogContainerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 "Top 5 ${data.catalogGetList.categoryName.lowercase()} terlaris di toped",
@@ -104,12 +104,12 @@ class CatalogLandingPageViewModel @Inject constructor(
     private fun getTopFiveVisitableList(
         catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>,
         categoryName: String
-    ): ArrayList<BaseCatalogLibraryDataModel> {
-        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+    ): ArrayList<BaseCatalogLibraryDM> {
+        val visitableList = arrayListOf<BaseCatalogLibraryDM>()
         catalogsProduct.forEachIndexed { index, catalogTopFive ->
             catalogTopFive.rank = (index + 1)
             visitableList.add(
-                CatalogTopFiveDataModel(
+                CatalogTopFiveDM(
                     CATALOG_TOP_FIVE,
                     CATALOG_TOP_FIVE,
                     catalogTopFive,
@@ -122,7 +122,7 @@ class CatalogLandingPageViewModel @Inject constructor(
 
     private fun mapCatalogMostViralData(data: CatalogListResponse): CatalogLibraryDataModel {
         val catalogMostViralDataModel =
-            CatalogContainerDataModel(
+            CatalogContainerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
                 "",
@@ -140,11 +140,11 @@ class CatalogLandingPageViewModel @Inject constructor(
     private fun getMostViralVisitableList(
         catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>,
         categoryName: String
-    ): ArrayList<BaseCatalogLibraryDataModel> {
-        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+    ): ArrayList<BaseCatalogLibraryDM> {
+        val visitableList = arrayListOf<BaseCatalogLibraryDM>()
         catalogsProduct.forEach {
             visitableList.add(
-                CatalogMostViralDataModel(
+                CatalogMostViralDM(
                     CATALOG_MOST_VIRAL,
                     CATALOG_MOST_VIRAL,
                     it,

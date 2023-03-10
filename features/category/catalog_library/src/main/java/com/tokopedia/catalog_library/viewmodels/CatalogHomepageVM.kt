@@ -17,7 +17,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CatalogHomepageViewModel @Inject constructor(
+class CatalogHomepageVM @Inject constructor(
     private val catalogSpecialUseCase: CatalogSpecialUseCase,
     private val catalogRelevantUseCase: CatalogRelevantUseCase,
     private val catalogBrandsPopularUseCase: CatalogBrandsPopularUseCase
@@ -27,7 +27,7 @@ class CatalogHomepageViewModel @Inject constructor(
     val catalogLibraryLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> =
         _catalogHomeLiveData
 
-    private val listOfComponents = mutableListOf<BaseCatalogLibraryDataModel>()
+    private val listOfComponents = mutableListOf<BaseCatalogLibraryDM>()
 
     fun getSpecialData() {
         catalogSpecialUseCase.cancelJobs()
@@ -44,7 +44,7 @@ class CatalogHomepageViewModel @Inject constructor(
 
     private fun mapSpecialData(data: CatalogSpecialResponse): CatalogLibraryDataModel {
         val specialDataModel =
-            CatalogContainerDataModel(
+            CatalogContainerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
                 CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
                 CatalogLibraryConstant.CATALOG_HOME_HEADING_KATEGORI_SPECIAL,
@@ -61,11 +61,11 @@ class CatalogHomepageViewModel @Inject constructor(
         return CatalogLibraryDataModel(listOfComponents)
     }
 
-    private fun getSpecialVisitableList(catalogSpecialDataList: ArrayList<CatalogSpecialResponse.CatalogCategorySpecial.CatalogSpecialData>?): ArrayList<BaseCatalogLibraryDataModel>? {
-        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+    private fun getSpecialVisitableList(catalogSpecialDataList: ArrayList<CatalogSpecialResponse.CatalogCategorySpecial.CatalogSpecialData>?): ArrayList<BaseCatalogLibraryDM>? {
+        val visitableList = arrayListOf<BaseCatalogLibraryDM>()
         catalogSpecialDataList?.forEach {
             visitableList.add(
-                CatalogSpecialDataModel(
+                CatalogSpecialDM(
                     CatalogLibraryConstant.CATALOG_SPECIAL,
                     CatalogLibraryConstant.CATALOG_SPECIAL,
                     it
@@ -92,7 +92,7 @@ class CatalogHomepageViewModel @Inject constructor(
 
     private fun mapRelevantData(data: CatalogRelevantResponse): CatalogLibraryDataModel {
         val relevantDataModel =
-            CatalogContainerDataModel(
+            CatalogContainerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
                 CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
                 CatalogLibraryConstant.CATALOG_HOME_HEADING_RELEVANT,
@@ -106,11 +106,11 @@ class CatalogHomepageViewModel @Inject constructor(
         return CatalogLibraryDataModel(listOfComponents)
     }
 
-    private fun getRelevantVisitableList(catalogsList: ArrayList<CatalogRelevantResponse.Catalogs>): ArrayList<BaseCatalogLibraryDataModel> {
-        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+    private fun getRelevantVisitableList(catalogsList: ArrayList<CatalogRelevantResponse.Catalogs>): ArrayList<BaseCatalogLibraryDM> {
+        val visitableList = arrayListOf<BaseCatalogLibraryDM>()
         catalogsList.forEach {
             visitableList.add(
-                CatalogRelevantDataModel(
+                CatalogRelevantDM(
                     CatalogLibraryConstant.CATALOG_RELEVANT,
                     CatalogLibraryConstant.CATALOG_RELEVANT,
                     it
@@ -135,7 +135,7 @@ class CatalogHomepageViewModel @Inject constructor(
         }
     }
     private fun mapPopularBrands(data: CatalogBrandsPopularResponse): CatalogLibraryDataModel{
-        val popularBrandsDataModel = CatalogContainerDataModel(
+        val popularBrandsDataModel = CatalogContainerDM(
             CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS,
             CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS,
             CatalogLibraryConstant.CATALOG_HOME_HEADING_POPULAR_BRANDS,
@@ -151,11 +151,11 @@ class CatalogHomepageViewModel @Inject constructor(
         return CatalogLibraryDataModel(listOfComponents)
     }
 
-    private fun getPopularBrandsVisitableList(brands: ArrayList<CatalogBrandsPopularResponse.CatalogGetBrandPopular.Brands>): ArrayList<BaseCatalogLibraryDataModel> {
-        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+    private fun getPopularBrandsVisitableList(brands: ArrayList<CatalogBrandsPopularResponse.CatalogGetBrandPopular.Brands>): ArrayList<BaseCatalogLibraryDM> {
+        val visitableList = arrayListOf<BaseCatalogLibraryDM>()
         brands.forEach {
             visitableList.add(
-                CatalogPopularBrandsDataModel(
+                CatalogPopularBrandsDM(
                     CatalogLibraryConstant.CATALOG_POPULAR_BRANDS,
                     CatalogLibraryConstant.CATALOG_POPULAR_BRANDS,
                     it

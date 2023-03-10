@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.CatalogSpecialDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogSpecialDM
 import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
 import com.tokopedia.catalog_library.util.AnalyticsHomePage
 import com.tokopedia.media.loader.loadImage
@@ -12,12 +12,12 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 
-class CatalogSpecialItemViewHolder(
+class CatalogSpecialItemVH(
     val view: View,
     private val catalogLibraryListener: CatalogLibraryListener
-) : AbstractViewHolder<CatalogSpecialDataModel>(view) {
+) : AbstractViewHolder<CatalogSpecialDM>(view) {
 
-    private var dataModel: CatalogSpecialDataModel? = null
+    private var dataModel: CatalogSpecialDM? = null
 
     private val specialImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.special_icon)
@@ -35,7 +35,7 @@ class CatalogSpecialItemViewHolder(
         val LAYOUT = R.layout.item_catalog_special
     }
 
-    override fun bind(element: CatalogSpecialDataModel?) {
+    override fun bind(element: CatalogSpecialDM?) {
         dataModel = element
         val specialDataListItem = element?.specialDataListItem
         specialDataListItem?.iconUrl?.let { iconUrl ->
