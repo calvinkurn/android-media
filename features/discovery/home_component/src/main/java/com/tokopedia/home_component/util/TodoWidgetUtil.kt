@@ -3,7 +3,6 @@ package com.tokopedia.home_component.util
 import android.content.Context
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home_component.R
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 
 /**
  * Created by frenzel
@@ -14,18 +13,6 @@ object TodoWidgetUtil {
     private const val TODO_WIDGET_INSIDE_LEFT_RIGHT_PADDING = 12f
     private const val TODO_WIDGET_IMAGE_TO_CONTENT_PADDING = 12f
     private const val TODO_WIDGET_CONTENT_TO_CTA_PADDING = 8f
-
-    fun String.parseCloseParam(): String {
-        return try {
-            val map = this.split("&").associate {
-                val (key, value) = it.split("=")
-                key to value
-            }
-            map[FE_PARAM_KEY_CLOSE].toEmptyStringIfNull()
-        } catch (e: Exception) {
-            ""
-        }
-    }
 
     fun measureTodoWidgetCardMaxWidth(
         context: Context

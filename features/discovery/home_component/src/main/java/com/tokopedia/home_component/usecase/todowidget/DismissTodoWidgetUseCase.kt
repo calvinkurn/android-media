@@ -43,7 +43,7 @@ class DismissTodoWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRep
             )
             this.execute(
                 { result ->
-                    onSuccess(Pair(position, result.closeMultisource.isSuccess))
+                    onSuccess(Pair(position, result.closeToDoWidget.isSuccess))
                 },
                 { error ->
                     onError(error)

@@ -5,7 +5,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
-import com.tokopedia.home_component.util.TodoWidgetUtil.parseCloseParam
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -33,7 +32,7 @@ class TodoWidgetComponentCallback(
 
     override fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int, isLastItem: Boolean) {
         TodoWidgetTracking.sendTodoWidgetCloseClicked(element)
-        homeRevampViewModel.dismissTodoWidget(horizontalPosition, element.dataSource, element.feParam.parseCloseParam(), isLastItem)
+        homeRevampViewModel.dismissTodoWidget(horizontalPosition, element.dataSource, element.feParam, isLastItem)
     }
 
     override fun onTodoImpressed(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {

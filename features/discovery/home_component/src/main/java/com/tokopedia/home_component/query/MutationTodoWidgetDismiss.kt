@@ -11,7 +11,7 @@ import com.tokopedia.home_component.query.MutationTodoWidgetDismiss.TODO_WIDGET_
 internal object MutationTodoWidgetDismiss {
     const val TODO_WIDGET_DISMISS_MUTATION_NAME = "TodoWidgetDismissMutation"
     const val TODO_WIDGET_DISMISS_MUTATION = "mutation dismissTodoWidget(\$dataSource: String!, \$param: String!) { " +
-        "closeMultisource(dataSource: \$dataSource, param: \$param) {\n" +
+        "closeToDoWidget(dataSource: \$dataSource, param: \$param) {\n" +
         "   success\n" +
         "   message\n" +
         "}\n" +
