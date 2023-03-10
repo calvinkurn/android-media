@@ -13,6 +13,7 @@ import com.tokopedia.autocompletecomponent.util.hasQuery
 import com.tokopedia.autocompletecomponent.util.hasQuery1
 import com.tokopedia.autocompletecomponent.util.hasQuery2
 import com.tokopedia.autocompletecomponent.util.hasQuery3
+import com.tokopedia.autocompletecomponent.util.isMps
 import com.tokopedia.autocompletecomponent.util.setSearchQueries
 import com.tokopedia.autocompletecomponent.util.setSearchQuery
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -103,6 +104,26 @@ class SearchBarViewModel @Inject constructor(
         _searchParameterLiveData.value = HashMap(searchParameter)
         if (searchParameter.hasQuery()) {
             onQueryUpdated(searchParameter[SearchApiConst.Q].orEmpty())
+            _activeKeywordLiveData.value = activeKeyword
+        } else if (searchParameter.isMps()) {
+            val keywordList = mutableListOf<SearchBarKeyword>()
+            if (searchParameter.hasQuery1()) {
+                keywordList.add(
+                    SearchBarKeyword(keyword = searchParameter[SearchApiConst.Q1].orEmpty())
+                )
+            }
+            if (searchParameter.hasQuery2()) {
+                keywordList.add(
+                    SearchBarKeyword(keywordList.size, searchParameter[SearchApiConst.Q2].orEmpty())
+                )
+            }
+            if (searchParameter.hasQuery3()) {
+                keywordList.add(
+                    SearchBarKeyword(keywordList.size, searchParameter[SearchApiConst.Q3].orEmpty())
+                )
+            }
+            _searchBarKeywords.value = keywordList.toList()
+            activeKeyword = SearchBarKeyword(keywordList.size)
             _activeKeywordLiveData.value = activeKeyword
         }
     }
