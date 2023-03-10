@@ -325,13 +325,43 @@ class RechargeGeneralViewModelTest {
     @Test
     fun getDppoConsentRecharge_Success() {
         // given
+        val consentDesc = "Tokopedia"
+        val rechargeGeneralDppoConsent = RechargeGeneralDppoConsent(
+            RechargeRecommendationData(
+                items = listOf(
+                    RechargeRecommendationItem(
+                        id = "1",
+                        title = consentDesc
+                    )
+                )
+            )
+        )
+
+        coEvery { getDppoConsentUseCase.execute(any()) } returns rechargeGeneralDppoConsent
 
         // when
+        rechargeGeneralViewModel.getDppoConsent(1)
 
         // then
+        val actualData = rechargeGeneralViewModel.dppoConsent.value
+        assertNotNull(actualData)
+        assertTrue(actualData is Success)
+        assertTrue((actualData as Success).data.description == consentDesc)
     }
 
     @Test
     fun getDppoConsentRecharge_Fail() {
+        // given
+        val errorMessage = "Tokopedia"
+        coEvery { getDppoConsentUseCase.execute(any()) } throws MessageErrorException(errorMessage)
+
+        // when
+        rechargeGeneralViewModel.getDppoConsent(1)
+
+        // then
+        val actualData = rechargeGeneralViewModel.dppoConsent.value
+        assertNotNull(actualData)
+        assertTrue(actualData is Fail)
+        assertTrue((actualData as Fail).throwable.message == errorMessage)
     }
 }
