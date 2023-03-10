@@ -39,8 +39,6 @@ class FollowerFollowingListingFragment @Inject constructor(
 
     private var userId = ""
 
-    var isFollowersTab: Boolean = true
-
     private val viewModel: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(FollowerFollowingViewModel::class.java)
     }
@@ -66,7 +64,6 @@ class FollowerFollowingListingFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        isFollowersTab = arguments?.getBoolean(EXTRA_IS_FOLLOWERS, true) == true
         setHeader()
         setMainUi()
 
@@ -120,8 +117,10 @@ class FollowerFollowingListingFragment @Inject constructor(
 
         binding.viewPager.registerOnPageChangeCallback(onPageChangeCallback)
 
-        if (isFollowersTab) {
+        if (arguments?.getBoolean(EXTRA_IS_FOLLOWERS, true) == true) {
             binding.tpFollow.getUnifyTabLayout().getTabAt(FOLLOWERS_PAGE_POSITION)?.select()
+        } else {
+            binding.tpFollow.getUnifyTabLayout().getTabAt(FOLLOWING_PAGE_POSITION)?.select()
         }
     }
 
