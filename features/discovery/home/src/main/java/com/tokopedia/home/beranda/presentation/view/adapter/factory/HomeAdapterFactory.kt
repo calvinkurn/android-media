@@ -278,7 +278,11 @@ class HomeAdapterFactory(
     }
 
     override fun type(homeHeaderOvoDataModel: HomeHeaderDataModel): Int {
-        return HomeHeaderOvoViewHolder.LAYOUT
+        return if (HomeRollenceController.isUsingAtf2Variant()) {
+            HomeHeaderAtf2ViewHolder.LAYOUT
+        } else {
+            HomeHeaderOvoViewHolder.LAYOUT
+        }
     }
 
     override fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int {
@@ -359,10 +363,6 @@ class HomeAdapterFactory(
 
     override fun type(lego4ProductDataModel: Lego4ProductDataModel): Int {
         return Lego4ProductViewHolder.LAYOUT
-    }
-
-    override fun type(homeHeaderAtf2DataModel: HomeHeaderAtf2DataModel): Int {
-        return HomeHeaderAtf2ViewHolder.LAYOUT
     }
 
     override fun type(mixLeftPaddingDataModel: MixLeftPaddingDataModel): Int {

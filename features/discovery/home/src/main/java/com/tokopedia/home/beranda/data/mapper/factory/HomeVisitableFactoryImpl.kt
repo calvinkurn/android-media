@@ -89,20 +89,11 @@ class HomeVisitableFactoryImpl(
 
     override fun addHomeHeaderOvo(): HomeVisitableFactory {
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS) ?: false
-
-        if (HomeRollenceController.isUsingAtf2Variant()) {
-            val homeHeaderAtf2 = HomeHeaderAtf2DataModel(needToShowUserWallet = needToShowUserWallet)
-            val headerViewModel = HeaderDataModel()
-            headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn ?: false
-            homeHeaderAtf2.headerDataModel = headerViewModel
-            visitableList.add(homeHeaderAtf2)
-        } else {
-            val homeHeader = HomeHeaderDataModel(needToShowUserWallet = needToShowUserWallet)
-            val headerViewModel = HeaderDataModel()
-            headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn ?: false
-            homeHeader.headerDataModel = headerViewModel
-            visitableList.add(homeHeader)
-        }
+        val homeHeader = HomeHeaderDataModel(needToShowUserWallet = needToShowUserWallet)
+        val headerViewModel = HeaderDataModel()
+        headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn ?: false
+        homeHeader.headerDataModel = headerViewModel
+        visitableList.add(homeHeader)
         return this
     }
 
