@@ -119,12 +119,12 @@ class ChatTextAreaTabLayout: ConstraintLayout {
     private fun initBackground() {
         tabBackgroundActive = ViewUtil.generateBackgroundWithShadow(
             this,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0,
             topLeftRadius = R.dimen.dp_topchat_8,
             topRightRadius = R.dimen.dp_topchat_8,
             bottomLeftRadius = R.dimen.dp_topchat_8,
             bottomRightRadius = R.dimen.dp_topchat_8,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
             elevation = R.dimen.dp_topchat_0,
             shadowRadius = R.dimen.dp_topchat_0,
             strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN50,
@@ -138,7 +138,7 @@ class ChatTextAreaTabLayout: ConstraintLayout {
             topRightRadius = R.dimen.dp_topchat_8,
             bottomLeftRadius = R.dimen.dp_topchat_8,
             bottomRightRadius = R.dimen.dp_topchat_8,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
             elevation = R.dimen.dp_topchat_0,
             shadowRadius = R.dimen.dp_topchat_0,
             strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN50,

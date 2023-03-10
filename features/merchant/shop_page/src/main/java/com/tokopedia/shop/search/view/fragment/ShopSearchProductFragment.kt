@@ -140,9 +140,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     private val userId: String
         get() = viewModel.userId
 
-    private val remoteConfig by lazy {
-        FirebaseRemoteConfigImpl(context)
-    }
     private var shopAttribution: String = ""
     private var searchQuery = ""
     private var shopRef: String = ""

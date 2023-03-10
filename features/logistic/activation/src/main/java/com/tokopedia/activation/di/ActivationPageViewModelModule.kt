@@ -20,5 +20,4 @@ abstract class ActivationPageViewModelModule {
     @IntoMap
     @ViewModelKey(ActivationPageViewModel::class)
     internal abstract fun providesActivationPageViewModel(viewModel: ActivationPageViewModel): ViewModel
-
 }

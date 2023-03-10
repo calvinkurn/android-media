@@ -3,6 +3,7 @@ package com.tokopedia.media.editor.ui.activity.main
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -110,13 +111,10 @@ class EditorActivity : BaseEditorActivity() {
         }
     }
 
-    override fun onDestroy() {
-        viewModel.cleanImageCache()
-        super.onDestroy()
-    }
-
     override fun onHeaderActionClick() {
-        if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+        ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE
@@ -136,8 +134,13 @@ class EditorActivity : BaseEditorActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_CODE && permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-            saveImageToGallery()
+        if (permissions.isNotEmpty() && grantResults.isNotEmpty()) {
+            if (
+                requestCode == PERMISSION_REQUEST_CODE &&
+                permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE &&
+                grantResults.first() != -1) {
+                saveImageToGallery()
+            }
         }
     }
 
@@ -152,6 +155,8 @@ class EditorActivity : BaseEditorActivity() {
             )
 
             editorHomeAnalytics.clickUpload()
+
+            viewModel.cleanImageCache()
 
             val intent = Intent()
             intent.putExtra(RESULT_INTENT_EDITOR, result)

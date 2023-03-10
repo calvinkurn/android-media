@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.fragment.app.FragmentFactory
@@ -14,19 +16,20 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.picker.analytics.LogType
+import com.tokopedia.media.picker.analytics.Logger
 import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.picker.di.PickerInjector
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.media.picker.ui.PickerUiConfig
-import com.tokopedia.media.picker.ui.component.BottomNavComponent
-import com.tokopedia.media.picker.ui.component.ParentContainerComponent
+import com.tokopedia.media.picker.ui.component.BottomNavUiComponent
+import com.tokopedia.media.picker.ui.component.PagerContainerUiComponent
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
-import com.tokopedia.media.picker.ui.observer.observe
-import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
+import com.tokopedia.media.picker.ui.publisher.PickerEventBus
+import com.tokopedia.media.picker.ui.publisher.observe
+import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
 import com.tokopedia.media.picker.utils.isOppoManufacturer
-import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
-import com.tokopedia.media.picker.utils.generateKey
 import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.*
@@ -35,22 +38,18 @@ import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.mapper.humanize
-import com.tokopedia.picker.common.observer.EventFlowFactory
-import com.tokopedia.picker.common.types.FragmentType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
-import com.tokopedia.picker.common.utils.VideoDurationRetriever
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
-    NavToolbarComponent.Listener, PickerActivityContract, BottomNavComponent.Listener {
+    NavToolbarComponent.Listener, PickerActivityContract, BottomNavUiComponent.Listener {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -64,13 +63,29 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     @Inject
     lateinit var pickerAnalytics: PickerAnalytics
 
+    @Inject
+    lateinit var eventBus: PickerEventBus
+
     protected val medias = arrayListOf<MediaUiModel>()
+
+    private val startTimeInMillis = System.currentTimeMillis()
+    private var loaderDialog: LoaderDialogWidget? = null
+    private var isOnVideoRecording = false
 
     private val viewModel by lazy {
         ViewModelProvider(
             this,
             viewModelFactory
         )[PickerViewModel::class.java]
+    }
+
+    private val pagerContainer by uiComponent {
+        PagerContainerUiComponent(
+            parent = it,
+            activity = this,
+            param = param,
+            factory = createFragmentFactory()
+        )
     }
 
     private val navToolbar by uiComponent {
@@ -81,16 +96,8 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         )
     }
 
-    private val container by uiComponent {
-        ParentContainerComponent(
-            parent = it,
-            fragmentManager = supportFragmentManager,
-            fragmentFactory = createFragmentFactory()
-        )
-    }
-
     private val bottomNavTab by uiComponent {
-        BottomNavComponent(
+        BottomNavUiComponent(
             parent = it,
             listener = this
         )
@@ -107,6 +114,16 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         setupParam()
     }
 
+    override fun onResume() {
+        super.onResume()
+        resetVideoRecordingState()
+    }
+
+    override fun onBackPressed() {
+        if (isOnVideoRecording) return
+        super.onBackPressed()
+    }
+
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
 
@@ -117,12 +134,12 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     override fun onPause() {
         super.onPause()
-        EventFlowFactory.dispose(param.get().generateKey())
+        eventBus.dispose()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        EventFlowFactory.reset(param.get().generateKey())
+        eventBus.reset()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -131,7 +148,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         // get data from preview if user had an updated the media elements
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
             data.getParcelableArrayListExtra<MediaUiModel>(RESULT_INTENT_PREVIEW)?.toList()?.let {
-                stateOnChangePublished(it, param.get().generateKey())
+                eventBus.notifyDataOnChangedEvent(it)
             }
 
             // exit picker
@@ -163,6 +180,11 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         )
     }
 
+    private fun resetVideoRecordingState() {
+        isOnVideoRecording = false
+        viewModel.isOnVideoRecording(isOnVideoRecording)
+    }
+
     private fun setupParam() {
         val mParam = intent?.getParcelableExtra<PickerParam>(EXTRA_PICKER_PARAM)
 
@@ -182,9 +204,45 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             // restore the last media selection to the drawer
             it.getParcelableArrayList<MediaUiModel>(LAST_MEDIA_SELECTION)
                 ?.let { elements ->
-                    stateOnChangePublished(elements, param.get().generateKey())
+                    eventBus.notifyDataOnChangedEvent(elements)
                 }
         }
+    }
+
+    private fun renderPageByType() {
+        when (param.get().pageType()) {
+            PageType.CAMERA -> {
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+                pagerContainer.setupCameraPage()
+            }
+            PageType.GALLERY -> {
+                navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+                pagerContainer.setupGalleryPage()
+            }
+            else -> {
+                pagerContainer.setupCommonPage()
+                bottomNavTab.setupView()
+
+                bottomNavTab.navigateToIndexOf(
+                    PickerUiConfig.startPageIndex
+                )
+            }
+        }
+    }
+
+    private fun renderPermissionPage() {
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+        pagerContainer.setupPermissionPage()
+    }
+
+    private fun navigateToCameraPage() {
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
+        pagerContainer.navigateToCameraPage()
+    }
+
+    private fun navigateToGalleryPage() {
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+        pagerContainer.navigateToGalleryPage()
     }
 
     private fun initView(param: PickerParam) {
@@ -197,15 +255,15 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         }
 
         if (isRootPermissionGranted()) {
-            onPageViewByType()
+            renderPageByType()
         } else {
-            onPermissionPageView()
+            renderPermissionPage()
         }
     }
 
     private fun initObservable() {
         viewModel.pickerParam.observe(this) {
-            onPageSourceNotFound(it)
+            onPageSourceNotFound(it.pageSourceName())
             initView(it)
         }
 
@@ -214,6 +272,19 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
             val intent = MediaEditor.intent(this@PickerActivity, result.originalPaths, param)
             startActivityForResult(intent, REQUEST_EDITOR_PAGE)
+        }
+
+        viewModel.isLoading.observe(this) {
+            if (it) {
+                loaderDialog = LoaderDialogWidget(this)
+                loaderDialog?.show()
+            } else {
+                loaderDialog?.dismiss()
+                Logger.send(
+                    startTime = startTimeInMillis,
+                    endTime = System.currentTimeMillis()
+                )
+            }
         }
 
         lifecycleScope.launchWhenStarted {
@@ -245,36 +316,35 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         viewModel.includeMedias.observe(this) { files ->
             if (files.isEmpty()) return@observe
 
-            val fileToUiModel = files.mapNotNull {
+            val fileAsUiModelList = files.mapNotNull {
                 val mPickerFile = it?.asPickerFile()
                 mPickerFile?.toUiModel()
             }
 
-            stateOnChangePublished(fileToUiModel, param.get().generateKey())
-        }
-    }
-
-    private fun onPageViewByType() {
-        when (param.get().pageType()) {
-            // single page -> camera
-            PageType.CAMERA -> onCameraPageView()
-            // single page -> gallery
-            PageType.GALLERY -> onGalleryPageView()
-            // multiple page -> by index
-            else -> {
-                bottomNavTab.setupView()
-
-                bottomNavTab.navigateToIndexOf(
-                    PickerUiConfig.startPageIndex
-                )
+            fileAsUiModelList.forEach {
+                eventBus.addMediaEvent(it)
             }
         }
+
+        viewModel.connectionIssue.observe(this) { message ->
+            onShowToaster(message, Toaster.TYPE_ERROR)
+            Logger.send(LogType.NoInternetConnection)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                finish()
+            }, TOAST_DELAYED)
+        }
+
+        viewModel.isOnVideoRecording.observe(this) { isRecord ->
+            navToolbar.setVisibility(isRecord.not())
+            isOnVideoRecording = isRecord
+        }
     }
 
-    private fun onPageSourceNotFound(param: PickerParam) {
+    private fun onPageSourceNotFound(sourceName: String) {
         if (GlobalConfig.isAllowDebuggingTools()) return
 
-        if (param.pageSourceName().isEmpty()) {
+        if (sourceName.isEmpty()) {
             Toast.makeText(
                 applicationContext,
                 getString(R.string.picker_page_source_not_found),
@@ -287,7 +357,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     private fun onRemoveSubSourceMedia() {
         if (param.get().subPageSourceName().isNotEmpty() && medias.isNotEmpty()) {
-            stateOnRemovePublished(medias.last(), param.get().generateKey())
+            eventBus.removeMediaEvent(medias.last())
         }
     }
 
@@ -302,23 +372,8 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         viewModel.navigateToEditorPage(data)
     }
 
-    private fun onPermissionPageView() {
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-        container.open(FragmentType.PERMISSION)
-    }
-
-    private fun onCameraPageView() {
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-        container.open(FragmentType.CAMERA)
-    }
-
-    private fun onGalleryPageView() {
-        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-        container.open(FragmentType.GALLERY)
-    }
-
     override fun onPermissionGranted() {
-        onPageViewByType()
+        renderPageByType()
     }
 
     override fun isRootPermissionGranted(): Boolean {
@@ -329,12 +384,11 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     override fun onGetVideoDuration(media: MediaUiModel): Int {
-        return VideoDurationRetriever.get(applicationContext, media.file)
+        return media.videoLength
     }
 
     override fun onCameraTabSelected(isDirectClick: Boolean) {
-        container.resetBottomNavMargin()
-        onCameraPageView()
+        navigateToCameraPage()
 
         if (isDirectClick) {
             pickerAnalytics.clickCameraTab()
@@ -342,8 +396,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     override fun onGalleryTabSelected(isDirectClick: Boolean) {
-        container.addBottomNavMargin()
-        onGalleryPageView()
+        navigateToGalleryPage()
 
         if (isDirectClick) {
             pickerAnalytics.clickGalleryTab()
@@ -355,19 +408,16 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             return super.dispatchTouchEvent(ev)
         }
 
-        container.cameraFragment()?.run {
-            val cameraFragment = this
-
-            if (cameraFragment.isAdded && cameraFragment.view != null) {
-                cameraFragment.gestureDetector.onTouchEvent(ev)
+        pagerContainer.cameraFragment()?.let {
+            if (it.isAdded && it.view != null) {
+                it.gestureDetector.onTouchEvent(ev)
             }
         }
-
         return super.dispatchTouchEvent(ev)
     }
 
     override fun onCloseClicked() {
-        if (container.isFragmentActive(FragmentType.GALLERY)) {
+        if (pagerContainer.isGalleryFragmentActive()) {
             pickerAnalytics.clickCloseButton()
         }
 
@@ -375,9 +425,10 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     override fun onContinueClicked() {
-        if (container.isFragmentActive(FragmentType.GALLERY)) {
-            pickerAnalytics.clickNextButton()
+        if (pagerContainer.isGalleryFragmentActive()) {
+            pickerAnalytics.clickCloseButton()
         }
+
         PickerPreviewActivity.start(this, ArrayList(medias), REQUEST_PREVIEW_PAGE)
     }
 
@@ -545,14 +596,14 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     private fun onShowToaster(message: String, type: Int = Toaster.TYPE_NORMAL) {
-        container.container().let {
+        pagerContainer.container().let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, type).show()
         }
     }
 
     protected open fun createFragmentFactory(): PickerFragmentFactory {
         return PickerFragmentFactoryImpl(
-            fragmentManager = supportFragmentManager,
+            mFragmentManager = supportFragmentManager,
             classLoader = applicationContext.classLoader
         )
     }
@@ -570,6 +621,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         private const val LAST_MEDIA_SELECTION = "last_media_selection"
 
         private const val BYTES_TO_MB = 1000000
+        private const val TOAST_DELAYED = 3000L
         private const val MILLIS_TO_SEC = 1000
     }
 

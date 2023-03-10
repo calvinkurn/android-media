@@ -1,5 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.viewholder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.widget.Toast
@@ -185,6 +186,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         }
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun getInstallmentInfoEvent(detail: Detail, link: String = "") =
         PayLaterCtaClick().apply {
             tenureOption = detail.tenure ?: 0
@@ -196,6 +198,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             ctaWording = detail.cta.name ?: ""
             linkingStatus = detail.linkingStatus ?: ""
             action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
+            promoName = detail.promoName.orEmpty()
         }
 }
 

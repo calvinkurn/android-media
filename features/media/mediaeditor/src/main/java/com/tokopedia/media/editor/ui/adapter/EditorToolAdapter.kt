@@ -90,14 +90,6 @@ class EditorToolViewHolder(
     fun bind(tool: ToolUiModel, isActive: Boolean = false) {
         txtName.text = context.getString(tool.name)
         when (tool.id) {
-            EditorToolType.WATERMARK -> {
-                icTool.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        context,
-                        R.drawable.editor_watermark
-                    )
-                )
-            }
             EditorToolType.REMOVE_BACKGROUND -> {
                 icTool.setImageDrawable(
                     ContextCompat.getDrawable(
