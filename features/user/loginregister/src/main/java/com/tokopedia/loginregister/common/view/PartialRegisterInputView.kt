@@ -75,11 +75,9 @@ class PartialRegisterInputView : BaseCustomView {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context,
         attrs,
-        defStyleAttr
-    ) {
+        defStyleAttr) {
         init()
     }
 
@@ -119,6 +117,7 @@ class PartialRegisterInputView : BaseCustomView {
                 }
                 handled
             }
+
         }
 
         viewBinding.wrapperPassword.editText.addTextChangedListener(
@@ -264,7 +263,7 @@ class PartialRegisterInputView : BaseCustomView {
 
     fun setAdapterInputEmailPhone(
         adapter: ArrayAdapter<String>,
-        onFocusChangeListener: OnFocusChangeListener?
+        onFocusChangeListener: OnFocusChangeListener?,
     ) {
         if (adapter.getItem(0) != null) {
             viewBinding.inputEmailPhone.editText.run {
@@ -280,53 +279,45 @@ class PartialRegisterInputView : BaseCustomView {
         this.emailExtensionList = emailExtensionList
         this.emailExtension = emailExtension
         emailExtensionList?.let { extension ->
-            this.emailExtension?.setExtensions(
-                extension,
-                object : EmailExtensionAdapter.ClickListener {
-                    override fun onExtensionClick(extension: String, position: Int) {
-                        viewBinding.inputEmailPhone.apply {
-                            val textInput = editText.text
-                            val charEmail: Array<String> = textInput.split("@").toTypedArray()
-                            if (charEmail.isNotEmpty()) {
-                                editText.setText(String.format(Locale.getDefault(), "%s@%s", charEmail[0], extension))
-                            } else {
-                                editText.setText(
-                                    String.format(
-                                        Locale.getDefault(),
-                                        "%s@%s",
-                                        textInput.toString().replace("@", ""),
-                                        extension
-                                    )
-                                )
-                            }
-                            editText.setSelection(editText.text.trim { it <= ' ' }.length)
-                            isExtensionSelected = true
-                            hideEmailExtension()
+            this.emailExtension?.setExtensions(extension, object : EmailExtensionAdapter.ClickListener {
+                override fun onExtensionClick(extension: String, position: Int) {
+                    viewBinding.inputEmailPhone.apply {
+                        val textInput = editText.text
+                        val charEmail: Array<String> = textInput.split("@").toTypedArray()
+                        if (charEmail.isNotEmpty()) {
+                            editText.setText(String.format(Locale.getDefault(), "%s@%s", charEmail[0], extension))
+                        } else {
+                            editText.setText(String.format(
+                                Locale.getDefault(),
+                                "%s@%s",
+                                textInput.toString().replace("@", ""),
+                                extension)
+                            )
                         }
+                        editText.setSelection(editText.text.trim { it <= ' ' }.length)
+                        isExtensionSelected = true
+                        hideEmailExtension()
                     }
                 }
-            )
+            })
         }
     }
 
     fun initKeyboardListener(view: View?) {
         view?.run {
-            KeyboardHandler(
-                view,
-                object : OnKeyBoardVisibilityChangeListener {
-                    override fun onKeyboardShow() {
-                        viewBinding.inputEmailPhone.editText.apply {
-                            if (text.contains("@") && isFocused && !isExtensionSelected) {
-                                showEmailExtension()
-                            }
+            KeyboardHandler(view, object : OnKeyBoardVisibilityChangeListener {
+                override fun onKeyboardShow() {
+                    viewBinding.inputEmailPhone.editText.apply {
+                        if (text.contains("@") && isFocused && !isExtensionSelected) {
+                            showEmailExtension()
                         }
                     }
-
-                    override fun onKeyboardHide() {
-                        hideEmailExtension()
-                    }
                 }
-            )
+
+                override fun onKeyboardHide() {
+                    hideEmailExtension()
+                }
+            })
         }
     }
 
@@ -341,9 +332,8 @@ class PartialRegisterInputView : BaseCustomView {
         viewBinding.inputEmailPhone.apply {
             isInputError = false
             setMessage(
-                context?.getString(R.string.default_placeholder).toString()
-            )
-        }
+            context?.getString(R.string.default_placeholder).toString()
+        )}
     }
 
     private fun hideMessageInputEmailPhone() {
