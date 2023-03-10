@@ -236,7 +236,7 @@ fun generateTestCheckoutTokoFoodProduct(): List<CartListCartGroupCart> {
             notes = "",
             variants = listOf()
         ),
-        customResponse = CartListCartGroupCartCustomResponse(
+        nullableCustomResponse = CartListCartGroupCartCustomResponse(
             categoryId = "244f0661-515b-45ed-8969-c9f41fad2979",
             name = "Home-plate Garlic Knots",
             description = "What\u0027s better than garlic bread? 5 pcs of Garlic tangled in knots!",
@@ -256,7 +256,7 @@ fun generateTestCheckoutTokoFoodProduct(): List<CartListCartGroupCart> {
             notes = "",
             variants = listOf()
         ),
-        customResponse = CartListCartGroupCartCustomResponse(
+        nullableCustomResponse = CartListCartGroupCartCustomResponse(
             categoryId = "244f0661-515b-45ed-8969-c9f41fad2979",
             name = "Home-plate Garlic Knots",
             description = "What\u0027s better than garlic bread? 5 pcs of Garlic tangled in knots!",
@@ -286,7 +286,7 @@ fun generateTestCheckoutTokoFoodProduct(): List<CartListCartGroupCart> {
         price = 55000.0,
         priceFmt = "Rp55.000",
         quantity = 1,
-        customResponse = CartListCartGroupCartCustomResponse(
+        nullableCustomResponse = CartListCartGroupCartCustomResponse(
             categoryId = "244f0661-515b-45ed-8969-c9f41fad2979",
             name = "Batting up chicken",
             description = "4 pcs of deep-fried breaded chicken tenders served with sauce on the side",
@@ -303,7 +303,7 @@ fun generateTestCheckoutTokoFoodProduct(): List<CartListCartGroupCart> {
         price = 55000.0,
         priceFmt = "Rp55.000",
         quantity = 1,
-        customResponse = CartListCartGroupCartCustomResponse(
+        nullableCustomResponse = CartListCartGroupCartCustomResponse(
             categoryId = "244f0661-515b-45ed-8969-c9f41fad2979",
             name = "Crispy French Fries",
             description = "4 pcs of deep-fried breaded chicken tenders served with sauce on the side",

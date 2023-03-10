@@ -199,7 +199,7 @@ abstract class MultipleFragmentsViewModelTestFixture {
             businessData = listOf(
                 CartListBusinessData(
                     businessId = TokoFoodCartUtil.getBusinessId(),
-                    customResponse = CartListBusinessDataCustomResponse(
+                    nullableCustomResponse = CartListBusinessDataCustomResponse(
                         bottomSheet = CartListBusinessDataBottomSheet(
                             isShowBottomSheet = true,
                             title = "Need phone verification"

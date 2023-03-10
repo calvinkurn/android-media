@@ -32,7 +32,7 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
                     CartGeneralPromoListBusinessData(
                         businessId = TokoFoodCartUtil.getBusinessId(),
                         success = TokoFoodCartUtil.SUCCESS_STATUS_INT,
-                        customResponse = CartGeneralBusinessDataCustomResponse(
+                        nullableCustomResponse = CartGeneralBusinessDataCustomResponse(
                             availableSection = PromoListTokoFoodSection(
                                 subSection = PromoListTokoFoodSubSection(
                                     coupons = listOf(
@@ -70,7 +70,7 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
                     CartGeneralPromoListBusinessData(
                         businessId = TokoFoodCartUtil.getBusinessId(),
                         success = TokoFoodCartUtil.SUCCESS_STATUS_INT,
-                        customResponse = CartGeneralBusinessDataCustomResponse(
+                        nullableCustomResponse = CartGeneralBusinessDataCustomResponse(
                             changeRestrictionMessage = "This coupon cannot be used",
                             unavailableSection = PromoListTokoFoodSection(
                                 subSection = PromoListTokoFoodSubSection(
@@ -109,7 +109,7 @@ class TokoFoodPromoViewModelTest: TokoFoodPromoViewModelTestFixture() {
                     CartGeneralPromoListBusinessData(
                         businessId = TokoFoodCartUtil.getBusinessId(),
                         success = TokoFoodCartUtil.SUCCESS_STATUS_INT,
-                        customResponse = CartGeneralBusinessDataCustomResponse(
+                        nullableCustomResponse = CartGeneralBusinessDataCustomResponse(
                             errorPage = PromoListTokoFoodErrorPage(
                                 isShowErrorPage = true
                             )
