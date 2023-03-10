@@ -105,7 +105,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun writeBalanceToCard(payload: String, balanceRawQuery: String, id: Int, mapAttributes: HashMap<String, Any>) {
-        if (::isoDep.isInitialized && isoDep.isConnected) {
+        if (::isoDep.isInitialized && isoDep.isConnected && payload.isNotEmpty()) {
             try {
                 val responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(payload))
 

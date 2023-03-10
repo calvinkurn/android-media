@@ -63,6 +63,7 @@ ext {
             fingerprint             : ":libraries:fingerprint",
             floatingWindow          : ":libraries:floating_window",
             graphql                 : ":libraries:graphql",
+            imageAssets             : ":libraries:image_assets",
             imagePicker             : ":libraries:image_picker",
             imagePickerCommon       : ":libraries:image_picker_common",
             imagePreview            : ":libraries:image_preview",

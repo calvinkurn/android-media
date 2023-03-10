@@ -256,8 +256,6 @@ class UserProfileVideoFragment @Inject constructor(
             viewModel.isSelfProfile,
             isLive,
             channelID,
-            imageUrl,
-            pos,
         )
         val intent = RouteManager.getIntent(context, appLink)
         startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
