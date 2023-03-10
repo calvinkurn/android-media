@@ -220,5 +220,6 @@
     <string name="pm_broadcast_chat_desc">Akses dan bonus kuota untuk kirim chat sekaligus</string>
     <string name="pm_tokopedia_play_title">Tokopedia Play</string>
     <string name="pm_tokopedia_play_desc">Berjualan dan berinteraksi live dengan pembeli</string>
+    <string name="pm_questionnaire_chip_info">Kamu bisa pilih lebih dari satu fitur, ya.</string>
 
 </resources>

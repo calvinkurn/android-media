@@ -3,6 +3,7 @@ package com.tokopedia.power_merchant.subscribe.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.databinding.ItemPmQuestionnaireChipOptionItemBinding
 import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireOptionUiModel
@@ -48,7 +49,11 @@ class QuestionnaireChipOptionAdapter(
             with(binding) {
                 chipsQuestionnaireOption.run {
                     centerText = true
-                    chip_image_icon.loadImage(item.imageURL)
+                    chip_image_icon.loadImage(item.imageURL) {
+                        listener(onSuccess = { _, _ ->
+                            chip_image_icon.show()
+                        })
+                    }
                     chipText = item.text
                     chipSize = ChipsUnify.SIZE_MEDIUM
                     toggle(item.isChecked)

@@ -81,7 +81,7 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
                 dismiss()
             }
 
-            imgAffectPmDeactivation.setImageUrl(if (context.isDarkMode()) Constant.Image.BG_AFFECT_PM_DEACTIVATION_DM else Constant.Image.BG_AFFECT_PM_DEACTIVATION, 0.3F)
+            imgAffectPmDeactivation.setImageUrl(if (isPmPro) getBgPmProDeactivation() else getBgPmDeactivation(), 0.3F)
             tvPmDeactivationTnC.movementMethod = LinkMovementMethod.getInstance()
             tvPmDeactivationTnC.text = getString(R.string.pm_pm_deactivation_be_rm_tnc)
         }
@@ -97,6 +97,14 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
             isNestedScrollingEnabled = false
             adapter = lostBenefitPmDeactivationAdapter
         }
+    }
+
+    private fun getBgPmDeactivation(): String {
+        return if (context.isDarkMode()) Constant.Image.BG_AFFECT_PM_DEACTIVATION_DM else Constant.Image.BG_AFFECT_PM_DEACTIVATION
+    }
+
+    private fun getBgPmProDeactivation(): String {
+        return if (context.isDarkMode()) Constant.Image.BG_AFFECT_PM_PRO_DEACTIVATION_DM else Constant.Image.BG_AFFECT_PM_PRO_DEACTIVATION
     }
 
     private fun getPmDeactivationList(): List<LostBenefitPmDeactivationUiModel> {
