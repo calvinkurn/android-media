@@ -1554,7 +1554,7 @@ class RechargeGeneralFragment :
                         true
                     }
                     getItem(0).icon = BitmapDrawable(
-                        resources,
+                        ctx.resources,
                         Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
                     )
                 }
@@ -1575,7 +1575,7 @@ class RechargeGeneralFragment :
                     true
                 }
                 getItem(1).icon = BitmapDrawable(
-                    resources,
+                    ctx.resources,
                     Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
                 )
             }

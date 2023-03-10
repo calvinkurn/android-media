@@ -9,7 +9,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.rechargegeneral.domain.GetDppoConsentUseCase
 import com.tokopedia.rechargegeneral.model.*
+import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,6 +19,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.junit.Assert.assertEquals
@@ -38,6 +41,9 @@ class RechargeGeneralViewModelTest {
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
 
+    @RelaxedMockK
+    lateinit var getDppoConsentUseCase: GetDppoConsentUseCase
+
     lateinit var rechargeGeneralViewModel: RechargeGeneralViewModel
 
     @Before
@@ -53,7 +59,7 @@ class RechargeGeneralViewModelTest {
         gqlResponseFail = GraphqlResponse(result, errors, false)
 
         rechargeGeneralViewModel =
-            RechargeGeneralViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
+            RechargeGeneralViewModel(graphqlRepository, getDppoConsentUseCase, RechargeGeneralMapper(), CoroutineTestDispatchersProvider)
     }
 
     @Test
@@ -314,5 +320,18 @@ class RechargeGeneralViewModelTest {
 
         val actualData = rechargeGeneralViewModel.addBills.value
         assert(actualData is Fail)
+    }
+
+    @Test
+    fun getDppoConsentRecharge_Success() {
+        // given
+
+        // when
+
+        // then
+    }
+
+    @Test
+    fun getDppoConsentRecharge_Fail() {
     }
 }
