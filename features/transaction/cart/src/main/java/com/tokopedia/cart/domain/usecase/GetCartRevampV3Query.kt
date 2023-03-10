@@ -293,25 +293,11 @@ const val CART_REVAMP_V3_QUERY =
                     shop_alert_message
                     is_tokonow
                     shop_id
-                    admin_ids
                     shop_name
-                    shop_image
-                    shop_url
-                    shop_status
                     postal_code
                     latitude
                     longitude
-                    district_name
-                    origin
-                    address_street
-                    city_name
-                    province_id
-                    province_name
-                    country_name
-                    is_allow_manage
-                    shop_domain
-                    is_gold
-                    is_official
+                    district_id
                     shop_type_info {
                       shop_tier
                       shop_grade
@@ -328,23 +314,20 @@ const val CART_REVAMP_V3_QUERY =
                   cart_string
                   cart_details {
                     bundle_detail {
-                      bundle_description
                       bundle_group_id
                       bundle_id
                       bundle_max_order
                       bundle_min_order
                       bundle_name
                       bundle_original_price
-                      bundle_original_price_fmt
                       bundle_price
-                      bundle_price_fmt
                       bundle_qty
                       bundle_quota
-                      bundle_status
                       bundle_type
                       edit_app_link
                       slash_price_label
                       bundle_icon_url
+                      bundle_grayscale_icon_url
                     }
                     products {
                       checkbox_state
@@ -407,8 +390,6 @@ const val CART_REVAMP_V3_QUERY =
                         variant_name
                       }
                     }
-                    errors
-                    messages
                   }
                   is_fulfillment_service
                   warehouse {
