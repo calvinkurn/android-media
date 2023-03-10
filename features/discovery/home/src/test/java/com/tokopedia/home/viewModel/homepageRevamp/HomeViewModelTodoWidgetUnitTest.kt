@@ -7,7 +7,6 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeTodoWidgetUseCas
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
 import com.tokopedia.home_component.visitable.TodoWidgetDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import io.mockk.mockk
@@ -33,7 +32,6 @@ class HomeViewModelTodoWidgetUnitTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
-    private val dismissTodoWidgetUseCase = mockk<DismissTodoWidgetUseCase>(relaxed = true)
     private val homeTodoWidgetUseCase = mockk<HomeTodoWidgetUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
     private val testDispatcher = TestCoroutineDispatcher()
@@ -62,7 +60,7 @@ class HomeViewModelTodoWidgetUnitTest {
     }
 
     @Test
-    fun `given failed todo widget when refresh data todo widget then get success data todo widget`() {
+    fun `given success when refresh todo widget then homeDataModel contain todo widget`() {
         val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(
@@ -85,36 +83,57 @@ class HomeViewModelTodoWidgetUnitTest {
         Assert.assertTrue(containsTodoWidgetSuccess)
     }
 
-//    @Test
-//    fun `given success when dismiss todo widget item then remove todo widget from model`(){
-//        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
-//        val position = 0
-//        val dataSource = "r3_category"
-//        val param = "closeButton=user_id:data_source"
-//
-//        getHomeUseCase.givenGetHomeDataReturn(
-//            HomeDynamicChannelModel(
-//                list = listOf(mockSuccessTodoWidget)
-//            )
-//        )
-//
-//        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homeTodoWidgetUseCase = homeTodoWidgetUseCase)
-//        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
-//
-//        val containsTodoWidgetSuccess =
-//            (homeViewModel.homeDataModel.list.find { it is TodoWidgetListDataModel } as TodoWidgetListDataModel).status == TodoWidgetListDataModel.STATUS_SUCCESS
-//        Assert.assertTrue(containsTodoWidgetSuccess)
-//
-//        coEvery { dismissTodoWidgetUseCase.getTodoWidgetDismissData(
-//            position, dataSource, param, any(), any()
-//        ) } answers {
-//            lastArg<(Throwable) -> Unit>().invoke(Throwable())
-//        }
-//
-//        homeViewModel.dismissTodoWidget(position, dataSource, param, deleteWidget = false)
-//
-//        val todoWidgetOnlyContain1 =
-//            (homeViewModel.homeDataModel.list.find { it is TodoWidgetListDataModel } as TodoWidgetListDataModel).todoWidgetList.size == 1
-//        Assert.assertTrue(todoWidgetOnlyContain1)
-//    }
+    @Test
+    fun `given dismiss todo widget item then remove from model`() {
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
+        val position = 0
+        val dataSource = "r3_category"
+        val param = "closeButton=user_id:data_source"
+
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(mockSuccessTodoWidget)
+            )
+        )
+
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homeTodoWidgetUseCase = homeTodoWidgetUseCase)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
+
+        val containsTodoWidgetSuccess =
+            (homeViewModel.homeDataModel.list.find { it is TodoWidgetListDataModel } as TodoWidgetListDataModel).status == TodoWidgetListDataModel.STATUS_SUCCESS
+        Assert.assertTrue(containsTodoWidgetSuccess)
+
+        homeViewModel.dismissTodoWidget(position, dataSource, param)
+
+        val todoWidgetOnlyContain1 =
+            (homeViewModel.homeDataModel.list.find { it is TodoWidgetListDataModel } as TodoWidgetListDataModel).todoWidgetList.size == (mockSuccessTodoWidget.todoWidgetList.size - 1)
+        Assert.assertTrue(todoWidgetOnlyContain1)
+    }
+
+    @Test
+    fun `given dismiss all todo widget items then remove model entirely`() {
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
+        val position = 0
+        val dataSource = "r3_category"
+        val param = "closeButton=user_id:data_source"
+
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(mockSuccessTodoWidget)
+            )
+        )
+
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homeTodoWidgetUseCase = homeTodoWidgetUseCase)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
+
+        val containsTodoWidgetSuccess =
+            (homeViewModel.homeDataModel.list.find { it is TodoWidgetListDataModel } as TodoWidgetListDataModel).status == TodoWidgetListDataModel.STATUS_SUCCESS
+        Assert.assertTrue(containsTodoWidgetSuccess)
+
+        repeat(mockSuccessTodoWidget.todoWidgetList.size) {
+            homeViewModel.dismissTodoWidget(position, dataSource, param)
+        }
+
+        Assert.assertNull(homeViewModel.homeDataModel.list.find { it is TodoWidgetListDataModel })
+    }
 }
