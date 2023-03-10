@@ -3,6 +3,7 @@ package com.tokopedia.login_helper.presentation.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.login_helper.databinding.ItemLoginDataBinding
 import com.tokopedia.login_helper.databinding.ItemLoginHeaderBinding
 import com.tokopedia.login_helper.domain.uiModel.LoginDataUiModel
@@ -20,6 +21,8 @@ class LoginDataViewHolder(itemView: View?, private val listener: LoginHelperClic
             }
             if (element?.tribe != null && element.tribe.isNotEmpty()){
                 tribeChip.chipText = element.tribe
+            } else {
+                tribeChip.hide()
             }
             root.setOnClickListener {
                 listener.onClickUserData(element)

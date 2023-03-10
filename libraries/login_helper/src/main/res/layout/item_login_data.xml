@@ -29,7 +29,6 @@
         android:id="@+id/tribe_chip"
         android:layout_marginEnd="16dp"
         app:chipType="selected"
-        app:chipText="Tribe"
         app:centerText="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

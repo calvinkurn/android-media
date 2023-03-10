@@ -40,6 +40,7 @@ import io.mockk.runs
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.resetMain
@@ -74,7 +75,7 @@ class LoginHelperViewModelTest {
 
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val throwable = Throwable("Error")
-    private val email = "yoris.prayogo@tokopedia.com"
+    private val email = "sourav.saikia@tokopedia.com"
     private val password = "abc123456"
 
     @Before
@@ -154,22 +155,22 @@ class LoginHelperViewModelTest {
     @Test
     fun `processEvent with QueryEmail`() {
         runBlockingTest {
-            val dummyUserList = Success(
-                LoginDataUiModel(
-                    HeaderUiModel(1),
-                    listOf<UserDataUiModel>(
-                        UserDataUiModel(
-                            "abc@tokopedia.com",
-                            "abc",
-                            "abc"
-                        )
-                    )
-                )
-            )
+            viewModel.processEvent(LoginHelperEvent.GetLoginData)
 
-            viewModel.processEvent(LoginHelperEvent.QueryEmail("abc"))
+            viewModel.processEvent(LoginHelperEvent.QueryEmail("pbs"))
             val result = viewModel.uiState.value.searchText
-            assertEquals(result, "abc")
+            assertEquals(result, "pbs")
+        }
+    }
+
+    @Test
+    fun `processEvent with QueryEmail throws exception`() {
+        runBlockingTest {
+            coEvery { getUserDetailsRestCase.executeOnBackground() } throws throwable
+
+            viewModel.processEvent(LoginHelperEvent.QueryEmail("pbs"))
+            val result = viewModel.uiState.value.searchText
+            assertEquals(result, "pbs")
         }
     }
 
@@ -183,7 +184,6 @@ class LoginHelperViewModelTest {
         }
 
         viewModel.processEvent(LoginHelperEvent.GetUserInfo)
-
         val result = viewModel.uiState.value.profilePojo
         assertTrue(result is Success)
     }
@@ -254,7 +254,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
 
         assert(
             viewModel.uiState.value.loginToken is Success
@@ -304,7 +304,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password,true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -330,7 +330,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -355,7 +355,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -380,7 +380,7 @@ class LoginHelperViewModelTest {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -394,7 +394,7 @@ class LoginHelperViewModelTest {
 
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail
@@ -405,7 +405,7 @@ class LoginHelperViewModelTest {
     fun `on Login Email V2 Error`() {
         coEvery { generatePublicKeyUseCase.executeOnBackground() } throws throwable
 
-        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password))
+        viewModel.processEvent(LoginHelperEvent.LoginUser(email, password, true))
 
         assert(
             viewModel.uiState.value.loginToken is Fail

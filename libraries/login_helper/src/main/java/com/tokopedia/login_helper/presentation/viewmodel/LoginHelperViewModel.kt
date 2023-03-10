@@ -93,7 +93,12 @@ class LoginHelperViewModel @Inject constructor(
       //          val response = getUserDetailsRestUseCase.executeOnBackground()
                 //      Log.d("FATAL", "callTheAPi: ${response}")
                 //         updateUserDataList(convertToUserListUiModel(response))
-                updateUserDataList(Success(listOfUsers()))
+                val userDetails = listOfUsers()
+                val sortedUserList = userDetails.users?.sortedBy {
+                    it.email
+                }
+                val userList = LoginDataUiModel(userDetails.count, sortedUserList)
+                updateUserDataList(Success(userList))
             },
             onError = {
                 updateUserDataList(Fail(it))
@@ -111,7 +116,7 @@ class LoginHelperViewModel @Inject constructor(
                 UserDataUiModel("sourav.saikia+01@tokopedia.com", "asd", "asedas"),
                 UserDataUiModel("eren.yeager+01@tokopedia.com", "asd", "qwert"),
                 UserDataUiModel("pbs-bagas.priyadi+03@tokopedia.com", "asd", "as"),
-                UserDataUiModel("sourav.pbs-saikia+01@tokopedia.com", "asd", "asedas")
+                UserDataUiModel("pbs-hanifah.puji+buystag1@tokopedia.com", "toped123", "Cex")
             )
         )
     }
@@ -239,9 +244,7 @@ class LoginHelperViewModel @Inject constructor(
 
                     filteredUserList = Success(LoginDataUiModel(HeaderUiModel(list?.size ?: 0), list))
                 }
-                is Fail -> {
-                    Fail(Exception("Failed to get data"))
-                }
+                is Fail -> Unit
             }
         }
 
