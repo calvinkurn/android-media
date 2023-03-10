@@ -287,17 +287,12 @@ class ShipmentMapper @Inject constructor() {
                     productId = product.productId
                     cartId = product.cartId
                     productName = product.productName
-                    productPriceFmt = product.productPriceFmt
                     productPrice = product.productPrice
                     productOriginalPrice = product.productOriginalPrice
                     productWholesalePrice = product.productWholesalePrice
-                    productWholesalePriceFmt = product.productWholesalePriceFmt
                     productWeightFmt = product.productWeightFmt
                     productWeight = product.productWeight
                     productWeightActual = product.productWeightActual
-                    productCondition = product.productCondition
-                    productUrl = product.productUrl
-                    isProductReturnable = product.productReturnable == 1
                     isProductIsFreeReturns = product.productIsFreeReturns == 1
                     isProductIsPreorder = product.productIsPreorder == 1
                     preOrderDurationDay = product.productPreorder.durationDay
@@ -305,9 +300,6 @@ class ShipmentMapper @Inject constructor() {
                         productPreOrderInfo = "PO " + product.productPreorder.durationText
                     }
                     productCashback = product.productCashback
-                    productMinOrder = product.productMinOrder
-                    productInvenageValue = product.productInvenageValue
-                    productSwitchInvenage = product.productSwitchInvenage
                     productPriceCurrency = product.productPriceCurrency
                     productImageSrc200Square = product.productImageSrc200Square
                     productNotes = product.productNotes
@@ -453,20 +445,11 @@ class ShipmentMapper @Inject constructor() {
         return com.tokopedia.checkout.domain.model.cartshipmentform.Shop().apply {
             shopId = shop.shopId
             shopName = shop.shopName
-            shopImage = shop.shopImage
-            shopUrl = shop.shopUrl
-            shopStatus = shop.shopStatus
             shopTypeInfoData = mapShopTypeInfo(shop)
             postalCode = shop.postalCode
             latitude = shop.latitude
             longitude = shop.longitude
             districtId = shop.districtId
-            districtName = shop.districtName
-            origin = shop.origin
-            addressStreet = shop.addressStreet
-            provinceId = shop.provinceId
-            cityId = shop.cityId
-            cityName = shop.cityName
             shopAlertMessage = shop.shopAlertMessage
             isTokoNow = shop.isTokoNow
             shopTickerTitle = shop.shopTickerTitle
