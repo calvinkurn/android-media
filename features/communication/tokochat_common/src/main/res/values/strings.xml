@@ -37,5 +37,6 @@
     <string name="tokochat_message_censored_desc_three_sub_one">&#8226; Hindari memberikan data pribadi seperti nomor HP, email dan identitas diri.</string>
     <string name="tokochat_message_censored_desc_three_sub_two">&#8226; Hindari promosi situs lain atau berkomunikasi lewat saluran selain Tokopedia.</string>
     <string name="tokochat_message_censored_terms_condition">Buat tahu lebih lanjut, cek Syarat &amp; Ketentuan</string>
+    <string name="tokochat_message_censored_terms_condition_span">Syarat &amp; Ketentuan</string>
 
 </resources>

@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatGuideChatBottomsheetBinding
+import com.tokopedia.tokochat_common.util.TokoChatUrlUtil
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.GUIDE_CHAT
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -60,9 +61,10 @@ class TokoChatGuideChatBottomSheet: BottomSheetUnify() {
     private fun setupTermsConditionSpan() {
         val completeString = getString(R.string.tokochat_message_censored_terms_condition)
         val spannableString = SpannableString(completeString)
+        val termsConditionSpan = getString(R.string.tokochat_message_censored_terms_condition_span)
         try {
-            val startPosition = completeString.indexOf(TERMS_CONDITION_SPAN)
-            val endPosition = completeString.lastIndexOf(TERMS_CONDITION_SPAN) + TERMS_CONDITION_SPAN.length
+            val startPosition = completeString.indexOf(termsConditionSpan)
+            val endPosition = completeString.lastIndexOf(termsConditionSpan) + termsConditionSpan.length
             spannableString.setSpan(
                 StyleSpan(Typeface.BOLD),
                 startPosition,
@@ -83,7 +85,7 @@ class TokoChatGuideChatBottomSheet: BottomSheetUnify() {
     private fun getTermsConditionClick(): ClickableSpan {
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
-                RouteManager.route(context, TERM_CONDITION_URL)
+                RouteManager.route(context, TokoChatUrlUtil.TNC)
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -103,8 +105,6 @@ class TokoChatGuideChatBottomSheet: BottomSheetUnify() {
 
     companion object {
         private val TAG = TokoChatGuideChatBottomSheet::class.simpleName
-        private const val TERMS_CONDITION_SPAN = "Syarat & Ketentuan"
-        private const val TERM_CONDITION_URL = "https://www.tokopedia.com/terms#konten"
     }
 }
 

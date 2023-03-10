@@ -15,19 +15,16 @@ object TokoChatUrlUtil {
      */
     const val IV_MASKING_PHONE_NUMBER = TokopediaImageUrl.IV_MASKING_PHONE_NUMBER
     const val IC_TOKOFOOD_SOURCE = TokopediaImageUrl.IC_TOKOFOOD_SOURCE
-    const val IMAGE_UNAVAILABLE_GENERAL_URL =
-        "https://images.tokopedia.net/img/android/tokochat/tokochat_img_chat_unavailable_general.png"
+    const val IMAGE_UNAVAILABLE_GENERAL_URL = TokopediaImageUrl.IMG_UNAVAILABLE_GENERAL
 
     /**
      * Typing GIF
      */
-    const val TYPING_LIGHT_MODE =
-        "https://images.tokopedia.net/img/android/user/typing_motion_lightmode.gif"
-    const val TYPING_DARK_MODE =
-        "https://images.tokopedia.net/img/android/user/typing_motion_darkmode.gif"
+    const val TYPING_LIGHT_MODE = TokopediaImageUrl.GIF_TYPING_LIGHT
+    const val TYPING_DARK_MODE = TokopediaImageUrl.GIF_TYPING_DARK
 
     /**
      * Censor Chat Urls
      */
-    const val GUIDE_CHAT = "https://images.tokopedia.net/img/android/communication/tokochat/tokochat_guide_chat.png"
+    const val GUIDE_CHAT = TokopediaImageUrl.IMG_GUIDE_CHAT
 }
