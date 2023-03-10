@@ -121,7 +121,8 @@ class AddProductViewModelTest {
     //getProductsAndProductsMetadata success page mode create
 
     @Test
-    fun `When get voucher metadata in voucher creation mode, action should be VoucherAction CREATE`() = runBlockingTest{
+    fun `When get voucher metadata in voucher creation mode, action should be VoucherAction CREATE`() = runBlockingTest {
+        //Given
         val pageMode = PageMode.CREATE
         val voucherConfiguration = buildVoucherConfiguration()
         val previouslySelectedProducts = populateProduct()
@@ -147,6 +148,7 @@ class AddProductViewModelTest {
     @Test
     fun `When get voucher metadata in edit voucher mode, action should be VoucherAction UPDATE`() {
         runBlockingTest {
+            //Given
             val pageMode = PageMode.EDIT
             val voucherConfiguration = buildVoucherConfiguration()
             val previouslySelectedProducts = populateProduct()
@@ -183,6 +185,7 @@ class AddProductViewModelTest {
     @Test
     fun `When get voucher metadata in duplicate voucher mode, action should be VoucherAction UPDATE`() {
         runBlockingTest {
+            //Given
             val pageMode = PageMode.EDIT
             val voucherConfiguration = buildVoucherConfiguration()
             val previouslySelectedProducts = populateProduct()
@@ -219,6 +222,7 @@ class AddProductViewModelTest {
     @Test
     fun `When get seller warehouse location response return empty warehouse, should not proceed to get product list metadata to server`() {
         runBlockingTest {
+            //Given
             val pageMode = PageMode.CREATE
             val voucherConfiguration = buildVoucherConfiguration()
             val previouslySelectedProducts = populateProduct()
@@ -253,6 +257,7 @@ class AddProductViewModelTest {
     @Test
     fun `When get products and its metadata return success, should set the response to ui state correctly`() {
         runBlockingTest {
+            //Given
             val pageMode = PageMode.CREATE
             val voucherConfiguration = buildVoucherConfiguration()
             val previouslySelectedProducts = populateProduct()
@@ -302,6 +307,7 @@ class AddProductViewModelTest {
     @Test
     fun `When get products success, should return all ready stock parent products only`() {
         runBlockingTest {
+            //Given
             val pageMode = PageMode.CREATE
             val voucherConfiguration = buildVoucherConfiguration()
             val expectedMaxProductSubmission = 100
@@ -343,10 +349,79 @@ class AddProductViewModelTest {
         }
     }
 
+    //getProducts success isEligible = false
+    @Test
+    fun `When validating two product eligibility to servers, and second product is ineligible then second product isEligible should be false`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                ),
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = false, //Second product isEligible should be false
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall(warehouseId = WAREHOUSE_ID, sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isLoading)
+            assertEquals(listOf(firstProduct, secondProduct), actual.products)
+
+            job.cancel()
+        }
+    }
+
+
+    //getProducts success isSelected = false
+    //getProducts success enableCheckbox = false
+
+
     //getProducts success category ids is not empty
     //getProducts success showcase ids is not empty
-    //getProducts success: has pre order product
-    //getProducts success: has no pre order product
 
 
     //getProducts success currentPageParentProductsIds is not empty
@@ -447,7 +522,10 @@ class AddProductViewModelTest {
         coEvery { getProductsUseCase.execute(getProductsParam) } returns getProductsResponse
     }
 
-    private fun mockVoucherValidationPartialGqlCall(productIds: List<Long> = emptyList()) {
+    private fun mockVoucherValidationPartialGqlCall(
+        productIds: List<Long> = emptyList(),
+        productValidationResponse: List<VoucherValidationResult.ValidationProduct> = emptyList()
+    ) {
         val voucherValidationParam = VoucherValidationPartialUseCase.Param(
             benefitIdr = 0,
             benefitMax = 0,
@@ -495,7 +573,7 @@ class AddProductViewModelTest {
                 minimumTierLevel = "",
                 quota = "",
             ),
-            validationProduct = emptyList()
+            validationProduct = productValidationResponse
         )
         coEvery { voucherValidationPartialUseCase.execute(voucherValidationParam) } returns voucherValidationResponse
     }
