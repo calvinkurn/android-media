@@ -44,7 +44,8 @@ class RegisterProgressiveUseCase @Inject constructor(
         } else if (response.data.challengeID.isNotEmpty()) {
             RegisterProgressiveResult.RiskyUser(challengeId = response.data.challengeID)
         } else {
-            RegisterProgressiveResult.NotRiskyUser()
+            //TODO: change implementation when API ready
+            RegisterProgressiveResult.NotRiskyUser(isPending = false)
         }
     }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.FinalLoaderViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainViewModel
 import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentViewModel
 import dagger.Binds
@@ -41,6 +42,11 @@ abstract class GotoKycViewModelModule {
     @IntoMap
     @ViewModelKey(DobChallengeViewModel::class)
     abstract fun dobChallengeViewModel(viewModel: DobChallengeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FinalLoaderViewModel::class)
+    abstract fun finalLoaderViewModel(viewModel: FinalLoaderViewModel): ViewModel
 
     @Binds
     @ActivityScope

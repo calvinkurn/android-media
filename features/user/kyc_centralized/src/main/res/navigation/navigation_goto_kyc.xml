@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_goto_kyc"
     app:startDestination="@id/routerFragment">
 
     <fragment
         android:id="@+id/routerFragment"
         android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment"
-        android:label="RouterFragment" >
+        android:label="RouterFragment"
+        tools:layout="@layout/fragment_goto_kyc_loader">
         <action
             android:id="@+id/action_routerFragment_to_statusSubmissionFragment"
             app:destination="@id/statusSubmissionFragment" />
@@ -25,7 +27,8 @@
     <fragment
         android:id="@+id/statusSubmissionFragment"
         android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.StatusSubmissionFragment"
-        android:label="StatusSubmissionFragment" >
+        android:label="StatusSubmissionFragment"
+        tools:layout="@layout/fragment_goto_kyc_status_submission">
         <argument
             android:name="parameter"
             app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.StatusSubmissionParam"/>
@@ -33,7 +36,8 @@
     <fragment
         android:id="@+id/bridgingAccountLinkingFragment"
         android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingFragment"
-        android:label="BridgingAccountLinkingFragment" >
+        android:label="BridgingAccountLinkingFragment"
+        tools:layout="@layout/fragment_goto_kyc_bridging_account_linking">
         <argument
             android:name="parameter"
             app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingParam" />
@@ -47,18 +51,38 @@
     <fragment
         android:id="@+id/dobChallengeFragment"
         android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeFragment"
-        android:label="DobChallengeFragment" >
+        android:label="DobChallengeFragment"
+        tools:layout="@layout/fragment_goto_kyc_dob_challenge">
         <argument
             android:name="parameter"
             app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeParam"/>
+        <action
+            android:id="@+id/action_dobChallengeFragment_to_finalLoaderFragment"
+            app:destination="@id/finalLoaderFragment" />
     </fragment>
     <fragment
         android:id="@+id/onboardBenefitFragment"
         android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.OnboardBenefitFragment"
-        android:label="OnboardBenefitFragment" >
+        android:label="OnboardBenefitFragment"
+        tools:layout="@layout/fragment_goto_kyc_onboard_benefit">
         <argument
             android:name="parameter"
             app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.OnboardBenefitParam"/>
+    </fragment>
+    <fragment
+        android:id="@+id/finalLoaderFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.FinalLoaderFragment"
+        android:label="FinalLoaderFragment"
+        tools:layout="@layout/fragment_goto_kyc_final_loader">
+        <argument
+            android:name="parameter"
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.FinalLoaderParam"/>
+        <action
+            android:id="@+id/action_finalLoaderFragment_to_statusSubmissionFragment"
+            app:destination="@id/statusSubmissionFragment" />
+        <action
+            android:id="@+id/action_finalLoaderFragment_to_dobChallengeFragment"
+            app:destination="@id/dobChallengeFragment" />
     </fragment>
 
 </navigation>
