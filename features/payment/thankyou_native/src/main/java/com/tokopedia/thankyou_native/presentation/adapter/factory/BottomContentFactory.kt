@@ -4,23 +4,23 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationWidgetModel
-import com.tokopedia.thankyou_native.presentation.adapter.model.RecommendationWidgetModel
-import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
-import com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcontent.GyroRecommendationItemViewHolder
-import com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcontent.RecommendationItemViewHolder
-import com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcontent.TopAdsItemViewHolder
+import com.tokopedia.thankyou_native.presentation.adapter.model.*
+import com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcontent.*
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
+import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
 
 class BottomContentFactory(
     private val registerMemberShipListener: RegisterMemberShipListener
+    private val marketplaceRecommendationListener: MarketplaceRecommendationListener
 ): BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
             TopAdsItemViewHolder.LAYOUT_ID -> TopAdsItemViewHolder(parent)
             GyroRecommendationItemViewHolder.LAYOUT_ID -> GyroRecommendationItemViewHolder(parent, registerMemberShipListener)
-            RecommendationItemViewHolder.LAYOUT_ID -> RecommendationItemViewHolder(parent)
+            MarketplaceRecommendationItemViewHolder.LAYOUT_ID -> MarketplaceRecommendationItemViewHolder(parent, marketplaceRecommendationListener)
+            DigitalRecommendationItemViewHolder.LAYOUT_ID -> DigitalRecommendationItemViewHolder(parent)
+            HeadlineAdsItemViewHolder.LAYOUT_ID -> HeadlineAdsItemViewHolder(parent)
         }
         return super.createViewHolder(parent, type)
     }
@@ -33,7 +33,15 @@ class BottomContentFactory(
         return GyroRecommendationItemViewHolder.LAYOUT_ID
     }
 
-    fun type(recommendationWidgetModel: RecommendationWidgetModel): Int {
-        return RecommendationItemViewHolder.LAYOUT_ID
+    fun type(marketplaceRecommendationWidgetModel: MarketplaceRecommendationWidgetModel): Int {
+        return MarketplaceRecommendationItemViewHolder.LAYOUT_ID
+    }
+
+    fun type(digitalRecommendationWidgetModel: DigitalRecommendationWidgetModel): Int {
+        return DigitalRecommendationItemViewHolder.LAYOUT_ID
+    }
+
+    fun type(headlineAdsWidgetModel: HeadlineAdsWidgetModel): Int {
+        return HeadlineAdsItemViewHolder.LAYOUT_ID
     }
 }

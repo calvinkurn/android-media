@@ -62,6 +62,7 @@ import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewMo
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
+import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
 import com.tokopedia.thankyou_native.presentation.views.listener.RecommendationItemListener
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
@@ -84,7 +85,7 @@ import javax.inject.Inject
 
 
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener,
-    RegisterMemberShipListener, RecommendationItemListener {
+    RegisterMemberShipListener, MarketplaceRecommendationListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
@@ -182,7 +183,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-    override fun addRecommendation(containerView: LinearLayout?) {
+    fun addRecommendation(containerView: LinearLayout?) {
         val pgCategoryIds = mutableListOf<Int>()
         when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
             is MarketPlaceThankPage -> {

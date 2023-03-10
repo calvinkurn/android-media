@@ -1,8 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.views.listener
 
-import android.widget.LinearLayout
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 
-interface RecommendationItemListener {
-    fun addRecommendation(containerView: LinearLayout?)
+interface MarketplaceRecommendationListener {
+    var iRecommendationView: IRecommendationView?
 }
