@@ -1,10 +1,11 @@
-package com.tokopedia.play.widget.ui.widget.medium
+package com.tokopedia.play.widget.ui.widget.large
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -14,21 +15,17 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.getWidthAndHeight
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
-import com.tokopedia.play_common.R as playCommonR
+import kotlinx.coroutines.*
 
 /**
- * Created by kenny.hadisaputra on 25/01/22
+ * Created By : Jonathan Darwin on February 09, 2023
  */
-class PlayWidgetCardMediumTranscodeView : FrameLayout {
+class PlayWidgetCardLargeTranscodeView : FrameLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -66,12 +63,12 @@ class PlayWidgetCardMediumTranscodeView : FrameLayout {
     private val transcodingCoverTarget: CustomTarget<Bitmap>
 
     init {
-        val view = View.inflate(context, R.layout.view_play_widget_card_medium_transcode, this)
+        val view = View.inflate(context, R.layout.view_play_widget_card_large_transcode, this)
         thumbnail = view.findViewById(R.id.play_widget_thumbnail)
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
-        tvTotalView = view.findViewById(playCommonR.id.viewer)
+        tvTotalView = view.findViewById(com.tokopedia.play_common.R.id.viewer)
         llWidgetContainer = view.findViewById(R.id.play_widget_info_container)
         llLoadingContainer = view.findViewById(R.id.ll_loading_container)
         loaderLoading = view.findViewById(R.id.loader_loading)
@@ -96,6 +93,12 @@ class PlayWidgetCardMediumTranscodeView : FrameLayout {
     }
 
     fun setData(data: PlayWidgetChannelUiModel) {
+
+        layoutParams = ViewGroup.LayoutParams(
+            data.gridType.getWidthAndHeight(context).first,
+            data.gridType.getWidthAndHeight(context).second
+        )
+
         Glide.with(thumbnail.context)
             .asBitmap()
             .load(data.video.coverUrl)
