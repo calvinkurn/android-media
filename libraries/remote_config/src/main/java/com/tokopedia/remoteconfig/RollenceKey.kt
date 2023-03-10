@@ -75,4 +75,7 @@ object RollenceKey {
 
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
+
+    //DG SBM Transition
+    const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
 }
