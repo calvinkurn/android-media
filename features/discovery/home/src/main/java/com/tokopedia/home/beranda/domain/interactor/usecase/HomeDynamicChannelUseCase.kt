@@ -24,7 +24,6 @@ import com.tokopedia.home.beranda.helper.MissionWidgetHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.HomeServerLogger
@@ -80,17 +79,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
     private val userSessionInterface: UserSessionInterface,
-    private val homeMissionWidgetRepository: HomeMissionWidgetRepository,
-    private val homeBalanceWidgetAtf2UseCase: HomeBalanceWidgetAtf2UseCase
+    private val homeMissionWidgetRepository: HomeMissionWidgetRepository
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
 
     private var currentHeaderDataModel: HomeHeaderDataModel? = null
     private var previousHeaderDataModel: HomeHeaderDataModel? = null
-
-    private var currentHeaderAtf2DataModel: HomeHeaderAtf2DataModel? = null
-    private var previousHeaderAtf2DataModel: HomeHeaderAtf2DataModel? = null
 
     companion object {
         private const val TYPE_ATF_1 = "atf-1"
@@ -115,20 +110,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
             if (model.needToShowUserWallet) {
                 homeDataModel.updateWidgetModel(
                     visitable = homeHeaderDataModel,
-                    position = index
-                ) {}
-            }
-        }
-    }
-
-    private fun updateHeaderAtf2Data(
-        homeHeaderAtf2DataModel: HomeHeaderAtf2DataModel,
-        homeDataModel: HomeDynamicChannelModel
-    ) {
-        findWidget<HomeHeaderAtf2DataModel>(homeDataModel) { model, index ->
-            if (model.needToShowUserWallet) {
-                homeDataModel.updateWidgetModel(
-                    visitable = homeHeaderAtf2DataModel,
                     position = index
                 ) {}
             }
@@ -203,30 +184,16 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     /**
                      * Get header data
                      */
-                    if (HomeRollenceController.isUsingAtf2Variant()) {
-                        if (currentHeaderAtf2DataModel == null) {
-                            currentHeaderAtf2DataModel =
-                                homeBalanceWidgetAtf2UseCase.onGetBalanceWidgetData(
-                                    previousHeaderAtf2DataModel
-                                )
-                            previousHeaderAtf2DataModel = currentHeaderAtf2DataModel
-                        }
-                        currentHeaderAtf2DataModel?.let {
-                            updateHeaderAtf2Data(it, dynamicChannelPlainResponse)
-                            emit(dynamicChannelPlainResponse)
-                        }
-                    } else {
-                        if (currentHeaderDataModel == null) {
-                            currentHeaderDataModel =
-                                homeBalanceWidgetUseCase.onGetBalanceWidgetData(
-                                    previousHeaderDataModel
-                                )
-                            previousHeaderDataModel = currentHeaderDataModel
-                        }
-                        currentHeaderDataModel?.let {
-                            updateHeaderData(it, dynamicChannelPlainResponse)
-                            emit(dynamicChannelPlainResponse)
-                        }
+                    if (currentHeaderDataModel == null) {
+                        currentHeaderDataModel =
+                            homeBalanceWidgetUseCase.onGetBalanceWidgetData(
+                                previousHeaderDataModel
+                            )
+                        previousHeaderDataModel = currentHeaderDataModel
+                    }
+                    currentHeaderDataModel?.let {
+                        updateHeaderData(it, dynamicChannelPlainResponse)
+                        emit(dynamicChannelPlainResponse)
                     }
                 }
 
@@ -829,11 +796,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
             var isAtfSuccess = true
-            if (HomeRollenceController.isUsingAtf2Variant()) {
-                currentHeaderAtf2DataModel = null
-            } else {
-                currentHeaderDataModel = null
-            }
+            currentHeaderDataModel = null
 
             /**
              * 1. Provide initial HomeData

@@ -11,7 +11,6 @@ import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetAtf2UseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -36,7 +35,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelLoadingModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelRetryModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderAtf2DataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
@@ -44,7 +42,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -93,8 +90,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>,
     private val deletePayLaterWidgetUseCase: Lazy<ClosePayLaterWidgetUseCase>,
     private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>,
-    private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>,
-    private val homeBalanceWidgetAtf2UseCase: Lazy<HomeBalanceWidgetAtf2UseCase>
+    private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -258,18 +254,6 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    private fun getBalanceWidgetAtf2LoadingState() {
-        if (!userSession.get().isLoggedIn) return
-        findWidget<HomeHeaderAtf2DataModel> { headerModel, index ->
-            launch {
-                val visitable = updateHeaderData(
-                    homeBalanceWidgetAtf2UseCase.get().onGetBalanceWidgetLoadingState(headerModel)
-                )
-                visitable?.let { updateWidget(visitable, index) }
-            }
-        }
-    }
-
     fun getBalanceWidgetData() {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
@@ -300,51 +284,6 @@ open class HomeRevampViewModel @Inject constructor(
                 } else {
                     val currentHeaderDataModel =
                         homeBalanceWidgetUseCase.get().onGetBalanceWidgetData(headerModel)
-                    val visitable = updateHeaderData(currentHeaderDataModel, index)
-                    visitable?.let {
-                        homeDataModel.updateWidgetModel(
-                            visitableToChange = visitable,
-                            visitable = currentHeaderDataModel,
-                            position = index
-                        ) {
-                            updateHomeData(homeDataModel)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fun getBalanceWidgetAtf2Data() {
-        if (!userSession.get().isLoggedIn) return
-        findWidget<HomeHeaderAtf2DataModel> { headerModel, index ->
-            launch {
-                if (headerModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isEmpty() == true) {
-                    val homeBalanceModel = headerModel.headerDataModel?.homeBalanceModel.apply {
-                        this?.status = HomeBalanceModel.STATUS_LOADING
-                    } ?: HomeBalanceModel()
-                    val headerDataModel = headerModel.headerDataModel?.copy(
-                        homeBalanceModel = homeBalanceModel
-                    )
-                    val initialHeaderModel = headerModel.copy(
-                        headerDataModel = headerDataModel
-                    )
-                    updateHeaderData(initialHeaderModel, index)
-                    val currentHeaderDataModel =
-                        homeBalanceWidgetAtf2UseCase.get().onGetBalanceWidgetData()
-                    val visitable = updateHeaderData(currentHeaderDataModel, index)
-                    visitable?.let {
-                        homeDataModel.updateWidgetModel(
-                            visitableToChange = visitable,
-                            visitable = currentHeaderDataModel,
-                            position = index
-                        ) {
-                            updateHomeData(homeDataModel)
-                        }
-                    }
-                } else {
-                    val currentHeaderDataModel =
-                        homeBalanceWidgetAtf2UseCase.get().onGetBalanceWidgetData(headerModel)
                     val visitable = updateHeaderData(currentHeaderDataModel, index)
                     visitable?.let {
                         homeDataModel.updateWidgetModel(
@@ -414,11 +353,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
         homeRateLimit.shouldFetch(HOME_LIMITER_KEY)
         onRefreshState = true
-        if (HomeRollenceController.isUsingAtf2Variant()) {
-            getBalanceWidgetAtf2LoadingState()
-        } else {
-            getBalanceWidgetLoadingState()
-        }
+        getBalanceWidgetLoadingState()
 
         if (homeFlowDataCancelled || !homeFlowStarted) {
             initFlow()
@@ -456,11 +391,7 @@ open class HomeRevampViewModel @Inject constructor(
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
         } else {
-            if (HomeRollenceController.isUsingAtf2Variant()) {
-                getBalanceWidgetAtf2Data()
-            } else {
-                getBalanceWidgetData()
-            }
+            getBalanceWidgetData()
         }
         getSearchHint(isFirstInstall)
     }
@@ -534,46 +465,24 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun onRefreshMembership(position: Int, headerTitle: String) {
         if (!userSession.get().isLoggedIn) return
-        if (HomeRollenceController.isUsingAtf2Variant()) {
-            findWidget<HomeHeaderAtf2DataModel> { headerModel, index ->
-                launch {
-                    val currentHeaderDataModel = homeBalanceWidgetAtf2UseCase.get()
-                        .onGetTokopointData(headerModel, position, headerTitle)
-                    val visitable = updateHeaderData(currentHeaderDataModel, index)
-                    visitable?.let { updateWidget(visitable, index) }
-                }
-            }
-        } else {
-            findWidget<HomeHeaderDataModel> { headerModel, index ->
-                launch {
-                    val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
-                        .onGetTokopointData(headerModel, position, headerTitle)
-                    val visitable = updateHeaderData(currentHeaderDataModel, index)
-                    visitable?.let { updateWidget(visitable, index) }
-                }
+        findWidget<HomeHeaderDataModel> { headerModel, index ->
+            launch {
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
+                    .onGetTokopointData(headerModel, position, headerTitle)
+                val visitable = updateHeaderData(currentHeaderDataModel, index)
+                visitable?.let { updateWidget(visitable, index) }
             }
         }
     }
 
     fun onRefreshWalletApp(position: Int, headerTitle: String) {
         if (!userSession.get().isLoggedIn) return
-        if (HomeRollenceController.isUsingAtf2Variant()) {
-            findWidget<HomeHeaderAtf2DataModel> { headerModel, index ->
-                launch {
-                    val currentHeaderDataModel = homeBalanceWidgetAtf2UseCase.get()
-                        .onGetWalletAppData(headerModel, position, headerTitle)
-                    val visitable = updateHeaderData(currentHeaderDataModel, index)
-                    visitable?.let { updateWidget(visitable, index) }
-                }
-            }
-        } else {
-            findWidget<HomeHeaderDataModel> { headerModel, index ->
-                launch {
-                    val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
-                        .onGetWalletAppData(headerModel, position, headerTitle)
-                    val visitable = updateHeaderData(currentHeaderDataModel, index)
-                    visitable?.let { updateWidget(visitable, index) }
-                }
+        findWidget<HomeHeaderDataModel> { headerModel, index ->
+            launch {
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
+                    .onGetWalletAppData(headerModel, position, headerTitle)
+                val visitable = updateHeaderData(currentHeaderDataModel, index)
+                visitable?.let { updateWidget(visitable, index) }
             }
         }
     }

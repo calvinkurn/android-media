@@ -8,7 +8,7 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderAtf2DataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.databinding.HomeHeaderAtf2Binding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -22,7 +22,7 @@ class HomeHeaderAtf2ViewHolder(
     itemView: View,
     private val listener: HomeCategoryListener
 ) :
-    AbstractViewHolder<HomeHeaderAtf2DataModel>(itemView) {
+    AbstractViewHolder<HomeHeaderDataModel>(itemView) {
 
     private var binding: HomeHeaderAtf2Binding? by viewBinding()
 
@@ -31,7 +31,7 @@ class HomeHeaderAtf2ViewHolder(
         val LAYOUT = R.layout.home_header_atf_2
     }
 
-    override fun bind(element: HomeHeaderAtf2DataModel) {
+    override fun bind(element: HomeHeaderDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
         renderEmptySpace()
         renderHeader()
@@ -75,7 +75,7 @@ class HomeHeaderAtf2ViewHolder(
         }
     }
 
-    override fun bind(element: HomeHeaderAtf2DataModel, payloads: MutableList<Any>) {
+    override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
         bind(element)
     }
 }
