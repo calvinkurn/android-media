@@ -115,10 +115,6 @@ class DeactivationQuestionnaireBottomSheet :
         btnPmDeactivationSubmit.setOnClickListener {
             submitDeactivationPm()
         }
-
-        btnPmDeactivationCancel.setOnClickListener {
-            dismiss()
-        }
     }
 
     fun setOnDeactivationSuccess(callback: () -> Unit) {
@@ -316,12 +312,10 @@ class DeactivationQuestionnaireBottomSheet :
     }
 
     private fun showButtonProgress() = binding?.run {
-        btnPmDeactivationCancel.isEnabled = false
         btnPmDeactivationSubmit.isLoading = true
     }
 
     private fun hideButtonProgress() = binding?.run {
-        btnPmDeactivationCancel.isEnabled = true
         btnPmDeactivationSubmit.isLoading = false
     }
 }

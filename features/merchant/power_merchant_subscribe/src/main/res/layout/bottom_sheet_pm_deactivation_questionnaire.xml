@@ -88,15 +88,6 @@
             android:text="@string/label_send_answer"
             app:unifyButtonSize="medium" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnPmDeactivationCancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/pm_later"
-            app:unifyButtonSize="medium"
-            app:unifyButtonVariant="ghost" />
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify
