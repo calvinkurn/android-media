@@ -101,8 +101,7 @@ fun createHomeViewModel(
     deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true),
     deletePayLaterWidgetUseCase: ClosePayLaterWidgetUseCase = mockk(relaxed = true),
     getPayLaterWidgetUseCase: GetPayLaterWidgetUseCase = mockk(relaxed = true),
-    homeMissionWidgetUseCase: HomeMissionWidgetUseCase = mockk(relaxed = true),
-    homeBalanceWidgetAtf2UseCase: HomeBalanceWidgetAtf2UseCase = mockk(relaxed = true)
+    homeMissionWidgetUseCase: HomeMissionWidgetUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return HomeRevampViewModel(
@@ -124,8 +123,7 @@ fun createHomeViewModel(
         deleteCMHomeWidgetUseCase = Lazy { deleteCMHomeWidgetUseCase },
         deletePayLaterWidgetUseCase = Lazy { deletePayLaterWidgetUseCase },
         getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase },
-        homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase },
-        homeBalanceWidgetAtf2UseCase = Lazy { homeBalanceWidgetAtf2UseCase }
+        homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase }
     )
 }
 
@@ -158,8 +156,7 @@ fun createHomeDynamicChannelUseCase(
     homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository = mockk(relaxed = true),
     homeChooseAddressRepository: HomeChooseAddressRepository = mockk(relaxed = true),
     homeUserSessionInterface: UserSessionInterface = mockk(relaxed = true),
-    homeMissionWidgetRepository: HomeMissionWidgetRepository = mockk(relaxed = true),
-    homeBalanceWidgetAtf2UseCase: HomeBalanceWidgetAtf2UseCase = mockk(relaxed = true)
+    homeMissionWidgetRepository: HomeMissionWidgetRepository = mockk(relaxed = true)
 ): HomeDynamicChannelUseCase {
     return HomeDynamicChannelUseCase(
         homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
@@ -189,8 +186,7 @@ fun createHomeDynamicChannelUseCase(
         homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
         homeChooseAddressRepository = homeChooseAddressRepository,
         userSessionInterface = homeUserSessionInterface,
-        homeMissionWidgetRepository = homeMissionWidgetRepository,
-        homeBalanceWidgetAtf2UseCase = homeBalanceWidgetAtf2UseCase
+        homeMissionWidgetRepository = homeMissionWidgetRepository
     )
 }
 
