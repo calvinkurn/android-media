@@ -1,4 +1,4 @@
-package com.tokopedia.catalog_library.model.util
+package com.tokopedia.catalog_library.util
 
 object CatalogLibraryConstant {
     const val CATALOG_SPECIAL = "catalog_special"
@@ -23,6 +23,11 @@ object CatalogLibraryConstant {
     const val CATALOG_SHIMMER_PRODUCTS = 3
     const val CATALOG_SHIMMER_LIHAT_SEMUA = 4
 
+    const val GRID_VIEW_STR = "grid view"
+    const val LIST_VIEW_STR = "list view"
+    const val ASCENDING_ORDER_STR = "ascending order"
+    const val DESCENDING_ORDER_STR = "descending order"
+
     const val SORT_TYPE_CATALOG = 0
     const val SORT_TYPE_VIRAL = 5
     const val SORT_TYPE_TOP_FIVE = 6
@@ -31,7 +36,12 @@ object CatalogLibraryConstant {
     const val TOTAL_ROWS_VIRAL = 1
     const val TOTAL_ROWS_CATALOG = 10
 
+    const val APP_LINK_HOME = "tokopedia://catalog-library"
     const val APP_LINK_KATEGORI = "tokopedia://catalog-library/kategori"
     const val CATALOG_HOME_PRODUCT_TITLE = "Katalog lainnya buat inspirasimu"
+    const val CATALOG_HOME_HEADING_KATEGORI_SPECIAL = "Kategori spesial buatmu"
+    const val CATALOG_HOME_HEADING_RELEVANT = "Cek katalognya produk incaranmu"
 
+    const val SOURCE_HOMEPAGE = "source homepage"
+    const val SOURCE_CATEGORY_LANDING_PAGE = "source category landing page"
 }

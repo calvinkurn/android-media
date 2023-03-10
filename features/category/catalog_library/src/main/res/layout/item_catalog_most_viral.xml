@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/catalog_most_viral_bg"
     android:layout_margin="1dp"
     android:padding="16dp"
     android:id="@+id/catalog_most_viral_item_layout"
@@ -21,14 +20,15 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/most_viral_lagi_viral_nih"
         android:layout_gravity="center_vertical"
-        app:typographyType="heading_5"
         android:layout_marginStart="8dp"
+        android:text="@string/most_viral_lagi_viral_nih"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintTop_toTopOf="@id/catalog_most_viral_icon"
+        app:layout_constraintBottom_toBottomOf="@id/catalog_most_viral_icon"
         app:layout_constraintStart_toEndOf="@id/catalog_most_viral_icon"
-        app:layout_constraintBottom_toBottomOf="@id/catalog_most_viral_icon" />
+        app:layout_constraintTop_toTopOf="@id/catalog_most_viral_icon"
+        app:typographyType="display_1"
+        app:typographyWeight="bold" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/catalog_product_viral_layout"
