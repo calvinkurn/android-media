@@ -8,7 +8,7 @@
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/catalog_home_header"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_height="wrap_content"
         app:unify_header_is_show_shadow="false"
         app:unify_header_is_show_back_button="true"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/catalog_home_rv"

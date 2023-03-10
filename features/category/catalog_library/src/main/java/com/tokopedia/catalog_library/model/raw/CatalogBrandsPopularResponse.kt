@@ -38,7 +38,31 @@ data class CatalogBrandsPopularResponse(
             val identifier: String? = "",
             @SerializedName("imageUrl")
             @Expose
-            val imageUrl: String? = ""
-        )
+            val imageUrl: String? = "",
+            @SerializedName("catalogs")
+            @Expose
+            val catalogs: ArrayList<Catalogs> = arrayListOf()
+        ){
+            data class Catalogs(
+                @SerializedName("id")
+                @Expose
+                val id: String? = "",
+                @SerializedName("name")
+                @Expose
+                val name: String? = "",
+                @SerializedName("applink")
+                @Expose
+                val applink: String? = "",
+                @SerializedName("imageUrl")
+                @Expose
+                val imageUrl: String? = "",
+                @SerializedName("url")
+                @Expose
+                val url: String? = "",
+                @SerializedName("mobileUrl")
+                @Expose
+                val mobileUrl: String? = ""
+            )
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.catalog_library.model.raw.gql
 
-const val GQL_CATALOG_BRAND_POPULAR: String =
+const val GQL_CATALOG_BRAND_POPULAR_WITH_CATALOGS: String =
     """query catalogGetBrandPopular() {
          catalogGetBrandPopular {
             header {
@@ -12,6 +12,14 @@ const val GQL_CATALOG_BRAND_POPULAR: String =
               name
               identifier
               imageUrl
+              catalogs {
+                id
+                name
+                imageUrl
+                url
+                mobileUrl
+                applink
+              }
             }
         }
     }

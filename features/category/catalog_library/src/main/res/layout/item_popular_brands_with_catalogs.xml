@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardElevation="6dp"
+    android:layout_margin="12dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_brand_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/circular_grey_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="100"
+            app:unify_image_type="rect" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_brand_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/brand_name"
+            app:layout_constraintBottom_toBottomOf="@id/img_brand_icon"
+            app:layout_constraintEnd_toStartOf="@id/tv_lihat_brand"
+            app:layout_constraintStart_toEndOf="@id/img_brand_icon"
+            app:layout_constraintTop_toTopOf="@id/img_brand_icon"
+            app:typographyType="heading_6" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/tv_lihat_brand"
+            android:layout_width="92dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="@string/lihat"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintBottom_toBottomOf="@id/img_brand_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/img_brand_icon"
+            app:typographyType="heading_6"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_catalog_1"
+            android:layout_width="99dp"
+            android:layout_height="99dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_brand_icon" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_catalog_1_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingEnd="8dp"
+            android:text="@string/brand_name"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/img_catalog_1"
+            app:layout_constraintStart_toStartOf="@id/img_catalog_1"
+            app:layout_constraintTop_toBottomOf="@id/img_catalog_1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_1"
+            android:layout_width="1dp"
+            android:layout_height="121dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@id/tv_lihat_brand"
+            app:layout_constraintGuide_percent="0.33"
+            app:layout_constraintStart_toStartOf="@id/img_brand_icon" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_catalog_2"
+            android:layout_width="99dp"
+            android:layout_height="99dp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_2"
+            app:layout_constraintStart_toStartOf="@id/guideline_1"
+            app:layout_constraintTop_toTopOf="@id/img_catalog_1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_catalog_2_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/brand_name"
+            android:textSize="12sp"
+            android:paddingEnd="8dp"
+            app:layout_constraintEnd_toEndOf="@id/img_catalog_2"
+            app:layout_constraintStart_toStartOf="@id/img_catalog_2"
+            app:layout_constraintTop_toBottomOf="@id/img_catalog_2"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_2"
+            android:layout_width="1dp"
+            android:layout_height="121dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="@id/img_brand_icon"
+            app:layout_constraintEnd_toEndOf="@id/tv_lihat_brand"
+            app:layout_constraintGuide_percent="0.66" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_catalog_3"
+            android:layout_width="99dp"
+            android:layout_height="99dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline_2"
+            app:layout_constraintTop_toTopOf="@id/img_catalog_1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_catalog_3_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/brand_name"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/img_catalog_3"
+            app:layout_constraintStart_toStartOf="@id/img_catalog_3"
+            app:layout_constraintTop_toBottomOf="@id/img_catalog_3"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>

@@ -137,7 +137,7 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
     }
 
     private fun setupRecyclerView(view: View) {
-        catalogLandingRecyclerView = view.findViewById(R.id.catalog_landing_rv)
+        catalogLandingRecyclerView = view.findViewById(R.id.category_landing_rv)
         catalogLandingRecyclerView?.apply {
             layoutManager = getLinearLayoutManager()
             adapter = catalogLandingPageAdapter

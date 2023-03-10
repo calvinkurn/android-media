@@ -33,6 +33,7 @@
             android:textColor="@color/Unify_GN500"
             app:typographyType="display_3"
             android:gravity="end"
+            android:layout_gravity="bottom"
             app:typographyWeight="bold" />
     </LinearLayout>
 

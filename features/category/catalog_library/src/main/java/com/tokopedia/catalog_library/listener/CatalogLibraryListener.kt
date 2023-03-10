@@ -7,6 +7,7 @@ interface CatalogLibraryListener {
     fun onLihatSemuaTextClick(applink: String) {}
     fun onProductCardClicked(applink: String?) {}
     fun onCategoryItemClicked(categoryIdentifier: String?) {}
+    fun onPopularBrandsLihatSemuaClick(applink: String){}
 
     fun specialCategoryImpression(
         creativeSlot: Int,

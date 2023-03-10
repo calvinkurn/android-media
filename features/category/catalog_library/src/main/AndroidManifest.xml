@@ -1,12 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.catalog_library">
 
     <application>
         <activity
             android:name=".ui.activity.CatalogLibraryHomePageActivity"
-            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
             android:screenOrientation="portrait"
-            android:exported="false">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -18,37 +19,57 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.activity.CatalogLibraryLihatSemuaPageActivity"
-            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
             android:screenOrientation="portrait"
-            android:exported="false">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/catalog_library_host"
-                    android:scheme="@string/internal_scheme"
-                    android:pathPattern="@string/applink_catalog_kategori"/>
+                    android:pathPattern="@string/applink_catalog_kategori"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.activity.CatalogLibraryLandingPageActivity"
-            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
             android:screenOrientation="portrait"
-            android:exported="false">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/catalog_library_host"
-                    android:scheme="@string/internal_scheme"
-                    android:pathPattern="@string/applink_catalog_kategori_category"/>
+                    android:pathPattern="@string/applink_catalog_kategori_category"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activity.PopularBrandsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/catalog_library_host"
+                    android:pathPattern="@string/applink_catalog_brand_popular"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

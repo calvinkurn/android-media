@@ -188,6 +188,11 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         RouteManager.route(context, applink)
     }
 
+    override fun onPopularBrandsLihatSemuaClick(applink: String) {
+        super.onPopularBrandsLihatSemuaClick(applink)
+        RouteManager.route(context, applink)
+    }
+
     override fun onProductCardClicked(applink: String?) {
         super.onProductCardClicked(applink)
         RouteManager.route(context, applink)
