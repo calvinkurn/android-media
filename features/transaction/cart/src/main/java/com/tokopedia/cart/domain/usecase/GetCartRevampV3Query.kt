@@ -21,26 +21,12 @@ const val CART_REVAMP_V3_QUERY =
               localization_choose_address {
                 address_id
                 address_name
-                address
                 postal_code
-                phone
                 receiver_name
-                status
-                country
-                province_id
-                province_name
                 city_id
-                city_name
                 district_id
-                district_name
-                address_2
                 latitude
                 longitude
-                corner_id
-                is_corner
-                is_primary
-                buyer_store_code
-                type
                 state
                 state_detail
                 tokonow {
@@ -446,46 +432,12 @@ const val CART_REVAMP_V3_QUERY =
                 }
                 last_apply {
                   data {
-                    global_success
-                    success
                     message {
                       state
                       color
                       text
                     }
                     codes
-                    promo_code_id
-                    title_description
-                    discount_amount
-                    cashback_wallet_amount
-                    cashback_advocate_referral_amount
-                    cashback_voucher_description
-                    invoice_description
-                    is_coupon
-                    gateway_id
-                    is_tokopedia_gerai
-                    clashing_info_detail {
-                      clash_message
-                      clash_reason
-                      is_clashed_promos
-                      options {
-                        voucher_orders {
-                          cart_id
-                          code
-                          shop_name
-                          potential_benefit
-                          promo_name
-                          unique_id
-                        }
-                      }
-                    }
-                    tokopoints_detail {
-                      conversion_rate {
-                        rate
-                        points_coefficient
-                        external_currency_coefficient
-                      }
-                    }
                     voucher_orders {
                       code
                       success
@@ -566,12 +518,29 @@ const val CART_REVAMP_V3_QUERY =
                       sp_ids
                       poml_auto_applied
                     }
+                    tracking_details {
+                      product_id
+                      promo_codes_tracking
+                      promo_details_tracking
+                    }
+                    benefit_summary_info {
+                      final_benefit_amount_str
+                      final_benefit_amount
+                      final_benefit_text
+                      summaries {
+                        description
+                        type
+                        amount_str
+                        amount
+                        details {
+                            description
+                            type
+                            amount_str
+                            amount
+                        }
+                      }
+                    }
                   }
-                  code
-                }
-                error_default {
-                  title
-                  description
                 }
               }
             }
