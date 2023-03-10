@@ -36,14 +36,13 @@ object AtcVariantNewMapper {
             VARIANT_HAVE_ONE_LEVEL -> {
                 VariantOneLevelUseCase.process(
                     variantData = variantData,
-                    selectedVariant = selectedVariant.orEmpty()
+                    mapOfSelectedVariant = selectedVariant.orEmpty()
                 )
             }
             VARIANT_HAVE_TWO_LEVEL -> {
                 VariantTwoLevelUseCase.process(
                     variantData = variantData,
-                    selectedVariant = selectedVariant.orEmpty(),
-                    selectedLevel = selectedLevel
+                    mapOfSelectedVariant = selectedVariant.orEmpty()
                 )
             }
             else -> null

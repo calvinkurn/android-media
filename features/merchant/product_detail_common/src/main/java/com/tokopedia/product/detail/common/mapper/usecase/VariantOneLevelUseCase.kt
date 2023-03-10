@@ -16,10 +16,10 @@ object VariantOneLevelUseCase {
 
     fun process(
         variantData: ProductVariant,
-        selectedVariant: Map<String, String>
+        mapOfSelectedVariant: Map<String, String>
     ): List<VariantCategory>? {
         val variant = variantData.variants.firstOrNull() ?: return null
-        val variantSelected = selectedVariant.values.toList()
+        val selectedVariant = mapOfSelectedVariant.values.toList()
         val hasCustomImages = variant.options.all {
             it.picture?.url100?.isNotEmpty() == true
         }
@@ -40,7 +40,7 @@ object VariantOneLevelUseCase {
                 if (option.id == child.optionIds.firstOrNull()) {
                     isFlashSale = child.isFlashSale
                     stock = child.stock?.stock.orZero()
-                    state = if (child.optionIds == variantSelected) {
+                    state = if (child.optionIds == selectedVariant) {
                         if (child.isBuyable) { // selected and can to buy
                             VariantConstant.STATE_SELECTED
                         } else { // selected and can not to buy
