@@ -85,10 +85,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import java.util.concurrent.TimeoutException
@@ -122,28 +119,31 @@ fun createHomeViewModel(
     homeDismissTodoWidgetUseCase: DismissTodoWidgetUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
-    return HomeRevampViewModel(
-        homeDispatcher = Lazy { dispatchers },
-        homeUseCase = Lazy { getHomeUseCase },
-        userSession = Lazy { userSessionInterface },
-        homeBalanceWidgetUseCase = Lazy { homeBalanceWidgetUseCase },
-        homeSuggestedReviewUseCase = Lazy { homeSuggestedReviewUseCase },
-        homeListCarouselUseCase = Lazy { homeListCarouselUseCase },
-        homePlayUseCase = Lazy { homePlayUseCase },
-        homePopularKeywordUseCase = Lazy { homePopularKeywordUseCase },
-        homeRechargeBuWidgetUseCase = Lazy { homeRechargeBuWidgetUseCase },
-        homeRechargeRecommendationUseCase = Lazy { homeRechargeRecommendationUseCase },
-        homeRecommendationUseCase = Lazy { homeRecommendationUseCase },
-        homeSalamRecommendationUseCase = Lazy { homeSalamRecommendationUseCase },
-        homeSearchUseCase = Lazy { homeSearchUseCase },
-        homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase },
-        getCMHomeWidgetDataUseCase = Lazy { getCMHomeWidgetDataUseCase },
-        deleteCMHomeWidgetUseCase = Lazy { deleteCMHomeWidgetUseCase },
-        deletePayLaterWidgetUseCase = Lazy { deletePayLaterWidgetUseCase },
-        getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase },
-        homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase },
-        homeTodoWidgetUseCase = Lazy { homeTodoWidgetUseCase },
-        homeDismissTodoWidgetUseCase = Lazy { homeDismissTodoWidgetUseCase }
+    return spyk(
+        HomeRevampViewModel(
+            homeDispatcher = Lazy { dispatchers },
+            homeUseCase = Lazy { getHomeUseCase },
+            userSession = Lazy { userSessionInterface },
+            homeBalanceWidgetUseCase = Lazy { homeBalanceWidgetUseCase },
+            homeSuggestedReviewUseCase = Lazy { homeSuggestedReviewUseCase },
+            homeListCarouselUseCase = Lazy { homeListCarouselUseCase },
+            homePlayUseCase = Lazy { homePlayUseCase },
+            homePopularKeywordUseCase = Lazy { homePopularKeywordUseCase },
+            homeRechargeBuWidgetUseCase = Lazy { homeRechargeBuWidgetUseCase },
+            homeRechargeRecommendationUseCase = Lazy { homeRechargeRecommendationUseCase },
+            homeRecommendationUseCase = Lazy { homeRecommendationUseCase },
+            homeSalamRecommendationUseCase = Lazy { homeSalamRecommendationUseCase },
+            homeSearchUseCase = Lazy { homeSearchUseCase },
+            homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase },
+            getCMHomeWidgetDataUseCase = Lazy { getCMHomeWidgetDataUseCase },
+            deleteCMHomeWidgetUseCase = Lazy { deleteCMHomeWidgetUseCase },
+            deletePayLaterWidgetUseCase = Lazy { deletePayLaterWidgetUseCase },
+            getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase },
+            homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase },
+            homeTodoWidgetUseCase = Lazy { homeTodoWidgetUseCase },
+            homeDismissTodoWidgetUseCase = Lazy { homeDismissTodoWidgetUseCase }
+        ),
+        recordPrivateCalls = true
     )
 }
 

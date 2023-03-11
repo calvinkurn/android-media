@@ -28,29 +28,18 @@ class DismissTodoWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRep
     }
 
     fun getTodoWidgetDismissData(
-        position: Int,
         dataSource: String,
-        param: String,
-        onSuccess: (Pair<Int, Boolean>) -> Unit = { },
-        onError: (Throwable) -> Unit = { }
+        param: String
     ) {
-        try {
-            this.setRequestParams(
-                RequestParams.create().apply {
-                    putString(PARAM, param)
-                    putString(DATASOURCE_PARAM, dataSource)
-                }.parameters
-            )
-            this.execute(
-                { result ->
-                    onSuccess(Pair(position, result.closeToDoWidget.isSuccess))
-                },
-                { error ->
-                    onError(error)
-                }
-            )
-        } catch (throwable: Throwable) {
-            onError(throwable)
-        }
+        this.setRequestParams(
+            RequestParams.create().apply {
+                putString(PARAM, param)
+                putString(DATASOURCE_PARAM, dataSource)
+            }.parameters
+        )
+        this.execute(
+            onSuccess = { },
+            onError = { }
+        )
     }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.TodoWidgetDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -135,5 +136,34 @@ class HomeViewModelTodoWidgetUnitTest {
         }
 
         Assert.assertNull(homeViewModel.homeDataModel.list.find { it is TodoWidgetListDataModel })
+    }
+
+    @Test
+    fun `given failed when removing dismissed todo widget from model then do nothing`() {
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
+        val position = 0
+        val dataSource = "r3_category"
+        val param = "closeButton=user_id:data_source"
+
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(mockSuccessTodoWidget)
+            )
+        )
+
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homeTodoWidgetUseCase = homeTodoWidgetUseCase)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
+
+        val containsTodoWidgetSuccess =
+            (homeViewModel.homeDataModel.list.find { it is TodoWidgetListDataModel } as TodoWidgetListDataModel).status == TodoWidgetListDataModel.STATUS_SUCCESS
+        Assert.assertTrue(containsTodoWidgetSuccess)
+
+        every { homeViewModel["deleteWidget"](any<TodoWidgetListDataModel>(), any<Int>()) } throws Exception()
+
+        repeat(mockSuccessTodoWidget.todoWidgetList.size) {
+            homeViewModel.dismissTodoWidget(position, dataSource, param)
+        }
+
+        Assert.assertNotNull(homeViewModel.homeDataModel.list.find { it is TodoWidgetListDataModel })
     }
 }

@@ -749,24 +749,25 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun dismissTodoWidget(horizontalPosition: Int, dataSource: String, param: String) {
-        launchCatchError(coroutineContext, block = {
+        launch {
             homeDismissTodoWidgetUseCase.get().getTodoWidgetDismissData(
-                horizontalPosition,
                 dataSource,
                 param
             )
 
-            findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
-                if (item.todoWidgetList.size == 1) {
-                    deleteWidget(item, verticalPosition)
-                } else {
-                    val newTodoWidgetList = item.todoWidgetList.toMutableList().apply {
-                        removeAt(horizontalPosition)
+            try {
+                findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
+                    if (item.todoWidgetList.size == 1) {
+                        deleteWidget(item, verticalPosition)
+                    } else {
+                        val newTodoWidgetList = item.todoWidgetList.toMutableList().apply {
+                            removeAt(horizontalPosition)
+                        }
+                        val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
+                        homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) { }
                     }
-                    val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
-                    homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) { }
                 }
-            }
-        }) { }
+            } catch (e: Exception) { }
+        }
     }
 }
