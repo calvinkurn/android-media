@@ -60,18 +60,18 @@ class DiscoveryExtensibleFragment : DiscoveryFragment() {
     }
 
     override fun initInjector() {
-        activity?.let { activity ->
+        context?.let { context ->
             discoveryComponent = DaggerDiscoveryComponent.builder()
                 .discoveryModule(DiscoveryModule(DiscoveryRepoProvider()))
-                .baseAppComponent((activity.applicationContext as BaseMainApplication).baseAppComponent)
+                .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
                 .build().also {
                     it.inject(this)
                 }
             tempViewModel = ViewModelProvider(
-                activity,
+                this,
                 viewModelFactory
             )[DiscoveryViewModel::class.java].apply {
-                activity.lifecycle.addObserver(BaseLifeCycleObserver(this))
+                this@DiscoveryExtensibleFragment.lifecycle.addObserver(BaseLifeCycleObserver(this))
             }
 
         }

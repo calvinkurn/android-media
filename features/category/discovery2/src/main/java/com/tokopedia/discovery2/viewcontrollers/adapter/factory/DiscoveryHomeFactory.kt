@@ -630,7 +630,7 @@ class DiscoveryHomeFactory {
             fragment: Fragment
         ): AbstractViewHolder? {
             return componentMapper[viewType]?.getViewHolder(itemView, fragment)?.apply {
-                uiWidgetComponent = (fragment as DiscoveryFragment).discoveryComponent.provideSubComponent()
+                uiWidgetComponent = (fragment as DiscoveryFragment).provideSubComponent()
             }
         }
 

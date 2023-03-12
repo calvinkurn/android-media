@@ -40,14 +40,11 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         val itemView: View =
             LayoutInflater.from(parent.context)
                 .inflate(ComponentsList.values()[viewType].id, parent, false)
-        return (DiscoveryHomeFactory.createViewHolder(
+        return DiscoveryHomeFactory.createViewHolder(
             itemView,
             viewType,
             fragment
-        ) as AbstractViewHolder).apply {
-            this.uiWidgetComponent =
-                (fragment as DiscoveryFragment).discoveryComponent.provideSubComponent()
-        }
+        ) as AbstractViewHolder
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {

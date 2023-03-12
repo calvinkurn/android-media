@@ -55,6 +55,7 @@ import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.di.DiscoveryComponent
+import com.tokopedia.discovery2.di.UIWidgetComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.AFFILIATE_UNIQUE_ID
@@ -971,7 +972,7 @@ open class DiscoveryFragment :
         if (anchorViewHolder == null) {
             val view = layoutInflater.inflate(ComponentsList.AnchorTabs.id, null, false)
             anchorViewHolder = AnchorTabsViewHolder(view, this).apply {
-                uiWidgetComponent = this@DiscoveryFragment.discoveryComponent.provideSubComponent()
+                uiWidgetComponent = provideSubComponent()
             }
             val viewModel =
                 AnchorTabsViewModel(context?.applicationContext as Application, it.data, 0)
@@ -2215,6 +2216,15 @@ open class DiscoveryFragment :
 
     fun createAffiliateLink(applink: String): String {
         return discoveryViewModel.createAffiliateLink(applink)
+    }
+
+    fun provideSubComponent(): UIWidgetComponent {
+        return if (::discoveryComponent.isInitialized) {
+            discoveryComponent.provideSubComponent()
+        } else {
+            initInjector()
+            discoveryComponent.provideSubComponent()
+        }
     }
 
 }
