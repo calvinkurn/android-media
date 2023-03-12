@@ -2,36 +2,23 @@ package com.tokopedia.rechargegeneral.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
-import android.view.Menu
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
-import com.tokopedia.common.topupbills.view.bottomsheet.TopupBillsMenuBottomSheets
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.DaggerRechargeGeneralComponent
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment
-import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
  * applink
@@ -50,14 +37,14 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         val productId = bundle?.getString(PARAM_PRODUCT_ID)?.toIntSafely().toZeroIfNull()
         val isAddSBM = bundle?.getString(PARAM_ADD_BILLS)?.toBoolean() ?: false
         val isFromSBM = bundle?.getBoolean(EXTRA_ADD_BILLS_IS_FROM_SBM) ?: false
-        val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA,"") ?: ""
+        val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA, "") ?: ""
         return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId, rechargeProductFromSlice, isAddSBM, isFromSBM)
     }
 
     override fun getComponent(): RechargeGeneralComponent {
         return DaggerRechargeGeneralComponent.builder()
-                .commonTopupBillsComponent(CommonTopupBillsComponentInstance.getCommonTopupBillsComponent(application))
-                .build()
+            .commonTopupBillsComponent(CommonTopupBillsComponentInstance.getCommonTopupBillsComponent(application))
+            .build()
     }
 
     override fun onBackPressed() {
@@ -90,7 +77,9 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
     companion object {
 
         @LayoutRes val LAYOUT = R.layout.view_recharge_general_toolbar
+
         @IdRes val TOOLBAR_ID = R.id.recharge_general_header
+
         @IdRes val VIEW_PARENT_ID = R.id.recharge_general_view_parent
 
         const val PARAM_CATEGORY_ID = "category_id"
@@ -103,11 +92,13 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
 
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
 
-        fun newInstance(context: Context,
-                        categoryId: Int,
-                        menuId: Int,
-                        operatorId: Int = 0,
-                        productId: String = ""): Intent {
+        fun newInstance(
+            context: Context,
+            categoryId: Int,
+            menuId: Int,
+            operatorId: Int = 0,
+            productId: String = ""
+        ): Intent {
             val intent = Intent(context, RechargeGeneralActivity::class.java)
             intent.putExtra(PARAM_CATEGORY_ID, categoryId.toString())
             intent.putExtra(PARAM_MENU_ID, menuId.toString())
