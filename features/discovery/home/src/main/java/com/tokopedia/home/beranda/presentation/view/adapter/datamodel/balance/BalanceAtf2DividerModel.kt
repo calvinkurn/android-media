@@ -8,11 +8,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
  */
 class BalanceAtf2DividerModel : BalanceVisitable {
     override fun areContentsTheSame(newItem: BalanceVisitable): Boolean {
-        return false
+        return this.areItemsTheSame(newItem)
     }
 
     override fun areItemsTheSame(newItem: BalanceVisitable): Boolean {
-        return false
+        return newItem is BalanceAtf2DividerModel
     }
 
     override fun type(typeFactory: BalanceTypeFactory): Int {
