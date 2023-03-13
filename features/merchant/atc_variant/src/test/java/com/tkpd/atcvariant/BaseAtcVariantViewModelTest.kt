@@ -16,6 +16,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -57,14 +58,19 @@ abstract class BaseAtcVariantViewModelTest {
     @RelaxedMockK
     lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
 
+    @RelaxedMockK
+    lateinit var remoteConfig: RemoteConfig
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     val viewModel by lazy {
-        AtcVariantViewModel(CoroutineTestDispatchersProvider, aggregatorMiniCartUseCase,
-                addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase,
-                addToWishlistV2UseCase, updateCartUseCase,
-                deleteCartUseCase, toggleFavoriteUseCase)
+        AtcVariantViewModel(
+            CoroutineTestDispatchersProvider, aggregatorMiniCartUseCase,
+            addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase,
+            addToWishlistV2UseCase, updateCartUseCase,
+            deleteCartUseCase, toggleFavoriteUseCase, remoteConfig
+        )
     }
 
     @Before
@@ -73,10 +79,12 @@ abstract class BaseAtcVariantViewModelTest {
     }
 
     //region assert helper
-    fun assertButton(expectedIsBuyable: Boolean = true,
-                     expectedCartType: String? = "normal",
-                     expectedCartColor: String? = "primary_green",
-                     expectedCartText: String? = "+ Keranjang") {
+    fun assertButton(
+        expectedIsBuyable: Boolean = true,
+        expectedCartType: String? = "normal",
+        expectedCartColor: String? = "primary_green",
+        expectedCartText: String? = "+ Keranjang"
+    ) {
         val data = (viewModel.buttonData.value as Success).data
 
         Assert.assertEquals(data.isProductSelectedBuyable, expectedIsBuyable)
@@ -87,11 +95,12 @@ abstract class BaseAtcVariantViewModelTest {
         Assert.assertEquals(cartType?.text, expectedCartText)
     }
 
-    fun assertRestrictionData(assertSuccess: Boolean,
-                              expectedProductId: String = "",
-                              expectedDescription: String = "",
-                              expectedTitle: String = "") {
-
+    fun assertRestrictionData(
+        assertSuccess: Boolean,
+        expectedProductId: String = "",
+        expectedDescription: String = "",
+        expectedTitle: String = ""
+    ) {
         if (assertSuccess) {
             val data = (viewModel.restrictionData.value as Success).data
 
@@ -103,10 +112,12 @@ abstract class BaseAtcVariantViewModelTest {
         }
     }
 
-    fun assertRatesData(assertSuccess: Boolean,
-                        containProductId: String = "",
-                        expectedSubtitle: String = "",
-                        expectedTitle: String = "") {
+    fun assertRatesData(
+        assertSuccess: Boolean,
+        containProductId: String = "",
+        expectedSubtitle: String = "",
+        expectedTitle: String = ""
+    ) {
         if (assertSuccess) {
             val data = (viewModel.ratesLiveData.value as Success).data
 
@@ -123,7 +134,6 @@ abstract class BaseAtcVariantViewModelTest {
 
         Assert.assertNotNull(currentStockCopy)
         Assert.assertEquals(currentStockCopy, expectedStockCopy)
-
     }
 
     fun decideFailValueHitGqlAggregator() {
@@ -141,9 +151,11 @@ abstract class BaseAtcVariantViewModelTest {
         Assert.assertTrue(viewModel.buttonData.value is Fail)
     }
 
-    fun decideSuccessValueHitGqlAggregator(productId: String,
-                                           isTokoNow: Boolean,
-                                           showQtyEditor: Boolean) {
+    fun decideSuccessValueHitGqlAggregator(
+        productId: String,
+        isTokoNow: Boolean,
+        showQtyEditor: Boolean
+    ) {
         val mockData = AtcVariantJsonHelper.generateAggregatorData(isTokoNow)
         val aggregatorParams = AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow, showQtyEditor)
 
@@ -158,10 +170,11 @@ abstract class BaseAtcVariantViewModelTest {
         }
     }
 
-    fun assertCampaign(visitables: List<AtcVariantVisitable>,
-                       expectedCampaignActive: Boolean,
-                       expectedDiscountedPrice: String) {
-
+    fun assertCampaign(
+        visitables: List<AtcVariantVisitable>,
+        expectedCampaignActive: Boolean,
+        expectedDiscountedPrice: String
+    ) {
         visitables.first {
             it is VariantHeaderDataModel
         }.let {
@@ -171,20 +184,21 @@ abstract class BaseAtcVariantViewModelTest {
         }
     }
 
-    fun assertVisitables(visitables: List<AtcVariantVisitable>,
-                         showQuantityEditor: Boolean,
-                         expectedSelectedProductId: String,
-                         expectedSelectedMainPrice: String,
-                         expectedSelectedStockFmt: String,
-                         expectedSelectedOptionIdsLevelOne: String,
-                         expectedSelectedOptionIdsLevelTwo: String,
-                         expectedVariantName: List<String> = listOf(),
-                         expectedQuantity: Int,
-                         cashBackPercentage: Int,
-                         uspImageUrl: String,
-                         isTokoCabang: Boolean,
-                         expectedMinOrder: Int) {
-
+    fun assertVisitables(
+        visitables: List<AtcVariantVisitable>,
+        showQuantityEditor: Boolean,
+        expectedSelectedProductId: String,
+        expectedSelectedMainPrice: String,
+        expectedSelectedStockFmt: String,
+        expectedSelectedOptionIdsLevelOne: String,
+        expectedSelectedOptionIdsLevelTwo: String,
+        expectedVariantName: List<String> = listOf(),
+        expectedQuantity: Int,
+        cashBackPercentage: Int,
+        uspImageUrl: String,
+        isTokoCabang: Boolean,
+        expectedMinOrder: Int
+    ) {
         visitables.forEach {
             when (it) {
                 is VariantHeaderDataModel -> {
@@ -199,9 +213,9 @@ abstract class BaseAtcVariantViewModelTest {
                 }
                 is VariantComponentDataModel -> {
                     val currentSelectedLevelOne = it.listOfVariantCategory?.first()?.getSelectedOption()?.variantId
-                            ?: "0"
+                        ?: "0"
                     val currentSelectedLevelTwo = it.listOfVariantCategory?.get(1)?.getSelectedOption()?.variantId
-                            ?: "0"
+                        ?: "0"
 
                     Assert.assertEquals(currentSelectedLevelOne, expectedSelectedOptionIdsLevelOne)
                     Assert.assertEquals(currentSelectedLevelTwo, expectedSelectedOptionIdsLevelTwo)
@@ -216,5 +230,4 @@ abstract class BaseAtcVariantViewModelTest {
         }
     }
     //endregion
-
 }
