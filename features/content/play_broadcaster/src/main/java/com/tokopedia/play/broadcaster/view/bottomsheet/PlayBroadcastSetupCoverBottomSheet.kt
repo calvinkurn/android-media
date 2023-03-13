@@ -89,9 +89,10 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
             height = (getScreenHeight() * SHEET_HEIGHT_PERCENT).toInt()
         }
 
-        selectedContent(false)
+        selectedContent(TAB_AUTO_GENERATED)
+        csuSetupCover.isChecked = true
         csuSetupCover.setOnCheckedChangeListener { _, isChecked ->
-            selectedContent(isChecked)
+            selectedContent(if (isChecked) TAB_AUTO_GENERATED else TAB_UPLOAD_IMAGE)
         }
 
         setupCoachMark()
@@ -99,11 +100,11 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
         if (isShowCoachMark) showCoachMark()
     }
 
-    private fun selectedContent(isChecked: Boolean) = with(binding) {
+    private fun selectedContent(selectedTab: Int) = with(binding) {
         childFragmentManager.commit {
             replace(
                 fragmentContainerSetupCover.id,
-                if (isChecked) {
+                if (selectedTab == TAB_AUTO_GENERATED) {
                     analytic.clickCoverTab(getString(R.string.play_bro_cover_setup_choose_template))
                     getSetupCoverChooseTemplateFragment()
                 } else {
@@ -167,6 +168,8 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
         const val TAG = "PlayBroadcastSetupCoverBottomSheet"
         private const val SHEET_HEIGHT_PERCENT = 0.85f
         private const val COACH_MARK_DELAY = 2000L
+        private const val TAB_UPLOAD_IMAGE = 1
+        private const val TAB_AUTO_GENERATED = 2
 
         fun getFragment(
             fragmentManager: FragmentManager,
