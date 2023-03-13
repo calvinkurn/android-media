@@ -10,10 +10,10 @@ import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductCriteriaCh
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.tkpd.flashsale.util.constant.TrackerConstant.MULTI_LOCATION
+import com.tokopedia.tkpd.flashsale.util.constant.TrackerConstant.SINGLE_LOCATION
 import com.tokopedia.tkpd.flashsale.util.tracker.ManageProductVariantTracker
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.tkpd.flashsale.util.constant.TrackerConstant.SINGLE_LOCATION
-import com.tokopedia.tkpd.flashsale.util.constant.TrackerConstant.MULTI_LOCATION
 import javax.inject.Inject
 
 class ManageProductVariantViewModel @Inject constructor(

@@ -17,10 +17,10 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
 import com.tokopedia.play.R
 import com.tokopedia.play.cast.PlayCastNotificationAction
+import com.tokopedia.play.databinding.ActivityPlayBinding
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.PlayFullScreenHelper
-import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
@@ -29,6 +29,8 @@ import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.ScreenOrientation2
+import com.tokopedia.play.view.type.isCompact
 import com.tokopedia.play.view.viewcomponent.FragmentErrorViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentUpcomingViewComponent
 import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
@@ -75,7 +77,7 @@ class PlayActivity :
     @Inject
     lateinit var router: Router
 
-    private lateinit var orientationManager: PlaySensorOrientationManager
+    private lateinit var binding: ActivityPlayBinding
 
     private lateinit var viewModel: PlayParentViewModel
 
@@ -89,8 +91,8 @@ class PlayActivity :
             window.decorView.systemUiVisibility = value
         }
 
-    private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+    private val orientation: ScreenOrientation2
+        get() = ScreenOrientation2.get(this)
 
     private val swipeContainerView by viewComponent(isEagerInit = true) {
         SwipeContainerViewComponent(
@@ -129,7 +131,9 @@ class PlayActivity :
 
         startPageMonitoring()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_play)
+
+        binding = ActivityPlayBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         PlayCastHelper.getCastContext(this)
 
@@ -140,13 +144,11 @@ class PlayActivity :
         onExitFullscreen()
 
         setupViewModel()
-        setupPage()
         setupObserve()
     }
 
     override fun onResume() {
         super.onResume()
-        orientationManager.enable()
         volumeControlStream = AudioManager.STREAM_MUSIC
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         PlayCastNotificationAction.showRedirectButton(applicationContext, false)
@@ -154,7 +156,6 @@ class PlayActivity :
 
     override fun onPause() {
         super.onPause()
-        orientationManager.disable()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
@@ -180,7 +181,7 @@ class PlayActivity :
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        swipeContainerView.setEnableSwiping(!ScreenOrientation.getByInt(newConfig.orientation).isLandscape)
+        swipeContainerView.setEnableSwiping(!orientation.isLandscape || !orientation.isCompact)
         swipeContainerView.refocusFragment()
     }
 
@@ -242,14 +243,6 @@ class PlayActivity :
         viewModel = ViewModelProvider(this, getViewModelFactory()).get(PlayParentViewModel::class.java)
     }
 
-    private fun setupPage() {
-        setupOrientation()
-    }
-
-    private fun setupOrientation() {
-        orientationManager = PlaySensorOrientationManager(this, this)
-    }
-
     private fun setupObserve() {
         observeChannelList()
         observeFirstChannelEvent()
@@ -303,7 +296,10 @@ class PlayActivity :
         val fragment = activeFragment
         if (fragment is PlayFragment) {
             if (!fragment.onBackPressed()) {
-                if (isSystemBack && orientation.isLandscape) {
+                if (isSystemBack &&
+                    orientation.isLandscape &&
+                    orientation.isCompact
+                ) {
                     onOrientationChanged(ScreenOrientation.Portrait, false)
                 } else {
                     if (isTaskRoot) {
@@ -332,7 +328,9 @@ class PlayActivity :
     }
 
     override fun requestEnableNavigation() {
-        swipeContainerView.setEnableSwiping(!orientation.isLandscape)
+        swipeContainerView.setEnableSwiping(
+            !orientation.isLandscape || !orientation.isCompact
+        )
     }
 
     override fun requestDisableNavigation() {

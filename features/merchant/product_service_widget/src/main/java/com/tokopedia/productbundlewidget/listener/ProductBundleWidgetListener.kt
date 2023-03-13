@@ -45,7 +45,21 @@ interface ProductBundleWidgetListener {
     ) {
     }
 
+    fun impressionMultipleBundle(
+        bundle: BundleUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        bundlePosition: Int
+    ) {
+    }
+
     fun impressionMultipleBundleProduct(
+        selectedProduct: BundleProductUiModel,
+        selectedBundle: BundleDetailUiModel
+    ) {
+    }
+
+    fun impressionMultipleBundleProduct(
+        bundle: BundleUiModel,
         selectedProduct: BundleProductUiModel,
         selectedBundle: BundleDetailUiModel
     ) {

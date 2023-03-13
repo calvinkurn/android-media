@@ -1266,7 +1266,8 @@ class OrderSummaryPageViewModel @Inject constructor(
                         products = products,
                         cartString = orderCart.cartString,
                         pslCode = pslCode,
-                        cartData = orderCart.cartData
+                        cartData = orderCart.cartData,
+                        warehouseId = orderCart.shop.warehouseId
                     )
                 )
             }

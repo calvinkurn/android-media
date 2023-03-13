@@ -36,11 +36,11 @@ object ToupTrackerEventAction {
     const val CLICK_METODE_PEMBAYARAN = "click - metode pembayaran"
     const val CLICK_BAYAR = "click - bayar"
     const val CLICK_KEMARIN = "click - kemarin"
-
 }
 
 object ToupTrackerEventCategory {
     const val PAYMENT_PAGE = "payment page"
     const val TA_CART = "ta - cart"
     const val TOP_ADS_CREDIT_HISTORY_PAGE = "topads credit history page"
+    const val TOP_ADS_HOME_PAGE_DASHBOARD = "topads homepage dashboard"
 }
