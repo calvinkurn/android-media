@@ -20,6 +20,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.CoroutineScope
@@ -278,7 +279,7 @@ class SharingUtil {
                     is ShareModel.CopyLink -> {
                         linkerShareData?.url?.let {
                             if (activity != null) {
-                                if (shareModel.sharingSource == ShareModel.SharingSource.PDP) {
+                                if (shareModel.pageType == PageType.PDP) {
                                     ClipboardHandler().copyToClipboard(activity, shareString)
                                 } else {
                                     ClipboardHandler().copyToClipboard(activity, it)

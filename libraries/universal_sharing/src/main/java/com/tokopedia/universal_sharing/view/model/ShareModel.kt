@@ -2,6 +2,7 @@ package com.tokopedia.universal_sharing.view.model
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import com.tokopedia.universal_sharing.tracker.PageType
 
 sealed class ShareModel {
 
@@ -22,7 +23,7 @@ sealed class ShareModel {
 
     // this variable is used for personalized campaign that has duration of campaign
     var personalizedMessageFormat: String = ""
-    var sharingSource: SharingSource = SharingSource.OTHERS
+    var pageType: PageType = PageType.OTHERS
 
     /* source id from imagenerator contextual image */
     var sourceId: String = ""
@@ -96,14 +97,4 @@ sealed class ShareModel {
         override var packageName: String? = "",
         override var appIntent: Intent? = null
     ) : ShareModel()
-
-    /**
-     * if your page has specific case that need to be handled in platforms (ex: instagram, copy link)
-     * then add your page on [SharingSource]
-     * example: sharing the link to Whatsapp from [SharingSource.PDP] has customization copy
-     */
-    enum class SharingSource {
-        PDP,
-        OTHERS
-    }
 }

@@ -23,7 +23,8 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.share.ekstensions.getShareContent
-import com.tokopedia.product.share.ekstensions.getTextDescription
+import com.tokopedia.product.share.ekstensions.getTextDescriptionDisc
+import com.tokopedia.product.share.ekstensions.getTextDescriptionNonDisc
 import com.tokopedia.product.share.ekstensions.showImmediately
 import com.tokopedia.product.share.tracker.ProductShareTracking.onClickAccessPhotoMediaAndFiles
 import com.tokopedia.product.share.tracker.ProductShareTracking.onClickChannelWidgetClicked
@@ -34,6 +35,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -309,7 +311,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         openIntentShare(file, shareProductName, shareDescription, shareUrl)
     }
 
-    private fun shareChannelClicked(shareModel: ShareModel) {
+    private fun shareChannelClicked(shareModel: ShareModel, personalizedCampaignModel: PersonalizedCampaignModel) {
         if (isBranchUrlActive()) {
             val branchStart = System.currentTimeMillis()
 
@@ -346,15 +348,24 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                             postBuildImage.invoke()
                             try {
                                 val shareString = if (shareModel.personalizedMessageFormat.isEmpty()) {
-                                    productData.getTextDescription(
-                                        activity.applicationContext,
-                                        linkerShareResult.url
-                                    )
+                                    if (personalizedCampaignModel.isThematicCampaign && personalizedCampaignModel.discountPercentage != 0F) {
+                                        productData.getTextDescriptionDisc(
+                                            activity.applicationContext,
+                                            linkerShareResult.url,
+                                            personalizedCampaignModel.discountPercentage
+                                        )
+                                    } else {
+                                        productData.getTextDescriptionNonDisc(
+                                            activity.applicationContext,
+                                            linkerShareResult.url
+                                        )
+                                    }
+
                                 } else {
                                     String.format(shareModel.personalizedMessageFormat, linkerShareResult.url)
                                 }
                                 shareModel.subjectName = productData.productName ?: ""
-                                shareModel.sharingSource = ShareModel.SharingSource.PDP
+                                shareModel.pageType = PageType.PDP
                                 SharingUtil.executeShareIntent(
                                     shareModel,
                                     linkerShareResult,
@@ -368,7 +379,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                                 openIntentShareDefaultUniversalSharing(
                                     null,
                                     productData.productName ?: "",
-                                    productData.getTextDescription(
+                                    productData.getTextDescriptionNonDisc(
                                         activity.applicationContext,
                                         linkerShareData.linkerData.renderShareUri()
                                     ),
@@ -387,7 +398,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                             openIntentShareDefaultUniversalSharing(
                                 null,
                                 productData.productName ?: "",
-                                productData.getTextDescription(
+                                productData.getTextDescriptionNonDisc(
                                     activity.applicationContext,
                                     linkerShareData.linkerData.renderShareUri()
                                 ),
@@ -406,7 +417,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             openIntentShareDefaultUniversalSharing(
                 null,
                 productData.productName ?: "",
-                productData.getTextDescription(
+                productData.getTextDescriptionNonDisc(
                     activity.applicationContext,
                     productData.renderShareUri
                 ),
@@ -477,7 +488,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 setImageGeneratorParam(paramImageGenerator)
                 init(object : ShareBottomsheetListener {
                     override fun onShareOptionClicked(shareModel: ShareModel) {
-                        shareChannelClicked(shareModel)
+                        shareChannelClicked(shareModel, personalizedCampaignModel)
                     }
 
                     override fun onCloseOptionClicked() {
