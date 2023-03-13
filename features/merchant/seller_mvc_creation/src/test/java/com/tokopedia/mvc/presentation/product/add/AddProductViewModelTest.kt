@@ -1118,6 +1118,86 @@ class AddProductViewModelTest {
     }
     //endregion
 
+    //region handleUncheckAllProduct
+    @Test
+    fun `When uncheck all products, all products should be updated to non selected`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val secondProduct = populateProduct().copy(id = 2, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                ),
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = secondProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(firstProduct.id))
+            viewModel.processEvent(AddProductEvent.DisableSelectAllCheckbox)
+
+            //Then
+            val actual = emittedValues.last()
+
+
+            assertEquals(AddProductUiState.CheckboxState.UNCHECKED, actual.checkboxState)
+            assertEquals(emptySet<Long>(), actual.selectedProductsIds)
+            assertEquals(0, actual.selectedProductCount)
+            assertEquals(
+                listOf(
+                    firstProduct.copy(isSelected = false, enableCheckbox = true),
+                    secondProduct.copy(isSelected = false, enableCheckbox = true)
+                ),
+                actual.products
+            )
+
+            job.cancel()
+        }
+    }
+    //endregion
+
     private fun buildVoucherConfiguration(): VoucherConfiguration {
         return VoucherConfiguration().copy(
             startPeriod = Date(2023, 1, 1, 0, 0, 0),
