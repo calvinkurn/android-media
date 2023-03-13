@@ -62,6 +62,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedR
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -548,6 +549,25 @@ class FeedFragment :
             if (item is FeedCardImageContentModel) {
                 val like = (item as FeedCardImageContentModel).like
                 like.isLiked = !like.isLiked
+                if (like.isLiked) {
+                    try {
+                        val likeValue = Integer.valueOf(like.countFmt) + 1
+                        like.countFmt = likeValue.toString()
+                    } catch (ignored: NumberFormatException) {
+                        Timber.e(ignored)
+                    }
+
+                    like.count = like.count + 1
+                } else {
+                    try {
+                        val likeValue = Integer.valueOf(like.countFmt) - 1
+                        like.countFmt = likeValue.toString()
+                    } catch (ignored: NumberFormatException) {
+                        Timber.e(ignored)
+                    }
+
+                    like.count = like.count - 1
+                }
                 adapter?.notifyItemChanged(
                     rowNumber,
                     FeedPostImageViewHolder.IMAGE_POST_LIKED_UNLIKED
@@ -556,27 +576,21 @@ class FeedFragment :
         }
     }
 
-    private fun getFeedShareDataModel(model: FeedCardImageContentModel): FeedShareDataModel {
-        val mediaUrl =
-            if (model.isTypeProductHighlight) {
-                model.products.firstOrNull()?.coverUrl ?: ""
-            } else {
-                model.media.firstOrNull()?.mediaUrl ?: ""
-            }
-
-        return FeedShareDataModel(
-            id = model.id,
-            name = model.author.name,
-            tnTitle = (
-                String.format(
-                    context?.getString(feedR.string.feed_share_title) ?: "",
-                    model.author.name
-                )
-                ),
-            tnImage = mediaUrl,
-            ogUrl = mediaUrl
-        )
-    }
+    private fun getFeedShareDataModel(
+        id: String,
+        authorName: String,
+        imageUrl: String
+    ): FeedShareDataModel = FeedShareDataModel(
+        id = id,
+        name = authorName,
+        tnTitle = (
+            String.format(
+                context?.getString(feedR.string.feed_share_title) ?: "",
+                authorName
+            )),
+        tnImage = imageUrl,
+        ogUrl = imageUrl
+    )
 
     private fun showUniversalShareBottomSheet(shareModel: FeedShareDataModel) {
         val universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {

@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
-import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,12 +7,12 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedPostImageAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
@@ -22,7 +21,6 @@ import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnima
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play_common.viewcomponent.viewComponent
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -73,6 +71,7 @@ class FeedPostImageViewHolder(
 
                 bindImagesContent(data.media)
                 bindIndicators(data.media.size)
+                bindLike(data)
 
                 menuButton.setOnClickListener { _ ->
                     listener.onMenuClicked(data.id)
@@ -116,13 +115,14 @@ class FeedPostImageViewHolder(
     }
 
     private fun renderLikeView(
-        isLiked: Boolean
+        like: FeedLikeModel
     ) {
+        val isLiked = like.isLiked
         likeAnimationView.setEnabled(isEnabled = true)
         smallLikeAnimationView.setEnabled(isEnabled = true)
 
         likeAnimationView.setIsLiked(true)
-
+        binding.postLikeButton.likedText.text = like.countFmt
         if (isLiked) {
             likeAnimationView.show()
         } else {
@@ -130,8 +130,9 @@ class FeedPostImageViewHolder(
         }
     }
 
-    private fun setLikeUnlike(isLiked: Boolean){
-        renderLikeView(isLiked)
+    private fun setLikeUnlike(like: FeedLikeModel){
+        val isLiked = like.isLiked
+        renderLikeView(like)
         if (isLiked) {
             likeAnimationView.playLikeAnimation()
             smallLikeAnimationView.playLikeAnimation()
@@ -146,7 +147,7 @@ class FeedPostImageViewHolder(
             return
         }
         if (payloads.contains(IMAGE_POST_LIKED_UNLIKED)) {
-            setLikeUnlike(element.like.isLiked)
+            setLikeUnlike(element.like)
         }
     }
 
@@ -178,6 +179,12 @@ class FeedPostImageViewHolder(
             indicatorFeedContent.setIndicator(imageSize)
             indicatorFeedContent.showWithCondition(imageSize > 1)
         }
+    }
+
+    private fun bindLike(feedCardModel: FeedCardImageContentModel){
+        val like = feedCardModel.like
+        binding.postLikeButton.likedText.text = like.countFmt
+        likeAnimationView.setIsLiked(like.isLiked)
     }
 
     private fun bindImagesContent(media: List<FeedMediaModel>) {
