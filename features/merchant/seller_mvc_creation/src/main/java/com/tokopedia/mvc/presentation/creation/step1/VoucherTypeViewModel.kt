@@ -96,11 +96,14 @@ class VoucherTypeViewModel @Inject constructor(
                     }
                 } else {
                     _uiState.update { it.copy(isLoading = false) }
-                    _uiAction.tryEmit(
-                        VoucherCreationStepOneAction.ShowIneligibleState(
-                            isVoucherProduct
+                    metadata.message?.let {
+                        _uiAction.tryEmit(
+                            VoucherCreationStepOneAction.ShowIneligibleState(
+                                isVoucherProduct,
+                                it
+                            )
                         )
-                    )
+                    }
                 }
             },
             onError = { error ->

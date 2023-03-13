@@ -1,6 +1,9 @@
 package com.tokopedia.people.views.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,20 +18,17 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.UserVideoPostImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentVideoBinding
-import com.tokopedia.people.model.PlayPostContentItem
-import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
-import com.tokopedia.people.views.adapter.UserPostBaseAdapter
+import com.tokopedia.people.views.adapter.PlayVideoAdapter
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.LOADING
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_CONTENT
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_EMPTY
@@ -38,7 +38,13 @@ import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.REQUEST
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.REQUEST_CODE_PLAY_ROOM
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.viewholder.PlayVideoViewHolder
+import com.tokopedia.play.widget.ui.bottomsheet.PlayWidgetActionMenuBottomSheet
+import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -52,7 +58,7 @@ class UserProfileVideoFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val userProfileTracker: UserProfileTracker,
     private val impressCoordinator: UserVideoPostImpressCoordinator,
-) : TkpdBaseV4Fragment(), AdapterCallback, UserPostBaseAdapter.PlayWidgetCallback {
+) : TkpdBaseV4Fragment() {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(activity, GRID_SPAN_COUNT)
@@ -69,10 +75,77 @@ class UserProfileVideoFragment @Inject constructor(
         )
     }
 
-    private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        UserPostBaseAdapter(this, this) { cursor ->
-            submitAction(UserProfileAction.LoadPlayVideo(cursor))
-        }
+    private val mAdapter: PlayVideoAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        PlayVideoAdapter(
+            channelWidgetListener = object : PlayVideoViewHolder.Channel.Listener {
+
+                override fun onPlayReminderClick(channel: PlayWidgetChannelUiModel) {
+                    submitAction(UserProfileAction.SaveReminderActivityResult(channel))
+
+                    if (userSession.isLoggedIn.not()) {
+                        startActivityForResult(
+                            RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN_TO_SET_REMINDER,
+                        )
+                    } else {
+                        submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = false))
+                    }
+                }
+
+                override fun onPlayWidgetLargeClick(
+                    appLink: String,
+                    channelID: String,
+                    isLive: Boolean,
+                ) {
+                    userProfileTracker.clickVideo(
+                        viewModel.profileUserID,
+                        viewModel.isSelfProfile,
+                        isLive,
+                        channelID,
+                    )
+                    val intent = RouteManager.getIntent(context, appLink)
+                    startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
+                }
+
+                override fun onImpressPlayWidgetData(
+                    channel: PlayWidgetChannelUiModel,
+                    isLive: Boolean,
+                    channelId: String,
+                    pos: Int
+                ) {
+                    impressCoordinator.initiateDataImpress(channel) {
+                        userProfileTracker.impressionVideo(
+                            viewModel.profileUserID,
+                            viewModel.isSelfProfile,
+                            isLive,
+                            channelId,
+                            channel.video.coverUrl,
+                            pos,
+                        )
+                    }
+                }
+
+                override fun onMenuActionButtonClicked(channel: PlayWidgetChannelUiModel) {
+                    submitAction(UserProfileAction.ClickPlayVideoMenuAction(channel))
+                }
+            },
+            transcodeWidgetListener = object : PlayVideoViewHolder.Transcode.Listener {
+                override fun onDeletePlayChannel(channel: PlayWidgetChannelUiModel) {
+                    submitAction(UserProfileAction.DeletePlayChannel(channel.channelId))
+                }
+            },
+            onLoading = {
+                submitAction(UserProfileAction.LoadPlayVideo())
+            }
+        )
+    }
+
+    private val playChannelDeleteConfirmationDialog by lazy {
+        PlayWidgetDeleteDialogContainer(object : PlayWidgetDeleteDialogContainer.Listener {
+            override fun onDeleteButtonClicked(channelId: String) {
+                submitAction(UserProfileAction.DeletePlayChannel(channelId))
+            }
+        })
     }
 
     override fun onCreateView(
@@ -90,7 +163,7 @@ class UserProfileVideoFragment @Inject constructor(
         initObserver()
         setupPlayVideo()
 
-        fetchPlayVideo(viewModel.profileUserID)
+        submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
     }
 
     override fun onPause() {
@@ -101,12 +174,6 @@ class UserProfileVideoFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun fetchPlayVideo(userId: String) {
-        mAdapter.resetAdapter()
-        mAdapter.cursor = ""
-        mAdapter.startDataLoading(userId)
     }
 
     private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
@@ -130,7 +197,6 @@ class UserProfileVideoFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is UserProfileUiEvent.SuccessUpdateReminder -> {
-                        mAdapter.notifyItemChanged(event.position)
                         view?.showToast(event.message)
                     }
                     is UserProfileUiEvent.ErrorUpdateReminder -> {
@@ -149,9 +215,57 @@ class UserProfileVideoFragment @Inject constructor(
 
                             globalErrorVideo.refreshBtn?.setOnClickListener {
                                 userVideoContainer.displayedChild = PAGE_LOADING
-                                fetchPlayVideo(viewModel.profileUserID)
+                                submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
                             }
                         }
+                    }
+                    is UserProfileUiEvent.SuccessDeleteChannel -> {
+                        view?.showToast(getString(R.string.up_play_video_deleted))
+                    }
+                    is UserProfileUiEvent.ErrorDeleteChannel -> {
+                        val message = when (event.throwable) {
+                            is UnknownHostException, is SocketTimeoutException -> {
+                                requireContext().getString(R.string.up_error_local_error)
+                            }
+                            else -> event.throwable.message ?: getDefaultErrorMessage()
+                        }
+
+                        view?.showErrorToast(message)
+                    }
+                    is UserProfileUiEvent.OpenPlayVideoActionMenu -> {
+                        val bottomSheet = PlayWidgetActionMenuBottomSheet.getFragment(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        )
+
+                        bottomSheet.setChannel(event.channel)
+                        bottomSheet.setListener(object : PlayWidgetActionMenuBottomSheet.Listener {
+                            override fun onClickShare(channel: PlayWidgetChannelUiModel) {
+                                submitAction(UserProfileAction.ClickCopyLinkPlayChannel(channel))
+                            }
+
+                            override fun onClickSeePerformance(channel: PlayWidgetChannelUiModel) {
+                                submitAction(UserProfileAction.ClickSeePerformancePlayChannel(channel))
+                            }
+
+                            override fun onClickDeleteVideo(channel: PlayWidgetChannelUiModel) {
+                                submitAction(UserProfileAction.ClickDeletePlayChannel(channel))
+                            }
+                        })
+
+                        bottomSheet.show(childFragmentManager)
+                    }
+                    is UserProfileUiEvent.CopyLinkPlayVideo -> {
+                        (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+                            .setPrimaryClip(ClipData.newPlainText("play-widget", event.copyText))
+
+                        view?.showToast(getString(R.string.up_play_video_link_copied))
+                    }
+                    is UserProfileUiEvent.OpenPerformancePlayChannel -> {
+                        RouteManager.route(requireContext(), event.appLink)
+                    }
+                    is UserProfileUiEvent.ShowDeletePlayVideoConfirmationDialog -> {
+                        playChannelDeleteConfirmationDialog.confirmDelete(requireContext(), event.channel.channelId)
                     }
                 }
             }
@@ -161,15 +275,50 @@ class UserProfileVideoFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                val prev = it.prevValue?.videoPostsContent
-                val value = it.value.videoPostsContent
-                if ((prev == null && value == UserPostModel()) || (prev == value)) return@collectLatest
-                mAdapter.onSuccess(value)
+                renderPlayVideo(it.prevValue?.videoPostsContent, it.value.videoPostsContent)
             }
         }
     }
 
     /** Render UI */
+    private fun renderPlayVideo(
+        prev: UserPlayVideoUiModel?,
+        curr: UserPlayVideoUiModel,
+    ) {
+        if(prev == curr) return
+
+        when(curr.status) {
+            UserPlayVideoUiModel.Status.Loading -> {
+                if(curr.items.isEmpty())
+                    binding.userVideoContainer.displayedChild = PAGE_LOADING
+            }
+            UserPlayVideoUiModel.Status.Success -> {
+                if(curr.items.isEmpty()) {
+                    if (viewModel.isSelfProfile) emptyPostSelf()
+                    else emptyPostVisitor()
+
+                    binding.userVideoContainer.displayedChild = PAGE_EMPTY
+
+                    return
+                }
+
+                val mappedList = curr.items.map {
+                    if(it.channelType == PlayWidgetChannelType.Transcoding || it.channelType == PlayWidgetChannelType.FailedTranscoding) {
+                        PlayVideoAdapter.Model.Transcode(it)
+                    }
+                    else {
+                        PlayVideoAdapter.Model.Channel(it)
+                    }
+                }
+
+                val finalList = if(curr.nextCursor.isEmpty()) mappedList else mappedList + listOf(PlayVideoAdapter.Model.Loading)
+                mAdapter.setItemsAndAnimateChanges(finalList)
+                binding.userVideoContainer.displayedChild = PAGE_CONTENT
+            }
+            else -> {}
+        }
+    }
+
     private fun setupPlayVideo() {
         gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
 
@@ -180,6 +329,15 @@ class UserProfileVideoFragment @Inject constructor(
             binding.rvPost.addItemDecoration(GridSpacingItemDecoration(2, spacing, false))
         }
         binding.rvPost.adapter = mAdapter
+
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when(mAdapter.getItem(position)) {
+                    is PlayVideoAdapter.Model.Loading -> LOADING_SPAN
+                    else -> DATA_SPAN
+                }
+            }
+        }
     }
 
     private fun getDefaultErrorMessage() = getString(R.string.up_error_unknown)
@@ -203,79 +361,6 @@ class UserProfileVideoFragment @Inject constructor(
         binding.emptyVideo.textErrorEmptyDesc.hide()
     }
 
-    override fun onRetryPageLoad(pageNumber: Int) {
-    }
-
-    override fun onEmptyList(rawObject: Any?) {
-        if (viewModel.isSelfProfile) emptyPostSelf()
-        else emptyPostVisitor()
-        binding.userVideoContainer.displayedChild = PAGE_EMPTY
-    }
-
-    override fun onStartFirstPageLoad() {
-        binding.userVideoContainer.displayedChild = PAGE_LOADING
-    }
-
-    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        binding.userVideoContainer.displayedChild = PAGE_CONTENT
-    }
-
-    override fun onStartPageLoad(pageNumber: Int) {
-    }
-
-    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-    }
-
-    override fun onError(pageNumber: Int) {
-    }
-
-    override fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int) {
-        submitAction(UserProfileAction.SaveReminderActivityResult(channelId, pos, isActive))
-
-        if (userSession.isLoggedIn.not()) {
-            startActivityForResult(
-                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN_TO_SET_REMINDER,
-            )
-        } else {
-            submitAction(UserProfileAction.ClickUpdateReminder(false))
-        }
-    }
-
-    override fun updatePlayWidgetLatestData(
-        channelId: String,
-        totalView: String,
-        isReminderSet: Boolean,
-    ) {
-        mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
-    }
-
-    override fun onPlayWidgetLargeClick(appLink: String, channelID: String, isLive: Boolean, imageUrl: String, pos: Int) {
-        userProfileTracker.clickVideo(
-            viewModel.profileUserID,
-            viewModel.isSelfProfile,
-            isLive,
-            channelID,
-            imageUrl,
-            pos,
-        )
-        val intent = RouteManager.getIntent(context, appLink)
-        startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
-    }
-
-    override fun onImpressPlayWidgetData(item: PlayPostContentItem, isLive: Boolean, channelId: String, pos: Int) {
-        impressCoordinator.initiateDataImpress(item) {
-            userProfileTracker.impressionVideo(
-                viewModel.profileUserID,
-                viewModel.isSelfProfile,
-                isLive,
-                channelId,
-                it.coverUrl,
-                pos,
-            )
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -287,7 +372,10 @@ class UserProfileVideoFragment @Inject constructor(
                 val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW).orEmpty()
                 val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false) ?: false
 
-                mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
+                submitAction(UserProfileAction.UpdatePlayChannelInfo(channelId, totalView, isReminderSet))
+            }
+            REQUEST_CODE_LOGIN_TO_SET_REMINDER -> {
+                viewModel.submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
             }
         }
     }

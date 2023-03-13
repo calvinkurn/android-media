@@ -99,6 +99,7 @@ public interface ApplinkConst {
     String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
+    String TELKOMSEL_OMNI = "tokopedia://telkomselomni";
     String DIGITAL_PRODUCT = "tokopedia://digital/form";
     String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
     String RECHARGE_SUBHOMEPAGE_HOME_NEW = "tokopedia://recharge/home?platform_id=31&personalize=true";
@@ -581,6 +582,7 @@ public interface ApplinkConst {
         //{voucher_type} value -> shop, product
         String SELLER_MVC_CREATE = "sellerapp://seller-mvc/create/{voucher_type}";
         String SELLER_MVC_DETAIL = "sellerapp://seller-mvc/detail/{voucher_id}";
+        String SELLER_PERSONA = "sellerapp://seller-persona";
 
     }
 

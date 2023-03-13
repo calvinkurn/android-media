@@ -1493,11 +1493,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showPersonaBottomSheet(personaStatus: Int) {
         activity?.let {
+            val data = getSellerHomeDataFromArguments()
             val btmSheet = SellerPersonaBottomSheet.getInstance(childFragmentManager)
             val shouldShowBottomSheet =
                 !it.isFinishing && !btmSheet.isVisible && sharedPref.shouldShowPersonaHomePopup(
                     userSession.userId
-                )
+                ) && data?.shouldShowPersonaBtmSheet.orFalse()
+
             if (shouldShowBottomSheet) {
                 runCatching {
                     btmSheet.setOnDismissListener {
@@ -2038,7 +2040,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun setHomeBackgroundRatio() {
         binding?.run {
-            viewBgShopStatus.layoutParams.height = (viewBgShopStatus.measuredWidth * SellerHomeConst.HOME_BACKGROUND_RATIO).toInt()
+            viewBgShopStatus.layoutParams.height =
+                (viewBgShopStatus.measuredWidth * SellerHomeConst.HOME_BACKGROUND_RATIO).toInt()
             viewBgShopStatus.requestLayout()
         }
     }
@@ -2911,13 +2914,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun showSellerHomeToaster() {
         binding?.run {
             recyclerView.post {
-                val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    arguments?.getParcelable(
-                        KEY_SELLER_HOME_DATA, SellerHomeDataUiModel::class.java
-                    )
-                } else {
-                    arguments?.getParcelable(KEY_SELLER_HOME_DATA)
-                }
+                val data = getSellerHomeDataFromArguments()
                 val message = data?.toasterMessage
                 if (!message.isNullOrBlank()) {
                     Toaster.build(
@@ -2929,6 +2926,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     ).show()
                 }
             }
+        }
+    }
+
+    private fun getSellerHomeDataFromArguments(): SellerHomeDataUiModel? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(
+                KEY_SELLER_HOME_DATA, SellerHomeDataUiModel::class.java
+            )
+        } else {
+            arguments?.getParcelable(KEY_SELLER_HOME_DATA)
         }
     }
 
