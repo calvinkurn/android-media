@@ -52,23 +52,29 @@ class FeedPostImageViewHolder(
     }
 
     override fun bind(element: FeedCardImageContentModel?) {
-        element?.let {
+        element?.let { data ->
             binding.apply {
                 val authorView =
                     FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
                 val captionView = FeedCaptionView(binding.tvFeedCaption)
 
-                authorView.bindData(element.author, false, !element.followers.isFollowed)
-                captionView.bind(element.text)
+                authorView.bindData(data.author, false, !data.followers.isFollowed)
+                captionView.bind(data.text)
 
-                bindImagesContent(element.media)
-                bindIndicators(element.media.size)
+                bindImagesContent(data.media)
+                bindIndicators(data.media.size)
 
                 menuButton.setOnClickListener { _ ->
-                    listener.onMenuClicked(it)
+                    listener.onMenuClicked(data.id)
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(element)
+                    listener.onSharePostClicked(
+                        id = data.id,
+                        authorName = data.author.name,
+                        applink = data.applink,
+                        weblink = data.weblink,
+                        imageUrl = data.media.firstOrNull()?.mediaUrl ?: ""
+                    )
                 }
 
                 btnDisableClearMode.setOnClickListener {
@@ -83,12 +89,12 @@ class FeedPostImageViewHolder(
                     hideClearView()
                 }
                 productTagButton.root.setOnClickListener {
-                    listener.onProductTagItemClicked(element)
+                    listener.onProductTagItemClicked(data)
                 }
                 productTagView.root.setOnClickListener {
-                    listener.onProductTagViewClicked(element)
+                    listener.onProductTagViewClicked(data)
                 }
-                setUpProductTagButtonText(feedCardModel = element)
+                setUpProductTagButtonText(feedCardModel = data)
 
                 root.setOnClickListener {
                 }

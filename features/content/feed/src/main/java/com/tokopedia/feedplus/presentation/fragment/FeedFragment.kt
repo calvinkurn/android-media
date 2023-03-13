@@ -154,7 +154,7 @@ class FeedFragment :
 
     override fun getScreenName(): String = "Feed Fragment"
 
-    override fun onMenuClicked(model: FeedCardImageContentModel) {
+    override fun onMenuClicked(id: String) {
         activity?.let {
             val feedMenuSheet =
                 ContentThreeDotsMenuBottomSheet.getFragment(
@@ -163,7 +163,7 @@ class FeedFragment :
                     TAG_FEED_MENU_BOTTOMSHEET
                 )
             feedMenuSheet.setListener(this)
-            feedMenuSheet.setData(getMenuItemData(), model.id)
+            feedMenuSheet.setData(getMenuItemData(), id)
             feedMenuSheet.show(childFragmentManager, TAG_FEED_MENU_BOTTOMSHEET)
         }
     }
@@ -194,30 +194,40 @@ class FeedFragment :
 
     override fun inClearViewMode(): Boolean = isInClearViewMode
 
-    override fun onSharePostClicked(model: FeedCardImageContentModel) {
+    override fun onSharePostClicked(
+        id: String,
+        authorName: String,
+        applink: String,
+        weblink: String,
+        imageUrl: String
+    ) {
         activity?.let {
             val shareDataBuilder = LinkerData.Builder.getLinkerBuilder()
-                .setId(model.id)
+                .setId(id)
                 .setName(
                     String.format(
                         getString(feedR.string.feed_share_title),
-                        model.author.name
+                        authorName
                     )
                 )
                 .setDescription(
                     String.format(
                         getString(feedR.string.feed_share_desc_text),
-                        model.author.name
+                        authorName
                     )
                 )
-                .setDesktopUrl(model.weblink)
+                .setDesktopUrl(weblink)
                 .setType(LinkerData.FEED_TYPE)
-                .setImgUri(model.media.firstOrNull()?.mediaUrl ?: "")
-                .setDeepLink(model.applink)
-                .setUri(model.weblink)
+                .setImgUri(imageUrl)
+                .setDeepLink(applink)
+                .setUri(weblink)
 
             shareData = shareDataBuilder.build()
-            showUniversalShareBottomSheet(getFeedShareDataModel(model))
+            showUniversalShareBottomSheet(
+                getFeedShareDataModel(
+                    id, authorName, imageUrl
+                )
+            )
         }
     }
 
@@ -467,27 +477,21 @@ class FeedFragment :
         }
     }
 
-    private fun getFeedShareDataModel(model: FeedCardImageContentModel): FeedShareDataModel {
-        val mediaUrl =
-            if (model.isTypeProductHighlight) {
-                model.products.firstOrNull()?.coverUrl ?: ""
-            } else {
-                model.media.firstOrNull()?.mediaUrl ?: ""
-            }
-
-        return FeedShareDataModel(
-            id = model.id,
-            name = model.author.name,
-            tnTitle = (
-                String.format(
-                    context?.getString(feedR.string.feed_share_title) ?: "",
-                    model.author.name
-                )
-                ),
-            tnImage = mediaUrl,
-            ogUrl = mediaUrl
-        )
-    }
+    private fun getFeedShareDataModel(
+        id: String,
+        authorName: String,
+        imageUrl: String
+    ): FeedShareDataModel = FeedShareDataModel(
+        id = id,
+        name = authorName,
+        tnTitle = (
+            String.format(
+                context?.getString(feedR.string.feed_share_title) ?: "",
+                authorName
+            )),
+        tnImage = imageUrl,
+        ogUrl = imageUrl
+    )
 
     private fun showUniversalShareBottomSheet(shareModel: FeedShareDataModel) {
         val universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
