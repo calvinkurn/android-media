@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.animation.PathInterpolatorCompat
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -55,6 +56,9 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     private var offsetY: Float = 0.0f
     private var pullRefreshIcon: ImageUnify? = null
     private var heightLayoutScroll: Int = 0
+    private val paddingTopGreen = 14f.toDpInt()
+    private val paddingTopWhite = 6f.toDpInt()
+    private val paddingBottomGreen = 8f.toDpInt()
 
     companion object {
         private const val MAXIMUM_HEIGHT_SCROLL = 120
@@ -97,6 +101,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
                 )
             )
             loaderPullRefresh?.type = LoaderUnify.TYPE_DECORATIVE_WHITE
+            containerIconPullRefresh?.setPadding(Int.ZERO, paddingTopWhite, Int.ZERO, Int.ZERO)
         } else if (colorType == TYPE_GREEN) {
             pullRefreshIcon?.setColorFilter(
                 ContextCompat.getColor(
@@ -105,6 +110,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
                 )
             )
             loaderPullRefresh?.type = LoaderUnify.TYPE_DECORATIVE
+            containerIconPullRefresh?.setPadding(Int.ZERO, paddingTopGreen, Int.ZERO, paddingBottomGreen)
         }
     }
 
