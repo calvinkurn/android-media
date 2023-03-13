@@ -225,7 +225,7 @@ import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
 
-class ShopPageHeaderHeaderFragment :
+class ShopPageHeaderFragment :
     BaseDaggerFragment(),
     HasComponent<ShopPageHeaderComponent>,
     ShopPageHeaderFragmentViewHolderListener,
@@ -313,7 +313,7 @@ class ShopPageHeaderHeaderFragment :
         private const val IMG_GENERATOR_SHOP_INFO_MAX_SIZE = 3
 
         @JvmStatic
-        fun createInstance() = ShopPageHeaderHeaderFragment()
+        fun createInstance() = ShopPageHeaderFragment()
     }
 
     private var initialScrollToTopButtonMarginBottom: Int = 0
@@ -1479,7 +1479,7 @@ class ShopPageHeaderHeaderFragment :
 
     private fun initAdapter() {
         activity?.run {
-            viewPagerAdapterHeader = ShopPageHeaderFragmentPagerAdapter(this, this@ShopPageHeaderHeaderFragment)
+            viewPagerAdapterHeader = ShopPageHeaderFragmentPagerAdapter(this, this@ShopPageHeaderFragment)
         }
     }
 
@@ -1635,7 +1635,7 @@ class ShopPageHeaderHeaderFragment :
         isShowFeed = shopPageHeaderP1Data.isWhitelist
         createPostUrl = shopPageHeaderP1Data.url
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
-            shopId = this@ShopPageHeaderHeaderFragment.shopId
+            shopId = this@ShopPageHeaderFragment.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial
             isGoldMerchant = shopPageHeaderP1Data.isGoldMerchant
             pmTier = shopPageHeaderP1Data.pmTier
@@ -3055,7 +3055,7 @@ class ShopPageHeaderHeaderFragment :
 
     private fun showUniversalShareBottomSheet() {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@ShopPageHeaderHeaderFragment)
+            init(this@ShopPageHeaderFragment)
             setMetaData(
                 shopPageHeaderDataModel?.shopName.orEmpty(),
                 shopPageHeaderDataModel?.avatar.orEmpty(),

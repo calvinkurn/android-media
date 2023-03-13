@@ -33,7 +33,7 @@ import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 
 class ShopPageHeaderActivity :
@@ -84,7 +84,7 @@ class ShopPageHeaderActivity :
         return R.layout.activity_new_shop_page
     }
 
-    override fun getNewFragment(): Fragment = ShopPageHeaderHeaderFragment.createInstance()
+    override fun getNewFragment(): Fragment = ShopPageHeaderFragment.createInstance()
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 
@@ -128,7 +128,7 @@ class ShopPageHeaderActivity :
         when (requestCode) {
             MvcView.REQUEST_CODE -> {
                 if (resultCode == MvcView.RESULT_CODE_OK) {
-                    (fragment as? ShopPageHeaderHeaderFragment)?.refreshData()
+                    (fragment as? ShopPageHeaderFragment)?.refreshData()
                 }
             }
             else -> {
@@ -202,7 +202,7 @@ class ShopPageHeaderActivity :
     }
 
     override fun createPdpAffiliateLink(basePdpAppLink: String): String {
-        return (fragment as? ShopPageHeaderHeaderFragment)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
+        return (fragment as? ShopPageHeaderFragment)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
     }
 
     override fun createAffiliateCookieAtcProduct(
@@ -210,11 +210,10 @@ class ShopPageHeaderActivity :
         isVariant: Boolean,
         stockQty: Int
     ) {
-        (fragment as? ShopPageHeaderHeaderFragment)?.createAffiliateCookieAtcProduct(
+        (fragment as? ShopPageHeaderFragment)?.createAffiliateCookieAtcProduct(
             productId,
             isVariant,
             stockQty
         )
     }
-
 }

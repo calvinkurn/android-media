@@ -1,7 +1,5 @@
 package com.tokopedia.shop.campaign.view.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -16,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -43,7 +42,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -195,15 +194,15 @@ class ShopPageCampaignFragment :
     }
 
     private fun showConfetti() {
-        (parentFragment as? ShopPageHeaderHeaderFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
+        (parentFragment as? ShopPageHeaderFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
     }
 
     private fun isShowConfetti(): Boolean {
-        return (parentFragment as? ShopPageHeaderHeaderFragment)?.isShowConfetti().orFalse()
+        return (parentFragment as? ShopPageHeaderFragment)?.isShowConfetti().orFalse()
     }
 
     private fun setConfettiAlreadyShown() {
-        (parentFragment as? ShopPageHeaderHeaderFragment)?.setConfettiAlreadyShown()
+        (parentFragment as? ShopPageHeaderFragment)?.setConfettiAlreadyShown()
     }
 
     override fun observeShopProductFilterParameterSharedViewModel() {}
@@ -638,10 +637,11 @@ class ShopPageCampaignFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    (parentFragment as? ShopPageHeaderHeaderFragment)?.expandHeader()
+                    (parentFragment as? ShopPageHeaderFragment)?.expandHeader()
                 }
-                if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex)
+                if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex) {
                     hideScrollToTopButton()
+                }
                 latestCompletelyVisibleItemIndex = firstCompletelyVisibleItemPosition
                 val lastCompletelyVisibleItemPosition =
                     layoutManager?.findLastCompletelyVisibleItemPositions(
@@ -682,10 +682,11 @@ class ShopPageCampaignFragment :
         val shouldLoadFirstVisibleItem =
             shopCampaignTabAdapter.isLoadNextHomeWidgetData(firstVisibleItemPosition)
         if (shouldLoadLastVisibleItem || shouldLoadFirstVisibleItem) {
-            val position = if (shouldLoadLastVisibleItem)
+            val position = if (shouldLoadLastVisibleItem) {
                 lastVisibleItemPosition
-            else
+            } else {
                 firstVisibleItemPosition
+            }
             val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(position)
             shopCampaignTabAdapter.updateShopHomeWidgetStateToLoading(listWidgetLayoutToLoad)
 
@@ -745,11 +746,11 @@ class ShopPageCampaignFragment :
     }
 
     private fun hideScrollToTopButton() {
-        (parentFragment as? ShopPageHeaderHeaderFragment)?.hideScrollToTopButton()
+        (parentFragment as? ShopPageHeaderFragment)?.hideScrollToTopButton()
     }
 
     private fun showScrollToTopButton() {
-        (parentFragment as? ShopPageHeaderHeaderFragment)?.showScrollToTopButton()
+        (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
     }
 
     fun setPageBackgroundColor(listBackgroundColor: List<String>) {
