@@ -615,10 +615,6 @@ open class TopChatRoomActivity :
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-    }
-
     companion object {
         const val SOURCE_ASK_BUYER = "tx_ask_buyer"
         val LABEL_USER = "Pengguna"

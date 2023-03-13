@@ -1,6 +1,9 @@
 package com.tokopedia.chatbot.view.util
 
-interface OnboardingDismissListener {
+interface OnboardingReplayDismissListener {
     fun dismissReplyBubbleOnBoarding()
+}
+
+interface OnboardingVideoDismissListener {
     fun dismissVideoUploadOnBoarding()
 }

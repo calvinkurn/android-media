@@ -3,7 +3,13 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccData
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccPaymentParameter
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccRedirectParam
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import io.mockk.coEvery
@@ -144,7 +150,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
                 uploadedImageCount = 0,
                 showImageUpload = true,
                 frontEndValidation = true,
-                isError = false,
+                isError = false
             )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
@@ -176,7 +182,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
                 uploadedImageCount = 0,
                 showImageUpload = true,
                 frontEndValidation = false,
-                isError = false,
+                isError = false
             )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
