@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +31,8 @@ import kotlin.coroutines.CoroutineContext
 
 class BannerRevampViewHolder(
     itemView: View,
-    private val bannerListener: BannerComponentListener?
+    private val bannerListener: BannerComponentListener?,
+    private val cardInteraction: Boolean = false
 ) :
     AbstractViewHolder<BannerRevampDataModel>(itemView),
     BannerItemListener,
@@ -151,10 +153,13 @@ class BannerRevampViewHolder(
         binding?.rvBannerRevamp?.layoutParams = layoutParams
 
         binding?.rvBannerRevamp?.layoutManager = getLayoutManager()
-        val adapter = BannerRevampChannelAdapter(list, this)
-        val halfIntegerSize = Integer.MAX_VALUE / DIVIDE_HALF_BANNER_SIZE_INT_SIZE
-        binding?.rvBannerRevamp?.layoutManager?.scrollToPosition(halfIntegerSize - halfIntegerSize % totalBanner)
-        binding?.rvBannerRevamp?.adapter = adapter
+        binding?.cardContainerBanner?.let {
+            it.animateOnPress = if (cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
+            val adapter = BannerRevampChannelAdapter(list, this, it)
+            val halfIntegerSize = Integer.MAX_VALUE / DIVIDE_HALF_BANNER_SIZE_INT_SIZE
+            binding?.rvBannerRevamp?.layoutManager?.scrollToPosition(halfIntegerSize - halfIntegerSize % totalBanner)
+            binding?.rvBannerRevamp?.adapter = adapter
+        }
     }
 
     override fun onImpressed(position: Int) {

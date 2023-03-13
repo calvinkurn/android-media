@@ -9,14 +9,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 
 class BannerRevampChannelAdapter(
     private var itemList: List<BannerItemModel>,
-    private val bannerItemListener: BannerItemListener
+    private val bannerItemListener: BannerItemListener,
+    private val cardContainer: CardUnify2
 ) : RecyclerView.Adapter<BannerRevampChannelImageViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerRevampChannelImageViewHolder {
-        return BannerRevampChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_banner_revamp_channel_item, parent, false), bannerItemListener)
+        return BannerRevampChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_banner_revamp_channel_item, parent, false), bannerItemListener, cardContainer)
     }
 
     override fun onBindViewHolder(holder: BannerRevampChannelImageViewHolder, position: Int) {
@@ -31,12 +33,13 @@ class BannerRevampChannelAdapter(
     }
 }
 
-class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerItemListener) : RecyclerView.ViewHolder(itemView) {
+class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerItemListener, val cardContainer: CardUnify2) : RecyclerView.ViewHolder(itemView) {
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: BannerItemModel) {
         val imageBanner = itemView.findViewById<ImageUnify>(R.id.image_banner_revamp)
         imageBanner.setImageUrl(item.url)
         imageBanner.setOnTouchListener { _, motionEvent ->
+            cardContainer.onTouchEvent(motionEvent)
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                     listener.onLongPress()
