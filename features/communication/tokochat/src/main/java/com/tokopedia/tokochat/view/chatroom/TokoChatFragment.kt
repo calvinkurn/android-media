@@ -32,12 +32,14 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
@@ -162,6 +164,12 @@ open class TokoChatFragment :
         setupTrackers()
         setupAttachmentMenu()
         initializeChatRoom(savedInstanceState)
+        setupExtensionProvider()
+        setupLifeCycleObserver()
+    }
+
+    private fun setupLifeCycleObserver() {
+        this.lifecycle.addObserver(viewModel)
     }
 
     protected open fun initializeChatRoom(savedInstanceState: Bundle?) {
@@ -1165,11 +1173,15 @@ open class TokoChatFragment :
 
     private fun processImagePathToUpload(imagePathList: List<String>): String? {
         imagePathList.firstOrNull()?.let { imagePath ->
-            if (imagePath.isNotEmpty()) {
+            if (imagePath.isNotEmpty() && context != null) {
                 viewModel.uploadImage(filePath = imagePath)
             }
         }
         return null
+    }
+
+    private fun setupExtensionProvider() {
+
     }
 
     companion object {

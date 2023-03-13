@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.util
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
@@ -18,12 +19,14 @@ import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger.ErrorType.ER
 import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger.PAGE.TOKOCHAT
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil
 import timber.log.Timber
 import java.io.File
+import java.io.FileOutputStream
 import java.io.InputStream
 import javax.inject.Inject
 
@@ -157,9 +160,38 @@ class TokoChatViewUtil @Inject constructor(
         )
     }
 
+    fun compressAndRenameImageToTokoChatPath(
+        originalFilePath: String,
+        newFileName: String,
+        quality: Int
+    ): Uri? {
+        val resultFile = getTokoChatPhotoPath(newFileName)
+        val originalFile = File(originalFilePath)
+        val fileAsUri = Uri.fromFile(originalFile)
+        return ImageCompressor.compress(
+            context = context,
+            imageUri = fileAsUri,
+            compressFormat = Bitmap.CompressFormat.JPEG,
+            maxWidth = MAX_WIDTH,
+            maxHeight = MAX_HEIGHT,
+            useMaxScale = true,
+            quality = quality,
+            minWidth = MIN_WIDTH,
+            minHeight = MIN_HEIGHT,
+            resultFile = resultFile
+        )
+    }
+
     companion object {
         private const val TOKOCHAT_RELATIVE_PATH = "/TokoChat"
         private const val JPEG_EXT = ".jpeg"
+
+        private const val MAX_WIDTH = 2000f
+        private const val MAX_HEIGHT = 2000f
+        private const val MIN_WIDTH = 300
+        private const val MIN_HEIGHT = 300
+        const val QUALITY = 80 // in percent
+        const val QUALITY_ORI = 100 // in percent
 
         fun getTokoChatPhotoPath(fileName: String): File {
             return File(getInternalCacheDirectory().absolutePath, fileName + JPEG_EXT)

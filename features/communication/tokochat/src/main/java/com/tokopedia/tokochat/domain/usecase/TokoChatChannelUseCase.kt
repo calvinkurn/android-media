@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
+import com.gojek.conversations.extensions.ConversationsExtensionProvider
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
@@ -54,5 +55,13 @@ open class TokoChatChannelUseCase @Inject constructor(
 
     fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?> {
         return repository.getConversationRepository().getLiveChannel(channelId)
+    }
+
+    fun registerExtensionProvider(extensionProvider: ConversationsExtensionProvider) {
+        repository.getConversationRepository().registerExtensionProvider(extensionProvider)
+    }
+
+    fun unRegisterExtensionProvider(extensionProvider: ConversationsExtensionProvider) {
+        repository.getConversationRepository().unRegisterExtensionProvider(extensionProvider)
     }
 }

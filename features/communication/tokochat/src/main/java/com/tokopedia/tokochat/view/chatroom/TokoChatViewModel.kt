@@ -1,8 +1,10 @@
 package com.tokopedia.tokochat.view.chatroom
 
-import android.util.Log
+import android.net.Uri
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,15 +12,20 @@ import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.database.chats.ConversationsMessage
+import com.gojek.conversations.extensions.ExtensionMessage
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
+import com.tokopedia.tokochat.domain.response.upload_image.TokoChatUploadImageResult
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
@@ -30,9 +37,15 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatUploadImageUseCase
+import com.tokopedia.tokochat.util.TokoChatValueUtil.IMAGE_EXTENSION
+import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatViewUtil
+import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.QUALITY
+import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.QUALITY_ORI
 import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.getTokoChatPhotoPath
+import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -51,7 +64,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.File
+import java.util.*
 import javax.inject.Inject
 
 class TokoChatViewModel @Inject constructor(
@@ -67,8 +82,9 @@ class TokoChatViewModel @Inject constructor(
     private val getImageUrlUseCase: TokoChatGetImageUseCase,
     private val uploadImageUseCase: TokoChatUploadImageUseCase,
     private val viewUtil: TokoChatViewUtil,
+    private val imageAttachmentExtensionProvider: TokoChatImageAttachmentExtensionProvider,
     private val dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
 
     private val _channelDetail = MutableLiveData<Result<GroupBookingChannelDetails>>()
     val channelDetail: LiveData<Result<GroupBookingChannelDetails>>
@@ -129,6 +145,16 @@ class TokoChatViewModel @Inject constructor(
                     _updateOrderTransactionStatus.emit(it)
                 }
         }
+    }
+
+    override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
+        chatChannelUseCase.registerExtensionProvider(imageAttachmentExtensionProvider)
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        chatChannelUseCase.unRegisterExtensionProvider(imageAttachmentExtensionProvider)
     }
 
     fun sendMessage(channelId: String, text: String) {
@@ -341,7 +367,7 @@ class TokoChatViewModel @Inject constructor(
         isFromRetry: Boolean = false
     ) {
         launchCatchError(context = dispatcher.io, block = {
-            val cachedImage = getTokoChatPhotoPath(generateImageName(imageId, channelId))
+            val cachedImage = getTokoChatPhotoPath(imageId)
             // If image has never been downloaded, then download
             if (!cachedImage.exists() || isFromRetry) {
                 delay(DELAY_FETCH_IMAGE)
@@ -351,7 +377,7 @@ class TokoChatViewModel @Inject constructor(
                 if (imageUrlResponse.success == true) {
                     imageUrlResponse.data?.url?.let {
                         viewUtil.downloadAndSaveByteArrayImage(
-                            generateImageName(imageId, channelId),
+                            imageId,
                             getImageUrlUseCase.getImage(it).byteStream(),
                             onImageReady,
                             onError,
@@ -377,30 +403,109 @@ class TokoChatViewModel @Inject constructor(
             })
     }
 
-    private fun generateImageName(imageId: String, channelId: String): String {
-        return "${imageId}_$channelId"
-    }
-
     fun uploadImage(filePath: String) {
         viewModelScope.launch {
             withContext(dispatcher.io) {
                 try {
-                    val params = TokoChatUploadImageUseCase.Param(
+                    val localUUID = UUID.randomUUID().toString()
+                    // Compress & Rename Image
+                    val localImage = preprocessingImage(
                         filePath = filePath,
-                        channelId = channelId
+                        newFileName = localUUID,
+                        quality = QUALITY
                     )
-                    val result = uploadImageUseCase(params)
-                    Log.d("UPLOAD-IMAGE-TEST", result.toString())
+
+                    // Add dummy / transient message
+                    addTransientExtensionMessage(
+                        extensionMessage = createExtensionMessage(localUUID = localUUID))
+
+                    // Upload image to BE
+                    val result = uploadImageToServer(filePath)
+
+                    // Rename Image to imageId
+                    preprocessingImage(
+                        filePath = localImage.path?: "",
+                        newFileName = result.data?.imageId?: "",
+                        quality = QUALITY_ORI
+                    )
+
+                    //send transient message
+                    sendTransientExtensionMessage(createExtensionMessage(
+                        localUUID = localUUID,
+                        result.data?.imageId
+                    ))
                 } catch (throwable: Throwable) {
-                    Log.d("UPLOAD-IMAGE-TEST", throwable.toString())
+                    Timber.d(throwable)
                 }
             }
         }
+    }
+
+    private fun preprocessingImage(
+        filePath: String,
+        newFileName: String,
+        quality: Int
+    ): Uri {
+        return viewUtil.compressAndRenameImageToTokoChatPath(
+            originalFilePath = filePath,
+            newFileName = newFileName,
+            quality = quality
+        )?: throw MessageErrorException(ERROR_IMAGE_NULL)
+    }
+
+    private suspend fun uploadImageToServer(filePath: String): TokoChatUploadImageResult {
+        val params = TokoChatUploadImageUseCase.Param(
+            filePath = filePath,
+            channelId = channelId
+        )
+        return uploadImageUseCase(params)
+    }
+
+    private fun addTransientExtensionMessage(extensionMessage: ExtensionMessage) {
+        sendMessageUseCase.addTransientMessage(
+            channel = channelId,
+            extensionMessage = extensionMessage
+        )
+    }
+
+    private fun sendTransientExtensionMessage(extensionMessage: ExtensionMessage) {
+        sendMessageUseCase.sendTransientMessage(
+            channel = channelId,
+            extensionMessage = extensionMessage
+        )
+    }
+
+    private fun createExtensionMessage(
+        localUUID: String,
+        extensionId: String? = null
+    ): ExtensionMessage {
+        return ExtensionMessage(
+            extensionId = PICTURE,
+            extensionMessageId = PICTURE,
+            extensionVersion = Int.ONE,
+            transientId = localUUID,
+            messageId = null,
+            message = IMAGE_ATTACHMENT_MSG,
+            isCanned = false,
+            cannedMessagePayload = null,
+            payload = createExtensionPayloadImageAttachment(extensionId = extensionId?: localUUID)
+        )
+    }
+
+    private fun createExtensionPayloadImageAttachment(
+        extensionId: String
+    ): String {
+        val extensionPayload = TokoChatExtensionPayload(
+            extension = IMAGE_EXTENSION,
+            id = extensionId
+        )
+        return Gson().toJson(extensionPayload)
     }
 
     companion object {
         const val TOKOFOOD_SERVICE_TYPE = 5
         const val DELAY_UPDATE_ORDER_STATE = 5000L
         private const val DELAY_FETCH_IMAGE = 500L
+        private const val ERROR_IMAGE_NULL = "Image null"
     }
 }

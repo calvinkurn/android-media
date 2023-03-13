@@ -10,6 +10,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.tokopedia.utils.image.ImageProcessingUtil.getCompressFormat
 import com.tokopedia.utils.image.ImageProcessingUtil.writeImageToTkpdPath
 import java.io.File
+import java.io.FileOutputStream
 import kotlin.math.max
 import kotlin.math.min
 
@@ -46,7 +47,7 @@ object ImageCompressor {
         )
     }
 
-    private fun compress(
+    fun compress(
         context: Context,
         imageUri: Uri,
         compressFormat: Bitmap.CompressFormat,
@@ -55,7 +56,8 @@ object ImageCompressor {
         useMaxScale: Boolean,
         quality: Int,
         minWidth: Int,
-        minHeight: Int
+        minHeight: Int,
+        resultFile: File? = null
     ): Uri? {
         val bmOptions = decodeBitmapFromUri(context, imageUri)
 
@@ -90,13 +92,26 @@ object ImageCompressor {
 
         val finalBitmap = scaleUpBitmapIfNeeded(newBitmap, finalWidth, finalHeight, scaleUpFactor, shouldScaleUp)
 
-        val imageFilePath = writeImageToTkpdPath(
-            bitmap = finalBitmap,
-            compressFormat = compressFormat,
-            quality = quality
-        ) ?: return null
+        val imageFilePath = if (resultFile != null) {
+            writeImageToFile(
+                bitmap = finalBitmap,
+                file = resultFile,
+                compressFormat = compressFormat,
+                quality = quality
+            )
+        } else {
+            writeImageToTkpdPath(
+                bitmap = finalBitmap,
+                compressFormat = compressFormat,
+                quality = quality
+            )
+        }
 
-        return Uri.fromFile(imageFilePath)
+        return if (imageFilePath != null) {
+            Uri.fromFile(imageFilePath)
+        } else {
+            null
+        }
     }
 
     private fun decodeBitmapFromUri(
@@ -272,6 +287,26 @@ object ImageCompressor {
         }
 
         return scaledBitmap
+    }
+
+    private fun writeImageToFile(
+        bitmap: Bitmap,
+        file: File,
+        compressFormat: Bitmap.CompressFormat,
+        quality: Int
+    ): File? {
+        if (file.exists()) {
+            file.delete()
+        }
+        try {
+            val out = FileOutputStream(file)
+            bitmap.compress(compressFormat, quality, out)
+            out.flush()
+            out.close()
+        } catch (e: Throwable) {
+            return null
+        }
+        return file
     }
 
 }
