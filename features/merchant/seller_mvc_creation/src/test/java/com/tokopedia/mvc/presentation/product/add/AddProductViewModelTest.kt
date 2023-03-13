@@ -121,6 +121,59 @@ class AddProductViewModelTest {
         }
     }
 
+    //getProducts success category ids is not empty
+    @Test
+    fun `when apply category filter, should call get products with correct categories ids`() {
+        runBlockingTest {
+            //Given
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall()
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall()
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+            val categories = listOf(
+                ProductCategoryOption("1", "TV", "Televisi"),
+                ProductCategoryOption("2", "Gaming", "PS 5")
+            )
+
+            //When
+            viewModel.processEvent(AddProductEvent.ApplyCategoryFilter(categories))
+
+
+            //Then
+            val getProductsParam = ProductListUseCase.Param(
+                categoryIds = listOf(1, 2),
+                page = 1,
+                pageSize = 20,
+                searchKeyword = "",
+                showcaseIds = listOf(),
+                sortDirection = "DESC",
+                sortId = "DEFAULT",
+                warehouseId = WAREHOUSE_ID
+            )
+
+            coVerify { getProductsUseCase.execute(getProductsParam) }
+
+            val actual = emittedValues.last()
+
+            assertEquals(true, actual.isLoading)
+            assertEquals(emptyList<Product>(), actual.products)
+            assertEquals(categories, actual.selectedCategories)
+            assertEquals(true, actual.isFilterActive)
+            job.cancel()
+        }
+    }
+    //getProducts success showcase ids is not empty
 
     //getProductsAndProductsMetadata success page mode create
 
@@ -321,7 +374,6 @@ class AddProductViewModelTest {
     }
 
     //getProductsAndProductsMetadata error, ui effect should emit Error, ui state error should contain throwable
-
 
     @Test
     fun `When get products success, should return all ready stock parent products only`() {
@@ -852,15 +904,6 @@ class AddProductViewModelTest {
     }
 
     //endregion
-
-    //region UT for getProducts function to test enableCheckbox property
-    //getProducts success: enableCheckbox should be false -> if product is not selected, enableCheckbox should be false
-    //getProducts success: enableCheckbox should be false -> if total selected product bigger than max allowed product selection, enableCheckbox should be false
-    //endregion
-
-    //getProducts success category ids is not empty
-    //getProducts success showcase ids is not empty
-    //getProducts success currentPageParentProductsIds is not empty
 
     //getProducts error ui effect should emit Error, ui state error should contain throwable
 
