@@ -18,6 +18,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionUiModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListUiModel
@@ -36,6 +37,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.ChatbotImageUploadViewHolde
 import com.tokopedia.chatbot.view.adapter.viewholder.ChatbotLiveChatSeparatorViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.ChatbotVideoUploadViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.CsatOptionListViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.DynamicStickyButtonViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.QuickReplyViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.StickyActionButtonViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.CustomChatbotMessageViewHolder
@@ -119,6 +121,7 @@ open class ChatbotTypeFactoryImpl(
             ChatbotFallbackAttachmentViewHolder.LAYOUT -> ChatbotFallbackAttachmentViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
             StickyActionButtonViewHolder.LAYOUT -> StickyActionButtonViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener, actionButtonClickListener)
             ChatRatingViewHolder.LAYOUT -> ChatRatingViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener, chatRatingListener)
+            DynamicStickyButtonViewHolder.LAYOUT -> DynamicStickyButtonViewHolder(parent, chatLinkHandlerListener)
             else -> createViewHolder(parent, type)
         }
     }
@@ -133,6 +136,10 @@ open class ChatbotTypeFactoryImpl(
 
     override fun type(attachInvoiceSentUiModel: com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel): Int {
         return AttachedInvoiceSentViewHolder.LAYOUT
+    }
+
+    override fun type(dynamicStickyButtonUiModel: DynamicStickyButtonUiModel): Int {
+        return DynamicStickyButtonViewHolder.LAYOUT
     }
 
     override fun type(chatSepratorUiModel: ChatSepratorUiModel): Int {
