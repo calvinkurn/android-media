@@ -968,8 +968,6 @@ class AddProductViewModelTest {
     //endregion
 
     //region handleCheckAllProduct
-            //search keyword, products, maxProductSelection
-
     @Test
     fun `When tick select all products checkbox and the product is not eligible, then make the product non selectable`() {
         runBlockingTest {
@@ -1043,6 +1041,81 @@ class AddProductViewModelTest {
         }
     }
 
+    @Test
+    fun `When tick select all products checkbox while searching product name, then only select product from the search result`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val secondProduct = populateProduct().copy(id = 2, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                ),
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = secondProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(searchKeyword = "", warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            mockGetProductListGqlCall(searchKeyword = "some keyword..", warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+            viewModel.processEvent(AddProductEvent.SearchProduct("some keyword.."))
+            viewModel.processEvent(AddProductEvent.EnableSelectAllCheckbox)
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isLoading)
+            assertEquals(
+                listOf(
+                    firstProduct.copy(isSelected = true, enableCheckbox = true, isEligible = true),
+                    secondProduct.copy(isSelected = true, enableCheckbox = true, isEligible = true)
+                ),
+                actual.products
+            )
+
+            job.cancel()
+        }
+    }
     //endregion
 
     private fun buildVoucherConfiguration(): VoucherConfiguration {
@@ -1117,6 +1190,7 @@ class AddProductViewModelTest {
 
     private fun mockGetProductListGqlCall(
         page : Int = 1,
+        searchKeyword: String = "",
         warehouseId: Long = WAREHOUSE_ID,
         totalProduct: Int = 20,
         products: List<Product> = emptyList()
@@ -1125,7 +1199,7 @@ class AddProductViewModelTest {
             categoryIds = listOf(),
             page = page,
             pageSize = 20,
-            searchKeyword = "",
+            searchKeyword = searchKeyword,
             showcaseIds = listOf(),
             sortDirection = "DESC",
             sortId = "DEFAULT",
