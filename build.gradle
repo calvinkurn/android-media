@@ -57,6 +57,7 @@ buildscript {
         classpath "com.gradle:gradle-enterprise-gradle-plugin:3.6.3"
         classpath "gradle.plugin.org.gradle.android:android-cache-fix-gradle-plugin:2.4.4"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:1.7.20"
+        classpath "org.jetbrains.dokka:dokka-core:1.6.21"
     }
 }
 
@@ -79,63 +80,84 @@ task installGitHooks {
 }
 clean.dependsOn installGitHooks
 
-// Dokka
+// --- Dokka ---
 
 apply plugin: "org.jetbrains.dokka"
 
-tasks.withType(DokkaMultiModuleTask).configureEach {
-    def footer = new File("docs/internal/footer.txt")
+/**
+ * Override the default value of Dokka styles.
+ *
+ * BaseConfiguration to generate a dokka properties to able to override through [pluginsMapConfiguration],
+ * it used for a multiModuleTask and dokkaPartialTask.
+ *
+ * @return String
+ */
+String generateBaseConfiguration() {
+    String footer = new File("docs/internal/footer.txt")
             .readLines()
             .join(" ")
             .trim()
             .toString()
 
-    outputDirectory.set(rootProject.file('docs'))
-    failOnWarning.set(true)
-
-    String baseConfiguration = """
-                {
-                    "customStyleSheets": ["${file("docs/internal/css/logo-styles.css")}"],
-                    "templatesDir": "${file("docs/internal/templates")}",
-                    "separateInheritedMembers": true,
-                    "footerMessage": "$footer"
-                }
-            """
-    pluginsMapConfiguration.set(["org.jetbrains.dokka.base.DokkaBase": baseConfiguration])
-
-
+    return """
+            {
+                "customStyleSheets": ["${file("docs/internal/css/logo-styles.css")}"],
+                "templatesDir": "${file("docs/internal/templates")}",
+                "separateInheritedMembers": true,
+                "footerMessage": "$footer"
+            }
+       """
 }
 
-tasks.withType(DokkaTaskPartial.class) {
-    dokkaSourceSets.configureEach {
-        documentedVisibilities.set([
-                DokkaConfiguration.Visibility.PUBLIC,
-                DokkaConfiguration.Visibility.PROTECTED
-        ])
+// root module
+tasks.withType(DokkaMultiModuleTask).configureEach {
+    failOnWarning.set(true)
+    outputDirectory.set(rootProject.file('docs'))
+    pluginsMapConfiguration.set(
+            ["org.jetbrains.dokka.base.DokkaBase": generateBaseConfiguration()]
+    )
+}
 
-        perPackageOption {
-            matchingRegex.set(".*internal.*")
-            suppress.set(true)
-        }
+// root module
+tasks.withType(DokkaMultiModuleTask) {
+    // Append the default main.css with a custom style.css
+    // The style.css contains a custom css style for Tokopedia footer message
+    doLast {
+        project.file("docs/styles/main.css").append(
+                project.file("docs/internal/css/style.css").text
+        )
+    }
+}
 
-        includes.from("readme.md")
+// sub module
+subprojects {
+    tasks.withType(DokkaTaskPartial.class) {
+        pluginsMapConfiguration.set(
+                ["org.jetbrains.dokka.base.DokkaBase": generateBaseConfiguration()]
+        )
 
-        reportUndocumented.set(true)
-        skipEmptyPackages.set(true)
-        skipDeprecated.set(true)
-        jdkVersion.set(8)
+        dokkaSourceSets.configureEach {
+            perPackageOption {
+                matchingRegex.set(".*internal.*")
+                suppress.set(true)
+            }
 
-        // Add Android SDK packages
-        noAndroidSdkLink.set(false)
+            reportUndocumented.set(true)
+            skipEmptyPackages.set(true)
+            skipDeprecated.set(true)
 
-        // AndroidX + Kotlin docs
-        externalDocumentationLink {
-            url.set(new URL("https://developer.android.com/reference/"))
-            packageListUrl.set(new URL("https://developer.android.com/reference/androidx/package-list"))
-        }
-        externalDocumentationLink {
-            url.set(new URL("https://developer.android.com/reference/kotlin/"))
-            packageListUrl.set(new URL("https://developer.android.com/reference/kotlin/androidx/package-list"))
+            // Add Android SDK packages
+            noAndroidSdkLink.set(false)
+
+            // AndroidX + Kotlin docs
+            externalDocumentationLink {
+                url.set(new URL("https://developer.android.com/reference/"))
+                packageListUrl.set(new URL("https://developer.android.com/reference/androidx/package-list"))
+            }
+            externalDocumentationLink {
+                url.set(new URL("https://developer.android.com/reference/kotlin/"))
+                packageListUrl.set(new URL("https://developer.android.com/reference/kotlin/androidx/package-list"))
+            }
         }
     }
 }
