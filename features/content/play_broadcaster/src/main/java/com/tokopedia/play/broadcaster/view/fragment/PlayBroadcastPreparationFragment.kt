@@ -790,7 +790,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 // TODO direct to performance dashboard page
                 //tokopedia://webview?url=https://www.tokopedia.com/help/article/syarat-dan-ketentuan-feed-user-profil
                 val url = "https://tokopedia.com/play/live"
-                val applink = "tokopedia://webview?url=$url"
+                val applink = "tokopedia://webview?pull_to_refresh=true&url=$url"
                 RouteManager.route(requireContext(), applink)
             }
         }
