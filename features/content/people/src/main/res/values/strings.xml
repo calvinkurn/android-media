@@ -52,4 +52,8 @@
     <!--Report-->
     <string name="up_report_user">Laporkan</string>
 
+    <!-- Play Video Tab -->
+    <string name="up_play_video_link_copied">Link disalin!</string>
+    <string name="up_play_video_deleted">Video telah dihapus.</string>
+
 </resources>
