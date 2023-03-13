@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.orUnknown
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
@@ -115,6 +116,8 @@ class ProductSetupFragment @Inject constructor(
                     override fun getSelectedAccount(): ContentAccountUiModel {
                         return mDataSource?.getSelectedAccount().orUnknown()
                     }
+
+                    override fun isProductNumerationShown(): Boolean = mDataSource?.isProductNumerationShown().orFalse()
                 })
             }
             is ProductPickerUGCBottomSheet -> {
@@ -228,6 +231,8 @@ class ProductSetupFragment @Inject constructor(
         fun getSelectedAccount(): ContentAccountUiModel
         fun creationId(): String
         fun maxProduct(): Int
+
+        fun isProductNumerationShown() : Boolean
     }
 
     interface Listener {

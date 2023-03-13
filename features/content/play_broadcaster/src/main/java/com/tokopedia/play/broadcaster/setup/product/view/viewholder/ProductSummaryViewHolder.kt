@@ -135,6 +135,7 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.viewPinProduct.setOnClickListener {
                 listener.onPinClicked(item.product)
             }
+            binding.tvSummaryProductTagNumber.showWithCondition(item.isNumerationShown)
             binding.tvSummaryProductTagNumber.unlockFeature = true
             binding.tvSummaryProductTagNumber.setLabelType(contentR.color.content_dms_bg_label.hexToString(ctx))
             binding.tvSummaryProductTagNumber.setLabel(item.product.number)

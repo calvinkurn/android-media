@@ -163,6 +163,8 @@ class PlayShortsPreparationFragment @Inject constructor(
                     override fun maxProduct(): Int {
                         return viewModel.maxProduct
                     }
+
+                    override fun isProductNumerationShown(): Boolean = false //Not applicable for VOD
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {
