@@ -45,7 +45,7 @@ class FollowerFollowingListingFragment @Inject constructor(
 
     private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            if (position == 1) {
+            if (position == FOLLOWING_PAGE_POSITION) {
                 userProfileTracker.openFollowingTab(userId)
             } else {
                 userProfileTracker.openFollowersTab(userId)
