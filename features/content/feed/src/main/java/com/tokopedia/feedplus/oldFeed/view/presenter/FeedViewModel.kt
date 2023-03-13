@@ -10,8 +10,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_INTEREST
+import com.tokopedia.content.common.usecase.GetWhiteListUseCase
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
@@ -24,6 +23,7 @@ import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderU
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetFollowingUseCase
 import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.domain.usecase.SCREEN_NAME_UPDATE_TAB
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
@@ -105,7 +105,7 @@ class FeedViewModel @Inject constructor(
     private val shopRecomMapper: ShopRecomUiMapper,
     private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
     private val sendReportUseCase: SubmitReportContentUseCase,
-    private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
+    private val getWhiteListUseCase: GetWhiteListUseCase,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
@@ -923,7 +923,7 @@ class FeedViewModel @Inject constructor(
         return try {
             val feedResponseModel = getFeedDataResult()
             if (userSession.isLoggedIn) {
-                val whiteListModel = getWhiteListNewUseCase.execute(type = WHITELIST_INTEREST)
+                val whiteListModel = getWhiteListUseCase(GetWhiteListUseCase.WhiteListType.Interest)
                 DynamicFeedFirstPageDomainModel(
                     feedResponseModel,
                     (whiteListModel.whitelist.error.isEmpty() && whiteListModel.whitelist.isWhitelist)

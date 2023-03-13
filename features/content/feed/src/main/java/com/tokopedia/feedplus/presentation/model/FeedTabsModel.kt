@@ -26,7 +26,7 @@ data class MetaModel(
     val profileWeblink: String,
     val profilePhotoUrl: String,
     val showMyProfile: Boolean,
-    val showCreatePost: Boolean,
+    val isCreationActive: Boolean,
     val showLive: Boolean,
     val liveApplink: String
 )

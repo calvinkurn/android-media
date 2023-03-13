@@ -96,6 +96,9 @@ dari Feed.</string>
     <string name="feeds_add_to_cart_toaster_action_text">Lihat</string>
     <string name="feed_share_title">%s post</string>
     <string name="feed_share_desc_text">Eh, %s baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
-
+    <string name="feed_onboarding_create_content_title">Baru! Bisa buat video pendek 🥳</string>
+    <string name="feed_onboarding_create_content_subtitle">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
+    <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>
+    <string name="feed_onboarding_profile_entry_point_subtitle">Kamu juga bisa buat profil yang menarik dan bikin banyak orang penasaran dengan kontenmu.</string>
 
 </resources>

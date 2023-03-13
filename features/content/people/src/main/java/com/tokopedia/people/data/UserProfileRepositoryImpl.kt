@@ -1,8 +1,7 @@
 package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.content.common.usecase.GetWhiteListUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
@@ -32,7 +31,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val playVodUseCase: PlayPostContentUseCase,
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
-    private val getWhitelistNewUseCase: GetWhiteListNewUseCase,
+    private val getWhitelistUseCase: GetWhiteListUseCase,
     private val shopRecomUseCase: ShopRecomUseCase,
     private val getUserProfileTabUseCase: GetUserProfileTabUseCase,
     private val getUserProfileFeedPostsUseCase: GetUserProfileFeedPostsUseCase,
@@ -57,7 +56,7 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getWhitelist(): ProfileWhitelistUiModel {
         return withContext(dispatcher.io) {
-            val result = getWhitelistNewUseCase.execute(WHITELIST_ENTRY_POINT)
+            val result = getWhitelistUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
 
             mapper.mapUserWhitelist(result)
         }
