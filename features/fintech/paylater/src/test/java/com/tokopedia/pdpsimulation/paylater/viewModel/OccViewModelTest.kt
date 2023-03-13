@@ -178,10 +178,24 @@ class OccViewModelTest {
             ),
             ""
         )
-        val checkoutData = CheckoutData("1",
-            null, null,null,null,
-            null,null,null,false,null,
-            null, listOf(tenureDetail),"",null,null,false)
+        val checkoutData = CheckoutData(
+            "1",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            null,
+            null,
+            listOf(tenureDetail),
+            "",
+            null,
+            null,
+            false,
+        )
         val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(listOf(checkoutData), "")
         coEvery {
             paylaterActivationUseCase.getPayLaterActivationDetail(
