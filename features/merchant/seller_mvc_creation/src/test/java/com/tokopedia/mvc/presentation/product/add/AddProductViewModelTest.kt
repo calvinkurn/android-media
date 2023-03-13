@@ -723,7 +723,7 @@ class AddProductViewModelTest {
                     listOf(previouslySelectedProducts)
                 )
             )
-            viewModel.processEvent(AddProductEvent.AddProductToSelection(firstProduct.id))
+            viewModel.processEvent(AddProductEvent.EnableSelectAllCheckbox)
 
             viewModel.processEvent(AddProductEvent.LoadPage(page = 1))
 
