@@ -70,10 +70,11 @@ class ContentCommentViewModel @AssistedInject constructor(
                     cursor = param.lastParentCursor,
                 )
                 _comments.update {
+                    val contentSame = it.state == result.state //temp
                     it.copy(
                         cursor = result.cursor,
                         state = result.state,
-                        list = if (it.list == result.list) it.list else it.list + result.list,
+                        list = if (contentSame) it.list else it.list + result.list,
                         commenterType = result.commenterType,
                     )
                 }
@@ -220,7 +221,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     private fun deleteComment(isFromToaster: Boolean) {
         fun removeComment() {
             _comments.update {
-                it.copy(list = it.list.filterNot { item -> (item is CommentUiModel.Item && item.id == _selectedComment.value.first.id) || item is CommentUiModel.Expandable && item.commentType.parentId == _selectedComment.value.first.id })
+                it.copy(list = it.list.filterNot { item -> (item is CommentUiModel.Item && (item.id == _selectedComment.value.first.id || item.commentType.parentId == _selectedComment.value.first.id)) || item is CommentUiModel.Expandable && item.commentType.parentId == _selectedComment.value.first.id })
             }
         }
 

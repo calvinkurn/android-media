@@ -9,6 +9,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.core.text.toSpanned
@@ -146,10 +147,16 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding =
+            FragmentContentCommentBottomSheetBinding.inflate(LayoutInflater.from(requireContext()), container, false)
+        setChild(binding.root)
         setupBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -161,10 +168,6 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding =
-            FragmentContentCommentBottomSheetBinding.inflate(LayoutInflater.from(requireContext()))
-        setChild(binding.root)
-
         clearContentPadding = true
         isDragable = false
         showKnob = false
@@ -463,7 +466,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val HEIGHT_PERCENT = 0.8
         private const val SHIMMER_VALUE = 10
 
-        private const val MAX_CHAR = 140
+        private const val MAX_CHAR = 139
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
