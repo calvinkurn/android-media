@@ -1099,7 +1099,21 @@ class MerchantPageFragment : BaseMultiFragment(),
                                 }
                             }
                         }
+                        showSuccessAddToCartToaster(cartListBusinessData.message)
                     }
+            }
+        }
+    }
+
+    private fun showSuccessAddToCartToaster(message: String) {
+        if (message.isNotEmpty()) {
+            view?.let { view ->
+                Toaster.build(
+                    view = view,
+                    text = message,
+                    duration = Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_NORMAL
+                ).show()
             }
         }
     }

@@ -188,6 +188,8 @@ data class CartListBusinessBreakdownAddOns(
 }
 
 data class CartListAddOnsCustomResponse(
+    @SerializedName("price_fmt")
+    val priceFmt: String = String.EMPTY,
     @SerializedName("info")
     val info: CartListAddOnsCustomResponseInfo = CartListAddOnsCustomResponseInfo()
 )
