@@ -9,7 +9,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.ShopPageHorizontalItemDivider
 import com.tokopedia.shop.databinding.LayoutShopHeaderPerformanceWidgetBinding
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderPerformanceWidgetAdapter
-import com.tokopedia.shop.pageheader.presentation.adapter.ShopPagePagePageHeaderPerformanceWidgetAdapterTypeFactory
+import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderPerformanceWidgetAdapterTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder
@@ -33,7 +33,7 @@ class ShopHeaderPerformanceWidgetViewHolder(
 
     override fun bind(modelPage: ShopPageHeaderWidgetUiModel) {
         shopPageHeaderPerformanceWidgetAdapter = ShopPageHeaderPerformanceWidgetAdapter(
-            ShopPagePagePageHeaderPerformanceWidgetAdapterTypeFactory(
+            ShopPageHeaderPerformanceWidgetAdapterTypeFactory(
                 modelPage,
                 shopPageHeaderPerformanceWidgetBadgeTextValueListener,
                 shopPageHeaderPerformanceWidgetImageOnlyListener,

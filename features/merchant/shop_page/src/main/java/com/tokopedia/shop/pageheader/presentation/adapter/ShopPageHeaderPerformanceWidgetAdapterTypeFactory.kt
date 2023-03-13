@@ -16,7 +16,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHead
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageTextComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 
-class ShopPagePagePageHeaderPerformanceWidgetAdapterTypeFactory(
+class ShopPageHeaderPerformanceWidgetAdapterTypeFactory(
     private val shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel,
     private val shopPageHeaderPerformanceWidgetBadgeTextValueListener: ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
     private val shopPageHeaderPerformanceWidgetImageOnlyListener: ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder.Listener,
