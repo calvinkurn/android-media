@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
+import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.constant.AtfKey
@@ -37,6 +38,7 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class HomeVisitableFactoryImpl(
     val userSessionInterface: UserSessionInterface?,
+    val homePrefController: HomePrefController,
     val remoteConfig: RemoteConfig,
     private val homeDefaultDataSource: HomeDefaultDataSource
 ) : HomeVisitableFactory {
@@ -171,7 +173,8 @@ class HomeVisitableFactoryImpl(
                         brandId = it.brandId,
                         categoryPersona = it.categoryPersona,
                         campaignCode = it.campaignCode,
-                        withBackground = it.withBackground
+                        withBackground = it.withBackground,
+                        isSkipCache = homePrefController.isUsingDifferentAtfRollenceVariant()
                     )
                 }
             ),
