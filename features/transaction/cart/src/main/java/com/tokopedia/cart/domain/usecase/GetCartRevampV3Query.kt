@@ -21,26 +21,12 @@ const val CART_REVAMP_V3_QUERY =
               localization_choose_address {
                 address_id
                 address_name
-                address
                 postal_code
-                phone
                 receiver_name
-                status
-                country
-                province_id
-                province_name
                 city_id
-                city_name
                 district_id
-                district_name
-                address_2
                 latitude
                 longitude
-                corner_id
-                is_corner
-                is_primary
-                buyer_store_code
-                type
                 state
                 state_detail
                 tokonow {
@@ -95,7 +81,6 @@ const val CART_REVAMP_V3_QUERY =
               available_section {
                 action {
                   id
-                  code
                   message
                 }
                 available_group {
@@ -202,72 +187,30 @@ const val CART_REVAMP_V3_QUERY =
                       product_information
                       product_information_with_icon {
                         text
-                       icon_url
+                        icon_url
                      }
                       product_tracker_data {
                         attribution
                         tracker_list_name
                       }
-                      isWishlist
                       product_id
                       product_name
-                      product_price_fmt
                       product_price
                       parent_id
                       category_id
                       category
-                      catalog_id
                       wholesale_price {
                         qty_min
-                        qty_min_fmt
                         qty_max
-                        qty_max_fmt
                         prd_prc
-                        prd_prc_fmt
                       }
                       product_weight
-                      product_weight_fmt
-                      product_condition
-                      product_status
-                      product_url
-                      product_returnable
-                      is_freereturns
                       is_preorder
                       product_cashback
                       product_min_order
                       product_max_order
-                      product_rating
                       product_invenage_value
-                      product_invenage_total {
-                        by_user {
-                          in_cart
-                          last_stock_less_than
-                        }
-                        by_user_text {
-                          in_cart
-                          last_stock_less_than
-                          complete
-                        }
-                        is_counted_by_user
-                        by_product {
-                          in_cart
-                          last_stock_less_than
-                        }
-                        by_product_text {
-                          in_cart
-                          last_stock_less_than
-                          complete
-                        }
-                        is_counted_by_product
-                      }
                       product_switch_invenage
-                      price_changes {
-                        changes_state
-                        amount_difference
-                        original_amount
-                        description
-                      }
-                      product_price_currency
                       product_image {
                         image_src
                         image_src_100_square
@@ -275,41 +218,16 @@ const val CART_REVAMP_V3_QUERY =
                         image_src_300
                         image_src_square
                       }
-                      product_all_images
                       product_notes
                       product_quantity
-                      product_weight_unit_code
-                      product_weight_unit_text
-                      last_update_price
-                      is_update_price
                       product_preorder {
                         duration_day
-                        duration_text
-                        duration_unit_code
-                        duration_unit_text
-                        duration_value
                       }
-                      product_showcase {
-                        name
-                        id
-                      }
-                      product_alias
-                      sku
                       campaign_id
                       product_original_price
-                      product_price_original_fmt
-                      is_slash_price
-                      free_returns {
-                        free_returns_logo
-                      }
-                      product_finsurance
                       is_wishlisted
-                      is_ppp
                       is_cod
                       warehouse_id
-                      is_parent
-                      is_campaign_error
-                      is_blacklisted
                       ethical_drug {
                         need_prescription
                         icon_url
@@ -317,32 +235,22 @@ const val CART_REVAMP_V3_QUERY =
                       }
                       free_shipping {
                         eligible
-                        badge_url
                       }
                       free_shipping_extra {
                         eligible
-                        badge_url
                       }
                       free_shipping_general {
                         bo_name
-                        bo_type
-                        badge_url
                       }
-                      booking_stock
-                      is_product_volume_weight
                       initial_price
-                      initial_price_fmt
                       slash_price_label
                       product_warning_message
                       product_alert_message
                       variant_description_detail {
                         variant_name
-                        variant_description
                       }
                       bundle_ids
                     }
-                    errors
-                    messages
                   }
                   is_fulfillment_service
                   warehouse {
@@ -353,7 +261,6 @@ const val CART_REVAMP_V3_QUERY =
               }
               unavailable_section_action {
                 id
-                code
                 message
               }
               unavailable_section {
@@ -362,7 +269,6 @@ const val CART_REVAMP_V3_QUERY =
                 unavailable_description
                 action {
                   id
-                  code
                   message
                 }
                 unavailable_group {
@@ -387,25 +293,11 @@ const val CART_REVAMP_V3_QUERY =
                     shop_alert_message
                     is_tokonow
                     shop_id
-                    admin_ids
                     shop_name
-                    shop_image
-                    shop_url
-                    shop_status
                     postal_code
                     latitude
                     longitude
-                    district_name
-                    origin
-                    address_street
-                    city_name
-                    province_id
-                    province_name
-                    country_name
-                    is_allow_manage
-                    shop_domain
-                    is_gold
-                    is_official
+                    district_id
                     shop_type_info {
                       shop_tier
                       shop_grade
@@ -422,23 +314,20 @@ const val CART_REVAMP_V3_QUERY =
                   cart_string
                   cart_details {
                     bundle_detail {
-                      bundle_description
                       bundle_group_id
                       bundle_id
                       bundle_max_order
                       bundle_min_order
                       bundle_name
                       bundle_original_price
-                      bundle_original_price_fmt
                       bundle_price
-                      bundle_price_fmt
                       bundle_qty
                       bundle_quota
-                      bundle_status
                       bundle_type
                       edit_app_link
                       slash_price_label
                       bundle_icon_url
+                      bundle_grayscale_icon_url
                     }
                     products {
                       checkbox_state
@@ -449,66 +338,24 @@ const val CART_REVAMP_V3_QUERY =
                         attribution
                         tracker_list_name
                       }
-                      isWishlist
                       product_id
                       product_name
-                      product_price_fmt
                       product_price
                       parent_id
                       category_id
                       category
-                      catalog_id
                       wholesale_price {
                         qty_min
-                        qty_min_fmt
                         qty_max
-                        qty_max_fmt
                         prd_prc
-                        prd_prc_fmt
                       }
                       product_weight
-                      product_weight_fmt
-                      product_condition
-                      product_status
-                      product_url
-                      product_returnable
-                      is_freereturns
                       is_preorder
                       product_cashback
                       product_min_order
                       product_max_order
-                      product_rating
                       product_invenage_value
-                      product_invenage_total {
-                        by_user {
-                          in_cart
-                          last_stock_less_than
-                        }
-                        by_user_text {
-                          in_cart
-                          last_stock_less_than
-                          complete
-                        }
-                        is_counted_by_user
-                        by_product {
-                          in_cart
-                          last_stock_less_than
-                        }
-                        by_product_text {
-                          in_cart
-                          last_stock_less_than
-                          complete
-                        }
-                        is_counted_by_product
-                      }
                       product_switch_invenage
-                      price_changes {
-                        changes_state
-                        amount_difference
-                        original_amount
-                        description
-                      }
-                      product_price_currency
                       product_image {
                         image_src
                         image_src_100_square
@@ -516,74 +363,38 @@ const val CART_REVAMP_V3_QUERY =
                         image_src_300
                         image_src_square
                       }
-                      product_all_images
                       product_notes
                       product_quantity
-                      product_weight_unit_code
-                      product_weight_unit_text
-                      last_update_price
-                      is_update_price
                       product_preorder {
                         duration_day
-                        duration_text
-                        duration_unit_code
-                        duration_unit_text
-                        duration_value
                       }
-                      product_showcase {
-                        name
-                        id
-                      }
-                      product_alias
-                      sku
                       campaign_id
                       product_original_price
-                      product_price_original_fmt
-                      is_slash_price
-                      free_returns {
-                        free_returns_logo
-                      }
-                      product_finsurance
                       is_wishlisted
-                      is_ppp
                       is_cod
                       warehouse_id
-                      is_parent
-                      is_campaign_error
-                      is_blacklisted
                       free_shipping {
                         eligible
-                        badge_url
                       }
                       free_shipping_extra {
                         eligible
-                        badge_url
                       }
                       free_shipping_general {
                         bo_name
-                        bo_type
-                        badge_url
                       }
-                      booking_stock
-                      is_product_volume_weight
                       initial_price
-                      initial_price_fmt 
                       slash_price_label
                       product_warning_message
                       product_alert_message
                       variant_description_detail {
                         variant_name
-                        variant_description
                       }
                     }
-                    errors
-                    messages
                   }
                   is_fulfillment_service
                   warehouse {
                     warehouse_id
                   }
-                  checkbox_state
                 }
               }
               global_checkbox_state
@@ -602,46 +413,12 @@ const val CART_REVAMP_V3_QUERY =
                 }
                 last_apply {
                   data {
-                    global_success
-                    success
                     message {
                       state
                       color
                       text
                     }
                     codes
-                    promo_code_id
-                    title_description
-                    discount_amount
-                    cashback_wallet_amount
-                    cashback_advocate_referral_amount
-                    cashback_voucher_description
-                    invoice_description
-                    is_coupon
-                    gateway_id
-                    is_tokopedia_gerai
-                    clashing_info_detail {
-                      clash_message
-                      clash_reason
-                      is_clashed_promos
-                      options {
-                        voucher_orders {
-                          cart_id
-                          code
-                          shop_name
-                          potential_benefit
-                          promo_name
-                          unique_id
-                        }
-                      }
-                    }
-                    tokopoints_detail {
-                      conversion_rate {
-                        rate
-                        points_coefficient
-                        external_currency_coefficient
-                      }
-                    }
                     voucher_orders {
                       code
                       success
@@ -722,12 +499,29 @@ const val CART_REVAMP_V3_QUERY =
                       sp_ids
                       poml_auto_applied
                     }
+                    tracking_details {
+                      product_id
+                      promo_codes_tracking
+                      promo_details_tracking
+                    }
+                    benefit_summary_info {
+                      final_benefit_amount_str
+                      final_benefit_amount
+                      final_benefit_text
+                      summaries {
+                        description
+                        type
+                        amount_str
+                        amount
+                        details {
+                            description
+                            type
+                            amount_str
+                            amount
+                        }
+                      }
+                    }
                   }
-                  code
-                }
-                error_default {
-                  title
-                  description
                 }
               }
             }
