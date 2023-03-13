@@ -61,12 +61,13 @@ class AddProductViewModelTest {
     lateinit var voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 
     companion object {
-        private const val WAREHOUSE_ID : Long = 1
+        private const val WAREHOUSE_ID : Long = 0
     }
     private lateinit var viewModel: AddProductViewModel
     private val mockedWarehouse = Warehouse(warehouseId = WAREHOUSE_ID, warehouseName = "Bekasi", warehouseType = WarehouseType.WAREHOUSE)
     private val mockedSortOptions = listOf(ProductSortOptions("price", "Harga Terendah", "ASC"))
     private val mockedCategoryOption = listOf(ProductCategoryOption("electronic", "TV", "Televisi"))
+
 
     @Before
     fun setup() {
@@ -96,7 +97,10 @@ class AddProductViewModelTest {
             mockGetProductListMetaGqlCall()
             mockGetShopShowcasesGqlCall()
             mockGetProductListGqlCall()
-            mockVoucherValidationPartialGqlCall()
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+            )
 
             val emittedValues = arrayListOf<AddProductUiState>()
             val job = launch {
@@ -132,7 +136,10 @@ class AddProductViewModelTest {
         mockGetProductListMetaGqlCall()
         mockGetShopShowcasesGqlCall()
         mockGetProductListGqlCall()
-        mockVoucherValidationPartialGqlCall()
+        mockVoucherValidationPartialGqlCall(
+            "3923-02-01",
+            "3923-03-01",
+        )
 
 
         //When
@@ -158,7 +165,10 @@ class AddProductViewModelTest {
             mockGetProductListMetaGqlCall()
             mockGetShopShowcasesGqlCall()
             mockGetProductListGqlCall()
-            mockVoucherValidationPartialGqlCall()
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+            )
 
 
             //When
@@ -195,7 +205,10 @@ class AddProductViewModelTest {
             mockGetProductListMetaGqlCall()
             mockGetShopShowcasesGqlCall()
             mockGetProductListGqlCall()
-            mockVoucherValidationPartialGqlCall()
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+            )
 
 
             //When
@@ -233,7 +246,10 @@ class AddProductViewModelTest {
             mockGetProductListMetaGqlCall()
             mockGetShopShowcasesGqlCall()
             mockGetProductListGqlCall()
-            mockVoucherValidationPartialGqlCall()
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+            )
 
 
             //When
@@ -266,10 +282,13 @@ class AddProductViewModelTest {
 
             mockShopWarehouseGqlCall()
             mockInitiateVoucherPageGqlCall(maxProductSubmission = expectedMaxProductSubmission)
-            mockGetProductListMetaGqlCall(warehouseId = WAREHOUSE_ID, sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
             mockGetShopShowcasesGqlCall()
             mockGetProductListGqlCall()
-            mockVoucherValidationPartialGqlCall()
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+            )
 
             val emittedValues = arrayListOf<AddProductUiState>()
             val job = launch {
@@ -322,7 +341,10 @@ class AddProductViewModelTest {
             mockGetProductListMetaGqlCall(warehouseId = WAREHOUSE_ID, sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
             mockGetShopShowcasesGqlCall()
             mockGetProductListGqlCall(products = mockedProductResponse)
-            mockVoucherValidationPartialGqlCall(productIds = listOf(readyStockProduct.id))
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01", productIds = listOf(readyStockProduct.id)
+            )
 
             val emittedValues = arrayListOf<AddProductUiState>()
             val job = launch {
@@ -349,7 +371,7 @@ class AddProductViewModelTest {
         }
     }
 
-    //region UT for getProducts function to test isEligible property
+    //region UT for shouldSelectProduct function to test isEligible property
     //getProducts success isEligible = false
     @Test
     fun `When validating two product eligibility to servers, and second product is ineligible then second product isEligible should be false`() {
@@ -383,10 +405,12 @@ class AddProductViewModelTest {
 
             mockShopWarehouseGqlCall()
             mockInitiateVoucherPageGqlCall()
-            mockGetProductListMetaGqlCall(warehouseId = WAREHOUSE_ID, sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
             mockGetShopShowcasesGqlCall()
             mockGetProductListGqlCall(products = mockedProductResponse)
             mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
                 productIds = listOf(firstProduct.id, secondProduct.id),
                 productValidationResponse = mockedProductValidationResponse
             )
@@ -417,16 +441,161 @@ class AddProductViewModelTest {
     }
     //endregion
 
-    //region UT for getProducts function to test isSelected property
+    //region UT for shouldSelectProduct function to test isSelected property
     //getProducts success: isSelected should be false -> if product not in selection, isSelected should be false
-    //getProducts success: isSelected should be false -> if product is not eligible, isSelected should be false
+    @Test
+    fun `When product not exist on current selection then isSelected should be false`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = true)
+            val secondProduct = populateProduct().copy(id = 2, isSelected = true)
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                ),
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = secondProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isLoading)
+            assertEquals(
+                listOf(
+                    firstProduct.copy(isSelected = false),
+                    secondProduct.copy(isSelected = false)
+                ), actual.products
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When product is exist on current selection then isSelected should be true`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                ),
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = secondProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(firstProduct.id))
+
+            viewModel.processEvent(AddProductEvent.LoadPage(page = 1))
+
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isLoading)
+            assertEquals(
+                listOf(
+                    firstProduct.copy(isSelected = true),
+                    secondProduct,
+                    firstProduct.copy(isSelected = true),
+                    secondProduct
+                ), actual.products
+            )
+
+            job.cancel()
+        }
+    }
     //getProducts success: isSelected should be false -> if checkbox select all is unchecked, isSelected should be false
     //getProducts success: isSelected should be false -> if selected product count is 90, next loaded product is 20, max product selection 100 and checkbox select all is active, is selected should be false
     //endregion
 
     //region UT for getProducts function to test enableCheckbox property
     //getProducts success: enableCheckbox should be false -> if product is not selected, enableCheckbox should be false
-    //getProducts success: enableCheckbox should be true -> if product is eligible, enableCheckbox should be true
     //getProducts success: enableCheckbox should be false -> if total selected product bigger than max allowed product selection, enableCheckbox should be false
     //endregion
 
@@ -532,6 +701,8 @@ class AddProductViewModelTest {
     }
 
     private fun mockVoucherValidationPartialGqlCall(
+        startDate: String,
+        endDate: String,
         productIds: List<Long> = emptyList(),
         productValidationResponse: List<VoucherValidationResult.ValidationProduct> = emptyList()
     ) {
@@ -552,8 +723,8 @@ class AddProductViewModelTest {
             periodType = 3,
             periodRepeat = 0,
             totalPeriod = 1,
-            startDate = "3923-02-01",
-            endDate = "3923-03-01",
+            startDate = startDate,
+            endDate = endDate,
             startHour = "00:00",
             endHour = "00:00",
             quota = 0
