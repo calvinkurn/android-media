@@ -730,6 +730,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    refreshHandler?.finishRefresh()
                     orderList = it.data
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
@@ -762,6 +763,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     }
                 }
                 is Fail -> {
+                    refreshHandler?.finishRefresh()
                     val errorType = when (it.throwable) {
                         is MessageErrorException -> null
                         is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
@@ -1787,8 +1789,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun renderOrderList() {
-        refreshHandler?.finishRefresh()
-
         val listOrder = arrayListOf<UohTypeData>()
 
         if (!onLoadMore && orderList.tickers.isNotEmpty()) {
