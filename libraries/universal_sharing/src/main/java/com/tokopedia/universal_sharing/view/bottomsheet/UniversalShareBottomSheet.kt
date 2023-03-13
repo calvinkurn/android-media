@@ -1186,7 +1186,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     /**
      * this function is deprecated and replaced with [setLinkProperties]
      */
-    @Deprecated("please use ")
+    @Deprecated("please use setLinkProperties to set ogImage")
     fun setOgImageUrl(imgUrl: String) {
         ogImageUrl = imgUrl
     }

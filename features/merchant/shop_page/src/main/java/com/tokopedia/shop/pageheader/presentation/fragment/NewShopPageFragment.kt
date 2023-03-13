@@ -3199,7 +3199,7 @@ class NewShopPageFragment :
         universalShareBottomSheet?.getImageFromMedia(shopPageParamModel.shopProfileImgUrl.isNotEmpty())
         universalShareBottomSheet?.setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.SHOP_PAGE)
         val inputShare = AffiliatePDPInput().apply {
-            pageDetail = PageDetail(pageId = shopId, pageType = "shop", siteId = "1", verticalId = "1")
+            pageDetail = PageDetail(pageId = shopId, pageType = PageType.SHOP.value, siteId = "1", verticalId = "1")
             pageType = PageType.SHOP.value
             product = Product()
             shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
