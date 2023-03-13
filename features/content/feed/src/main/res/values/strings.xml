@@ -105,9 +105,13 @@ dari Feed.</string>
     <string name="feed_label_no_content_subtitle">Cek konten menarik di Untuk Kamu. Siapa tahu ada kreator keren yang bisa kamu follow.</string>
     <string name="feed_label_no_content_button">Lihat Konten Lainnya</string>
 
-<!--  Error Load  -->
+    <!--  Error Load  -->
     <string name="feed_label_error_fetch_title">Koneksi internetmu terganggu!</string>
     <string name="feed_label_error_fetch_subtitle">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="feed_label_error_fetch_button">Coba Lagi</string>
+    <string name="feed_onboarding_create_content_title">Baru! Bisa buat video pendek 🥳</string>
+    <string name="feed_onboarding_create_content_subtitle">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
+    <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>
+    <string name="feed_onboarding_profile_entry_point_subtitle">Kamu juga bisa buat profil yang menarik dan bikin banyak orang penasaran dengan kontenmu.</string>
 
 </resources>

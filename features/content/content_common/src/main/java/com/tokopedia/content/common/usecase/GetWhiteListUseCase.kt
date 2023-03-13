@@ -1,0 +1,77 @@
+package com.tokopedia.content.common.usecase
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import javax.inject.Inject
+
+/**
+ * @author by yfsx on 20/06/18.
+ */
+class GetWhiteListUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers,
+) : CoroutineUseCase<GetWhiteListUseCase.WhiteListType, GetCheckWhitelistResponse>(dispatchers.io) {
+
+    override fun graphqlQuery(): String {
+        return """
+            query FeedCheckWhitelist(${'$'}type: String, ${'$'}ID: String) {
+              feed_check_whitelist(type: ${'$'}type, ID: ${'$'}ID) {
+                __typename
+                iswhitelist
+                url
+                title
+                title_identifier
+                description
+                post_success
+                image_url
+                authors {
+                  id
+                  name
+                  title
+                  thumbnail
+                  link
+                  badge
+                  type
+                  has_accept_tnc
+                  post {
+                    enable
+                    has_username
+                  }
+                  livestream {
+                    enable
+                    has_username
+                  }
+                  shortvideo {
+                    enable
+                    has_username
+                  }
+                }
+                error
+              }
+            }
+        """.trimIndent()
+    }
+
+    override suspend fun execute(params: WhiteListType): GetCheckWhitelistResponse {
+        val param = mapOf(
+            PARAM_TYPE to params.key,
+            PARAM_ID to "",
+        )
+        return repository.request(graphqlQuery(), param)
+    }
+
+    companion object {
+        private const val PARAM_TYPE = "type"
+        private const val PARAM_ID = "ID"
+    }
+
+    enum class WhiteListType(val key: String) {
+
+        Interest("interest"),
+        EntryPoint("entrypoint")
+    }
+}
