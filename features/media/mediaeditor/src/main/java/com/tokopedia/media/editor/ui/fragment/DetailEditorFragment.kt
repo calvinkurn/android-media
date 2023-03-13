@@ -35,10 +35,14 @@ import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent.Companion.ROTATE_BTN_DEGREE
 import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
+import com.tokopedia.media.editor.ui.activity.addtext.AddTextActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.*
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
@@ -402,7 +406,9 @@ class DetailEditorFragment @Inject constructor(
 
     // === Listener add text
     override fun onAddFreeText() {
-        isEdited = true
+        val intent = Intent(activity, AddTextActivity::class.java)
+        intent.putExtra(AddTextActivity.ADD_TEXT_PARAM, data.resultUrl ?: "empty")
+        startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
     }
 
     override fun onAddSingleBackgroundText() {

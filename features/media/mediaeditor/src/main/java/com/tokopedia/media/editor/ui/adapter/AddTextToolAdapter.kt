@@ -13,7 +13,7 @@ import com.tokopedia.media.editor.ui.widget.ToolSelectionItem
 import com.tokopedia.unifycomponents.toPx
 
 class AddTextToolAdapter(
-    private val asd: AddTextToolUiComponent.Listener
+    private val listener: AddTextToolUiComponent.Listener
 ): RecyclerView.Adapter<AddTextViewHolder>() {
     // icon ref will be replace by unify icon later
     private val mAddTextMenu = listOf(
@@ -34,10 +34,10 @@ class AddTextToolAdapter(
     override fun onBindViewHolder(holder: AddTextViewHolder, position: Int) {
         holder.bind(mAddTextMenu[position]){
             when (position) {
-                CHANGE_POSITION_INDEX -> asd.onChangePosition()
-                SAVE_TEMPLATE_INDEX -> asd.onTemplateSave()
-                FREE_TEXT_INDEX -> asd.onAddFreeText()
-                BACKGROUND_TEXT_INDEX -> asd.onAddSingleBackgroundText()
+                CHANGE_POSITION_INDEX -> listener.onChangePosition()
+                SAVE_TEMPLATE_INDEX -> listener.onTemplateSave()
+                FREE_TEXT_INDEX -> listener.onAddFreeText()
+                BACKGROUND_TEXT_INDEX -> listener.onAddSingleBackgroundText()
             }
         }
     }

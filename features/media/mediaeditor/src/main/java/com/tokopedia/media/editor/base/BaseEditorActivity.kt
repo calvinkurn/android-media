@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.ui.EditorFragmentProvider
 import com.tokopedia.media.editor.ui.EditorFragmentProviderImpl
 
@@ -57,6 +59,14 @@ abstract class BaseEditorActivity : BaseSimpleActivity() {
                 }
             }
         }
+    }
+
+    fun hideHeaderAction() {
+        unifyToolbar.actionTextView?.hide()
+    }
+
+    fun showHeaderAction() {
+        unifyToolbar.actionTextView?.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

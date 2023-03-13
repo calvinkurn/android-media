@@ -28,6 +28,7 @@
             android:name=".ui.activity.detail.DetailEditorActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.addtext.AddTextActivity"/>
     </application>
 
 </manifest>
