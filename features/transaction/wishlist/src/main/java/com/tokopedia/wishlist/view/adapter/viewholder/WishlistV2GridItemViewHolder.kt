@@ -19,6 +19,7 @@ class WishlistV2GridItemViewHolder(
     private val binding: WishlistV2GridItemBinding,
     private val actionListener: WishlistV2Adapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
+
     fun bind(
         item: WishlistV2TypeLayoutData,
         position: Int,
@@ -63,29 +64,28 @@ class WishlistV2GridItemViewHolder(
         binding.wishlistCheckbox.visible()
         binding.wishlistCheckbox.isChecked = item.isChecked
         binding.wishlistCheckbox.skipAnimation()
-        binding.wishlistCheckbox.setOnClickListener {
-            setCheckboxClickListener(isAddBulkModeFromOthers, isAutoSelected, item.wishlistItem)
+        binding.wishlistCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            setCheckboxCheckedChangedListener(isChecked, isAddBulkModeFromOthers, isAutoSelected, item.wishlistItem)
         }
         buttonSecondary.gone()
         rlPrimaryButton.gone()
         binding.pcGridItem.setOnClickListener {
-            setCheckboxClickListener(isAddBulkModeFromOthers, isAutoSelected, item.wishlistItem)
+            binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
         }
         binding.root.setOnClickListener {
-            setCheckboxClickListener(isAddBulkModeFromOthers, isAutoSelected, item.wishlistItem)
+            binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
         }
     }
 
-    private fun setCheckboxClickListener(isAddBulkModeFromOthers: Boolean, isAutoSelected: Boolean, item: WishlistV2UiModel.Item) {
+    private fun setCheckboxCheckedChangedListener(isChecked: Boolean, isAddBulkModeFromOthers: Boolean, isAutoSelected: Boolean, item: WishlistV2UiModel.Item) {
         if (!isAddBulkModeFromOthers) {
-            binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
             if (isAutoSelected) {
-                actionListener?.onUncheckAutomatedBulkDelete(item.id, binding.wishlistCheckbox.isChecked, position)
+                actionListener?.onUncheckAutomatedBulkDelete(item.id, isChecked, position)
             } else {
-                actionListener?.onCheckBulkOption(item.id, binding.wishlistCheckbox.isChecked, position)
+                actionListener?.onCheckBulkOption(item.id, isChecked, position)
             }
         } else {
-            actionListener?.onValidateCheckBulkOption(item.id, binding.wishlistCheckbox.isChecked, position)
+            actionListener?.onValidateCheckBulkOption(item.id, isChecked, position)
         }
     }
 
