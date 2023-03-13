@@ -9,7 +9,8 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 
 class ShipmentGroupProductExpandViewHolder(
-    itemView: View, private val listener: Listener? = null
+    itemView: View,
+    private val listener: Listener? = null
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {

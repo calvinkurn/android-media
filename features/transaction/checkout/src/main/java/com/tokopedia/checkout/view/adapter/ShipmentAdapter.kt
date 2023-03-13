@@ -20,9 +20,9 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentGroupFooterModel
 import com.tokopedia.checkout.view.uimodel.ShipmentGroupHeaderModel
 import com.tokopedia.checkout.view.uimodel.ShipmentGroupProductExpandModel
+import com.tokopedia.checkout.view.uimodel.ShipmentGroupProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
-import com.tokopedia.checkout.view.uimodel.ShipmentProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel
@@ -192,7 +192,7 @@ class ShipmentAdapter @Inject constructor(
                 return ShipmentGroupHeaderViewHolder.LAYOUT
             }
 
-            is ShipmentProductModel -> {
+            is ShipmentGroupProductModel -> {
                 return ShipmentCartItemViewHolder.LAYOUT
             }
 
@@ -397,7 +397,7 @@ class ShipmentAdapter @Inject constructor(
 
             ShipmentCartItemViewHolder.LAYOUT -> {
                 // TODO: Update listener after testing!!!
-                (holder as ShipmentCartItemViewHolder).bind(data as ShipmentProductModel)
+                (holder as ShipmentCartItemViewHolder).bind(data as ShipmentGroupProductModel)
             }
 
             ShipmentGroupProductExpandViewHolder.LAYOUT -> {
@@ -489,7 +489,7 @@ class ShipmentAdapter @Inject constructor(
             if (shipmentCartItem.isStateAllItemViewExpanded) {
                 shipmentCartItem.cartItemModels.forEach { cartItem ->
                     shipmentDataList.add(
-                        ShipmentProductModel(
+                        ShipmentGroupProductModel(
                             cartItem,
                             shipmentCartItem.addOnWordingModel
                         )
@@ -497,7 +497,7 @@ class ShipmentAdapter @Inject constructor(
                 }
             } else {
                 shipmentDataList.add(
-                    ShipmentProductModel(
+                    ShipmentGroupProductModel(
                         shipmentCartItem.cartItemModels.first(),
                         shipmentCartItem.addOnWordingModel
                     )
@@ -1232,7 +1232,7 @@ class ShipmentAdapter @Inject constructor(
         }
         totalPrice =
             totalItemPrice + finalShippingFee + insuranceFee + orderPriorityFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
-                shipmentCostModel!!.productDiscountAmount - tradeInPrice + totalAddOnPrice
+            shipmentCostModel!!.productDiscountAmount - tradeInPrice + totalAddOnPrice
         shipmentCostModel!!.totalWeight = totalWeight
         shipmentCostModel!!.additionalFee = additionalFee
         shipmentCostModel!!.totalItemPrice = totalItemPrice
@@ -1497,6 +1497,5 @@ class ShipmentAdapter @Inject constructor(
     }
 
     override fun onClickExpandGroupProduct(shipmentGroupProductExpand: ShipmentGroupProductExpandModel) {
-        // TODO: Implement this method!
     }
 }

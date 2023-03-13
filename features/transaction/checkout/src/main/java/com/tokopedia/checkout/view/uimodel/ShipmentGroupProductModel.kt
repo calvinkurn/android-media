@@ -6,7 +6,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWo
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ShipmentProductModel(
+data class ShipmentGroupProductModel(
     val cartItem: CartItemModel = CartItemModel(),
     val addOnWording: AddOnWordingModel? = null,
 ) : Parcelable

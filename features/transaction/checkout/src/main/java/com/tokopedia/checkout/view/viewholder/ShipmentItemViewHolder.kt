@@ -84,7 +84,7 @@ import java.util.regex.Pattern
 /**
  * @author Irfan Khoirul on 23/04/18.
  */
-@Deprecated("Use disassembled view holders!")
+@Deprecated("")
 class ShipmentItemViewHolder(
     itemView: View,
     actionListener: ShipmentAdapterActionListener?,

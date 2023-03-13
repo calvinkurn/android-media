@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.utils.WeightFormatterUtil
-import com.tokopedia.checkout.view.uimodel.ShipmentProductModel
+import com.tokopedia.checkout.view.uimodel.ShipmentGroupProductModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -36,7 +36,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-@Deprecated("Use disassembled view holders!")
+@Deprecated("")
 class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -89,7 +89,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         itemView.findViewById(R.id.button_gifting_addon_product_level)
 
     fun bind(
-        shipmentProduct: ShipmentProductModel
+        shipmentProduct: ShipmentGroupProductModel
     ) {
         bind(shipmentProduct.cartItem, shipmentProduct.addOnWording!!, null)
     }
