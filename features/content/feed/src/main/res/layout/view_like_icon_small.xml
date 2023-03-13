@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/black"
+    >
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/like_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="THUMB"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/like_star_1"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        app:srcCompat="@drawable/like_star"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/like_button"
+        app:layout_constraintBottom_toBottomOf="@id/like_button"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintVertical_bias="0.1"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/like_star_2"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        app:srcCompat="@drawable/like_star"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/like_button"
+        app:layout_constraintBottom_toBottomOf="@id/like_button"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintVertical_bias="0.1"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/like_star_3"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/like_star"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/like_button"
+        app:layout_constraintTop_toTopOf= "@id/like_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintVertical_bias="1"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/like_star_4"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        app:srcCompat="@drawable/like_star"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@id/like_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/like_button"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintVertical_bias="1"
+        tools:visibility="visible"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
