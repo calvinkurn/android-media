@@ -176,9 +176,17 @@ class BannerIndicator : LinearLayout {
     }
 
     fun startIndicatorByPosition(position: Int) {
-        bannerAnimatorSet.removeAllListeners()
-        bannerAnimatorSet.cancel()
-        bannerAnimator.removeAllUpdateListeners()
+        if (bannerAnimator.isRunning) {
+            bannerAnimatorSet.removeAllListeners()
+            bannerAnimatorSet.cancel()
+            bannerAnimator.removeAllUpdateListeners()
+            getChildProgressBar(currentPosition)?.let {
+                it.progress = MINIMUM_PROGRESS_ALPHA
+                it.alpha = MAXIMUM_PROGRESS_ALPHA
+                it.layoutParams?.width = WIDTH_MINIMUM_PROGRESS.toPx()
+                it.requestLayout()
+            }
+        }
         val indicatorPosition = position % totalBanner
         try {
             if (position == currentPosition) {
