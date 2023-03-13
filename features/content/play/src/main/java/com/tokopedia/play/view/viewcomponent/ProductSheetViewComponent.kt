@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getVisiblePercent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,6 +36,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.getBitmapFromUrl
+import com.tokopedia.play_common.view.BottomSheetHeader
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -54,7 +56,6 @@ class ProductSheetViewComponent(
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
     private val clVoucherContent: ConstraintLayout = findViewById(R.id.cl_product_voucher_content)
-    private val tvSheetTitle: TextView = findViewById(commonR.id.tv_sheet_title)
     private val rvProductList: RecyclerView = findViewById(R.id.rv_product_list)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
 
@@ -67,6 +68,8 @@ class ProductSheetViewComponent(
     private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
 
     private val voucherInfo: PlayVoucherView = findViewById(R.id.voucher_view)
+
+    private val header: BottomSheetHeader = findViewById(R.id.bottom_sheet_header)
 
     private val impressionSet = mutableSetOf<String>()
 
@@ -161,11 +164,6 @@ class ProductSheetViewComponent(
     }
 
     init {
-        findViewById<ImageView>(commonR.id.iv_sheet_close)
-            .setOnClickListener {
-                listener.onCloseButtonClicked(this@ProductSheetViewComponent)
-            }
-
         rvProductList.apply {
             adapter = productAdapter
             layoutManager = linearLayoutManager
@@ -188,6 +186,16 @@ class ProductSheetViewComponent(
         clVoucherContent.outlineProvider = RectangleShadowOutlineProvider()
         clVoucherContent.clipToOutline = true
         voucherInfo.setupListener(voucherListener)
+
+        header.setListener(object : BottomSheetHeader.Listener {
+            override fun onCloseClicked(view: BottomSheetHeader) {
+                listener.onCloseButtonClicked(this@ProductSheetViewComponent)
+            }
+
+            override fun onIconClicked(view: BottomSheetHeader) {
+                listener.onCartClicked(this@ProductSheetViewComponent)
+            }
+        })
     }
 
     override fun show() {
@@ -220,10 +228,17 @@ class ProductSheetViewComponent(
     fun setProductSheet(
         sectionList: List<ProductSectionUiModel>,
         voucherList: List<PlayVoucherUiModel>,
-        title: String
+        title: String,
+        showCart: Boolean,
     ) {
         showContent(true)
-        tvSheetTitle.text = title
+        header.setTitle(title)
+
+        if (showCart) {
+            header.setIconNotification(IconUnify.CART)
+        } else {
+            header.setIconNotification(null)
+        }
 
         val sections = sectionList.filterIsInstance<ProductSectionUiModel.Section>()
         val newProductList = buildProductList(sections)
@@ -283,15 +298,19 @@ class ProductSheetViewComponent(
         }
     }
 
+    fun setCartCount(count: Int) {
+        header.setIconNotificationText(count.toString())
+    }
+
     private fun showContent(shouldShow: Boolean) {
         if (shouldShow) {
-            tvSheetTitle.show()
+            header.showTitle(true)
             rvProductList.show()
 
             globalError.hide()
             clProductEmpty.hide()
         } else {
-            tvSheetTitle.hide()
+            header.showTitle(false)
             rvProductList.hide()
             voucherInfo.hide()
 
@@ -436,5 +455,7 @@ class ProductSheetViewComponent(
         fun onInformationClicked(view: ProductSheetViewComponent)
         fun onInformationImpressed(view: ProductSheetViewComponent)
         fun onInfoVoucherImpressed(view: ProductSheetViewComponent, voucher: PlayVoucherUiModel.Merchant)
+
+        fun onCartClicked(view: ProductSheetViewComponent)
     }
 }

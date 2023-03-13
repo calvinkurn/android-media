@@ -151,6 +151,10 @@ class PlayBottomSheetFragment @Inject constructor(
         closeProductSheet()
     }
 
+    override fun onCartClicked(view: ProductSheetViewComponent) {
+        router.route(context, ApplinkConst.CART)
+    }
+
     override fun onButtonTransactionClicked(
         view: ProductSheetViewComponent,
         product: PlayProductUiModel.Product,
@@ -811,8 +815,10 @@ class PlayBottomSheetFragment @Inject constructor(
             productSheetView.setProductSheet(
                 sectionList = tagItem.product.productSectionList,
                 voucherList = tagItem.voucher.voucherList,
-                title = bottomSheetTitle
+                title = bottomSheetTitle,
+                showCart = true,
             )
+            productSheetView.setCartCount(5)
         } else {
             productSheetView.showEmpty(emptyBottomSheetInfoUi)
         }
