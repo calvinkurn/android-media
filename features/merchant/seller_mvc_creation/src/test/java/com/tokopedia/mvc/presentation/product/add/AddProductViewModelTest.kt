@@ -167,6 +167,7 @@ class AddProductViewModelTest {
             val actual = emittedValues.last()
 
             assertEquals(true, actual.isLoading)
+            assertEquals(1, actual.page)
             assertEquals(emptyList<Product>(), actual.products)
             assertEquals(categories, actual.selectedCategories)
             assertEquals(true, actual.isFilterActive)
@@ -174,6 +175,58 @@ class AddProductViewModelTest {
         }
     }
     //getProducts success showcase ids is not empty
+
+    @Test
+    fun `when apply showcase filter, should call get products with correct showcase ids`() {
+        runBlockingTest {
+            //Given
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall()
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall()
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+            val showcases = listOf(
+                ShopShowcase(1, "TV", "Televisi", 1, isSelected = false),
+                ShopShowcase(2, "Gaming", "PS 5", 2, isSelected = false)
+            )
+
+            //When
+            viewModel.processEvent(AddProductEvent.ApplyShowCaseFilter(showcases))
+
+
+            //Then
+            val getProductsParam = ProductListUseCase.Param(
+                categoryIds = listOf(),
+                page = 1,
+                pageSize = 20,
+                searchKeyword = "",
+                showcaseIds = listOf(1, 2),
+                sortDirection = "DESC",
+                sortId = "DEFAULT",
+                warehouseId = WAREHOUSE_ID
+            )
+
+            coVerify { getProductsUseCase.execute(getProductsParam) }
+
+            val actual = emittedValues.last()
+
+            assertEquals(true, actual.isLoading)
+            assertEquals(1, actual.page)
+            assertEquals(emptyList<Product>(), actual.products)
+            assertEquals(showcases, actual.selectedShopShowcase)
+            assertEquals(true, actual.isFilterActive)
+            job.cancel()
+        }
+    }
 
     //getProductsAndProductsMetadata success page mode create
 
