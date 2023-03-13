@@ -38,7 +38,6 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private val mapper: PlayBroadcastMapper,
     private val dispatchers: CoroutineDispatchers,
     private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
-    private val setBeautificationConfigUseCase: SetBeautificationConfigUseCase,
 ) : PlayBroadcastChannelRepository {
 
     override suspend fun getBroadcastingConfig(
@@ -126,21 +125,6 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
 
     override fun canSchedule(): Boolean {
         return remoteConfig.getBoolean(KEY_ENABLE_SCHEDULING, true)
-    }
-
-    override suspend fun saveBeautificationConfig(
-        authorId: String,
-        authorType: String,
-        beautificationConfig: BeautificationConfigUiModel
-    ): Boolean = withContext(dispatchers.io) {
-        /** TODO: for mocking purpose, delete this soon when GQL is available in prod */
-        return@withContext true
-
-        setBeautificationConfigUseCase.execute(
-            authorId = authorId,
-            authorType = authorType,
-            beautificationConfig = beautificationConfig
-        ).wrapper.success
     }
 
     private suspend fun setSchedule(

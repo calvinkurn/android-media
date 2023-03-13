@@ -124,6 +124,8 @@ dependencies {
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
+    implementation rootProject.ext.debugToolsDependencies.chuck
+
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 
     testImplementation rootProject.ext.testDependencies.mockk

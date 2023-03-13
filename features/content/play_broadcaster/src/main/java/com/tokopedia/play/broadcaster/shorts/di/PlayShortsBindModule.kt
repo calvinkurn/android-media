@@ -107,6 +107,12 @@ abstract class PlayShortsBindModule {
 
     @Binds
     @PlayShortsScope
+    abstract fun bindBeautificationRepository(
+        repo: PlayBroadcastBeautificationRepositoryImpl
+    ): PlayBroadcastBeautificationRepository
+
+    @Binds
+    @PlayShortsScope
     abstract fun bindRepository(
         repo: PlayBroadcastRepositoryImpl
     ): PlayBroadcastRepository

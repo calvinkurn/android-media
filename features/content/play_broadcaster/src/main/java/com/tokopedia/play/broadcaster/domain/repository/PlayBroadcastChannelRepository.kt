@@ -29,10 +29,4 @@ interface PlayBroadcastChannelRepository {
     ): BroadcastScheduleUiModel
 
     fun canSchedule(): Boolean
-
-    suspend fun saveBeautificationConfig(
-        authorId: String,
-        authorType: String,
-        beautificationConfig: BeautificationConfigUiModel,
-    ): Boolean
 }
