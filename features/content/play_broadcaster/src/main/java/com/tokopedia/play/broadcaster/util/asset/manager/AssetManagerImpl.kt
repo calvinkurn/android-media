@@ -1,9 +1,9 @@
 package com.tokopedia.play.broadcaster.util.asset.manager
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.broadcaster.util.asset.downloader.AssetDownloadManager
 import com.tokopedia.play.broadcaster.util.asset.FileUtil
 import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import java.io.File
 import javax.inject.Inject
 
@@ -12,14 +12,13 @@ import javax.inject.Inject
  */
 class AssetManagerImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val downloadManager: AssetDownloadManager,
 ) : AssetManager {
 
-    override suspend fun downloadUnzip(
-        url: String,
+    override suspend fun unzipAndSave(
+        responseBody: ResponseBody,
         fileName: String,
         filePath: String,
-        folderPath: String,
+        folderPath: String
     ): Boolean {
         return try {
             withContext(dispatchers.io) {
@@ -28,10 +27,6 @@ class AssetManagerImpl @Inject constructor(
 
                 val file = File(filePath)
                 if (!file.exists()) {
-                    val responseBody = withContext(dispatchers.io) {
-                        downloadManager.download(url)
-                    }
-
                     if(FileUtil.writeResponseBodyToDisk(filePath, fileNameWithExtension, responseBody)) {
                         val isUnzipSuccess = FileUtil.unzipFile(completePath, folderPath)
                         if (isUnzipSuccess) {

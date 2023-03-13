@@ -48,5 +48,5 @@ abstract class PlayBroadcastSetupBindModule {
 
     @Binds
     @PlayBroadcastSetupScope
-    abstract fun bindAssetDownloader(assetDownloader: AssetManagerImpl): AssetManager
+    abstract fun bindAssetManager(assetManager: AssetManagerImpl): AssetManager
 }

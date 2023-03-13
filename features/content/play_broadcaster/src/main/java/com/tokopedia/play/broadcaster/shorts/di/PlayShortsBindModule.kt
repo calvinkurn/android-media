@@ -37,6 +37,8 @@ import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsUiMapper
 import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.asset.checker.AssetCheckerImpl
+import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
+import com.tokopedia.play.broadcaster.util.asset.manager.AssetManagerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -200,9 +202,13 @@ abstract class PlayShortsBindModule {
     abstract fun bindPlayDeviceSpec(playDeviceSpec: PlayDeviceSpecImpl): PlayDeviceSpec
 
     /**
-     * Asset Checker
+     * Beautification
      */
     @Binds
     @PlayShortsScope
     abstract fun bindAssetChecker(assetChecker: AssetCheckerImpl): AssetChecker
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindAssetManager(assetManager: AssetManagerImpl): AssetManager
 }

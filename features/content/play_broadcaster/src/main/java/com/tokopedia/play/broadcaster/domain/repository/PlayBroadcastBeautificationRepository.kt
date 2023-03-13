@@ -14,5 +14,8 @@ interface PlayBroadcastBeautificationRepository {
         beautificationConfig: BeautificationConfigUiModel,
     ): Boolean
 
-    suspend fun downloadAsset(url: String): ResponseBody
+    suspend fun downloadPresetAsset(
+        url: String,
+        fileName: String,
+    ): Boolean
 }

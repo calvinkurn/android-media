@@ -24,6 +24,7 @@ import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnaly
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
+import com.tokopedia.play.broadcaster.di.setup.PlayBroadcastSetupScope
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerImpl
 import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
@@ -150,7 +151,7 @@ abstract class PlayBroadcastBindModule {
     @Binds
     abstract fun bindAssetChecker(assetChecker: AssetCheckerImpl): AssetChecker
 
-    @ActivityRetainedScope
     @Binds
-    abstract fun bindAssetDownloader(assetDownloader: AssetManagerImpl): AssetManager
+    @ActivityRetainedScope
+    abstract fun bindAssetManager(assetManager: AssetManagerImpl): AssetManager
 }

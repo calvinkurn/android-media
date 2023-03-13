@@ -6,8 +6,9 @@ import com.tokopedia.play.broadcaster.di.qualifier.PlayBroadcastQualifier
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastBeautificationRepository
 import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautificationConfigUseCase
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.util.asset.AssetPathHelper
+import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
 import javax.inject.Inject
 
 /**
@@ -17,6 +18,8 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val setBeautificationConfigUseCase: SetBeautificationConfigUseCase,
     @PlayBroadcastQualifier private val beautificationAssetApi: BeautificationAssetApi,
+    private val assetManager: AssetManager,
+    private val assetPathHelper: AssetPathHelper,
 ) : PlayBroadcastBeautificationRepository {
 
     override suspend fun saveBeautificationConfig(
@@ -34,7 +37,14 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
         ).wrapper.success
     }
 
-    override suspend fun downloadAsset(url: String): ResponseBody {
-        return beautificationAssetApi.downloadAsset(url)
+    override suspend fun downloadPresetAsset(url: String, fileName: String): Boolean = withContext(dispatchers.io) {
+        val responseBody = beautificationAssetApi.downloadAsset(url)
+
+        assetManager.unzipAndSave(
+            responseBody = responseBody,
+            fileName = fileName,
+            filePath = assetPathHelper.getPresetFilePath(fileName),
+            folderPath = assetPathHelper.presetDir,
+        )
     }
 }

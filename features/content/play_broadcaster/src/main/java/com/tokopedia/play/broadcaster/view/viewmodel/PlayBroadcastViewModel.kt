@@ -135,7 +135,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger,
     private val broadcastTimer: PlayBroadcastTimer,
-    private val assetManager: AssetManager,
     private val assetPathHelper: AssetPathHelper,
 ) : ViewModel() {
 
@@ -1742,11 +1741,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 updatePresetAssetStatus(preset, BeautificationAssetStatus.Downloading)
 
                 viewModelScope.launchCatchError(block = {
-                    val isSuccess = assetManager.downloadUnzip(
+                    val isSuccess = repo.downloadPresetAsset(
                         url = preset.assetLink,
                         fileName = preset.id,
-                        filePath = assetPathHelper.getPresetFilePath(preset.id),
-                        folderPath = assetPathHelper.presetDir
                     )
 
                     if(isSuccess) {
