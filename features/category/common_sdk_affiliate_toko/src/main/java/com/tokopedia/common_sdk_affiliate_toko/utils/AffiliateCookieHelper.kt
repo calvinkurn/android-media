@@ -44,8 +44,9 @@ class AffiliateCookieHelper @Inject constructor(
         uuid: String = "",
         additionalParam: List<AdditionalParam> = emptyList()
     ) {
+        val affiliateUuid = getAffiliateUUID(affiliateUUID)
         val params = AffiliateCookieParams(
-            affiliateUUID,
+            affiliateUuid,
             affiliateChannel,
             affiliatePageDetail,
             uuid,
@@ -103,5 +104,9 @@ class AffiliateCookieHelper @Inject constructor(
             return affiliateLink.build().toString()
         }
         return productUrl
+    }
+
+    private fun getAffiliateUUID(affiliateUUID: String): String {
+        return if (affiliateUUID.isNotEmpty()) affiliateUUID else this.affiliateUUID
     }
 }
