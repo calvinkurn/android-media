@@ -3,11 +3,9 @@ package com.tokopedia.pdpsimulation.paylater.presentation.viewholder
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
