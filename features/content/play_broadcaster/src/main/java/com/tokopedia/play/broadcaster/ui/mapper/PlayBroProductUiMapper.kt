@@ -82,7 +82,6 @@ class PlayBroProductUiMapper @Inject constructor() {
                         priceFormat.format(BigDecimal(data.price.min.orZero())),
                         data.price.min.orZero()
                     ), //No discounted price because it is not supported in the current gql
-                    number = "", //No number
                 )
             },
             hasNextPage = response.wrapper.pagerCursor.hasNext,
@@ -110,7 +109,6 @@ class PlayBroProductUiMapper @Inject constructor() {
                         price = data.campaign.originalPrice,
                         priceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
                     ),
-                    number = "", //no number
                 )
             },
             hasNextPage = response.getCampaignProduct.products.isNotEmpty(),

@@ -173,9 +173,7 @@
             android:layout_marginTop="@dimen/unify_space_4"
             app:layout_constraintStart_toStartOf="@+id/iv_product_summary_image"
             app:layout_constraintTop_toTopOf="@+id/iv_product_summary_image"
-            tools:labelTitle="1"
-            android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:labelTitle="1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>

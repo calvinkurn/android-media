@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.common.util.hexToString
 import com.tokopedia.kotlin.extensions.view.isLessThanEqualZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
@@ -23,6 +24,7 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.content.common.R as contentR
 
 /**
  * Created By : Jonathan Darwin on February 07, 2022
@@ -132,6 +134,9 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.viewPinProduct.setOnClickListener {
                 listener.onPinClicked(item.product)
             }
+            binding.tvSummaryProductTagNumber.unlockFeature = true
+            binding.tvSummaryProductTagNumber.setLabelType(contentR.color.content_dms_bg_label.hexToString(ctx))
+            binding.tvSummaryProductTagNumber.setLabel(item.product.number)
         }
 
         companion object {

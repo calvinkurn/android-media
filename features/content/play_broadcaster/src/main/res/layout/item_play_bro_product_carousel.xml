@@ -115,6 +115,5 @@
         android:layout_marginTop="@dimen/unify_space_4"
         app:layout_constraintStart_toStartOf="@+id/iv_product_tag"
         app:layout_constraintTop_toTopOf="@+id/iv_product_tag"
-        tools:labelTitle="1"
-        android:visibility="gone"/>
+        tools:labelTitle="1"/>
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

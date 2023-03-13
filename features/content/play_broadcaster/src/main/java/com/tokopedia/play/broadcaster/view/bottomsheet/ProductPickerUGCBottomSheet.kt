@@ -59,7 +59,6 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                             imageUrl = it.cover,
                             stock = 1,
                             price = PriceUnknown,
-                            number = "",
                         )
                     }
                 )

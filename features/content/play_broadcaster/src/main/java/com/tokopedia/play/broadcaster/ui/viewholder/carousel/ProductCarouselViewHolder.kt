@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.content.common.util.hexToString
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPinnedProductCarouselBinding
@@ -15,6 +16,7 @@ import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.view.loadImage
+import com.tokopedia.content.common.R as contentR
 
 /**
  * Created by kenny.hadisaputra on 09/02/22
@@ -68,6 +70,9 @@ class ProductCarouselViewHolder private constructor() {
             binding.viewPinProduct.setOnClickListener {
                 listener.onPinClicked(item)
             }
+            binding.tvProductTagNumber.unlockFeature = true
+            binding.tvProductTagNumber.setLabelType(contentR.color.content_dms_bg_label.hexToString(context))
+            binding.tvProductTagNumber.setLabel(item.number)
         }
 
         companion object {
@@ -139,6 +144,9 @@ class ProductCarouselViewHolder private constructor() {
             binding.viewPinProduct.setOnClickListener {
                 listener.onPinClicked(item)
             }
+            binding.tvPinnedProductTagNumber.unlockFeature = true
+            binding.tvPinnedProductTagNumber.setLabelType(contentR.color.content_dms_bg_label.hexToString(context))
+            binding.tvPinnedProductTagNumber.setLabel(item.number)
         }
 
         companion object {
