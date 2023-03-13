@@ -50,7 +50,6 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -139,15 +138,12 @@ class AtcVariantViewModel @Inject constructor(
             val selectedVariantIds = updateSelectedOptionIdsVisitable(selectedOptionKey, selectedOptionId)
 
             // Run variant logic to determine selected , empty , flash sale, etc
-            val last = System.currentTimeMillis()
             val processedVariant = AtcVariantMapper.processVariant(
                 variantData = getVariantData(),
                 mapOfSelectedVariant = selectedVariantIds,
                 level = variantLevel,
                 isNewLogic = isNewVariantLogic()
             )
-            Timber.tag("variant_logic")
-                .d("%s : %s", (System.currentTimeMillis() - last).toString(), Thread.currentThread())
 
             val selectedVariantChild = getVariantData()?.getChildByOptionId(
                 selectedVariantIds?.values?.toList()
