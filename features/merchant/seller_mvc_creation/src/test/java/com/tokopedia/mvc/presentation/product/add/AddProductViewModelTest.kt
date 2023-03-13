@@ -805,21 +805,7 @@ class AddProductViewModelTest {
 
             val thirdProduct = populateProduct().copy(id = 3)
             val fourthProduct = populateProduct().copy(id = 4)
-            val secondPageProductResponse = listOf(thirdProduct, fourthProduct)
-            val getProductsParam = ProductListUseCase.Param(
-                categoryIds = listOf(),
-                page = 2,
-                pageSize = 20,
-                searchKeyword = "",
-                showcaseIds = listOf(),
-                sortDirection = "DESC",
-                sortId = "DEFAULT",
-                warehouseId = WAREHOUSE_ID
-            )
-
-
-            val getProductsResponse = ProductResult(total = 20, products = secondPageProductResponse)
-            coEvery { getProductsUseCase.execute(getProductsParam) } returns getProductsResponse
+            mockGetProductListGqlCall(page = 2, products = listOf(thirdProduct, fourthProduct))
 
             val mockedSecondPageProductValidationResponse = listOf(
                 VoucherValidationResult.ValidationProduct(
@@ -865,7 +851,6 @@ class AddProductViewModelTest {
         }
     }
 
-    //getProducts success: isSelected should be false -> if selected product count is 90, next loaded product is 20, max product selection 100 and checkbox select all is active, is selected should be false
     //endregion
 
     //region UT for getProducts function to test enableCheckbox property
@@ -956,13 +941,14 @@ class AddProductViewModelTest {
     }
 
     private fun mockGetProductListGqlCall(
+        page : Int = 1,
         warehouseId: Long = WAREHOUSE_ID,
         totalProduct: Int = 20,
         products: List<Product> = emptyList()
     ) {
         val getProductsParam = ProductListUseCase.Param(
             categoryIds = listOf(),
-            page = 1,
+            page = page,
             pageSize = 20,
             searchKeyword = "",
             showcaseIds = listOf(),
