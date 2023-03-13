@@ -34,7 +34,7 @@ class PlayBroIconWithGreenDotView : FrameLayout {
             val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.PlayBroIconWithGreenDotView)
 
             isShowDot = attributeArray.getBoolean(R.styleable.PlayBroIconWithGreenDotView_is_show_dot, false)
-            setIcon(attributeArray.getInt(R.styleable.PlayBroIconWithGreenDotView_icon_id, -1))
+            setIcon(attributeArray.getInt(R.styleable.PlayBroIconWithGreenDotView_icon_id, Icon.Unknown.id))
 
             attributeArray.recycle()
         }
@@ -50,7 +50,7 @@ class PlayBroIconWithGreenDotView : FrameLayout {
         R.dimen.play_product_icon_dot_radius
     ).toFloat()
 
-    private val dotOffset = 1.5f* dotRadius
+    private val dotOffset = DOT_OFFSET_RADIUS * dotRadius
 
     private val mPaint = Paint().apply {
         color = MethodChecker.getColor(
@@ -63,13 +63,7 @@ class PlayBroIconWithGreenDotView : FrameLayout {
     )
 
     private fun setIcon(iconId: Int) {
-        binding.iconUnify.setImage(
-            newIconId = when(iconId) {
-                0 -> IconUnify.PRODUCT
-                1 -> IconUnify.SMILE
-                else -> -1
-            }
-        )
+        binding.iconUnify.setImage(Icon.getIconUnifyId(iconId))
     }
 
     override fun drawChild(canvas: Canvas, child: View?, drawingTime: Long): Boolean {
@@ -83,5 +77,24 @@ class PlayBroIconWithGreenDotView : FrameLayout {
             )
         }
         return returnValue
+    }
+
+    enum class Icon(val id: Int, val iconUnifyId: Int){
+        Unknown(id = DEFAULT_ICON_ID, iconUnifyId = DEFAULT_ICON_ID),
+        Product(id = 0, iconUnifyId = IconUnify.PRODUCT),
+        Smile(id = 1, iconUnifyId = IconUnify.SMILE);
+
+        companion object {
+            fun getIconUnifyId(id: Int): Int {
+                return values().firstOrNull {
+                    it.id == id
+                }?.iconUnifyId ?: Unknown.iconUnifyId
+            }
+        }
+    }
+
+    companion object {
+        private const val DEFAULT_ICON_ID = -1
+        private const val DOT_OFFSET_RADIUS = 1.5f
     }
 }
