@@ -105,6 +105,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
+import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
 import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread
@@ -357,6 +358,9 @@ open class HomeRevampFragment :
     lateinit var viewModel: Lazy<HomeRevampViewModel>
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var homePrefController: HomePrefController
     private lateinit var root: FrameLayout
     private var refreshLayout: ParentIconSwipeRefreshLayout? = null
     private var refreshLayoutOld: ToggleableSwipeRefreshLayout? = null
@@ -1426,7 +1430,7 @@ open class HomeRevampFragment :
             CategoryNavigationCallback(context, this),
             RechargeBUWidgetCallback(context, this),
             bannerCarouselCallback,
-            DynamicIconComponentCallback(context, this),
+            DynamicIconComponentCallback(context, this, homePrefController),
             Lego6AutoBannerComponentCallback(context, this),
             CampaignWidgetComponentCallback(context, this),
             this,
