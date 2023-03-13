@@ -12,6 +12,7 @@ import com.tkpd.atcvariant.util.AtcCommonMapper
 import com.tkpd.atcvariant.util.AtcCommonMapper.asFail
 import com.tkpd.atcvariant.util.AtcCommonMapper.asSuccess
 import com.tkpd.atcvariant.util.AtcCommonMapper.generateAvailableButtonIngatkanSaya
+import com.tkpd.atcvariant.util.REMOTE_CONFIG_NEW_VARIANT_LOG
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
@@ -40,6 +41,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -63,7 +65,8 @@ class AtcVariantViewModel @Inject constructor(
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
-    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val remoteConfig: RemoteConfig
 ) : ViewModel() {
 
     companion object {
@@ -138,9 +141,10 @@ class AtcVariantViewModel @Inject constructor(
             // Run variant logic to determine selected , empty , flash sale, etc
             val last = System.currentTimeMillis()
             val processedVariant = AtcVariantMapper.processVariant(
-                getVariantData(),
-                selectedVariantIds,
-                variantLevel
+                variantData = getVariantData(),
+                mapOfSelectedVariant = selectedVariantIds,
+                level = variantLevel,
+                isNewLogic = isNewVariantLogic()
             )
             Timber.tag("variant_logic")
                 .d("%s : %s", (System.currentTimeMillis() - last).toString(), Thread.currentThread())
@@ -197,6 +201,10 @@ class AtcVariantViewModel @Inject constructor(
             }
         }) {
         }
+    }
+
+    private fun isNewVariantLogic(): Boolean {
+        return remoteConfig.getBoolean(REMOTE_CONFIG_NEW_VARIANT_LOG, true)
     }
 
     fun getVariantData(): ProductVariant? {
@@ -263,7 +271,11 @@ class AtcVariantViewModel @Inject constructor(
 
             // generate variant component and data, initial render need to determine selected option
             val initialSelectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(getVariantData(), selectedChild)
-            val processedVariant = AtcVariantMapper.processVariant(getVariantData(), initialSelectedOptionIds)
+            val processedVariant = AtcVariantMapper.processVariant(
+                variantData = getVariantData(),
+                mapOfSelectedVariant = initialSelectedOptionIds,
+                isNewLogic = isNewVariantLogic()
+            )
 
             assignLocalQuantityWithMiniCartQuantity(minicartData?.values?.toList())
             val selectedQuantity = getSelectedQuantity(selectedChild?.productId ?: "")

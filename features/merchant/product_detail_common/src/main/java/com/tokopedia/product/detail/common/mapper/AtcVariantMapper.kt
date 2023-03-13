@@ -57,8 +57,8 @@ object AtcVariantMapper {
         variantData: ProductVariant?,
         mapOfSelectedVariant: MutableMap<String, String>? = mutableMapOf(),
         level: Int = VARIANT_LEVEL_INITIALIZE,
-        isNew: Boolean = true
-    ): List<VariantCategory>? = if (isNew) {
+        isNewLogic: Boolean = true
+    ): List<VariantCategory>? = if (isNewLogic) {
         AtcVariantNewMapper.processVariantNew(variantData, mapOfSelectedVariant, level)
     } else {
         processVariantOld(variantData, mapOfSelectedVariant, level)
