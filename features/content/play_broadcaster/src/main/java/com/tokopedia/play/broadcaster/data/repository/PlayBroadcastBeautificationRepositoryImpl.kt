@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.data.api.BeautificationAssetApi
-import com.tokopedia.play.broadcaster.di.qualifier.PlayBroadcastQualifier
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastBeautificationRepository
 import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautificationConfigUseCase
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
@@ -17,7 +16,7 @@ import javax.inject.Inject
 class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val setBeautificationConfigUseCase: SetBeautificationConfigUseCase,
-    @PlayBroadcastQualifier private val beautificationAssetApi: BeautificationAssetApi,
+    private val beautificationAssetApi: BeautificationAssetApi,
     private val assetManager: AssetManager,
     private val assetPathHelper: AssetPathHelper,
 ) : PlayBroadcastBeautificationRepository {

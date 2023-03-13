@@ -10,7 +10,6 @@ import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.play.broadcaster.data.api.BeautificationAssetApi
-import com.tokopedia.play.broadcaster.di.qualifier.PlayBroadcastQualifier
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -27,7 +26,6 @@ class PlayBroadcastNetworkModule {
 
     @Provides
     @ActivityRetainedScope
-    @PlayBroadcastQualifier
     fun provideBroadcastBeautificationApi(
         builder: Retrofit.Builder,
         okHttpClient: OkHttpClient,

@@ -29,8 +29,6 @@ import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnal
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.data.api.BeautificationAssetApi
-import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
-import com.tokopedia.play.broadcaster.di.qualifier.PlayBroadcastQualifier
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
@@ -163,7 +161,6 @@ class PlayShortsModule(
     /** Play Broadcaster Network */
     @Provides
     @PlayShortsScope
-    @PlayBroadcastQualifier
     fun provideBroadcastBeautificationApi(
         builder: Retrofit.Builder,
         okHttpClient: OkHttpClient,
