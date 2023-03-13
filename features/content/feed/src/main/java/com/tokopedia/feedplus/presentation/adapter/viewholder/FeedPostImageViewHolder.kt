@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
+import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedPostImageAdapter
@@ -15,9 +17,12 @@ import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
+import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
+import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.viewcomponent.viewComponent
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -29,6 +34,11 @@ class FeedPostImageViewHolder(
 
     private val layoutManager =
         LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
+    private val likeAnimationView = FeedLikeAnimationComponent(
+        binding.root
+    )
+    private val smallLikeAnimationView =
+        FeedSmallLikeIconAnimationComponent(binding.root)
 
     init {
         with(binding) {
@@ -70,6 +80,9 @@ class FeedPostImageViewHolder(
                 shareButton.setOnClickListener {
                     listener.onSharePostClicked(element)
                 }
+                postLikeButton.likeButton.setOnClickListener {
+                    listener.onLikePostCLicked(element, absoluteAdapterPosition)
+                }
 
                 btnDisableClearMode.setOnClickListener {
                     if (listener.inClearViewMode()) {
@@ -96,8 +109,39 @@ class FeedPostImageViewHolder(
         }
     }
 
+    private fun renderLikeView(
+        isLiked: Boolean
+    ) {
+        likeAnimationView.setEnabled(isEnabled = true)
+        smallLikeAnimationView.setEnabled(isEnabled = true)
+
+        likeAnimationView.setIsLiked(true)
+
+        if (isLiked) {
+            likeAnimationView.show()
+        } else {
+            likeAnimationView.hide()
+        }
+    }
+
+    private fun setLikeUnlike(isLiked: Boolean){
+        renderLikeView(isLiked)
+        if (isLiked) {
+            likeAnimationView.playLikeAnimation()
+            smallLikeAnimationView.playLikeAnimation()
+        } else {
+            smallLikeAnimationView.playUnLikeAnimation()
+        }
+    }
+
     override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
+        if (element == null) {
+            return
+        }
+        if (payloads.contains(IMAGE_POST_LIKED_UNLIKED)) {
+            setLikeUnlike(element.like.isLiked)
+        }
     }
 
     private fun setUpProductTagButtonText(feedCardModel: FeedCardImageContentModel) {
@@ -141,7 +185,7 @@ class FeedPostImageViewHolder(
         with(binding) {
             layoutAuthorInfo.root.hide()
             tvFeedCaption.hide()
-            likeButton.hide()
+            postLikeButton.root.hide()
             commentButton.hide()
             menuButton.hide()
             shareButton.hide()
@@ -155,7 +199,7 @@ class FeedPostImageViewHolder(
         with(binding) {
             layoutAuthorInfo.root.show()
             tvFeedCaption.show()
-            likeButton.show()
+            postLikeButton.root.show()
             commentButton.show()
             menuButton.show()
             shareButton.show()
@@ -168,6 +212,8 @@ class FeedPostImageViewHolder(
     companion object {
         const val PRODUCT_COUNT_ZERO = 0
         const val PRODUCT_COUNT_ONE = 1
+        const val IMAGE_POST_LIKED_UNLIKED = 1011
+
 
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post

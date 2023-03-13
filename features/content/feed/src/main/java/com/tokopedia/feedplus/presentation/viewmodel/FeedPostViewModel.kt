@@ -10,9 +10,14 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
+import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
+import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
+import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
+import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -29,6 +34,7 @@ import javax.inject.Inject
 class FeedPostViewModel @Inject constructor(
     private val feedXHomeUseCase: FeedXHomeUseCase,
     private val addToCartUseCase: AddToCartUseCase,
+    private val likeContentUseCase: SubmitLikeContentUseCase,
     private val userSession: UserSessionInterface,
     private val shopFollowUseCase: ShopFollowUseCase,
     private val userFollowUseCase: ProfileFollowUseCase,
@@ -46,6 +52,10 @@ class FeedPostViewModel @Inject constructor(
     private val _followResult = MutableLiveData<Result<FollowShopModel>>()
     val followResult: LiveData<Result<FollowShopModel>>
         get() = _followResult
+
+    private val _likeKolResp = MutableLiveData<FeedResult<LikeFeedDataModel>>()
+    val getLikeKolResp: LiveData<FeedResult<LikeFeedDataModel>>
+        get() = _likeKolResp
 
     fun fetchFeedPosts(source: String) {
         launchCatchError(dispatchers.main, block = {
@@ -144,6 +154,33 @@ class FeedPostViewModel @Inject constructor(
 
         return newList.toList()
     }
+
+    fun likeContent(contentId: String, action: FeedLikeAction, rowNumber: Int) {
+        _likeKolResp.value = FeedResult.Loading
+        launchCatchError(dispatchers.main, block = {
+            likeContentUseCase.setRequestParams(
+                SubmitLikeContentUseCase.createParam(contentId, action.value)
+            )
+            val response = likeContentUseCase.executeOnBackground()
+
+            if (response.doLikeKolPost.error.isNotEmpty()) {
+                throw com.tokopedia.network.exception.MessageErrorException(response.doLikeKolPost.error)
+            }
+            if (response.doLikeKolPost.data.success != SubmitLikeContentUseCase.SUCCESS) {
+                throw CustomUiMessageThrowable(R.string.feed_like_error_message)
+            }
+            val mappedResponse = mapLikeResponse(action, rowNumber)
+            _likeKolResp.value = FeedResult.Success(mappedResponse)
+        }) {
+            _likeKolResp.value = FeedResult.Failure(it)
+        }
+    }
+
+    private fun mapLikeResponse(likeAction: FeedLikeAction, rowNumber: Int) =
+        LikeFeedDataModel(
+            rowNumber = rowNumber,
+            action = likeAction
+        )
 
     private suspend fun addToCartImplementation(
         productId: String,

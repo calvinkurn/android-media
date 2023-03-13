@@ -12,4 +12,6 @@ interface FeedListener {
     fun onFollowClicked(id: String, isShop: Boolean)
     fun changeTab(type: String)
     fun reload()
+    fun onLikePostCLicked(model: FeedCardImageContentModel, rowNumber: Int)
+
 }

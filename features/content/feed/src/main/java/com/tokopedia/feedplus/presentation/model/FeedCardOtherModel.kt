@@ -14,7 +14,7 @@ data class FeedLikeModel(
     val count: Int = 0,
     val countFmt: String = "",
     val likedBy: List<String> = emptyList(),
-    val isLiked: Boolean = false,
+    var isLiked: Boolean = false,
 )
 
 data class FeedCommentModel(
