@@ -99,6 +99,7 @@ internal class ProductSummaryViewHolder private constructor() {
 
             binding.ivProductSummaryCover.showWithCondition(item.product.stock.isLessThanEqualZero())
             binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock.isLessThanEqualZero())
+            binding.tvProductSummaryEmptyStock.text = if (item.product.pinStatus.isPinned) ctx.getString(R.string.play_bro_product_tag_stock_empty_pinned) else ctx.getString(R.string.play_bro_product_tag_stock_empty)
 
             when(item.product.price) {
                 is OriginalPrice -> {

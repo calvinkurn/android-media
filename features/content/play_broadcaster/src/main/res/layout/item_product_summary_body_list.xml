@@ -45,14 +45,13 @@
             android:layout_margin="@dimen/spacing_lvl2"
             android:background="@drawable/bg_play_product_tag_stock"
             android:padding="@dimen/spacing_lvl2"
-            android:text="@string/play_bro_product_tag_stock_empty"
+            tools:text="@string/play_bro_product_tag_stock_empty"
             android:textColor="@color/Unify_Static_White"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/iv_product_summary_cover"
             app:layout_constraintStart_toStartOf="@id/iv_product_summary_cover"
             app:typographyType="small"
             app:typographyWeight="bold"
-            tools:text="Stok Habis"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
