@@ -1,5 +1,8 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
+import android.annotation.SuppressLint
+import android.view.GestureDetector
+import android.view.MotionEvent
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
+@SuppressLint("ClickableViewAccessibility")
 class FeedPostImageViewHolder(
     private val binding: ItemFeedPostBinding,
     private val listener: FeedListener
@@ -65,6 +69,29 @@ class FeedPostImageViewHolder(
                 val authorView =
                     FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
                 val captionView = FeedCaptionView(binding.tvFeedCaption)
+
+                val postGestureDetector = GestureDetector(
+                    itemView.context,
+                    object : GestureDetector.SimpleOnGestureListener() {
+                        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                            return true
+                        }
+
+                        override fun onDoubleTap(e: MotionEvent): Boolean {
+                            if (element.like.isLiked.not()) {
+                                listener.onLikePostCLicked(element, absoluteAdapterPosition)
+                            }
+                            return true
+                        }
+
+                        override fun onDown(e: MotionEvent): Boolean {
+                            return true
+                        }
+
+                        override fun onLongPress(e: MotionEvent) {
+                        }
+                    }
+                )
 
                 authorView.bindData(data.author, false, !data.followers.isFollowed)
                 captionView.bind(data.text)
@@ -108,7 +135,9 @@ class FeedPostImageViewHolder(
                 }
                 setUpProductTagButtonText(feedCardModel = data)
 
-                root.setOnClickListener {
+                rvFeedPostImageContent.setOnTouchListener { _, event ->
+                    postGestureDetector.onTouchEvent(event)
+                    true
                 }
             }
         }
@@ -130,7 +159,7 @@ class FeedPostImageViewHolder(
         }
     }
 
-    private fun setLikeUnlike(like: FeedLikeModel){
+    private fun setLikeUnlike(like: FeedLikeModel) {
         val isLiked = like.isLiked
         renderLikeView(like)
         if (isLiked) {
@@ -181,7 +210,7 @@ class FeedPostImageViewHolder(
         }
     }
 
-    private fun bindLike(feedCardModel: FeedCardImageContentModel){
+    private fun bindLike(feedCardModel: FeedCardImageContentModel) {
         val like = feedCardModel.like
         binding.postLikeButton.likedText.text = like.countFmt
         likeAnimationView.setIsLiked(like.isLiked)
@@ -226,7 +255,6 @@ class FeedPostImageViewHolder(
         const val PRODUCT_COUNT_ZERO = 0
         const val PRODUCT_COUNT_ONE = 1
         const val IMAGE_POST_LIKED_UNLIKED = 1011
-
 
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post
