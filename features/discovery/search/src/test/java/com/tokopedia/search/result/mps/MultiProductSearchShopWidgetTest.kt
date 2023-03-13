@@ -16,35 +16,46 @@ import com.tokopedia.search.result.stubExecute
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsInstanceOf.instanceOf
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures() {
 
+    private val parameter = mapOf(
+        SearchApiConst.ACTIVE_TAB to SearchConstant.ActiveTab.MPS,
+        SearchApiConst.Q1 to "samsung",
+        SearchApiConst.Q2 to "xiaomi",
+        SearchApiConst.Q3 to "iphone",
+    )
     private val mpsViewModel = mpsViewModel(
         MPSState(
-            mapOf(
-                SearchApiConst.ACTIVE_TAB to SearchConstant.ActiveTab.MPS,
-                SearchApiConst.Q1 to "samsung",
-                SearchApiConst.Q2 to "xiaomi",
-                SearchApiConst.Q3 to "iphone",
-            )
+            parameter
         ),
     )
 
     @Test
     fun `multi product search success`() {
         val mpsModel = MPSSuccessJSON.jsonToObject<MPSModel>()
-        `Given MPS Use Case success`(mpsModel)
+        `Given MPS Use Case success`(mpsModel, requestParamsSlot)
 
         `When view created`()
 
         val mpsState = mpsViewModel.stateValue
+        `Then assert use case is executed with given parameters`()
         `Then assert state is success`(mpsState)
         `Then assert visitable list`(mpsState.result.data!!, mpsModel)
     }
 
     private fun `When view created`() {
         mpsViewModel.onViewCreated()
+    }
+
+    private fun `Then assert use case is executed with given parameters`() {
+        assertEquals(parameter.size, requestParamParameters.size)
+
+        parameter.forEach { (key, value) ->
+            assertEquals(value, requestParamParameters[key])
+        }
     }
 
     private fun `Then assert state is success`(mpsState: MPSState) {

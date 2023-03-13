@@ -3,11 +3,16 @@ package com.tokopedia.search.result.mps.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.filter.common.data.DataValue
 
 data class MPSModel(
     @SerializedName("ace_search_shop_mps")
     @Expose
     val aceSearchShopMPS: AceSearchShopMPS = AceSearchShopMPS(),
+
+    @SerializedName("quick_filter")
+    @Expose
+    val quickFilterModel: DataValue = DataValue(),
 ) {
 
     val shopList

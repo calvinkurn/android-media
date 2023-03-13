@@ -6,10 +6,8 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.shouldBe
-import com.tokopedia.usecase.RequestParams
 import io.mockk.confirmVerified
 import io.mockk.every
-import io.mockk.slot
 import io.mockk.verify
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertThat
@@ -36,11 +34,6 @@ class MultiProductSearchChooseAddressTest: MultiProductSearchTestFixtures() {
         postal_code = "53241",
         warehouse_id = "2256",
     )
-
-    private val requestParamsSlot = slot<RequestParams>()
-    private val requestParams by lazy { requestParamsSlot.captured }
-    private val parameters
-        get() = requestParams.parameters as Map<String, String>
 
     @Test
     fun `on view created will update state with current choose address`() {
@@ -78,7 +71,7 @@ class MultiProductSearchChooseAddressTest: MultiProductSearchTestFixtures() {
         `When view created`(viewModel)
 
         `Then verify parameters contains choose address data`(
-            parameters,
+            requestParamParameters,
             dummyChooseAddressData
         )
     }
@@ -123,7 +116,7 @@ class MultiProductSearchChooseAddressTest: MultiProductSearchTestFixtures() {
         `When localizing address selected`(mpsViewModel)
 
         `Then verify parameters contains choose address data`(
-            parameters,
+            requestParamParameters,
             dummyChooseAddressDataUpdated
         )
     }
@@ -147,7 +140,7 @@ class MultiProductSearchChooseAddressTest: MultiProductSearchTestFixtures() {
 
         `Then verify check choose address updates is called`(dummyChooseAddressData)
         `Then verify parameters contains choose address data`(
-            parameters,
+            requestParamParameters,
             dummyChooseAddressDataUpdated,
         )
     }

@@ -14,12 +14,14 @@ import com.tokopedia.discovery.common.State
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.search.databinding.SearchMpsFragmentLayoutBinding
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
+import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterView
 import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.mvvm.SearchView
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import kotlin.LazyThreadSafetyMode.NONE
 
 class MPSFragment:
     TkpdBaseV4Fragment(),
@@ -33,7 +35,7 @@ class MPSFragment:
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: MPSViewModel? by viewModels { viewModelFactory }
-    private var binding by autoClearedNullable<SearchMpsFragmentLayoutBinding>()
+    private var binding: SearchMpsFragmentLayoutBinding? by autoClearedNullable()
     private val recycledViewPool = RecycledViewPool()
     private val mpsTypeFactory = MPSTypeFactoryImpl(
         recycledViewPool = recycledViewPool,
@@ -41,6 +43,7 @@ class MPSFragment:
         chooseAddressListener = this,
     )
     private val mpsListAdapter = MPSListAdapter(mpsTypeFactory)
+    private val quickFilterView by lazy(NONE) { QuickFilterView(viewModel) }
 
     override fun getScreenName(): String = ""
 
@@ -73,6 +76,7 @@ class MPSFragment:
         binding?.mpsSwipeRefreshLayout?.showWithCondition(it.result is State.Success)
 
         mpsListAdapter.submitList(it.result.data)
+        quickFilterView.refreshQuickFilter(binding?.mpsSortFilter, it)
     }
 
     override fun onResume() {

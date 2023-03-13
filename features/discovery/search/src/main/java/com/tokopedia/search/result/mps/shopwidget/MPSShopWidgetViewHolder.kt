@@ -95,6 +95,7 @@ class MPSShopWidgetViewHolder(
             formattedPrice = shopProductItem.priceFormat,
             ratingString = shopProductItem.ratingAverage,
             labelGroupList = shopProductItem.labelGroupList.map(::toLabelGroup),
+            hasAddToCartButton = true,
         )
 
     private fun toLabelGroup(labelGroupDataView: MPSProductLabelGroupDataView) =

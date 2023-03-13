@@ -17,6 +17,11 @@ abstract class MultiProductSearchTestFixtures {
     protected val mpsUseCase: UseCase<MPSModel> = mockk(relaxed = true)
     protected val chooseAddressWrapper: ChooseAddressWrapper = mockk(relaxed = true)
 
+    protected val requestParamsSlot = slot<RequestParams>()
+    protected val requestParams by lazy { requestParamsSlot.captured }
+    protected val requestParamParameters
+        get() = requestParams.parameters as Map<String, String>
+
     fun mpsViewModel(state: MPSState = MPSState()) = MPSViewModel(
         mpsState = state,
         mpsUseCase = mpsUseCase,

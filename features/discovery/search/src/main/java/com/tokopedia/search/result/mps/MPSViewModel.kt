@@ -3,6 +3,7 @@ package com.tokopedia.search.result.mps
 import androidx.lifecycle.ViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_USE_CASE
 import com.tokopedia.search.result.mps.domain.model.MPSModel
+import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
 import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.search.utils.mvvm.SearchViewModel
 import com.tokopedia.search.utils.toSearchParams
@@ -31,16 +32,18 @@ class MPSViewModel @Inject constructor(
         get() = stateFlow.value.chooseAddressModel
 
     fun onViewCreated() {
-        reloadData()
-    }
-
-    private fun reloadData() {
         updateChooseAddress()
-        multiProductSearch()
+        reloadData()
     }
 
     private fun updateChooseAddress() {
         _stateFlow.update { it.chooseAddress(chooseAddressWrapper.getChooseAddressData()) }
+    }
+
+    private fun reloadData() {
+        _stateFlow.update { it.loading() }
+
+        multiProductSearch()
     }
 
     private fun multiProductSearch() {
@@ -53,6 +56,7 @@ class MPSViewModel @Inject constructor(
 
     private fun mpsUseCaseRequestParams(): RequestParams = RequestParams.create().apply {
         putAll(chooseAddressParams())
+        putAll(stateFlow.value.parameter)
     }
 
     private fun chooseAddressParams() =
@@ -67,17 +71,28 @@ class MPSViewModel @Inject constructor(
     }
 
     fun onLocalizingAddressSelected() {
+        updateChooseAddress()
         reloadData()
     }
 
     fun onViewResumed() {
-        if (isChooseAddressUpdated())
+        if (isChooseAddressUpdated()) {
+            updateChooseAddress()
             reloadData()
+        }
     }
 
     private fun isChooseAddressUpdated(): Boolean {
         val chooseAddressModel = chooseAddressModel ?: return false
 
         return chooseAddressWrapper.isChooseAddressUpdated(chooseAddressModel)
+    }
+
+    fun onQuickFilterSelected(quickFilterDataView: QuickFilterDataView) {
+        quickFilterDataView.firstOption ?: return
+
+        _stateFlow.update { it.applyQuickFilter(quickFilterDataView) }
+
+        reloadData()
     }
 }
