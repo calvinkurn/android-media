@@ -175,17 +175,26 @@ class BannerIndicator : LinearLayout {
         minAnimatorSet.start()
     }
 
+    private fun minimizeAllIndicatorExceptPosition(exceptPosition: Int) {
+        for (i in Int.ZERO until totalBanner) {
+            if (i != exceptPosition) {
+                getChildProgressBar(i)?.let {
+                    if (it.width == WIDTH_MAXIMUM_PROGRESS.toPx()) {
+                        it.progress = Int.ZERO
+                        it.layoutParams.width = WIDTH_MINIMUM_PROGRESS.toPx()
+                        it.requestLayout()
+                    }
+                }
+            }
+        }
+    }
     fun startIndicatorByPosition(position: Int) {
         if (bannerAnimator.isRunning) {
             bannerAnimatorSet.removeAllListeners()
             bannerAnimatorSet.cancel()
             bannerAnimator.removeAllUpdateListeners()
-            getChildProgressBar(currentPosition)?.let {
-                it.progress = MINIMUM_PROGRESS_ALPHA
-                it.alpha = MAXIMUM_PROGRESS_ALPHA
-                it.layoutParams?.width = WIDTH_MINIMUM_PROGRESS.toPx()
-                it.requestLayout()
-            }
+            bannerAnimator.cancel()
+            minimizeAllIndicatorExceptPosition(position)
         }
         val indicatorPosition = position % totalBanner
         try {

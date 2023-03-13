@@ -170,7 +170,7 @@ class BannerRevampViewHolder(
     override fun onClick(position: Int) {
         channelModel?.let { channel ->
             channel.selectGridInPosition(position) {
-                bannerListener?.onBannerClickListener(position, it, channel)
+//                bannerListener?.onBannerClickListener(position, it, channel)
             }
         }
     }
