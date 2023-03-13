@@ -83,7 +83,7 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String, pos
         } else {
             val pemudaReserveBalance = balances.reserveBalance.find { it.walletCode == WALLET_CODE_GOPAY_POINTS }
             balanceTitle = BalanceTextAttribute(
-                text = if ((pemudaReserveBalance?.amount ?: EMPTY_AMOUNT_RESERVE_BALANCE) >= EMPTY_AMOUNT_RESERVE_BALANCE) {
+                text = if ((pemudaReserveBalance?.amount ?: EMPTY_AMOUNT_RESERVE_BALANCE) > EMPTY_AMOUNT_RESERVE_BALANCE) {
                     RESERVE_BALANCE_FORMAT.format(pemudaReserveBalance?.amountFmt)
                 } else {
                     selectedBalance.walletName
