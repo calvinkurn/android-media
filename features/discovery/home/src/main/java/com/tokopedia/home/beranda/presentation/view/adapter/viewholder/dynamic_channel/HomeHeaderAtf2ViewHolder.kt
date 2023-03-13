@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.view.View
+import android.view.ViewStub
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
@@ -9,9 +10,12 @@ import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.databinding.HomeHeaderAtf2Binding
+import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -25,6 +29,9 @@ class HomeHeaderAtf2ViewHolder(
     AbstractViewHolder<HomeHeaderDataModel>(itemView) {
 
     private var binding: HomeHeaderAtf2Binding? by viewBinding()
+    private var balanceWidgetView: BalanceWidgetView? = null
+    private var chooseAddressView: ChooseAddressWidget? = null
+    private var viewPullRefresh: LayoutIconPullRefreshView? = null
 
     companion object {
         @LayoutRes
@@ -46,13 +53,23 @@ class HomeHeaderAtf2ViewHolder(
     }
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
-        binding?.viewChooseAddress?.let {
-            listener.initializeChooseAddressWidget(it, needToShowChooseAddress)
+        if (chooseAddressView == null) {
+            chooseAddressView = getParentLayout(binding?.viewChooseAddress)
+        }
+        chooseAddressView?.let {
+            if (needToShowChooseAddress) {
+                listener.initializeChooseAddressWidget(it, needToShowChooseAddress)
+            } else {
+                it.gone()
+            }
         }
     }
 
     private fun renderHeader() {
-        binding?.viewPullRefresh?.let {
+        if (viewPullRefresh == null) {
+            viewPullRefresh = getParentLayout(binding?.viewPullRefresh)
+        }
+        viewPullRefresh?.let {
             listener.pullRefreshIconCaptured(it)
         }
     }
@@ -65,17 +82,40 @@ class HomeHeaderAtf2ViewHolder(
     }
 
     private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean) {
+        if (balanceWidgetView == null) {
+            balanceWidgetView = getParentLayout(binding?.viewBalanceWidget)
+        }
         data?.let {
             if (isUserLogin) {
-                binding?.viewBalanceWidget?.visible()
-                binding?.viewBalanceWidget?.bind(it, listener)
+                balanceWidgetView?.visible()
+                balanceWidgetView?.bind(it, listener)
             } else {
-                binding?.viewBalanceWidget?.gone()
+                balanceWidgetView?.gone()
             }
         }
     }
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
         bind(element)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> getParentLayout(viewStub: ViewStub?) : T? {
+        return if (viewStub is ViewStub &&
+            !isViewStubHasBeenInflated(viewStub)
+        ) {
+            try {
+                val stubChannelView = viewStub.inflate()
+                stubChannelView as T
+            } catch (e: Exception) {
+                null
+            }
+        } else {
+            null
+        }
+    }
+
+    private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
+        return viewStub?.parent == null
     }
 }
