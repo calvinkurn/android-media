@@ -69,26 +69,40 @@ class PlayBroadcastUiMapper @Inject constructor(
 
             )
 
-    override fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel> =
-        if (authorType == TYPE_SHOP) {
-            mutableListOf(
-                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
-                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
-                TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
-                TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
-                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
-            )
+    override fun mapToLiveTrafficUiMetrics(
+        authorType: String,
+        metrics: GetLiveStatisticsResponse.ReportChannelSummary
+    ): List<TrafficMetricUiModel> {
+        return if (authorType == TYPE_SHOP) {
+            mapToLiveTrafficUiMetrics(metrics.channel.metrics)
         } else {
-            mutableListOf(
-                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
-                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
-                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
-            )
+            mapToLiveTrafficUiMetrics(metrics.channel.userMetrics)
         }
+    }
+
+    private fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> {
+        return mutableListOf(
+            TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
+            TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
+            TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
+            TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
+            TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
+        )
+    }
+
+    private fun mapToLiveTrafficUiMetrics(metrics: GetLiveStatisticsResponse.ReportUserChannelMetric): List<TrafficMetricUiModel> {
+        return mutableListOf(
+            TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannel),
+            TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannel),
+            TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followProfile),
+            TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdp),
+            TrafficMetricUiModel(TrafficMetricType.ProfileVisit, metrics.visitProfile),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCart),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerified)
+        )
+    }
 
     override fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
         totalView.totalViewFmt

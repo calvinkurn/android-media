@@ -1,5 +1,7 @@
 package com.tokopedia.unifyorderhistory.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -316,8 +318,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             }
         }
 
-        const val URL_IMG_EMPTY_SEARCH_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_search_list.png"
-        const val URL_IMG_EMPTY_ORDER_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_order_list.png"
+        const val URL_IMG_EMPTY_SEARCH_LIST = TokopediaImageUrl.URL_IMG_EMPTY_SEARCH_LIST
+        const val URL_IMG_EMPTY_ORDER_LIST = TokopediaImageUrl.URL_IMG_EMPTY_ORDER_LIST
         const val CREATE_REVIEW_APPLINK = "product-review/create/"
         const val CREATE_REVIEW_MESSAGE = "create_review_message"
         const val CREATE_REVIEW_REQUEST_CODE = 200
@@ -728,6 +730,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    refreshHandler?.finishRefresh()
                     orderList = it.data
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
@@ -760,6 +763,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     }
                 }
                 is Fail -> {
+                    refreshHandler?.finishRefresh()
                     val errorType = when (it.throwable) {
                         is MessageErrorException -> null
                         is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
@@ -1785,8 +1789,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun renderOrderList() {
-        refreshHandler?.finishRefresh()
-
         val listOrder = arrayListOf<UohTypeData>()
 
         if (!onLoadMore && orderList.tickers.isNotEmpty()) {

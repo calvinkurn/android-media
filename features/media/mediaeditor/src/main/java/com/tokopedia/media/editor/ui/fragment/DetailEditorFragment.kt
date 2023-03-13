@@ -7,7 +7,6 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +48,12 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.getRunnable
-import com.tokopedia.media.editor.utils.checkBitmapSizeOverflow
+import com.tokopedia.media.editor.utils.checkMemoryOverflow
+import com.tokopedia.media.editor.utils.delay
+import com.tokopedia.media.editor.utils.getImageSize
+import com.tokopedia.media.editor.utils.showErrorLoadToaster
+import com.tokopedia.media.editor.utils.showMemoryLimitToast
+import com.tokopedia.media.editor.utils.validateImageSize
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
@@ -263,7 +267,7 @@ class DetailEditorFragment @Inject constructor(
                             if (removeBackgroundRetryLimit == 0) {
                                 removeBgClosePage()
                             } else {
-                                Handler().postDelayed(getRunnable {
+                                delay({
                                     onRemoveBackgroundClicked(removeBackgroundType)
                                 }, DELAY_REMOVE_BG_TOASTER)
                             }
@@ -350,7 +354,7 @@ class DetailEditorFragment @Inject constructor(
                         it.overlayView.cropViewRect.height()
                     )
                 )
-            }, DELAY_EXECUTION_PREVIOUS_CROP + DELAY_EXECUTION_PREVIOUS_ROTATE)
+            }, DELAY_CROP_ROTATE_PROCESS)
         }
     }
 
@@ -918,6 +922,7 @@ class DetailEditorFragment @Inject constructor(
 
         intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
         activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)
+
         activity?.finish()
     }
 
@@ -940,49 +945,70 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.imgUcropPreview?.hide()
         viewBinding?.imgViewPreview?.visible()
 
-        loadImageWithEmptyTarget(requireContext(),
-            url,
-            properties = {},
-            mediaTarget = MediaBitmapEmptyTarget(
-                onReady = { bitmap ->
-                    originalImageWidth = bitmap.width
-                    originalImageHeight = bitmap.height
+        var memoryOverflow: Boolean
 
-                    viewBinding?.imgViewPreview?.setImageBitmap(validateImageSize(bitmap))
+        val imageSize = getImageSize(url).apply {
+            val usageEstimation = first * second * PIXEL_BYTE_SIZE
+            memoryOverflow = activity?.checkMemoryOverflow(usageEstimation) ?: true
+        }
 
-                    if (readPreviousValue) {
-                        readPreviousState()
-                        viewBinding?.imgViewPreview?.let {
-                            setOverlaySize(
-                                getDisplayedImageSize(
-                                    viewBinding?.imgViewPreview,
-                                    it.drawable.toBitmap()
-                                )
-                            )
+        if (memoryOverflow) {
+            activity?.showMemoryLimitToast(imageSize)
+        } else {
+            loadImageWithEmptyTarget(requireContext(),
+                url,
+                properties = {
+                    listener(
+                        onError = {
+                            it?.let { exception ->
+                                viewBinding?.actionBtnContainer?.let { view ->
+                                    showErrorLoadToaster(view, exception.message ?: "")
+                                }
+                            }
                         }
-                    } else {
-                        implementedBaseBitmap = bitmap
-                        viewBinding?.imgViewPreview?.post {
-                            setOverlaySize(
-                                getDisplayedImageSize(
-                                    viewBinding?.imgViewPreview,
-                                    bitmap
-                                )
-                            )
-                        }
-                    }
-
-                    if (data.isToolWatermark()) {
-                        setWatermarkDrawerItem(bitmap)
-                        watermarkComponent.setWatermarkTypeSelected(
-                            WatermarkType.map(data.watermarkMode?.watermarkType)
-                        )
-                    }
-
-                    onImageReady()
+                    )
                 },
-                onCleared = {}
-            ))
+                mediaTarget = MediaBitmapEmptyTarget(
+                    onReady = { bitmap ->
+                        originalImageWidth = bitmap.width
+                        originalImageHeight = bitmap.height
+
+                        viewBinding?.imgViewPreview?.setImageBitmap(validateImageSize(bitmap))
+
+                        if (readPreviousValue) {
+                            readPreviousState()
+                            viewBinding?.imgViewPreview?.let {
+                                setOverlaySize(
+                                    getDisplayedImageSize(
+                                        viewBinding?.imgViewPreview,
+                                        it.drawable.toBitmap()
+                                    )
+                                )
+                            }
+                        } else {
+                            implementedBaseBitmap = bitmap
+                            viewBinding?.imgViewPreview?.post {
+                                setOverlaySize(
+                                    getDisplayedImageSize(
+                                        viewBinding?.imgViewPreview,
+                                        bitmap
+                                    )
+                                )
+                            }
+                        }
+
+                        if (data.isToolWatermark()) {
+                            setWatermarkDrawerItem(bitmap)
+                            watermarkComponent.setWatermarkTypeSelected(
+                                WatermarkType.map(data.watermarkMode?.watermarkType)
+                            )
+                        }
+
+                        onImageReady()
+                    },
+                    onCleared = {}
+                ))
+        }
     }
 
     private fun setOverlaySize(displaySize: Pair<Float, Float>?) {
@@ -1114,7 +1140,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     fun showAddLogoUploadTips(isUpload: Boolean = true) {
-        addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, bottomSheetTag)
+        addLogoComponent.bottomSheet(isUpload).show(childFragmentManager, BOTTOM_SHEET_TAG)
         isAddLogoTipsShowed = true
     }
 
@@ -1193,29 +1219,6 @@ class DetailEditorFragment @Inject constructor(
         isEdited = true
     }
 
-    // validate image pixel not greater than 25 million, used for image that will be draw only
-    private fun validateImageSize(source: Bitmap): Bitmap {
-        return if (checkBitmapSizeOverflow(source.width.toFloat(), source.height.toFloat())) {
-            var newImageHeight = 0f
-            var newImageWidth = source.width.toFloat()
-            val sourceWidth = source.width
-            val sourceHeight = source.height
-            do {
-                newImageWidth *= SCALED_DOWN_VALUE
-                newImageHeight = (newImageWidth / sourceWidth) * sourceHeight
-            } while (checkBitmapSizeOverflow(newImageWidth, newImageHeight))
-
-            return Bitmap.createScaledBitmap(
-                source,
-                newImageWidth.toInt(),
-                newImageHeight.toInt(),
-                true
-            )
-        } else {
-            source
-        }
-    }
-
     override fun getScreenName() = SCREEN_NAME
 
     companion object {
@@ -1231,7 +1234,7 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DELAY_REMOVE_BG_TOASTER = 300L
 
-        private const val bottomSheetTag = "Add Logo BottomSheet"
+        private const val BOTTOM_SHEET_TAG = "Add Logo BottomSheet"
 
         private const val ADD_LOGO_PICKER_REQUEST_CODE = 979
 
@@ -1243,6 +1246,6 @@ class DetailEditorFragment @Inject constructor(
         private const val ADD_LOGO_IMAGE_RES_MIN = 500
         private const val ADD_LOGO_IMAGE_RES_MAX = 1000
 
-        private const val SCALED_DOWN_VALUE = 0.9f
+        private const val PIXEL_BYTE_SIZE = 4
     }
 }
