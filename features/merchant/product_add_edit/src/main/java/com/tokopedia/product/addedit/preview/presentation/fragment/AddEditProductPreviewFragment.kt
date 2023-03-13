@@ -1382,7 +1382,7 @@ class AddEditProductPreviewFragment :
                 }
             }.orEmpty()
 
-            if (Rollence.getImagePickerRollence()) {
+            if (RemoteConfig.getImagePickerRemoteConfig(context)) {
                 val pageSource = if (!isEditing()) PageSource.AddProduct else PageSource.EditProduct
                 doTracking(isEditing())
                 val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
@@ -1478,7 +1478,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun updateProductImage() {
-        if (Rollence.getImagePickerRollence()) {
+        if (RemoteConfig.getImagePickerRemoteConfig(context)) {
             updateProductImageList()
         } else {
             updateImageList()
