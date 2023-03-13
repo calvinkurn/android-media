@@ -17,6 +17,7 @@ import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2Binding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -67,12 +68,15 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
     }
 
     private fun renderDrawerItem(element: BalanceDrawerItemModel?) {
-        binding?.cardContainerBalance?.setCardUnifyBackgroundColor(
-            ContextCompat.getColor(
-                itemView.context,
-                com.tokopedia.home.R.color.home_dms_color_transparent
+        binding?.cardContainerBalance?.apply {
+            animateOnPress = CardUnify2.ANIMATE_OVERLAY
+            setCardUnifyBackgroundColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.home.R.color.home_dms_color_transparent
+                )
             )
-        )
+        }
         when (element?.state) {
             BalanceDrawerItemModel.STATE_SUCCESS -> {
                 renderItemSuccess(element)
@@ -101,7 +105,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
         binding?.homeContainerBalance?.homeTvReserveBalance?.setWeight(Typography.BOLD)
         binding?.homeContainerBalance?.homeTvReserveBalance?.text =
             itemView.context.getString(com.tokopedia.home.R.string.text_reload)
-        binding?.homeContainerBalance?.homeContainerBalance?.handleItemClickType(
+        binding?.cardContainerBalance?.handleItemClickType(
             element = element,
             rewardsAction = { showLoading(element) },
             walletAppAction = { showLoading(element) }
@@ -194,7 +198,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
     }
 
     private fun handleClickSuccess(element: BalanceDrawerItemModel, reserveBalance: String) {
-        binding?.homeContainerBalance?.homeContainerBalance?.handleItemClickType(
+        binding?.cardContainerBalance?.handleItemClickType(
             element = element,
             rewardsAction = {
                 // handle click for type rewards
