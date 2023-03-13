@@ -237,7 +237,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         return parentViewModel.maxProduct
                     }
 
-                    override fun isProductNumerationShown(): Boolean = true //Only in livestream
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {

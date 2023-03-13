@@ -16,6 +16,8 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSumm
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
+import com.tokopedia.play.broadcaster.ui.model.page.orUnknown
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import javax.inject.Inject
 
@@ -116,8 +118,6 @@ class ProductSetupFragment @Inject constructor(
                     override fun getSelectedAccount(): ContentAccountUiModel {
                         return mDataSource?.getSelectedAccount().orUnknown()
                     }
-
-                    override fun isProductNumerationShown(): Boolean = mDataSource?.isProductNumerationShown().orFalse()
                 })
             }
             is ProductPickerUGCBottomSheet -> {
@@ -211,7 +211,8 @@ class ProductSetupFragment @Inject constructor(
                         mDataSource?.maxProduct().orZero(),
                         mDataSource?.getProductSectionList().orEmpty(),
                         handle,
-                        mDataSource?.isEligibleForPin() ?: true
+                        mDataSource?.isEligibleForPin() ?: true,
+                        mDataSource?.getPageSource().orUnknown(),
                     ) as T
                 }
             }
@@ -231,8 +232,7 @@ class ProductSetupFragment @Inject constructor(
         fun getSelectedAccount(): ContentAccountUiModel
         fun creationId(): String
         fun maxProduct(): Int
-
-        fun isProductNumerationShown() : Boolean
+        fun getPageSource() : PlayBroPageSource
     }
 
     interface Listener {

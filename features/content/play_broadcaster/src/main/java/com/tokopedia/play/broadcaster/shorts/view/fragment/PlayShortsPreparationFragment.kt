@@ -164,7 +164,9 @@ class PlayShortsPreparationFragment @Inject constructor(
                         return viewModel.maxProduct
                     }
 
-                    override fun isProductNumerationShown(): Boolean = false //Not applicable for VOD
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Shorts
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {

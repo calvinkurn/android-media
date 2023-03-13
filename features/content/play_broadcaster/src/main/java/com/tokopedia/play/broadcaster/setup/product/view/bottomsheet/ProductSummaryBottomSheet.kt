@@ -150,7 +150,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                         binding.globalError.visibility = View.GONE
                         binding.flBtnDoneContainer.visibility = View.VISIBLE
 
-                        productSummaryListView.setProductList(state.productTagSectionList, viewModel.isEligibleForPin, mDataSource?.isProductNumerationShown().orFalse())
+                        productSummaryListView.setProductList(state.productTagSectionList, viewModel.isEligibleForPin, viewModel.isNumerationShown)
 
                         if(state.productTagSectionList.isEmpty()) {
                             binding.globalError.productTagSummaryEmpty { handleAddMoreProduct() }
@@ -173,7 +173,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                             actionListener = { event.action?.invoke() },
                         )
 
-                        productSummaryListView.setProductList(emptyList(), viewModel.isEligibleForPin, mDataSource?.isProductNumerationShown().orFalse())
+                        productSummaryListView.setProductList(emptyList(), viewModel.isEligibleForPin, viewModel.isNumerationShown)
                         showLoading(false)
                     }
                     is PlayBroProductChooserEvent.DeleteProductSuccess -> {
@@ -278,7 +278,5 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     interface DataSource {
         fun getSelectedAccount(): ContentAccountUiModel
-
-        fun isProductNumerationShown(): Boolean
     }
 }
