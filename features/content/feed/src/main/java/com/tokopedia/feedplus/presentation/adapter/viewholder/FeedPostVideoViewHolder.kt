@@ -8,6 +8,8 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
+import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.coroutines.CoroutineScope
@@ -30,7 +32,30 @@ class FeedPostVideoViewHolder(
     private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun bind(element: FeedCardVideoContentModel?) {
-        bindVideoPlayer(element)
+        element?.let { data ->
+            with(binding) {
+                bindVideoPlayer(element)
+
+                val authorView = FeedAuthorInfoView(layoutAuthorInfo, listener)
+                authorView.bindData(data.author, false, !element.followers.isFollowed)
+
+                val captionView = FeedCaptionView(tvFeedCaption)
+                captionView.bind(element.text)
+
+                menuButton.setOnClickListener {
+                    listener.onMenuClicked(data.id)
+                }
+                shareButton.setOnClickListener {
+                    listener.onSharePostClicked(
+                        id = data.id,
+                        authorName = data.author.name,
+                        applink = data.applink,
+                        weblink = data.weblink,
+                        imageUrl = data.media.firstOrNull()?.coverUrl ?: ""
+                    )
+                }
+            }
+        }
     }
 
     private fun bindVideoPlayer(element: FeedCardVideoContentModel?) {
@@ -42,7 +67,11 @@ class FeedPostVideoViewHolder(
             feedVideoJob = scope.launch {
                 playerFeedVideo.player = videoPlayer?.getExoPlayer()
                 playerFeedVideo.videoSurfaceView?.setOnClickListener {
-                    videoPlayer?.pause()
+                    if (playerFeedVideo.player?.isPlaying == true) {
+                        videoPlayer?.pause()
+                    } else {
+                        videoPlayer?.resume()
+                    }
                 }
                 element?.media?.get(0)?.let {
                     videoPlayer?.start(it.mediaUrl, false)
@@ -67,10 +96,12 @@ class FeedPostVideoViewHolder(
 
     private fun showLoading() {
         binding.loaderFeedVideo.show()
+        binding.playerFeedVideo.hide()
     }
 
     private fun hideLoading() {
         binding.loaderFeedVideo.hide()
+        binding.playerFeedVideo.show()
     }
 
     companion object {
