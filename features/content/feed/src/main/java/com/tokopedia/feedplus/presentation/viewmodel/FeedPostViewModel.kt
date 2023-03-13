@@ -47,6 +47,8 @@ class FeedPostViewModel @Inject constructor(
     val followResult: LiveData<Result<FollowShopModel>>
         get() = _followResult
 
+    private var lastCursorFetched = ""
+
     fun fetchFeedPosts(source: String) {
         launchCatchError(dispatchers.main, block = {
             val cursor = feedHome.value?.let {
@@ -56,14 +58,18 @@ class FeedPostViewModel @Inject constructor(
                     ""
                 }
             } ?: ""
-            val response = feedXHomeUseCase(
-                feedXHomeUseCase.createParams(
-                    source,
-                    cursor
-                )
-            )
 
-            _feedHome.value = Success(response)
+            if (lastCursorFetched == "" || cursor != lastCursorFetched) {
+                lastCursorFetched = cursor
+                val response = feedXHomeUseCase(
+                    feedXHomeUseCase.createParams(
+                        source,
+                        cursor
+                    )
+                )
+
+                _feedHome.value = Success(response)
+            }
         }) {
             _feedHome.value = Fail(it)
         }
