@@ -10,6 +10,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse
@@ -21,6 +22,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals
@@ -214,7 +216,9 @@ class TokoNowSimilarProductViewModelTest {
     }
 
     @Test
-    fun `given mini cart item when onSuccessGetMiniCartData should update products quantity`() {
+    fun `given mini cart item when getMiniCart should update products quantity`() {
+        val shopId = 1L
+        val warehouseId = 5L
         val miniCartItems = mapOf(
             MiniCartItemKey("2148241523") to MiniCartItem.MiniCartItemProduct(
                 productId = "2148241523",
@@ -231,13 +235,37 @@ class TokoNowSimilarProductViewModelTest {
             getSimilarProductUiModel("2148241524", 3)
         )
 
+        every {
+            addressData.isOutOfCoverage()
+        } returns false
+
+        every {
+            addressData.getShopId()
+        } returns shopId
+
+        every {
+            addressData.getWarehouseId()
+        } returns warehouseId
+
+        every {
+            userSession.isLoggedIn
+        } returns true
+
+        coEvery {
+            getMiniCartUseCase.executeOnBackground()
+        } returns miniCartSimplifiedData
+
         viewModel.onViewCreated(productList)
-        viewModel.onSuccessGetMiniCartData(miniCartSimplifiedData)
+        viewModel.getMiniCart()
 
         val expectedProductList = listOf(
             getSimilarProductUiModel("2148241523", 6),
             getSimilarProductUiModel("2148241524", 100)
         )
+
+        coVerify {
+            getMiniCartUseCase.setParams(listOf(shopId.toString()), MiniCartSource.TokonowHome)
+        }
 
         viewModel.visitableItems.verifyValueEquals(expectedProductList)
     }
