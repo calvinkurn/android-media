@@ -15,7 +15,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 
 object AtcVariantMapper {
 
-    const val VARIANT_LEVEL_INITIALIZE = -1
+    private const val VARIANT_LEVEL_INITIALIZE = -1
 
     /**
      * Determine wether variant is select fully or not
@@ -59,7 +59,7 @@ object AtcVariantMapper {
         level: Int = VARIANT_LEVEL_INITIALIZE,
         isNewLogic: Boolean = true
     ): List<VariantCategory>? = if (isNewLogic) {
-        AtcVariantNewMapper.processVariantNew(variantData, mapOfSelectedVariant, level)
+        AtcVariantNewMapper.processVariantNew(variantData, mapOfSelectedVariant)
     } else {
         processVariantOld(variantData, mapOfSelectedVariant, level)
     }

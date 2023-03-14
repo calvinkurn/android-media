@@ -19,20 +19,12 @@ object AtcVariantNewMapper {
 
     fun processVariantNew(
         variantData: ProductVariant?,
-        selectedVariant: MutableMap<String, String>?,
-        level: Int
+        selectedVariant: MutableMap<String, String>?
     ): List<VariantCategory>? {
         val variants = variantData ?: return null
         if (variants.variants.isEmpty()) return null
-        val variantSize = variants.variants.size
-        // for new logic, initialize value by default is level one selected
-        val selectedLevel = if (level == AtcVariantMapper.VARIANT_LEVEL_INITIALIZE) {
-            VARIANT_LEVEL_ONE_SELECTED
-        } else {
-            level
-        }
 
-        return when (variantSize) {
+        return when (variants.variants.size) {
             VARIANT_HAVE_ONE_LEVEL -> {
                 VariantOneLevelUseCase.process(
                     variantData = variantData,
