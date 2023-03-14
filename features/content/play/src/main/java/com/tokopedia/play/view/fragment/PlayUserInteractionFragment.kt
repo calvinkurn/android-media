@@ -1745,12 +1745,20 @@ class PlayUserInteractionFragment @Inject constructor(
         if (state.isNotChanged(
                 { it.combinedState.videoProperty },
                 { it.status },
+                { it.channel.channelInfo.channelType.isLive }
             )
         ) return
 
+        val isLive = state.value.channel.channelInfo.channelType.isLive
+
         if (isAllowAutoSwipe(
-                !state.value.status.channelStatus.statusType.isActive ||
-                state.value.combinedState.videoProperty.state == PlayViewerVideoState.End
+                if (isLive) {
+                    !state.value.status.channelStatus.statusType.isActive
+                }
+                else {
+                    !state.value.status.channelStatus.statusType.isActive ||
+                        state.value.combinedState.videoProperty.state == PlayViewerVideoState.End
+                }
             )
         ) {
             doAutoSwipe()
