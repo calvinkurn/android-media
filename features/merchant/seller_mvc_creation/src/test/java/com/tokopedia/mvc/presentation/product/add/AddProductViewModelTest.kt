@@ -31,14 +31,12 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyString
 import java.util.*
 
 @ExperimentalCoroutinesApi
@@ -119,113 +117,6 @@ class AddProductViewModelTest {
             assertEquals(voucherConfiguration, actual.voucherConfiguration)
             assertEquals(listOf(previouslySelectedProducts), actual.previouslySelectedProducts)
 
-            job.cancel()
-        }
-    }
-
-    //getProducts success category ids is not empty
-    @Test
-    fun `when apply category filter, should call get products with correct categories ids`() {
-        runBlockingTest {
-            //Given
-
-            mockShopWarehouseGqlCall()
-            mockInitiateVoucherPageGqlCall()
-            mockGetProductListMetaGqlCall()
-            mockGetShopShowcasesGqlCall()
-            mockGetProductListGqlCall()
-            mockVoucherValidationPartialGqlCall(
-                "3923-02-01",
-                "3923-03-01",
-            )
-
-            val emittedValues = arrayListOf<AddProductUiState>()
-            val job = launch {
-                viewModel.uiState.toList(emittedValues)
-            }
-            val categories = listOf(
-                ProductCategoryOption("1", "TV", "Televisi"),
-                ProductCategoryOption("2", "Gaming", "PS 5")
-            )
-
-            //When
-            viewModel.processEvent(AddProductEvent.ApplyCategoryFilter(categories))
-
-
-            //Then
-            val getProductsParam = ProductListUseCase.Param(
-                categoryIds = listOf(1, 2),
-                page = 1,
-                pageSize = 20,
-                searchKeyword = "",
-                showcaseIds = listOf(),
-                sortDirection = "DESC",
-                sortId = "DEFAULT",
-                warehouseId = WAREHOUSE_ID
-            )
-
-            coVerify { getProductsUseCase.execute(getProductsParam) }
-
-            val actual = emittedValues.last()
-
-            assertEquals(true, actual.isLoading)
-            assertEquals(1, actual.page)
-            assertEquals(emptyList<Product>(), actual.products)
-            assertEquals(categories, actual.selectedCategories)
-            assertEquals(true, actual.isFilterActive)
-            job.cancel()
-        }
-    }
-    //getProducts success showcase ids is not empty
-
-    @Test
-    fun `when apply showcase filter, should call get products with correct showcase ids`() {
-        runBlockingTest {
-            //Given
-            mockShopWarehouseGqlCall()
-            mockInitiateVoucherPageGqlCall()
-            mockGetProductListMetaGqlCall()
-            mockGetShopShowcasesGqlCall()
-            mockGetProductListGqlCall()
-            mockVoucherValidationPartialGqlCall(
-                "3923-02-01",
-                "3923-03-01",
-            )
-
-            val emittedValues = arrayListOf<AddProductUiState>()
-            val job = launch {
-                viewModel.uiState.toList(emittedValues)
-            }
-            val showcases = listOf(
-                ShopShowcase(1, "TV", "Televisi", 1, isSelected = false),
-                ShopShowcase(2, "Gaming", "PS 5", 2, isSelected = false)
-            )
-
-            //When
-            viewModel.processEvent(AddProductEvent.ApplyShowCaseFilter(showcases))
-
-
-            //Then
-            val getProductsParam = ProductListUseCase.Param(
-                categoryIds = listOf(),
-                page = 1,
-                pageSize = 20,
-                searchKeyword = "",
-                showcaseIds = listOf(1, 2),
-                sortDirection = "DESC",
-                sortId = "DEFAULT",
-                warehouseId = WAREHOUSE_ID
-            )
-
-            coVerify { getProductsUseCase.execute(getProductsParam) }
-
-            val actual = emittedValues.last()
-
-            assertEquals(true, actual.isLoading)
-            assertEquals(1, actual.page)
-            assertEquals(emptyList<Product>(), actual.products)
-            assertEquals(showcases, actual.selectedShopShowcase)
-            assertEquals(true, actual.isFilterActive)
             job.cancel()
         }
     }
@@ -429,6 +320,7 @@ class AddProductViewModelTest {
     }
 
     //getProductsAndProductsMetadata error, ui effect should emit Error, ui state error should contain throwable
+    //endregion
 
     @Test
     fun `When get products success, should return all ready stock parent products only`() {
@@ -2233,6 +2125,209 @@ class AddProductViewModelTest {
     }
     //endregion
 
+    //region handleApplyShopShowcasesFilter
+    @Test
+    fun `when apply showcase filter with showcase selected, isFilterActive should be true`() {
+        runBlockingTest {
+            //Given
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall()
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall()
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+            val showcases = listOf(
+                ShopShowcase(1, "TV", "Televisi", 1, isSelected = false),
+                ShopShowcase(2, "Gaming", "PS 5", 2, isSelected = false)
+            )
+
+            //When
+            viewModel.processEvent(AddProductEvent.ApplyShowCaseFilter(showcases))
+
+
+            //Then
+            val getProductsParam = ProductListUseCase.Param(
+                categoryIds = listOf(),
+                page = 1,
+                pageSize = 20,
+                searchKeyword = "",
+                showcaseIds = listOf(1, 2),
+                sortDirection = "DESC",
+                sortId = "DEFAULT",
+                warehouseId = WAREHOUSE_ID
+            )
+
+            coVerify { getProductsUseCase.execute(getProductsParam) }
+
+            val actual = emittedValues.last()
+
+            assertEquals(true, actual.isLoading)
+            assertEquals(1, actual.page)
+            assertEquals(emptyList<Product>(), actual.products)
+            assertEquals(showcases, actual.selectedShopShowcase)
+            assertEquals(true, actual.isFilterActive)
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when apply showcase filter with no showcase selected, isFilterActive should be false`() {
+        runBlockingTest {
+            //Given
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall()
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall()
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+            val showcases = listOf<ShopShowcase>()
+
+            //When
+            viewModel.processEvent(AddProductEvent.ApplyShowCaseFilter(showcases))
+
+
+            //Then
+            val getProductsParam = ProductListUseCase.Param(
+                categoryIds = listOf(),
+                page = 1,
+                pageSize = 20,
+                searchKeyword = "",
+                showcaseIds = listOf(),
+                sortDirection = "DESC",
+                sortId = "DEFAULT",
+                warehouseId = WAREHOUSE_ID
+            )
+
+            coVerify { getProductsUseCase.execute(getProductsParam) }
+
+            val actual = emittedValues.last()
+
+            assertEquals(1, actual.page)
+            assertEquals(emptyList<Product>(), actual.products)
+            assertEquals(showcases, actual.selectedShopShowcase)
+            assertEquals(false, actual.isFilterActive)
+            job.cancel()
+        }
+    }
+    //endregion
+
+    //region handleApplyCategoryFilter
+    @Test
+    fun `when apply category filter with category selected, isFilterActive should be true`() {
+        runBlockingTest {
+            //Given
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall()
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall()
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+            val categories = listOf(
+                ProductCategoryOption("1", "TV", "Televisi"),
+                ProductCategoryOption("2", "Gaming", "PS 5")
+            )
+
+            //When
+            viewModel.processEvent(AddProductEvent.ApplyCategoryFilter(categories))
+
+
+            //Then
+            val getProductsParam = ProductListUseCase.Param(
+                categoryIds = listOf(1, 2),
+                page = 1,
+                pageSize = 20,
+                searchKeyword = "",
+                showcaseIds = listOf(),
+                sortDirection = "DESC",
+                sortId = "DEFAULT",
+                warehouseId = WAREHOUSE_ID
+            )
+
+            coVerify { getProductsUseCase.execute(getProductsParam) }
+
+            val actual = emittedValues.last()
+
+            assertEquals(1, actual.page)
+            assertEquals(emptyList<Product>(), actual.products)
+            assertEquals(categories, actual.selectedCategories)
+            assertEquals(true, actual.isFilterActive)
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when apply category filter with no category selected, isFilterActive should be false`() {
+        runBlockingTest {
+            //Given
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall()
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall()
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+            val categories = listOf<ProductCategoryOption>()
+
+            //When
+            viewModel.processEvent(AddProductEvent.ApplyCategoryFilter(categories))
+
+
+            //Then
+            val getProductsParam = ProductListUseCase.Param(
+                categoryIds = listOf(),
+                page = 1,
+                pageSize = 20,
+                searchKeyword = "",
+                showcaseIds = listOf(),
+                sortDirection = "DESC",
+                sortId = "DEFAULT",
+                warehouseId = WAREHOUSE_ID
+            )
+
+            coVerify { getProductsUseCase.execute(getProductsParam) }
+
+            val actual = emittedValues.last()
+
+            assertEquals(1, actual.page)
+            assertEquals(emptyList<Product>(), actual.products)
+            assertEquals(categories, actual.selectedCategories)
+            assertEquals(false, actual.isFilterActive)
+            job.cancel()
+        }
+    }
+    //endregion
+
     //region handleApplySortFilter
 
     //endregion
@@ -2252,6 +2347,8 @@ class AddProductViewModelTest {
     //region handleAddNewProducts
 
     //endregion
+
+
     private fun buildVoucherConfiguration(): VoucherConfiguration {
         return VoucherConfiguration().copy(
             startPeriod = Date(2023, 1, 1, 0, 0, 0),
