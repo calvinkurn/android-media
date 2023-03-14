@@ -1286,7 +1286,8 @@ class PlayViewModel @AssistedInject constructor(
     private fun updateCartCount() {
         viewModelScope.launch {
             try {
-                if (!userSession.isLoggedIn) error("User is not logged in")
+                require(userSession.isLoggedIn) { "User is not logged in" }
+                require(_channelDetail.value.showCart) { "Cart is not shown for this channel" }
                 val count = repo.getCartCount()
 
                 _combinedState.update { it.copy(cartCount = count) }
