@@ -116,8 +116,16 @@ class BeautificationSetupFragment @Inject constructor(
     private fun setupView() {
         hideFaceSetupBottomSheet()
 
-        binding.viewPager.isUserInputEnabled = false
-        binding.viewPager.adapter = pagerAdapter
+        binding.sliderBeautification.apply {
+            showSeparator(true)
+            rangeSliderStepSize = SLIDER_STEP_SIZE
+            setShowTickMark(true)
+        }
+
+        binding.viewPager.apply {
+            isUserInputEnabled = false
+            adapter = pagerAdapter
+        }
 
         TabsUnifyMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when(position) {
@@ -231,16 +239,12 @@ class BeautificationSetupFragment @Inject constructor(
                         return@let
                     }
 
-                    binding.sliderBeautification.rangeSliderValueFrom = faceFilter.minValueForSlider
-                    binding.sliderBeautification.rangeSliderValueTo = faceFilter.maxValueForSlider
-                    binding.sliderBeautification.rangeSliderStepSize = SLIDER_STEP_SIZE
-                    binding.sliderBeautification.setShowTickMark(true)
-                    binding.sliderBeautification.showTickMarkOnRangeValues(
-                        true,
-                        faceFilter.defaultValueForSlider,
-                        faceFilter.defaultValueForSlider,
-                    )
-                    binding.sliderBeautification.updateValue(faceFilter.valueForSlider, null)
+                    binding.sliderBeautification.apply {
+                        updateStartValue(faceFilter.minValueForSlider)
+                        updateEndValue(faceFilter.maxValueForSlider)
+                        showTickMarkOnRangeValues(true, faceFilter.defaultValueForSlider, faceFilter.defaultValueForSlider)
+                        setInitialValue(faceFilter.valueForSlider)
+                    }
 
                     showSlider()
                 } ?: kotlin.run {
@@ -254,16 +258,12 @@ class BeautificationSetupFragment @Inject constructor(
                         return@let
                     }
 
-                    binding.sliderBeautification.rangeSliderValueFrom = preset.minValueForSlider
-                    binding.sliderBeautification.rangeSliderValueTo = preset.maxValueForSlider
-                    binding.sliderBeautification.rangeSliderStepSize = SLIDER_STEP_SIZE
-                    binding.sliderBeautification.setShowTickMark(true)
-                    binding.sliderBeautification.showTickMarkOnRangeValues(
-                        true,
-                        preset.defaultValueForSlider,
-                        preset.defaultValueForSlider,
-                    )
-                    binding.sliderBeautification.updateValue(preset.valueForSlider, null)
+                    binding.sliderBeautification.apply {
+                        updateStartValue(preset.minValueForSlider)
+                        updateEndValue(preset.maxValueForSlider)
+                        showTickMarkOnRangeValues(true, preset.defaultValueForSlider, preset.defaultValueForSlider)
+                        setInitialValue(preset.valueForSlider)
+                    }
 
                     showSlider()
                 } ?: kotlin.run {
@@ -302,11 +302,7 @@ class BeautificationSetupFragment @Inject constructor(
     }
 
     companion object {
-
-        private const val SLIDER_MIN_VALUE = 0
-        private const val SLIDER_MAX_VALUE = 100
         private const val SLIDER_STEP_SIZE = 10
-        private const val PERCENTAGE_MULTIPLIER = 100
 
         const val TAG = "BeautificationSetupFragment"
 
