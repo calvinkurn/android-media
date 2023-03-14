@@ -141,7 +141,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String CUST_HEADER = "header_text";
     private static final String HELP_URL = "tokopedia.com/help";
     private static final String ANDROID_PRINT_JS_INTERFACE = "AndroidPrint";
-    private static final String ANDROID_MAIN_APP_PDF_ENCODE = "android_main_app_pdf_encode";
+    private static final String ANDROID_MAIN_APP_WEBVIEW_PDF_ENCODE = "android_main_app_webview_pdf_encode";
 
     @NonNull
     protected String url = "";
@@ -1014,7 +1014,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private String getDocsUrl(Uri uri){
-        if (remoteConfig.getBoolean(ANDROID_MAIN_APP_PDF_ENCODE, true)) {
+        if (remoteConfig.getBoolean(ANDROID_MAIN_APP_WEBVIEW_PDF_ENCODE, true)) {
             return getDocsUrlV2(uri);
         } else {
             return getDocsUrlLegacy(uri);
