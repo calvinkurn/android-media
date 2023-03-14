@@ -9,6 +9,7 @@ import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.ui.view.carousel.adapter.ProductCarouselAdapter
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 

@@ -13,6 +13,7 @@ import com.tokopedia.play.domain.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
 import com.tokopedia.play.domain.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -43,6 +44,7 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
         channelId: String,
         warehouseId: String,
         partnerName : String,
+        channelType: PlayChannelType,
     ): TagItemUiModel = withContext(dispatchers.io) {
         val response = getProductTagItemsUseCase.apply {
             setRequestParams(
@@ -53,7 +55,7 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
             )
         }.executeOnBackground()
 
-        val productList = mapper.mapProductSection(response.playGetTagsItem.sectionList)
+        val productList = mapper.mapProductSection(response.playGetTagsItem.sectionList, channelType)
 
         val voucherList = mapper.mapMerchantVouchers(
             response.playGetTagsItem.voucherList,

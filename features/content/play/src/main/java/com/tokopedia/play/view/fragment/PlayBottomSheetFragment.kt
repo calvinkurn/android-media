@@ -429,6 +429,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.sectionInfo, event.position)
+            else -> {}
         }
     }
 
@@ -846,6 +847,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 isConnectionError = variant.error is ConnectException || variant.error is UnknownHostException,
                 onError = { }
             )
+            else -> {}
         }
     }
 

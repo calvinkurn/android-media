@@ -21,17 +21,18 @@ class PlayProductTagUiMapper @Inject constructor() {
     fun mapSection(
         input: Section,
         controlTime: Date,
+        channelType: PlayChannelType,
     ) = ProductSectionUiModel.Section(
         productList = input.listOfProducts.map {
-            mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
+            mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType), channelType)
         },
         config = mapConfig(input, controlTime),
-        id = input.id,
+        id = input.id
     )
 
     private fun mapConfig(
         input: Section,
-        controlTime: Date,
+        controlTime: Date
     ) = ProductSectionUiModel.Section.ConfigUiModel(
         title = input.sectionTitle,
         type = ProductSectionType.getSectionValue(sectionType = input.sectionType),
@@ -47,11 +48,12 @@ class PlayProductTagUiMapper @Inject constructor() {
         reminder = mapReminder(hasReminder = input.id.toLongOrZero() != 0L && (ProductSectionType.getSectionValue(sectionType = input.sectionType) == ProductSectionType.Upcoming))
     )
 
-    private fun mapReminder(hasReminder: Boolean) : PlayUpcomingBellStatus = if(hasReminder) PlayUpcomingBellStatus.Off else PlayUpcomingBellStatus.Unknown
+    private fun mapReminder(hasReminder: Boolean): PlayUpcomingBellStatus = if (hasReminder) PlayUpcomingBellStatus.Off else PlayUpcomingBellStatus.Unknown
 
     private fun mapProduct(
         input: Product,
         sectionType: ProductSectionType = ProductSectionType.Unknown,
+        channelType: PlayChannelType,
     ): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(
             id = input.id,
@@ -72,8 +74,11 @@ class PlayProductTagUiMapper @Inject constructor() {
                 )
             },
             isVariantAvailable = input.isVariant,
-            stock = if (sectionType == ProductSectionType.Upcoming) ComingSoon else
-                if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
+            stock = if (sectionType == ProductSectionType.Upcoming) {
+                ComingSoon
+            } else {
+                if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock
+            },
             minQty = input.minimumQuantity,
             isFreeShipping = input.isFreeShipping,
             applink = input.appLink,
@@ -81,12 +86,14 @@ class PlayProductTagUiMapper @Inject constructor() {
             isPinned = input.isPinned,
             isRilisanSpesial = sectionType == ProductSectionType.Active || sectionType == ProductSectionType.Upcoming,
             buttons = mapButtons(input.buttons),
+            number = input.number.toString(),
+            isNumerationShown = channelType.isLive,
         )
     }
 
-    private fun mapButtons(buttons: List< Product.ProductButton>) : List<ProductButtonUiModel> {
+    private fun mapButtons(buttons: List<Product.ProductButton>): List<ProductButtonUiModel> {
         return buttons.map { btn ->
-                ProductButtonUiModel(text = btn.text, color = ProductButtonColor.getByValue(btn.color), type = ProductButtonType.getByValue(btn.buttonType))
-            }
+            ProductButtonUiModel(text = btn.text, color = ProductButtonColor.getByValue(btn.color), type = ProductButtonType.getByValue(btn.buttonType))
+        }
     }
 }
