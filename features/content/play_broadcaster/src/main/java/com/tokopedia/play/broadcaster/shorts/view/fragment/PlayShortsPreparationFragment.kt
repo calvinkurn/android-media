@@ -163,6 +163,10 @@ class PlayShortsPreparationFragment @Inject constructor(
                     override fun maxProduct(): Int {
                         return viewModel.maxProduct
                     }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Shorts
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {

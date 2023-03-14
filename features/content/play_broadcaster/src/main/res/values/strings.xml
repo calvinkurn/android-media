@@ -165,6 +165,7 @@
     <string name="play_bro_product_tag_stock_empty">Stok Habis</string>
     <string name="play_bro_product_tag_no_price">Rp -</string>
     <string name="play_bro_product_discount_template">%d%%</string>
+    <string name="play_bro_product_tag_stock_empty_pinned">Habis</string>
 
     <!-- New Preparation -->
     <string name="play_bro_title_label">Judul</string>

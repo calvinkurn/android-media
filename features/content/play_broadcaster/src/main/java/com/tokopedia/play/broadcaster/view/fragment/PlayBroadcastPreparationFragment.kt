@@ -236,6 +236,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     override fun maxProduct(): Int {
                         return parentViewModel.maxProduct
                     }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {
