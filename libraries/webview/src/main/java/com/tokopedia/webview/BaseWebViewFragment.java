@@ -997,7 +997,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
      * return true of webview success load.
      */
     private boolean loadGoogleDocsUrl(Uri uri) {
-        String googleDocsUrl = getDocsUrl(uri);
+        String googleDocsUrl = WebViewHelper.getDocsUrl(uri, getContext());
         if (webView != null) {
             if (uri.getHost().contains(TOKOPEDIA_STRING)) {
                 webView.loadAuthUrl(googleDocsUrl, userSession);
@@ -1009,26 +1009,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             // change first url directly
             url = googleDocsUrl;
             return false;
-        }
-    }
-
-    private String getDocsUrl(Uri uri){
-        return getDocsUrlV2(uri);
-    }
-
-    private String getDocsUrlLegacy(Uri uri) {
-        if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
-            return decode(uri.toString());
-        } else {
-            return GOOGLE_DOCS_PDF_URL + decode(uri.toString());
-        }
-    }
-
-    private String getDocsUrlV2(Uri uri) {
-        if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
-            return uri.toString();
-        } else {
-            return GOOGLE_DOCS_PDF_URL + encodeOnce(uri.toString());
         }
     }
 
