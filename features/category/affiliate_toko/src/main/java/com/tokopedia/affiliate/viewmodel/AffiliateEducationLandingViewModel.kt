@@ -47,14 +47,9 @@ class AffiliateEducationLandingViewModel @Inject constructor(
 
     companion object {
         private val isStaging = TokopediaUrl.getInstance().GQL.contains("staging")
-        private val TYPE_ARTICLE_TOPIC = if (isStaging) 1222 else 381
-        private val TYPE_ARTICLE = if (isStaging) 1232 else 395
-        private val TYPE_EVENT = if (isStaging) 1238 else 405
+        private val TYPE_ARTICLE = if (isStaging) 1222 else 381
+        private val TYPE_EVENT = if (isStaging) 1223 else 382
         private val TYPE_TUTORIAL = if (isStaging) 1224 else 383
-    }
-
-    init {
-        getEducationLandingPageData()
     }
 
     @Inject
@@ -62,7 +57,7 @@ class AffiliateEducationLandingViewModel @Inject constructor(
 
     private val educationPageData = MutableLiveData<List<Visitable<AffiliateAdapterTypeFactory>>>()
 
-    private fun getEducationLandingPageData() {
+    fun getEducationLandingPageData() {
         launchCatchError(block = {
             val educationBanners = educationBannerUseCase.getEducationBanners()
             val educationCategories = educationCategoryUseCase.getEducationCategoryTree()
@@ -102,7 +97,7 @@ class AffiliateEducationLandingViewModel @Inject constructor(
         educationCategoryResponse.categoryTree?.let { educationCategories ->
             val categoryGroup =
                 educationCategories.data?.categories?.groupBy { it?.id?.toInt().orZero() }
-            val articleTopics = categoryGroup?.get(TYPE_ARTICLE_TOPIC)?.getOrNull(0)?.children
+            val articleTopics = categoryGroup?.get(TYPE_ARTICLE)?.getOrNull(0)?.children
             val tutorial =
                 categoryGroup?.get(TYPE_TUTORIAL)?.getOrNull(0)?.children?.toMutableList()
             if (articleTopics?.isNotEmpty() == true) {

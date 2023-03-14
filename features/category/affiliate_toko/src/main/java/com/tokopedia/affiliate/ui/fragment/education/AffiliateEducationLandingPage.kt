@@ -91,6 +91,7 @@ class AffiliateEducationLandingPage :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        eduViewModel?.getEducationLandingPageData()
         view.findViewById<NavToolbar>(R.id.edukasi_navToolbar)?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
