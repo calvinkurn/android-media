@@ -66,7 +66,7 @@ import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatus
 import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1HeaderData
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
-import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -84,26 +84,26 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class ShopPageHeaderViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        @GqlGetShopInfoForHeaderUseCaseQualifier
-        private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
-        private val getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>,
-        @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
-        private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
-        private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
-        private val newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>,
-        private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
-        private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
-        private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
-        private val getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>,
-        private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
-        private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
-        private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
-        private val sharedPreferences: SharedPreferences,
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
-)
-    : BaseViewModel(dispatcherProvider.main) {
+    private val userSessionInterface: UserSessionInterface,
+    @GqlGetShopInfoForHeaderUseCaseQualifier
+    private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
+    private val getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>,
+    @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
+    private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
+    private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
+    private val newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>,
+    private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
+    private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
+    private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
+    private val getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>,
+    private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
+    private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
+    private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
+    private val sharedPreferences: SharedPreferences,
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig
+) :
+    BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
@@ -248,7 +248,7 @@ class ShopPageHeaderViewModel @Inject constructor(
                 shopHeaderWidgetDataAsync.await()?.let { shopPageHeaderWidgetData ->
                     shopPageP1Data.postValue(
                         Success(
-                            NewShopPageHeaderMapper.mapToNewShopPageP1HeaderData(
+                            ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(
                                 shopPageHeaderP1Data.isShopOfficialStore,
                                 shopPageHeaderP1Data.isShopPowerMerchant,
                                 shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
@@ -359,9 +359,11 @@ class ShopPageHeaderViewModel @Inject constructor(
         launchCatchError(dispatcherProvider.io, {
             context?.let {
                 ShopUtil.loadImageWithEmptyTarget(
-                    it, shopSnippetUrl, {
-                    fitCenter()
-                },
+                    it,
+                    shopSnippetUrl,
+                    {
+                        fitCenter()
+                    },
                     MediaBitmapEmptyTarget(
                         onReady = { bitmap ->
                             val savedFile = ImageProcessingUtil.writeImageToTkpdPath(

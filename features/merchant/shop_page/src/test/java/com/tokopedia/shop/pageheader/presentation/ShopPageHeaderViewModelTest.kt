@@ -26,7 +26,7 @@ import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.*
-import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -238,9 +238,9 @@ class ShopPageHeaderViewModelTest {
         coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
             data = listOf(ShopProduct(), ShopProduct())
         )
-        mockkObject(NewShopPageHeaderMapper)
+        mockkObject(ShopPageHeaderMapper)
         every {
-            NewShopPageHeaderMapper.mapToNewShopPageP1HeaderData(any(), any(), any(), any(), any())
+            ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(any(), any(), any(), any(), any())
         } throws Exception()
         shopPageHeaderViewModel.getNewShopPageTabData(
             SAMPLE_SHOP_ID,

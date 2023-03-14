@@ -16,7 +16,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPage
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
 
-object NewShopPageHeaderMapper {
+object ShopPageHeaderMapper {
 
     fun mapToShopPageP1HeaderData(
         shopInfoOsData: GetIsShopOfficialStore,
