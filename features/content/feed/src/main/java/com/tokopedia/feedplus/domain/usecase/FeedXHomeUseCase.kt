@@ -395,7 +395,7 @@ class FeedXHomeUseCase @Inject constructor(
             PARAMS_SOURCE to SOURCE_DETAIL,
             PARAMS_SOURCE_ID to postId,
             PARAMS_CURSOR to "",
-            PARAMS_LIMIT to 1,
+            PARAMS_LIMIT to LIMIT_DETAIL,
         )
 
         return mapOf(PARAMS_REQUEST to params)
@@ -410,5 +410,7 @@ class FeedXHomeUseCase @Inject constructor(
         private const val PARAMS_LIMIT = "limit"
 
         private const val SOURCE_DETAIL = "detail"
+
+        private const val LIMIT_DETAIL = 1
     }
 }
