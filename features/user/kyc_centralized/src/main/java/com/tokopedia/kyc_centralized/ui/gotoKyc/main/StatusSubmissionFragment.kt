@@ -1,6 +1,7 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main
 
 import android.animation.ValueAnimator
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -67,7 +68,10 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     }
 
     private fun initToolbar() {
-        binding?.unifyToolbar?.setNavigationOnClickListener { activity?.finish() }
+        binding?.unifyToolbar?.setNavigationOnClickListener {
+            activity?.setResult(Activity.RESULT_OK)
+            activity?.finish()
+        }
     }
 
     private fun setUpView() {
@@ -105,6 +109,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
                 }
                 else -> {
+                    activity?.setResult(Activity.RESULT_OK)
                     activity?.finish()
                 }
             }
@@ -229,6 +234,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                             HtmlCompat.FROM_HTML_MODE_COMPACT
                         )
                     if (remainingTime == 0) {
+                        activity?.setResult(Activity.RESULT_OK)
                         activity?.finish()
                     }
                 }
