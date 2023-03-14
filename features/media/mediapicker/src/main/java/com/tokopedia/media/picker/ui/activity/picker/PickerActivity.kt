@@ -30,6 +30,8 @@ import com.tokopedia.media.picker.ui.publisher.PickerEventBus
 import com.tokopedia.media.picker.ui.publisher.observe
 import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
 import com.tokopedia.media.picker.utils.isOppoManufacturer
+import com.tokopedia.media.picker.utils.parcelableArrayListExtra
+import com.tokopedia.media.picker.utils.parcelableExtra
 import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.picker.common.*
@@ -147,12 +149,14 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
         // get data from preview if user had an updated the media elements
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
-            data.getParcelableArrayListExtra<MediaUiModel>(RESULT_INTENT_PREVIEW)?.toList()?.let {
-                eventBus.notifyDataOnChangedEvent(it)
-            }
+            data.parcelableArrayListExtra<MediaUiModel>(RESULT_INTENT_PREVIEW)
+                ?.toList()
+                ?.let {
+                    eventBus.notifyDataOnChangedEvent(it)
+                }
 
             // exit picker
-            data.getParcelableExtra<PickerResult>(EXTRA_RESULT_PICKER)?.let {
+            data.parcelableExtra<PickerResult>(EXTRA_RESULT_PICKER)?.let {
                 onRemoveSubSourceMedia()
 
                 val withEditor = data.getBooleanExtra(EXTRA_EDITOR_PICKER, false)
@@ -164,7 +168,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
                 }
             }
         } else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_EDITOR_PAGE && data != null) {
-            data.getParcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
+            data.parcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
                 onFinishIntent(
                     PickerResult(it.originalPaths, editedImages = it.editedImages)
                 )
