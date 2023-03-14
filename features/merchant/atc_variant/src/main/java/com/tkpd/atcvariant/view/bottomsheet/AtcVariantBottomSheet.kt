@@ -51,6 +51,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.PostAtcHelper
 import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
@@ -602,6 +603,7 @@ class AtcVariantBottomSheet :
 
     private fun onSuccessAtc(successMessage: String?, cartId: String) {
         context?.let {
+            if (showPostATC(cartId)) return
             val message = if (successMessage == null || successMessage.isEmpty()) {
                 it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
             } else {
@@ -624,6 +626,26 @@ class AtcVariantBottomSheet :
                 cartId = cartId
             )
         }
+    }
+
+    private fun showPostATC(cartId: String): Boolean {
+        val variantAggregatorData = viewModel.getVariantAggregatorData() ?: return false
+        val variantData = variantAggregatorData.variantData
+        val postAtcLayoutId = variantData.postAtcLayout.layoutId
+
+        if (postAtcLayoutId.isEmpty()) return false
+
+        val context = context ?: return false
+        val productId = adapter.getHeaderDataModel()?.productId ?: return false
+
+        PostAtcHelper.start(
+            context,
+            productId,
+            layoutId = postAtcLayoutId,
+            cartId = cartId,
+            pageSource = PostAtcHelper.Source.PDP
+        )
+        return true
     }
 
     private fun goToCheckout() {
