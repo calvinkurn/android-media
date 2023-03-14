@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -42,8 +41,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         when (sourcePage) {
             PAGE_STATUS_SUBMISSION -> {
                 val parameter = StatusSubmissionParam(
-                    isCameFromAccountPage = data?.sourcePage == KYCConstant.GotoKycSourceAccountPage,
-                    dataSource = data?.gotoKycType.orEmpty(),
+                    gotoKycType = data?.gotoKycType.orEmpty(),
                     status = data?.status.orEmpty(),
                     sourcePage = data?.sourcePage.orEmpty(),
                     listReason = data?.listReason.orEmpty()

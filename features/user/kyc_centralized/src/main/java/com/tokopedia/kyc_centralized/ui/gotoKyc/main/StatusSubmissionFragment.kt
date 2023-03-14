@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,12 +8,15 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycStatus
@@ -31,7 +35,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<FragmentGotoKycStatusSubmissionBinding>()
 
     private val args: StatusSubmissionFragmentArgs by navArgs()
-    private var dataSource: String = ""
+    private var kycFlowType: String = ""
     private var sourcePage: String = ""
     private var status: String = ""
     private var listReason: List<String> = emptyList()
@@ -46,11 +50,11 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     ): View? {
         binding = FragmentGotoKycStatusSubmissionBinding.inflate(inflater, container, false)
 
-        dataSource = args.parameter.dataSource
+        kycFlowType = args.parameter.gotoKycType
         status = args.parameter.status
         sourcePage = args.parameter.sourcePage
         listReason = args.parameter.listReason
-        isAccountPage = args.parameter.isCameFromAccountPage
+        isAccountPage = args.parameter.sourcePage == KYCConstant.GotoKycSourceAccountPage
 
         return binding?.root
     }
@@ -75,7 +79,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                 onPending24Hours()
             }
             KycStatus.VERIFIED.code.toString() -> {
-                if (dataSource == KYCConstant.GotoKycFlow.PROGRESSIVE) {
+                if (kycFlowType == KYCConstant.GotoKycFlow.PROGRESSIVE) {
                     onVerifiedProgressive()
                 } else {
                     onVerifiedNonProgressive()
@@ -112,7 +116,10 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     }
 
     private fun onRejected() {
-        loadInitImage(getString(R.string.img_url_goto_kyc_status_submission_rejected))
+        loadInitImage(
+            imageUrl = getString(R.string.img_url_goto_kyc_status_submission_rejected),
+            usingLottie = false
+        )
 
         binding?.apply {
             divider.showWithCondition(isAccountPage)
@@ -157,7 +164,10 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     }
 
     private fun onBlackListed() {
-        loadInitImage(getString(R.string.img_url_goto_kyc_status_submission_blacklisted))
+        loadInitImage(
+            imageUrl = getString(R.string.img_url_goto_kyc_status_submission_blacklisted),
+            usingLottie = false
+        )
 
         binding?.apply {
             divider.showWithCondition(isAccountPage)
@@ -176,7 +186,10 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     }
 
     private fun onVerifiedProgressive() {
-        loadInitImage(getString(R.string.img_url_goto_kyc_status_submission_verified))
+        loadInitImage(
+            imageUrl = getString(R.string.img_url_goto_kyc_status_submission_verified),
+            usingLottie = true
+        )
 
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_verified_title)
@@ -224,7 +237,10 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     }
 
     private fun onVerifiedNonProgressive() {
-        loadInitImage(getString(R.string.img_url_goto_kyc_status_submission_verified))
+        loadInitImage(
+            imageUrl = getString(R.string.img_url_goto_kyc_status_submission_verified),
+            usingLottie = true
+        )
 
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_verified_title)
@@ -242,7 +258,10 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     }
 
     private fun onPending24Hours() {
-        loadInitImage(getString(R.string.img_url_goto_kyc_status_submission_pending))
+        loadInitImage(
+            imageUrl = getString(R.string.img_url_goto_kyc_status_submission_pending),
+            usingLottie = true
+        )
 
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_pending_title)
@@ -275,8 +294,21 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun loadInitImage(imageUrl: String) {
-        binding?.layoutStatusSubmission?.ivStatusSubmission?.loadImageWithoutPlaceholder(imageUrl)
+    private fun loadInitImage(imageUrl: String, usingLottie: Boolean) {
+        binding?.layoutStatusSubmission?.apply {
+            ivStatusSubmission.visibleWithCondition(!usingLottie)
+            ivStatusSubmissionLottie.visibleWithCondition(usingLottie)
+
+            if (usingLottie) {
+                LottieCompositionFactory.fromUrl(requireContext(), imageUrl).addListener { result: LottieComposition? ->
+                    result?.let { ivStatusSubmissionLottie.setComposition(it) }
+                    ivStatusSubmissionLottie.repeatCount = ValueAnimator.INFINITE
+                    ivStatusSubmissionLottie.playAnimation()
+                }
+            } else {
+                ivStatusSubmission.loadImageWithoutPlaceholder(imageUrl)
+            }
+        }
     }
 
     override fun getScreenName(): String = SCREEN_NAME

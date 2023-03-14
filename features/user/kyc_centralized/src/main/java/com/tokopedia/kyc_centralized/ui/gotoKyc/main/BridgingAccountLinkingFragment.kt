@@ -137,7 +137,6 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                 is RegisterProgressiveResult.NotRiskyUser -> {
                     setButtonLoading(false)
                     val parameter = StatusSubmissionParam(
-                        isCameFromAccountPage = args.parameter.source == KYCConstant.GotoKycSourceAccountPage,
                         sourcePage = args.parameter.source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = "0"
