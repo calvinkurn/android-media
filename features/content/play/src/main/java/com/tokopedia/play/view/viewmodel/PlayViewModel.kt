@@ -2641,6 +2641,7 @@ class PlayViewModel @AssistedInject constructor(
             _combinedState.update { it.copy(isLoadingBuy = false) }
             onSuccess(cartId)
 
+            delay(DELAY_UPDATE_CART_AFTER_BUY)
             updateCartCount()
         }) { err ->
             _uiEvent.emit(ShowErrorEvent(err))
@@ -3052,5 +3053,10 @@ class PlayViewModel @AssistedInject constructor(
 
         private const val FOLLOW_POP_UP_ID = "FOLLOW_POP_UP"
         private const val ONBOARDING_COACHMARK_ID = "ONBOARDING_COACHMARK"
+
+        /**
+         * Cart
+         */
+        private const val DELAY_UPDATE_CART_AFTER_BUY = 500L
     }
 }
