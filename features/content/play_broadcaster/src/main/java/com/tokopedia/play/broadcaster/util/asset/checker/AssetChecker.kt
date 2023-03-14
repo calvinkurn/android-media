@@ -7,5 +7,7 @@ interface AssetChecker {
 
     suspend fun isLicenseAvailable(licenseName: String): Boolean
 
+    suspend fun isModelAvailable(modelLink: String): Boolean
+
     suspend fun isPresetFileAvailable(fileName: String): Boolean
 }

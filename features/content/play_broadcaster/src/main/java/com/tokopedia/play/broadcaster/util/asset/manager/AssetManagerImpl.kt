@@ -63,9 +63,15 @@ class AssetManagerImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteAllFiles(directory: String): Boolean {
-        val listFiles = File(directory).listFiles() ?: return true
-        return listFiles.all { FileUtil.deleteFile(it.absolutePath) }
+    override suspend fun deleteDirectory(directory: String) {
+        val file = File(directory)
+
+        if(file.isDirectory) {
+            file.listFiles()?.forEach {
+                deleteDirectory(it.absolutePath)
+            }
+        }
+        file.delete()
     }
 
     companion object {

@@ -1790,11 +1790,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         val isLicenseDownloaded = viewModelScope.asyncCatchError(block = {
             repo.downloadLicense(beautificationConfig.licenseLink)
         }) {
-            Log.d("<LOG>", "error download license ${it.message}")
             false
         }
 
-        return isLicenseDownloaded.await() == true
+        val isModelDownloaded = viewModelScope.asyncCatchError(block = {
+            repo.downloadModel(beautificationConfig.modelLink)
+        }) {
+            false
+        }
+
+        return isLicenseDownloaded.await() == true && isModelDownloaded.await() == true
     }
 
     private fun updatePresetAssetStatus(preset: PresetFilterUiModel, assetStatus: BeautificationAssetStatus) {

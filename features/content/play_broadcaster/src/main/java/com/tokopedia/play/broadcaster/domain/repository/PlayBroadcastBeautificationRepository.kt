@@ -16,6 +16,8 @@ interface PlayBroadcastBeautificationRepository {
 
     suspend fun downloadLicense(url: String): Boolean
 
+    suspend fun downloadModel(url: String): Boolean
+
     suspend fun downloadPresetAsset(
         url: String,
         fileName: String,

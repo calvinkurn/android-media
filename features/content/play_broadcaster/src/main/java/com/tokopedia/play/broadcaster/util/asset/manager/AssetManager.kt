@@ -20,7 +20,5 @@ interface AssetManager {
         folderPath: String,
     ): Boolean
 
-    suspend fun deleteAllFiles(
-        directory: String,
-    ): Boolean
+    suspend fun deleteDirectory(directory: String)
 }

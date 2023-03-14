@@ -15,6 +15,10 @@ class AssetCheckerImpl @Inject constructor(
         return File(assetPathHelper.licenseDir).listFiles()?.any { it.name == licenseName } ?: false
     }
 
+    override suspend fun isModelAvailable(modelLink: String): Boolean {
+        return File(assetPathHelper.modelDir).exists()
+    }
+
     override suspend fun isPresetFileAvailable(presetName: String): Boolean {
         val file = File(assetPathHelper.getPresetFilePath(presetName))
         return file.exists()

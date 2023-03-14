@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautific
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.util.asset.AssetHelper
 import com.tokopedia.play.broadcaster.util.asset.AssetPathHelper
+import com.tokopedia.play.broadcaster.util.asset.FileUtil
 import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
 import kotlinx.coroutines.withContext
@@ -45,13 +46,31 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
         if(assetChecker.isLicenseAvailable(licenseName)) {
             true
         } else {
-            assetManager.deleteAllFiles(assetPathHelper.licenseDir)
+            assetManager.deleteDirectory(assetPathHelper.licenseDir)
+
             val responseBody = beautificationAssetApi.downloadAsset(url)
 
             assetManager.save(
                 responseBody = responseBody,
                 fileName = licenseName,
                 folderPath = assetPathHelper.licenseDir,
+            )
+        }
+    }
+
+    override suspend fun downloadModel(url: String): Boolean = withContext(dispatchers.io) {
+        if(assetChecker.isModelAvailable(url)) {
+            true
+        } else {
+            assetManager.deleteDirectory(assetPathHelper.modelDir)
+
+            val responseBody = beautificationAssetApi.downloadAsset(url)
+
+            assetManager.unzipAndSave(
+                responseBody = responseBody,
+                fileName = AssetHelper.getFileNameFromLinkWithoutExtension(url),
+                filePath = assetPathHelper.modelDir,
+                folderPath = assetPathHelper.effectRootDir,
             )
         }
     }
