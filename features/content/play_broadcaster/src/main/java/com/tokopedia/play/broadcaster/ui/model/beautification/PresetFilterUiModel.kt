@@ -23,7 +23,21 @@ data class PresetFilterUiModel(
     val isRemoveEffect: Boolean
         get() = id == OPTION_NONE
 
+    val minValueForSlider: Int
+        get() = (minValue * PERCENTAGE_MULTIPLIER).toInt()
+
+    val maxValueForSlider: Int
+        get() = (maxValue * PERCENTAGE_MULTIPLIER).toInt()
+
+    val defaultValueForSlider: Int
+        get() = (defaultValue * PERCENTAGE_MULTIPLIER).toInt()
+
+    val valueForSlider: Int
+        get() = (value * PERCENTAGE_MULTIPLIER).toInt()
+
     companion object {
         private const val OPTION_NONE = "none"
+
+        private const val PERCENTAGE_MULTIPLIER = 100
     }
 }

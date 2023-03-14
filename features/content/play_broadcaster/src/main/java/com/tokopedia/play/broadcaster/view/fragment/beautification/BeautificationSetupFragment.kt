@@ -116,10 +116,6 @@ class BeautificationSetupFragment @Inject constructor(
     private fun setupView() {
         hideFaceSetupBottomSheet()
 
-        binding.sliderBeautification.rangeSliderValueFrom = SLIDER_MIN_VALUE
-        binding.sliderBeautification.rangeSliderValueTo = SLIDER_MAX_VALUE
-        binding.sliderBeautification.rangeSliderStepSize = SLIDER_STEP_SIZE
-
         binding.viewPager.isUserInputEnabled = false
         binding.viewPager.adapter = pagerAdapter
 
@@ -219,32 +215,63 @@ class BeautificationSetupFragment @Inject constructor(
         curr: BeautificationConfigUiModel,
     ) {
         if(prev == curr) return
+        if(prev?.selectedFaceFilter?.id == curr.selectedFaceFilter?.id && prev?.selectedPreset?.id == curr.selectedPreset?.id) return
 
         setupSlider()
     }
 
     private fun setupSlider() {
-        if(_bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN) return
+        if (_bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN) return
 
-        val (currentValue, isRemoveEffect) = when(selectedTabIdx) {
+        when (selectedTabIdx) {
             BeautificationTabFragment.Companion.Type.FaceFilter.value -> {
-                val selectedFaceFilter = viewModel.selectedFaceFilter
-                selectedFaceFilter?.value to selectedFaceFilter?.isRemoveEffect
+                viewModel.selectedFaceFilter?.let { faceFilter ->
+                    if (faceFilter.isRemoveEffect) {
+                        hideSlider()
+                        return@let
+                    }
+
+                    binding.sliderBeautification.rangeSliderValueFrom = faceFilter.minValueForSlider
+                    binding.sliderBeautification.rangeSliderValueTo = faceFilter.maxValueForSlider
+                    binding.sliderBeautification.rangeSliderStepSize = SLIDER_STEP_SIZE
+                    binding.sliderBeautification.setShowTickMark(true)
+                    binding.sliderBeautification.showTickMarkOnRangeValues(
+                        true,
+                        faceFilter.defaultValueForSlider,
+                        faceFilter.defaultValueForSlider,
+                    )
+                    binding.sliderBeautification.updateValue(faceFilter.valueForSlider, null)
+
+                    showSlider()
+                } ?: kotlin.run {
+                    hideSlider()
+                }
             }
             BeautificationTabFragment.Companion.Type.Preset.value -> {
-                val selectedPreset = viewModel.selectedPreset
-                selectedPreset?.value to selectedPreset?.isRemoveEffect
+                viewModel.selectedPreset?.let { preset ->
+                    if (preset.isRemoveEffect) {
+                        hideSlider()
+                        return@let
+                    }
+
+                    binding.sliderBeautification.rangeSliderValueFrom = preset.minValueForSlider
+                    binding.sliderBeautification.rangeSliderValueTo = preset.maxValueForSlider
+                    binding.sliderBeautification.rangeSliderStepSize = SLIDER_STEP_SIZE
+                    binding.sliderBeautification.setShowTickMark(true)
+                    binding.sliderBeautification.showTickMarkOnRangeValues(
+                        true,
+                        preset.defaultValueForSlider,
+                        preset.defaultValueForSlider,
+                    )
+                    binding.sliderBeautification.updateValue(preset.valueForSlider, null)
+
+                    showSlider()
+                } ?: kotlin.run {
+                    hideSlider()
+                }
             }
-            else -> null to false
+            else -> {}
         }
-
-        if(currentValue == null || isRemoveEffect == true) {
-            hideSlider()
-            return
-        }
-
-        binding.sliderBeautification.updateValue((currentValue * PERCENTAGE_MULTIPLIER).toInt(), null)
-        showSlider()
     }
 
     private fun showSlider() {

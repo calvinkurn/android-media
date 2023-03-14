@@ -29,6 +29,18 @@ data class FaceFilterUiModel(
     val iconUnifyId: Int
         get() = Type.getIconUnifyById(id)
 
+    val minValueForSlider: Int
+        get() = (minValue * PERCENTAGE_MULTIPLIER).toInt()
+
+    val maxValueForSlider: Int
+        get() = (maxValue * PERCENTAGE_MULTIPLIER).toInt()
+
+    val defaultValueForSlider: Int
+        get() = (defaultValue * PERCENTAGE_MULTIPLIER).toInt()
+
+    val valueForSlider: Int
+        get() = (value * PERCENTAGE_MULTIPLIER).toInt()
+
     enum class Type(val id: String, val iconUnifyId: Int) {
         Unknown("", UNKNOWN_ICON_UNIFY),
         None("none", IconUnify.BLOCK),
@@ -46,5 +58,7 @@ data class FaceFilterUiModel(
 
     companion object {
         private const val UNKNOWN_ICON_UNIFY = -1
+
+        private const val PERCENTAGE_MULTIPLIER = 100
     }
 }
