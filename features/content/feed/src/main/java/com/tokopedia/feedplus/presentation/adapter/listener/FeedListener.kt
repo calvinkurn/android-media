@@ -8,7 +8,7 @@ interface FeedListener {
     fun onMenuClicked(id: String)
     fun disableClearView()
     fun inClearViewMode(): Boolean
-    fun onFollowClicked(id: String, isShop: Boolean)
+    fun onFollowClicked(id: String, encryptedId: String, isShop: Boolean)
     fun changeTab(type: String)
     fun reload()
 

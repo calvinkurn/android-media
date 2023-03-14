@@ -47,6 +47,8 @@ class FeedPostViewModel @Inject constructor(
     val followResult: LiveData<Result<FollowShopModel>>
         get() = _followResult
 
+    private val _suspendedFollowData = MutableLiveData<FollowShopModel>()
+
     private var lastCursorFetched = ""
 
     fun fetchFeedPosts(source: String) {
@@ -90,26 +92,45 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    fun doFollow(id: String, isShop: Boolean) {
+    fun suspendFollow(id: String, encryptedId: String, isShop: Boolean) {
+        _suspendedFollowData.value =
+            FollowShopModel(
+                id = id,
+                encryptedId = encryptedId,
+                success = false,
+                isFollowing = false,
+                isShop = isShop
+            )
+    }
+
+    fun processSuspendedFollow() {
+        _suspendedFollowData.value?.let {
+            doFollow(it.id, it.encryptedId, it.isShop)
+        }
+    }
+
+    fun doFollow(id: String, encryptedId: String, isShop: Boolean) {
         launchCatchError(dispatchers.main, block = {
             val response = withContext(dispatchers.io) {
                 if (isShop) {
                     val response = shopFollowUseCase(shopFollowUseCase.createParams(id))
                     FollowShopModel(
                         id = id,
+                        encryptedId = encryptedId,
                         success = response.followShop.success,
                         isFollowing = response.followShop.isFollowing,
                         isShop = true
                     )
                 } else {
-                    val response = userFollowUseCase.executeOnBackground(id)
+                    val response = userFollowUseCase.executeOnBackground(encryptedId)
                     if (response.profileFollowers.errorCode.isNotEmpty()) {
                         throw MessageErrorException(
                             response.profileFollowers.messages.firstOrNull() ?: ""
                         )
                     }
                     FollowShopModel(
-                        id = response.profileFollowers.data.userIdTarget,
+                        id = id,
+                        encryptedId = encryptedId,
                         success = true,
                         isFollowing = true,
                         isShop = false

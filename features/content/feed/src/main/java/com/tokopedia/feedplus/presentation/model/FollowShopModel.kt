@@ -5,6 +5,7 @@ package com.tokopedia.feedplus.presentation.model
  */
 data class FollowShopModel(
     val id: String,
+    val encryptedId: String,
     val isShop: Boolean,
     val success: Boolean,
     val isFollowing: Boolean
