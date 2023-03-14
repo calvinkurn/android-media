@@ -10,6 +10,7 @@ import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodCart
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessBreakdownAddOns
+import com.tokopedia.tokofood.common.domain.response.CartListBusinessBreakdownProduct
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataPromo
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessDataShipping
@@ -131,7 +132,7 @@ object TokoFoodPurchaseUiModelMapper {
                 }
                 if (shouldSummaryShown) {
                     add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
-                    add(mapSummaryTransactionUiModel(businessBreakdown.addOns))
+                    add(mapSummaryTransactionUiModel(businessBreakdown.product, businessBreakdown.addOns))
                 }
             }
 
@@ -193,6 +194,7 @@ object TokoFoodPurchaseUiModelMapper {
             ).takeIf { shouldShippingShown },
             promoUiModel = mapPromoUiModel(businessData.customResponse.promo).takeIf { shouldPromoShown },
             summaryUiModel = mapSummaryTransactionUiModel(
+                businessBreakdown.product,
                 businessBreakdown.addOns
             ).takeIf { shouldSummaryShown },
             totalAmountUiModel = mapTotalAmountUiModel(
@@ -563,11 +565,13 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
-    private fun mapSummaryTransactionUiModel(summaryDetails: List<CartListBusinessBreakdownAddOns>): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
+    private fun mapSummaryTransactionUiModel(product: CartListBusinessBreakdownProduct,
+                                             summaryDetails: List<CartListBusinessBreakdownAddOns>): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
+        val productUiModel = product.mapToUiModel()
         val summaryDetailList = summaryDetails.map {
             it.mapToUiModel()
         }
-        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(summaryDetailList.toList())
+        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(listOf(productUiModel) + summaryDetailList.toList())
     }
 
     private fun CartListBusinessBreakdownAddOns.mapToUiModel(): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction {
@@ -577,6 +581,14 @@ object TokoFoodPurchaseUiModelMapper {
         return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
             title = title,
             value = displayedPriceFmt,
+            detailInfo = customResponse.info
+        )
+    }
+
+    private fun CartListBusinessBreakdownProduct.mapToUiModel(): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction {
+        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
+            title = title,
+            value = totalPriceFmt,
             detailInfo = customResponse.info
         )
     }

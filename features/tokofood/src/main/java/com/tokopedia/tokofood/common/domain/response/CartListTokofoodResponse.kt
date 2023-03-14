@@ -168,8 +168,15 @@ data class CartListBusinessBreakdownProduct(
     @SerializedName("total_quantity")
     val totalQuantity: Int = Int.ZERO,
     @SerializedName("total_cart")
-    val totalCart: Int = Int.ZERO
-)
+    val totalCart: Int = Int.ZERO,
+    @SerializedName("custom_response")
+    val nullableCustomResponse: CartListAddOnsCustomResponse? = CartListAddOnsCustomResponse()
+) {
+
+    val customResponse: CartListAddOnsCustomResponse
+        get() = nullableCustomResponse ?: CartListAddOnsCustomResponse()
+
+}
 
 data class CartListBusinessBreakdownAddOns(
     @SerializedName("title")
