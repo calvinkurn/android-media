@@ -228,7 +228,9 @@ class FeedFragment :
             shareData = shareDataBuilder.build()
             showUniversalShareBottomSheet(
                 getFeedShareDataModel(
-                    id, authorName, imageUrl
+                    id,
+                    authorName,
+                    imageUrl
                 )
             )
         }
@@ -518,7 +520,8 @@ class FeedFragment :
             String.format(
                 context?.getString(feedR.string.feed_share_title) ?: "",
                 authorName
-            )),
+            )
+            ),
         tnImage = imageUrl,
         ogUrl = imageUrl
     )
@@ -594,13 +597,13 @@ class FeedFragment :
             ProductBottomSheetData(
                 postId = postId,
                 shopId = author.id,
-                postType = feedXCard.typename,
-                isFollowed = feedXCard.followers.isFollowed,
-                shopName = feedXCard.author.name,
-                saleStatus = feedXCard.campaign.status,
-                saleType = feedXCard.campaign.name,
-                hasVoucher = feedXCard.hasVoucher,
-                authorType = feedXCard.author.type.toString()
+                postType = postType,
+                isFollowed = isFollowing,
+                shopName = author.name,
+                saleStatus = campaign.status,
+                saleType = campaign.name,
+                hasVoucher = hasVoucher,
+                authorType = author.type.toString()
             ),
             viewModelFactory = viewModelFactory,
             tag = TAG_FEED_PRODUCT_BOTTOMSHEET
