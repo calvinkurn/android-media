@@ -22,6 +22,7 @@ import com.tokopedia.mvc.domain.usecase.ProductListMetaUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
 import com.tokopedia.mvc.domain.usecase.ShopShowcasesByShopIDUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
+import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -1969,11 +1970,201 @@ class AddProductViewModelTest {
     //endregion
 
     //region handleApplyWarehouseLocationFilter
+    @Test
+    fun `When change warehouse filter to new different warehouse, should emit dialog confirmation event`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedEvent = arrayListOf<AddProductEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEvent)
+            }
+            val newWarehouse = Warehouse(warehouseId = 100, warehouseName = "Depok", warehouseType = WarehouseType.WAREHOUSE)
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            viewModel.processEvent(AddProductEvent.ApplyWarehouseLocationFilter(newWarehouse))
+
+            //Then
+            val actual = emittedEvent.last()
+
+            assertEquals(AddProductEffect.ShowChangeWarehouseDialogConfirmation(newWarehouse), actual)
+
+            job.cancel()
+        }
+    }
+
 
     //endregion
 
     //region handleConfirmChangeWarehouseLocationFilter
+    @Test
+    fun `When change warehouse to the same warehouse, isFilterActive should be false and should fetch products from the selected warehouse`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
 
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+            val newWarehouse = Warehouse(warehouseId = WAREHOUSE_ID, warehouseName = "", warehouseType = WarehouseType.DEFAULT_WAREHOUSE_LOCATION)
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            viewModel.processEvent(AddProductEvent.ConfirmChangeWarehouseLocationFilter(newWarehouse))
+
+            //Then
+            val actual = emittedValues.last()
+
+
+             assertEquals(1, actual.page)
+             assertEquals(AddProductUiState.CheckboxState.UNCHECKED, actual.checkboxState)
+             assertEquals(emptySet<Long>(), actual.selectedProductsIds)
+             assertEquals(0, actual.selectedProductCount)
+             assertEquals(newWarehouse, actual.selectedWarehouseLocation)
+             assertEquals(false, actual.isFilterActive)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When change warehouse to different warehouse, isFilterActive should be true and should fetch products from the selected warehouse`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+            val newWarehouse = Warehouse(warehouseId = 100, warehouseName = "Depok", warehouseType = WarehouseType.WAREHOUSE)
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            viewModel.processEvent(AddProductEvent.ConfirmChangeWarehouseLocationFilter(newWarehouse))
+
+            //Then
+            val actual = emittedValues.last()
+
+
+            assertEquals(1, actual.page)
+            assertEquals(AddProductUiState.CheckboxState.UNCHECKED, actual.checkboxState)
+            assertEquals(emptySet<Long>(), actual.selectedProductsIds)
+            assertEquals(0, actual.selectedProductCount)
+            assertEquals(newWarehouse, actual.selectedWarehouseLocation)
+            assertEquals(true, actual.isFilterActive)
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region handleApplySortFilter
