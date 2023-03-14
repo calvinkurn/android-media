@@ -176,6 +176,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         showLoading()
         updateAddressData()
         checkAddressData()
+        getMiniCart()
     }
 
     fun showLoading() {
