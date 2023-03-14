@@ -58,19 +58,9 @@ internal class InspirationFilterViewHolder(
 
     private fun createAdapter(element: InspirationFilterDataView) {
         val adapter = InspirationFilterOptionAdapter(inspirationFilterListener)
-        val sortedFilterData = getSortedFilterData(element.optionSizeData)
-        adapter.setItemList(sortedFilterData)
+        adapter.setItemList(element.optionSizeData)
 
         inspirationFilterOptionAdapter = adapter
-    }
-
-    private fun getSortedFilterData(
-        optionFilterData: List<InspirationFilterOptionDataView>,
-    ): List<InspirationFilterOptionDataView> {
-        val selectedSizeData = optionFilterData
-            .filter { inspirationFilterListener.isFilterSelected(it.optionList) }
-        val nonSelectedSizeData = (optionFilterData - selectedSizeData.toSet())
-        return selectedSizeData + nonSelectedSizeData
     }
 
     companion object {
