@@ -51,6 +51,7 @@ private const val QUERY = """
                       additional_group_id
                       cart_ids
                       message
+                      additional_group_child_ids
                     }
                   }
                   custom_response
