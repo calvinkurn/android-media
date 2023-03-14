@@ -46,6 +46,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -63,6 +64,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
     implementation projectOrAar(rootProject.ext.libraries.diffUtilRecycler)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.network)
+
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
