@@ -259,7 +259,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
             iconContainer = itemView.findViewById(R.id.dynamic_icon_container)
 
             iconTvName?.text = item.name
-            iconImageView?.setImageUrl(item.imageUrl, isSkipCache = item.isSkipCache)
+            iconImageView?.setImageUrl(item.imageUrl)
             listener.onSuccessLoadImage()
             iconContainer?.layoutParams = ViewGroup.LayoutParams(
                 if (isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,

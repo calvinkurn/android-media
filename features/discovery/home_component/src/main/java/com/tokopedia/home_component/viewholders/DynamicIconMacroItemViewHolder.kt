@@ -108,7 +108,7 @@ class DynamicIconMacroItemViewHolder(
         isCache: Boolean
     ) {
         binding?.dynamicIconTypography?.text = item.name
-        binding?.dynamicIconImageView?.setImageUrl(item.imageUrl, isSkipCache = item.isSkipCache)
+        binding?.dynamicIconImageView?.setImageUrl(item.imageUrl)
         listener.onSuccessLoadImage()
         binding?.dynamicIconContainer?.layoutParams = ViewGroup.LayoutParams(
             if (isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,

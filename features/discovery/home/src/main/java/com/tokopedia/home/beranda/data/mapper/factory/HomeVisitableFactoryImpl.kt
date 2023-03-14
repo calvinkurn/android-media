@@ -130,7 +130,8 @@ class HomeVisitableFactoryImpl(
         }
     }
 
-    private fun addDynamicIconData(defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf()) {
+    private fun addDynamicIconData(defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false) {
+        if (isCache && homePrefController.isUsingDifferentAtfRollenceVariant()) return
         var isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP) ?: false
         var iconList = defaultIconList
         if (iconList.isEmpty()) {
@@ -156,7 +157,8 @@ class HomeVisitableFactoryImpl(
         visitableList.add(viewModelDynamicIcon)
     }
 
-    private fun addDynamicIconData(id: String = "", type: Int = 1, defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf()) {
+    private fun addDynamicIconData(id: String = "", type: Int = 1, defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf(), isCache: Boolean = false) {
+        if (isCache && homePrefController.isUsingDifferentAtfRollenceVariant()) return
         val viewModelDynamicIcon = DynamicIconComponentDataModel(
             id = id,
             dynamicIconComponent = DynamicIconComponent(
@@ -173,8 +175,7 @@ class HomeVisitableFactoryImpl(
                         brandId = it.brandId,
                         categoryPersona = it.categoryPersona,
                         campaignCode = it.campaignCode,
-                        withBackground = it.withBackground,
-                        isSkipCache = homePrefController.isUsingDifferentAtfRollenceVariant()
+                        withBackground = it.withBackground
                     )
                 }
             ),
@@ -242,12 +243,12 @@ class HomeVisitableFactoryImpl(
         else -> TYPE_ANNOUNCEMENT
     }
 
-    override fun addDynamicIconVisitable(): HomeVisitableFactory {
-        addDynamicIconData()
+    override fun addDynamicIconVisitable(isCache: Boolean): HomeVisitableFactory {
+        addDynamicIconData(isCache = isCache)
         return this
     }
 
-    override fun addAtfComponentVisitable(isProcessingAtf: Boolean): HomeVisitableFactory {
+    override fun addAtfComponentVisitable(isProcessingAtf: Boolean, isCache: Boolean): HomeVisitableFactory {
         if (homeData?.atfData?.dataList?.isNotEmpty() == true) {
             homeData?.atfData?.let {
                 var channelPosition = 0
@@ -269,7 +270,7 @@ class HomeVisitableFactoryImpl(
                                     },
                                     onSuccess = {
                                         val icon = data.getAtfContent<DynamicHomeIcon>()
-                                        addDynamicIconData(data.id.toString(), icon?.type ?: 1, icon?.dynamicIcon ?: listOf())
+                                        addDynamicIconData(data.id.toString(), icon?.type ?: 1, icon?.dynamicIcon ?: listOf(), isCache)
                                     }
                                 )
                                 iconPosition++
