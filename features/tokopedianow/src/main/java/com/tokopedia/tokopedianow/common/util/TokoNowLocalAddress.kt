@@ -39,10 +39,8 @@ class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val co
     }
 
     fun updateLocalData() {
-        localAddressData?.let {
-            if (ChooseAddressUtils.isLocalizingAddressHasUpdated(context, it)) {
-                localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
-            }
+        if (ChooseAddressUtils.isLocalizingAddressHasUpdated(context, localAddressData)) {
+            localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
         }
     }
 
