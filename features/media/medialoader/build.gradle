@@ -31,6 +31,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
 
     kapt rootProject.ext.networkDependencies.glideProcessor
     implementation rootProject.ext.networkDependencies.glide
@@ -49,6 +50,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
+    testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
 }

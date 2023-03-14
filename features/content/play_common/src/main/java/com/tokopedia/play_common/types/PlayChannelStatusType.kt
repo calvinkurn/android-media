@@ -7,12 +7,14 @@ package com.tokopedia.play_common.types
  */
 enum class PlayChannelStatusType(val value: String) {
     Draft("0"),
+    Active("1"),
     Live("2"),
     Pause("3"),
     Stop("4"),
     Moderated("5"),
     Deleted("-1"),
     Transcoding("6"),
+    TranscodingFailed("7"),
     ScheduledLive("8"),
     Unknown("-2");
 

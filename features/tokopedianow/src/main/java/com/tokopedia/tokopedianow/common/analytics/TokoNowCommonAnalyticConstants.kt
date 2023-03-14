@@ -17,7 +17,6 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_PRODUCT_CLICK = "productClick"
         const val EVENT_NAME_ADD_TO_CART = "addToCart"
         const val EVENT_ADD_TO_CART = "add_to_cart"
-        const val EVENT_NAME_REMOVE_FROM_CART = "removeFromCart"
         const val EVENT_REMOVE_FROM_CART = "remove_from_cart"
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val EVENT_VIEW_PG_IRIS = "viewPGIris"
@@ -50,6 +49,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_CREATIVE_NAME = "creative_name"
         const val KEY_CREATIVE_SLOT = "creative_slot"
         const val KEY_DIMENSION_104 = "dimension104"
+        const val KEY_DIMENSION_100 = "dimension100"
         const val KEY_DIMENSION_38 = "dimension38"
         const val KEY_DIMENSION_79 = "dimension79"
         const val KEY_DIMENSION_82 = "dimension82"
@@ -59,6 +59,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_90 = "dimension90"
+        const val KEY_DIMENSION_96 = "dimension96"
         const val KEY_QUANTITY = "quantity"
         const val KEY_SHOP_ID = "shop_id"
         const val KEY_SHOP_NAME = "shop_name"
@@ -84,6 +85,7 @@ object TokoNowCommonAnalyticConstants {
     }
 
     object VALUE {
+        const val CURRENT_SITE_HOME_AND_BROWSE = "home & browse"
         const val CURRENT_SITE_TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
         const val BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
         const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"

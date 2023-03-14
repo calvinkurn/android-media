@@ -12,6 +12,7 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
@@ -57,11 +58,9 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
-import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.NewGetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
@@ -92,7 +91,6 @@ class NewShopPageViewModel @Inject constructor(
         @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
         private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
-        private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
         private val newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>,
         private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
         private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
@@ -102,7 +100,8 @@ class NewShopPageViewModel @Inject constructor(
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val sharedPreferences: SharedPreferences,
-        private val dispatcherProvider: CoroutineDispatchers
+        private val dispatcherProvider: CoroutineDispatchers,
+        private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 )
     : BaseViewModel(dispatcherProvider.main) {
 
@@ -157,114 +156,6 @@ class NewShopPageViewModel @Inject constructor(
     private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
-
-    fun getShopPageTabData(
-        shopId: String,
-        shopDomain: String,
-        page: Int,
-        itemPerPage: Int,
-        shopProductFilterParameter: ShopProductFilterParameter,
-        keyword: String,
-        etalaseId: String,
-        isRefresh: Boolean,
-        widgetUserAddressLocalData: LocalCacheModel,
-        extParam: String
-    ) {
-        launchCatchError(block = {
-            val shopP1DataAsync = asyncCatchError(
-                dispatcherProvider.io,
-                block = {
-                    getShopP1Data(
-                        shopId,
-                        shopDomain,
-                        isRefresh,
-                        extParam,
-                        widgetUserAddressLocalData
-                    )
-                },
-                onError = {
-                    shopPageP1Data.postValue(
-                        Fail(
-                            ShopAsyncErrorException(
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_P1,
-                                it
-                            )
-                        )
-                    )
-                    null
-                }
-            )
-
-            val shopHeaderWidgetDataAsync = asyncCatchError(
-                dispatcherProvider.io,
-                block = {
-                    getShopPageHeaderData(
-                        shopId,
-                        isRefresh,
-                        widgetUserAddressLocalData
-                    )
-                },
-                onError = {
-                    shopPageP1Data.postValue(
-                        Fail(
-                            ShopAsyncErrorException(
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_HEADER_WIDGET,
-                                it
-                            )
-                        )
-                    )
-                    null
-                }
-            )
-
-            val productListDataAsync = asyncCatchError(
-                dispatcherProvider.io,
-                block = {
-                    getProductListData(
-                        shopId,
-                        page,
-                        itemPerPage,
-                        shopProductFilterParameter,
-                        keyword,
-                        etalaseId,
-                        widgetUserAddressLocalData
-                    )
-                },
-                onError = {
-                    shopPageP1Data.postValue(
-                        Fail(
-                            ShopAsyncErrorException(
-                                ShopAsyncErrorException.AsyncQueryType.SHOP_INITIAL_PRODUCT_LIST,
-                                it
-                            )
-                        )
-                    )
-                    null
-                }
-            )
-            shopP1DataAsync.await()?.let { shopPageHeaderP1Data ->
-                productListDataAsync.await()?.let { shopProductData ->
-                    productListData = shopProductData
-                }
-                homeWidgetLayoutData = shopPageHeaderP1Data.shopInfoHomeTypeData.homeLayoutData
-                shopHeaderWidgetDataAsync.await()?.let { shopPageHeaderWidgetData ->
-                    shopPageP1Data.postValue(
-                        Success(
-                            NewShopPageHeaderMapper.mapToShopPageP1HeaderData(
-                                shopPageHeaderP1Data.isShopOfficialStore,
-                                shopPageHeaderP1Data.isShopPowerMerchant,
-                                shopPageHeaderP1Data.shopInfoHomeTypeData,
-                                shopPageHeaderP1Data.feedWhitelist,
-                                shopPageHeaderWidgetData
-                            )
-                        )
-                    )
-                }
-            }
-        }) { exception ->
-            shopPageP1Data.postValue(Fail(exception))
-        }
-    }
 
     fun getNewShopPageTabData(
         shopId: String,
@@ -424,24 +315,6 @@ class NewShopPageViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
-    private suspend fun getShopP1Data(
-        shopId: String,
-        shopDomain: String,
-        isRefresh: Boolean,
-        extParam: String,
-        widgetUserAddressLocalData: LocalCacheModel
-    ): ShopPageHeaderP1 {
-        val useCase = getShopPageP1DataUseCase.get()
-        useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(
-            shopId,
-            shopDomain,
-            extParam,
-            widgetUserAddressLocalData
-        )
-        return useCase.executeOnBackground()
-    }
-
     private suspend fun getNewShopP1Data(
         shopId: String,
         shopDomain: String,
@@ -451,11 +324,11 @@ class NewShopPageViewModel @Inject constructor(
     ): NewShopPageHeaderP1 {
         val useCase = newGetShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(
-            shopId,
-            shopDomain,
-            extParam,
-            widgetUserAddressLocalData
+        useCase.params = NewGetShopPageP1DataUseCase.createParams(
+            shopId = shopId,
+            shopDomain = shopDomain,
+            extParam = extParam,
+            widgetUserAddressLocalData = widgetUserAddressLocalData
         )
         return useCase.executeOnBackground()
     }
@@ -597,6 +470,9 @@ class NewShopPageViewModel @Inject constructor(
             var broadcasterConfig: Broadcaster.Config = Broadcaster.Config()
             if (isMyShop(shopId = shopId)) {
                 broadcasterConfig = getShopBroadcasterConfig(shopId)
+                broadcasterConfig = broadcasterConfig.copy(
+                    shortVideoAllowed = broadcasterConfig.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()
+                )
             }
             _shopSellerPLayWidgetData.postValue(Success(broadcasterConfig))
         }) {

@@ -12,11 +12,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.topchat.R
@@ -53,8 +49,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
-import java.util.Calendar
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -91,7 +90,6 @@ class ChatItemListViewModel @Inject constructor(
     private val getChatListTickerUseCase: GetChatListTickerUseCase,
     private val sharedPref: SharedPreferences,
     private val userSession: UserSessionInterface,
-    private val abTestPlatform: AbTestPlatform,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), ChatItemListContract {
 
@@ -435,24 +433,13 @@ class ChatItemListViewModel @Inject constructor(
 
     fun shouldShowBubbleTicker(): Boolean {
         return sharedPref.getBoolean(BUBBLE_TICKER_PREF_NAME, true) &&
-            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) &&
-            getRollenceIsBubbleChatEnabled()
+            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
     }
 
     fun saveTickerPref(prefName: String) {
         sharedPref.edit()
             .putBoolean(prefName, false)
             .apply()
-    }
-
-    private fun getRollenceIsBubbleChatEnabled(): Boolean {
-        return try {
-            abTestPlatform.getString(
-                RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT, String.EMPTY
-            ) == RollenceKey.KEY_ROLLENCE_BUBBLE_CHAT
-        } catch (e: Exception) {
-            true
-        }
     }
 
     companion object {

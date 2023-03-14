@@ -22,12 +22,17 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.navigation.people.UserProfileParam
+import com.tokopedia.content.common.navigation.shorts.PlayShorts
+import com.tokopedia.content.common.navigation.shorts.PlayShortsParam
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.types.BundleData.KEY_IS_OPEN_FROM
 import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
@@ -60,6 +65,7 @@ import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_LIVE
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_POST
+import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_SHORTS
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
@@ -92,6 +98,7 @@ import java.net.SocketTimeoutException
 import java.net.URLEncoder
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.math.abs
 import com.tokopedia.feedcomponent.R as feedComponentR
 
 class UserProfileFragment @Inject constructor(
@@ -99,7 +106,9 @@ class UserProfileFragment @Inject constructor(
     private var userProfileTracker: UserProfileTracker,
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
-    private val impressionCoordinator: ShopRecomImpressCoordinator
+    private val impressionCoordinator: ShopRecomImpressCoordinator,
+    private val coachMarkManager: ContentCoachMarkManager,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -168,6 +177,7 @@ class UserProfileFragment @Inject constructor(
         initObserver()
         initListener()
         setHeader()
+        setupCoachMark()
 
         if (arguments == null || requireArguments().getString(EXTRA_USERNAME).isNullOrBlank()) {
             // TODO show error page
@@ -177,6 +187,9 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                 binding.swipeRefreshLayout.isEnabled = verticalOffset == 0
+                val condition = abs(verticalOffset) > mainBinding.appBarUserProfile.totalScrollRange / HEADER_HEIGHT_OFFSET
+                mainBinding.headerProfile.headerView?.showWithCondition(condition && mainBinding.headerProfile.title.isNotEmpty())
+                mainBinding.headerProfile.subheaderView?.showWithCondition(condition && mainBinding.headerProfile.subtitle.isNotEmpty())
             }
         )
 
@@ -242,6 +255,7 @@ class UserProfileFragment @Inject constructor(
         super.onDestroyView()
         mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
         feedFloatingButtonManager.cancel()
+        coachMarkManager.dismissAllCoachMark()
 
         dismissBlockUserDialog()
         mBlockDialog = null
@@ -260,6 +274,7 @@ class UserProfileFragment @Inject constructor(
                             when (ugcOnboardingOpenFrom) {
                                 UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
                                 UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
+                                UGC_ONBOARDING_OPEN_FROM_SHORTS -> goToCreateShortsPage()
                                 else -> {}
                             }
                         }
@@ -382,7 +397,13 @@ class UserProfileFragment @Inject constructor(
         fabUp.circleMainMenu.invisible()
 
         fabUserProfile.setOnClickListener {
+            coachMarkManager.hasBeenShown(fabUserProfile)
+
             fabUp.menuOpen = !fabUp.menuOpen
+
+            if(fabUp.menuOpen && viewModel.isWhitelist) {
+                userProfileTracker.viewCreateShorts(viewModel.profileUserID)
+            }
         }
     }
 
@@ -428,6 +449,7 @@ class UserProfileFragment @Inject constructor(
                             if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
                             mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                         } else {
+                            mainBinding.shopRecommendation.hide()
                             mainBinding.profileTabs.viewPager.currentItem = viewPagerSelectedPage
                             mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
                         }
@@ -502,9 +524,9 @@ class UserProfileFragment @Inject constructor(
 
         if (pagerAdapter.getTabs().isEmpty()) return
         if (pagerAdapter.getFeedsTabs().isNotEmpty())
-            viewModel.submitAction(UserProfileAction.LoadFeedPosts())
+            viewModel.submitAction(UserProfileAction.LoadFeedPosts(isRefresh = true))
         if (pagerAdapter.getVideoTabs().isNotEmpty())
-            viewModel.submitAction(UserProfileAction.LoadPlayVideo())
+            viewModel.submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
     }
 
     private fun addLiveClickListener(appLink: String) {
@@ -541,6 +563,10 @@ class UserProfileFragment @Inject constructor(
         curr: ProfileUiModel
     ) {
         if (prev == curr || curr == ProfileUiModel.Empty) return
+
+        mainBinding.headerProfile.title = curr.name
+        mainBinding.headerProfile.subtitle = if (curr.username.isEmpty()) "" else "@${curr.username}"
+        mainBinding.headerProfile.visible()
 
         binding.viewFlipper.displayedChild = PAGE_CONTENT
 
@@ -582,8 +608,6 @@ class UserProfileFragment @Inject constructor(
                 textSeeMore.hide()
             }
         }
-        binding.headerProfile.title = curr.name
-        binding.headerProfile.alpha = 1F
     }
 
     private fun renderButtonAction(
@@ -662,6 +686,10 @@ class UserProfileFragment @Inject constructor(
                     val items = arrayListOf<FloatingButtonItem>()
                     items.add(createLiveFab())
                     items.add(createPostFab())
+                    if(playShortsEntryPointRemoteConfig.isShowEntryPoint()) {
+                        items.add(createShortsFab())
+                    }
+
                     mainBinding.fabUp.addItem(items)
                     mainBinding.fabUserProfile.show()
                     fabCreated = true
@@ -718,6 +746,17 @@ class UserProfileFragment @Inject constructor(
 
         pagerAdapter.insertFragment(value.tabs)
         mainBinding.profileTabs.tabLayout.showWithCondition(value.showTabs)
+
+        setupAutoSelectTabIfAny(value.tabs)
+    }
+
+    private fun setupAutoSelectTabIfAny(tabs: List<ProfileTabUiModel.Tab>) {
+        val selectedTab = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true)
+
+        val idx = tabs.indexOfFirst { it.key == selectedTab.key }
+        if(idx != -1) {
+            mainBinding.profileTabs.viewPager.setCurrentItem(idx, false)
+        }
     }
 
     private fun createLiveFab(): FloatingButtonItem {
@@ -786,6 +825,27 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    private fun createShortsFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.SHORT_VIDEO),
+            title = getString(feedComponentR.string.feed_fab_create_shorts),
+            listener = {
+                mainBinding.fabUp.menuOpen = false
+
+                userProfileTracker.clickCreateShorts(viewModel.profileUserID)
+
+                /** TODO: uncomment this if you need onboarding */
+//                if (viewModel.needOnboarding) {
+//                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_SHORTS
+//                    openUGCOnboardingBottomSheet()
+//                }
+//                else goToCreateShortsPage()
+
+                goToCreateShortsPage()
+            }
+        )
+    }
+
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
         text = getString(R.string.up_btn_text_following)
         buttonVariant = UnifyButton.Variant.GHOST
@@ -838,7 +898,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun setHeader() {
-        binding.headerProfile.apply {
+        mainBinding.headerProfile.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
                 userProfileTracker.clickBack(userSession.userId, self = viewModel.isSelfProfile)
@@ -885,6 +945,16 @@ class UserProfileFragment @Inject constructor(
                 RouteManager.route(activity, APPLINK_MENU)
             }
         }
+    }
+
+    private fun setupCoachMark() {
+        coachMarkManager.setupCoachMark(
+            ContentCoachMarkConfig(mainBinding.fabUserProfile).apply {
+                title = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_title)
+                subtitle = getString(feedComponentR.string.feed_play_shorts_entry_point_coachmark_description)
+                setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+            }
+        )
     }
 
     private fun navigateToEditProfile() {
@@ -942,20 +1012,23 @@ class UserProfileFragment @Inject constructor(
         startActivity(intent)
     }
 
+    private fun goToCreateShortsPage() {
+        val appLink = PlayShorts.generateApplink {
+            setAuthorType(PlayShortsParam.AuthorType.User)
+        }
+
+        RouteManager.route(requireContext(), appLink)
+    }
+
     private fun openUGCOnboardingBottomSheet() {
         childFragmentManager.executePendingTransactions()
         val existingFragment = childFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
         if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
-        val bundle = Bundle().apply {
-            putInt(
-                UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
-                if (viewModel.profileUsername.isEmpty()) {
-                    VALUE_ONBOARDING_TYPE_COMPLETE
-                } else {
-                    VALUE_ONBOARDING_TYPE_TNC
-                }
-            )
-        }
+
+        val bundle = UGCOnboardingParentFragment.createBundle(
+            if (viewModel.profileUsername.isEmpty()) UGCOnboardingParentFragment.OnboardingType.Complete
+            else UGCOnboardingParentFragment.OnboardingType.Tnc
+        )
         childFragmentManager.beginTransaction()
             .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
             .commit()
@@ -1041,12 +1114,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomItemClicked(item: ShopRecomUiModelItem, postPosition: Int) {
-        userProfileTracker.clickProfileRecommendation(
-            viewModel.profileUserID,
-            item,
-            item.logoImageURL,
-            postPosition
-        )
+        userProfileTracker.clickProfileRecommendation(viewModel.profileUserID, item)
         RouteManager.route(requireContext(), item.applink)
     }
 
@@ -1074,7 +1142,6 @@ class UserProfileFragment @Inject constructor(
 
         when (requestCode) {
             REQUEST_CODE_LOGIN_TO_FOLLOW -> doFollowUnfollow(isFromLogin = true)
-            REQUEST_CODE_LOGIN_TO_SET_REMINDER -> viewModel.submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
             REQUEST_CODE_LOGIN -> refreshLandingPageData(isRefreshPost = true)
         }
     }
@@ -1211,6 +1278,10 @@ class UserProfileFragment @Inject constructor(
         /** Not yet implemented */
     }
 
+    override fun updateVideoTabSelectedChipValue(chipValue: String) {
+        /** Not yet implemented */
+    }
+
     /**
      * Temporary report feature
      */
@@ -1257,6 +1328,7 @@ class UserProfileFragment @Inject constructor(
         const val SEE_ALL_LINE = 3
         const val MAX_LINE = 20
 
+        private const val HEADER_HEIGHT_OFFSET = 1.5
         private const val KEY_APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
         private const val KEY_MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
         private const val KEY_MAX_MULTI_SELECT_ALLOWED_VALUE = 5

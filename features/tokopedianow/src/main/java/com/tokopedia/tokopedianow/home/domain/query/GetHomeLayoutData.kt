@@ -4,7 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 internal object GetHomeLayoutData: GqlQueryInterface {
 
-    private const val OPERATION_NAME = "dynamicHomeChannel"
+    private const val OPERATION_NAME = "getHomeChannelV2"
 
     override fun getOperationNameList(): List<String> {
         return listOf(OPERATION_NAME)
@@ -17,29 +17,29 @@ internal object GetHomeLayoutData: GqlQueryInterface {
           ${'$'}numOfChannel: Int, 
           ${'$'}location: String
         ) {
-          $OPERATION_NAME {
-            channels(
-              type:"tokonow", 
+          $OPERATION_NAME(
+              page:"tokonow", 
               token:${'$'}token, 
               numOfChannel:${'$'}numOfChannel, 
               location: ${'$'}location
             ) {
+            channels {
               id
-              group_id
-              galaxy_attribution
+              groupID
+              galaxyAttribution
               persona
-              brand_id
-              category_persona
+              brandID
+              categoryPersona
               name
               layout
               type
               campaignID
               showPromoBadge
               categoryID
-              perso_type
+              persoType
               pageName
               campaignCode
-              has_close_button
+              hasCloseButton
               header {
                 id
                 name
@@ -51,14 +51,6 @@ internal object GetHomeLayoutData: GqlQueryInterface {
                 backColor
                 backImage
                 textColor
-              }
-              hero {
-                id
-                name
-                url
-                applink
-                imageUrl
-                attribution
               }
               grids {
                 id
@@ -88,7 +80,7 @@ internal object GetHomeLayoutData: GqlQueryInterface {
                 maxOrder
                 stock
                 shop {
-                  shopID
+                  id
                 }
                 labelGroup {
                   title
@@ -103,18 +95,18 @@ internal object GetHomeLayoutData: GqlQueryInterface {
                 title
                 description
                 url
-                back_color
+                backColor
                 cta {
                   type
                   mode
                   text
-                  coupon_code
+                  couponCode
                 }
                 applink
-                text_color
-                image_url
+                textColor
+                imageUrl
                 attribution
-                gradient_color
+                gradientColor
               }
               token
               widgetParam

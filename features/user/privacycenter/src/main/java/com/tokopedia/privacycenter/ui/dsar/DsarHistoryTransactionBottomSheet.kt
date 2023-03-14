@@ -35,6 +35,7 @@ class DsarHistoryTransactionBottomSheet(private val mContext: Context, val onCli
 
     init {
         setChild(rangePickerDialogBinding.root)
+        overlayClickDismiss = false
     }
 
     private fun onDateSelected() {

@@ -3,21 +3,24 @@ package com.tokopedia.media.editor.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorViewPagerAdapter
 import com.tokopedia.media.editor.ui.adapter.viewPagerTag
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.showErrorLoadToaster
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.utils.MediaException
 
-class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(context, attrSet) {
+class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(context, attrSet),
+    EditorViewPagerAdapter.Listener {
     private var editorAdapter: EditorViewPagerAdapter? = null
     private var previousVideoIndex = INITIAL_VIEW_PAGER_INDEX
     private var callback: (position: Int, isVideo: Boolean) -> Unit = { _, _ -> }
 
     fun setAdapter(listData: List<EditorUiModel>) {
-        editorAdapter = EditorViewPagerAdapter(context, listData)
+        editorAdapter = EditorViewPagerAdapter(context, listData, this)
         adapter = editorAdapter
 
         addOnPageChangeListener(object : OnPageChangeListener {
@@ -58,8 +61,13 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
         editorAdapter?.stopVideo(index)
     }
 
-    fun updateImage(index: Int, newImageUrl: String, onImageUpdated: () -> Unit = {}) {
-        val layout = findViewWithTag<LinearLayout>(viewPagerTag(index))
+    fun updateImage(
+        index: Int,
+        newImageUrl: String,
+        overlayImageUrl: String = "",
+        onImageUpdated: () -> Unit = {}
+    ) {
+        val layout = findViewWithTag<RelativeLayout>(viewPagerTag(index))
         val view = layout.findViewById<ImageView>(R.id.img_main_preview)
         view?.loadImage(newImageUrl) {
             listener(
@@ -67,13 +75,32 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
                     view.post {
                         onImageUpdated()
                     }
+                },
+                onError = {
+                    errorHandler(it)
                 }
             )
+        }
+
+        layout.findViewById<ImageView>(R.id.img_main_overlay).apply {
+            if (overlayImageUrl.isNotEmpty()) {
+                loadImage(overlayImageUrl)
+            } else {
+                setImageDrawable(null)
+            }
         }
     }
 
     fun setOnPageChanged(callback: (position: Int, isVideo: Boolean) -> Unit) {
         this.callback = callback
+    }
+
+    override fun onErrorImageLoad(exception: MediaException?) {
+        errorHandler(exception)
+    }
+
+    private fun errorHandler(exception: MediaException?) {
+        showErrorLoadToaster(this, exception?.message ?: "")
     }
 
     companion object {

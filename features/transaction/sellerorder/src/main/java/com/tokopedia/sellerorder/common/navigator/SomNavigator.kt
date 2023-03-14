@@ -30,7 +30,8 @@ object SomNavigator {
     const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
     const val REQUEST_CHANGE_COURIER = 995
     const val REQUEST_RESCHEDULE_PICKUP = 994
-    const val REQUEST_FIND_NEW_DRIVER = 993
+    const val REQUEST_RETURN_TO_SHIPPER = 993
+    const val REQUEST_FIND_NEW_DRIVER = 992
 
     fun goToSomOrderDetail(fragment: SomListFragment, orderId: String) {
         fragment.run {
@@ -93,6 +94,13 @@ object SomNavigator {
         }
     }
 
+    fun goToReturnToShipper(fragment: Fragment, orderId: String) {
+        fragment.run {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.RETURN_TO_SHIPPER, orderId)
+            startActivityForResult(intent, REQUEST_RETURN_TO_SHIPPER)
+        }
+    }
+
     fun goToFindNewDriver(fragment: Fragment, orderId: String, invoice: String?) {
         fragment.run {
             startActivityForResult(RouteManager.getIntent(
@@ -110,11 +118,11 @@ object SomNavigator {
         activity?.run {
             if (GlobalConfig.isSellerApp()) {
                 val url = Uri.parse("${TokopediaUrl.getInstance().MOBILEWEB}${SomConsts.PATH_PRINT_AWB}")
-                        .buildUpon()
-                        .appendQueryParameter(SomConsts.PRINT_AWB_ORDER_ID_QUERY_PARAM, orderIds.joinToString(","))
-                        .appendQueryParameter(SomConsts.PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, if (markAsPrinted) "1" else "0")
-                        .build()
-                        .toString()
+                    .buildUpon()
+                    .appendQueryParameter(SomConsts.PRINT_AWB_ORDER_ID_QUERY_PARAM, orderIds.joinToString(","))
+                    .appendQueryParameter(SomConsts.PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, if (markAsPrinted) "1" else "0")
+                    .build()
+                    .toString()
                 Intent(this, SomPrintAwbActivity::class.java).apply {
                     putExtra(KEY_URL, url)
                     putExtra(KEY_TITLE, SomConsts.PRINT_AWB_WEBVIEW_TITLE)
@@ -134,7 +142,9 @@ object SomNavigator {
             if (appLink.startsWith(SomConsts.PREFIX_HTTP)) {
                 openWebView(context, appLink)
                 true
-            } else false
+            } else {
+                false
+            }
         } else {
             context?.startActivity(intent)
             true

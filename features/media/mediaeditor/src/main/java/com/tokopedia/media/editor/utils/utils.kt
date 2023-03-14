@@ -1,21 +1,26 @@
 package com.tokopedia.media.editor.utils
 
+import android.app.Activity
+import android.app.ActivityManager
+import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import android.os.Handler
+import android.util.Log
+import android.view.View
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.analytics.REMOVE_BG_TYPE_GREY
-import com.tokopedia.media.editor.analytics.REMOVE_BG_TYPE_ORI
-import com.tokopedia.media.editor.analytics.REMOVE_BG_TYPE_WHITE
-import com.tokopedia.media.editor.analytics.WATERMARK_TYPE_CENTER
-import com.tokopedia.media.editor.analytics.WATERMARK_TYPE_DIAGONAL
-import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.ImageRatioType
-import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
+import timber.log.Timber
 import java.io.File
 
 private const val MEDIA_EDITOR_CACHE_DIR = "Editor-Cache"
@@ -35,6 +40,11 @@ fun getUCropTempResultPath(): Uri {
     if (!dir.exists()) dir.mkdir()
 
     return Uri.fromFile(File("${folderPath}/uCrop_temp_result.png"))
+}
+
+fun isGranted(context: Context, permission: String): Boolean {
+    return ContextCompat.checkSelfPermission(context, permission) ==
+        PackageManager.PERMISSION_GRANTED
 }
 
 //formula to determine brightness 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
@@ -73,17 +83,6 @@ fun Bitmap.isDark(): Boolean {
         return darkPixels >= darkThreshold
     } catch (t: Throwable) {
         return false
-    }
-}
-
-fun getToolEditorText(editorToolType: Int): Int {
-    return when (editorToolType) {
-        EditorToolType.BRIGHTNESS -> R.string.editor_tool_brightness
-        EditorToolType.CONTRAST -> R.string.editor_tool_contrast
-        EditorToolType.WATERMARK -> R.string.editor_tool_watermark
-        EditorToolType.ROTATE -> R.string.editor_tool_rotate
-        EditorToolType.CROP -> R.string.editor_tool_crop
-        else -> R.string.editor_tool_remove_background
     }
 }
 
@@ -143,27 +142,109 @@ fun cropCenterImage(
     return null
 }
 
-// for analytics purpose
-fun cropRatioToText(ratio: Pair<Int, Int>): String {
-    return if (ratio.first != 0) {
-        "${ratio.first}:${ratio.second}"
+// validation for each delay to make sure fragment still exist
+fun Fragment.getRunnable(action: () -> Unit): Runnable {
+    return Runnable {
+        if (isAdded) {
+            action()
+        }
+    }
+}
+
+fun Fragment.delay(action: () -> Unit, delayTime: Long) {
+    Handler().postDelayed(getRunnable {
+        action()
+    }, delayTime)
+}
+
+fun checkBitmapSizeOverflow(width: Float, height: Float): Boolean {
+    val imagePxDrawThreshold = 25_000_000 // 25 million pixel
+    return (width * height) >= imagePxDrawThreshold
+}
+
+// get image size without load the image
+fun getImageSize(path: String): Pair<Int, Int> {
+    return try {
+        val option = BitmapFactory.Options()
+        option.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(path, option)
+        return Pair(option.outWidth, option.outHeight)
+    } catch (e: Exception) {
+        Timber.d("get image size bound error, ${e.message}")
+        Pair(0, 0)
+    }
+}
+
+// scale down image size (if needed) until canvas draw limit size (25 million pixel)
+fun validateImageSize(source: Bitmap): Bitmap {
+    // used to decide scaled result value for each scaled down iteration
+    // each iteration will reduce image size 10% (100px -> 90px -> 81px -> etc)
+    val scaledFactor = 0.9f
+    return if (checkBitmapSizeOverflow(source.width.toFloat(), source.height.toFloat())) {
+        var newImageHeight = 0f
+        var newImageWidth = source.width.toFloat()
+        val sourceWidth = source.width
+        val sourceHeight = source.height
+        do {
+            newImageWidth *= scaledFactor
+            newImageHeight = (newImageWidth / sourceWidth) * sourceHeight
+        } while (checkBitmapSizeOverflow(newImageWidth, newImageHeight))
+
+        return Bitmap.createScaledBitmap(
+            source,
+            newImageWidth.toInt(),
+            newImageHeight.toInt(),
+            true
+        )
     } else {
-        ""
+        source
     }
 }
 
-fun removeBackgroundToText(removeBackgroundType: Int?): String {
-    return when (removeBackgroundType) {
-        EditorDetailUiModel.REMOVE_BG_TYPE_GRAY -> REMOVE_BG_TYPE_GREY
-        EditorDetailUiModel.REMOVE_BG_TYPE_WHITE -> REMOVE_BG_TYPE_WHITE
-        else -> REMOVE_BG_TYPE_ORI
+fun Activity.getFreeMemory(): Long {
+    val mi = ActivityManager.MemoryInfo()
+    val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    activityManager.getMemoryInfo(mi)
+    return mi.availMem
+}
+
+fun Activity.checkMemoryOverflow(memoryUsage: Int): Boolean {
+    return getFreeMemory() < memoryUsage
+}
+
+fun Activity.showMemoryLimitToast(imageSize: Pair<Int, Int>, msg: String? = null) {
+    // format = image width || image height || avail memory
+    newRelicLog(
+        mapOf(
+            "Error" to (msg ?: ""),
+            MEMORY_LIMIT_FIELD to "width: ${imageSize.first} || height: ${imageSize.second} || " +
+                "avail memory: ${getFreeMemory()}"
+        )
+    )
+
+    if (!this.isDestroyed) {
+        Toast.makeText(
+            this,
+            R.string.editor_activity_memory_limit,
+            Toast.LENGTH_LONG
+        ).show()
+        finish()
     }
 }
 
-fun watermarkToText(watermarkType: Int?): String {
-    return when (watermarkType) {
-        WatermarkType.Center.value -> WATERMARK_TYPE_CENTER
-        WatermarkType.Diagonal.value -> WATERMARK_TYPE_DIAGONAL
-        else -> ""
+fun showErrorLoadToaster(view: View, msg: String) {
+    newRelicLog(
+        mapOf(
+            LOAD_IMAGE_FAILED to msg
+        )
+    )
+
+    if (view.isAttachedToWindow) {
+        Toaster.build(
+            view,
+            view.context.resources.getString(R.string.editor_activity_failed_load_image),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR
+        ).show()
     }
 }

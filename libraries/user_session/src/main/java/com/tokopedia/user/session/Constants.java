@@ -35,6 +35,7 @@ public class Constants {
     public static final String IS_FIRST_TIME_USER_NEW_ONBOARDING = "IS_FIRST_TIME_NEW_ONBOARDING";
     public static final String HAS_PASSWORD = "HAS_PASSWORD";
     public static final String SHOP_AVATAR = "SHOP_AVATAR";
+    public static final String SHOP_AVATAR_ORIGINAL = "SHOP_AVATAR_ORIGINAL";
     public static final String IS_POWER_MERCHANT_IDLE = "IS_POWER_MERCHANT_IDLE";
     public static final String AUTOFILL_USER_DATA = "AUTOFILL_USER_DATA";
     public static final String LOGIN_METHOD = "LOGIN_METHOD";

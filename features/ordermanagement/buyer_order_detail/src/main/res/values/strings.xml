@@ -75,4 +75,33 @@
 
     <!--Resolution-->
     <string name="order_resolution_deadline_label">Batas respons</string>
+
+    <string name="buyer_order_detail_product_list_collapse">Tampilkan Lebih Sedikit</string>
+    <string name="buyer_order_detail_product_list_expand">+%d Barang Lainnya</string>
+
+    <!--Partial Order Fulfillment-->
+    <string name="buyer_order_detail_pof_estimate_refund_info_title">Estimasi dana dikembalikan</string>
+    <string name="buyer_order_detail_pof_estimate_refund_info_desc">• Estimasi hanya dari total harga barang tidak dikirim. Belum termasuk biaya layanan dan lainnya.
+        \n• Dana akan dikembalikan setelah pesanan selesai.</string>
+    <string name="buyer_order_detail_pof_confirm_reject_title">Batalkan pesanan ini?</string>
+    <string name="buyer_order_detail_pof_confirm_reject_desc">Pesanan tidak akan diproses oleh penjual dan kamu tidak akan mendapatkan sisa barang yang bisa dikirim.</string>
+    <string name="buyer_order_detail_pof_confirm_reject_btn_primary">Ya, Batalkan</string>
+    <string name="buyer_order_detail_pof_confirm_reject_btn_secondary">Kembali</string>
+    <string name="buyer_order_detail_pof_confirm_reject_success">Pesananmu akan dikirim sebagian dan akan ada dana yang dikembalikan.</string>
+    <string name="buyer_order_detail_pof_cancel_order_btn_secondary">Batalkan Pesanan</string>
+    <string name="buyer_order_detail_pof_confirmation_btn_primary">Konfirmasi</string>
+    <string name="buyer_order_detail_pof_bottomsheet_title">Sebagian barang tidak tersedia</string>
+    <string name="buyer_order_detail_pof_product_label">Detail Produk</string>
+    <string name="buyer_order_detail_pof_item_available_label">Barang tersedia</string>
+    <string name="buyer_order_detail_pof_item_request_stock"><![CDATA[<font color="%1$s">%2$s </font>]]></string>
+    <string name="buyer_order_detail_pof_item_checkout_stock">dari %1$s</string>
+
+    <string name="buyer_order_detail_pof_header_label"><![CDATA[<font color="%1$s">%2$s </font>]]></string>
+    <string name="buyer_order_detail_pof_header_total_items"><![CDATA[<font color="%1$s">%2$s</font>]]></string>
+
+    <string name="buyer_order_detail_pof_item_detail_refunded_cta">Cek detail dana yang dikembalikan &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
+    <string name="buyer_order_detail_pof_detail_refunded_bottomsheet_title">Detail dana dikembalikan</string>
+    <string name="buyer_order_detail_pof_error_request">Ada gangguan yang perlu kami bereskan. Coba lagi nanti, ya.</string>
+    <string name="buyer_order_detail_pof_success_message">Pesananmu akan dikirim sebagian dan akan ada dana yang dikembalikan setelah pesanan selesai.</string>
+
 </resources>

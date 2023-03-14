@@ -1,0 +1,439 @@
+{
+  "ongkirGetScheduledDeliveryRates": {
+    "data": {
+      "available": true,
+      "hidden": false,
+      "recommend": false,
+      "title": "Jadwal lainnya",
+      "text": "Pilih jadwal kirim belum tersedia untuk belanjamu di kategori Makanan Hewan, Sayur",
+      "notice": {
+        "title": "Kirim Sesuai jadwal",
+        "text": "Bebas atur kapan pesanan tiba sesuai kebutuhanmu. Layanan ini baru tersedia untuk pesanan Tokopedia NOW!"
+      },
+      "ticker": {
+        "title": "Nikmati gratis ongkir NOW!",
+        "text": "Min. pembelian 2 jam tiba Rp75.000 dan min. pembelian jadwal lainnya Rp50.000"
+      },
+      "labels": [
+        "Hari ini",
+        "Besok",
+        "22 Sep",
+        "3 jadwal lainnya"
+      ],
+      "error": {
+        "error_id": "503",
+        "error_message": "Berat melebihi batas maksimum 20 kg."
+      },
+      "rates_id": 1569522872698156300,
+      "delivery_type": 1,
+      "delivery_services": [
+        {
+          "title": "Hari ini",
+          "available": true,
+          "hidden": false,
+          "error": {
+            "error_id": "503",
+            "error_message": "Berat melebihi batas maksimum 20 kg."
+          },
+          "title_label": "20 Sep",
+          "id": "2022-09-20T00:00:00Z",
+          "delivery_products": [
+            {
+              "title": "Tiba 14:00 - 16:00",
+              "text": "Sisa 3 slot",
+              "available": true,
+              "hidden": false,
+              "recommend": true,
+              "insurance": {
+                "insurance_price": 0,
+                "insurance_type": 3,
+                "insurance_type_info": "Must insurance",
+                "insurance_used_type": 2,
+                "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                "insurance_used_default": 2,
+                "insurance_actual_price": 133,
+                "insurance_pay_type": 2
+              },
+              "features": {
+                "ontime_delivery_guarantee": {
+                  "available": true,
+                  "value": 300,
+                  "text_label": "On-time Delivery Guarantee",
+                  "text_detail": "We'll refund the shipping cost if your order hasn't arrived within 5 Hour(s) <b>after being shipped</b>",
+                  "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
+                  "url_text": "T&C Applied",
+                  "icon_url": "https://ecs7.tokopedia.net/img/ongkirapp/otdg-icon-v2.png",
+                  "bom": {
+                    "title": "On-time Delivery Guarantee",
+                    "notes": "On-time Delivery Guarantee will be valid <b>after your order has been sent.</b>",
+                    "url_detail": "https://gw.tokopedia.com/rates/otdg_info_bom",
+                    "url_text": "T&C Applied"
+                  }
+                }
+              },
+              "text_eta": "Tiba hari ini, 14:00 - 16:00",
+              "promo_text": "",
+              "timeslot_id": 2022092014123,
+              "service_id": 1000,
+              "service_name": "Instan (3 jam)",
+              "shipper_id": 10,
+              "shipper_name": "GoSend Bike",
+              "shipper_product_id": 28,
+              "shipper_product_name": "Instant",
+              "final_price": 0,
+              "real_price": 10000,
+              "text_final_price": "Rp0",
+              "text_real_price": "Rp10.000",
+              "check_sum": "4mAA0QYdOOiWK4qheHIlQHH83q4%3D",
+              "cod": {
+                "is_cod_available": 1,
+                "cod_text": "Tersedia COD (Bayar di Tempat)",
+                "cod_price": 0,
+                "formatted_price": "Rp0",
+                "tnc_text": "S&K Berlaku",
+                "tnc_link": "https://gw.tokopedia.com/cod_info"
+              },
+              "shipping_metadata": {
+                "sla_delivery": {
+                  "etd": 86400
+                }
+              },
+              "ut": "1569522872",
+              "promo_stacking": {
+                "promo_code": "SICEPATTEST",
+                "promo_chargeable": true,
+                "benefit_class": "sameday",
+                "is_bebas_ongkir_extra": true,
+                "bo_campaign_id": 101,
+                "free_shipping_metadata": {
+                  "sent_shipper_partner": true,
+                  "benefit_class": "sameday",
+                  "shipping_subsidy": 10000,
+                  "additional_data": "{\"bo_feature_type\":[\"PLUS\"]}"
+                }
+              },
+              "validation_metadata": "{\"timeslot_id\":2022092014123,\"schedule_date\":\"2022-09-20T00:00:00Z\",\"shipping_price\":10000}"
+            }
+          ]
+        },
+        {
+          "title": "Besok",
+          "available": true,
+          "hidden": false,
+          "error": {
+            "error_id": "503",
+            "error_message": "Berat melebihi batas maksimum 20 kg."
+          },
+          "title_label": "21 Sep",
+          "id": "2022-09-21T00:00:00Z",
+          "delivery_products": [
+            {
+              "title": "Tiba 12:00 - 14:00",
+              "text": "Sisa 3 slot",
+              "available": true,
+              "hidden": false,
+              "recommend": false,
+              "insurance": {
+                "insurance_price": 0,
+                "insurance_type": 3,
+                "insurance_type_info": "Must insurance",
+                "insurance_used_type": 2,
+                "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                "insurance_used_default": 2,
+                "insurance_actual_price": 133,
+                "insurance_pay_type": 2
+              },
+              "features": {
+                "ontime_delivery_guarantee": {
+                  "available": true,
+                  "value": 300,
+                  "text_label": "On-time Delivery Guarantee",
+                  "text_detail": "We'll refund the shipping cost if your order hasn't arrived within 5 Hour(s) <b>after being shipped</b>",
+                  "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
+                  "url_text": "T&C Applied",
+                  "icon_url": "https://ecs7.tokopedia.net/img/ongkirapp/otdg-icon-v2.png",
+                  "bom": {
+                    "title": "On-time Delivery Guarantee",
+                    "notes": "On-time Delivery Guarantee will be valid <b>after your order has been sent.</b>",
+                    "url_detail": "https://gw.tokopedia.com/rates/otdg_info_bom",
+                    "url_text": "T&C Applied"
+                  }
+                }
+              },
+              "text_eta": "Tiba besok, 12:00 - 14:00",
+              "promo_text": "",
+              "timeslot_id": 2022092112,
+              "service_id": 1000,
+              "service_name": "Instan (3 jam)",
+              "shipper_id": 10,
+              "shipper_name": "GoSend Bike",
+              "shipper_product_id": 28,
+              "shipper_product_name": "Instant",
+              "final_price": 0,
+              "real_price": 10000,
+              "text_final_price": "Rp0",
+              "text_real_price": "Rp10.000",
+              "check_sum": "4mAA0QYdOOiWK4qheHIlQHH83q4%3D",
+              "cod": {
+                "is_cod_available": 1,
+                "cod_text": "Tersedia COD (Bayar di Tempat)",
+                "cod_price": 0,
+                "formatted_price": "Rp0",
+                "tnc_text": "S&K Berlaku",
+                "tnc_link": "https://gw.tokopedia.com/cod_info"
+              },
+              "shipping_metadata": {
+                "sla_delivery": {
+                  "etd": 86400
+                }
+              },
+              "ut": "1569522872",
+              "promo_stacking": {
+                "promo_code": "SICEPATTEST",
+                "promo_chargeable": true,
+                "benefit_class": "sameday",
+                "is_bebas_ongkir_extra": true,
+                "bo_campaign_id": 101,
+                "free_shipping_metadata": {
+                  "sent_shipper_partner": true,
+                  "benefit_class": "sameday",
+                  "shipping_subsidy": 7000,
+                  "additional_data": "{\"bo_feature_type\":[\"PLUS\"]}"
+                }
+              },
+              "validation_metadata": "{\"timeslot_id\":2022092112,\"schedule_date\":\"2022-09-21T00:00:00Z\",\"shipping_price\":10000}"
+            },
+            {
+              "title": "Tiba 14:00 - 16:00",
+              "text": "Slot habis",
+              "available": false,
+              "hidden": false,
+              "recommend": false,
+              "insurance": {
+                "insurance_price": 0,
+                "insurance_type": 3,
+                "insurance_type_info": "Must insurance",
+                "insurance_used_type": 2,
+                "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                "insurance_used_default": 2,
+                "insurance_actual_price": 133,
+                "insurance_pay_type": 2
+              },
+              "features": {
+                "ontime_delivery_guarantee": {
+                  "available": true,
+                  "value": 300,
+                  "text_label": "On-time Delivery Guarantee",
+                  "text_detail": "We'll refund the shipping cost if your order hasn't arrived within 5 Hour(s) <b>after being shipped</b>",
+                  "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
+                  "url_text": "T&C Applied",
+                  "icon_url": "https://ecs7.tokopedia.net/img/ongkirapp/otdg-icon-v2.png",
+                  "bom": {
+                    "title": "On-time Delivery Guarantee",
+                    "notes": "On-time Delivery Guarantee will be valid <b>after your order has been sent.</b>",
+                    "url_detail": "https://gw.tokopedia.com/rates/otdg_info_bom",
+                    "url_text": "T&C Applied"
+                  }
+                }
+              },
+              "text_eta": "Tiba besok, 14:00 - 16:00",
+              "promo_text": "",
+              "id": 2022092114,
+              "service_id": 1000,
+              "service_name": "Instan (3 jam)",
+              "shipper_id": 10,
+              "shipper_name": "GoSend Bike",
+              "shipper_product_id": 28,
+              "shipper_product_name": "Instant",
+              "final_price": 0,
+              "real_price": 10000,
+              "text_final_price": "Rp0",
+              "text_real_price": "Rp10.000",
+              "check_sum": "4mAA0QYdOOiWK4qheHIlQHH83q4%3D",
+              "cod": {
+                "is_cod_available": 1,
+                "cod_text": "Tersedia COD (Bayar di Tempat)",
+                "cod_price": 0,
+                "formatted_price": "Rp0",
+                "tnc_text": "S&K Berlaku",
+                "tnc_link": "https://gw.tokopedia.com/cod_info"
+              },
+              "shipping_metadata": {
+                "sla_delivery": {
+                  "etd": 86400
+                }
+              },
+              "ut": "1569522872",
+              "validation_metadata": "{\"timeslot_id\":2022092114,\"schedule_date\":\"2022-09-21T00:00:00Z\",\"shipping_price\":10000}"
+            },
+            {
+              "title": "Tiba 16:00 - 18:00",
+              "text": "",
+              "available": true,
+              "hidden": false,
+              "recommend": false,
+              "insurance": {
+                "insurance_price": 0,
+                "insurance_type": 3,
+                "insurance_type_info": "Must insurance",
+                "insurance_used_type": 2,
+                "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                "insurance_used_default": 2,
+                "insurance_actual_price": 133,
+                "insurance_pay_type": 2
+              },
+              "features": {
+                "ontime_delivery_guarantee": {
+                  "available": true,
+                  "value": 300,
+                  "text_label": "On-time Delivery Guarantee",
+                  "text_detail": "We'll refund the shipping cost if your order hasn't arrived within 5 Hour(s) <b>after being shipped</b>",
+                  "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
+                  "url_text": "T&C Applied",
+                  "icon_url": "https://ecs7.tokopedia.net/img/ongkirapp/otdg-icon-v2.png",
+                  "bom": {
+                    "title": "On-time Delivery Guarantee",
+                    "notes": "On-time Delivery Guarantee will be valid <b>after your order has been sent.</b>",
+                    "url_detail": "https://gw.tokopedia.com/rates/otdg_info_bom",
+                    "url_text": "T&C Applied"
+                  }
+                }
+              },
+              "text_eta": "Tiba besok, 16:00 - 18:00",
+              "promo_text": "",
+              "id": 2022092116,
+              "service_id": 1000,
+              "service_name": "Instan (3 jam)",
+              "shipper_id": 10,
+              "shipper_name": "45gr43uiy87p9 --",
+              "shipper_product_id": 28,
+              "shipper_product_name": "Instant",
+              "final_price": 0,
+              "real_price": 10000,
+              "text_final_price": "Rp0",
+              "text_real_price": "Rp10.000",
+              "check_sum": "4mAA0QYdOOiWK4qheHIlQHH83q4%3D",
+              "cod": {
+                "is_cod_available": 1,
+                "cod_text": "Tersedia COD (Bayar di Tempat)",
+                "cod_price": 0,
+                "formatted_price": "Rp0",
+                "tnc_text": "S&K Berlaku",
+                "tnc_link": "https://gw.tokopedia.com/cod_info"
+              },
+              "shipping_metadata": {
+                "sla_delivery": {
+                  "etd": 86400
+                }
+              },
+              "ut": "1569522872",
+              "promo_stacking": {
+                "promo_code": "SICEPATTEST",
+                "promo_chargeable": true,
+                "benefit_class": "sameday",
+                "is_bebas_ongkir_extra": true,
+                "bo_campaign_id": 101,
+                "free_shipping_metadata": {
+                  "sent_shipper_partner": true,
+                  "benefit_class": "sameday",
+                  "shipping_subsidy": 7000,
+                  "additional_data": "{\"bo_feature_type\":[\"PLUS\"]}"
+                }
+              },
+              "validation_metadata": "{\"timeslot_id\":2022092116,\"schedule_date\":\"2022-09-21T00:00:00Z\",\"shipping_price\":10000}"
+            }
+          ]
+        },
+        {
+          "title": "Kamis",
+          "available": false,
+          "hidden": false,
+          "error": {
+            "error_id": "503",
+            "error_message": "Berat melebihi batas maksimum 20 kg."
+          },
+          "title_label": "22 Sep",
+          "id": "2022-09-20T00:00:00Z",
+          "delivery_products": [
+            {
+              "title": "Semua jadwal",
+              "text": "Slot habis",
+              "available": false,
+              "hidden": false,
+              "recommend": false,
+              "insurance": {
+                "insurance_price": 0,
+                "insurance_type": 3,
+                "insurance_type_info": "Must insurance",
+                "insurance_used_type": 2,
+                "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                "insurance_used_default": 2,
+                "insurance_actual_price": 133,
+                "insurance_pay_type": 2
+              },
+              "features": {
+                "ontime_delivery_guarantee": {
+                  "available": true,
+                  "value": 300,
+                  "text_label": "On-time Delivery Guarantee",
+                  "text_detail": "We'll refund the shipping cost if your order hasn't arrived within 5 Hour(s) <b>after being shipped</b>",
+                  "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
+                  "url_text": "T&C Applied",
+                  "icon_url": "https://ecs7.tokopedia.net/img/ongkirapp/otdg-icon-v2.png",
+                  "bom": {
+                    "title": "On-time Delivery Guarantee",
+                    "notes": "On-time Delivery Guarantee will be valid <b>after your order has been sent.</b>",
+                    "url_detail": "https://gw.tokopedia.com/rates/otdg_info_bom",
+                    "url_text": "T&C Applied"
+                  }
+                }
+              },
+              "text_eta": "",
+              "promo_text": "",
+              "timeslot_id": 0,
+              "service_id": 1000,
+              "service_name": "Instan (3 jam)",
+              "shipper_id": 10,
+              "shipper_name": "GoSend Bike",
+              "shipper_product_id": 28,
+              "shipper_product_name": "Instant",
+              "final_price": 0,
+              "real_price": 10000,
+              "text_final_price": "Rp0",
+              "text_real_price": "Rp10.000",
+              "check_sum": "4mAA0QYdOOiWK4qheHIlQHH83q4%3D",
+              "cod": {
+                "is_cod_available": 1,
+                "cod_text": "Tersedia COD (Bayar di Tempat)",
+                "cod_price": 0,
+                "formatted_price": "Rp0",
+                "tnc_text": "S&K Berlaku",
+                "tnc_link": "https://gw.tokopedia.com/cod_info"
+              },
+              "shipping_metadata": {
+                "sla_delivery": {
+                  "etd": 86400
+                }
+              },
+              "ut": "1569522872",
+              "promo_stacking": {
+                "promo_code": "SICEPATTEST",
+                "promo_chargeable": true,
+                "benefit_class": "sameday",
+                "is_bebas_ongkir_extra": true,
+                "bo_campaign_id": 101,
+                "free_shipping_metadata": {
+                  "sent_shipper_partner": true,
+                  "benefit_class": "sameday",
+                  "shipping_subsidy": 7000,
+                  "additional_data": "{\"bo_feature_type\":[\"PLUS\"]}"
+                }
+              },
+              "validation_metadata": ""
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

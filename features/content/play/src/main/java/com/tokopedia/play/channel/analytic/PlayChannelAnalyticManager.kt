@@ -15,6 +15,7 @@ import com.tokopedia.play.view.uimodel.event.BuySuccessEvent
 import com.tokopedia.play.view.uimodel.event.OCCSuccessEvent
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.viewcomponent.ExploreWidgetViewComponent
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.CoroutineScope
@@ -70,10 +71,6 @@ class PlayChannelAnalyticManager @Inject constructor(
                             it.productMap.isEmpty()
                         ) return@collect
 
-                        it.productMap.forEach { entry ->
-                            if (!entry.key.isPinned) return@forEach
-                            analytic2?.impressPinnedProductInCarousel(entry.key, entry.value)
-                        }
                         sendImpression(it.productMap)
                     }
                     is ProductCarouselUiComponent.Event.OnUpdated -> {
@@ -81,6 +78,9 @@ class PlayChannelAnalyticManager @Inject constructor(
                         sendImpression(it.productMap)
                     }
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
+                    KebabIconUiComponent.Event.OnImpressed -> analytic2?.impressKebab()
+                    ExploreWidgetViewComponent.Event.OnImpressed -> analytic2?.impressExploreIcon()
+                    ExploreWidgetViewComponent.Event.OnClicked -> analytic2?.clickExploreIcon()
                 }
             }
         }
@@ -153,6 +153,7 @@ class PlayChannelAnalyticManager @Inject constructor(
         if(partnerType == PartnerType.TokoNow) newAnalytic.impressFeaturedProductNow(finalProducts)
 
         finalProducts.forEach {
+            if (it.first.isPinned) analytic2?.impressPinnedProductInCarousel(it.first, it.second)
             impressionSet.add(it.first.id)
         }
     }

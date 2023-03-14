@@ -1,37 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/spacing_lvl4">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/detail_title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/unify_space_4"
-        tools:text="Product Title"
-        android:textColor="@color/Unify_N700_96"
-        app:typographyType="heading_4" />
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/spacing_lvl4">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/detail_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/unify_space_4"
-        android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_2"
-        tools:text="Nomor User ID dan Server ID Dapat dilihat di halaman ini." />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            tools:text="Product Title"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_4" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/detail_url"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/vg_product_detail_url"
-        android:textColor="@color/Unify_G500"
-        app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/detail_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            tools:text="Nomor User ID dan Server ID Dapat dilihat di halaman ini." />
 
-</LinearLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/detail_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/vg_product_detail_url"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
+
+    </LinearLayout>
+</ScrollView>

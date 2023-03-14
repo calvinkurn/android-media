@@ -50,11 +50,11 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: RequestNewFcmTokenUiModel): Int
     fun type(uiModel: ResetOnBoardingNavigationUiModel): Int
     fun type(uiModel: TranslatorUiModel): Int
-    fun type(uiModel: AppAuthSecretUiModel): Int
     fun type(uiModel: SellerAppReviewDebuggingUiModel): Int
     fun type(uiModel: ShowApplinkOnToastUiModel): Int
     fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int
     fun type(uiModel: TypographySwitchUiModel): Int
     fun type(uiModel: ConvertResourceIdUiModel): Int
     fun type(uiModel: ViewHanselPatchUiModel): Int
+    fun type(uiModel: TopchatWebSocketLoggingUiModel): Int
 }

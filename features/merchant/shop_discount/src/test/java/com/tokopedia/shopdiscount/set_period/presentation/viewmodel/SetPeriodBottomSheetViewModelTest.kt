@@ -1,7 +1,7 @@
 package com.tokopedia.shopdiscount.set_period.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
@@ -15,6 +15,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -87,8 +90,11 @@ class SetPeriodBottomSheetViewModelTest {
         val endDateValue = viewModel.endDate.value
         assert(startDateValue == viewModel.getSelectedStartDate())
         assert(endDateValue == viewModel.getSelectedEndDate())
-        val daysDiff = TimeUnit.MILLISECONDS.toDays(endDateValue?.time.orZero()  - startDateValue?.time.orZero())
-        assert(daysDiff >= 364)
+        val yearDiff = ChronoUnit.YEARS.between(
+            LocalDateTime.ofInstant(startDateValue?.toInstant(), ZoneId.systemDefault()),
+            LocalDateTime.ofInstant(endDateValue?.toInstant(), ZoneId.systemDefault())
+        )
+        assert(yearDiff == Int.ONE.toLong())
     }
 
     @Test
@@ -98,8 +104,11 @@ class SetPeriodBottomSheetViewModelTest {
         val endDateValue = viewModel.endDate.value
         assert(startDateValue == viewModel.getSelectedStartDate())
         assert(endDateValue == viewModel.getSelectedEndDate())
-        val daysDiff = TimeUnit.MILLISECONDS.toDays(endDateValue?.time.orZero()  - startDateValue?.time.orZero())
-        assert(daysDiff >= 179)
+        val monthsDiff = ChronoUnit.MONTHS.between(
+            LocalDateTime.ofInstant(startDateValue?.toInstant(), ZoneId.systemDefault()),
+            LocalDateTime.ofInstant(endDateValue?.toInstant(), ZoneId.systemDefault())
+        )
+        assert(monthsDiff == 6.toLong())
     }
 
     @Test
@@ -109,8 +118,11 @@ class SetPeriodBottomSheetViewModelTest {
         val endDateValue = viewModel.endDate.value
         assert(startDateValue == viewModel.getSelectedStartDate())
         assert(endDateValue == viewModel.getSelectedEndDate())
-        val daysDiff = TimeUnit.MILLISECONDS.toDays(endDateValue?.time.orZero()  - startDateValue?.time.orZero())
-        assert(daysDiff >= 29)
+        val monthsDiff = ChronoUnit.MONTHS.between(
+            LocalDateTime.ofInstant(startDateValue?.toInstant(), ZoneId.systemDefault()),
+            LocalDateTime.ofInstant(endDateValue?.toInstant(), ZoneId.systemDefault())
+        )
+        assert(monthsDiff == Int.ONE.toLong())
     }
 
     @Test

@@ -12,8 +12,8 @@ enum class ScreenOrientation(
         val value: String
 ) {
 
-    Portrait(Configuration.ORIENTATION_PORTRAIT, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, "portrait"),
-    Landscape(Configuration.ORIENTATION_LANDSCAPE, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, "landscape"),
+    Portrait(Configuration.ORIENTATION_PORTRAIT, ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT, "portrait"),
+    Landscape(Configuration.ORIENTATION_LANDSCAPE, ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE, "landscape"),
 
     /**
      * The int in the reversed mode is incorrect
