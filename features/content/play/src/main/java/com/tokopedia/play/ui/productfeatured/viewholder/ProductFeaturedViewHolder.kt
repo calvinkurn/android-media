@@ -1,12 +1,12 @@
 package com.tokopedia.play.ui.productfeatured.viewholder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.content.common.util.hexToString
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayProductFeaturedBinding
@@ -32,6 +32,7 @@ class ProductFeaturedViewHolder(
             binding.tvSlashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 
+    @SuppressLint("ResourceType")
     fun bind(item: PlayProductUiModel.Product) {
         binding.ivProductImage.loadImage(item.imageUrl)
 
@@ -60,7 +61,7 @@ class ProductFeaturedViewHolder(
 
         binding.lblProductNumber.showWithCondition(item.isNumerationShown)
         binding.lblProductNumber.unlockFeature = true
-        binding.lblProductNumber.setLabelType(R.color.play_dms_explore_widget_icon_bg.hexToString(context))
+        binding.lblProductNumber.setLabelType(context.resources.getString(R.color.play_dms_explore_widget_icon_bg))
         binding.lblProductNumber.setLabel(item.number)
     }
 

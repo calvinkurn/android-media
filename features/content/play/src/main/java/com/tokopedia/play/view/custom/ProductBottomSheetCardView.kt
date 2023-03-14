@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.custom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.text.Spanned
@@ -7,7 +8,6 @@ import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.content.common.util.hexToString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -53,6 +53,7 @@ class ProductBottomSheetCardView(
         mListener = listener
     }
 
+    @SuppressLint("ResourceType")
     fun setItem(item: PlayProductUiModel.Product, section: ProductSectionUiModel.Section) {
         binding.ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
         binding.tvProductTitle.text = item.title
@@ -126,7 +127,7 @@ class ProductBottomSheetCardView(
 
         binding.lblProductNumber.showWithCondition(item.isNumerationShown)
         binding.lblProductNumber.unlockFeature = true
-        binding.lblProductNumber.setLabelType(R.color.play_dms_explore_widget_icon_bg.hexToString(context))
+        binding.lblProductNumber.setLabelType(context.resources.getString(R.color.play_dms_explore_widget_icon_bg))
         binding.lblProductNumber.setLabel(item.number)
     }
 

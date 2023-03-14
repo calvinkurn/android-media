@@ -1,5 +1,6 @@
 package com.tokopedia.play.ui.view.carousel.viewholder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.text.Spanned
@@ -9,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.content.common.util.hexToString
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -80,6 +80,7 @@ class ProductCarouselViewHolder private constructor() {
             binding.btnSecond.isEnabled = !isDisabled
         }
 
+        @SuppressLint("ResourceType")
         fun bind(item: PlayProductUiModel.Product) {
             binding.imgProduct.loadImage(item.imageUrl)
             binding.tvName.text = item.title
@@ -130,7 +131,7 @@ class ProductCarouselViewHolder private constructor() {
             }
             binding.lblProductNumber.showWithCondition(item.isNumerationShown)
             binding.lblProductNumber.unlockFeature = true
-            binding.lblProductNumber.setLabelType(R.color.play_dms_explore_widget_icon_bg.hexToString(context))
+            binding.lblProductNumber.setLabelType(context.resources.getString(R.color.play_dms_explore_widget_icon_bg))
             binding.lblProductNumber.setLabel(item.number)
         }
 
