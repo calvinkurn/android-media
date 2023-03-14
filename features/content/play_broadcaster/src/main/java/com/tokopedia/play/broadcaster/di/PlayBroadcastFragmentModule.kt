@@ -119,10 +119,10 @@ abstract class PlayBroadcastFragmentModule {
     @Binds
     @IntoMap
     @FragmentKey(FaceFilterSetupFragment::class)
-    abstract fun getFaceFilterSetupFragment(bottomSheet: FaceFilterSetupFragment) : Fragment
+    abstract fun getFaceFilterSetupFragment(fragment: FaceFilterSetupFragment) : Fragment
 
     @Binds
     @IntoMap
     @FragmentKey(PlayBroMakeupTabFragment::class)
-    abstract fun getPlayBroMakeupTabFragment(bottomSheet: PlayBroMakeupTabFragment) : Fragment
+    abstract fun getPlayBroMakeupTabFragment(fragment: PlayBroMakeupTabFragment) : Fragment
 }
