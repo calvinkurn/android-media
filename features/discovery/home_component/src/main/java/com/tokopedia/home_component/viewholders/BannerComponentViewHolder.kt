@@ -65,7 +65,7 @@ class BannerComponentViewHolder(
     private var layoutManager = LinearLayoutManager(itemView.context)
 
     private var isUsingDotsAndInfiniteScroll: Boolean = false
-    private var scrollTransitionDuration: Long = 5000L
+    private var scrollTransitionDuration: Long = 6000L
 
     private val masterJob = Job()
     override val coroutineContext: CoroutineContext
