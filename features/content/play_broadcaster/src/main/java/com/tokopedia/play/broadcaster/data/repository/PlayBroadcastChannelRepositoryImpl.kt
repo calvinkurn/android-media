@@ -3,8 +3,7 @@ package com.tokopedia.play.broadcaster.data.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.teleporter.Teleporter.gson
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.content.common.usecase.GetWhiteListUseCase
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
@@ -35,8 +34,8 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private val remoteConfig: RemoteConfig,
     private val mapper: PlayBroadcastMapper,
     private val dispatchers: CoroutineDispatchers,
-    private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
-) : PlayBroadcastChannelRepository {
+    private val getWhiteListUseCase: GetWhiteListUseCase,
+): PlayBroadcastChannelRepository {
 
     override suspend fun getBroadcastingConfig(
         authorID: String,
@@ -48,7 +47,7 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> =
         withContext(dispatchers.io) {
-            val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
+            val response = getWhiteListUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
 
             return@withContext mapper.mapAuthorList(response)
         }

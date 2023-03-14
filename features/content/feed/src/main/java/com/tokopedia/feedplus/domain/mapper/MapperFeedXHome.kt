@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.feedplus.data.FeedXAuthor
+import com.tokopedia.feedplus.data.FeedXCampaign
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_LONG_VIDEO
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_PLAY_LIVE
@@ -87,21 +88,7 @@ object MapperFeedHome {
                 card.products.map { product -> transformProduct(product) }.toList()
             else card.tags.map { product -> transformProduct(product) }.toList(),
             totalProducts = card.totalProducts,
-            campaign = card.campaign.let { campaign ->
-                FeedCardCampaignModel(
-                    id = campaign.id,
-                    status = campaign.status,
-                    name = campaign.name,
-                    shortName = campaign.shortName,
-                    startTime = campaign.startTime,
-                    endTime = campaign.endTime,
-                    restrictions = campaign.restrictions.map { restriction ->
-                        FeedCardCampaignRestrictionModel(
-                            isActive = restriction.isActive, label = restriction.label
-                        )
-                    }.toList()
-                )
-            },
+            campaign = transformCampaign(card.campaign),
             hasVoucher = card.hasVoucher,
             media = card.media.map { media -> transformMedia(media) }.toList(),
             hashtagApplinkFmt = card.hashtagApplinkFmt,
@@ -132,6 +119,8 @@ object MapperFeedHome {
             applink = card.applink,
             weblink = card.weblink,
             actionButtonLabel = card.actionButtonLabel,
+            campaign = transformCampaign(card.campaign),
+            hasVoucher = card.hasVoucher,
             products = if (card.products.isNotEmpty())
                 card.products.map { product -> transformProduct(product) }.toList()
             else card.tags.map { product -> transformProduct(product) }.toList(),
@@ -209,6 +198,21 @@ object MapperFeedHome {
             )
         }.toList()
     )
+
+    private fun transformCampaign(campaign: FeedXCampaign): FeedCardCampaignModel =
+        FeedCardCampaignModel(
+            id = campaign.id,
+            status = campaign.status,
+            name = campaign.name,
+            shortName = campaign.shortName,
+            startTime = campaign.startTime,
+            endTime = campaign.endTime,
+            restrictions = campaign.restrictions.map { restriction ->
+                FeedCardCampaignRestrictionModel(
+                    isActive = restriction.isActive, label = restriction.label
+                )
+            }.toList()
+        )
 
     private fun transformView(view: FeedXView): FeedViewModel = FeedViewModel(
         label = view.label, count = view.count, countFmt = view.countFmt

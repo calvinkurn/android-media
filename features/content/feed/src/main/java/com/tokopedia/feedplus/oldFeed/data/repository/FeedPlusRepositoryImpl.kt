@@ -2,8 +2,7 @@ package com.tokopedia.feedplus.oldFeed.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.GetCheckWhitelistResponse
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.content.common.usecase.GetWhiteListUseCase
 import com.tokopedia.feedplus.oldFeed.data.pojo.FeedTabs
 import com.tokopedia.feedplus.oldFeed.domain.repository.FeedPlusRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -18,11 +17,11 @@ import javax.inject.Inject
 class FeedPlusRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getDynamicTabsUseCase: GraphqlUseCase<FeedTabs.Response>,
-    private val getWhitelistUseCase: GetWhiteListNewUseCase
+    private val getWhitelistUseCase: GetWhiteListUseCase
 ) : FeedPlusRepository {
 
     override suspend fun getWhitelist(): GetCheckWhitelistResponse = withContext(dispatchers.io) {
-        getWhitelistUseCase.execute(WHITELIST_ENTRY_POINT)
+        getWhitelistUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
     }
 
     override suspend fun getDynamicTabs(): FeedTabs = withContext(dispatchers.io) {
