@@ -34,7 +34,10 @@ class MediaFileRepositoryImpl @Inject constructor(
 
                 if (result.size == LIMIT_MEDIA_OFFSET) break
 
-                // if the device only contains under 100 item of medias in all-media's bucket id
+                /**
+                 * if the device only contains under 100 item of medias in all-media's bucket id.
+                 * This validation needs to fix infinite loop on OPPO and VIVO devices.
+                 */
                 if (cursor.count < LIMIT_MEDIA_OFFSET && cursor.isAfterLast.not() && bucketId == BUCKET_ALL_MEDIA_ID) break
             }
 
