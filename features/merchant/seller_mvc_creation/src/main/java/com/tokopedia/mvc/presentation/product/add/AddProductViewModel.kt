@@ -729,13 +729,18 @@ class AddProductViewModel @Inject constructor(
         selectedProductCount: Int,
         totalProductCount: Int
     ): AddProductUiState.CheckboxState {
-        val checkboxState = when {
-            currentState.checkboxState.isChecked() -> AddProductUiState.CheckboxState.CHECKED
-            selectedProductCount.isZero() -> AddProductUiState.CheckboxState.UNCHECKED
-            selectedProductCount < totalProductCount -> AddProductUiState.CheckboxState.INDETERMINATE
-            selectedProductCount == totalProductCount -> AddProductUiState.CheckboxState.CHECKED
-            else -> AddProductUiState.CheckboxState.UNCHECKED
+        if (selectedProductCount.isZero()) {
+            return AddProductUiState.CheckboxState.UNCHECKED
         }
-        return checkboxState
+
+        if (selectedProductCount < totalProductCount) {
+            return AddProductUiState.CheckboxState.INDETERMINATE
+        }
+
+        if (selectedProductCount > totalProductCount) {
+            return AddProductUiState.CheckboxState.UNCHECKED
+        }
+
+        return AddProductUiState.CheckboxState.CHECKED
     }
 }
