@@ -2899,6 +2899,98 @@ class AddProductViewModelTest {
             job.cancel()
         }
     }
+
+    @Test
+    fun `When add product with previous selected product id exist within newly selected product id, should return both previous and newly selected products`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct().copy(id = 200, isSelected = true)
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val secondProduct = populateProduct().copy(id = 2, isSelected = false)
+            val thirdProduct = populateProduct().copy(id = 3, isSelected = false)
+
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct, thirdProduct, previouslySelectedProducts)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                ),
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = secondProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                ),
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = thirdProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                ),
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = previouslySelectedProducts.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id, thirdProduct.id, previouslySelectedProducts.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedEffects = arrayListOf<AddProductEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(previouslySelectedProducts.id))
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(firstProduct.id))
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(secondProduct.id))
+            viewModel.processEvent(AddProductEvent.AddNewProducts)
+
+
+            //Then
+            val actual = emittedEffects.last()
+            val expectedProducts = listOf(
+                previouslySelectedProducts.copy(isSelected = true),
+                firstProduct.copy(isSelected = true),
+                secondProduct.copy(isSelected = true)
+            )
+            assertEquals(AddProductEffect.AddNewProducts(selectedProducts = expectedProducts), actual)
+
+            job.cancel()
+        }
+    }
+
     //endregion
 
 
