@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.uiview
 
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedplus.databinding.LayoutFeedAuthorInfoBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
@@ -26,6 +27,10 @@ class FeedAuthorInfoView(
 
             bindLiveLabel(isLive)
             bindFollow(author, showFollow)
+
+            root.setOnClickListener {
+                navigateToAuthorProfile(author.applink)
+            }
         }
     }
 
@@ -52,24 +57,8 @@ class FeedAuthorInfoView(
         }
     }
 
-    fun showClearView() {
-        with(binding) {
-            imgFeedOwnerProfile.hide()
-            imgFeedOwnerBadge.hide()
-            tvFeedOwnerName.hide()
-            labelFeedLive.hide()
-            btnFeedFollow.hide()
-        }
-    }
-
-    fun hideClearView() {
-        with(binding) {
-            imgFeedOwnerProfile.show()
-            imgFeedOwnerBadge.show()
-            tvFeedOwnerName.show()
-            labelFeedLive.show()
-            btnFeedFollow.show()
-        }
+    private fun navigateToAuthorProfile(applink: String) {
+        RouteManager.route(binding.root.context, applink)
     }
 
     private fun imageConditions(url: String) = url.isNotEmpty()
