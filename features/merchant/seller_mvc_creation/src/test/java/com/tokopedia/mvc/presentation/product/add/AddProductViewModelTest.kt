@@ -26,6 +26,8 @@ import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
+import com.tokopedia.mvc.util.constant.NumberConstant
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -3250,6 +3252,105 @@ class AddProductViewModelTest {
             val actual = emittedValues.last()
 
             assertEquals(AddProductUiState.CheckboxState.CHECKED, actual.checkboxState)
+
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+    //region getShopShowcases
+    @Test
+    fun `When get shop showcases and got showcase created by Tokopedia, should remove it from the list`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val mockedShowcases = listOf(
+                ShopShowcase(id = 1, alias = "book", name = "Buku", type = NumberConstant.ID_TOKOPEDIA_CREATED_SHOWCASE_TYPE, isSelected = false),
+                ShopShowcase(id = 1, alias = "hp", name = "Handphone", type = 1, isSelected = false)
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+
+            coEvery { getShopShowcasesByShopIDUseCase.execute() } returns mockedShowcases
+
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(),
+                productValidationResponse = listOf()
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf()
+                )
+            )
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(
+                listOf(ShopShowcase(id = 1, alias = "hp", name = "Handphone", type = 1, isSelected = false)),
+                actual.shopShowcases
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When get shop showcase error, should set error`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val error = MessageErrorException("Server error")
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall()
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+
+            coEvery { getShopShowcasesByShopIDUseCase.execute() } throws error
+
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(),
+                productValidationResponse = listOf()
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf()
+                )
+            )
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(error, actual.error)
 
 
             job.cancel()
