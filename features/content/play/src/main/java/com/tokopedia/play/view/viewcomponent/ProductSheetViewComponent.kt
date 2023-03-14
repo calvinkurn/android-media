@@ -28,6 +28,7 @@ import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSheetSectionViewHolder
 import com.tokopedia.play.view.custom.PlayVoucherView
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
@@ -49,7 +50,7 @@ import com.tokopedia.play_common.R as commonR
 class ProductSheetViewComponent(
     container: ViewGroup,
     private val listener: Listener,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
 ) : ViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
@@ -135,7 +136,7 @@ class ProductSheetViewComponent(
                 listener.onInformationImpressed(this@ProductSheetViewComponent)
             }
         },
-        productListener = productCardListener
+        productListener = productCardListener,
     )
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)

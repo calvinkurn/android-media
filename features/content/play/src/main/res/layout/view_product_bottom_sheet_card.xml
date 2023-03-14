@@ -242,6 +242,25 @@
             tools:visibility="visible"
             />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/lbl_product_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/layout_lvl2"
+            android:background="@drawable/bg_label_soft_gray"
+            app:typographyType="small"
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingTop="@dimen/spacing_lvl1"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingBottom="@dimen/spacing_lvl1"
+            android:gravity="center"
+            android:textColor="@color/Unify_Static_White"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:layout_marginStart="@dimen/unify_space_4"
+            app:layout_constraintStart_toStartOf="@+id/iv_product_image"
+            app:layout_constraintTop_toTopOf="@+id/iv_product_image"
+            tools:text="1" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </merge>

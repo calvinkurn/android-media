@@ -1,5 +1,6 @@
 package com.tokopedia.play.ui.view.carousel.viewholder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.text.Spanned
@@ -28,7 +29,7 @@ class ProductCarouselViewHolder private constructor() {
 
     class PinnedProduct(
         private val binding: ItemPlayPinnedProductBinding,
-        private val listener: Listener,
+        private val listener: Listener
     ) : BaseViewHolder(binding.root) {
 
         private val context: Context
@@ -44,14 +45,14 @@ class ProductCarouselViewHolder private constructor() {
         private val iconCartEnabled = getIconUnifyDrawable(
             context,
             IconUnify.CART,
-            MethodChecker.getColor(context, unifyR.color.Unify_GN500),
+            MethodChecker.getColor(context, unifyR.color.Unify_GN500)
         )
 
         private val iconCartDisabled by lazy {
             getIconUnifyDrawable(
                 context,
                 IconUnify.CART,
-                MethodChecker.getColor(context, unifyR.color.Unify_NN300),
+                MethodChecker.getColor(context, unifyR.color.Unify_NN300)
             )
         }
 
@@ -60,10 +61,10 @@ class ProductCarouselViewHolder private constructor() {
                 binding.tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
-        private fun UnifyButton.configButton(button: ProductButtonUiModel){
-            //Setup Icon if any, for now its only for ATC
+        private fun UnifyButton.configButton(button: ProductButtonUiModel) {
+            // Setup Icon if any, for now its only for ATC
             val isDisabled = button.color == ProductButtonColor.PRIMARY_DISABLED_BUTTON || button.color == ProductButtonColor.SECONDARY_DISABLED_BUTTON
-            val iconType = if(isDisabled) iconCartDisabled else iconCartEnabled
+            val iconType = if (isDisabled) iconCartDisabled else iconCartEnabled
 
             when (button.type) {
                 ProductButtonType.ATC -> {
@@ -79,6 +80,7 @@ class ProductCarouselViewHolder private constructor() {
             binding.btnSecond.isEnabled = !isDisabled
         }
 
+        @SuppressLint("ResourceType")
         fun bind(item: PlayProductUiModel.Product) {
             binding.imgProduct.loadImage(item.imageUrl)
             binding.tvName.text = item.title
@@ -102,7 +104,7 @@ class ProductCarouselViewHolder private constructor() {
                     binding.tvDiscount.visibility = View.VISIBLE
                     binding.tvDiscount.text = context.getString(
                         R.string.play_discount_percent,
-                        item.price.discountPercent,
+                        item.price.discountPercent
                     )
                     binding.tvOriginalPrice.visibility = View.VISIBLE
                     binding.tvOriginalPrice.text = item.price.originalPrice
@@ -127,6 +129,8 @@ class ProductCarouselViewHolder private constructor() {
             binding.root.setOnClickListener {
                 listener.onClicked(this, item)
             }
+            binding.lblProductNumber.showWithCondition(item.isNumerationShown)
+            binding.lblProductNumber.text = item.number
         }
 
         private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
@@ -134,7 +138,10 @@ class ProductCarouselViewHolder private constructor() {
                 append(getString(R.string.play_product_pinned))
 
                 if (item.stock !is StockAvailable ||
-                    item.stock.stock > MIN_STOCK) return@buildSpannedString
+                    item.stock.stock > MIN_STOCK
+                ) {
+                    return@buildSpannedString
+                }
 
                 append(' ')
                 val separator = getString(R.string.play_product_pinned_info_separator)
@@ -151,14 +158,14 @@ class ProductCarouselViewHolder private constructor() {
 
             fun create(
                 parent: ViewGroup,
-                listener: Listener,
+                listener: Listener
             ) = PinnedProduct(
                 ItemPlayPinnedProductBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
-                    false,
+                    false
                 ),
-                listener,
+                listener
             )
         }
 
