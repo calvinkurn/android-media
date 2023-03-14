@@ -2,6 +2,7 @@ package com.tokopedia.editshipping.ui.customview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.editshipping.R;
+import com.tokopedia.editshipping.databinding.ShippingCourierAdapterBinding;
 import com.tokopedia.editshipping.domain.model.editshipping.Courier;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 import com.tokopedia.unifyprinciples.Typography;
@@ -19,15 +21,15 @@ import com.tokopedia.unifyprinciples.Typography;
  * TOKOPEDIA
  */
 public class CourierView extends EditShippingCourierView<Courier,
-        EditShippingViewListener>{
+        EditShippingViewListener, ShippingCourierAdapterBinding>{
 
-    LinearLayout courierNamePlaceHolder;
-    Typography courierNameText;
-    ImageView courierImageHolder;
-    LinearLayout shipmentSettings;
-    PackageView packageView;
-    LinearLayout packageViewHolder;
-    Typography courierUnavailableWarning;
+//    LinearLayout courierNamePlaceHolder;
+//    Typography courierNameText;
+//    ImageView courierImageHolder;
+//    LinearLayout shipmentSettings;
+//    PackageView packageView;
+//    LinearLayout packageViewHolder;
+//    Typography courierUnavailableWarning;
     private EditShippingViewListener mainView;
 
     public CourierView(Context context) {
@@ -35,20 +37,20 @@ public class CourierView extends EditShippingCourierView<Courier,
     }
 
     @Override
-    protected int getLayoutView() {
-        return R.layout.shipping_courier_adapter;
+    protected ShippingCourierAdapterBinding getLayoutView(Context context) {
+        return ShippingCourierAdapterBinding.inflate(LayoutInflater.from(context), this, true);
     }
 
     @Override
-    protected void bindView(View view) {
-        courierNamePlaceHolder = view.findViewById(R.id.courier_name_placeholder);
-        courierNameText = view.findViewById(R.id.name);
-        courierImageHolder = view.findViewById(R.id.img_courier);
-        shipmentSettings = view.findViewById(R.id.shipping_settings);
-
-        packageView = view.findViewById(R.id.children_layout);
-        packageViewHolder = view.findViewById(R.id.package_view_holder);
-        courierUnavailableWarning = view.findViewById(R.id.courier_unavailable_warning);
+    protected void bindView(ShippingCourierAdapterBinding view) {
+//        courierNamePlaceHolder = view.findViewById(R.id.courier_name_placeholder);
+//        courierNameText = view.findViewById(R.id.name);
+//        courierImageHolder = view.findViewById(R.id.img_courier);
+//        shipmentSettings = view.findViewById(R.id.shipping_settings);
+//
+//        packageView = view.findViewById(R.id.children_layout);
+//        packageViewHolder = view.findViewById(R.id.package_view_holder);
+//        courierUnavailableWarning = view.findViewById(R.id.courier_unavailable_warning);
 
     }
 
@@ -57,17 +59,17 @@ public class CourierView extends EditShippingCourierView<Courier,
     @Override
     public void renderData(@NonNull final Courier courier, final int courierIndex) {
         if (courier.isWhitelabelService()) {
-            courierNameText.setVisibility(View.GONE);
-            courierImageHolder.setVisibility(View.GONE);
+            getBinding().name.setVisibility(View.GONE);
+            getBinding().imgCourier.setVisibility(View.GONE);
         } else {
-            courierNameText.setText(courier.name);
-            ImageHandler.LoadImage(courierImageHolder, courier.logo);
-            courierImageHolder.setVisibility(View.VISIBLE);
+            getBinding().name.setText(courier.name);
+            ImageHandler.LoadImage(getBinding().imgCourier, courier.logo);
+            getBinding().imgCourier.setVisibility(View.VISIBLE);
         }
-        packageView.setViewListener(mainView);
+        getBinding().childrenLayout.setViewListener(mainView);
         setPackageAvailability(courierIndex, courier);
         setCourierWeightPolicy(courier);
-        shipmentSettings.setOnClickListener(new OnClickListener() {
+        getBinding().shippingSettings.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mainView.showLoading();
@@ -81,17 +83,17 @@ public class CourierView extends EditShippingCourierView<Courier,
         if(courier.urlAdditionalOption.isEmpty()
                 || courier.urlAdditionalOption.equals("0")
                 || !courier.available.equals("1")){
-            shipmentSettings.setVisibility(View.GONE);
+            getBinding().shippingSettings.setVisibility(View.GONE);
         } else{
-            shipmentSettings.setVisibility(View.VISIBLE);
+            getBinding().shippingSettings.setVisibility(View.VISIBLE);
         }
     }
 
     private void setPackageAvailability(int courierIndex, Courier courier){
-        if(courier.available.equals("1")) packageView.renderData(courier, courierIndex);
+        if(courier.available.equals("1")) getBinding().childrenLayout.renderData(courier, courierIndex);
         else {
-            courierUnavailableWarning.setVisibility(VISIBLE);
-            shipmentSettings.setVisibility(View.GONE);
+            getBinding().courierUnavailableWarning.setVisibility(VISIBLE);
+            getBinding().shippingSettings.setVisibility(View.GONE);
         }
     }
 
@@ -114,8 +116,8 @@ public class CourierView extends EditShippingCourierView<Courier,
     private void setCourierInformation(final String information, final String courierName,
                                        int visibility){
         if(visibility == VISIBLE){
-            courierNameText.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
-            courierNamePlaceHolder.setOnClickListener(new OnClickListener() {
+            getBinding().name.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
+            getBinding().courierNamePlaceholder.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mainView.showInfoBottomSheet(information, courierName);

@@ -12,7 +12,9 @@ import androidx.annotation.NonNull;
  * Created by Kris on 6/6/2016.
  * TOKOPEDIA
  */
-public abstract class EditShippingCourierView<D, L> extends LinearLayout{
+public abstract class EditShippingCourierView<D, L, V> extends LinearLayout{
+
+    private V binding;
 
     public EditShippingCourierView(Context context) {
         super(context);
@@ -29,16 +31,18 @@ public abstract class EditShippingCourierView<D, L> extends LinearLayout{
         initView(context);
     }
 
-    protected void initView(Context context) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(getLayoutView(), this, true);
-        bindView(view);
+    protected V getBinding() {
+        return binding;
     }
 
-    protected abstract int getLayoutView();
+    protected void initView(Context context) {
+       binding = getLayoutView(context);
+       bindView(binding);
+    }
 
-    protected abstract void bindView (View view);
+    protected abstract V getLayoutView(Context context);
+
+    protected abstract void bindView (V view);
 
     public abstract void renderData(@NonNull D data, int index);
 

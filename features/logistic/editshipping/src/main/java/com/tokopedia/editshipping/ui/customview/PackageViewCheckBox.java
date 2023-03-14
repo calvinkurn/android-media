@@ -3,11 +3,13 @@ package com.tokopedia.editshipping.ui.customview;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import com.tokopedia.editshipping.R;
+import com.tokopedia.editshipping.databinding.PackageViewCheckboxBinding;
 import com.tokopedia.editshipping.domain.model.editshipping.Service;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
@@ -16,8 +18,8 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
  * Created by kris on 8/23/16. Tokopedia
  */
 public class PackageViewCheckBox extends EditShippingCourierView<Service,
-        EditShippingViewListener>{
-    CheckboxUnify serviceCheckbox;
+        EditShippingViewListener, PackageViewCheckboxBinding>{
+//    CheckboxUnify serviceCheckbox;
 
     EditShippingViewListener mainView;
 
@@ -36,32 +38,32 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
     }
 
     @Override
-    protected int getLayoutView() {
-        return R.layout.package_view_checkbox;
+    protected PackageViewCheckboxBinding getLayoutView(Context context) {
+        return PackageViewCheckboxBinding.inflate(LayoutInflater.from(context), this, true);
     }
 
     @Override
-    protected void bindView(View view) {
-        serviceCheckbox = view.findViewById(R.id.service_checkbox);
+    protected void bindView(PackageViewCheckboxBinding view) {
+//        serviceCheckbox = view.findViewById(R.id.service_checkbox);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void renderData(@NonNull Service service, int serviceIndex) {
-        serviceCheckbox.setText(service.name);
-        serviceCheckbox.setChecked(service.getActive());
+        getBinding().serviceCheckbox.setText(service.name);
+        getBinding().serviceCheckbox.setChecked(service.getActive());
         this.serviceIndex = serviceIndex;
-        serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
-        serviceCheckbox.setOnTouchListener(onDescriptionTouchedListener(serviceCheckbox,
+        getBinding().serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
+        getBinding().serviceCheckbox.setOnTouchListener(onDescriptionTouchedListener(getBinding().serviceCheckbox,
                 service.description, service.name));
     }
 
     public void setServiceCheckBoxListener(final int courierIndex){
-        serviceCheckbox.setOnCheckedChangeListener(onServiceCheckedChanged(courierIndex));
+        getBinding().serviceCheckbox.setOnCheckedChangeListener(onServiceCheckedChanged(courierIndex));
     }
 
     public void setServiceWhitelabelLayout(boolean isWhitelabel) {
-        serviceCheckbox.setTextBold(isWhitelabel);
+        getBinding().serviceCheckbox.setTextBold(isWhitelabel);
     }
 
     private CompoundButton.OnCheckedChangeListener onServiceCheckedChanged(final int courierIndex){
