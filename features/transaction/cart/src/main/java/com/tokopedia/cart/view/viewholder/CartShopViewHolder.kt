@@ -184,7 +184,7 @@ class CartShopViewHolder(
             val padding16 = itemView.resources.getDimensionPixelSize(R.dimen.dp_16)
             if (!cartShopHolderData.isError) {
                 cbSelectShop.show()
-                cbSelectShop.isEnabled = true
+//                cbSelectShop.isEnabled = true
                 cbSelectShop.isChecked = cartShopHolderData.isAllSelected
                 cbSelectShop.skipAnimation()
                 rlShopHeader.setPadding(padding10, padding16, padding10, padding10)
