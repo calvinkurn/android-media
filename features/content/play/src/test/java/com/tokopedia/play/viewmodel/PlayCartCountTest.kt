@@ -130,7 +130,7 @@ class PlayCartCountTest {
                 focusPage(notShowCartData)
             }
 
-            state.combinedState.cartCount.assertEqualTo(0)
+            state.combinedState.cartCount.assertEqualTo(DEFAULT_CART_COUNT)
         }
     }
 
