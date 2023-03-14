@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
@@ -29,17 +30,24 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
     companion object {
         val LAYOUT = R.layout.item_balance_widget_atf2
         private const val TITLE_HEADER_WEBSITE = "Tokopedia"
+        private const val SINGLE_ITEM = 1
+        private const val BALANCE_FILL_WIDTH_THRESHOLD = 2
     }
 
     private val binding: ItemBalanceWidgetAtf2Binding? by viewBinding()
     private var listener: HomeCategoryListener? = null
+
+    private val containerLayoutParams by lazy { binding?.containerBalance?.layoutParams }
+    private val successContainerLayoutParams by lazy { binding?.homeContainerBalance?.homeContainerBalance?.layoutParams }
+    private val titleLayoutParams by lazy { binding?.homeContainerBalance?.homeTvTitle?.layoutParams as? ConstraintLayout.LayoutParams }
+    private val subtitleLayoutParams by lazy { binding?.homeContainerBalance?.homeTvSubtitle?.layoutParams as? ConstraintLayout.LayoutParams }
 
     override fun bind(
         drawerItem: BalanceDrawerItemModel?,
         listener: HomeCategoryListener?
     ) {
         this.listener = listener
-        setWidth()
+        setWidth(drawerItem)
         renderDrawerItem(drawerItem)
         this.itemView.tag = String.format(
             itemView.context.getString(R.string.tag_balance_widget),
@@ -47,24 +55,34 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
         )
     }
 
-    private fun setWidth() {
-        val cardLayoutParams = binding?.cardContainerBalance?.layoutParams
-        val containerLayoutParams = binding?.containerBalance?.layoutParams
-
-        cardLayoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        containerLayoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        cardLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
-
-        containerLayoutParams?.width = if(totalItems == 1) {
-            ViewGroup.LayoutParams.MATCH_PARENT
-        } else if(DeviceScreenInfo.isTablet(itemView.context) || totalItems <= 2) {
-            BalanceAtf2Util.getBalanceItemWidth(itemView.context, totalItems)
+    private fun setWidth(element: BalanceDrawerItemModel?) {
+        if(DeviceScreenInfo.isTablet(itemView.context) || totalItems <= BALANCE_FILL_WIDTH_THRESHOLD) {
+            setFillWidth()
         } else {
-            itemView.context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_atf2_item_width)
+            setDynamicWidth(
+                element?.drawerItemType == TYPE_WALLET_APP_LINKED ||
+                element?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
+            )
         }
-
-        binding?.cardContainerBalance?.layoutParams = cardLayoutParams
         binding?.containerBalance?.layoutParams = containerLayoutParams
+        binding?.homeContainerBalance?.homeContainerBalance?.layoutParams = successContainerLayoutParams
+        binding?.homeContainerBalance?.homeTvTitle?.layoutParams = titleLayoutParams
+        binding?.homeContainerBalance?.homeTvSubtitle?.layoutParams = subtitleLayoutParams
+    }
+
+    private fun setFillWidth() {
+        containerLayoutParams?.width = BalanceAtf2Util.getBalanceItemWidth(itemView.context, totalItems)
+        successContainerLayoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
+        titleLayoutParams?.matchConstraintMaxWidth = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+        subtitleLayoutParams?.matchConstraintMaxWidth = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+    }
+
+    private fun setDynamicWidth(isWallet: Boolean) {
+        containerLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        successContainerLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        val textMaxWidth = BalanceAtf2Util.getBalanceTextWidth(itemView.context, isWallet)
+        titleLayoutParams?.matchConstraintMaxWidth = textMaxWidth
+        subtitleLayoutParams?.matchConstraintMaxWidth = textMaxWidth
     }
 
     private fun renderDrawerItem(element: BalanceDrawerItemModel?) {
@@ -94,16 +112,16 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
         binding?.shimmerItemBalanceWidget?.root?.gone()
         binding?.homeContainerBalance?.homeContainerBalance?.show()
         showFailedImage()
-        binding?.homeContainerBalance?.homeTvBalance?.text =
+        binding?.homeContainerBalance?.homeTvTitle?.text =
             itemView.context.getString(com.tokopedia.home.R.string.balance_widget_failed_to_load)
-        binding?.homeContainerBalance?.homeTvReserveBalance?.setTextColor(
+        binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
             ContextCompat.getColor(
                 itemView.context,
                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
         )
-        binding?.homeContainerBalance?.homeTvReserveBalance?.setWeight(Typography.BOLD)
-        binding?.homeContainerBalance?.homeTvReserveBalance?.text =
+        binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
+        binding?.homeContainerBalance?.homeTvSubtitle?.text =
             itemView.context.getString(com.tokopedia.home.R.string.text_reload)
         binding?.cardContainerBalance?.handleItemClickType(
             element = element,
@@ -139,11 +157,11 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
 
         // Load Text
         val balanceText = element.balanceTitleTextAttribute?.text ?: ""
-        binding?.homeContainerBalance?.homeTvBalance?.text = balanceText
+        binding?.homeContainerBalance?.homeTvTitle?.text = balanceText
 
         // load subtitle
         val subtitle = element.balanceSubTitleTextAttribute?.text ?: ""
-        binding?.homeContainerBalance?.homeTvReserveBalance?.text = subtitle
+        binding?.homeContainerBalance?.homeTvSubtitle?.text = subtitle
         setFontSubtitle(element)
 
         handleClickSuccess(element, subtitle)
@@ -156,16 +174,16 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
             (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus) ||
             element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
         ) {
-            binding?.homeContainerBalance?.homeTvReserveBalance?.setWeight(Typography.BOLD)
-            binding?.homeContainerBalance?.homeTvReserveBalance?.setTextColor(
+            binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
+            binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
                     com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
         } else {
-            binding?.homeContainerBalance?.homeTvReserveBalance?.setWeight(Typography.REGULAR)
-            binding?.homeContainerBalance?.homeTvReserveBalance?.setTextColor(
+            binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.REGULAR)
+            binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
                     com.tokopedia.unifyprinciples.R.color.Unify_NN600
