@@ -35,6 +35,13 @@ import javax.inject.Named
 )
 class CartModule {
 
+    @CartScope
+    @Provides
+    fun provideAppContext(@ApplicationContext context: Context): Context {
+        // for recommendation use case
+        return context
+    }
+
     @Provides
     fun provideCompositeSubscription(): CompositeSubscription {
         return CompositeSubscription()
