@@ -4,9 +4,9 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.widget.RemoteViews
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
-import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.WidgetSize
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.CommonStateUiModel
@@ -28,7 +28,7 @@ object OrderWidgetNoShopState {
             widgetId = widgetId,
             title = context.getString(R.string.saw_order_small_no_shop_state_title),
             description = context.getString(R.string.saw_order_small_no_shop_state_description),
-            imgUrl = Const.Images.NO_SHOP_STATE,
+            imgUrl = TokopediaImageUrl.SHOP_OPEN_ILLUSTRATION,
             ctaText = context.getString(R.string.saw_create_shop),
             appLink = ApplinkConst.CREATE_SHOP
         )
