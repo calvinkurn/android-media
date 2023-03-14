@@ -2554,14 +2554,14 @@ class ChatbotFragment :
 //        )
 
         //TODO fake message here
-        presenter.sendMessage(
-            messageId,
-            "ABCC",
-            startTime,
-            opponentId,
-            replyBubbleContainer?.referredMsg,
-            onSendingMessage("ABCC", startTime, replyBubbleContainer?.referredMsg)
-        )
+//        presenter.sendMessage(
+//            messageId,
+//            "ABCC",
+//            startTime,
+//            opponentId,
+//            replyBubbleContainer?.referredMsg,
+//            onSendingMessage("ABCC", startTime, replyBubbleContainer?.referredMsg)
+//        )
 
 
         getViewState()?.scrollToBottom()

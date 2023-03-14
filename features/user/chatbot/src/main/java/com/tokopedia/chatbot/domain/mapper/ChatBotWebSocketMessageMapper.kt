@@ -134,20 +134,9 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             ChatActionPojo::class.java
         )
         return DynamicAttachmentTextUiModel.Builder()
-            .withMsg(dynamicStickyButton.text)
+            .withResponseFromWs(pojo)
+            .withMsgContent(dynamicStickyButton.text)
             .build()
-
-//        return DynamicAttachmentTextUiModel(
-//            messageId = pojo.msgId,
-//            fromUid = pojo.fromUid,
-//            from = pojo.from,
-//            fromRole = pojo.fromRole,
-//            attachmentId = pojo.attachment?.id ?: "",
-//            attachmentType = pojo.attachment?.type ?: "",
-//            actionBubble = convertToSingleButtonAction(dynamicStickyButton.buttonAction),
-//            contentText = dynamicStickyButton.textMessage,
-//            replyTime = pojo.message.timeStampUnixNano
-//        )
     }
 
     private fun convertToSingleButtonAction(pojo: ChatActionPojo): ChatActionBubbleUiModel {

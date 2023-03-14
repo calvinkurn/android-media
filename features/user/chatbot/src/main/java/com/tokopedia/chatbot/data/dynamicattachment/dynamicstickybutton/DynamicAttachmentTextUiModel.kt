@@ -11,6 +11,10 @@ class DynamicAttachmentTextUiModel(
     class Builder : SendableUiModel.Builder<Builder, DynamicAttachmentTextUiModel>() {
 
         internal var message: String? = null
+        fun withMsgContent(message: String?): Builder {
+            this.message = message
+            return self()
+        }
 
         override fun build(): DynamicAttachmentTextUiModel {
             return DynamicAttachmentTextUiModel(this)
