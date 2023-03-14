@@ -582,16 +582,9 @@ class PlayBottomSheetFragment @Inject constructor(
                 }
 
                 renderProductSheet(state)
-
                 renderVoucherSheet(state.value.tagItems)
-
                 renderVariantSheet(state.value.selectedVariant)
-
-                if (state.value.isLoadingBuy) {
-                    showLoadingView()
-                } else {
-                    hideLoadingView()
-                }
+                renderFullLoading(state)
             }
         }
     }
@@ -857,6 +850,17 @@ class PlayBottomSheetFragment @Inject constructor(
                 isConnectionError = variant.error is ConnectException || variant.error is UnknownHostException,
                 onError = { }
             )
+            else -> {}
+        }
+    }
+
+    private fun renderFullLoading(state: CachedState<PlayViewerNewUiState>) {
+        if (state.isNotChanged { it.combinedState.isLoadingBuy }) return
+
+        if (state.value.combinedState.isLoadingBuy) {
+            showLoadingView()
+        } else {
+            hideLoadingView()
         }
     }
 

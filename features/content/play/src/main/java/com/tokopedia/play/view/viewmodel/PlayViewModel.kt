@@ -202,7 +202,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _selectedVariant = MutableStateFlow<NetworkResult<VariantUiModel>>(
         NetworkResult.Loading
     )
-    private val _loadingBuy = MutableStateFlow(false)
+    private val _combinedState = MutableStateFlow(PlayCombinedState.Empty)
     private val _autoOpenInteractive = MutableStateFlow(false)
     private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
 
@@ -212,13 +212,11 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _isFollowPopUpShown = MutableStateFlow(FollowPopUpUiState.Empty)
 
-    private val _videoProperty = MutableStateFlow(VideoPropertyUiModel.Empty)
-
     private val _isBottomSheetsShown = MutableStateFlow(false)
 
-    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _interactive, _videoProperty, _isBottomSheetsShown) {
-            bottomInsets, popUp, partner, interactive, videoState, bottomSheets ->
-        !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !interactive.isPlaying && (!videoState.state.hasNoData || videoPlayer.isYouTube) && !bottomSheets
+    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _interactive, _combinedState, _isBottomSheetsShown) {
+            bottomInsets, popUp, partner, interactive, combinedState, bottomSheets ->
+        !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !interactive.isPlaying && (!combinedState.videoProperty.state.hasNoData || videoPlayer.isYouTube) && !bottomSheets
     }.flowOn(dispatchers.computation)
 
     private val _winnerBadgeUiState = combine(
@@ -292,7 +290,6 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private val _engagementUiState = combine(_tagItems, _interactive, _bottomInsets, _status) {
             voucher, game, bottomInsets, status ->
         EngagementUiState(
@@ -376,16 +373,16 @@ class PlayViewModel @AssistedInject constructor(
         _status,
         _quickReply,
         _selectedVariant,
-        _loadingBuy,
         _addressUiState,
         _featuredProducts.distinctUntilChanged(),
         _engagementUiState,
         _followPopUpUiState,
-        _explore.distinctUntilChanged()
+        _explore.distinctUntilChanged(),
+        _combinedState,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
-        status, quickReply, selectedVariant, isLoadingBuy, address,
-        featuredProducts, engagement, followPopUp, explore ->
+        status, quickReply, selectedVariant, address,
+        featuredProducts, engagement, followPopUp, explore, combinedState ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -400,12 +397,12 @@ class PlayViewModel @AssistedInject constructor(
             status = status,
             quickReply = quickReply,
             selectedVariant = selectedVariant,
-            isLoadingBuy = isLoadingBuy,
             address = address,
             featuredProducts = featuredProducts,
             engagement = engagement,
             followPopUp = followPopUp,
-            exploreWidget = explore
+            exploreWidget = explore,
+            combinedState = combinedState,
         )
     }.stateIn(
         viewModelScope,
@@ -459,7 +456,7 @@ class PlayViewModel @AssistedInject constructor(
         }
 
     val hasNoMedia: Boolean
-        get() = _videoProperty.value.state.hasNoData
+        get() = _combinedState.value.videoProperty.state.hasNoData
 
     val isAnyBottomSheetsShown: Boolean
         get() = bottomInsets.isAnyShown || _isBottomSheetsShown.value || _isFollowPopUpShown.value.shouldShow
@@ -594,7 +591,7 @@ class PlayViewModel @AssistedInject constructor(
             viewModelScope.launch(dispatchers.immediate) {
                 val newState = VideoPropertyUiModel(state)
                 _observableVideoProperty.value = newState
-                _videoProperty.update { newState }
+                _combinedState.update { it.copy(videoProperty = newState) }
             }
         }
     }
@@ -2616,7 +2613,7 @@ class PlayViewModel @AssistedInject constructor(
         action: ProductAction,
         onSuccess: suspend (String) -> Unit
     ) {
-        _loadingBuy.value = true
+        _combinedState.update { it.copy(isLoadingBuy = true) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val cartId = if (action == ProductAction.OCC) {
                 repo.addProductToCartOcc(
@@ -2641,13 +2638,13 @@ class PlayViewModel @AssistedInject constructor(
                     }
                 )
             }
-            _loadingBuy.value = false
+            _combinedState.update { it.copy(isLoadingBuy = false) }
             onSuccess(cartId)
 
             updateCartCount()
-        }) {
-            _uiEvent.emit(ShowErrorEvent(it))
-            _loadingBuy.value = false
+        }) { err ->
+            _uiEvent.emit(ShowErrorEvent(err))
+            _combinedState.update { it.copy(isLoadingBuy = false) }
         }
     }
 

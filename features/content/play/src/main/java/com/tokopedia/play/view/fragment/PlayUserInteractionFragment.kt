@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -11,7 +10,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -21,10 +22,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -867,6 +864,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderWinnerBadge(state = state.winnerBadge)
 
                 handleStatus(cachedState)
+                handleAutoSwipe(cachedState)
                 renderEngagement(prevState?.engagement, state.engagement)
                 if (cachedState.isChanged { it.exploreWidget.shouldShow }) renderExploreView(state.exploreWidget.shouldShow)
 
@@ -1364,7 +1362,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun isAllowAutoSwipe(status: Boolean) =
-        status && !playViewModel.bottomInsets.isAnyShown && playNavigation.canNavigateNextPage() && !playViewModel.isAnyBottomSheetsShown
+        status && !playViewModel.bottomInsets.isAnyShown &&
+            playNavigation.canNavigateNextPage() && !playViewModel.isAnyBottomSheetsShown &&
+            viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
 
     private fun doAutoSwipe() {
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
@@ -1739,7 +1739,22 @@ class PlayUserInteractionFragment @Inject constructor(
         }
 
         endLiveInfoViewOnStateChanged(event = status)
-        if (isAllowAutoSwipe(!status.channelStatus.statusType.isActive)) doAutoSwipe()
+    }
+
+    private fun handleAutoSwipe(state: CachedState<PlayViewerNewUiState>) {
+        if (state.isNotChanged(
+                { it.combinedState.videoProperty },
+                { it.status },
+            )
+        ) return
+
+        if (isAllowAutoSwipe(
+                !state.value.status.channelStatus.statusType.isActive ||
+                state.value.combinedState.videoProperty.state == PlayViewerVideoState.End
+            )
+        ) {
+            doAutoSwipe()
+        }
     }
 
     private fun getTextFromUiString(uiString: UiString): String {

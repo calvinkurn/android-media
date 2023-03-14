@@ -323,7 +323,6 @@ class ProductSheetViewComponent(
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private fun buildProductList(
         sectionList: List<ProductSectionUiModel.Section>
     ): List<ProductSheetAdapter.Item> {
