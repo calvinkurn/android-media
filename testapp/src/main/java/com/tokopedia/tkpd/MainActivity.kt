@@ -2,21 +2,22 @@ package com.tokopedia.tkpd
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
-import android.view.View
-import android.widget.CompoundButton
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.tkpd.testgql.TestGqlUseCase
+import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.main_testapp.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,50 +25,79 @@ class MainActivity : AppCompatActivity() {
     val REQUEST_CODE_LOGOUT = 456
     lateinit var userSession: UserSessionInterface
 
+    private val model = mutableStateOf(
+        Model(getDefaultAppLink(), getLiveStatus(), false, "Login")
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_testapp)
         userSession = UserSession(this)
-
-        if (TokopediaUrl.getInstance().GQL.contains("staging")) {
-            testapp_environment?.text = "STAGING URL"
-            testapp_environment?.setBackgroundColor(Color.parseColor("#e67e22"))
-        } else {
-            testapp_environment?.text = "LIVE URL"
-            testapp_environment?.setBackgroundColor(Color.parseColor("#27ae60"))
-        }
-
-        toggle_dark_mode.isChecked = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        toggle_dark_mode.setOnCheckedChangeListener { _: CompoundButton?, state: Boolean ->
-            AppCompatDelegate.setDefaultNightMode(if (state) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
-        }
-
-        loginButton.setOnClickListener {
-            if (!userSession.isLoggedIn) {
-                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-            } else {
-                Toast.makeText(this, "Already logged in", Toast.LENGTH_SHORT).show()
-                goTo()
+        model.value = model.value.copy(isDarkModeChecked = getDarkModeStatus())
+        setContent {
+            NestTheme {
+                var modelState by remember { model }
+                HomeScreen(
+                    model = modelState,
+                    onDarkModeChanged = {
+                        val newState = modelState.isDarkModeChecked.not()
+                        setDarkModeAndRecreate(newState)
+                        modelState = modelState.copy(isDarkModeChecked = newState)
+                    },
+                    onApplinkChanged = { modelState = modelState.copy(applink = it) },
+                    onNavigateTo = {
+                        when (it) {
+                            HomeDestination.LOGIN -> handleNavigationLogin()
+                            HomeDestination.LOGOUT -> handleNavigationLogout()
+                            HomeDestination.DEVELOPER_OPTION -> gotoDeveloperOptions()
+                            HomeDestination.APPLINK -> goTo()
+                        }
+                    })
             }
         }
+    }
 
-        /* use mainapp login use case */
-        logoutButton.setOnClickListener {
-            val logoutIntent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.LOGOUT).apply {
+    private fun gotoDeveloperOptions() {
+        RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
+    }
+
+    private fun setDarkModeAndRecreate(active: Boolean) {
+        AppCompatDelegate.setDefaultNightMode(
+            if (active) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+        finish()
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        startActivity(Intent(this, this.javaClass))
+    }
+
+    private fun getDarkModeStatus(): Boolean =
+        resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
+    private fun getLiveStatus(): String {
+        return if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+            "STAGING URL"
+        } else {
+            "LIVE URL"
+        }
+    }
+
+    private fun handleNavigationLogin() {
+        if (!userSession.isLoggedIn) {
+            startActivityForResult(
+                RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
+        } else {
+            Toast.makeText(this, "Already logged in", Toast.LENGTH_SHORT).show()
+            goTo()
+        }
+    }
+
+    private fun handleNavigationLogout() {
+        val logoutIntent =
+            RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.LOGOUT).apply {
                 putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, false)
             }
-            startActivityForResult(logoutIntent, REQUEST_CODE_LOGOUT)
-        }
-
-        testGqlButton.setOnClickListener { TestGqlUseCase().execute() }
-
-        devOptButton.setOnClickListener {
-            RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
-        }
-
-        etAppLink.setText(getDefaultAppLink())
-
-        goToButton.setOnClickListener { goTo() }
+        startActivityForResult(logoutIntent, REQUEST_CODE_LOGOUT)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -94,12 +124,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setLoginStatus() {
         if (userSession.isLoggedIn) {
-            val identity = if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
-            loginButton?.text = "Logged in as:\n$identity"
-            logoutButton.visibility = View.VISIBLE
+            val identity =
+                if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
+            model.value = model.value.copy(loginText = "Logged in as:\n${identity}")
         } else {
-            loginButton?.text = "Login"
-            logoutButton.visibility = View.GONE
+            model.value = model.value.copy(loginText = "Login")
         }
     }
 
@@ -115,12 +144,8 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        val appLink = etAppLink.text.toString()
-        if (appLink.isNotBlank()) {
-            RouteManager.route(this, appLink)
-        } else {
-            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
-        }
+        if (model.value.applink.isNotBlank()) RouteManager.route(this, model.value.applink)
+        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
     private fun getDefaultAppLink(): String {
@@ -128,6 +153,20 @@ class MainActivity : AppCompatActivity() {
          * Put your default applink here
          */
         return ""
+    }
+
+    data class Model(
+        val applink: String = "",
+        val urlState: String = "LIVE",
+        val isDarkModeChecked: Boolean = false,
+        val loginText: String = "Login"
+    )
+
+    sealed interface HomeDestination {
+        object LOGIN : HomeDestination
+        object LOGOUT : HomeDestination
+        object DEVELOPER_OPTION : HomeDestination
+        object APPLINK : HomeDestination
     }
 }
 //       for gaung.utama

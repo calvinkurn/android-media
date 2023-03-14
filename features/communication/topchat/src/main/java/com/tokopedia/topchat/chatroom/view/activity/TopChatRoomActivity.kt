@@ -615,13 +615,6 @@ open class TopChatRoomActivity :
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        if (::chatRoomFragment.isInitialized) {
-            chatRoomFragment.setupAttachmentsPreview(intent?.extras)
-        }
-    }
-
     companion object {
         const val SOURCE_ASK_BUYER = "tx_ask_buyer"
         val LABEL_USER = "Pengguna"

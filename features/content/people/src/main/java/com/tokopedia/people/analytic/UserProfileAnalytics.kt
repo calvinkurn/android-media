@@ -21,6 +21,9 @@ class UserProfileAnalytics {
             } else {
                 Constants.TOKOPEDIA_MARKETPLACE
             }
+
+        val sessionIris: String
+            get() = TrackApp.getInstance().gtm.irisSessionId
     }
 
     object Function {

@@ -27,6 +27,7 @@ class AffiliatePromoViewModel @Inject constructor(
     private var errorMessage = MutableLiveData<String>()
     private var validateUserState = MutableLiveData<String>()
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
+
     fun isAffiliateSSAShopEnabled() =
         RemoteConfigInstance.getInstance().abTestPlatform.getString(
             AFFILIATE_SSA_SHOP,

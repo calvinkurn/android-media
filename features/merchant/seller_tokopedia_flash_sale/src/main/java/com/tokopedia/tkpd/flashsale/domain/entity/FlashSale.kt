@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.flashsale.domain.entity
 
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
-import java.util.Date
+import java.util.*
 
 data class FlashSale(
     val campaignId: Long,

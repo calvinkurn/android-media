@@ -1,8 +1,6 @@
 package com.tokopedia.product_bundle.single.presentation.model
 
 import android.content.Context
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_DAY
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_MONTH
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_WEEK
