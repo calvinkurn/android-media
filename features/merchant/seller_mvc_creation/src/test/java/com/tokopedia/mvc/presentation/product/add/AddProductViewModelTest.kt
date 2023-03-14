@@ -1372,6 +1372,108 @@ class AddProductViewModelTest {
             job.cancel()
         }
     }
+
+    @Test
+    fun `When product added to selection, should add eligible variants to the selection as well`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val expectedFirstProductVariant = listOf(
+                Product.Variant(
+                    variantProductId = 111,
+                    isEligible = true,
+                    reason = "",
+                    isSelected = true
+                ),
+                Product.Variant(
+                    variantProductId = 112,
+                    isEligible = false,
+                    reason = "Has been registered on another voucher",
+                    isSelected = false
+                ),
+            )
+            val firstProductVariants = listOf(
+                VoucherValidationResult.ValidationProduct.ProductVariant(
+                    productId = 111,
+                    productName = "First Product - Red Variant",
+                    price = 55_000,
+                    stock = 10,
+                    isEligible = true,
+                    reason = ""
+                ),
+                VoucherValidationResult.ValidationProduct.ProductVariant(
+                    productId = 112,
+                    productName = "First Product - Blue Variant",
+                    price = 55_000,
+                    stock = 10,
+                    isEligible = false,
+                    reason = "Has been registered on another voucher"
+                )
+            )
+
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = firstProductVariants
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse, totalProduct = 50)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(firstProduct.id))
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstProduct.copy(
+                        isSelected = true,
+                        enableCheckbox = true,
+                        originalVariants = expectedFirstProductVariant,
+                        selectedVariantsIds = setOf<Long>(111)
+                    ),
+                ),
+                actual.products
+            )
+
+            job.cancel()
+        }
+    }
     //endregion
 
     private fun buildVoucherConfiguration(): VoucherConfiguration {
