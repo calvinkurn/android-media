@@ -141,6 +141,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String CUST_HEADER = "header_text";
     private static final String HELP_URL = "tokopedia.com/help";
     private static final String ANDROID_PRINT_JS_INTERFACE = "AndroidPrint";
+    private static final String ANDROID_MAIN_APP_PDF_ENCODE = "android_main_app_pdf_encode";
 
     @NonNull
     protected String url = "";
@@ -997,7 +998,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
      * return true of webview success load.
      */
     private boolean loadGoogleDocsUrl(Uri uri) {
-        String googleDocsUrl = WebViewHelper.getDocsUrl(uri, getContext());
+        String googleDocsUrl = getDocsUrl(uri);
         if (webView != null) {
             if (uri.getHost().contains(TOKOPEDIA_STRING)) {
                 webView.loadAuthUrl(googleDocsUrl, userSession);
@@ -1009,6 +1010,30 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             // change first url directly
             url = googleDocsUrl;
             return false;
+        }
+    }
+
+    private String getDocsUrl(Uri uri){
+        if (remoteConfig.getBoolean(ANDROID_MAIN_APP_PDF_ENCODE, true)) {
+            return getDocsUrlV2(uri);
+        } else {
+            return getDocsUrlLegacy(uri);
+        }
+    }
+
+    private String getDocsUrlLegacy(Uri uri) {
+        if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
+            return decode(uri.toString());
+        } else {
+            return GOOGLE_DOCS_PDF_URL + decode(uri.toString());
+        }
+    }
+
+    private String getDocsUrlV2(Uri uri) {
+        if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
+            return uri.toString();
+        } else {
+            return GOOGLE_DOCS_PDF_URL + encodeOnce(uri.toString());
         }
     }
 

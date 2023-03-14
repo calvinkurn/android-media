@@ -30,7 +30,6 @@ object WebViewHelper {
     private const val HOST_TOKOPEDIA = "tokopedia"
 
     private const val ANDROID_WEBVIEW_JS_ENCODE = "android_webview_js_encode"
-    private const val ANDROID_MAIN_APP_PDF_ENCODE = "android_main_app_pdf_encode"
 
     @JvmStatic
     fun isUrlValid(url: String): Boolean {
@@ -372,32 +371,6 @@ object WebViewHelper {
             pageSource(PageSource.WebView)
             modeType(ModeType.IMAGE_ONLY)
             singleSelectionMode()
-        }
-    }
-
-    @JvmStatic
-    fun getDocsUrl(uri: Uri, context: Context): String {
-        val rc = FirebaseRemoteConfigImpl(context)
-        return if (rc.getBoolean(ANDROID_MAIN_APP_PDF_ENCODE, true)) {
-            getDocsUrlV2(uri)
-        } else {
-            getDocsUrlLegacy(uri)
-        }
-    }
-
-    private fun getDocsUrlLegacy(uri: Uri): String {
-        return if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
-            uri.toString().decode()
-        } else {
-            GOOGLE_DOCS_PDF_URL + uri.toString().decode()
-        }
-    }
-
-    private fun getDocsUrlV2(uri: Uri): String {
-        return if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
-            uri.toString()
-        } else {
-            GOOGLE_DOCS_PDF_URL + uri.toString().encodeOnce()
         }
     }
 }
