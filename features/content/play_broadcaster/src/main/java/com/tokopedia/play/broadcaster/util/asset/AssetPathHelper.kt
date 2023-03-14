@@ -19,9 +19,14 @@ class AssetPathHelper @Inject constructor(
     val modelDir = effectRootDir
         .appendPath(MODEL_BUNDLE)
 
-    val presetDir: String = effectRootDir
+    val composeMakeupDir = effectRootDir
         .appendPath(COMPOSE_BUNDLE)
         .appendPath(COMPOSE_DIR)
+
+    val customFaceDir = composeMakeupDir
+        .appendPath(COMPOSE_CUSTOM_FACE_MAKEUP_DIR)
+
+    val presetDir: String = composeMakeupDir
         .appendPath(COMPOSE_PRESET_MAKEUP_DIR)
 
     fun getPresetFilePath(presetName: String) = presetDir.appendPath(presetName)
@@ -39,6 +44,7 @@ class AssetPathHelper @Inject constructor(
         private const val COMPOSE_BUNDLE = "ComposeMakeup.bundle"
 
         private const val COMPOSE_DIR = "ComposeMakeup"
+        private const val COMPOSE_CUSTOM_FACE_MAKEUP_DIR = "beauty_Android_standard"
         private const val COMPOSE_PRESET_MAKEUP_DIR = "style_makeup"
     }
 }

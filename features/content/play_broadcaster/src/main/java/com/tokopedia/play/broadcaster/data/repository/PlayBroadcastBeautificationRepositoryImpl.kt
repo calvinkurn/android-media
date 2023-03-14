@@ -59,7 +59,7 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun downloadModel(url: String): Boolean = withContext(dispatchers.io) {
-        if(assetChecker.isModelAvailable(url)) {
+        if(assetChecker.isModelAvailable()) {
             true
         } else {
             assetManager.deleteDirectory(assetPathHelper.modelDir)
@@ -71,6 +71,23 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
                 fileName = AssetHelper.getFileNameFromLinkWithoutExtension(url),
                 filePath = assetPathHelper.modelDir,
                 folderPath = assetPathHelper.effectRootDir,
+            )
+        }
+    }
+
+    override suspend fun downloadCustomFace(url: String): Boolean = withContext(dispatchers.io) {
+        if(assetChecker.isCustomFaceAvailable()) {
+            true
+        } else {
+            assetManager.deleteDirectory(assetPathHelper.customFaceDir)
+
+            val responseBody = beautificationAssetApi.downloadAsset(url)
+
+            assetManager.unzipAndSave(
+                responseBody = responseBody,
+                fileName = AssetHelper.getFileNameFromLink(url),
+                filePath = assetPathHelper.composeMakeupDir,
+                folderPath = assetPathHelper.composeMakeupDir,
             )
         }
     }

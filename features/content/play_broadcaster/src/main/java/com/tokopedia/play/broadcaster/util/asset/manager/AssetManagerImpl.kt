@@ -22,7 +22,7 @@ class AssetManagerImpl @Inject constructor(
     ): Boolean {
         return try {
             withContext(dispatchers.io) {
-                val fileNameWithExtension = fileName + ZIP_EXTENSION
+                val fileNameWithExtension = if(fileName.endsWith(ZIP_EXTENSION)) fileName else fileName + ZIP_EXTENSION
                 val completePath = filePath + File.separator + fileNameWithExtension
 
                 val file = File(filePath)

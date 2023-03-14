@@ -18,6 +18,8 @@ interface PlayBroadcastBeautificationRepository {
 
     suspend fun downloadModel(url: String): Boolean
 
+    suspend fun downloadCustomFace(url: String): Boolean
+
     suspend fun downloadPresetAsset(
         url: String,
         fileName: String,

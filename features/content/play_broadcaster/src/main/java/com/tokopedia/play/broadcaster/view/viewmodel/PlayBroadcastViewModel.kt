@@ -1799,7 +1799,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             false
         }
 
-        return isLicenseDownloaded.await() == true && isModelDownloaded.await() == true
+        val isCustomFaceDownloaded = viewModelScope.asyncCatchError(block = {
+            repo.downloadCustomFace(beautificationConfig.customFaceAssetLink)
+        }) {
+            false
+        }
+
+        return isLicenseDownloaded.await() == true &&
+            isModelDownloaded.await() == true &&
+            isCustomFaceDownloaded.await() == true
     }
 
     private fun updatePresetAssetStatus(preset: PresetFilterUiModel, assetStatus: BeautificationAssetStatus) {
