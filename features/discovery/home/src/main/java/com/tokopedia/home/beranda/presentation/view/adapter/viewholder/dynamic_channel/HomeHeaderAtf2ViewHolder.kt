@@ -13,6 +13,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.databinding.HomeHeaderAtf2Binding
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
+import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -32,6 +34,7 @@ class HomeHeaderAtf2ViewHolder(
     private var balanceWidgetView: BalanceWidgetView? = null
     private var chooseAddressView: ChooseAddressWidget? = null
     private var viewPullRefresh: LayoutIconPullRefreshView? = null
+    private val paddingBottomChooseAddress = 4f.toDpInt()
 
     companion object {
         @LayoutRes
@@ -58,6 +61,7 @@ class HomeHeaderAtf2ViewHolder(
         }
         chooseAddressView?.let {
             if (needToShowChooseAddress) {
+                it.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, paddingBottomChooseAddress)
                 listener.initializeChooseAddressWidget(it, needToShowChooseAddress)
             } else {
                 it.gone()
@@ -100,7 +104,7 @@ class HomeHeaderAtf2ViewHolder(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getParentLayout(viewStub: ViewStub?) : T? {
+    private fun <T> getParentLayout(viewStub: ViewStub?): T? {
         return if (viewStub is ViewStub &&
             !isViewStubHasBeenInflated(viewStub)
         ) {
