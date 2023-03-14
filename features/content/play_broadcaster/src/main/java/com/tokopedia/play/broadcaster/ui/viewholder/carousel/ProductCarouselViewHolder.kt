@@ -1,12 +1,12 @@
 package com.tokopedia.play.broadcaster.ui.viewholder.carousel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.content.common.util.hexToString
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPinnedProductCarouselBinding
@@ -36,6 +36,7 @@ class ProductCarouselViewHolder private constructor() {
                 binding.tvProductTagNormalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
+        @SuppressLint("ResourceType")
         fun bind(item: ProductUiModel) {
             binding.ivProductTag.setImageUrl(item.imageUrl)
             binding.tvProductTagStock.showWithCondition(item.stock.isLessThanEqualZero())
@@ -71,7 +72,7 @@ class ProductCarouselViewHolder private constructor() {
                 listener.onPinClicked(item)
             }
             binding.tvProductTagNumber.unlockFeature = true
-            binding.tvProductTagNumber.setLabelType(contentR.color.content_dms_bg_label.hexToString(context))
+            binding.tvProductTagNumber.setLabelType(context.resources.getString(contentR.color.content_dms_bg_label))
             binding.tvProductTagNumber.setLabel(item.number)
         }
 
@@ -107,6 +108,7 @@ class ProductCarouselViewHolder private constructor() {
             get() = itemView.context
 
 
+        @SuppressLint("ResourceType")
         fun bind(item: ProductUiModel) {
             binding.ivPinnedProductCarousel.loadImage(item.imageUrl)
             binding.tvPinnedProductCarouselName.text = item.name
@@ -145,7 +147,7 @@ class ProductCarouselViewHolder private constructor() {
                 listener.onPinClicked(item)
             }
             binding.tvPinnedProductTagNumber.unlockFeature = true
-            binding.tvPinnedProductTagNumber.setLabelType(contentR.color.content_dms_bg_label.hexToString(context))
+            binding.tvPinnedProductTagNumber.setLabelType(context.resources.getString(contentR.color.content_dms_bg_label))
             binding.tvPinnedProductTagNumber.setLabel(item.number)
         }
 

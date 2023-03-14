@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewholder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.text.Spanned
@@ -9,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.content.common.util.hexToString
 import com.tokopedia.kotlin.extensions.view.isLessThanEqualZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
@@ -84,6 +84,7 @@ internal class ProductSummaryViewHolder private constructor() {
         private val fgColor: ForegroundColorSpan
             get() = ForegroundColorSpan(MethodChecker.getColor(ctx, unifyR.color.Unify_G500))
 
+        @SuppressLint("ResourceType")
         fun bind(item: ProductSummaryAdapter.Model.Body) {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
             binding.tvProductSummaryName.text = item.product.name
@@ -137,7 +138,7 @@ internal class ProductSummaryViewHolder private constructor() {
             }
             binding.tvSummaryProductTagNumber.showWithCondition(item.isNumerationShown)
             binding.tvSummaryProductTagNumber.unlockFeature = true
-            binding.tvSummaryProductTagNumber.setLabelType(contentR.color.content_dms_bg_label.hexToString(ctx))
+            binding.tvSummaryProductTagNumber.setLabelType(ctx.resources.getString(contentR.color.content_dms_bg_label))
             binding.tvSummaryProductTagNumber.setLabel(item.product.number)
         }
 
