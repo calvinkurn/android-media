@@ -16,14 +16,19 @@ class TokoChatMediaCleanupStorageWorker(context: Context, params: WorkerParamete
     CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        val directoryToClean = TokoChatViewUtil.getInternalCacheDirectory().absolutePath
-        FileUtil.deleteFolder(directoryToClean)
+        val newDirectoryToClean = TokoChatViewUtil.getTokopediaTokoChatCacheDirectory().absolutePath
+        FileUtil.deleteFolder(newDirectoryToClean)
+
+        // Need to remove this in the next version
+        val oldDirectoryToClean = TokoChatViewUtil.getInternalCacheDirectory().absolutePath
+        FileUtil.deleteFolder(oldDirectoryToClean)
+
         return Result.success()
     }
 
     companion object {
         private const val WORKER_NAME = "TOKOCHAT_MEDIA_CLEANER"
-        private const val THRESHOLD_LAST_MODIFICATION_TIME = 86_400_000L //1 day
+        private const val THRESHOLD_LAST_MODIFICATION_TIME = 86_400_000L // 1 day
 
         fun scheduleWorker(context: Context) {
             try {

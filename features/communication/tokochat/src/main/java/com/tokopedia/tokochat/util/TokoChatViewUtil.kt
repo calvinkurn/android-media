@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
+import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -24,9 +25,9 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.utils.image.ImageProcessingUtil.DEFAULT_DIRECTORY
 import timber.log.Timber
 import java.io.File
-import java.io.FileOutputStream
 import java.io.InputStream
 import javax.inject.Inject
 
@@ -160,41 +161,40 @@ class TokoChatViewUtil @Inject constructor(
         )
     }
 
-    fun compressAndRenameImageToTokoChatPath(
-        originalFilePath: String,
-        newFileName: String,
-        quality: Int
-    ): Uri? {
-        val resultFile = getTokoChatPhotoPath(newFileName)
-        val originalFile = File(originalFilePath)
-        val fileAsUri = Uri.fromFile(originalFile)
+    fun compressImageToTokoChatPath(originalFilePath: String): Uri? {
         return ImageCompressor.compress(
             context = context,
-            imageUri = fileAsUri,
-            compressFormat = Bitmap.CompressFormat.JPEG,
-            maxWidth = MAX_WIDTH,
-            maxHeight = MAX_HEIGHT,
-            useMaxScale = true,
-            quality = quality,
-            minWidth = MIN_WIDTH,
-            minHeight = MIN_HEIGHT,
-            resultFile = resultFile
+            imagePath = originalFilePath,
+            customSubDirectory = TOKOCHAT_RELATIVE_PATH
         )
     }
 
+    fun renameAndMoveFileToTokoChatDir(originalFileUri: Uri, newFileName: String): Uri? {
+        FileUtil.getPath(context.contentResolver, originalFileUri)?.let { resultPath ->
+            val tempResultFile = File(resultPath)
+            val renamedResultFile = getTokoChatPhotoPath(newFileName)
+            tempResultFile.renameTo(renamedResultFile)
+
+            return renamedResultFile.toUri()
+        }
+        return null
+    }
+
     companion object {
-        private const val TOKOCHAT_RELATIVE_PATH = "/TokoChat"
+        private const val TOKOCHAT_RELATIVE_PATH = "TokoChat"
         private const val JPEG_EXT = ".jpeg"
 
-        private const val MAX_WIDTH = 2000f
-        private const val MAX_HEIGHT = 2000f
-        private const val MIN_WIDTH = 300
-        private const val MIN_HEIGHT = 300
-        const val QUALITY = 80 // in percent
-        const val QUALITY_ORI = 100 // in percent
-
         fun getTokoChatPhotoPath(fileName: String): File {
-            return File(getInternalCacheDirectory().absolutePath, fileName + JPEG_EXT)
+            return File(
+                getTokopediaTokoChatCacheDirectory().absolutePath,
+                fileName + JPEG_EXT
+            )
+        }
+
+        fun getTokopediaTokoChatCacheDirectory(): File {
+            return FileUtil.getTokopediaInternalDirectory(
+                "${DEFAULT_DIRECTORY}$TOKOCHAT_RELATIVE_PATH"
+            )
         }
 
         fun getInternalCacheDirectory(): File {

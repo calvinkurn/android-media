@@ -40,8 +40,6 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatUploadImageUseCase
 import com.tokopedia.tokochat.util.TokoChatValueUtil.IMAGE_EXTENSION
 import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatViewUtil
-import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.QUALITY
-import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.QUALITY_ORI
 import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.getTokoChatPhotoPath
 import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
@@ -411,29 +409,28 @@ class TokoChatViewModel @Inject constructor(
                     // Compress & Rename Image
                     val localImage = preprocessingImage(
                         filePath = filePath,
-                        newFileName = localUUID,
-                        quality = QUALITY
+                        newFileName = localUUID
                     )
 
                     // Add dummy / transient message
                     addTransientExtensionMessage(
-                        extensionMessage = createExtensionMessage(localUUID = localUUID))
+                        extensionMessage = createExtensionMessage(localUUID = localUUID)
+                    )
 
                     // Upload image to BE
                     val result = uploadImageToServer(filePath)
+                    result.data?.imageId?.let {
+                        // Rename Image to imageId
+                        renameImage(originalFileUri = localImage, newFileName = it)
+                    }
 
-                    // Rename Image to imageId
-                    preprocessingImage(
-                        filePath = localImage.path?: "",
-                        newFileName = result.data?.imageId?: "",
-                        quality = QUALITY_ORI
+                    // send transient message
+                    sendTransientExtensionMessage(
+                        createExtensionMessage(
+                            localUUID = localUUID,
+                            result.data?.imageId
+                        )
                     )
-
-                    //send transient message
-                    sendTransientExtensionMessage(createExtensionMessage(
-                        localUUID = localUUID,
-                        result.data?.imageId
-                    ))
                 } catch (throwable: Throwable) {
                     Timber.d(throwable)
                 }
@@ -441,16 +438,20 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    private fun preprocessingImage(
-        filePath: String,
-        newFileName: String,
-        quality: Int
+    private fun preprocessingImage(filePath: String, newFileName: String): Uri {
+        val compressedImage = viewUtil.compressImageToTokoChatPath(originalFilePath = filePath)
+            ?: throw MessageErrorException(ERROR_COMPRESSED_IMAGE_NULL)
+        return renameImage(originalFileUri = compressedImage, newFileName = newFileName)
+    }
+
+    private fun renameImage(
+        originalFileUri: Uri,
+        newFileName: String
     ): Uri {
-        return viewUtil.compressAndRenameImageToTokoChatPath(
-            originalFilePath = filePath,
-            newFileName = newFileName,
-            quality = quality
-        )?: throw MessageErrorException(ERROR_IMAGE_NULL)
+        return viewUtil.renameAndMoveFileToTokoChatDir(
+            originalFileUri = originalFileUri,
+            newFileName = newFileName
+        ) ?: throw MessageErrorException(ERROR_RENAMED_IMAGE_NULL)
     }
 
     private suspend fun uploadImageToServer(filePath: String): TokoChatUploadImageResult {
@@ -488,7 +489,7 @@ class TokoChatViewModel @Inject constructor(
             message = IMAGE_ATTACHMENT_MSG,
             isCanned = false,
             cannedMessagePayload = null,
-            payload = createExtensionPayloadImageAttachment(extensionId = extensionId?: localUUID)
+            payload = createExtensionPayloadImageAttachment(extensionId = extensionId ?: localUUID)
         )
     }
 
@@ -506,6 +507,7 @@ class TokoChatViewModel @Inject constructor(
         const val TOKOFOOD_SERVICE_TYPE = 5
         const val DELAY_UPDATE_ORDER_STATE = 5000L
         private const val DELAY_FETCH_IMAGE = 500L
-        private const val ERROR_IMAGE_NULL = "Image null"
+        private const val ERROR_COMPRESSED_IMAGE_NULL = "Compressed image null"
+        private const val ERROR_RENAMED_IMAGE_NULL = "Renamed image null"
     }
 }
