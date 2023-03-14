@@ -479,6 +479,9 @@ class PlayViewModel @AssistedInject constructor(
     val videoLatency: Long
         get() = videoLatencyPerformanceMonitoring.totalDuration
 
+    val performanceSummaryPageLink: String
+        get() = _channelReport.value.performanceSummaryPageLink
+
     private var mChannelData: PlayChannelData? = null
 
     val latestCompleteChannelData: PlayChannelData

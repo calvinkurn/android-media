@@ -6,7 +6,7 @@
       "event": "begin_checkout",
       "eventCategory": "digital - checkout",
       "eventAction": "view checkout",
-      "eventLabel": ".+ - .+ - .+",
+      "eventLabel": ".+ - .+ - .+ - .* - .+",
       "checkout_step": "1",
       "checkout_option": "cart page loaded",
       "currentSite": "tokopediadigitalRecharge",
