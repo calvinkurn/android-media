@@ -669,12 +669,12 @@ object TokoFoodPurchaseUiModelMapper {
             val isMultipleCartGroup = unavailableCartGroup.additionalGroupChildIds.isNotEmpty()
             if (isMultipleCartGroup) {
                 sectionHeader = unavailableCartGroup.message
-                unavailableSectionMap = unavailableCartGroup.additionalGroupChildIds.associateWith { groupId ->
-                    val groupChildIds = businessData.additionalGrouping.details.find { it.additionalGroupId == groupId }
+                unavailableSectionMap = unavailableCartGroup.additionalGroupChildIds.associate { groupId ->
+                    val groupChildDetail = businessData.additionalGrouping.details.find { it.additionalGroupId == groupId }
                     val carts = businessData.cartGroups?.firstOrNull()?.carts?.filter { cart ->
-                        groupChildIds?.cartIds?.contains(cart.cartId) == true
+                        groupChildDetail?.cartIds?.contains(cart.cartId) == true
                     }
-                    carts.orEmpty()
+                    groupChildDetail?.message.orEmpty() to carts.orEmpty()
                 }
             } else {
                 unavailableCartGroup.message.let { message ->

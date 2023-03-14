@@ -3,7 +3,6 @@ package com.tokopedia.tokofood.feature.purchase.promopage.domain.model
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 data class PromoListTokoFoodResponse(
@@ -12,8 +11,6 @@ data class PromoListTokoFoodResponse(
 )
 
 data class CartGeneralPromoList(
-    @SerializedName("header")
-    val header: Header = Header(),
     @SerializedName("data")
     val data: CartGeneralPromoListData = CartGeneralPromoListData()
 )

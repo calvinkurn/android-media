@@ -13,8 +13,8 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.respons
 import javax.inject.Inject
 
 private const val QUERY = """
-        mutation TokoFoodCheckoutGeneral(${'$'}params: CheckoutGeneralV2Params!) {
-          checkout_general_v2(params: ${'$'}params) {
+        mutation TokoFoodCheckoutGeneral(${'$'}params: CheckoutCartGeneralParams) {
+          checkout_cart_general(params: ${'$'}params) {
             header {
               process_time
               reason

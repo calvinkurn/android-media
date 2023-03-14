@@ -7,7 +7,7 @@ import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.metadata.CheckoutErrorMetadata
 
 data class CheckoutGeneralTokoFoodResponse(
-    @SerializedName("checkout_general_v2")
+    @SerializedName("checkout_cart_general")
     val checkoutGeneralTokoFood: CheckoutGeneralTokoFood = CheckoutGeneralTokoFood()
 )
 

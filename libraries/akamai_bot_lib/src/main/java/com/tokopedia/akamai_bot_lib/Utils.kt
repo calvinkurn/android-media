@@ -67,6 +67,7 @@ val registeredGqlFunctions = mapOf(
     "cart_general_update_cart_quantity" to "cagn",
     "cart_general_cart_list" to "cagn",
     "cart_general_remove_cart" to "cagn",
+    "cart_general_promo_list" to "cagn",
     "checkout_cart_general" to "cogn"
     )
 

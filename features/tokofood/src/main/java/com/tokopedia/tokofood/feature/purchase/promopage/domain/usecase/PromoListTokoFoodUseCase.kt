@@ -16,16 +16,18 @@ import com.tokopedia.tokofood.feature.purchase.promopage.domain.param.PromoTokof
 import javax.inject.Inject
 
 private const val QUERY = """
-        query PromoListTokofood(${'$'}params: cartTokofoodParams!) {
+        mutation PromoListTokofood(${'$'}params: CartGeneralPromoListParams) {
           cart_general_promo_list(params: ${'$'}params) {
-            message
-            success
             data {
-              business_data {
-                business_id
-                success
-                message
-                custom_response
+              message
+              success
+              data {
+                business_data {
+                  business_id
+                  success
+                  message
+                  custom_response
+                }
               }
             }
           }
