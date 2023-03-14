@@ -331,6 +331,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     state.isMinimumBuyError,
                     state.minimumBuyErrorMsg
                 )
+                renderDiscountNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
             }
             VoucherCreationStepThreeFieldValidation.QUOTA -> {
                 renderDiscountQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)

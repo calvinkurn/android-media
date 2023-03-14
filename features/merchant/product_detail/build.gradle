@@ -54,6 +54,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -99,7 +100,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.attachcommon)
-    implementation projectOrAar(rootProject.ext.features.variantCommon)
     implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.minicart)

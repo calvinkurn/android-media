@@ -48,6 +48,7 @@ kapt {
 
 dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
