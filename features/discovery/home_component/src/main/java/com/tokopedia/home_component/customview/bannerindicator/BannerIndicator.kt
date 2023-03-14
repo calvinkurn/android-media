@@ -179,8 +179,9 @@ class BannerIndicator : LinearLayout {
         }
         val indicatorPosition = position % totalBanner
         try {
-            if (position == currentPosition) {
+            if (indicatorPosition == currentPosition) {
                 getChildProgressBar(indicatorPosition)?.let {
+                    it.progress = Int.ZERO
                     animateIndicatorBanner(it, indicatorPosition)
                 }
             } else {
