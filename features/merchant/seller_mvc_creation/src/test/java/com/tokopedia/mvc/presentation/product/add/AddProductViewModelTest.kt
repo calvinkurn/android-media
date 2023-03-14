@@ -1706,7 +1706,43 @@ class AddProductViewModelTest {
     //endregion
 
     //region handleClearSearchbar
+    @Test
+    fun `When clear searchbar, should reset the state before re-fetch the products`() {
+        runBlockingTest {
+            //Given
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
 
+            //When
+            viewModel.processEvent(AddProductEvent.ClearSearchBar)
+
+            //Then
+            val actual = emittedValues.first()
+
+            assertEquals(true, actual.isLoading)
+            assertEquals("", actual.searchKeyword)
+            assertEquals(1, actual.page)
+            assertEquals(AddProductUiState.CheckboxState.UNCHECKED, actual.checkboxState)
+            assertEquals(emptyList<Product>(), actual.products)
+
+            val param = ProductListUseCase.Param(
+                categoryIds = listOf(),
+                page = 1,
+                pageSize = 20,
+                searchKeyword = "",
+                showcaseIds = listOf(),
+                sortDirection = "DESC",
+                sortId = "DEFAULT",
+                warehouseId = WAREHOUSE_ID
+            )
+
+            coVerify { getProductsUseCase.execute(param) }
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region handleClearFilter
