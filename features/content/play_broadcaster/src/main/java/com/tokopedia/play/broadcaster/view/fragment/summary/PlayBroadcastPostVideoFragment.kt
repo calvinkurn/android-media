@@ -118,7 +118,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when(childFragment) {
             is PlayBroadcastSetupCoverBottomSheet -> {
-                childFragment.setupListener(this)
+                childFragment.setupData(this, PAGE_NAME)
 
                 val isShowCoachMark = prepareViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
@@ -328,6 +328,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
 
     companion object {
         private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
+        private const val PAGE_NAME = "report page"
     }
 
     override fun dismissSetupCover() {

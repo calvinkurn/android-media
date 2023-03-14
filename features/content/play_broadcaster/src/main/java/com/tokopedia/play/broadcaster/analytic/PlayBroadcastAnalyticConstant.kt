@@ -41,8 +41,10 @@ internal const val KEY_TRACK_IMPRESSION = "impression"
 
 internal const val VAL_BUSINESS_UNIT = "content"
 
+internal val isSellerApp = GlobalConfig.isSellerApp()
+
 internal val currentSite: String
-    get() = if (GlobalConfig.isSellerApp()) {
+    get() = if (isSellerApp) {
         KEY_TRACK_CURRENT_SITE
     } else {
         KEY_TRACK_CURRENT_SITE_MARKETPLACE
@@ -52,20 +54,20 @@ internal val sessionIris: String
     get() = TrackApp.getInstance().gtm.irisSessionId
 
 internal val KEY_TRACK_CLICK_EVENT: String
-    get() = if (GlobalConfig.isSellerApp()) {
+    get() = if (isSellerApp) {
         KEY_TRACK_CLICK_EVENT_SELLER
     } else {
         KEY_TRACK_CLICK_EVENT_MARKETPLACE
     }
 
 internal val KEY_TRACK_VIEW_EVENT: String
-    get() = if (GlobalConfig.isSellerApp()) {
+    get() = if (isSellerApp) {
         KEY_TRACK_VIEW_EVENT_SELLER
     } else {
         KEY_TRACK_VIEW_EVENT_MARKETPLACE
     }
 
 internal fun getTrackerId(trackerIdMA: String, trackerIdSA: String): String {
-    return if (GlobalConfig.isSellerApp()) trackerIdSA
+    return if (isSellerApp) trackerIdSA
     else trackerIdMA
 }

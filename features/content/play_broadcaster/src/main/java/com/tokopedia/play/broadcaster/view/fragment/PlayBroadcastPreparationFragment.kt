@@ -308,7 +308,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setMaxCharacter(viewModel.maxTitleChars)
             }
             is PlayBroadcastSetupCoverBottomSheet -> {
-                childFragment.setupListener(this)
+                childFragment.setupData(this, PAGE_NAME)
 
                 val isShowCoachMark = viewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
@@ -1093,7 +1093,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     companion object {
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
-
+        private const val PAGE_NAME = "prep page"
         private const val REQ_PLAY_SHORTS = 12323
     }
 
