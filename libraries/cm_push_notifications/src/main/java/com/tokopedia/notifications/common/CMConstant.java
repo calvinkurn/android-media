@@ -266,6 +266,7 @@ public interface CMConstant {
         String KEY_TRACKER_ID = "trackerId";
         String KEY_DEVICE_ID = "deviceId";
         String KEY_PAGE_PATH = "pagePath";
+        String KEY_PAGE_TYPE = "pageType";
         String VALUE_BUSINESS_UNIT = "cm";
         String VALUE_TRACKER_ID_VIEW = "35363";
         String VALUE_TRACKER_ID_NOT_ALLOW = "35365";
@@ -279,6 +280,10 @@ public interface CMConstant {
         String VALUE_TRACKER_ID_CLICK_CLOSE_GEN_MA = "37793";
         String VALUE_TRACKER_ID_CLICK_CTA_GEN_SA = "37797";
         String VALUE_TRACKER_ID_CLICK_CTA_GEN_MA = "37794";
+        String VALUE_TRACKER_ID_REMINDER_VIEW = "42642";
+        String VALUE_TRACKER_ID_CLICK_CTA_REMINDER = "42645";
+
+        String VALUE_TRACKER_ID_CLICK_CLOSE_REMINDER = "42646";
         String VALUE_CURRENT_SITE = "tokopediamarketplace";
         String VALUE_EVENT_CLICK_CONTENT = "clickContent";
         String VALUE_EVENT_VIEW_CONTENT = "viewContentIris";
@@ -286,6 +291,7 @@ public interface CMConstant {
         String VALUE_CATEGORY_SA = "native android seller push prompt";
         String VALUE_GEN_CATEGORY = "general android push prompt";
         String VALUE_GEN_CATEGORY_SA = "general android seller push prompt";
+        String VALUE_REMINDER_CATEGORY = "reminder push prompt";
         String VALUE_ACTION_IMPRESSION = "impression";
         String VALUE_ACTION_NOT_ALLOW = "click not allow";
         String VALUE_ACTION_ALLOW = "click allow";

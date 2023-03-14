@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.common.NotificationReminderPromptGtmTracker
 import com.tokopedia.notifications.common.NotificationSettingsGtmEvents
 import com.tokopedia.notifications.databinding.CmLayoutNotificationsGeneralPromptBinding
 import com.tokopedia.notifications.utils.NotificationSettingsUtils
@@ -115,10 +116,18 @@ class NotificationGeneralPromptBottomSheet(
 
     private fun sendEventImpression() {
         context?.let {
-            NotificationSettingsGtmEvents(
-                userSession,
-                it.applicationContext
-            ).sendGeneralPromptImpressionEvent(it, activityName)
+            if (isReminderPrompt) {
+                NotificationReminderPromptGtmTracker(
+                    userSession,
+                    it.applicationContext,
+                    pageName
+                ).sendReminderPromptImpressionEvent(it, activityName)
+            } else {
+                NotificationSettingsGtmEvents(
+                    userSession,
+                    it.applicationContext
+                ).sendGeneralPromptImpressionEvent(it, activityName)
+            }
         }
     }
 
@@ -130,10 +139,19 @@ class NotificationGeneralPromptBottomSheet(
 
     private fun sendEventClose() {
         context?.let {
-            NotificationSettingsGtmEvents(
-                userSession,
-                it.applicationContext
-            ).sendGeneralPromptClickCloseEvent(it, activityName)
+            if (isReminderPrompt) {
+                NotificationReminderPromptGtmTracker(
+                    userSession,
+                    it.applicationContext,
+                    pageName
+                ).sendReminderPromptClickCloseEvent(it, activityName)
+            } else {
+                NotificationSettingsGtmEvents(
+                    userSession,
+                    it.applicationContext
+                ).sendGeneralPromptClickCloseEvent(it, activityName)
+            }
+
         }
     }
 
@@ -164,10 +182,18 @@ class NotificationGeneralPromptBottomSheet(
 
     private fun sendEventClickCta() {
         context?.let {
-            NotificationSettingsGtmEvents(
-                userSession,
-                it.applicationContext
-            ).sendGeneralPromptClickCtaEvent(it, activityName)
+            if (isReminderPrompt) {
+                NotificationReminderPromptGtmTracker(
+                    userSession,
+                    it.applicationContext,
+                    pageName
+                ).sendReminderPromptClickCtaEvent(it, activityName)
+            } else {
+                NotificationSettingsGtmEvents(
+                    userSession,
+                    it.applicationContext
+                ).sendGeneralPromptClickCtaEvent(it, activityName)
+            }
         }
     }
 

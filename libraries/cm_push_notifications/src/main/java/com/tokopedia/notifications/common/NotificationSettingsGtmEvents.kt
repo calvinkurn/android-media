@@ -239,6 +239,7 @@ class NotificationSettingsGtmEvents constructor(
         const val TRACKER_PREF_NAME = "NotificationSettingsTracker"
         const val FREQ_KEY_NATIVE_PROMPT = "frequencyNativePrompt"
         const val FREQ_KEY_GENERAL_PROMPT = "frequencyGeneralPrompt"
+        const val FREQ_KEY_REMINDER_PROMPT = "frequencyReminderPrompt"
         const val ZERO = "0"
         const val JOURNEY = "Journey"
         const val HOMEPAGE = "Homepage"
