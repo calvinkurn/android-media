@@ -17,6 +17,8 @@ data class FeedCardVideoContentModel(
     val applink: String,
     val weblink: String,
     val actionButtonLabel: String,
+    val campaign: FeedCardCampaignModel,
+    val hasVoucher: Boolean,
     val products: List<FeedCardProductModel>,
     val totalProducts: Int,
     val media: List<FeedMediaModel>,

@@ -15,6 +15,8 @@ import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
+import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
+import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -54,15 +56,11 @@ class FeedPostImageViewHolder(
     override fun bind(element: FeedCardImageContentModel?) {
         element?.let { data ->
             binding.apply {
-                val authorView =
-                    FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-                val captionView = FeedCaptionView(binding.tvFeedCaption)
-
-                authorView.bindData(data.author, false, !data.followers.isFollowed)
-                captionView.bind(data.text)
-
+                bindAuthor(data)
+                bindCaption(data)
                 bindImagesContent(data.media)
                 bindIndicators(data.media.size)
+                bindProductTag(data)
 
                 menuButton.setOnClickListener { _ ->
                     listener.onMenuClicked(data.id)
@@ -88,13 +86,6 @@ class FeedPostImageViewHolder(
                 } else {
                     hideClearView()
                 }
-                productTagButton.root.setOnClickListener {
-                    listener.onProductTagItemClicked(data)
-                }
-                productTagView.root.setOnClickListener {
-                    listener.onProductTagViewClicked(data)
-                }
-                setUpProductTagButtonText(feedCardModel = data)
 
                 root.setOnClickListener {
                 }
@@ -106,27 +97,40 @@ class FeedPostImageViewHolder(
         super.bind(element, payloads)
     }
 
-    private fun setUpProductTagButtonText(feedCardModel: FeedCardImageContentModel) {
-        val productData = feedCardModel.products
+    private fun bindAuthor(model: FeedCardImageContentModel) {
+        val authorView =
+            FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
+        authorView.bindData(model.author, false, !model.followers.isFollowed)
+    }
 
-        when (val numberOfTaggedProducts = feedCardModel.totalProducts) {
-            PRODUCT_COUNT_ZERO -> {
-                binding.productTagView.root.hide()
-                binding.productTagButton.root.hide()
-            }
-            PRODUCT_COUNT_ONE -> {
-                binding.productTagView.tvTagProduct.text = productData.firstOrNull()?.name
-                binding.productTagButton.tvPlayProductCount.text = numberOfTaggedProducts.toString()
-            }
-            else -> {
-                binding.productTagView.tvTagProduct.text =
-                    itemView.context.getString(
-                        R.string.feeds_tag_product_text,
-                        numberOfTaggedProducts
-                    )
-                binding.productTagButton.tvPlayProductCount.text = numberOfTaggedProducts.toString()
-            }
-        }
+    private fun bindCaption(model: FeedCardImageContentModel) {
+        val captionView = FeedCaptionView(binding.tvFeedCaption)
+        captionView.bind(model.text)
+    }
+
+    private fun bindProductTag(model: FeedCardImageContentModel) {
+        val productTagView = FeedProductTagView(binding.productTagView, listener)
+        productTagView.bindData(
+            postId = model.id,
+            author = model.author,
+            postType = model.typename,
+            isFollowing = model.followers.isFollowed,
+            campaign = model.campaign,
+            hasVoucher = model.hasVoucher,
+            products = model.products,
+            totalProducts = model.totalProducts
+        )
+
+        val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
+        productButtonView.bindData(
+            postId = model.id,
+            author = model.author,
+            postType = model.typename,
+            isFollowing = model.followers.isFollowed,
+            campaign = model.campaign,
+            hasVoucher = model.hasVoucher,
+            totalProducts = model.totalProducts
+        )
     }
 
     private fun bindIndicators(imageSize: Int) {
@@ -172,9 +176,6 @@ class FeedPostImageViewHolder(
     }
 
     companion object {
-        const val PRODUCT_COUNT_ZERO = 0
-        const val PRODUCT_COUNT_ONE = 1
-
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post
     }

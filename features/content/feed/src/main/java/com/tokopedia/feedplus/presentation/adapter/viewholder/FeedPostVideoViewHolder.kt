@@ -10,6 +10,8 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
+import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
+import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.coroutines.CoroutineScope
@@ -35,12 +37,9 @@ class FeedPostVideoViewHolder(
         element?.let { data ->
             with(binding) {
                 bindVideoPlayer(element)
-
-                val authorView = FeedAuthorInfoView(layoutAuthorInfo, listener)
-                authorView.bindData(data.author, false, !element.followers.isFollowed)
-
-                val captionView = FeedCaptionView(tvFeedCaption)
-                captionView.bind(element.text)
+                bindAuthor(element)
+                bindCaption(element)
+                bindProductTag(element)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(data.id)
@@ -56,6 +55,41 @@ class FeedPostVideoViewHolder(
                 }
             }
         }
+    }
+
+    private fun bindAuthor(data: FeedCardVideoContentModel) {
+        val authorView = FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
+        authorView.bindData(data.author, false, !data.followers.isFollowed)
+    }
+
+    private fun bindCaption(data: FeedCardVideoContentModel) {
+        val captionView = FeedCaptionView(binding.tvFeedCaption)
+        captionView.bind(data.text)
+    }
+
+    private fun bindProductTag(data: FeedCardVideoContentModel) {
+        val productTagView = FeedProductTagView(binding.productTagView, listener)
+        productTagView.bindData(
+            postId = data.id,
+            author = data.author,
+            postType = data.typename,
+            isFollowing = data.followers.isFollowed,
+            campaign = data.campaign,
+            hasVoucher = data.hasVoucher,
+            products = data.products,
+            totalProducts = data.totalProducts
+        )
+
+        val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
+        productButtonView.bindData(
+            postId = data.id,
+            author = data.author,
+            postType = data.typename,
+            isFollowing = data.followers.isFollowed,
+            campaign = data.campaign,
+            hasVoucher = data.hasVoucher,
+            totalProducts = data.totalProducts
+        )
     }
 
     private fun bindVideoPlayer(element: FeedCardVideoContentModel?) {

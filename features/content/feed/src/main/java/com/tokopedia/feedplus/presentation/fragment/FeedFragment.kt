@@ -31,10 +31,13 @@ import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
+import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -245,23 +248,50 @@ class FeedFragment :
         adapter?.showLoading()
     }
 
-    override fun onProductTagItemClicked(model: FeedCardImageContentModel) {
-        openProductTagBottomSheet(model)
+    override fun onProductTagButtonClicked(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean
+    ) {
+        openProductTagBottomSheet(
+            postId = postId,
+            author = author,
+            postType = postType,
+            isFollowing = isFollowing,
+            campaign = campaign,
+            hasVoucher = hasVoucher
+        )
     }
 
-    override fun onProductTagViewClicked(model: FeedCardImageContentModel) {
-        val numberOfTaggedProducts = model.totalProducts
-        val productData = model.products
-
-        if (numberOfTaggedProducts == 1) {
-            val appLink = productData.firstOrNull()?.applink
+    override fun onProductTagViewClicked(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
+        totalProducts: Int
+    ) {
+        if (totalProducts == FeedProductTagView.PRODUCT_COUNT_ONE) {
+            val appLink = products.firstOrNull()?.applink
             if (appLink?.isNotEmpty() == true) {
                 activity?.let {
                     RouteManager.route(it, appLink)
                 }
             }
         } else {
-            openProductTagBottomSheet(model)
+            openProductTagBottomSheet(
+                postId = postId,
+                author = author,
+                postType = postType,
+                isFollowing = isFollowing,
+                campaign = campaign,
+                hasVoucher = hasVoucher
+            )
         }
     }
 
@@ -549,14 +579,21 @@ class FeedFragment :
         return items
     }
 
-    private fun openProductTagBottomSheet(feedXCard: FeedCardImageContentModel) {
+    private fun openProductTagBottomSheet(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean
+    ) {
         val productBottomSheet = ProductItemInfoBottomSheet()
         productBottomSheet.show(
             childFragmentManager,
             this,
             ProductBottomSheetData(
-                postId = feedXCard.id,
-                shopId = feedXCard.author.id,
+                postId = postId,
+                shopId = author.id,
                 postType = feedXCard.typename,
                 isFollowed = feedXCard.followers.isFollowed,
                 shopName = feedXCard.author.name,
