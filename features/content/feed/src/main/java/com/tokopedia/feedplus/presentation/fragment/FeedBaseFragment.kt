@@ -188,7 +188,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun observeCurrentTabPosition() {
         feedMainViewModel.currentTabIndex.observe(viewLifecycleOwner) {
-            binding?.vpFeedTabItemsContainer?.setCurrentItem(it, true)
+            binding.vpFeedTabItemsContainer.setCurrentItem(it, true)
             onChangeTab(it)
         }
     }
@@ -201,26 +201,28 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private fun initView(data: FeedTabsModel) {
         adapter = FeedPagerAdapter(childFragmentManager, lifecycle, data.data)
+        liveApplink = data.meta.liveApplink
+        profileApplink = data.meta.profileApplink
 
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                    onNonLoginGoToFollowingTab.launch(
-                        RouteManager.getIntent(
-                            context,
-                            ApplinkConst.LOGIN
+                OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                        onNonLoginGoToFollowingTab.launch(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConst.LOGIN
+                            )
                         )
-                    )
+                    }
+                    onChangeTab(position)
                 }
-                onChangeTab(position)
-            }
-        })
+            })
 
         var firstTabData: FeedDataModel? = null
         var secondTabData: FeedDataModel? = null
