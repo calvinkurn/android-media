@@ -107,13 +107,22 @@
         android:maxLines="1"
         tools:text="Rp88.888.888" />
 
-    <com.tokopedia.unifycomponents.Label
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_tag_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_4"
         android:layout_marginTop="@dimen/unify_space_4"
+        android:minWidth="@dimen/layout_lvl2"
+        android:background="@drawable/bg_label_soft_gray"
+        app:typographyType="small"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingTop="@dimen/spacing_lvl1"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        android:paddingBottom="@dimen/spacing_lvl1"
+        android:gravity="center"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintStart_toStartOf="@+id/iv_product_tag"
         app:layout_constraintTop_toTopOf="@+id/iv_product_tag"
-        tools:labelTitle="1"/>
+        tools:text="1"/>
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

@@ -16,7 +16,6 @@ import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.view.loadImage
-import com.tokopedia.content.common.R as contentR
 
 /**
  * Created by kenny.hadisaputra on 09/02/22
@@ -71,9 +70,7 @@ class ProductCarouselViewHolder private constructor() {
             binding.viewPinProduct.setOnClickListener {
                 listener.onPinClicked(item)
             }
-            binding.tvProductTagNumber.unlockFeature = true
-            binding.tvProductTagNumber.setLabelType(context.resources.getString(contentR.color.content_dms_bg_label))
-            binding.tvProductTagNumber.setLabel(item.number)
+            binding.tvProductTagNumber.text = item.number
         }
 
         companion object {
@@ -146,9 +143,7 @@ class ProductCarouselViewHolder private constructor() {
             binding.viewPinProduct.setOnClickListener {
                 listener.onPinClicked(item)
             }
-            binding.tvPinnedProductTagNumber.unlockFeature = true
-            binding.tvPinnedProductTagNumber.setLabelType(context.resources.getString(contentR.color.content_dms_bg_label))
-            binding.tvPinnedProductTagNumber.setLabel(item.number)
+            binding.tvPinnedProductTagNumber.text = item.number
         }
 
         companion object {

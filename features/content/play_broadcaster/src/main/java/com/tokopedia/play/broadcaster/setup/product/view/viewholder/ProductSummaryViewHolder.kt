@@ -24,7 +24,6 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.content.common.R as contentR
 
 /**
  * Created By : Jonathan Darwin on February 07, 2022
@@ -137,9 +136,7 @@ internal class ProductSummaryViewHolder private constructor() {
                 listener.onPinClicked(item.product)
             }
             binding.tvSummaryProductTagNumber.showWithCondition(item.isNumerationShown)
-            binding.tvSummaryProductTagNumber.unlockFeature = true
-            binding.tvSummaryProductTagNumber.setLabelType(ctx.resources.getString(contentR.color.content_dms_bg_label))
-            binding.tvSummaryProductTagNumber.setLabel(item.product.number)
+            binding.tvSummaryProductTagNumber.text = item.product.number
         }
 
         companion object {
