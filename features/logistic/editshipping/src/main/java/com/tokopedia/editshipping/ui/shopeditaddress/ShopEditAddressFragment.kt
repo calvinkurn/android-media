@@ -68,24 +68,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var currentLong: Double = 0.0
     private var detailAddressHelper: String = ""
 
-//    private var swipeRefreshLayout: SwipeRefreshLayout? = null
-//    private var etShopLocationWrapper: TextInputLayout? = null
-//    private var etShopLocation: TextInputEditText? = null
-//    private var etKotaKecamatanWrapper: TextInputLayout? = null
-//    private var etKotaKecamatan: TextInputEditText? = null
-//    private var etZipCodeWrapper: TextInputLayout? = null
-//    private var etZipCode: AutoCompleteTextView? = null
-//    private var etShopDetailWrapper: TextInputLayout? = null
-//    private var etShopDetail: TextInputEditText? = null
-//    private var tvPinpointText: Typography? = null
-//    private var btnSave: UnifyButton? = null
-//    private var helperShopDetail: Typography? = null
-//    private var txtShopLocationWatcher: Typography? = null
-//    private var tvUserConsent: Typography? = null
-
-//    private var mapView: MapView? = null
-//    private var btnOpenMap: UnifyButton? = null
-
     private var getSavedInstanceState: Bundle? = null
     private var googleMap: GoogleMap? = null
     private var validate: Boolean = true
@@ -124,7 +106,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         savedInstanceState?.let {
             getSavedInstanceState = savedInstanceState
         }
-        initViews()
+        initMaps()
         initViewModel()
         prepareMap()
         prepareLayout()
@@ -207,26 +189,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     override fun onLowMemory() {
         super.onLowMemory()
         binding?.layoutMapsPreview?.mapViewDetail?.onLowMemory()
-    }
-
-    private fun initViews() {
-//        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
-//        etShopLocationWrapper = view?.findViewById(R.id.et_nama_lokasi_shop_wrapper)
-//        etShopLocation = view?.findViewById(R.id.et_nama_lokasi_shop)
-//        etKotaKecamatanWrapper = view?.findViewById(R.id.et_kota_kecamatan_shop_wrapper)
-//        etKotaKecamatan = view?.findViewById(R.id.et_kota_kecamatan_shop)
-//        etZipCodeWrapper = view?.findViewById(R.id.et_kode_pos_shop_wrapper)
-//        etZipCode = view?.findViewById(R.id.et_kode_pos_shop)
-//        etShopDetailWrapper = view?.findViewById(R.id.et_detail_alamat_shop_wrapper)
-//        etShopDetail = view?.findViewById(R.id.et_detail_alamat_shop)
-//        tvPinpointText = view?.findViewById(R.id.tv_pinpoint_text)
-//        btnSave = view?.findViewById(R.id.btn_save_warehouse)
-//        helperShopDetail = view?.findViewById(R.id.tv_detail_alamat_helper)
-//        txtShopLocationWatcher = view?.findViewById(R.id.tv_nama_lokasi_watcher)
-//        tvUserConsent = view?.findViewById(R.id.tv_user_consent)
-//        mapView = view?.findViewById(R.id.map_view_detail)
-//        btnOpenMap = view?.findViewById(R.id.btn_open_map)
-        initMaps()
     }
 
     private fun initMaps() {
