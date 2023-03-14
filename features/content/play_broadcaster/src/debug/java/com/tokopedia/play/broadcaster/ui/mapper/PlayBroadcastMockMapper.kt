@@ -147,7 +147,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                         value = it * 0.1,
                         assetLink = "asset link $it",
                         isSelected = false,
-                        assetStatus = BeautificationAssetStatus.Available,
                     )
                 },
                 presets = List(5) {

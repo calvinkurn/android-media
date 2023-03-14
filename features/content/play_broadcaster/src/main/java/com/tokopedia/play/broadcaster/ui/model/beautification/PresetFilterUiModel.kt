@@ -35,6 +35,12 @@ data class PresetFilterUiModel(
     val valueForSlider: Int
         get() = (value * PERCENTAGE_MULTIPLIER).toInt()
 
+    fun copyWithNewValue(newValueFromSlider: Int): PresetFilterUiModel {
+        return copy(
+            value = newValueFromSlider / PERCENTAGE_MULTIPLIER.toDouble()
+        )
+    }
+
     companion object {
         private const val OPTION_NONE = "none"
 

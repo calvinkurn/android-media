@@ -26,12 +26,8 @@ class BeautificationFilterOptionViewHolder private constructor() {
         fun bind(item: FaceFilterUiModel) {
             binding.apply {
                 tvBeautificationFilter.text = item.name
-
-                imgBeautificationFilter.hide()
-
                 icBeautificationFilter.setImage(item.iconUnifyId)
                 icBeautificationFilter.show()
-
                 icChecked.showWithCondition(item.isChecked)
 
                 clIcon.setBackgroundResource(
@@ -39,27 +35,12 @@ class BeautificationFilterOptionViewHolder private constructor() {
                     else R.drawable.bg_face_filter_option
                 )
 
-                setAssetStatus(item.assetStatus)
+                imgBeautificationFilter.hide()
+                binding.icLoader.hide()
+                binding.icDownload.hide()
 
                 root.setOnClickListener {
                     listener.onClick(item)
-                }
-            }
-        }
-
-        private fun setAssetStatus(assetStatus: BeautificationAssetStatus) {
-            when(assetStatus) {
-                BeautificationAssetStatus.Downloading -> {
-                    binding.icLoader.show()
-                    binding.icDownload.hide()
-                }
-                BeautificationAssetStatus.NotDownloaded -> {
-                    binding.icLoader.hide()
-                    binding.icDownload.show()
-                }
-                else -> {
-                    binding.icLoader.hide()
-                    binding.icDownload.hide()
                 }
             }
         }

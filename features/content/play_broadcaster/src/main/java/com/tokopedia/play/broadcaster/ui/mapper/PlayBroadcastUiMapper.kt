@@ -170,7 +170,6 @@ class PlayBroadcastUiMapper @Inject constructor(
                         value = 0.0,
                         assetLink = "asset link",
                         isSelected = false,
-                        assetStatus = BeautificationAssetStatus.Available,
                     ),
                     FaceFilterUiModel(
                         id = FaceFilterUiModel.Type.Blur.id,
@@ -181,7 +180,6 @@ class PlayBroadcastUiMapper @Inject constructor(
                         value = 0.7,
                         assetLink = "asset link",
                         isSelected = false,
-                        assetStatus = BeautificationAssetStatus.Available,
                     ),
                     FaceFilterUiModel(
                         id = FaceFilterUiModel.Type.Sharpen.id,
@@ -192,7 +190,6 @@ class PlayBroadcastUiMapper @Inject constructor(
                         value = 0.5,
                         assetLink = "asset link",
                         isSelected = false,
-                        assetStatus = BeautificationAssetStatus.Available,
                     ),
                     FaceFilterUiModel(
                         id = FaceFilterUiModel.Type.Clarity.id,
@@ -203,7 +200,6 @@ class PlayBroadcastUiMapper @Inject constructor(
                         value = 0.4,
                         assetLink = "asset link",
                         isSelected = false,
-                        assetStatus = BeautificationAssetStatus.Available,
                     )
                 ),
                 presets = List(3) {
@@ -254,7 +250,6 @@ class PlayBroadcastUiMapper @Inject constructor(
 //                        value = menu.value,
 //                        assetLink = config.beautificationConfig.customFace.assetAndroid,
 //                        isSelected = false,
-//                        assetStatus = BeautificationAssetStatus.Available, /** TODO: handle this */
 //                    )
 //                },
 //                presets = config.beautificationConfig.presets.map { preset ->
@@ -268,7 +263,7 @@ class PlayBroadcastUiMapper @Inject constructor(
 //                        value = preset.value,
 //                        iconUrl = preset.urlIcon,
 //                        assetLink = preset.assetLink,
-//                        assetStatus = BeautificationAssetStatus.Available, /** TODO: handle this */
+//                        assetStatus = if(assetChecker.isPresetFileAvailable(preset.id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
 //                    )
 //                }
             )

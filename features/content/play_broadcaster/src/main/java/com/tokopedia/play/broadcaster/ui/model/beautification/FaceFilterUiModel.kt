@@ -17,7 +17,6 @@ data class FaceFilterUiModel(
     val value: Double,
     val assetLink: String,
     val isSelected: Boolean,
-    val assetStatus: BeautificationAssetStatus,
 ) : Parcelable {
 
     val isChecked: Boolean
@@ -40,6 +39,12 @@ data class FaceFilterUiModel(
 
     val valueForSlider: Int
         get() = (value * PERCENTAGE_MULTIPLIER).toInt()
+
+    fun copyWithNewValue(newValueFromSlider: Int): FaceFilterUiModel {
+        return copy(
+            value = newValueFromSlider / PERCENTAGE_MULTIPLIER.toDouble()
+        )
+    }
 
     enum class Type(val id: String, val iconUnifyId: Int) {
         Unknown("", UNKNOWN_ICON_UNIFY),

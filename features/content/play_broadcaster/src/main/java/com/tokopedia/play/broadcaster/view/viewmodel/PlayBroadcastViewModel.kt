@@ -1718,7 +1718,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _beautificationConfig.update {
                 it.copy(
                     faceFilters = it.faceFilters.map { faceFilter ->
-                        if(faceFilter.isSelected) faceFilter.copy(value = (newValue / 100.toDouble()))
+                        if(faceFilter.isSelected) faceFilter.copyWithNewValue(newValueFromSlider = newValue)
                         else faceFilter
                     }
                 )
@@ -1765,7 +1765,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _beautificationConfig.update {
                 it.copy(
                     presets = it.presets.map { preset ->
-                        if(preset.active) preset.copy(value = (newValue / 100.toDouble()))
+                        if(preset.active) preset.copyWithNewValue(newValueFromSlider = newValue)
                         else preset
                     }
                 )
