@@ -1746,7 +1746,51 @@ class AddProductViewModelTest {
     //endregion
 
     //region handleClearFilter
+    @Test
+    fun `When clear filter, should reset the state before re-fetch the products`() {
+        runBlockingTest {
+            //Given
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
 
+            //When
+            viewModel.processEvent(AddProductEvent.ClearFilter)
+
+            //Then
+            val actual = emittedValues.first()
+
+            assertEquals(true, actual.isLoading)
+            assertEquals("", actual.searchKeyword)
+            assertEquals(1, actual.page)
+            assertEquals(emptyList<Product>(), actual.products)
+            assertEquals(AddProductUiState.CheckboxState.UNCHECKED, actual.checkboxState)
+            assertEquals(emptyList<ProductCategoryOption>(), actual.selectedCategories)
+            assertEquals(Warehouse(WAREHOUSE_ID, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION), actual.selectedWarehouseLocation)
+            assertEquals(emptyList<ShopShowcase>(), actual.selectedShopShowcase)
+            assertEquals(
+                ProductSortOptions(id = "DEFAULT", name = "", value = "DESC"),
+                actual.selectedSort
+            )
+            assertEquals(false, actual.isFilterActive)
+
+            val param = ProductListUseCase.Param(
+                categoryIds = listOf(),
+                page = 1,
+                pageSize = 20,
+                searchKeyword = "",
+                showcaseIds = listOf(),
+                sortDirection = "DESC",
+                sortId = "DEFAULT",
+                warehouseId = WAREHOUSE_ID
+            )
+
+            coVerify { getProductsUseCase.execute(param) }
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region handleApplySortFilter
