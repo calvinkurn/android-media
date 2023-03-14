@@ -44,7 +44,7 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         val LAYOUT = R.layout.home_component_dynamic_icon
         const val SCROLLABLE_ITEM = 5
         const val SCROLLABLE_ITEM_MACRO = 6
-        const val SCROLLABLE_ITEM_MACRO_REVAMP = 4
+        const val SCROLLABLE_ITEM_MACRO_REVAMP = 3
         private const val MARGIN_TOP_MACRO = 6
         private const val MARGIN_BOTTOM_MACRO = 8
         private const val MARGIN_VERTICAL_DEFAULT = 12
