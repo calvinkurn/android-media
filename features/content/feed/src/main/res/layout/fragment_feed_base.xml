@@ -117,7 +117,7 @@
             android:id="@+id/label_feed_live"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/label_live_feed"
+            android:background="@drawable/bg_label_live_feed"
             android:text="@string/feed_live_label"
             android:textAlignment="center"
             android:textColor="@color/Unify_NN0"
