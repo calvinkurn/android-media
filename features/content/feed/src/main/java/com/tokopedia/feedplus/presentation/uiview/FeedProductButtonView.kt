@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.presentation.uiview
 
 import com.tokopedia.content.common.databinding.ViewProductSeeMoreBinding
-import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
@@ -19,19 +18,21 @@ class FeedProductButtonView(
 ) {
 
     fun bindData(
-        postId: String, author: FeedAuthorModel, postType: String,
-        isFollowing: Boolean, campaign: FeedCardCampaignModel,
-        hasVoucher: Boolean, totalProducts: Int
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        totalProducts: Int
     ) {
         with(binding) {
             when {
                 totalProducts > PRODUCT_COUNT_NINETY_NINE -> {
-                    tvPlayProductCount.text =
-                        root.context.getString(R.string.feeds_tag_product_99_more_text)
+                    tvPlayProductCount.text = NINETY_NINE_PLUS
                 }
                 else -> {
-                    tvPlayProductCount.text =
-                        root.context.getString(R.string.feeds_tag_product_text, totalProducts)
+                    tvPlayProductCount.text = totalProducts.toString()
                 }
             }
 
@@ -48,10 +49,13 @@ class FeedProductButtonView(
                     postType,
                     isFollowing,
                     campaign,
-                    hasVoucher,
+                    hasVoucher
                 )
             }
         }
     }
 
+    companion object {
+        private const val NINETY_NINE_PLUS = "99+"
+    }
 }
