@@ -68,10 +68,15 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_CHAT_SEPARATOR -> convertToChatSeprator(chatItemPojoByDateByTime)
             TYPE_HELPFULL_QUESTION -> convertToHelpQuestionViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(chatItemPojoByDateByTime)
-            TYPE_STICKED_BUTTON_ACTIONS -> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
+            TYPE_STICKED_BUTTON_ACTIONS -> convertToStickyButtonActionsViewModel(
+                chatItemPojoByDateByTime
+            )
             TYPE_CSAT_VIEW -> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
-            TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(chatItemPojoByDateByTime, attachmentIds)
+            TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(
+                chatItemPojoByDateByTime,
+                attachmentIds
+            )
             TYPE_VIDEO_UPLOAD -> convertToVideoUpload(chatItemPojoByDateByTime)
             DYNAMIC_ATTACHMENT -> {
                 val dynamicAttachment = GsonBuilder().create().fromJson(
@@ -79,10 +84,19 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                     DynamicAttachment::class.java
                 )
                 val contentCode = dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
-                if (ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(contentCode)) {
+                if (ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(
+                        contentCode
+                    )
+                ) {
                     when (contentCode) {
-                        ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_RECEIVE -> convertToDynamicAttachmentwithContentCode105(chatItemPojoByDateByTime, dynamicAttachment)
-                        ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND -> convertToDynamicAttachment105withContentCode106(chatItemPojoByDateByTime, dynamicAttachment)
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_RECEIVE -> convertToDynamicAttachmentwithContentCode105(
+                            chatItemPojoByDateByTime,
+                            dynamicAttachment
+                        )
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND -> convertToDynamicAttachment105withContentCode106(
+                            chatItemPojoByDateByTime,
+                            dynamicAttachment
+                        )
                         else -> convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
                     }
                 } else {
@@ -110,7 +124,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             attachmentType = pojo.attachmentType.toString(),
             actionBubble = convertToSingleButtonAction(dynamicStickyButton.buttonAction),
             contentText = dynamicStickyButton.textMessage,
-            replyTime = pojo.replyTime
+            replyTime = pojo.replyTime,
+            status = pojo.status
         )
     }
 
