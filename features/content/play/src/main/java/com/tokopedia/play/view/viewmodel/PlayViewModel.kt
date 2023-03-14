@@ -1289,7 +1289,7 @@ class PlayViewModel @AssistedInject constructor(
                 if (!userSession.isLoggedIn) error("User is not logged in")
                 val count = repo.getCartCount()
 
-                _channelDetail.update { it.copy(cartCount = count) }
+                _combinedState.update { it.copy(cartCount = count) }
             } catch (e: Throwable) {
                 e.printStackTrace()
             }

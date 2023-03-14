@@ -172,12 +172,14 @@ data class ExploreWidgetUiState(
 data class PlayCombinedState(
     val videoProperty: VideoPropertyUiModel,
     val isLoadingBuy: Boolean,
+    val cartCount: Int,
 ) {
     companion object {
         val Empty: PlayCombinedState
             get() = PlayCombinedState(
                 videoProperty = VideoPropertyUiModel.Empty,
                 isLoadingBuy = false,
+                cartCount = 0,
             )
     }
 }

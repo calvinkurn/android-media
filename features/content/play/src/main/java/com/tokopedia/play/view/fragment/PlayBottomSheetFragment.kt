@@ -792,13 +792,13 @@ class PlayBottomSheetFragment @Inject constructor(
         if (state.isNotChanged(
                 { it.tagItems },
                 { it.channel.showCart },
-                { it.channel.cartCount },
+                { it.combinedState.cartCount },
                 { it.channel.emptyBottomSheetInfo }
             )
         ) return
 
         productSheetView.showCart(state.value.channel.showCart)
-        productSheetView.setCartCount(state.value.channel.cartCount)
+        productSheetView.setCartCount(state.value.combinedState.cartCount)
 
         val prevTagItems = state.prevValue?.tagItems
         val tagItems = state.value.tagItems
