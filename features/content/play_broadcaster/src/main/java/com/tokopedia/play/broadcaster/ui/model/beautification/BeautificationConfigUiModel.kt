@@ -9,8 +9,9 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class BeautificationConfigUiModel(
-    val license: String,
-    val model: String,
+    val licenseLink: String,
+    val modelLink: String,
+    val customFaceAssetLink: String,
     val faceFilters: List<FaceFilterUiModel>,
     val presets: List<PresetFilterUiModel>,
 ) : Parcelable {
@@ -28,10 +29,10 @@ data class BeautificationConfigUiModel(
         get() = presets.firstOrNull { it.active }
 
     fun convertToDTO() = Config.BeautificationConfig(
-        license = license,
-        model = model,
+        license = licenseLink,
+        model = modelLink,
         customFace = Config.BeautificationConfig.CustomFace(
-            assetAndroid = faceFilters.firstOrNull()?.assetLink.orEmpty(),
+            assetAndroid = customFaceAssetLink,
             menu = faceFilters.map { faceFilter ->
                 Config.BeautificationConfig.CustomFace.Menu(
                     name = faceFilter.name,
@@ -59,8 +60,9 @@ data class BeautificationConfigUiModel(
     companion object {
         val Empty: BeautificationConfigUiModel
             get() = BeautificationConfigUiModel(
-                license = "",
-                model = "",
+                licenseLink = "",
+                modelLink = "",
+                customFaceAssetLink = "",
                 faceFilters = emptyList(),
                 presets = emptyList(),
             )

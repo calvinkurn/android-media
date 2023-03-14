@@ -135,8 +135,9 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 TermsAndConditionUiModel("Gak ada izin sama sekali"),
             ),
             beautificationConfig = BeautificationConfigUiModel(
-                license = "license.bag",
-                model = "model.bag",
+                licenseLink = "license.bag",
+                modelLink = "model.zip",
+                customFaceAssetLink = "customface.zip",
                 faceFilters = List(5) {
                     FaceFilterUiModel(
                         id = if(it == 0) "none" else "Custom Face id $it",
@@ -145,7 +146,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                         maxValue = it * 0.1,
                         defaultValue = it * 0.1,
                         value = it * 0.1,
-                        assetLink = "asset link $it",
                         isSelected = false,
                     )
                 },

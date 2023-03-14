@@ -15,7 +15,6 @@ data class FaceFilterUiModel(
     val maxValue: Double,
     val defaultValue: Double,
     val value: Double,
-    val assetLink: String,
     val isSelected: Boolean,
 ) : Parcelable {
 

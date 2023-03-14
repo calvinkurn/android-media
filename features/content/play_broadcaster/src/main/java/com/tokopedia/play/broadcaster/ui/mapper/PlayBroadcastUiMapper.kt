@@ -157,9 +157,10 @@ class PlayBroadcastUiMapper @Inject constructor(
                 TermsAndConditionUiModel(desc = it.description)
             },
             beautificationConfig = BeautificationConfigUiModel(
-                license = config.beautificationConfig.license,
-                model = config.beautificationConfig.model,
                 /** TODO: mocking purpose */
+                licenseLink = "https://assets.tokopedia.net/asts/android/content/play/tokopedia_20221231_20231231_com.tokopedia.tkpd_4.2.3.licbag",
+                modelLink = "https://assets.tokopedia.net/asts/android/content/play/ModelResource.bundle.zip",
+                customFaceAssetLink = "https://assets.tokopedia.net/asts/android/content/play/beauty_Android_standard.zip",
                 faceFilters = listOf(
                     FaceFilterUiModel(
                         id = FaceFilterUiModel.Type.None.id,
@@ -168,7 +169,6 @@ class PlayBroadcastUiMapper @Inject constructor(
                         maxValue = 1.0,
                         defaultValue = 0.0,
                         value = 0.0,
-                        assetLink = "asset link",
                         isSelected = false,
                     ),
                     FaceFilterUiModel(
@@ -178,7 +178,6 @@ class PlayBroadcastUiMapper @Inject constructor(
                         maxValue = 1.0,
                         defaultValue = 0.7,
                         value = 0.7,
-                        assetLink = "asset link",
                         isSelected = false,
                     ),
                     FaceFilterUiModel(
@@ -188,7 +187,6 @@ class PlayBroadcastUiMapper @Inject constructor(
                         maxValue = 1.0,
                         defaultValue = 0.5,
                         value = 0.5,
-                        assetLink = "asset link",
                         isSelected = false,
                     ),
                     FaceFilterUiModel(
@@ -198,7 +196,6 @@ class PlayBroadcastUiMapper @Inject constructor(
                         maxValue = 1.0,
                         defaultValue = 0.4,
                         value = 0.4,
-                        assetLink = "asset link",
                         isSelected = false,
                     )
                 ),
@@ -239,7 +236,10 @@ class PlayBroadcastUiMapper @Inject constructor(
                         assetLink = assetLink,
                         assetStatus = if(assetChecker.isPresetFileAvailable(id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
                     )
-                }
+                },
+//                licenseLink = config.beautificationConfig.license,
+//                modelLink = config.beautificationConfig.model,
+//                customFaceAssetLink = config.beautificationConfig.customFace.assetAndroid,
 //                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
 //                    FaceFilterUiModel(
 //                        id = menu.id,
@@ -248,7 +248,6 @@ class PlayBroadcastUiMapper @Inject constructor(
 //                        maxValue = menu.maxValue,
 //                        defaultValue = menu.defaultValue,
 //                        value = menu.value,
-//                        assetLink = config.beautificationConfig.customFace.assetAndroid,
 //                        isSelected = false,
 //                    )
 //                },
