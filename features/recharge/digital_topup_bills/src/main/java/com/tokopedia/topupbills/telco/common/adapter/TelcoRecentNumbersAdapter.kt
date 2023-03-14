@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 
 class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBillsRecommendation>) :
     RecyclerView.Adapter<TelcoRecentNumbersAdapter.RecentNumbersItemViewHolder>() {
@@ -21,7 +21,7 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentNumbersItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_vertical_recent_numbers, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(com.tokopedia.common.topupbills.R.layout.item_vertical_recent_numbers, parent, false)
         return RecentNumbersItemViewHolder(view)
     }
 
@@ -49,7 +49,9 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
 
         fun bind(topupBillsRecommendation: TopupBillsRecommendation) {
             this.topupBillsRecommendation = topupBillsRecommendation
-            ImageHandler.loadImageWithoutPlaceholder(iconOperator, topupBillsRecommendation.iconUrl,
+            ImageHandler.loadImageWithoutPlaceholder(
+                iconOperator,
+                topupBillsRecommendation.iconUrl,
                 ContextCompat.getDrawable(itemView.context, com.tokopedia.abstraction.R.drawable.status_no_result)
             )
             if (topupBillsRecommendation.description.isEmpty()) {
@@ -60,11 +62,9 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
 
             textProductName.text = topupBillsRecommendation.title
         }
-
     }
 
     interface ActionListener {
         fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int)
     }
-
 }

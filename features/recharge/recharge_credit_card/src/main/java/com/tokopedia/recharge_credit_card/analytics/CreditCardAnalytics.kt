@@ -78,8 +78,6 @@ class CreditCardAnalytics(val iris: Iris) {
     }
 
     fun addToCart(userId: String, categoryName: String, categoryId: String, prefixName: String, prefixId: String) {
-        val products: MutableList<Any> = ArrayList()
-        products.add(constructProductEnhanceEcommerce(prefixName, prefixId, categoryName, categoryId))
         val defaultChannelId = 1
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -95,7 +93,12 @@ class CreditCardAnalytics(val iris: Iris) {
                     DigitalTrackingConst.CurrencyCode.KEY,
                     DigitalTrackingConst.CurrencyCode.IDR,
                     DigitalTrackingConst.Label.ADD,
-                    DataLayer.mapOf(DigitalTrackingConst.Label.PRODUCTS, DataLayer.listOf(*products.toTypedArray()))
+                    DataLayer.mapOf(
+                        DigitalTrackingConst.Label.PRODUCTS,
+                        DataLayer.listOf(
+                            constructProductEnhanceEcommerce(prefixName, prefixId, categoryName, categoryId)
+                        )
+                    )
                 ),
                 DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE
             )
