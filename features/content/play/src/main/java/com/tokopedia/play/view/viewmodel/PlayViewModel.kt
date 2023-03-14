@@ -1170,6 +1170,8 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
         updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
+        updateCartCount()
+
         sendInitialLog()
     }
 
@@ -1281,6 +1283,19 @@ class PlayViewModel @AssistedInject constructor(
         updatePartnerInfo(channelData)
         if (!channelData.status.channelStatus.statusType.isFreeze) {
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
+        }
+    }
+
+    private fun updateCartCount() {
+        viewModelScope.launch {
+            try {
+                if (!userSession.isLoggedIn) error("User is not logged in")
+                val count = repo.getCartCount()
+
+                _channelDetail.update { it.copy(cartCount = count) }
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -2628,6 +2643,8 @@ class PlayViewModel @AssistedInject constructor(
             }
             _loadingBuy.value = false
             onSuccess(cartId)
+
+            updateCartCount()
         }) {
             _uiEvent.emit(ShowErrorEvent(it))
             _loadingBuy.value = false

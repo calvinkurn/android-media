@@ -225,20 +225,21 @@ class ProductSheetViewComponent(
         }
     }
 
-    fun setProductSheet(
-        sectionList: List<ProductSectionUiModel>,
-        voucherList: List<PlayVoucherUiModel>,
-        title: String,
-        showCart: Boolean,
-    ) {
-        showContent(true)
-        header.setTitle(title)
-
-        if (showCart) {
+    fun showCart(shouldShow: Boolean) {
+        if (shouldShow) {
             header.setIconNotification(IconUnify.CART)
         } else {
             header.setIconNotification(null)
         }
+    }
+
+    fun setProductSheet(
+        sectionList: List<ProductSectionUiModel>,
+        voucherList: List<PlayVoucherUiModel>,
+        title: String,
+    ) {
+        showContent(true)
+        header.setTitle(title)
 
         val sections = sectionList.filterIsInstance<ProductSectionUiModel.Section>()
         val newProductList = buildProductList(sections)
@@ -299,7 +300,10 @@ class ProductSheetViewComponent(
     }
 
     fun setCartCount(count: Int) {
-        header.setIconNotificationText(count.toString())
+        header.setIconNotificationText(
+            if (count <= 0) ""
+            else count.toString()
+        )
     }
 
     private fun showContent(shouldShow: Boolean) {

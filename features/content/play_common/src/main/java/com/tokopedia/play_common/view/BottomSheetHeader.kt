@@ -71,6 +71,8 @@ class BottomSheetHeader : ConstraintLayout {
     }
 
     fun setIconNotificationText(text: String) {
+        binding.iconNotifRight.notificationRef.showWithCondition(text.isNotBlank())
+
         binding.iconNotifRight.notificationRef.setNotification(
             text,
             NotificationUnify.COUNTER_TYPE,
