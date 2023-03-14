@@ -1476,6 +1476,168 @@ class AddProductViewModelTest {
     }
     //endregion
 
+    //region handleRemoveProductFromSelection
+
+    @Test
+    fun `When removing product with no variant, should mark the deleted product as non selected`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val secondProduct = populateProduct().copy(id = 2, isSelected = false)
+            val expectedFirstProductVariant = listOf(
+                Product.Variant(
+                    variantProductId = 111,
+                    isEligible = true,
+                    reason = "",
+                    isSelected = true
+                ),
+                Product.Variant(
+                    variantProductId = 112,
+                    isEligible = false,
+                    reason = "",
+                    isSelected = false
+                ),
+            )
+            val firstProductVariants = listOf(
+                VoucherValidationResult.ValidationProduct.ProductVariant(
+                    productId = 111,
+                    productName = "First Product - Red Variant",
+                    price = 55_000,
+                    stock = 10,
+                    isEligible = true,
+                    reason = ""
+                ),
+                VoucherValidationResult.ValidationProduct.ProductVariant(
+                    productId = 112,
+                    productName = "First Product - Blue Variant",
+                    price = 55_000,
+                    stock = 10,
+                    isEligible = false,
+                    reason = ""
+                )
+            )
+
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = firstProductVariants
+                ),
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = secondProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse, totalProduct = 50)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(firstProduct.id))
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(secondProduct.id))
+
+            viewModel.processEvent(AddProductEvent.RemoveProductFromSelection(secondProduct.id))
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstProduct.copy(
+                        isSelected = true,
+                        enableCheckbox = true,
+                        originalVariants = expectedFirstProductVariant,
+                        selectedVariantsIds = setOf<Long>(111)
+                    ),
+                    secondProduct.copy(
+                        isSelected = false,
+                        enableCheckbox = true
+                    )
+                ),
+                actual.products
+            )
+            assertEquals(AddProductUiState.CheckboxState.INDETERMINATE, actual.checkboxState)
+            assertEquals(setOf<Long>(1), actual.selectedProductsIds)
+            assertEquals(1, actual.selectedProductCount)
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+    //region handleClearSearchbar
+
+    //endregion
+
+    //region handleClearFilter
+
+    //endregion
+
+    //region handleApplySortFilter
+
+    //endregion
+
+    //region handleApplyWarehouseLocationFilter
+
+    //endregion
+
+    //region handleConfirmChangeWarehouseLocationFilter
+
+    //endregion
+
+    //region handleApplySortFilter
+
+    //endregion
+
+    //region handleTapVariant
+
+    //endregion
+
+    //region handleVariantUpdated
+
+    //endregion
+
+    //region handleConfirmAddProduct
+
+    //endregion
+
+    //region handleAddNewProducts
+
+    //endregion
     private fun buildVoucherConfiguration(): VoucherConfiguration {
         return VoucherConfiguration().copy(
             startPeriod = Date(2023, 1, 1, 0, 0, 0),
