@@ -37,6 +37,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
 import java.util.*
 
 @ExperimentalCoroutinesApi
@@ -1794,7 +1795,137 @@ class AddProductViewModelTest {
     //endregion
 
     //region handleApplySortFilter
+    @Test
+    fun `When apply new sort with id other than DEFAULT, isFilterActive should be true`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
 
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+            val newSort = ProductSortOptions(id = "PRICE", name = "Harga", value = "ASC")
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            mockGetProductListGqlCall(sortDirection = "ASC", sortId = "PRICE")
+
+            viewModel.processEvent(AddProductEvent.ApplySortFilter(newSort))
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(1, actual.page)
+            assertEquals(newSort, actual.selectedSort)
+            assertEquals(true, actual.isFilterActive)
+
+
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When apply new sort with id equals to DEFAULT, isFilterActive should be false`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+            val newSort = ProductSortOptions(id = "DEFAULT", name = "", value = "ASC")
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            mockGetProductListGqlCall(sortDirection = "ASC", sortId = "DEFAULT")
+
+            viewModel.processEvent(AddProductEvent.ApplySortFilter(newSort))
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(1, actual.page)
+            assertEquals(newSort, actual.selectedSort)
+            assertEquals(false, actual.isFilterActive)
+
+
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region handleApplyWarehouseLocationFilter
@@ -1898,6 +2029,8 @@ class AddProductViewModelTest {
         page : Int = 1,
         searchKeyword: String = "",
         warehouseId: Long = WAREHOUSE_ID,
+        sortDirection: String = "DESC",
+        sortId: String = "DEFAULT",
         totalProduct: Int = 20,
         products: List<Product> = emptyList()
     ) {
@@ -1907,8 +2040,8 @@ class AddProductViewModelTest {
             pageSize = 20,
             searchKeyword = searchKeyword,
             showcaseIds = listOf(),
-            sortDirection = "DESC",
-            sortId = "DEFAULT",
+            sortDirection = sortDirection,
+            sortId = sortId,
             warehouseId = warehouseId
         )
         val getProductsResponse = ProductResult(total = totalProduct, products = products)
