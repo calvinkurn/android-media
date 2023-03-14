@@ -2328,12 +2328,29 @@ class AddProductViewModelTest {
     }
     //endregion
 
-    //region handleApplySortFilter
-
-    //endregion
-
     //region handleTapVariant
+    @Test
+    fun `When tap variant function called, should emit ShowVariantBottomSheet effect` () {
+        runBlockingTest {
+            //Given
+            val emittedEffects = arrayListOf<AddProductEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
 
+            val product = populateProduct()
+
+            //When
+            viewModel.processEvent(AddProductEvent.TapVariant(product))
+
+
+            //Then
+            val actual = emittedEffects.last()
+            assertEquals(AddProductEffect.ShowVariantBottomSheet(product), actual)
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region handleVariantUpdated
