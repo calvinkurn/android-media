@@ -13,6 +13,7 @@ object ChatbotConstant {
     const val MODE_BOT = "bot"
     const val TOKOPEDIA_CARE = "Tokopedia Care"
     const val TANYA = "Tanya"
+
     // Used for invoice list, button action and dynamic sticky button action
     const val RENDER_TO_UI_BASED_ON_STATUS = 1
     const val SOURCE_CHATBOT = "chatbot"
@@ -56,7 +57,7 @@ object ChatbotConstant {
         const val SESSION_CHANGE = "31"
     }
 
-    object ReplyBoxType {
+    object DynamicAttachment {
         const val DYNAMIC_ATTACHMENT = "34"
         const val TYPE_BIG_REPLY_BOX = 100
         const val REPLY_BOX_TOGGLE_VALUE = 101
@@ -69,7 +70,7 @@ object ChatbotConstant {
             DYNAMIC_STICKY_BUTTON_SEND
         )
         val PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT = listOf<Int>(
-            DYNAMIC_STICKY_BUTTON_RECEIVE,
+            DYNAMIC_STICKY_BUTTON_RECEIVE
         )
     }
 

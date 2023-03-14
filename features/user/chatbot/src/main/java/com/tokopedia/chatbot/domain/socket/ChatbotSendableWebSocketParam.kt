@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.domain.socket
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -10,6 +11,8 @@ import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
+import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicButtonAction
+import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicStickyActionBubbleContent
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -369,5 +372,72 @@ object ChatbotSendableWebSocketParam {
 
         json.add("data", data)
         return json
+    }
+
+    fun generateParamDynamicAttachmentText(
+        messageId: String,
+        bubbleUiModel: ChatActionBubbleUiModel,
+        startTime: String,
+        toUid: String
+    ): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+
+        val dynamicContent: String = generateDynamicContent(bubbleUiModel)
+
+        val attribute = JsonObject().apply {
+            addProperty(
+                "content_code",
+                ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_SEND
+            )
+            addProperty("dynamic_content", dynamicContent)
+            // TODO change this one
+            addProperty("user_id", toUid.toLongOrZero())
+        }
+
+        val payload = JsonObject().apply {
+            add("attribute", attribute)
+            addProperty("is_log_history", true)
+        }
+
+        val data = JsonObject().apply {
+            addProperty("message_id", messageId.convertMessageIdToLong())
+            addProperty("message", bubbleUiModel.text)
+            addProperty("attachment_type", ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT.toIntOrZero())
+            add("payload", payload)
+            addProperty("start_time", startTime)
+            addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
+        }
+
+        json.add("data", data)
+
+        return json
+    }
+
+    private fun generateDynamicContent(bubbleUiModel: ChatActionBubbleUiModel): String {
+        val buttonActionContent = JsonObject().apply {
+            addProperty("action", bubbleUiModel.action)
+            addProperty("text", bubbleUiModel.text)
+            addProperty("value", bubbleUiModel.value)
+        }
+        val content = JsonObject().apply {
+            add("button_action", buttonActionContent)
+        }
+        val bubbleContent = DynamicStickyActionBubbleContent(
+            bubbleUiModel.action,
+            bubbleUiModel.text,
+            bubbleUiModel.value
+        )
+        val dynamicButtonAction = DynamicButtonAction(bubbleContent)
+//
+//        return JsonObject().apply {
+//            add("button_action", buttonAction)
+//        }
+
+        try {
+            return Gson().toJson(dynamicButtonAction)
+        } catch (e: Exception) {
+            return ""
+        }
     }
 }

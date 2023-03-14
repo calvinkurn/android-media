@@ -49,6 +49,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatOptionListList
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.DynamicStickyButtonListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
@@ -72,7 +73,8 @@ open class ChatbotTypeFactoryImpl(
     private val actionButtonClickListener: StickyActionButtonClickListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val videoUploadListener: VideoUploadListener,
-    private val userSession: UserSessionInterface,
+    private val dynamicStickyButtonListener: DynamicStickyButtonListener,
+    private val userSession: UserSessionInterface
 ) :
     BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
@@ -121,7 +123,7 @@ open class ChatbotTypeFactoryImpl(
             ChatbotFallbackAttachmentViewHolder.LAYOUT -> ChatbotFallbackAttachmentViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
             StickyActionButtonViewHolder.LAYOUT -> StickyActionButtonViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener, actionButtonClickListener)
             ChatRatingViewHolder.LAYOUT -> ChatRatingViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener, chatRatingListener)
-            DynamicStickyButtonViewHolder.LAYOUT -> DynamicStickyButtonViewHolder(parent, chatLinkHandlerListener)
+            DynamicStickyButtonViewHolder.LAYOUT -> DynamicStickyButtonViewHolder(parent, chatLinkHandlerListener, dynamicStickyButtonListener)
             else -> createViewHolder(parent, type)
         }
     }

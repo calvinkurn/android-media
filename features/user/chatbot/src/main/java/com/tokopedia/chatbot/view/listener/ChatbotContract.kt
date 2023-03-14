@@ -188,5 +188,12 @@ interface ChatbotContract {
             onError: (Throwable) -> Unit,
             onGetChatRatingListMessageError: (String) -> Unit
         )
+
+        fun sendDynamicAttachmentText(
+            messageId: String,
+            bubbleUiModel: ChatActionBubbleUiModel,
+            startTime: String,
+            opponentId: String
+        )
     }
 }

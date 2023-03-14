@@ -8,10 +8,15 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicContentCode105Binding
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.DynamicStickyButtonListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class DynamicStickyButtonViewHolder(itemView: View,
-                                    private val chatLinkHandlerListener: ChatLinkHandlerListener,): BaseChatBotViewHolder<DynamicStickyButtonUiModel>(itemView) {
+class DynamicStickyButtonViewHolder(
+    itemView: View,
+    private val chatLinkHandlerListener: ChatLinkHandlerListener,
+    private val dynamicStickyButtonListener: DynamicStickyButtonListener
+) :
+    BaseChatBotViewHolder<DynamicStickyButtonUiModel>(itemView) {
 
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
     private var binding: ItemChatbotDynamicContentCode105Binding? by viewBinding()
@@ -25,9 +30,13 @@ class DynamicStickyButtonViewHolder(itemView: View,
         binding?.apply {
             chatbotTvMessageContent.message?.text = uiModel.contentText ?: ""
             actionButton.text = uiModel.actionBubble.text
+            actionButton.setOnClickListener {
+                dynamicStickyButtonListener.onButtonActionClicked(
+                    uiModel.actionBubble
+                )
+            }
         }
     }
-
 
     override fun getCustomChatLayoutId(): Int = R.id.chatbot_tv_message_content
 
