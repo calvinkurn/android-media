@@ -2,15 +2,13 @@ package com.tokopedia.feedplus.presentation.adapter.listener
 
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 
 interface FeedListener {
     fun onMenuClicked(id: String)
     fun disableClearView()
     fun inClearViewMode(): Boolean
-    fun onFollowClicked(id: String, isShop: Boolean)
-    fun changeTab(type: String)
-    fun reload()
 
     fun onProductTagButtonClicked(
         postId: String,
@@ -43,5 +41,4 @@ interface FeedListener {
     fun changeTab(type: String)
     fun reload()
     fun onLikePostCLicked(model: FeedCardImageContentModel, rowNumber: Int)
-
 }
