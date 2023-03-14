@@ -190,11 +190,9 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     private fun setupParam() {
-        val mParam = intent?.getParcelableExtra<PickerParam>(EXTRA_PICKER_PARAM)
+        val mParam = intent?.parcelableExtra<PickerParam>(EXTRA_PICKER_PARAM)
 
-        if (mParam?.pageSourceName()?.isNotEmpty() == true && mParam.subPageSourceName()
-                .isEmpty()
-        ) {
+        if (mParam?.pageSourceName()?.isNotEmpty() == true && mParam.subPageSourceName().isEmpty()) {
             param.disposeSubPicker()
         }
 
