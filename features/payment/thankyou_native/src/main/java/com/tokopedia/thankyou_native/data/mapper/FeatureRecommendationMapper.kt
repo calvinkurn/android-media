@@ -10,6 +10,7 @@ import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.tokomember.model.MembershipOrderData
 import com.tokopedia.tokomember.trackers.TokomemberSource
 import org.json.JSONObject
+import timber.log.Timber
 
 object FeatureRecommendationMapper {
 
@@ -29,7 +30,9 @@ object FeatureRecommendationMapper {
                         return requestParam
                     }
 
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
             }
         }
         return null
@@ -43,7 +46,9 @@ object FeatureRecommendationMapper {
                     if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
                         return true
                     }
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
             }
         }
         return false
@@ -76,7 +81,9 @@ object FeatureRecommendationMapper {
                             sectionSubTitle = jsonObject[KEY_SUBTITLE].toString()
                         }
                     }
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
             }
         }
         return TokoMemberRequestParam (
@@ -112,6 +119,23 @@ object FeatureRecommendationMapper {
         return null
     }
 
+    fun getWidgetOrder(engineData: FeatureEngineData?): String {
+        if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
+            try {
+                val jsonObject = JSONObject(engineData.featureEngineItem.first().detail)
+                return if (jsonObject[KEY_TYPE].toString().equals(TYPE_CONFIG, true)){
+                    jsonObject[KEY_WIDGET_ORDER].toString()
+                } else {
+                    ""
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+
+        return ""
+    }
+
     private fun getGyroRecommendationItemList(featureEngineItems: ArrayList<FeatureEngineItem>): ArrayList<Visitable<*>> {
         return arrayListOf<Visitable<*>>().apply {
             featureEngineItems.forEach { featureEngineItem ->
@@ -122,7 +146,9 @@ object FeatureRecommendationMapper {
                             add(getFeatureRecommendationListItem(featureEngineItem))
                         }
                     }
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
             }
         }
     }
@@ -140,8 +166,11 @@ object FeatureRecommendationMapper {
     private const val KEY_TITLE = "section_title"
     private const val KEY_SUBTITLE = "section_desc"
     private const val TYPE_LIST = "list"
-    const val TYPE_TOKOMEMBER = "tokomember"
     private const val TYPE_TDN_USER = "tdn_user"
+    private const val TYPE_CONFIG = "config"
+    private const val KEY_WIDGET_ORDER = "widget_order"
+    const val TYPE_TOKOMEMBER = "tokomember"
     const val TYPE_TDN_PRODUCT = "tdn_product"
+
 
 }

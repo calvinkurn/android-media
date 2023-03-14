@@ -53,6 +53,7 @@ import com.tokopedia.thankyou_native.helper.getTopAdsHeadlinesView
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
+import com.tokopedia.thankyou_native.presentation.adapter.BottomContentAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroTokomemberItem
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
@@ -326,6 +327,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                     showErrorToasterRegister()
                 }
             }
+        }
+
+        thanksPageDataViewModel.widgetOrder.observe(viewLifecycleOwner) {
+
         }
     }
 

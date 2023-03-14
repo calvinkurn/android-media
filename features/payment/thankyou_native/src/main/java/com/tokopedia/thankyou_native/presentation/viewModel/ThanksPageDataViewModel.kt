@@ -3,6 +3,7 @@ package com.tokopedia.thankyou_native.presentation.viewModel
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
@@ -60,6 +61,9 @@ class ThanksPageDataViewModel @Inject constructor(
     private val _membershipRegisterData = MutableLiveData<Result<MembershipRegister>>()
     val membershipRegisterData : LiveData<Result<MembershipRegister>> = _membershipRegisterData
 
+    private val _bottomContentVisitableList = MutableLiveData<List<Visitable<*>>>()
+
+    private var widgetOrder = ""
 
     fun getThanksPageData(paymentId: String, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
@@ -89,6 +93,7 @@ class ThanksPageDataViewModel @Inject constructor(
             if (it.success) {
                 it.engineData?.let { featureEngineData ->
                     _gyroResponseLiveData.value = featureEngineData
+                    widgetOrder = getWidgetOrder(featureEngineData)
 
                     val topAdsRequestParams = getTopAdsRequestParams(it.engineData)
                     if (topAdsRequestParams != null) {
@@ -116,6 +121,8 @@ class ThanksPageDataViewModel @Inject constructor(
             if (it.isNotEmpty()) {
                 topAdsRequestParams.topAdsUIModelList = it
                 _topAdsDataLiveData.postValue(topAdsRequestParams)
+
+                addTopAdsItemBottomContent(topAdsRequestParams)
             }
         }, { it.printStackTrace() })
     }
@@ -133,6 +140,10 @@ class ThanksPageDataViewModel @Inject constructor(
         engineData: FeatureEngineData
     ): TokoMemberRequestParam {
         return FeatureRecommendationMapper.getTokomemberRequestParams(thanksPageData,engineData)
+    }
+
+    private fun getWidgetOrder(featureEngineData: FeatureEngineData?): String {
+        return FeatureRecommendationMapper.getWidgetOrder(featureEngineData)
     }
 
     @VisibleForTesting
@@ -183,6 +194,12 @@ class ThanksPageDataViewModel @Inject constructor(
         },{
             _membershipRegisterData.postValue(Fail(it))
         })
+    }
+
+    fun addTopAdsItemBottomContent(topAdsRequestParams: TopAdsRequestParams) {
+        _bottomContentVisitableList.value = _bottomContentVisitableList.value.orEmpty().plus(
+            topAdsRequestParams
+        )
     }
 
     override fun onCleared() {

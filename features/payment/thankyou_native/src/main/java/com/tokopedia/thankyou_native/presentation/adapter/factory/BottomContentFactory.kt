@@ -10,7 +10,7 @@ import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListen
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
 
 class BottomContentFactory(
-    private val registerMemberShipListener: RegisterMemberShipListener
+    private val registerMemberShipListener: RegisterMemberShipListener,
     private val marketplaceRecommendationListener: MarketplaceRecommendationListener
 ): BaseAdapterTypeFactory() {
 
