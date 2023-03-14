@@ -66,7 +66,10 @@ data class PurposeDataModel(
 
 data class Attributes(
     @SerializedName("uiName")
-    var uiName: String = ""
+    var uiName: String = "",
+
+    @SerializedName("dataElementType")
+    val dataElementType: String = ""
 )
 
 data class NoticeDataModel(

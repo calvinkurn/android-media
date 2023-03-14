@@ -242,9 +242,10 @@ class UserConsentWidget : FrameLayout,
             val purposes: MutableList<UserConsentPayload.PurposeDataModel> = mutableListOf()
             collection?.purposes?.forEach {
                 purposes.add(UserConsentPayload.PurposeDataModel(
-                    it.id,
-                    it.version,
-                    collection?.consentType.orEmpty()
+                    purposeId = it.id,
+                    version = it.version,
+                    transactionType = collection?.consentType.orEmpty(),
+                    dataElementType = it.attribute.dataElementType
                 ))
             }
             UserConsentPayload(

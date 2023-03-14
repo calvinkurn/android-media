@@ -21,7 +21,9 @@ data class UserConsentPayload (
         @SerializedName("version")
         var version: String = "",
         @SerializedName("transaction_type")
-        var transactionType: String = ""
+        var transactionType: String = "",
+        @SerializedName("dataElementType")
+        val dataElementType: String = ""
     )
 
     override fun toString(): String {
