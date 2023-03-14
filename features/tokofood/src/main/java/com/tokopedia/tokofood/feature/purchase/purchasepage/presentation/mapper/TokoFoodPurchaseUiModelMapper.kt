@@ -571,9 +571,9 @@ object TokoFoodPurchaseUiModelMapper {
     }
 
     private fun CartListBusinessBreakdownAddOns.mapToUiModel(): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction {
-        val displayedPriceFmt = priceFmt.takeIf {
+        val displayedPriceFmt = customResponse.priceFmt.takeIf {
             it.isNotEmpty()
-        } ?: customResponse.priceFmt
+        } ?: priceFmt
         return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
             title = title,
             value = displayedPriceFmt,
