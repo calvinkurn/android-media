@@ -642,7 +642,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 configUiModel.durationConfig.pauseDuration
             )
 
-            downloadInitialBeautificationAsset(configUiModel.beautificationConfig)
+            if(!configUiModel.beautificationConfig.isUnknown) {
+                val isDownloadSuccess = downloadInitialBeautificationAsset(configUiModel.beautificationConfig)
+
+                if(isDownloadSuccess) {
+                    /** TODO: reinit broadcaster & setup beautification sdk */
+                }
+                else {
+                    /** TODO: handle error */
+                }
+            }
 
             updateSelectedAccount(selectedAccount)
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
@@ -1785,7 +1794,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private suspend fun downloadInitialBeautificationAsset(beautificationConfig: BeautificationConfigUiModel): Boolean {
-        if(beautificationConfig == BeautificationConfigUiModel.Empty) return true
+        if(beautificationConfig.isUnknown) return false
 
         val isLicenseDownloaded = viewModelScope.asyncCatchError(block = {
             repo.downloadLicense(beautificationConfig.licenseLink)
