@@ -1,12 +1,12 @@
 ---
 <!--left header table-->
-| **Status**      | <!--start status:Green-->RELEASE<!--end status-->       |
-|-----------------|---------------------------------------------------------|
-| Product Manager | @Fauzan Ramadhanu @Nevin Jonaputra Liauw @Ayesha Brenda |
-| Team            | Minion Bob                                              |
-| Module type     | <!--start status:Yellow-->FEATURE<!--end status-->      |
-| Module Location | <code>features/transaction/oneclickcheckout</code>      |
-| Product PRD     | -                                                       |
+| **Status**      | <!--start status:Green-->RELEASE<!--end status-->                                                                                                   |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| Product Manager | @Fauzan Ramadhanu @Nevin Jonaputra Liauw @Ayesha Brenda                                                                                             |
+| Team            | [Minion Bob](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1225571771/Android+Minion+Bob)                                                    |
+| Module type     | <!--start status:Yellow-->FEATURE<!--end status-->                                                                                                  |
+| Module Location | <code>features/transaction/oneclickcheckout</code>                                                                                                  |
+| Product PRD     | [PRD OCC Multi - Tokopedia Now](https://docs.google.com/document/d/1xgPIQkocPZoP0HATcvvbC4M8kgzkV1gVJvAU8vfhONQ/edit?pli=1#heading=h.1rxfwnt6h4rr)  |
 
 <!--toc-->
 ## Release Notes
