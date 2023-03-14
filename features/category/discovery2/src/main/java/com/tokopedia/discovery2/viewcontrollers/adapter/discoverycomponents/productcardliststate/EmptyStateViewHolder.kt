@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tkpd.remoteresourcerequest.view.ImageDensityType
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.Constant.DISCO_EMPTY_STATE_IMG
 import com.tokopedia.discovery2.Constant.EmptyStateTexts.EMPTY_IMAGE
 import com.tokopedia.discovery2.Constant.EmptyStateTexts.FILTER_EMPTY_IMAGE
 import com.tokopedia.discovery2.R
@@ -17,7 +18,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -56,7 +56,8 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
                         }
                     }
                     if (!it.imageURL.isNullOrEmpty()) {
-                        horizontalImageView.loadImage(it.imageURL)
+                        horizontalImageView.loadRemoteImageDrawable(DISCO_EMPTY_STATE_IMG, it.imageURL
+                            ?: "")
                     } else {
                         horizontalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
                     }
@@ -87,7 +88,8 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
             verticalButton.show()
             verticalButton.text = emptyStateModel.buttonText
             if (!emptyStateModel.imageURL.isNullOrEmpty()) {
-                verticalImageView.loadImage(emptyStateModel.imageURL)
+                verticalImageView.loadRemoteImageDrawable(DISCO_EMPTY_STATE_IMG, emptyStateModel.imageURL
+                    ?: "")
             } else {
                 verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE, ImageDensityType.SUPPORT_SINGLE_DPI)
             }
