@@ -531,6 +531,7 @@
         }
       ],
       "item_list": "/groupchat - featured product",
+      "item_list_name": "/groupchat - featured product",
       "currentSite": ".*",
       "userId": ".*",
       "businessUnit": "play"
