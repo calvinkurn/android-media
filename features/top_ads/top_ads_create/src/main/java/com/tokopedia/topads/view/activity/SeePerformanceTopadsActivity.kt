@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spanned
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -25,23 +27,30 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Calendar
 import javax.inject.Inject
 
-class SeePerformanceTopadsActivity : AppCompatActivity(),HasComponent<CreateAdsComponent> {
+class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAdsComponent> {
 
     private lateinit var seePerformanceTopadsBottomSheet: BottomSheetUnify
     private var selectedDateFrom: Date = Date()
     private var selectedDateTo: Date = Date()
     private var customDate: String = ""
-    private var productId : String = ""
+    private var productId: String = ""
 
-    @JvmField @Inject
+    private var creditAmount: Typography? = null
+    private var tipsDescription: Typography? = null
+    private var productImage: ImageUnify? = null
+    private var productName: Typography? = null
+
+    @JvmField
+    @Inject
     var factory: ViewModelProvider.Factory? = null
 
     private val seePerformanceTopAdsViewModel by lazy {
-        if(factory==null) null
-        else ViewModelProvider(this,factory!!).get(SeePerformanceTopAdsViewModel::class.java)
+        if (factory == null) null
+        else ViewModelProvider(this, factory!!).get(SeePerformanceTopAdsViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,37 +72,74 @@ class SeePerformanceTopadsActivity : AppCompatActivity(),HasComponent<CreateAdsC
         productId = intent.data?.getQueryParameter(MpTopadsConst.PRODUCT_ID_PARAM).orEmpty()
         showMainBottomSheet()
         seePerformanceTopAdsViewModel?.getTopAdsDeposit()
+        seePerformanceTopAdsViewModel?.getProductManage(productId)
+        getProductStatistics()
     }
-    private fun initInjector(){
+
+    private fun initInjector() {
         component.inject(this)
     }
-    private fun getColoredSpanned(text: String, color: String, multiply: String, other:String): Spanned {
-        return MethodChecker.fromHtml("<strong><b><big><big><font color=$color>$text </font></big> <font color=#212121><big>teratas</font></big></big></b></strong> <br>${multiply}x teratas dari $other total tampil" )
+
+    private fun getColoredSpanned(
+        text: String,
+        color: String,
+        multiply: String,
+        other: String
+    ): Spanned {
+        return MethodChecker.fromHtml("<strong><b><big><big><font color=$color>$text </font></big> <font color=#212121><big>teratas</font></big></big></b></strong> <br>${multiply}x teratas dari $other total tampil")
     }
 
     private fun showMainBottomSheet() {
         val contentView = View.inflate(this, R.layout.bottomsheet_see_performance, null)
+        initViews(contentView)
         seePerformanceTopadsBottomSheet = BottomSheetUnify().apply {
             setupContent(contentView)
             setChild(contentView)
-            isDragable = true
-            isHideable = true
+            isDragable = false
+            isHideable = false
             showKnob = true
             clearContentPadding = true
             showCloseIcon = false
             isFullpage = true
-            setTitle("Performa Iklan Produkmu")
+            setTitle(this@SeePerformanceTopadsActivity.getString(R.string.your_product_ad_performance))
         }
-        seePerformanceTopadsBottomSheet.show(supportFragmentManager,"tagFragment")
-        contentView?.findViewById<ImageUnify>(R.id.product_image)?.urlSrc = "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2022/12/6/6f34687f-e85f-4abc-a2dd-f012488f20a4.jpg"
-        seePerformanceTopAdsViewModel?.topAdsDeposits?.observe(this){
-            when(it){
+        seePerformanceTopadsBottomSheet.show(supportFragmentManager, "tagFragment")
+
+        seePerformanceTopAdsViewModel?.topAdsDeposits?.observe(this) {
+            when (it) {
                 is Success -> {
-                    contentView?.findViewById<Typography>(R.id.creditAmount)?.text = "Rp ${it.data.topadsDashboardDeposits.data.amount}"
+                    creditAmount?.text = "Rp ${it.data.topadsDashboardDeposits.data.amount}"
                 }
                 else -> {}
             }
         }
+
+        seePerformanceTopAdsViewModel?.topAdsGetProductManage?.observe(this) {
+            productImage?.urlSrc = it.data.itemImage
+            productName?.text = it.data.itemName
+        }
+
+        seePerformanceTopAdsViewModel?.productStatistics?.observe(this){
+            Log.d("testing","$it")
+        }
+
+        tipsDescription?.text = HtmlCompat.fromHtml(
+            getString(R.string.see_ads_performance_tips_description),
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
+    }
+
+    private fun getProductStatistics() {
+        var startDate = getDaysAgo(30)
+        var endDate = getDaysAgo(0)
+        seePerformanceTopAdsViewModel?.getTopAdsProductStatistics(startDate ?: "", endDate ?: "", 1)
+    }
+
+    private fun initViews(contentView: View?) {
+        creditAmount = contentView?.findViewById<Typography>(R.id.creditAmount)
+        tipsDescription = contentView?.findViewById<Typography>(R.id.tips_description)
+        productImage = contentView?.findViewById<ImageUnify>(R.id.product_image)
+        productName = contentView?.findViewById<Typography>(R.id.product_name)
     }
 
     private fun setupContent(content: View?) {
@@ -128,7 +174,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(),HasComponent<CreateAdsC
     }
 
     private fun showDescriptionBottomSheet(title: String, description: CharSequence) {
-        val contentView = View.inflate(this, R.layout.bottomsheet_product_name_see_performance, null)
+        val contentView =
+            View.inflate(this, R.layout.bottomsheet_product_name_see_performance, null)
         val descriptionView = contentView.findViewById<Typography>(R.id.description)
         descriptionView.text = description
         val bottomSheet = BottomSheetUnify().apply {
@@ -140,7 +187,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(),HasComponent<CreateAdsC
             setTitle(title)
         }
 
-        bottomSheet.show(supportFragmentManager,"tagFragment")
+        bottomSheet.show(supportFragmentManager, "tagFragment")
     }
 
 
@@ -165,7 +212,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(),HasComponent<CreateAdsC
     }
 
     private fun getRangeCustomDate(): String {
-        if(customDate.isBlank()){
+        if (customDate.isBlank()) {
             return DEFAULT_CUSTOM_DATE_PLACEHOLDER
         }
         return "custom"
@@ -190,11 +237,14 @@ class SeePerformanceTopadsActivity : AppCompatActivity(),HasComponent<CreateAdsC
 
     private fun showAdsPlacingFilterBottomSheet() {
         val temporaryData = arrayListOf(
-            ItemListUiModel("Semua Penempatan", "Iklan produk yang tampil di halaman pencarian dan rekomendasi."),
+            ItemListUiModel(
+                "Semua Penempatan",
+                "Iklan produk yang tampil di halaman pencarian dan rekomendasi."
+            ),
             ItemListUiModel("Di Pencarian", "Iklan produk yang tampil di halaman pencarian"),
             ItemListUiModel("Di Rekomendasi", "Iklan produk yang tampil di bagian rekomendasi"),
 
-        )
+            )
         ListBottomSheet.show(supportFragmentManager, "Penempatan Iklan", temporaryData)
     }
 
@@ -212,7 +262,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(),HasComponent<CreateAdsC
 
     override fun getComponent(): CreateAdsComponent {
         return DaggerCreateAdsComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).baseAppComponent).build()
+            (application as BaseMainApplication).baseAppComponent
+        ).build()
     }
 }
 
