@@ -893,7 +893,9 @@ class TokoNowRepurchaseFragment:
     }
 
     private fun getMiniCart() {
-        viewModel.getMiniCart()
+        val shopId = listOf(localCacheModel?.shop_id.orEmpty())
+        val warehouseId = localCacheModel?.warehouse_id
+        viewModel.getMiniCart(shopId, warehouseId)
     }
 
     private fun showEmptyStateOoc() {
