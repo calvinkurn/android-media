@@ -2,7 +2,7 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="6dp" />
-            <solid android:color="@color/dms_banner_indicator_background" />
+            <solid android:color="@color/Unify_Static_White_44" />
         </shape>
     </item>
 
