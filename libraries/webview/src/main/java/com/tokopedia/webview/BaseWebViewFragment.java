@@ -836,7 +836,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             e.printStackTrace();
         }
 
-        if (url.endsWith(".pdf") && url.startsWith("http")) {
+        if (uri.getPath().endsWith(".pdf") && url.startsWith("http")) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse(decode(uri.toString().replace(GOOGLE_DOCS_PDF_URL, "")))
                     , "application/pdf");
@@ -997,12 +997,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
      * return true of webview success load.
      */
     private boolean loadGoogleDocsUrl(Uri uri) {
-        String googleDocsUrl;
-        if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
-            googleDocsUrl = decode(uri.toString());
-        } else {
-            googleDocsUrl = GOOGLE_DOCS_PDF_URL + decode(uri.toString());
-        }
+        String googleDocsUrl = getDocsUrl(uri);
         if (webView != null) {
             if (uri.getHost().contains(TOKOPEDIA_STRING)) {
                 webView.loadAuthUrl(googleDocsUrl, userSession);
@@ -1014,6 +1009,26 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             // change first url directly
             url = googleDocsUrl;
             return false;
+        }
+    }
+
+    private String getDocsUrl(Uri uri){
+        return getDocsUrlV2(uri);
+    }
+
+    private String getDocsUrlLegacy(Uri uri) {
+        if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
+            return decode(uri.toString());
+        } else {
+            return GOOGLE_DOCS_PDF_URL + decode(uri.toString());
+        }
+    }
+
+    private String getDocsUrlV2(Uri uri) {
+        if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
+            return uri.toString();
+        } else {
+            return GOOGLE_DOCS_PDF_URL + encodeOnce(uri.toString());
         }
     }
 
