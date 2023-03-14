@@ -16,11 +16,11 @@ class BottomContentFactory(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
-            TopAdsItemViewHolder.LAYOUT_ID -> TopAdsItemViewHolder(parent)
-            GyroRecommendationItemViewHolder.LAYOUT_ID -> GyroRecommendationItemViewHolder(parent, registerMemberShipListener)
-            MarketplaceRecommendationItemViewHolder.LAYOUT_ID -> MarketplaceRecommendationItemViewHolder(parent, marketplaceRecommendationListener)
-            DigitalRecommendationItemViewHolder.LAYOUT_ID -> DigitalRecommendationItemViewHolder(parent)
-            HeadlineAdsItemViewHolder.LAYOUT_ID -> HeadlineAdsItemViewHolder(parent)
+            TopAdsItemViewHolder.LAYOUT_ID -> return TopAdsItemViewHolder(parent)
+            GyroRecommendationItemViewHolder.LAYOUT_ID -> return GyroRecommendationItemViewHolder(parent, registerMemberShipListener)
+            MarketplaceRecommendationItemViewHolder.LAYOUT_ID -> return MarketplaceRecommendationItemViewHolder(parent, marketplaceRecommendationListener)
+            DigitalRecommendationItemViewHolder.LAYOUT_ID -> return DigitalRecommendationItemViewHolder(parent)
+            HeadlineAdsItemViewHolder.LAYOUT_ID -> return HeadlineAdsItemViewHolder(parent)
         }
         return super.createViewHolder(parent, type)
     }

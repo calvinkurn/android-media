@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentFactory
-import com.tokopedia.thankyou_native.presentation.views.widgetType.WidgetType
 import com.tokopedia.thankyou_native.presentation.views.widgettag.WidgetTag
 
 data class TopAdsRequestParams(

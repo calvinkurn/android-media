@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.domain.usecase
 
 import com.google.gson.Gson
+import com.tokopedia.applink.teleporter.Teleporter
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -22,20 +23,51 @@ class GyroEngineRequestUseCase @Inject constructor(
         thanksPageData: ThanksPageData, walletBalance: WalletBalance?,
         onSuccess: (ValidateEngineResponse) -> Unit
     ) {
-        try {
-            this.setTypeClass(FeatureEngineResponse::class.java)
-            this.setRequestParams(getRequestParams(thanksPageData, walletBalance))
-            this.setGraphqlQuery(GyroRecommendationQuery.GQL_QUERY)
-            this.execute(
-                { result ->
-                    onSuccess(result.validateEngineResponse)
-                }, {
-                    it.printStackTrace()
-                }
-            )
-        } catch (throwable: Throwable) {
-            throwable.printStackTrace()
-        }
+        onSuccess(
+            Teleporter.gson.fromJson(
+                "{\"validateEngineRequest\": {\n" +
+                    "      \"success\": true,\n" +
+                    "      \"error_code\": \"\",\n" +
+                    "      \"message\": \"\",\n" +
+                    "      \"data\": {\n" +
+                    "        \"title\": \"Fitur spesial buat kamu\",\n" +
+                    "        \"description\": \"Cobain fitur ini yuk\",\n" +
+                    "        \"items\": [\n" +
+                    "          {\n" +
+                    "            \"id\" : 136,\n" +
+                    "            \"detail\" : \"{\\\"type\\\":\\\"config\\\",\\\"widget_order\\\":\\\"dg, pg, feature, shopads, feature\\\"}\"\n" +
+                    "          },{\n" +
+                    "            \"id\": 15,\n" +
+                    "            \"detail\": \"{\\\"type\\\":\\\"tdn_user\\\",\\\"ep\\\":\\\"banner\\\",\\\"inventory_id\\\":\\\"15\\\",\\\"item\\\":\\\"3\\\",\\\"dimen_id_desktop\\\":\\\"8\\\",\\\"dimen_id_mobile\\\":\\\"3\\\",\\\"title\\\":\\\"Sesuai seleramu\\\",\\\"desc\\\":\\\"Cobain yuk\\\",\\\"section_title\\\":\\\"Promo Brand Pilihan\\\"}\"\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"id\": 20,\n" +
+                    "            \"detail\": \"{\\\"type\\\":\\\"tokomember\\\",\\\"section_title\\\":\\\"Fitur spesial buat kamu\\\",\\\"section_desc\\\":\\\"Cobain fitur ini yuk\\\",\\\"url\\\":\\\"https://www.tokopedia.com/membership/\\\",\\\"url_android\\\":\\\"tokopedia://webview?url=https://www.tokopedia.com/membership/\\\",\\\"url_ios\\\":\\\"tokopedia://webview?url=https://www.tokopedia.com/membership/\\\",\\\"title\\\":\\\"Tokomember hadir untukmu\\\",\\\"desc\\\":\\\"Selalu ada selalu bisa\\\",\\\"image\\\":\\\"https://images.tokopedia.net/img/blog/promo/2019/09/tokomember.png\\\"}\"\n" +
+                    "          },\n" +
+                    "          {\n" +
+                    "            \"id\": 64,\n" +
+                    "            \"detail\": \"{\\\"type\\\":\\\"list\\\",\\\"title\\\":\\\"Ambil Hadiahmu Sekarang!\\\",\\\"desc\\\":\\\"Buka Tap Tap Kotak untuk dapatkan kupon Diskon, Cashback hingga GoPay Coins!\\\",\\\"image\\\":\\\"https://ecs7.tokopedia.net/img/blog/promo/2023/02/FLOATING-ICON-NEW-YEAR.png\\\",\\\"url\\\":\\\"https://www.tokopedia.com/kotak-kejutan/pre-tap-tap\\\",\\\"url_android\\\":\\\"tokopedia://gamification_gift_daily\\\",\\\"url_ios\\\":\\\"tokopedia://gamification_gift_daily\\\"}\"\n" +
+                    "          }\n" +
+                    "        ]\n" +
+                    "      }\n" +
+                    "    }}",
+                FeatureEngineResponse::class.java
+            ).validateEngineResponse
+        )
+//        try {
+//            this.setTypeClass(FeatureEngineResponse::class.java)
+//            this.setRequestParams(getRequestParams(thanksPageData, walletBalance))
+//            this.setGraphqlQuery(GyroRecommendationQuery.GQL_QUERY)
+//            this.execute(
+//                { result ->
+//                    onSuccess(result.validateEngineResponse)
+//                }, {
+//                    it.printStackTrace()
+//                }
+//            )
+//        } catch (throwable: Throwable) {
+//            throwable.printStackTrace()
+//        }
     }
 
     private fun getRequestParams(

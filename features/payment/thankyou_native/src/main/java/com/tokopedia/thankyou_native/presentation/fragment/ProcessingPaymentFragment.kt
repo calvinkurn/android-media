@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.thankyou_native.R
@@ -16,6 +17,14 @@ import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.thank_fragment_processing.*
+import kotlinx.android.synthetic.main.thank_fragment_processing.btnShopAgain
+import kotlinx.android.synthetic.main.thank_fragment_processing.featureListingContainer
+import kotlinx.android.synthetic.main.thank_fragment_processing.loadingLayout
+import kotlinx.android.synthetic.main.thank_fragment_processing.recommendationContainer
+import kotlinx.android.synthetic.main.thank_fragment_processing.rvBottomContent
+import kotlinx.android.synthetic.main.thank_fragment_processing.topAdsView
+import kotlinx.android.synthetic.main.thank_fragment_processing.topTicker
+import kotlinx.android.synthetic.main.thank_fragment_processing.tvTotalAmount
 
 class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
@@ -39,6 +48,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
     override fun getTopAdsView(): TopAdsView? = topAdsView
+    override fun getBottomContentRecyclerView(): RecyclerView? = rvBottomContent
 
     override fun getTopTickerView(): Ticker? = topTicker
 

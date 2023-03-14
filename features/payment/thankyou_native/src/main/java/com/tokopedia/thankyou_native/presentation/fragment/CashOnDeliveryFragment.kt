@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -29,6 +30,7 @@ class CashOnDeliveryFragment : ThankYouBaseFragment() {
 
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
     override fun getTopAdsView(): TopAdsView? = topAdsView
+    override fun getBottomContentRecyclerView(): RecyclerView? = rvBottomContent
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         tv_payment_success.text = getString(R.string.thank_cod_payment_successful)
