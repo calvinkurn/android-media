@@ -145,10 +145,7 @@ class AtcVariantViewModel @Inject constructor(
                 isNewLogic = isNewVariantLogic()
             )
 
-            val selectedVariantChild = getVariantData()?.getChildByOptionId(
-                selectedVariantIds?.values?.toList()
-                    ?: listOf()
-            )
+            val selectedVariantChild = getVariantData()?.getChildByOptionId(selectedVariantIds.values.toList())
             val selectedMiniCart = minicartData?.get(selectedVariantChild?.productId ?: "")
             val shouldShowDeleteButton = selectedMiniCart != null
             val cartData = AtcCommonMapper.mapToCartRedirectionData(
@@ -278,7 +275,7 @@ class AtcVariantViewModel @Inject constructor(
             val shouldShowDeleteButton = minicartData?.get(selectedChild?.productId ?: "") != null
 
             // Generate visitables
-            val visitables = AtcCommonMapper.mapToVisitable(
+            val visitable = AtcCommonMapper.mapToVisitable(
                 selectedChild = selectedChild,
                 showQtyEditor = aggregatorParams.showQtyEditor,
                 initialSelectedVariant = initialSelectedOptionIds,
@@ -289,8 +286,8 @@ class AtcVariantViewModel @Inject constructor(
                 aggregatorUiData = aggregatorData
             )
 
-            if (visitables != null) {
-                _initialData.postValue(visitables.asSuccess())
+            if (visitable != null) {
+                _initialData.postValue(visitable.asSuccess())
                 updateActivityResult(
                     selectedProductId = selectedChild?.productId ?: "",
                     mapOfSelectedVariantOption = initialSelectedOptionIds
@@ -479,8 +476,7 @@ class AtcVariantViewModel @Inject constructor(
         showQtyEditor: Boolean
     ) {
         val selectedChild = getVariantData()?.getChildByOptionId(
-            getSelectedOptionIds()?.values?.toList()
-                ?: listOf()
+            getSelectedOptionIds()?.values.orEmpty().toList()
         )
         val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
         val selectedMiniCart = getSelectedMiniCartItem(selectedChild?.productId ?: "")
@@ -555,8 +551,7 @@ class AtcVariantViewModel @Inject constructor(
             } else {
                 _updateCartLiveData.postValue(
                     MessageErrorException(
-                        result.error.firstOrNull()
-                            ?: ""
+                        result.error.firstOrNull().orEmpty()
                     ).asFail()
                 )
             }
@@ -622,16 +617,14 @@ class AtcVariantViewModel @Inject constructor(
      *  - Before update (warna, 0), (ukuran, 0)
      *  - After update (warna, merah), (ukuran, 0)
      */
-    private fun updateSelectedOptionIdsVisitable(selectedOptionKey: String, selectedOptionId: String): MutableMap<String, String>? {
+    private fun updateSelectedOptionIdsVisitable(selectedOptionKey: String, selectedOptionId: String): MutableMap<String, String> {
         val variantDataModel = (_initialData.value as Success).data.firstOrNull {
             it is VariantComponentDataModel
         } as? VariantComponentDataModel
 
         // Update selected variant id to existing options
-        val selectedVariantIds = variantDataModel?.mapOfSelectedVariant?.toMutableMap()
-        selectedVariantIds?.let { selectedIds ->
-            selectedIds[selectedOptionKey] = selectedOptionId
-        }
+        val selectedVariantIds = variantDataModel?.mapOfSelectedVariant.orEmpty().toMutableMap()
+        selectedVariantIds[selectedOptionKey] = selectedOptionId
         return selectedVariantIds
     }
 
