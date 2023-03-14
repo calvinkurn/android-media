@@ -72,7 +72,8 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
                                     shop = tokofoodBusinessData.customResponse.shop,
                                     shipping = tokofoodBusinessData.customResponse.shipping,
                                     shoppingSummary = tokofoodBusinessData.customResponse.shoppingSummary
-                                )
+                                ),
+                                cartGroups = tokofoodBusinessData.cartGroups.orEmpty()
                             )
                         )
                     )
