@@ -5,7 +5,9 @@ import com.tokopedia.play.broadcaster.data.api.BeautificationAssetApi
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastBeautificationRepository
 import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautificationConfigUseCase
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
+import com.tokopedia.play.broadcaster.util.asset.AssetHelper
 import com.tokopedia.play.broadcaster.util.asset.AssetPathHelper
+import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,6 +21,7 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
     private val beautificationAssetApi: BeautificationAssetApi,
     private val assetManager: AssetManager,
     private val assetPathHelper: AssetPathHelper,
+    private val assetChecker: AssetChecker,
 ) : PlayBroadcastBeautificationRepository {
 
     override suspend fun saveBeautificationConfig(
@@ -34,6 +37,23 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
             authorType = authorType,
             beautificationConfig = beautificationConfig
         ).wrapper.success
+    }
+
+    override suspend fun downloadLicense(url: String): Boolean = withContext(dispatchers.io) {
+        val licenseName = AssetHelper.getFileNameFromLink(url)
+
+        if(assetChecker.isLicenseAvailable(licenseName)) {
+            true
+        } else {
+            assetManager.deleteAllFiles(assetPathHelper.licenseDir)
+            val responseBody = beautificationAssetApi.downloadAsset(url)
+
+            assetManager.save(
+                responseBody = responseBody,
+                fileName = licenseName,
+                folderPath = assetPathHelper.licenseDir,
+            )
+        }
     }
 
     override suspend fun downloadPresetAsset(url: String, fileName: String): Boolean = withContext(dispatchers.io) {

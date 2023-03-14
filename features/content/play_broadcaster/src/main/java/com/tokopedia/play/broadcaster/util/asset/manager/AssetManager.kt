@@ -13,4 +13,14 @@ interface AssetManager {
         filePath: String,
         folderPath: String,
     ): Boolean
+
+    suspend fun save(
+        responseBody: ResponseBody,
+        fileName: String,
+        folderPath: String,
+    ): Boolean
+
+    suspend fun deleteAllFiles(
+        directory: String,
+    ): Boolean
 }

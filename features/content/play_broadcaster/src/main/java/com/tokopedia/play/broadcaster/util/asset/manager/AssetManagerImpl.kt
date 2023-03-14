@@ -43,6 +43,31 @@ class AssetManagerImpl @Inject constructor(
         }
     }
 
+    override suspend fun save(
+        responseBody: ResponseBody,
+        fileName: String,
+        folderPath: String,
+    ): Boolean {
+        return try {
+            withContext(dispatchers.io) {
+                val isFileExists = File(folderPath).listFiles()?.any { it.name == fileName } ?: false
+                if (!isFileExists) {
+                    FileUtil.writeResponseBodyToDisk(folderPath, fileName, responseBody)
+                }
+                else {
+                    true
+                }
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    override suspend fun deleteAllFiles(directory: String): Boolean {
+        val listFiles = File(directory).listFiles() ?: return true
+        return listFiles.all { FileUtil.deleteFile(it.absolutePath) }
+    }
+
     companion object {
         private const val ZIP_EXTENSION = ".zip"
     }

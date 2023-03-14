@@ -11,6 +11,10 @@ class AssetCheckerImpl @Inject constructor(
     private val assetPathHelper: AssetPathHelper,
 ) : AssetChecker {
 
+    override suspend fun isLicenseAvailable(licenseName: String): Boolean {
+        return File(assetPathHelper.licenseDir).listFiles()?.any { it.name == licenseName } ?: false
+    }
+
     override suspend fun isPresetFileAvailable(presetName: String): Boolean {
         val file = File(assetPathHelper.getPresetFilePath(presetName))
         return file.exists()

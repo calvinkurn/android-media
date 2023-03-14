@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -640,6 +641,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             broadcastTimer.setupPauseDuration(
                 configUiModel.durationConfig.pauseDuration
             )
+
+            downloadInitialBeautificationAsset(configUiModel.beautificationConfig)
 
             updateSelectedAccount(selectedAccount)
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
@@ -1781,7 +1784,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun updatePresetAssetStatus(preset: PresetFilterUiModel, assetStatus: BeautificationAssetStatus) {
+    private suspend fun downloadInitialBeautificationAsset(beautificationConfig: BeautificationConfigUiModel): Boolean {
+        if(beautificationConfig == BeautificationConfigUiModel.Empty) return true
+
+        val isLicenseDownloaded = viewModelScope.asyncCatchError(block = {
+            repo.downloadLicense(beautificationConfig.licenseLink)
+        }) {
+            Log.d("<LOG>", "error download license ${it.message}")
+            false
+        }
+
+        return isLicenseDownloaded.await() == true
+    }
+
+    private fun updatePresetAssetStatus(preset: PresetFilterUiModel, assetStatus: BeautificationAssetStatus) {
         _beautificationConfig.update {
             it.copy(
                 presets = it.presets.map { item ->
