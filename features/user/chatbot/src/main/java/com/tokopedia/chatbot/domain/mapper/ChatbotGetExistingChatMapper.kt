@@ -26,6 +26,7 @@ import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicAttachmentTextUiModel
 import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotImageUploadAttributes
@@ -81,7 +82,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 if (ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(contentCode)) {
                     when (contentCode) {
                         ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_RECEIVE -> convertToDynamicAttachmentwithContentCode105(chatItemPojoByDateByTime, dynamicAttachment)
-                        //         ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND -> convertToDynamicAttachment105withContentCode106(pojo, dynamicAttachment)
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND -> convertToDynamicAttachment105withContentCode106(chatItemPojoByDateByTime, dynamicAttachment)
                         else -> convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
                     }
                 } else {
@@ -111,6 +112,20 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             contentText = dynamicStickyButton.textMessage,
             replyTime = pojo.replyTime
         )
+    }
+
+    private fun convertToDynamicAttachment105withContentCode106(
+        pojo: Reply,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicAttachmentTextUiModel {
+        val dynamicStickyButton = Gson().fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent,
+            ChatActionPojo::class.java
+        )
+        return DynamicAttachmentTextUiModel.Builder()
+            .withResponseFromGQL(pojo)
+            .withMsgContent(dynamicStickyButton.text)
+            .build()
     }
 
     private fun convertToSingleButtonAction(pojo: ChatActionPojo): ChatActionBubbleUiModel {
