@@ -9,7 +9,7 @@ import androidx.lifecycle.LifecycleObserver
  */
 class FragmentViewContainer {
 
-    private val viewMap = mutableMapOf<@IdRes Int, View>()
+    private val viewMap = mutableMapOf<Int, View>()
 
     private var viewLifecycleObserver: LifecycleObserver? = null
 

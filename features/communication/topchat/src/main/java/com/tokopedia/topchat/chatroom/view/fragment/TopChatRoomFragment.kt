@@ -2017,6 +2017,7 @@ open class TopChatRoomFragment :
     }
 
     override fun onBackPressed(): Boolean {
+        if (!isAdded || isDetached) return super.onBackPressed()
         if (super.onBackPressed()) return true
         if (webSocketViewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
