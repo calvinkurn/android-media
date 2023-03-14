@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
@@ -84,9 +85,14 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private var bookmarkJob: Job? = null
 
-    override fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
-        super.setMiniCartData(miniCartData)
+    init {
+        miniCartSource = MiniCartSource.TokonowRecipe
+    }
+
+    override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        super.onSuccessGetMiniCartData(miniCartData)
         updateProductQuantity(miniCartData)
+        _layoutList.postValue(layoutItemList)
     }
 
     fun checkAddressData() {
@@ -178,10 +184,6 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         _layoutList.postValue(layoutItemList)
     }
 
-    fun updateAddressData() {
-        addressData.updateLocalData()
-    }
-
     fun setRecipeData(recipeId: String, slug: String) {
         this.recipeId = recipeId
         this.slug = slug
@@ -204,7 +206,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
             layoutItemList.add(recipeTab)
 
             miniCartData?.let {
-                setMiniCartData(it)
+                updateProductQuantity(it)
             }
 
             _isBookmarked.postValue(bookmarked)
@@ -227,13 +229,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     }
 
     private fun updateProductQuantity(miniCartData: MiniCartSimplifiedData) {
-        launchCatchError(block = {
-            layoutItemList.updateProductQuantity(miniCartData)
-            layoutItemList.updateDeletedProductQuantity(miniCartData)
-            _layoutList.postValue(layoutItemList)
-        }) {
-            // do nothing
-        }
+        layoutItemList.updateProductQuantity(miniCartData)
+        layoutItemList.updateDeletedProductQuantity(miniCartData)
     }
 
     private fun getRecipeTitle() = _recipeInfo.value?.title.orEmpty()

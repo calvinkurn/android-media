@@ -201,16 +201,45 @@ class TokoNowSimilarProductViewModelTest {
     }
 
     @Test
-    fun `given layout list throws error when set mini cart data should do nothing`() {
+    fun `given layout list throws error when onSuccessGetMiniCartData should do nothing`() {
         onGetLayoutItemList_returnNull()
 
-        viewModel.setMiniCartData(MiniCartSimplifiedData())
+        viewModel.onSuccessGetMiniCartData(MiniCartSimplifiedData())
 
         viewModel.visitableItems.verifyValueEquals(null)
     }
 
     private fun onGetLayoutItemList_returnNull() {
         viewModel.mockPrivateField("layoutItemList", null)
+    }
+
+    @Test
+    fun `given mini cart item when onSuccessGetMiniCartData should update products quantity`() {
+        val miniCartItems = mapOf(
+            MiniCartItemKey("2148241523") to MiniCartItem.MiniCartItemProduct(
+                productId = "2148241523",
+                quantity = 6
+            ),
+            MiniCartItemKey("2148241524") to MiniCartItem.MiniCartItemProduct(
+                productId = "2148241524",
+                quantity = 100
+            )
+        )
+        val miniCartSimplifiedData = MiniCartSimplifiedData(miniCartItems = miniCartItems)
+        val productList = listOf(
+            getSimilarProductUiModel("2148241523", 5),
+            getSimilarProductUiModel("2148241524", 3)
+        )
+
+        viewModel.onViewCreated(productList)
+        viewModel.onSuccessGetMiniCartData(miniCartSimplifiedData)
+
+        val expectedProductList = listOf(
+            getSimilarProductUiModel("2148241523", 6),
+            getSimilarProductUiModel("2148241524", 100)
+        )
+
+        viewModel.visitableItems.verifyValueEquals(expectedProductList)
     }
 
     private fun getSimilarProductUiModel(productId: String, quantity: Int): SimilarProductUiModel{
@@ -243,5 +272,4 @@ class TokoNowSimilarProductViewModelTest {
         postal_code = "123",
         warehouse_id = "412"
     )
-
 }

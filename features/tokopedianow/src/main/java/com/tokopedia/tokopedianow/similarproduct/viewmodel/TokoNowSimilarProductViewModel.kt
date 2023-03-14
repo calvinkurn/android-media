@@ -59,8 +59,8 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     var warehouseId: String = ""
         private set
 
-    override fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
-        super.setMiniCartData(miniCartData)
+    override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        super.onSuccessGetMiniCartData(miniCartData)
         updateProductQuantity(miniCartData)
     }
 
@@ -99,7 +99,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
         layoutItemList.addAll(productList)
 
         miniCartData?.let {
-            setMiniCartData(it)
+            updateProductQuantity(it)
         }
 
         _visitableItems.postValue(layoutItemList)

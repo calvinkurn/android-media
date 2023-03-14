@@ -103,8 +103,10 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         onGetWarehouseId_thenReturn(warehouseId)
         onGetIsOutOfCoverage_thenReturn(outOfCoverage)
         onGetRecipe_thenReturn(response = recipeResponse)
+        onGetIsLoggedIn_thenReturn(isLoggedIn = true)
+        onGetMiniCart_thenReturn(miniCartData)
 
-        viewModel.setMiniCartData(miniCartData)
+        viewModel.getMiniCart()
         viewModel.setRecipeData(recipeId, slug)
         viewModel.checkAddressData()
 
@@ -257,6 +259,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         onGetIsOutOfCoverage_thenReturn(outOfCoverage)
         onGetRecipe_thenReturn(response = recipeResponse)
 
+        viewModel.getMiniCart()
         viewModel.setRecipeData(recipeId, slug)
         viewModel.checkAddressData()
 
