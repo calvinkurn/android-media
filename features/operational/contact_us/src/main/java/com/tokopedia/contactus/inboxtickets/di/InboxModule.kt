@@ -4,9 +4,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxtickets.data.UploadImageResponse
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.imageuploader.di.ImageUploaderModule
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
 import com.tokopedia.imageuploader.domain.GenerateHostRepository
@@ -22,13 +27,13 @@ import javax.inject.Named
 @Module(includes = [ImageUploaderModule::class])
 class InboxModule(private val context: Context) {
 
-    @InboxScope
     @Provides
+    @ActivityScope
     fun provideContext(): Context {
         return context
     }
 
-    @InboxScope
+    @ActivityScope
     @Provides
     fun provideSharedPreference(context: Context?): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
@@ -37,30 +42,6 @@ class InboxModule(private val context: Context) {
     @Provides
     fun provideUserSession(): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @Named("close_ticket_by_user")
-    @Provides
-    fun provideCloseTicketQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.close_ticket_by_user)
-    }
-
-    @Named("inbox_question_query")
-    @Provides
-    fun provideInboxQuestionQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.inbox_question_query)
-    }
-
-    @Named("submit_rating")
-    @Provides
-    fun provideSubmitRatingQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.submit_rating)
-    }
-
-    @Named("reply_ticket")
-    @Provides
-    fun provideReplyTicketQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.reply_ticket_query)
     }
 
     @Provides
