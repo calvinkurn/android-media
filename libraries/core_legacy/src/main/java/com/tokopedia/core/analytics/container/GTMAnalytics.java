@@ -5,7 +5,6 @@ import static com.google.firebase.analytics.FirebaseAnalytics.Param.CREATIVE_SLO
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEMS;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_ID;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_LIST;
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_LIST_NAME;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_NAME;
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
@@ -31,7 +30,6 @@ import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
-import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -109,7 +107,6 @@ public class GTMAnalytics extends ContextAnalytics {
     private final Iris iris;
     private final RemoteConfig remoteConfig;
     private final Long DELAY_GET_CONN = 120000L; //2 minutes
-    private TetraDebugger tetraDebugger;
     private String clientIdString = "";
     private final UserSessionInterface userSession;
     private final SharedPreferences sharedPreferences;
@@ -146,9 +143,6 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public GTMAnalytics(Context context) {
         super(context);
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            tetraDebugger = TetraDebugger.Companion.instance(context);
-        }
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
         userSession = new UserSession(context);
@@ -936,9 +930,6 @@ public class GTMAnalytics extends ContextAnalytics {
             Cassava.save(values, name, source);
             logEventSize(eventName, values);
             logEventForVerification(eventName, values);
-            if (tetraDebugger != null) {
-                tetraDebugger.send(values);
-            }
         } catch (Exception e) {
             Timber.w(e);
         }

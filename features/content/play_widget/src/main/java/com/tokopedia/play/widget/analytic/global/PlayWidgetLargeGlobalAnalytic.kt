@@ -245,4 +245,13 @@ class PlayWidgetLargeGlobalAnalytic @AssistedInject constructor(
                 )
             )
     }
+
+    override fun onClickDeleteChannel(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int
+    ) {
+        /** No Global Analytic for Delete Channel in Large Widget for now */
+    }
 }
