@@ -48,6 +48,7 @@ class PerformanceTrace(val traceName: String) {
             Toaster.build(view, "" +
                 "TTFL: ${summaryModel.timeToFirstLayout?.inflateTime} ms \n" +
                 "TTIL: ${summaryModel.timeToInitialLayout?.inflateTime} ms \n" ).show()
+
         }
     }
 
