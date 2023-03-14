@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="dms_vps_widget_background">#FDFBFE</color>
-    <color name="dms_banner_indicator_background">#70FFFFFF</color>
 </resources>
