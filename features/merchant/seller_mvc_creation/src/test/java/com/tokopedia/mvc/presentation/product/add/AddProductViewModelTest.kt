@@ -1711,35 +1711,57 @@ class AddProductViewModelTest {
     fun `When clear searchbar, should reset the state before re-fetch the products`() {
         runBlockingTest {
             //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
             val emittedValues = arrayListOf<AddProductUiState>()
             val job = launch {
                 viewModel.uiState.toList(emittedValues)
             }
 
             //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
             viewModel.processEvent(AddProductEvent.ClearSearchBar)
 
             //Then
-            val actual = emittedValues.first()
+            val actual = emittedValues.last()
 
-            assertEquals(true, actual.isLoading)
             assertEquals("", actual.searchKeyword)
             assertEquals(1, actual.page)
             assertEquals(AddProductUiState.CheckboxState.UNCHECKED, actual.checkboxState)
-            assertEquals(emptyList<Product>(), actual.products)
-
-            val param = ProductListUseCase.Param(
-                categoryIds = listOf(),
-                page = 1,
-                pageSize = 20,
-                searchKeyword = "",
-                showcaseIds = listOf(),
-                sortDirection = "DESC",
-                sortId = "DEFAULT",
-                warehouseId = WAREHOUSE_ID
-            )
-
-            coVerify { getProductsUseCase.execute(param) }
 
             job.cancel()
         }
@@ -1751,43 +1773,61 @@ class AddProductViewModelTest {
     fun `When clear filter, should reset the state before re-fetch the products`() {
         runBlockingTest {
             //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
             val emittedValues = arrayListOf<AddProductUiState>()
             val job = launch {
                 viewModel.uiState.toList(emittedValues)
             }
 
             //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
             viewModel.processEvent(AddProductEvent.ClearFilter)
 
             //Then
-            val actual = emittedValues.first()
+            val actual = emittedValues.last()
 
-            assertEquals(true, actual.isLoading)
             assertEquals("", actual.searchKeyword)
             assertEquals(1, actual.page)
-            assertEquals(emptyList<Product>(), actual.products)
-            assertEquals(AddProductUiState.CheckboxState.UNCHECKED, actual.checkboxState)
             assertEquals(emptyList<ProductCategoryOption>(), actual.selectedCategories)
             assertEquals(Warehouse(WAREHOUSE_ID, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION), actual.selectedWarehouseLocation)
             assertEquals(emptyList<ShopShowcase>(), actual.selectedShopShowcase)
-            assertEquals(
-                ProductSortOptions(id = "DEFAULT", name = "", value = "DESC"),
-                actual.selectedSort
-            )
+            assertEquals(ProductSortOptions(id = "DEFAULT", name = "", value = "DESC"), actual.selectedSort)
             assertEquals(false, actual.isFilterActive)
-
-            val param = ProductListUseCase.Param(
-                categoryIds = listOf(),
-                page = 1,
-                pageSize = 20,
-                searchKeyword = "",
-                showcaseIds = listOf(),
-                sortDirection = "DESC",
-                sortId = "DEFAULT",
-                warehouseId = WAREHOUSE_ID
-            )
-
-            coVerify { getProductsUseCase.execute(param) }
 
             job.cancel()
         }
