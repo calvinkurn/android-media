@@ -130,9 +130,7 @@ class ProductCarouselViewHolder private constructor() {
                 listener.onClicked(this, item)
             }
             binding.lblProductNumber.showWithCondition(item.isNumerationShown)
-            binding.lblProductNumber.unlockFeature = true
-            binding.lblProductNumber.setLabelType(context.resources.getString(R.color.play_dms_explore_widget_icon_bg))
-            binding.lblProductNumber.setLabel(item.number)
+            binding.lblProductNumber.text = item.number
         }
 
         private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
