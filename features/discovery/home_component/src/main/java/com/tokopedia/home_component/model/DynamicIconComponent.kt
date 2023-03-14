@@ -20,7 +20,6 @@ data class DynamicIconComponent(
         val brandId: String = "",
         val categoryPersona: String = "",
         val campaignCode: String = "",
-        val withBackground: Boolean = false,
-        val isSkipCache: Boolean = false
+        val withBackground: Boolean = false
     ) : ImpressHolder()
 }
