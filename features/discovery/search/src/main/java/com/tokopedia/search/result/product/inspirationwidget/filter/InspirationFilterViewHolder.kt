@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductSizeLayoutBinding
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
@@ -17,11 +16,6 @@ internal class InspirationFilterViewHolder(
     itemView: View,
     private val inspirationFilterListener: InspirationFilterListener
 ): AbstractViewHolder<InspirationFilterDataView>(itemView) {
-    companion object {
-        @JvmField
-        @LayoutRes
-        val LAYOUT = R.layout.search_result_product_size_layout
-    }
 
     private var binding: SearchResultProductSizeLayoutBinding? by viewBinding()
     private var inspirationFilterOptionAdapter: InspirationFilterOptionAdapter? = null
@@ -64,30 +58,24 @@ internal class InspirationFilterViewHolder(
 
     private fun createAdapter(element: InspirationFilterDataView) {
         val adapter = InspirationFilterOptionAdapter(inspirationFilterListener)
-        val sortedSizeData = getSortedSizeData(element.optionSizeData)
-        adapter.setItemList(sortedSizeData)
+        val sortedFilterData = getSortedFilterData(element.optionSizeData)
+        adapter.setItemList(sortedFilterData)
 
         inspirationFilterOptionAdapter = adapter
     }
 
-    private fun getSortedSizeData(
-        optionSizeData: List<InspirationFilterOptionDataView>
-    ) : List<InspirationFilterOptionDataView> {
-        val sortedSelectedSizeData = optionSizeData
+    private fun getSortedFilterData(
+        optionFilterData: List<InspirationFilterOptionDataView>,
+    ): List<InspirationFilterOptionDataView> {
+        val selectedSizeData = optionFilterData
             .filter { inspirationFilterListener.isFilterSelected(it.optionList) }
-            .sortedByOptionValue()
-        val nonSelectedSizeData = optionSizeData - sortedSelectedSizeData.toSet()
-        val sortedNonSelectedSizeData = nonSelectedSizeData.sortedByOptionValue()
-        return sortedSelectedSizeData + sortedNonSelectedSizeData
+        val nonSelectedSizeData = (optionFilterData - selectedSizeData.toSet())
+        return selectedSizeData + nonSelectedSizeData
     }
 
-    private fun List<InspirationFilterOptionDataView>.sortedByOptionValue() : List<InspirationFilterOptionDataView> {
-        return sortedBy {
-            try {
-                it.optionList.minOf { option -> option.value.toIntOrZero() }
-            } catch (e: Throwable) {
-                0
-            }
-        }
+    companion object {
+        @JvmField
+        @LayoutRes
+        val LAYOUT = R.layout.search_result_product_size_layout
     }
 }
