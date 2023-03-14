@@ -43,7 +43,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.File
 
-class NewShopPageViewModelTest {
+class ShopPageHeaderViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -103,7 +103,7 @@ class NewShopPageViewModelTest {
         CoroutineTestDispatchersProvider
     }
 
-    private lateinit var shopPageViewModel: NewShopPageViewModel
+    private lateinit var shopPageHeaderViewModel: ShopPageHeaderViewModel
 
     private val SAMPLE_SHOP_ID = "123"
     private val mockExtParam = "fs_widget%3D23600"
@@ -113,7 +113,7 @@ class NewShopPageViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        shopPageViewModel = NewShopPageViewModel(
+        shopPageHeaderViewModel = ShopPageHeaderViewModel(
             userSessionInterface,
             gqlGetShopInfoForHeaderUseCase,
             getBroadcasterShopConfigUseCase,
@@ -136,20 +136,20 @@ class NewShopPageViewModelTest {
     @Test
     fun `check whether isMyShop return true if given same shop id as mocked user session shop id`() {
         every { userSessionInterface.shopId } returns SAMPLE_SHOP_ID
-        assertTrue(shopPageViewModel.isMyShop(SAMPLE_SHOP_ID))
+        assertTrue(shopPageHeaderViewModel.isMyShop(SAMPLE_SHOP_ID))
     }
 
     @Test
     fun `check whether isUserSessionActive return the same value as the mock value`() {
         every { userSessionInterface.isLoggedIn } returns true
-        assertTrue(shopPageViewModel.isUserSessionActive)
+        assertTrue(shopPageHeaderViewModel.isUserSessionActive)
     }
 
     @Test
     fun `check whether ownerShopName return the same value as the mock value`() {
         val shopNameMock = "mock shop"
         every { userSessionInterface.shopName } returns shopNameMock
-        assertTrue(shopPageViewModel.ownerShopName == shopNameMock)
+        assertTrue(shopPageHeaderViewModel.ownerShopName == shopNameMock)
     }
 
     @Test
@@ -169,7 +169,7 @@ class NewShopPageViewModelTest {
         coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
             data = listOf(ShopProduct(), ShopProduct())
         )
-        shopPageViewModel.getNewShopPageTabData(
+        shopPageHeaderViewModel.getNewShopPageTabData(
             SAMPLE_SHOP_ID,
             "shop domain",
             1,
@@ -182,8 +182,8 @@ class NewShopPageViewModelTest {
             mockExtParam
         )
         coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
-        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
-        assert(shopPageViewModel.productListData.data.size == 2)
+        assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Success)
+        assert(shopPageHeaderViewModel.productListData.data.size == 2)
     }
 
     @Test
@@ -204,7 +204,7 @@ class NewShopPageViewModelTest {
         coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
             data = listOf(ShopProduct(), ShopProduct())
         )
-        shopPageViewModel.getNewShopPageTabData(
+        shopPageHeaderViewModel.getNewShopPageTabData(
             shopId = SAMPLE_SHOP_ID,
             shopDomain = "shop domain",
             page = 1,
@@ -217,8 +217,8 @@ class NewShopPageViewModelTest {
             extParam = mockExtParam
         )
         coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
-        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
-        assert(shopPageViewModel.productListData.data.size == 2)
+        assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Success)
+        assert(shopPageHeaderViewModel.productListData.data.size == 2)
     }
 
     @Test
@@ -242,7 +242,7 @@ class NewShopPageViewModelTest {
         every {
             NewShopPageHeaderMapper.mapToNewShopPageP1HeaderData(any(), any(), any(), any(), any())
         } throws Exception()
-        shopPageViewModel.getNewShopPageTabData(
+        shopPageHeaderViewModel.getNewShopPageTabData(
             SAMPLE_SHOP_ID,
             "shop domain",
             1,
@@ -255,13 +255,13 @@ class NewShopPageViewModelTest {
             mockExtParam
         )
         coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
-        assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
+        assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Fail)
     }
 
     @Test
     fun `check whether new shopPageP1Data value is Fail`() {
         coEvery { newGetShopPageP1DataUseCase.get().executeOnBackground() } throws Exception()
-        shopPageViewModel.getNewShopPageTabData(
+        shopPageHeaderViewModel.getNewShopPageTabData(
             SAMPLE_SHOP_ID,
             "shop domain",
             1,
@@ -274,13 +274,13 @@ class NewShopPageViewModelTest {
             mockExtParam
         )
         coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
-        assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
+        assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Fail)
     }
 
     @Test
     fun `check whether new shopPageP1Data value is not null when shopId is 0 but shopDomain isn't empty`() {
         coEvery { newGetShopPageP1DataUseCase.get().executeOnBackground() } returns NewShopPageHeaderP1()
-        shopPageViewModel.getNewShopPageTabData(
+        shopPageHeaderViewModel.getNewShopPageTabData(
             "0",
             "domain",
             1,
@@ -292,77 +292,77 @@ class NewShopPageViewModelTest {
             addressWidgetData,
             mockExtParam
         )
-        assertTrue(shopPageViewModel.shopPageP1Data.value != null)
+        assertTrue(shopPageHeaderViewModel.shopPageP1Data.value != null)
     }
 
     @Test
     fun `check whether update follow status is success`() {
         every { userSessionInterface.isLoggedIn } returns true
         coEvery { updateFollowStatusUseCase.get().executeOnBackground() } returns FollowShopResponse(null)
-        shopPageViewModel.updateFollowStatus(SAMPLE_SHOP_ID, UpdateFollowStatusUseCase.ACTION_FOLLOW)
+        shopPageHeaderViewModel.updateFollowStatus(SAMPLE_SHOP_ID, UpdateFollowStatusUseCase.ACTION_FOLLOW)
         coVerify { updateFollowStatusUseCase.get().executeOnBackground() }
-        assert(shopPageViewModel.followShopData.value is Success)
+        assert(shopPageHeaderViewModel.followShopData.value is Success)
     }
 
     @Test
     fun `check whether update follow status is fail`() {
         every { userSessionInterface.isLoggedIn } returns true
         coEvery { updateFollowStatusUseCase.get().executeOnBackground() } throws Throwable()
-        shopPageViewModel.updateFollowStatus(SAMPLE_SHOP_ID, UpdateFollowStatusUseCase.ACTION_FOLLOW)
+        shopPageHeaderViewModel.updateFollowStatus(SAMPLE_SHOP_ID, UpdateFollowStatusUseCase.ACTION_FOLLOW)
         coVerify { updateFollowStatusUseCase.get().executeOnBackground() }
-        assert(shopPageViewModel.followShopData.value is Fail)
+        assert(shopPageHeaderViewModel.followShopData.value is Fail)
     }
 
     @Test
     fun `check whether update follow status is error when user not login`() {
         every { userSessionInterface.isLoggedIn } returns false
-        shopPageViewModel.updateFollowStatus(SAMPLE_SHOP_ID, UpdateFollowStatusUseCase.ACTION_FOLLOW)
-        assert(shopPageViewModel.followShopData.value is Fail)
+        shopPageHeaderViewModel.updateFollowStatus(SAMPLE_SHOP_ID, UpdateFollowStatusUseCase.ACTION_FOLLOW)
+        assert(shopPageHeaderViewModel.followShopData.value is Fail)
     }
 
     @Test
     fun `check whether get follow status is success`() {
         every { userSessionInterface.isLoggedIn } returns true
         coEvery { getFollowStatusUseCase.get().executeOnBackground() } returns FollowStatusResponse(null)
-        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID, RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL)
+        shopPageHeaderViewModel.getFollowStatusData(SAMPLE_SHOP_ID, RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL)
         coVerify { getFollowStatusUseCase.get().executeOnBackground() }
-        assert(shopPageViewModel.followStatusData.value is Success)
+        assert(shopPageHeaderViewModel.followStatusData.value is Success)
 
-        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID, RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG)
+        shopPageHeaderViewModel.getFollowStatusData(SAMPLE_SHOP_ID, RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG)
         coVerify { getFollowStatusUseCase.get().executeOnBackground() }
-        assert(shopPageViewModel.followStatusData.value is Success)
+        assert(shopPageHeaderViewModel.followStatusData.value is Success)
     }
 
     @Test
     fun `check whether get follow status is fail`() {
         every { userSessionInterface.isLoggedIn } returns true
         coEvery { getFollowStatusUseCase.get().executeOnBackground() } throws Throwable()
-        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID, "mock_key")
+        shopPageHeaderViewModel.getFollowStatusData(SAMPLE_SHOP_ID, "mock_key")
         coVerify { getFollowStatusUseCase.get().executeOnBackground() }
-        assert(shopPageViewModel.followStatusData.value is Fail)
+        assert(shopPageHeaderViewModel.followStatusData.value is Fail)
     }
 
     @Test
     fun `check whether getShopIdFromDomain post shopIdFromDomainData success value`() {
         coEvery { gqlGetShopInfobUseCaseCoreAndAssets.get().executeOnBackground() } returns ShopInfo()
-        shopPageViewModel.getShopIdFromDomain("Mock domain")
+        shopPageHeaderViewModel.getShopIdFromDomain("Mock domain")
         coVerify { gqlGetShopInfobUseCaseCoreAndAssets.get().executeOnBackground() }
-        assert(shopPageViewModel.shopIdFromDomainData.value is Success)
+        assert(shopPageHeaderViewModel.shopIdFromDomainData.value is Success)
     }
 
     @Test
     fun `check whether getShopIdFromDomain post shopIdFromDomainData fail value`() {
         coEvery { gqlGetShopInfobUseCaseCoreAndAssets.get().executeOnBackground() } throws Throwable()
-        shopPageViewModel.getShopIdFromDomain("Mock domain")
+        shopPageHeaderViewModel.getShopIdFromDomain("Mock domain")
         coVerify { gqlGetShopInfobUseCaseCoreAndAssets.get().executeOnBackground() }
-        assert(shopPageViewModel.shopIdFromDomainData.value is Fail)
+        assert(shopPageHeaderViewModel.shopIdFromDomainData.value is Fail)
     }
 
     @Test
     fun `when homeWidgetLayoutData value is changed, then should return the new value`() {
         val mockHomeLayoutData = HomeLayoutData()
-        shopPageViewModel.homeWidgetLayoutData = mockHomeLayoutData
-        assert(shopPageViewModel.homeWidgetLayoutData == mockHomeLayoutData)
+        shopPageHeaderViewModel.homeWidgetLayoutData = mockHomeLayoutData
+        assert(shopPageHeaderViewModel.homeWidgetLayoutData == mockHomeLayoutData)
     }
 
     @Test
@@ -381,21 +381,21 @@ class NewShopPageViewModelTest {
                 Bitmap.CompressFormat.PNG
             )
         } returns File("path")
-        shopPageViewModel.saveShopImageToPhoneStorage(context, "")
-        assert(shopPageViewModel.shopImagePath.value.orEmpty().isNotEmpty())
+        shopPageHeaderViewModel.saveShopImageToPhoneStorage(context, "")
+        assert(shopPageHeaderViewModel.shopImagePath.value.orEmpty().isNotEmpty())
     }
 
     @Test
     fun `check whether shopImagePath value is null when callback is not called`() {
         unmockkAll()
-        shopPageViewModel.saveShopImageToPhoneStorage(context, "")
-        assert(shopPageViewModel.shopImagePath.value == null)
+        shopPageHeaderViewModel.saveShopImageToPhoneStorage(context, "")
+        assert(shopPageHeaderViewModel.shopImagePath.value == null)
     }
 
     @Test
     fun `check whether shopImagePath value is null when if context is null and callback is not called`() {
-        shopPageViewModel.saveShopImageToPhoneStorage(null, "")
-        assert(shopPageViewModel.shopImagePath.value == null)
+        shopPageHeaderViewModel.saveShopImageToPhoneStorage(null, "")
+        assert(shopPageHeaderViewModel.shopImagePath.value == null)
     }
 
     @Test
@@ -414,8 +414,8 @@ class NewShopPageViewModelTest {
                 Bitmap.CompressFormat.PNG
             )
         } returns null
-        shopPageViewModel.saveShopImageToPhoneStorage(context, "")
-        assert(shopPageViewModel.shopImagePath.value == null)
+        shopPageHeaderViewModel.saveShopImageToPhoneStorage(context, "")
+        assert(shopPageHeaderViewModel.shopImagePath.value == null)
     }
 
     @Test
@@ -427,16 +427,16 @@ class NewShopPageViewModelTest {
         }
 
         mockkStatic(ImageProcessingUtil::class)
-        shopPageViewModel.saveShopImageToPhoneStorage(context, "")
-        assert(shopPageViewModel.shopImagePath.value == null)
+        shopPageHeaderViewModel.saveShopImageToPhoneStorage(context, "")
+        assert(shopPageHeaderViewModel.shopImagePath.value == null)
     }
 
     @Test
     fun `check whether shopImagePath value is null when ImageHandler loadImageWithTarget throws exception`() {
         mockkObject(ShopUtil)
         every { ShopUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } throws Exception()
-        shopPageViewModel.saveShopImageToPhoneStorage(context, "")
-        assert(shopPageViewModel.shopImagePath.value == null)
+        shopPageHeaderViewModel.saveShopImageToPhoneStorage(context, "")
+        assert(shopPageHeaderViewModel.shopImagePath.value == null)
     }
 
     @Test
@@ -445,7 +445,7 @@ class NewShopPageViewModelTest {
         every {
             userSessionInterface.shopId
         } returns mockUserShopId
-        assert(shopPageViewModel.userShopId == mockUserShopId)
+        assert(shopPageHeaderViewModel.userShopId == mockUserShopId)
     }
 
     @Test
@@ -454,7 +454,7 @@ class NewShopPageViewModelTest {
         every {
             userSessionInterface.userId
         } returns mockUserId
-        assert(shopPageViewModel.userId == mockUserId)
+        assert(shopPageHeaderViewModel.userId == mockUserId)
     }
 
     @Test
@@ -462,8 +462,8 @@ class NewShopPageViewModelTest {
         coEvery {
             shopModerateRequestStatusUseCase.get().executeOnBackground()
         } returns ShopModerateRequestData(ShopModerateRequestStatus())
-        shopPageViewModel.checkShopRequestModerateStatus()
-        assert(shopPageViewModel.shopModerateRequestStatus.value is Success)
+        shopPageHeaderViewModel.checkShopRequestModerateStatus()
+        assert(shopPageHeaderViewModel.shopModerateRequestStatus.value is Success)
     }
 
     @Test
@@ -471,8 +471,8 @@ class NewShopPageViewModelTest {
         coEvery {
             shopModerateRequestStatusUseCase.get().executeOnBackground()
         } throws Exception()
-        shopPageViewModel.checkShopRequestModerateStatus()
-        assert(shopPageViewModel.shopModerateRequestStatus.value is Fail)
+        shopPageHeaderViewModel.checkShopRequestModerateStatus()
+        assert(shopPageHeaderViewModel.shopModerateRequestStatus.value is Fail)
     }
 
     @Test
@@ -482,8 +482,8 @@ class NewShopPageViewModelTest {
         coEvery {
             shopRequestUnmoderateUseCase.get().executeOnBackground()
         } returns ShopRequestUnmoderateSuccessResponse()
-        shopPageViewModel.sendRequestUnmoderateShop(mockShopId, mockOptionValue)
-        assert(shopPageViewModel.shopUnmoderateData.value is Success)
+        shopPageHeaderViewModel.sendRequestUnmoderateShop(mockShopId, mockOptionValue)
+        assert(shopPageHeaderViewModel.shopUnmoderateData.value is Success)
     }
 
     @Test
@@ -493,8 +493,8 @@ class NewShopPageViewModelTest {
         coEvery {
             shopRequestUnmoderateUseCase.get().executeOnBackground()
         } throws Exception()
-        shopPageViewModel.sendRequestUnmoderateShop(mockShopId, mockOptionValue)
-        assert(shopPageViewModel.shopUnmoderateData.value is Fail)
+        shopPageHeaderViewModel.sendRequestUnmoderateShop(mockShopId, mockOptionValue)
+        assert(shopPageHeaderViewModel.shopUnmoderateData.value is Fail)
     }
 
     @Test
@@ -504,8 +504,8 @@ class NewShopPageViewModelTest {
         coEvery {
             shopQuestGeneralTrackerUseCase.get().executeOnBackground()
         } returns ShopQuestGeneralTracker()
-        shopPageViewModel.sendShopShareTracker(mockShopId, mockChannel)
-        assert(shopPageViewModel.shopShareTracker.value is Success)
+        shopPageHeaderViewModel.sendShopShareTracker(mockShopId, mockChannel)
+        assert(shopPageHeaderViewModel.shopShareTracker.value is Success)
     }
 
     @Test
@@ -515,15 +515,15 @@ class NewShopPageViewModelTest {
         coEvery {
             shopQuestGeneralTrackerUseCase.get().executeOnBackground()
         } throws Exception()
-        shopPageViewModel.sendShopShareTracker(mockShopId, mockChannel)
-        assert(shopPageViewModel.shopShareTracker.value is Fail)
+        shopPageHeaderViewModel.sendShopShareTracker(mockShopId, mockChannel)
+        assert(shopPageHeaderViewModel.shopShareTracker.value is Fail)
     }
 
     @Test
     fun `check whether shopSellerPLayWidgetData post success value and streamAllowed is false`() {
         val mockShopId = "123"
-        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
-        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value
         assert(shopSellerPLayWidgetData is Success)
         assert((shopSellerPLayWidgetData as? Success)?.data?.streamAllowed == false)
     }
@@ -535,8 +535,8 @@ class NewShopPageViewModelTest {
         coEvery {
             getBroadcasterShopConfigUseCase.get().executeOnBackground()
         } returns Broadcaster.Config(true)
-        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
-        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value
         assert(shopSellerPLayWidgetData is Success)
         assert((shopSellerPLayWidgetData as? Success)?.data?.streamAllowed == true)
     }
@@ -548,8 +548,8 @@ class NewShopPageViewModelTest {
         coEvery {
             getBroadcasterShopConfigUseCase.get().executeOnBackground()
         } throws Exception()
-        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
-        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value
         assert(shopSellerPLayWidgetData is Success)
         assert((shopSellerPLayWidgetData as? Success)?.data?.streamAllowed == false)
     }
@@ -561,8 +561,8 @@ class NewShopPageViewModelTest {
         coEvery {
             getBroadcasterShopConfigUseCase.get().executeOnBackground()
         } throws Throwable()
-        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
-        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value
         assert(shopSellerPLayWidgetData is Success)
     }
 
@@ -570,8 +570,8 @@ class NewShopPageViewModelTest {
     fun `check whether shopSellerPLayWidgetData post success value and shortVideoAllowed is false and remoteConfig is false`() {
         coEvery { playShortsEntryPointRemoteConfig.isShowEntryPoint() } returns false
         val mockShopId = "123"
-        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
-        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value
         assert(shopSellerPLayWidgetData is Success)
         assert((shopSellerPLayWidgetData as? Success)?.data?.shortVideoAllowed == false)
     }
@@ -584,8 +584,8 @@ class NewShopPageViewModelTest {
         coEvery {
             getBroadcasterShopConfigUseCase.get().executeOnBackground()
         } returns Broadcaster.Config(shortVideoAllowed = true)
-        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
-        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value
         assert(shopSellerPLayWidgetData is Success)
         assert((shopSellerPLayWidgetData as? Success)?.data?.shortVideoAllowed == false)
     }
@@ -598,8 +598,8 @@ class NewShopPageViewModelTest {
         coEvery {
             getBroadcasterShopConfigUseCase.get().executeOnBackground()
         } returns Broadcaster.Config(shortVideoAllowed = true)
-        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
-        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        shopPageHeaderViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageHeaderViewModel.shopSellerPLayWidgetData.value
         assert(shopSellerPLayWidgetData is Success)
         assert((shopSellerPLayWidgetData as? Success)?.data?.shortVideoAllowed == true)
     }
@@ -614,13 +614,13 @@ class NewShopPageViewModelTest {
         coEvery {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } returns ShopOperationalHourStatus()
-        shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
-        assert(shopPageViewModel.shopPageHeaderTickerData.value is Success)
-        assert(shopPageViewModel.shopPageShopShareData.value is Success)
+        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
+        assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value is Success)
+        assert(shopPageHeaderViewModel.shopPageShopShareData.value is Success)
 
-        shopPageViewModel.getShopShareAndOperationalHourStatusData("0", mockShopDomain, true)
-        assert(shopPageViewModel.shopPageHeaderTickerData.value is Success)
-        assert(shopPageViewModel.shopPageShopShareData.value is Success)
+        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData("0", mockShopDomain, true)
+        assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value is Success)
+        assert(shopPageHeaderViewModel.shopPageShopShareData.value is Success)
     }
 
     @Test
@@ -633,8 +633,8 @@ class NewShopPageViewModelTest {
         coEvery {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } throws Exception()
-        shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
-        assert(shopPageViewModel.shopPageShopShareData.value == null)
+        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
+        assert(shopPageHeaderViewModel.shopPageShopShareData.value == null)
     }
 
     @Test
@@ -647,8 +647,8 @@ class NewShopPageViewModelTest {
         coEvery {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } throws Exception()
-        shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
-        assert(shopPageViewModel.shopPageHeaderTickerData.value == null)
+        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
+        assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value == null)
     }
 
     @Test
@@ -661,9 +661,9 @@ class NewShopPageViewModelTest {
         coEvery {
             gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
         } returns ShopOperationalHourStatus()
-        shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
-        assert(shopPageViewModel.shopPageHeaderTickerData.value == null)
-        assert(shopPageViewModel.shopPageShopShareData.value == null)
+        shopPageHeaderViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
+        assert(shopPageHeaderViewModel.shopPageHeaderTickerData.value == null)
+        assert(shopPageHeaderViewModel.shopPageShopShareData.value == null)
     }
 
     @Test
@@ -674,7 +674,7 @@ class NewShopPageViewModelTest {
         coEvery {
             affiliateCookieHelper.initCookie(any(), any(), any())
         } returns Unit
-        shopPageViewModel.shopLandingPageInitAffiliateCookie(
+        shopPageHeaderViewModel.shopLandingPageInitAffiliateCookie(
             affiliateCookieHelper,
             mockAffiliateUUId,
             mockAffiliateChannel,
@@ -691,7 +691,7 @@ class NewShopPageViewModelTest {
         coEvery {
             affiliateCookieHelper.initCookie(any(), any(), any())
         } throws Exception()
-        shopPageViewModel.shopLandingPageInitAffiliateCookie(
+        shopPageHeaderViewModel.shopLandingPageInitAffiliateCookie(
             affiliateCookieHelper,
             mockAffiliateUUId,
             mockAffiliateChannel,
@@ -711,7 +711,7 @@ class NewShopPageViewModelTest {
         coEvery {
             affiliateCookieHelper.initCookie(any(), any(), any())
         } returns Unit
-        shopPageViewModel.createAffiliateCookieShopAtcProduct(
+        shopPageHeaderViewModel.createAffiliateCookieShopAtcProduct(
             mockUUID,
             affiliateCookieHelper,
             mockAffiliateChannel,
@@ -734,7 +734,7 @@ class NewShopPageViewModelTest {
         coEvery {
             affiliateCookieHelper.initCookie(any(), any(), any())
         } throws Exception()
-        shopPageViewModel.createAffiliateCookieShopAtcProduct(
+        shopPageHeaderViewModel.createAffiliateCookieShopAtcProduct(
             mockUUID,
             affiliateCookieHelper,
             mockAffiliateChannel,
@@ -750,7 +750,7 @@ class NewShopPageViewModelTest {
     fun `when saveAffiliateTrackerId success, then shared preferences getString should return mocked value`() {
         val mockAffiliateChannel = "channel"
         every { sharedPreferences.getString(any(), any()) } returns mockAffiliateChannel
-        shopPageViewModel.saveAffiliateChannel(mockAffiliateChannel)
+        shopPageHeaderViewModel.saveAffiliateChannel(mockAffiliateChannel)
         assert(sharedPreferences.getString("", "") == mockAffiliateChannel)
     }
 
@@ -761,7 +761,7 @@ class NewShopPageViewModelTest {
         coEvery {
             sharedPreferences.edit().putString(any(), any())
         } throws Exception()
-        shopPageViewModel.saveAffiliateChannel(mockAffiliateChannel)
+        shopPageHeaderViewModel.saveAffiliateChannel(mockAffiliateChannel)
         assert(sharedPreferences.getString("", "")?.isEmpty() == true)
     }
 }

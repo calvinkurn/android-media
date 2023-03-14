@@ -160,7 +160,7 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageHeaderComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageHeaderModule
-import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
+import com.tokopedia.shop.pageheader.presentation.ShopPageHeaderViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder
@@ -323,7 +323,7 @@ class ShopPageHeaderFragment :
 
     @Inject
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
-    var shopViewModel: NewShopPageViewModel? = null
+    var shopHeaderViewModel: ShopPageHeaderViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
     var shopPageTracking: ShopPageTrackingBuyer? = null
@@ -398,10 +398,10 @@ class ShopPageHeaderFragment :
     private var isGeneralShareBottomSheet = false
     var selectedPosition = -1
     val isMyShop: Boolean
-        get() = shopViewModel?.isMyShop(shopId) == true
+        get() = shopHeaderViewModel?.isMyShop(shopId) == true
     var localCacheModel: LocalCacheModel? = null
     val userId: String
-        get() = shopViewModel?.userId.orEmpty()
+        get() = shopHeaderViewModel?.userId.orEmpty()
     private var appBarLayout: AppBarLayout? = null
     private var swipeToRefresh: SwipeToRefresh? = null
     private var mainLayout: View? = null
@@ -420,7 +420,7 @@ class ShopPageHeaderFragment :
     private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<WidgetSellerMigrationBottomSheetHasPostBinding>()
     private var viewBindingShopContentLayout: NewShopPageFragmentContentLayoutBinding? by viewBinding()
     private val isLogin: Boolean
-        get() = shopViewModel?.isUserSessionActive ?: false
+        get() = shopHeaderViewModel?.isUserSessionActive ?: false
 
     private var isConfettiAlreadyShown = false
     override fun getComponent() = activity?.run {
@@ -457,22 +457,22 @@ class ShopPageHeaderFragment :
     }
 
     override fun onDestroy() {
-        shopViewModel?.shopPageP1Data?.removeObservers(this)
-        shopViewModel?.shopImagePath?.removeObservers(this)
-        shopViewModel?.shopUnmoderateData?.removeObservers(this)
-        shopViewModel?.shopModerateRequestStatus?.removeObservers(this)
-        shopViewModel?.shopShareTracker?.removeObservers(this)
-        shopViewModel?.followStatusData?.removeObservers(this)
-        shopViewModel?.followShopData?.removeObservers(this)
-        shopViewModel?.shopSellerPLayWidgetData?.removeObservers(this)
-        shopViewModel?.shopPageHeaderTickerData?.removeObservers(this)
-        shopViewModel?.shopPageShopShareData?.removeObservers(this)
+        shopHeaderViewModel?.shopPageP1Data?.removeObservers(this)
+        shopHeaderViewModel?.shopImagePath?.removeObservers(this)
+        shopHeaderViewModel?.shopUnmoderateData?.removeObservers(this)
+        shopHeaderViewModel?.shopModerateRequestStatus?.removeObservers(this)
+        shopHeaderViewModel?.shopShareTracker?.removeObservers(this)
+        shopHeaderViewModel?.followStatusData?.removeObservers(this)
+        shopHeaderViewModel?.followShopData?.removeObservers(this)
+        shopHeaderViewModel?.shopSellerPLayWidgetData?.removeObservers(this)
+        shopHeaderViewModel?.shopPageHeaderTickerData?.removeObservers(this)
+        shopHeaderViewModel?.shopPageShopShareData?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopPageFeedTabSharedViewModel?.sellerMigrationBottomSheet?.removeObservers(this)
         shopPageFeedTabSharedViewModel?.shopPageFab?.removeObservers(this)
         shopPageMiniCartSharedViewModel?.miniCartSimplifiedData?.removeObservers(this)
-        shopViewModel?.flush()
+        shopHeaderViewModel?.flush()
         removeTemporaryShopImage(shopImageFilePath)
         UniversalShareBottomSheet.clearState(screenShotDetector)
         super.onDestroy()
@@ -552,7 +552,7 @@ class ShopPageHeaderFragment :
         }
         mainLayout?.requestFocus()
         getScrollToTopButtonInitialMargin()
-        if (shopViewModel?.isUserSessionActive == false) initStickyLogin()
+        if (shopHeaderViewModel?.isUserSessionActive == false) initStickyLogin()
         scrollToTopButton?.apply {
             circleMainMenu.setOnClickListener {
                 if (!isMyShop) {
@@ -620,7 +620,7 @@ class ShopPageHeaderFragment :
     }
 
     private fun observeLiveData(owner: LifecycleOwner) {
-        shopViewModel?.shopPageP1Data?.observe(
+        shopHeaderViewModel?.shopPageP1Data?.observe(
             owner,
             Observer { result ->
                 stopMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
@@ -658,7 +658,7 @@ class ShopPageHeaderFragment :
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
-                                liveDataName = NewShopPageViewModel::shopPageP1Data.name,
+                                liveDataName = ShopPageHeaderViewModel::shopPageP1Data.name,
                                 userId = userId,
                                 shopId = shopId,
                                 shopName = shopName,
@@ -675,7 +675,7 @@ class ShopPageHeaderFragment :
             }
         )
 
-        shopViewModel?.followStatusData?.observe(
+        shopHeaderViewModel?.followStatusData?.observe(
             owner,
             Observer {
                 shopPageHeaderFragmentHeaderViewHolder?.setLoadingFollowButton(false)
@@ -693,12 +693,12 @@ class ShopPageHeaderFragment :
                 shopPageHeaderFragmentHeaderViewHolder?.showCoachMark(
                     followStatusData,
                     shopId,
-                    shopViewModel?.userId.orEmpty()
+                    shopHeaderViewModel?.userId.orEmpty()
                 )
             }
         )
 
-        shopViewModel?.followShopData?.observe(
+        shopHeaderViewModel?.followShopData?.observe(
             owner,
             Observer {
                 shopPageHeaderFragmentHeaderViewHolder?.setLoadingFollowButton(false)
@@ -715,7 +715,7 @@ class ShopPageHeaderFragment :
             }
         )
 
-        shopViewModel?.shopIdFromDomainData?.observe(
+        shopHeaderViewModel?.shopIdFromDomainData?.observe(
             owner,
             Observer { result ->
                 when (result) {
@@ -728,7 +728,7 @@ class ShopPageHeaderFragment :
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
-                                liveDataName = NewShopPageViewModel::shopIdFromDomainData.name,
+                                liveDataName = ShopPageHeaderViewModel::shopIdFromDomainData.name,
                                 userId = userId,
                                 shopId = shopId,
                                 shopName = shopName,
@@ -743,7 +743,7 @@ class ShopPageHeaderFragment :
             }
         )
 
-        shopViewModel?.shopImagePath?.observe(
+        shopHeaderViewModel?.shopImagePath?.observe(
             owner,
             Observer {
                 shopImageFilePath = it
@@ -754,7 +754,7 @@ class ShopPageHeaderFragment :
             }
         )
 
-        shopViewModel?.shopUnmoderateData?.observe(
+        shopHeaderViewModel?.shopUnmoderateData?.observe(
             owner,
             Observer {
                 when (it) {
@@ -781,7 +781,7 @@ class ShopPageHeaderFragment :
             }
         )
 
-        shopViewModel?.shopModerateRequestStatus?.observe(
+        shopHeaderViewModel?.shopModerateRequestStatus?.observe(
             owner,
             Observer {
                 when (it) {
@@ -802,7 +802,7 @@ class ShopPageHeaderFragment :
             }
         )
 
-        shopViewModel?.shopPageHeaderTickerData?.observe(
+        shopHeaderViewModel?.shopPageHeaderTickerData?.observe(
             owner,
             Observer { result ->
                 if (result is Success) {
@@ -811,7 +811,7 @@ class ShopPageHeaderFragment :
             }
         )
 
-        shopViewModel?.shopPageShopShareData?.observe(
+        shopHeaderViewModel?.shopPageShopShareData?.observe(
             owner,
             Observer { result ->
                 if (result is Success) {
@@ -828,7 +828,7 @@ class ShopPageHeaderFragment :
             }
         )
 
-        shopViewModel?.shopSellerPLayWidgetData?.observe(
+        shopHeaderViewModel?.shopSellerPLayWidgetData?.observe(
             owner,
             Observer { result ->
                 if (result is Success) {
@@ -934,7 +934,7 @@ class ShopPageHeaderFragment :
                             showMerchantVoucherCouponBottomSheet(shopId.toIntOrZero())
                             shopPageTracking?.clickCekToasterSuccess(
                                 shopId,
-                                shopViewModel?.userId
+                                shopHeaderViewModel?.userId
                             )
                         }
                     }.show()
@@ -980,13 +980,13 @@ class ShopPageHeaderFragment :
             shopPageTracking?.impressionToasterFollow(
                 isSuccess,
                 shopId,
-                shopViewModel?.userId
+                shopHeaderViewModel?.userId
             )
         } else {
             shopPageTracking?.impressionToasterUnfollow(
                 isSuccess,
                 shopId,
-                shopViewModel?.userId
+                shopHeaderViewModel?.userId
             )
         }
     }
@@ -1003,12 +1003,12 @@ class ShopPageHeaderFragment :
     }
 
     private fun getShopShareAndOperationalHourStatusData() {
-        shopViewModel?.getShopShareAndOperationalHourStatusData(shopId, shopDomain ?: "", isRefresh)
+        shopHeaderViewModel?.getShopShareAndOperationalHourStatusData(shopId, shopDomain ?: "", isRefresh)
     }
 
     private fun getSellerPlayWidget() {
         if (shopPageHeaderFragmentHeaderViewHolder?.isPlayWidgetPlaceHolderAvailable() == true) {
-            shopViewModel?.getSellerPlayWidgetData(shopId)
+            shopHeaderViewModel?.getSellerPlayWidgetData(shopId)
         }
     }
 
@@ -1016,7 +1016,7 @@ class ShopPageHeaderFragment :
         val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         if (shopPageHeaderFragmentHeaderViewHolder?.isFollowButtonPlaceHolderAvailable() == true) {
             shopPageHeaderFragmentHeaderViewHolder?.setLoadingFollowButton(true)
-            shopViewModel?.getFollowStatusData(shopId, shopFollowButtonVariantType)
+            shopHeaderViewModel?.getFollowStatusData(shopId, shopFollowButtonVariantType)
         }
     }
 
@@ -1025,7 +1025,7 @@ class ShopPageHeaderFragment :
         stopMonitoringPltPreparePage()
         stopMonitoringPltCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
         sharedPreferences = activity?.getSharedPreferences(SHOP_PAGE_SHARED_PREFERENCE, Context.MODE_PRIVATE)
-        shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(NewShopPageViewModel::class.java)
+        shopHeaderViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageHeaderViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopPageMiniCartSharedViewModel = ViewModelProviders.of(requireActivity()).get(
             ShopPageMiniCartSharedViewModel::class.java
@@ -1086,7 +1086,7 @@ class ShopPageHeaderFragment :
                 handlePlayBroadcastExtra(this@run)
             }
             if (GlobalConfig.isSellerApp()) {
-                shopId = shopViewModel?.userShopId.orEmpty()
+                shopId = shopHeaderViewModel?.userShopId.orEmpty()
                 if (shouldAutoRedirectToCreateEtalase) {
                     goToCreateEtalase()
                 }
@@ -1130,7 +1130,7 @@ class ShopPageHeaderFragment :
     private fun setAffiliateData(uri: Uri) {
         val affiliateTrackerId = UUID.randomUUID().toString()
         val affiliateChannel = uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty()
-        shopViewModel?.saveAffiliateChannel(affiliateChannel)
+        shopHeaderViewModel?.saveAffiliateChannel(affiliateChannel)
         affiliateData = ShopAffiliateData(
             uri.getQueryParameter(QUERY_AFFILIATE_UUID).orEmpty(),
             affiliateChannel,
@@ -1139,7 +1139,7 @@ class ShopPageHeaderFragment :
     }
 
     private fun shopLandingPageInitAffiliateCookie() {
-        shopViewModel?.shopLandingPageInitAffiliateCookie(
+        shopHeaderViewModel?.shopLandingPageInitAffiliateCookie(
             affiliateCookieHelper,
             affiliateData?.affiliateUUId.orEmpty(),
             affiliateData?.affiliateChannel.orEmpty(),
@@ -1280,7 +1280,7 @@ class ShopPageHeaderFragment :
         startMonitoringPltNetworkRequest()
         startMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
         if (shopId.isEmpty()) {
-            shopViewModel?.getShopIdFromDomain(shopDomain.orEmpty())
+            shopHeaderViewModel?.getShopIdFromDomain(shopDomain.orEmpty())
         } else {
             getShopPageP1Data()
         }
@@ -1288,7 +1288,7 @@ class ShopPageHeaderFragment :
 
     private fun getShopPageP1Data() {
         if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
-        shopViewModel?.getNewShopPageTabData(
+        shopHeaderViewModel?.getNewShopPageTabData(
             shopId = shopId,
             shopDomain = shopDomain.orEmpty(),
             page = START_PAGE,
@@ -1346,7 +1346,7 @@ class ShopPageHeaderFragment :
             }
             iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
             setIcon(iconBuilder)
-            if (shopViewModel?.isUserSessionActive == true) {
+            if (shopHeaderViewModel?.isUserSessionActive == true) {
                 setBadgeCounter(IconList.ID_CART, getCartCounter())
             }
             setToolbarPageName(SHOP_PAGE)
@@ -1579,7 +1579,7 @@ class ShopPageHeaderFragment :
 
     private fun redirectToCartPage() {
         shopPageTracking?.clickCartButton(
-            shopViewModel?.isMyShop(shopId) ?: false,
+            shopHeaderViewModel?.isMyShop(shopId) ?: false,
             CustomDimensionShopPage.create(
                 shopId,
                 shopPageHeaderDataModel?.isOfficial ?: false,
@@ -1895,7 +1895,7 @@ class ShopPageHeaderFragment :
             shopRef = shopRef,
             isEnableDirectPurchase = shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
         )
-        shopViewModel?.productListData?.let {
+        shopHeaderViewModel?.productListData?.let {
             shopPageProductFragment.setInitialProductListData(it)
         }
         listShopPageTabModel.add(
@@ -1978,7 +1978,7 @@ class ShopPageHeaderFragment :
                         shopRef,
                         shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     ).apply {
-                        shopViewModel?.productListData?.let {
+                        shopHeaderViewModel?.productListData?.let {
                             setInitialProductListData(it)
                         }
                         setListWidgetLayoutData(it.data.homeLayoutData)
@@ -1997,7 +1997,7 @@ class ShopPageHeaderFragment :
                         shopRef = shopRef,
                         isEnableDirectPurchase = shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     )
-                    shopViewModel?.productListData?.let {
+                    shopHeaderViewModel?.productListData?.let {
                         shopPageProductFragment.setInitialProductListData(it)
                     }
                     shopPageProductFragment
@@ -2100,10 +2100,10 @@ class ShopPageHeaderFragment :
                 shopRef,
                 shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
             ).apply {
-                shopViewModel?.productListData?.let {
+                shopHeaderViewModel?.productListData?.let {
                     setInitialProductListData(it)
                 }
-                shopViewModel?.homeWidgetLayoutData?.let {
+                shopHeaderViewModel?.homeWidgetLayoutData?.let {
                     setListWidgetLayoutData(it)
                 }
             }
@@ -2252,7 +2252,7 @@ class ShopPageHeaderFragment :
                     shopPageHeaderDataModel?.isGoldMerchant ?: false
                 )
             )
-            if (shopViewModel?.isUserSessionActive == true) {
+            if (shopHeaderViewModel?.isUserSessionActive == true) {
                 shopPageTracking?.eventShopSendChat()
                 val intent = RouteManager.getIntent(
                     context,
@@ -2285,7 +2285,7 @@ class ShopPageHeaderFragment :
     }
 
     override fun onSendRequestOpenModerate(choosenOptionValue: String) {
-        shopViewModel?.sendRequestUnmoderateShop(
+        shopHeaderViewModel?.sendRequestUnmoderateShop(
             shopId = shopId.toDoubleOrZero(),
             optionValue = choosenOptionValue
         )
@@ -2295,7 +2295,7 @@ class ShopPageHeaderFragment :
         shopPageHeaderUnmoderateBottomSheet = bottomSheetPageHeader
         shopPageHeaderUnmoderateBottomSheet?.show(fragmentManager)
         shopPageHeaderUnmoderateBottomSheet?.showLoading()
-        shopViewModel?.checkShopRequestModerateStatus()
+        shopHeaderViewModel?.checkShopRequestModerateStatus()
     }
 
     override fun onCompleteCheckRequestModerateStatus(moderateStatusResult: ShopModerateRequestResult) {
@@ -2407,7 +2407,7 @@ class ShopPageHeaderFragment :
 
                             // send gql tracker
                             shopShare.socialMediaName?.let { name ->
-                                shopViewModel?.sendShopShareTracker(
+                                shopHeaderViewModel?.sendShopShareTracker(
                                     shopId,
                                     channel = when (shopShare) {
                                         is ShopShareModel.CopyLink -> {
@@ -2457,7 +2457,7 @@ class ShopPageHeaderFragment :
 
     private fun saveShopImage() {
         shopPageHeaderDataModel?.shopSnippetUrl?.let {
-            shopViewModel?.saveShopImageToPhoneStorage(context, it)
+            shopHeaderViewModel?.saveShopImageToPhoneStorage(context, it)
         }
     }
 
@@ -2508,8 +2508,8 @@ class ShopPageHeaderFragment :
 
     private fun setShopName() {
         if (isMyShop) {
-            shopPageHeaderDataModel?.shopName = shopViewModel?.ownerShopName.orEmpty()
-            shopPageHeaderFragmentHeaderViewHolder?.updateShopName(shopViewModel?.ownerShopName.orEmpty())
+            shopPageHeaderDataModel?.shopName = shopHeaderViewModel?.ownerShopName.orEmpty()
+            shopPageHeaderFragmentHeaderViewHolder?.updateShopName(shopHeaderViewModel?.ownerShopName.orEmpty())
         }
     }
 
@@ -2812,7 +2812,7 @@ class ShopPageHeaderFragment :
         shopPageTracking?.clickFollowUnfollowShop(
             !isFollowing,
             shopId,
-            shopViewModel?.userId
+            shopHeaderViewModel?.userId
         )
 
         shopPageTracking?.sendMoEngageFavoriteEvent(
@@ -2830,7 +2830,7 @@ class ShopPageHeaderFragment :
             UpdateFollowStatusUseCase.ACTION_FOLLOW
         }
         shopPageHeaderFragmentHeaderViewHolder?.setLoadingFollowButton(true)
-        shopViewModel?.updateFollowStatus(shopId, action)
+        shopHeaderViewModel?.updateFollowStatus(shopId, action)
     }
 
     override fun onImpressionShopPerformanceWidgetImageOnlyItem(
@@ -2952,7 +2952,7 @@ class ShopPageHeaderFragment :
                             SharingUtil.executeShopPageShareIntent(shareModel, linkerShareData, activity, view, shareString)
                             // send gql tracker
                             shareModel.socialMediaName?.let { name ->
-                                shopViewModel?.sendShopShareTracker(
+                                shopHeaderViewModel?.sendShopShareTracker(
                                     shopId,
                                     channel = when (shareModel) {
                                         is ShareModel.CopyLink -> {
@@ -3066,7 +3066,7 @@ class ShopPageHeaderFragment :
         }
         configShopShareBottomSheetImpressionTracker()
         // activate contextual image
-        val initialProductListData = shopViewModel?.productListData?.data ?: listOf()
+        val initialProductListData = shopHeaderViewModel?.productListData?.data ?: listOf()
         val initialProductListSize = initialProductListData.size
 
         // core params
@@ -3351,7 +3351,7 @@ class ShopPageHeaderFragment :
         isVariant: Boolean,
         stockQty: Int
     ) {
-        shopViewModel?.createAffiliateCookieShopAtcProduct(
+        shopHeaderViewModel?.createAffiliateCookieShopAtcProduct(
             affiliateData?.affiliateUUId.orEmpty(),
             affiliateCookieHelper,
             affiliateData?.affiliateChannel.orEmpty(),

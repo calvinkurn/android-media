@@ -83,7 +83,7 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class NewShopPageViewModel @Inject constructor(
+class ShopPageHeaderViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         @GqlGetShopInfoForHeaderUseCaseQualifier
         private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,

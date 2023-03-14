@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shop.pageheader.di.scope.ShopPageHeaderScope
-import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
+import com.tokopedia.shop.pageheader.presentation.ShopPageHeaderViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -19,6 +19,6 @@ abstract class ShopPageHeaderViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(NewShopPageViewModel::class)
-    internal abstract fun newShopPageViewModel(viewModel: NewShopPageViewModel): ViewModel
+    @ViewModelKey(ShopPageHeaderViewModel::class)
+    internal abstract fun newShopPageViewModel(headerViewModel: ShopPageHeaderViewModel): ViewModel
 }
