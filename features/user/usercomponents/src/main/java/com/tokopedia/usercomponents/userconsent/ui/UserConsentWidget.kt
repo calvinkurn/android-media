@@ -244,7 +244,7 @@ class UserConsentWidget : FrameLayout,
                 purposes.add(UserConsentPayload.PurposeDataModel(
                     purposeId = it.id,
                     version = it.version,
-                    transactionType = collection?.consentType.orEmpty(),
+                    transactionType = CONSENT_OPT_IN,
                     dataElementType = it.attribute.dataElementType
                 ))
             }
