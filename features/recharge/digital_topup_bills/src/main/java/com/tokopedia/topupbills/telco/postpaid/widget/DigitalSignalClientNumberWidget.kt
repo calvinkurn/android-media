@@ -66,4 +66,8 @@ class DigitalSignalClientNumberWidget : DigitalClientNumberWidget {
     fun setPostpaidListener(listener: ClientNumberPostpaidListener) {
         this.postpaidListener = listener
     }
+
+    override fun formatClientNumberInput(clientNumber: String?) {
+        // do nothing
+    }
 }

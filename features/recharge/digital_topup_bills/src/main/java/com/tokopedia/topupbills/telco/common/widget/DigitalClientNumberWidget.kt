@@ -85,6 +85,14 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
         initListener()
     }
 
+    open fun formatClientNumberInput(clientNumber: String?) {
+        inputNumberField.editText.run {
+            val formattedText = CommonTopupBillsUtil.formatPrefixClientNumber(clientNumber)
+            setText(formattedText)
+            setSelection(formattedText.length)
+        }
+    }
+
     private fun initListener() {
         inputNumberField.icon1.run {
             setOnClickListener { listener.onNavigateToContact(false) }
@@ -106,6 +114,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
 
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
+                    removeTextChangedListener(this)
+                    formatClientNumberInput(s?.toString())
+                    addTextChangedListener(this)
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -250,9 +261,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
     }
 
     fun setInputNumber(inputNumber: String) {
-        inputNumberField.editText.setText(
-            CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber)
-        )
+        inputNumberField.editText.setText(inputNumber)
     }
 
     fun getInputNumber(): String {
