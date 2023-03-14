@@ -21,8 +21,14 @@ class PerformanceTrace(val traceName: String) {
         const val TYPE_TTFL = "TTFL"
         const val TYPE_TTIL = "TTIL"
         const val GLOBAL_LAYOUT_DEBOUNCE = 500L
+        const val ATTR_CONDITION = "State"
+        const val STATE_ERROR = "page_error"
+        const val STATE_TOUCH = "user_touch"
+        const val STATE_SUCCESS = "success"
     }
     private var startCurrentTimeMillis = 0L
+    private var currentLoadableComponentList = mutableListOf<LoadableComponent>()
+
     var summaryModel: AtomicReference<SummaryModel> = AtomicReference(SummaryModel())
     var outputSharedFlow: SharedFlow<Unit> = MutableSharedFlow<Unit>(1, 0, BufferOverflow.SUSPEND)
 
@@ -45,6 +51,19 @@ class PerformanceTrace(val traceName: String) {
         }
     }
 
+    fun setLoadableComponentList(objList: List<Any>) {
+        currentLoadableComponentList = objList.filterIsInstance<LoadableComponent>().toMutableList()
+    }
+
+    fun checkIfLoadingIsFinished(): Boolean {
+        currentLoadableComponentList.filterIsInstance<LoadableComponent>().forEach {
+            if (it.isLoading()) {
+                return false
+            }
+        }
+        return true
+    }
+
     fun init(
         v: View,
         scope: LifecycleCoroutineScope,
@@ -60,20 +79,24 @@ class PerformanceTrace(val traceName: String) {
                 val viewgroup = v as ViewGroup
                 setTTFLInflateTrace(viewgroup, onLaunchTimeFinished)
                 setTTILInflateTrace(v, viewgroup, onLaunchTimeFinished, scope)
-                touchListenerActivity?.addListener { cancelPerformancetrace() }
+                touchListenerActivity?.addListener { cancelPerformancetrace(STATE_TOUCH) }
             }) {
         }
     }
 
-    fun cancelPerformancetrace() {
+    fun cancelPerformancetrace(state: String) {
         performanceTraceJob?.cancel()
+        performanceMonitoring.putCustomAttribute(
+            ATTR_CONDITION, state)
+        performanceMonitoring.stopTrace()
+
         if (summaryModel.get().timeToInitialLayout != null) {
             PerformanceTraceDebugger.logTrace(
-                "Performance trace finished."
+                "Performance TTFL trace finished."
             )
         } else {
             PerformanceTraceDebugger.logTrace(
-                "Performance trace cancelled due to scroll event"
+                "Performance TTIL trace cancelled due to scroll event / error"
             )
         }
     }
@@ -89,7 +112,9 @@ class PerformanceTrace(val traceName: String) {
         viewgroup.viewTreeObserver.addOnGlobalLayoutListener(onGlobalLayoutTTIL)
 
         outputSharedFlow = sharedFlow.debounce(GLOBAL_LAYOUT_DEBOUNCE).map {
-            onTTILFinished(onLaunchTimeFinished, it, viewgroup, onGlobalLayoutTTIL)
+            if (checkIfLoadingIsFinished()) {
+                onTTILFinished(onLaunchTimeFinished, it, viewgroup, onGlobalLayoutTTIL)
+            }
         }.shareIn(scope, SharingStarted.WhileSubscribed(5000), 1)
         outputSharedFlow.launchIn(scope)
     }
@@ -143,6 +168,8 @@ class PerformanceTrace(val traceName: String) {
         onLaunchTimeFinished.invoke(summaryModel.get(), TYPE_TTIL, it)
         viewgroup.viewTreeObserver.removeOnGlobalLayoutListener(onGlobalLayoutTTIL)
         performanceMonitoring.putMetric(TYPE_TTIL, summaryModel.get().timeToInitialLayout?.inflateTime?:0L)
+        performanceMonitoring.putCustomAttribute(
+            ATTR_CONDITION, STATE_SUCCESS)
         performanceMonitoring.stopTrace()
     }
 

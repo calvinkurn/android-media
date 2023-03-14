@@ -41,6 +41,7 @@ import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring.OnFrameListener
 import com.tokopedia.analytics.performance.perf.PerformanceTrace
+import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -228,7 +229,6 @@ import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.cancel
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -1182,6 +1182,7 @@ open class HomeRevampFragment :
                         showNetworkError(errorString)
                         NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                         onPageLoadTimeEnd()
+                        performanceTrace.cancelPerformancetrace(PerformanceTrace.STATE_ERROR)
                     }
                     else -> {
                         showLoading()
@@ -1283,6 +1284,7 @@ open class HomeRevampFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        PerformanceTraceDebugger.DEBUG = true
         performanceTrace.init(
             v = view.rootView,
             scope = this.lifecycleScope,
@@ -1295,7 +1297,7 @@ open class HomeRevampFragment :
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if (data.isNotEmpty()) {
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
-                finishPageLoadTime(isCache)
+//                finishPageLoadTime(isCache)
             }
             this.fragmentCurrentCacheState = isCache
             this.fragmentCurrentVisitableCount = data.size
@@ -1307,6 +1309,7 @@ open class HomeRevampFragment :
                 visitableListCount = data.size,
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
+            performanceTrace.setLoadableComponentList(data)
             adapter?.submitList(data)
         }
     }
