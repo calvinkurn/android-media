@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicAttachmentTextUiModel
 import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionUiModel
@@ -53,4 +54,6 @@ interface ChatbotTypeFactory : AdapterTypeFactory {
     fun type(attachInvoiceSentUiModel: com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel): Int
 
     fun type(dynamicStickyButtonUiModel: DynamicStickyButtonUiModel): Int
+
+    fun type(dynamicAttachmentTextUiModel: DynamicAttachmentTextUiModel): Int
 }

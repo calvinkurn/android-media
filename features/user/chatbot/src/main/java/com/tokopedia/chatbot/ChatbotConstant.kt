@@ -62,12 +62,12 @@ object ChatbotConstant {
         const val TYPE_BIG_REPLY_BOX = 100
         const val REPLY_BOX_TOGGLE_VALUE = 101
         const val DYNAMIC_STICKY_BUTTON_RECEIVE = 105
-        const val DYNAMIC_STICKY_BUTTON_SEND = 106
+        const val DYNAMIC_TEXT_SEND = 106
         val ALLOWED_DYNAMIC_ATTACHMENT_TYPE = listOf<Int>(
             TYPE_BIG_REPLY_BOX,
             REPLY_BOX_TOGGLE_VALUE,
             DYNAMIC_STICKY_BUTTON_RECEIVE,
-            DYNAMIC_STICKY_BUTTON_SEND
+            DYNAMIC_TEXT_SEND
         )
         val PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT = listOf<Int>(
             DYNAMIC_STICKY_BUTTON_RECEIVE

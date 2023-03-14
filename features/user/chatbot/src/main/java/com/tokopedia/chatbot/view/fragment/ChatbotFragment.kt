@@ -11,7 +11,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -2535,13 +2534,36 @@ class ChatbotFragment :
     }
 
     override fun onButtonActionClicked(bubble: ChatActionBubbleUiModel) {
-        // SEnd attachment 34,
-        Log.d("FATAL", "onButtonActionClicked: $bubble")
+        val startTime = SendableUiModel.generateStartTime()
         presenter.sendDynamicAttachmentText(
             messageId,
             bubble,
-            SendableUiModel.generateStartTime(),
+            startTime,
             opponentId
         )
+        getViewState()?.removeDynamicStickyButton()
+
+//        getViewState()?.onSendingMessage(
+//            messageId,
+//            getUserSession().userId,
+//            getUserSession()
+//                .name,
+//            bubble.text,
+//            startTime,
+//            null
+//        )
+
+        //TODO fake message here
+        presenter.sendMessage(
+            messageId,
+            "ABCC",
+            startTime,
+            opponentId,
+            replyBubbleContainer?.referredMsg,
+            onSendingMessage("ABCC", startTime, replyBubbleContainer?.referredMsg)
+        )
+
+
+        getViewState()?.scrollToBottom()
     }
 }

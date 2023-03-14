@@ -388,7 +388,7 @@ object ChatbotSendableWebSocketParam {
         val attribute = JsonObject().apply {
             addProperty(
                 "content_code",
-                ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_SEND
+                ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND
             )
             addProperty("dynamic_content", dynamicContent)
             // TODO change this one

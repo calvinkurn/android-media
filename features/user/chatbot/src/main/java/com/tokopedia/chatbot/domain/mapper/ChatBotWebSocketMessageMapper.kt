@@ -24,12 +24,15 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UP
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_STICKED_BUTTON_ACTIONS
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_RECEIVE
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicAttachmentTextUiModel
 import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotImageUploadAttributes
@@ -89,7 +92,11 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 )
                 val contentCode = dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
                 if (PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(contentCode)) {
-                    convertToDynamicAttachment(pojo, dynamicAttachment)
+                    when(contentCode) {
+                        DYNAMIC_STICKY_BUTTON_RECEIVE -> convertToDynamicAttachmentwithContentCode105(pojo, dynamicAttachment)
+                        DYNAMIC_TEXT_SEND -> convertToDynamicAttachment105withContentCode106(pojo, dynamicAttachment)
+                        else ->  convertToDynamicAttachmentFallback(pojo, dynamicAttachment)
+                    }
                 } else {
                     convertToDynamicAttachmentFallback(pojo, dynamicAttachment)
                 }
@@ -97,7 +104,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         }
     }
 
-    private fun convertToDynamicAttachment(
+    private fun convertToDynamicAttachmentwithContentCode105(
         pojo: ChatSocketPojo,
         dynamicAttachment: DynamicAttachment
     ): DynamicStickyButtonUiModel {
@@ -116,6 +123,31 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             contentText = dynamicStickyButton.textMessage,
             replyTime = pojo.message.timeStampUnixNano
         )
+    }
+
+    private fun convertToDynamicAttachment105withContentCode106(
+        pojo: ChatSocketPojo,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicAttachmentTextUiModel {
+        val dynamicStickyButton = Gson().fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent,
+            ChatActionPojo::class.java
+        )
+        return DynamicAttachmentTextUiModel.Builder()
+            .withMsg(dynamicStickyButton.text)
+            .build()
+
+//        return DynamicAttachmentTextUiModel(
+//            messageId = pojo.msgId,
+//            fromUid = pojo.fromUid,
+//            from = pojo.from,
+//            fromRole = pojo.fromRole,
+//            attachmentId = pojo.attachment?.id ?: "",
+//            attachmentType = pojo.attachment?.type ?: "",
+//            actionBubble = convertToSingleButtonAction(dynamicStickyButton.buttonAction),
+//            contentText = dynamicStickyButton.textMessage,
+//            replyTime = pojo.message.timeStampUnixNano
+//        )
     }
 
     private fun convertToSingleButtonAction(pojo: ChatActionPojo): ChatActionBubbleUiModel {

@@ -18,6 +18,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicAttachmentTextUiModel
 import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionUiModel
@@ -144,6 +145,10 @@ open class ChatbotTypeFactoryImpl(
         return DynamicStickyButtonViewHolder.LAYOUT
     }
 
+    override fun type(dynamicAttachmentTextUiModel: DynamicAttachmentTextUiModel): Int {
+        return RightChatMessageUnifyViewHolder.LAYOUT
+    }
+
     override fun type(chatSepratorUiModel: ChatSepratorUiModel): Int {
         return ChatbotLiveChatSeparatorViewHolder.LAYOUT
     }
@@ -199,6 +204,7 @@ open class ChatbotTypeFactoryImpl(
             ChatActionListBubbleViewHolder.LAYOUT -> ChatActionListBubbleViewHolder(parent, chatActionListBubbleListener, chatLinkHandlerListener)
             ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener, userSession)
             ChatbotVideoUploadViewHolder.LAYOUT -> ChatbotVideoUploadViewHolder(parent, videoUploadListener)
+            RightChatMessageUnifyViewHolder.LAYOUT -> RightChatMessageUnifyViewHolder(parent, chatLinkHandlerListener, replyBubbleListener, userSession)
             else -> super.createViewHolder(parent, type)
         }
     }
