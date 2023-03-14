@@ -70,6 +70,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
     private val mBackReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Timber.d("Do back action to parent")
+            //
         }
     }
 
