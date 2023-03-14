@@ -706,12 +706,22 @@ class AddProductViewModel @Inject constructor(
         currentPageParentProductsIds: List<Long>,
         selectedParentProductIds: Set<Long>
     ): Int {
+        var selectedParentProductCounter = 0
+
         val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
         val selectedProductCount = if (isOnSearchMode) {
-            currentPageParentProductsIds.count { it in selectedParentProductIds }
+
+            currentPageParentProductsIds.forEach { productId ->
+                if (productId in selectedParentProductIds) {
+                    selectedParentProductCounter++
+                }
+            }
+
+            selectedParentProductCounter
         } else {
             selectedParentProductIds.count()
         }
+
         return selectedProductCount
     }
 

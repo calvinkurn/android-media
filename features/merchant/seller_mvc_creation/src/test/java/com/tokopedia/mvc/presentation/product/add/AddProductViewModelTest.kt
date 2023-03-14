@@ -857,9 +857,6 @@ class AddProductViewModelTest {
     //region getProducts
     //getProducts error ui effect should emit Error, ui state error should contain throwable
 
-    //voucher validation partial success
-    //voucher validation partial error
-
     //endregion
 
     //region handleCheckAllProduct
@@ -2994,6 +2991,111 @@ class AddProductViewModelTest {
     //endregion
 
 
+    //region findSelectedProductCount
+
+
+    @Test
+    fun `When searching products, if search result matched with the current selected products, the should return the correct selectedProductCount`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val secondProduct = populateProduct().copy(id = 2, isSelected = false)
+            val thirdProduct = populateProduct().copy(id = 3, isSelected = false)
+            val fourthProduct = populateProduct().copy(id = 4, isSelected = false)
+
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val secondPageOfMockedProductResponse = listOf(thirdProduct, fourthProduct)
+
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                ),
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = secondProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+            val secondPageOfMockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = thirdProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                ),
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = fourthProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf()
+                )
+            )
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(thirdProduct.id))
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(fourthProduct.id))
+
+            mockGetProductListGqlCall(searchKeyword = "some keyword..", warehouseId = WAREHOUSE_ID, products = secondPageOfMockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(thirdProduct.id, fourthProduct.id),
+                productValidationResponse = secondPageOfMockedProductValidationResponse
+            )
+
+            viewModel.processEvent(AddProductEvent.SearchProduct("some keyword.."))
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(2, actual.selectedProductCount)
+
+
+            job.cancel()
+        }
+    }
+
+
+    //endregion
     private fun buildVoucherConfiguration(): VoucherConfiguration {
         return VoucherConfiguration().copy(
             startPeriod = Date(2023, 1, 1, 0, 0, 0),
