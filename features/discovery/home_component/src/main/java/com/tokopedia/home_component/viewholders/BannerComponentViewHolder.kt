@@ -4,12 +4,12 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Interpolator
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -36,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -352,8 +353,8 @@ class BannerComponentViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_banner
-        val autoScrollInterpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
-        val manualScrollInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
+        val autoScrollInterpolator: Interpolator = UnifyMotion.EASE_IN_OUT
+        val manualScrollInterpolator: Interpolator = UnifyMotion.EASE_OUT
         const val FLING_DURATION = 600
         private const val STATE_RUNNING = 0
         private const val STATE_PAUSED = 1
