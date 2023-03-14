@@ -2354,7 +2354,205 @@ class AddProductViewModelTest {
     //endregion
 
     //region handleVariantUpdated
+    @Test
+    fun `When select variants from a product, parent product should be selected and selected variants ids should be stored`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
 
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val firstProductVariants = listOf(
+                VoucherValidationResult.ValidationProduct.ProductVariant(
+                    productId = 111,
+                    productName = "First Product - Red Variant",
+                    price = 55_000,
+                    stock = 10,
+                    isEligible = true,
+                    reason = ""
+                ),
+                VoucherValidationResult.ValidationProduct.ProductVariant(
+                    productId = 112,
+                    productName = "First Product - Blue Variant",
+                    price = 55_000,
+                    stock = 10,
+                    isEligible = false,
+                    reason = "Has been registered on another voucher"
+                ),
+                VoucherValidationResult.ValidationProduct.ProductVariant(
+                    productId = 113,
+                    productName = "First Product - Green Variant",
+                    price = 55_000,
+                    stock = 10,
+                    isEligible = false,
+                    reason = "Has been registered on another voucher"
+                )
+            )
+            val expectedFirstProductVariant = listOf(
+                Product.Variant(
+                    variantProductId = 111,
+                    isEligible = true,
+                    reason = "",
+                    isSelected = true
+                ),
+                Product.Variant(
+                    variantProductId = 112,
+                    isEligible = false,
+                    reason = "Has been registered on another voucher",
+                    isSelected = false
+                ),
+                Product.Variant(
+                    variantProductId = 113,
+                    isEligible = false,
+                    reason = "Has been registered on another voucher",
+                    isSelected = false
+                )
+            )
+
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = firstProductVariants
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            viewModel.processEvent(
+                AddProductEvent.VariantUpdated(
+                    modifiedParentProductId = 1,
+                    selectedVariantIds = setOf(111)
+                )
+            )
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstProduct.copy(
+                        isSelected = true,
+                        selectedVariantsIds = setOf(111),
+                        originalVariants = expectedFirstProductVariant
+                    )
+                ),
+                actual.products
+            )
+            assertEquals(setOf<Long>(1), actual.selectedProductsIds)
+            assertEquals(1, actual.selectedProductCount)
+            assertEquals(AddProductUiState.CheckboxState.INDETERMINATE, actual.checkboxState)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When select variants from a non exist parent product id, is selected should be false`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct)
+            val mockedProductValidationResponse = listOf(
+                VoucherValidationResult.ValidationProduct(
+                    isEligible = true,
+                    isVariant = false,
+                    parentProductId = firstProduct.id,
+                    reason = "",
+                    variant = emptyList()
+                )
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedValues = arrayListOf<AddProductUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            val unknownParentProduct : Long = 2
+            viewModel.processEvent(
+                AddProductEvent.VariantUpdated(
+                    modifiedParentProductId = unknownParentProduct,
+                    selectedVariantIds = setOf()
+                )
+            )
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstProduct.copy(
+                        isSelected = false,
+                        selectedVariantsIds = setOf()
+                    )
+                ),
+                actual.products
+            )
+            assertEquals(setOf<Long>(), actual.selectedProductsIds)
+            assertEquals(0, actual.selectedProductCount)
+            assertEquals(AddProductUiState.CheckboxState.UNCHECKED, actual.checkboxState)
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region handleConfirmAddProduct
