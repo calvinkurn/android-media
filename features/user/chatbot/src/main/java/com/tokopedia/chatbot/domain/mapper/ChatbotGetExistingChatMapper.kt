@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.domain.mapper
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
@@ -11,6 +12,7 @@ import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CHAT_SEPARATOR
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_OPTIONS
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_VIEW
@@ -24,6 +26,7 @@ import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.dynamicattachment.dynamicstickybutton.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotImageUploadAttributes
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionUiModel
@@ -36,8 +39,11 @@ import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonUiModel
 import com.tokopedia.chatbot.data.uploadsecure.ChatbotVideoUploadAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
+import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionPojo
 import com.tokopedia.chatbot.domain.pojo.chatdivider.ChatDividerResponse
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachment
+import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicStickyButton
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.ListInvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -66,9 +72,53 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(chatItemPojoByDateByTime, attachmentIds)
             TYPE_VIDEO_UPLOAD -> convertToVideoUpload(chatItemPojoByDateByTime)
-            DYNAMIC_ATTACHMENT -> convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
+            DYNAMIC_ATTACHMENT -> {
+                val dynamicAttachment = GsonBuilder().create().fromJson(
+                    chatItemPojoByDateByTime.attachment.attributes,
+                    DynamicAttachment::class.java
+                )
+                val contentCode = dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
+                if (ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(contentCode)) {
+                    when (contentCode) {
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_RECEIVE -> convertToDynamicAttachmentwithContentCode105(chatItemPojoByDateByTime, dynamicAttachment)
+                        //         ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND -> convertToDynamicAttachment105withContentCode106(pojo, dynamicAttachment)
+                        else -> convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
+                    }
+                } else {
+                    convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
+                }
+            }
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
+    }
+
+    private fun convertToDynamicAttachmentwithContentCode105(
+        pojo: Reply,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicStickyButtonUiModel {
+        val dynamicStickyButton = Gson().fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent,
+            DynamicStickyButton::class.java
+        )
+        return DynamicStickyButtonUiModel(
+            messageId = pojo.msgId,
+            fromUid = pojo.senderId,
+            from = pojo.senderName,
+            fromRole = pojo.role,
+            attachmentId = pojo.attachment.id,
+            attachmentType = pojo.attachmentType.toString(),
+            actionBubble = convertToSingleButtonAction(dynamicStickyButton.buttonAction),
+            contentText = dynamicStickyButton.textMessage,
+            replyTime = pojo.replyTime
+        )
+    }
+
+    private fun convertToSingleButtonAction(pojo: ChatActionPojo): ChatActionBubbleUiModel {
+        return ChatActionBubbleUiModel(
+            pojo.text,
+            pojo.value,
+            pojo.action
+        )
     }
 
     /**
