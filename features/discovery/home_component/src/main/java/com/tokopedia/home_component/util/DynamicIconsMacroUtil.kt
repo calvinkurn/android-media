@@ -102,8 +102,8 @@ object DynamicIconsMacroUtil {
         }
         maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_image_size_revamp)
         maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_padding_top_revamp)
-        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_padding_bottom)
-        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_margin_top_title)
+        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_padding_bottom_title_revamp)
+        maxHeight += context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_margin_top_title_revamp)
         return maxHeight
     }
 }

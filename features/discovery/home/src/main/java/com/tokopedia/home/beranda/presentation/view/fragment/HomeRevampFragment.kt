@@ -631,7 +631,6 @@ open class HomeRevampFragment :
             }
             it.setIcon(icons)
             it.setupMicroInteraction(navToolbarMicroInteraction)
-            it.setInvertSearchBarColor(!HomeRollenceController.isUsingAtf2Variant())
         }
         onChooseAddressUpdated()
         getSearchPlaceHolderHint()
