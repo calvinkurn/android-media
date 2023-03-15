@@ -55,6 +55,7 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
+import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatConsentBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
@@ -125,7 +126,12 @@ open class TokoChatFragment :
         super.initViews(view, savedInstanceState)
         setupBackground()
         setupTrackers()
+        askTokoChatConsent()
         initializeChatRoom(savedInstanceState)
+    }
+
+    private fun askTokoChatConsent() {
+        viewModel.getUserConsent()
     }
 
     protected open fun initializeChatRoom(savedInstanceState: Bundle?) {
@@ -234,6 +240,7 @@ open class TokoChatFragment :
         observeUpdateOrderTransactionStatus()
         observeChatConnection()
         observeError()
+        observeUserConsent()
     }
 
     private fun observeError() {
@@ -838,6 +845,21 @@ open class TokoChatFragment :
                 showInterlocutorTypingStatus()
             } else {
                 hideInterlocutorTypingStatus()
+            }
+        }
+    }
+
+    private fun observeUserConsent() {
+        observe(viewModel.isNeedConsent) {
+            when(it) {
+                true -> {
+                    TokoChatConsentBottomSheet.show(childFragmentManager) {
+                        activity?.finish()
+                    }
+                }
+                false -> {
+                    // do nothing
+                }
             }
         }
     }

@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
@@ -34,6 +35,7 @@ import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usercomponents.userconsent.domain.collection.GetNeedConsentUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -63,6 +65,7 @@ class TokoChatViewModel @Inject constructor(
     private val getTokoChatRoomTickerUseCase: GetTokoChatRoomTickerUseCase,
     private val getTokoChatOrderProgressUseCase: TokoChatOrderProgressUseCase,
     private val getImageUrlUseCase: TokoChatGetImageUseCase,
+    private val getNeedConsentUseCase: GetNeedConsentUseCase,
     private val viewUtil: TokoChatViewUtil,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -86,6 +89,10 @@ class TokoChatViewModel @Inject constructor(
     private val _orderTransactionStatus = MutableLiveData<Result<TokoChatOrderProgressResponse>>()
     val orderTransactionStatus: LiveData<Result<TokoChatOrderProgressResponse>>
         get() = _orderTransactionStatus
+
+    private val _isNeedConsent = MutableLiveData<Boolean>()
+    val isNeedConsent: LiveData<Boolean>
+        get() = _isNeedConsent
 
     private val _updateOrderTransactionStatus =
         MutableSharedFlow<Result<TokoChatOrderProgressResponse>>(replay = Int.ONE)
@@ -376,6 +383,26 @@ class TokoChatViewModel @Inject constructor(
 
     private fun generateImageName(imageId: String, channelId: String): String {
         return "${imageId}_$channelId"
+    }
+
+    fun getUserConsent() {
+        launch {
+            try {
+                val result = getNeedConsentUseCase(TokoChatValueUtil.consentParam)
+                if (result.data.success) {
+                    val consentData = result.data.collectionPoints.firstOrNull()
+                    // Default true, when response is error, bottom sheet should not shown
+                    _isNeedConsent.value = consentData?.needConsent?: false
+                } else {
+                    _error.value = Pair(MessageErrorException(
+                        result.data.errorMessages.joinToString()),
+                        ::getUserConsent.name
+                    )
+                }
+            } catch (throwable: Throwable) {
+                _error.value = Pair(throwable, ::getUserConsent.name)
+            }
+        }
     }
 
     companion object {

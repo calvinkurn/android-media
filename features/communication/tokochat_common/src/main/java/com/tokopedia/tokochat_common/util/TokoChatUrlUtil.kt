@@ -17,6 +17,7 @@ object TokoChatUrlUtil {
     const val IC_TOKOFOOD_SOURCE = TokopediaImageUrl.IC_TOKOFOOD_SOURCE
     const val IMAGE_UNAVAILABLE_GENERAL_URL =
         "https://images.tokopedia.net/img/android/tokochat/tokochat_img_chat_unavailable_general.png"
+    const val IMAGE_TOKOCHAT_CONSENT = TokopediaImageUrl.IMG_TOKOCHAT_CONSENT
 
     /**
      * Typing GIF

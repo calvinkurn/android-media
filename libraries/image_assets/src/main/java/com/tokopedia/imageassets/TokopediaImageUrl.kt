@@ -367,4 +367,5 @@ object TokopediaImageUrl {
     const val BG_SAH_OTHER_THEMATIC_LEFT_STAR_PM = "https://images.tokopedia.net/img/android/seller_home/bg_sah_other_left_star_thematic_pm@3x.png"
     const val BG_SAH_OTHER_THEMATIC_LEFT_STAR_OS = "https://images.tokopedia.net/img/android/seller_home/bg_sah_other_left_star_thematic_os@3x.png"
     const val BG_SAH_OTHER_THEMATIC_RIGHT_STAR = "https://images.tokopedia.net/img/android/seller_home/bg_sah_other_right_star_thematic@3x.png"
+    const val IMG_TOKOCHAT_CONSENT = "https://images.tokopedia.net/img/android/communication/tokochat/tokochat_consent.png"
 }
