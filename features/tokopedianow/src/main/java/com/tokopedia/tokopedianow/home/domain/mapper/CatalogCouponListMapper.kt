@@ -31,22 +31,32 @@ object CatalogCouponListMapper {
     }
 
     fun GetCatalogCouponListResponse.TokopointsCatalogWithCouponList?.mapToClaimCouponWidgetUiModelList(
-        item: HomeClaimCouponWidgetUiModel
-    ): List<HomeClaimCouponWidgetItemUiModel>? {
-        return this?.catalogWithCouponList?.map { coupon ->
-            HomeClaimCouponWidgetItemUiModel(
-                id = coupon.id,
-                widgetId = item.id,
-                smallImageUrlMobile = coupon.smallImageUrlMobile,
-                imageUrlMobile = coupon.imageUrlMobile,
-                ctaText = coupon.buttonStr,
-                isDouble = item.isDouble,
-                slugText = item.slugText,
-                appLink = coupon.appLink,
-                couponName = coupon.title,
-                warehouseId = item.warehouseId
-            )
+        item: HomeClaimCouponWidgetUiModel,
+        slugList: List<String>
+    ): List<HomeClaimCouponWidgetItemUiModel> {
+        val couponList = mutableListOf<HomeClaimCouponWidgetItemUiModel>()
+        slugList.forEach {
+            this?.catalogWithCouponList?.forEach eachCoupon@{ coupon ->
+                if (it == coupon.slug) {
+                    couponList.add(
+                        HomeClaimCouponWidgetItemUiModel(
+                            id = coupon.id,
+                            widgetId = item.id,
+                            smallImageUrlMobile = coupon.smallImageUrlMobile,
+                            imageUrlMobile = coupon.imageUrlMobile,
+                            ctaText = coupon.buttonStr,
+                            isDouble = item.isDouble,
+                            slugText = item.slugText,
+                            appLink = coupon.appLink,
+                            couponName = coupon.title,
+                            warehouseId = item.warehouseId
+                        )
+                    )
+                    return@eachCoupon
+                }
+            }
         }
+        return couponList
     }
 
     fun RedeemCouponResponse.mapToClaimCouponDataModel(

@@ -250,12 +250,18 @@ object HomeLayoutMapper {
     ) {
         filter { it?.layout is HomeClaimCouponWidgetUiModel }.find { it?.layout?.getVisitableId() == widgetId }?.let {
             val item = it.layout as HomeClaimCouponWidgetUiModel
-            val couponList = response.mapToClaimCouponWidgetUiModelList(item)
+
+            val slugList = if (!slugs.isNullOrEmpty()) slugs else item.slugs
+
+            val couponList = response.mapToClaimCouponWidgetUiModelList(
+                item = item,
+                slugList = slugList
+            )
 
             val layout = it.layout.copy(
                 claimCouponList = couponList,
                 state = state,
-                slugs = if (!slugs.isNullOrEmpty()) slugs else item.slugs
+                slugs = slugList
             )
             val newItem = HomeLayoutItemUiModel(
                 layout = layout,
