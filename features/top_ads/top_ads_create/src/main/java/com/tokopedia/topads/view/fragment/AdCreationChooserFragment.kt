@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.getResDrawable
@@ -48,14 +49,10 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     private var topCornerBg1: ImageUnify? = null
     private var topCornerBg2: ImageUnify? = null
     private var imageView7: ImageUnify? = null
-    private var icon2: ImageUnify? = null
-    private var icon3: ImageUnify? = null
-    private var icon4: ImageUnify? = null
-    private var icon6: ImageUnify? = null
-    private var icon7: ImageUnify? = null
-    private var icon8: ImageUnify? = null
     private var btnStartAutoAds: UnifyButton? = null
     private var btnStartManualAds: UnifyButton? = null
+    private var btnLearnAutoAds: UnifyButton? = null
+    private var btnLearnManualAds: UnifyButton? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -70,6 +67,10 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         private const val TOGGLE_OFF = "toggle_off"
         private const val AUTO_ADS_DISABLED = 111
         private const val AUTO = 4
+
+
+        private const val EDU_AUTO_ADS_LINK = "https://seller.tokopedia.com/edu/tambah-iklan-otomatis-topads/"
+        private const val EDU_MANUAL_ADS_LINK = "https://seller.tokopedia.com/edu/iklan-manual-baru/"
 
         fun newInstance(): AdCreationChooserFragment {
             val args = Bundle()
@@ -96,14 +97,11 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         topCornerBg1 = view.findViewById(R.id.top_corner_bg1)
         topCornerBg2 = view.findViewById(R.id.top_corner_bg2)
         imageView7 = view.findViewById(R.id.imageView7)
-        icon2 = view.findViewById(R.id.icon2)
-        icon3 = view.findViewById(R.id.icon3)
-        icon4 = view.findViewById(R.id.icon4)
-        icon6 = view.findViewById(R.id.icon6)
-        icon7 = view.findViewById(R.id.icon7)
-        icon8 = view.findViewById(R.id.icon8)
         btnStartAutoAds = view.findViewById(R.id.btn_start_auto_ads)
         btnStartManualAds = view.findViewById(R.id.btn_start_manual_ads)
+        btnLearnAutoAds = view.findViewById(R.id.btn_learn_auto_ads)
+        btnLearnManualAds = view.findViewById(R.id.btn_learn_manual_ads)
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -157,14 +155,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         }
 
         topCornerIcon1?.setImageResource(R.drawable.ic_iklan_otomatis)
-        icon2?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
-        icon3?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
-        icon4?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
-
         topCornerIcon2?.setImageResource(R.drawable.ic_iklan_manual)
-        icon6?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
-        icon7?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
-        icon8?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
 
         btnStartAutoAds?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MULAI_IKLAN, "")
@@ -213,6 +204,18 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                     }
                     startActivity(this)
                 }
+            }
+        }
+
+        btnLearnAutoAds?.setOnClickListener {
+            activity?.let{
+                RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, EDU_AUTO_ADS_LINK)
+            }
+        }
+
+        btnLearnManualAds?.setOnClickListener {
+            activity?.let{
+                RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, EDU_MANUAL_ADS_LINK)
             }
         }
     }
