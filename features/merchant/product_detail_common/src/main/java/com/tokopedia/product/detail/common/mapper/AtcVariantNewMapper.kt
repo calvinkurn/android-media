@@ -17,9 +17,19 @@ object AtcVariantNewMapper {
     const val VARIANT_LEVEL_ONE_SELECTED = 0
     const val VARIANT_LEVEL_TWO_SELECTED = 1
 
-    fun processVariantNew(
+    /***
+     * process variant
+     * @param variantData
+     * @param selectedVariant is what will store the user-selected variant base on level
+     *      selectedVariant value will like this
+     *         index 0 : Key[productVariantID lvl1], value[variantID lvl1]
+     *         index 1: Key[productVariantID  lvl2]value[variantID lvl2]
+     *      if variant have one level so have index 0 only
+     * @return
+     */
+    fun processVariant(
         variantData: ProductVariant?,
-        selectedVariant: MutableMap<String, String>?
+        selectedVariant: Map<String, String>
     ): List<VariantCategory>? {
         val variants = variantData ?: return null
         if (variants.variants.isEmpty()) return null
@@ -28,13 +38,13 @@ object AtcVariantNewMapper {
             VARIANT_HAVE_ONE_LEVEL -> {
                 VariantOneLevelUseCase.process(
                     variantData = variantData,
-                    mapOfSelectedVariant = selectedVariant.orEmpty()
+                    mapOfSelectedVariant = selectedVariant
                 )
             }
             VARIANT_HAVE_TWO_LEVEL -> {
                 VariantTwoLevelUseCase.process(
                     variantData = variantData,
-                    mapOfSelectedVariant = selectedVariant.orEmpty()
+                    mapOfSelectedVariant = selectedVariant
                 )
             }
             else -> null

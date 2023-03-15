@@ -5,7 +5,7 @@ import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.mapper.AtcVariantNewMapper
+import com.tokopedia.product.detail.common.mapper.AtcVariantNewMapper.VARIANT_LEVEL_ONE_SELECTED
 
 /**
  * Created by yovi.putra on 08/03/23"
@@ -18,7 +18,7 @@ object VariantOneLevelUseCase {
         variantData: ProductVariant,
         mapOfSelectedVariant: Map<String, String>
     ): List<VariantCategory>? {
-        val variant = variantData.variants.firstOrNull() ?: return null
+        val variant = variantData.variants.getOrNull(VARIANT_LEVEL_ONE_SELECTED) ?: return null
         val selectedVariant = mapOfSelectedVariant.values.toList()
         val hasCustomImages = variant.options.all {
             it.picture?.url100?.isNotEmpty() == true
@@ -35,23 +35,21 @@ object VariantOneLevelUseCase {
 
             // looping the children and find the child containing the option id
             // set state, flash sale and stock
-            for (child in variantData.children) {
-                // update state when variant option id equal by child option id
-                if (option.id == child.optionIds.firstOrNull()) {
-                    isFlashSale = child.isFlashSale
-                    stock = child.stock?.stock.orZero()
-                    state = if (child.optionIds == selectedVariant) {
-                        if (child.isBuyable) { // selected and can to buy
-                            VariantConstant.STATE_SELECTED
-                        } else { // selected and can not to buy
-                            VariantConstant.STATE_SELECTED_EMPTY
-                        }
-                    } else if (child.isBuyable) { // un-selected and can to buy
-                        VariantConstant.STATE_UNSELECTED
-                    } else { // un-selected and can not to buy because stock is empty
-                        VariantConstant.STATE_EMPTY
+            variantData.children.firstOrNull {
+                option.id == it.optionIds.getOrNull(VARIANT_LEVEL_ONE_SELECTED)
+            }?.let { child ->
+                isFlashSale = child.isFlashSale
+                stock = child.stock?.stock.orZero()
+                state = if (child.optionIds == selectedVariant) {
+                    if (child.isBuyable) { // selected and can to buy
+                        VariantConstant.STATE_SELECTED
+                    } else { // selected and can not to buy
+                        VariantConstant.STATE_SELECTED_EMPTY
                     }
-                    break
+                } else if (child.isBuyable) { // un-selected and can to buy
+                    VariantConstant.STATE_UNSELECTED
+                } else { // un-selected and can not to buy because stock is empty
+                    VariantConstant.STATE_EMPTY
                 }
             }
 
@@ -62,7 +60,7 @@ object VariantOneLevelUseCase {
                 stock = stock,
                 hasCustomImages = hasCustomImages,
                 isFlashSale = isFlashSale,
-                level = AtcVariantNewMapper.VARIANT_LEVEL_ONE_SELECTED
+                level = VARIANT_LEVEL_ONE_SELECTED
             )
         }
 
