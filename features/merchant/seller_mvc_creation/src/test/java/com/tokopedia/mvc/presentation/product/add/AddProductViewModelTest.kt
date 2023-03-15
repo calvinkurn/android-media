@@ -37,6 +37,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import okhttp3.internal.wait
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -1597,6 +1598,131 @@ class AddProductViewModelTest {
             job.cancel()
         }
     }
+    //endregion
+
+    //region TapCategoryFilter
+    @Test
+    fun `When change category filter, should emit ShowProductCategoryBottomSheet effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val secondProduct = populateProduct().copy(id = 2, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val mockedProductValidationResponse = listOf<VoucherValidationResult.ValidationProduct>()
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse, totalProduct = 50)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedEffects = arrayListOf<AddProductEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            viewModel.processEvent(AddProductEvent.TapCategoryFilter)
+
+            //Then
+            val actual = emittedEffects.last()
+
+            assertEquals(
+                AddProductEffect.ShowProductCategoryBottomSheet(mockedCategoryOption, listOf()),
+                actual
+            )
+
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+    //region TapWarehouseLocationFilter
+    @Test
+    fun `When change warehouse filter, should emit ShowWarehouseLocationBottomSheet effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val secondProduct = populateProduct().copy(id = 2, isSelected = false)
+            val maxProductSubmission = 100
+            val currentlySelectedWarehouse = mockedWarehouse
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val mockedProductValidationResponse = listOf<VoucherValidationResult.ValidationProduct>()
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse, totalProduct = 50)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedEffects = arrayListOf<AddProductEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            viewModel.processEvent(AddProductEvent.TapWarehouseLocationFilter)
+
+            //Then
+            val actual = emittedEffects.last()
+
+            assertEquals(
+                AddProductEffect.ShowWarehouseLocationBottomSheet(listOf(mockedWarehouse) , currentlySelectedWarehouse),
+                actual
+            )
+
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+    //region TapShowCaseFilter
+    //endregion
+
+    //region TapSortFilter
     //endregion
 
     //region handleClearSearchbar
@@ -3357,6 +3483,7 @@ class AddProductViewModelTest {
         }
     }
     //endregion
+
 
 
     private fun buildVoucherConfiguration(): VoucherConfiguration {
