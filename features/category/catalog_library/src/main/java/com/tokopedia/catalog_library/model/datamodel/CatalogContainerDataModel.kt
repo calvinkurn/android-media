@@ -13,7 +13,10 @@ data class CatalogContainerDataModel(
     val hasMoreButtonAppLink: String = "",
     val hasMoreButtonEnabled: Boolean = false,
     val isGrid: Boolean = false,
-    val columnCount: Int = 0
+    val columnCount: Int = 0,
+    val marginForTitle: Margin = Margin(),
+    val marginForRV: Margin = Margin()
+
 ) : BaseCatalogLibraryDataModel {
 
     override fun type() = type

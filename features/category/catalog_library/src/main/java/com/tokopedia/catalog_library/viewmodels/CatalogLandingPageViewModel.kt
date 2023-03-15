@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.catalog_library.model.datamodel.*
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_MOST_VIRAL
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_TOP_FIVE
 import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_MOST_VIRAL
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_TOP_FIVE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -29,7 +29,7 @@ class CatalogLandingPageViewModel @Inject constructor(
     private val listOfComponents = mutableListOf<BaseCatalogLibraryDataModel>()
 
     fun getCatalogTopFiveData(
-        categoryIdentifier: String,
+        categoryId: String,
         sortType: Int,
         rows: Int
     ) {
@@ -37,14 +37,14 @@ class CatalogLandingPageViewModel @Inject constructor(
         catalogTopFiveUseCase.getCatalogProductsData(
             ::onAvailableCatalogTopFiveData,
             ::onFailLandingPageData,
-            categoryIdentifier,
+            categoryId,
             sortType,
             rows
         )
     }
 
     fun getCatalogMostViralData(
-        categoryIdentifier: String,
+        categoryId: String,
         sortType: Int,
         rows: Int
     ) {
@@ -52,7 +52,7 @@ class CatalogLandingPageViewModel @Inject constructor(
         catalogMostViralUseCase.getCatalogProductsData(
             ::onAvailableCatalogMostViralData,
             ::onFailLandingPageData,
-            categoryIdentifier,
+            categoryId,
             sortType,
             rows
         )
@@ -88,15 +88,23 @@ class CatalogLandingPageViewModel @Inject constructor(
             CatalogContainerDataModel(
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                 CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
-                "Top 5 category terlaris di toped",
-                getTopFiveVisitableList(data.catalogGetList.catalogsProduct)
+                "Top 5 ${data.catalogGetList.categoryName.lowercase()} terlaris di toped",
+                getTopFiveVisitableList(
+                    data.catalogGetList.catalogsProduct,
+                    data.catalogGetList.categoryName
+                ),
+                marginForTitle = Margin(0, 16, 12, 16),
+                marginForRV = Margin(12, 0, 0, 16)
             )
         listOfComponents.add(catalogTopFiveDataModel)
 
         return CatalogLibraryDataModel(listOfComponents)
     }
 
-    private fun getTopFiveVisitableList(catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>): ArrayList<BaseCatalogLibraryDataModel> {
+    private fun getTopFiveVisitableList(
+        catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>,
+        categoryName: String
+    ): ArrayList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
         catalogsProduct.forEachIndexed { index, catalogTopFive ->
             catalogTopFive.rank = (index + 1)
@@ -104,7 +112,8 @@ class CatalogLandingPageViewModel @Inject constructor(
                 CatalogTopFiveDataModel(
                     CATALOG_TOP_FIVE,
                     CATALOG_TOP_FIVE,
-                    catalogTopFive
+                    catalogTopFive,
+                    categoryName
                 )
             )
         }
@@ -120,7 +129,8 @@ class CatalogLandingPageViewModel @Inject constructor(
                 getMostViralVisitableList(
                     data.catalogGetList.catalogsProduct,
                     data.catalogGetList.categoryName
-                )
+                ),
+                marginForTitle = Margin(16, 6, 0, 6)
             )
         listOfComponents.add(catalogMostViralDataModel)
 

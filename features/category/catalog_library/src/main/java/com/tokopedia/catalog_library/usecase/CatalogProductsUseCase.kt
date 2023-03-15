@@ -14,7 +14,7 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
     fun getCatalogProductsData(
         onSuccess: (CatalogListResponse, Int) -> Unit,
         onError: (Throwable) -> Unit,
-        categoryIdentifier: String,
+        categoryId: String,
         sortType: Int,
         rows: Int,
         page: Int = 1
@@ -23,7 +23,7 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
             this.setTypeClass(CatalogListResponse::class.java)
             this.setRequestParams(
                 getRequestParams(
-                    categoryIdentifier,
+                    categoryId,
                     sortType,
                     rows,
                     page
@@ -32,7 +32,7 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
             this.setGraphqlQuery(GqlCatalogList())
             this.execute(
                 { result ->
-                    onSuccess(result,page)
+                    onSuccess(result, page)
                 },
                 { error ->
                     onError(error)
@@ -44,13 +44,13 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
     }
 
     private fun getRequestParams(
-        categoryIdentifier: String,
+        categoryId: String,
         sortType: Int,
         rows: Int,
         page: Int
     ): MutableMap<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
-        requestMap[CATEGORY_IDENTIFIER] = categoryIdentifier
+        requestMap[CATEGORY_ID] = categoryId
         requestMap[SORT_TYPE] = sortType.toString()
         requestMap[ROWS] = rows.toString()
         requestMap[PAGE] = page.toString()
@@ -58,7 +58,7 @@ class CatalogProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepos
     }
 
     companion object {
-        const val CATEGORY_IDENTIFIER = "category_identifier"
+        const val CATEGORY_ID = "category_id"
         const val SORT_TYPE = "sortType"
         const val ROWS = "rows"
         const val PAGE = "page"

@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.TOTAL_ROWS_CATALOG
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_CATALOG
 import com.tokopedia.catalog_library.viewmodels.ProductsBaseViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -19,7 +19,7 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
 
     private var linearLayoutManager: LinearLayoutManager? = null
     abstract var baseRecyclerView: RecyclerView?
-    private var categoryIdentifier = ""
+    private var categoryId = ""
 
     private var sortType = SORT_TYPE_CATALOG
     private val rows = TOTAL_ROWS_CATALOG
@@ -44,8 +44,8 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
         initLayoutManager()
     }
 
-    fun setCategory(categoryName: String) {
-        categoryIdentifier = categoryName
+    fun setCategory(categoryIdStr: String) {
+        categoryId = categoryIdStr
     }
 
     fun setUpBase() {
@@ -74,13 +74,13 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                productsBaseViewModel?.getCatalogListData(categoryIdentifier, sortType, rows, page)
+                productsBaseViewModel?.getCatalogListData(categoryId, sortType, rows, page)
             }
         }
     }
 
     private fun getProducts() {
-        productsBaseViewModel?.getCatalogListData(categoryIdentifier, sortType, rows)
+        productsBaseViewModel?.getCatalogListData(categoryId, sortType, rows)
     }
 
     private fun setObservers() {

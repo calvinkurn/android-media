@@ -1,10 +1,10 @@
-package com.tokopedia.catalog_library.model.util
+package com.tokopedia.catalog_library.util
 
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL
 
 class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibraryDataModel>) {
 

@@ -17,7 +17,7 @@ import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDataModel
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse.CategoryListLibraryPage.CategoryData
-import com.tokopedia.catalog_library.model.util.CatalogLibraryConstant.CATALOG_LIHAT_SEMUA_ITEM
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_LIHAT_SEMUA_ITEM
 
 class CatalogLihatViewHolder(
     private val view: View,
@@ -48,18 +48,21 @@ class CatalogLihatViewHolder(
                 element.catalogLibraryDataList?.accordionExpandedState = isExpanded
             }
         }
-        getAccordionData(element.catalogLibraryDataList)
+        getAccordionData(element.catalogLibraryDataList, element.isAsc)
     }
 
-    private fun getAccordionData(catalogLibraryData: CategoryData?) {
+    private fun getAccordionData(catalogLibraryData: CategoryData?, isAsc: Boolean) {
         accordionView.apply {
             addGroup(
-                setExpandableChildView(catalogLibraryData)
+                setExpandableChildView(catalogLibraryData, isAsc)
             )
         }
     }
 
-    private fun setExpandableChildView(catalogLibraryData: CategoryData?): AccordionDataUnify {
+    private fun setExpandableChildView(
+        catalogLibraryData: CategoryData?,
+        isAsc: Boolean
+    ): AccordionDataUnify {
         val listAdapter = CatalogLibraryAdapter(
             AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build(),
             catalogLibraryAdapterFactory
@@ -72,23 +75,38 @@ class CatalogLihatViewHolder(
             layoutManager = GridLayoutManager(view.context, COLUMN_COUNT)
         }
 
-        listAdapter.submitList(getChildVisitableList(catalogLibraryData?.childCategoryList))
+        listAdapter.submitList(
+            getChildVisitableList(
+                catalogLibraryData?.childCategoryList,
+                catalogLibraryData?.rootCategoryName,
+                catalogLibraryData?.rootCategoryId,
+                isAsc
+            )
+        )
         return AccordionDataUnify(
             title = catalogLibraryData?.rootCategoryName.toString(),
             expandableView = expandableLayout,
-            isExpanded = catalogLibraryData?.accordionExpandedState ?: true,
+            isExpanded = catalogLibraryData?.accordionExpandedState ?: true
         )
     }
 
-    private fun getChildVisitableList(childCategoryList: ArrayList<CategoryData.ChildCategoryList>?)
-        : MutableList<BaseCatalogLibraryDataModel> {
+    private fun getChildVisitableList(
+        childCategoryList: ArrayList<CategoryData.ChildCategoryList>?,
+        rootCategoryName: String?,
+        rootCategoryId: String?,
+        isAsc: Boolean
+    ): MutableList<BaseCatalogLibraryDataModel> {
         val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
         childCategoryList?.forEach {
             visitableList.add(
                 CatalogLihatItemDataModel(
                     CATALOG_LIHAT_SEMUA_ITEM,
                     CATALOG_LIHAT_SEMUA_ITEM,
-                    it
+                    it,
+                    rootCategoryId ?: "",
+                    rootCategoryName ?: "",
+                    true,
+                    isAsc
                 )
             )
         }
