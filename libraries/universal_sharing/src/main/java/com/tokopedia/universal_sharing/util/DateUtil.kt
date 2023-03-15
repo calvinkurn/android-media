@@ -10,6 +10,7 @@ object DateUtil {
     private const val ONE_THOUSAND = 1000
     private const val HOUR_FORMAT = "HH:mm"
     private const val DATE_FORMAT = "dd MMMM"
+    private const val DATE_CAMPAIGN_INFO_FORMAT = "dd MMM"
     fun timeIsUnder1Day(date: Long): Boolean {
         return try {
             val endDateMillis = date * ONE_THOUSAND
@@ -83,5 +84,15 @@ object DateUtil {
         val date = formatterDate.format(dateTime)
         val hour = formatterHour.format(dateTime)
         return String.format(Locale.getDefault(), "%s, jam %s WIB", date, hour)
+    }
+
+    fun getDateCampaignInfo(date: Long): String {
+        val locale = Locale("id", "ID")
+        val dateTime = Date(date * ONE_THOUSAND)
+        val formatterDate = SimpleDateFormat(DATE_CAMPAIGN_INFO_FORMAT, locale)
+        val formatterHour = SimpleDateFormat(HOUR_FORMAT, locale)
+        val date = formatterDate.format(dateTime)
+        val hour = formatterHour.format(dateTime)
+        return return String.format("%s %s WIB", date, hour)
     }
 }

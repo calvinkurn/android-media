@@ -44,6 +44,9 @@ private fun ImagePolicyResponse.generateToPDP(
                 ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_NAME_PDP -> {
                     imagePolicy.toRequestParam(data.campaignName)
                 }
+                ImageGeneratorConstants.ImageGeneratorKeys.PERSONALIZED_CAMPAIGN_INFO -> {
+                    imagePolicy.toRequestParam(data.campaignInfo)
+                }
                 else -> {
                     imagePolicy.toRequestParam("")
                 }
