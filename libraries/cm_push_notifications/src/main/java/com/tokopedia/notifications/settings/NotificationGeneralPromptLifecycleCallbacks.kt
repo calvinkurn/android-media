@@ -41,7 +41,7 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
     }
 
     private fun sendDevicePushPermissionStatusEvent(userSession:UserSessionInterface, context: Context?, activityName: String){
-        if(activityName == CUSTOMER_APP_FIRST_ACTIVITY) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && activityName == CUSTOMER_APP_FIRST_ACTIVITY) {
             context?.let {
                 NotificationSettingsGtmEvents(
                     userSession,
