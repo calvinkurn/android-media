@@ -10,8 +10,10 @@ import rx.Subscriber
 /**
  * Created by fwidjaja on 07/03/20.
  */
-class ValidateUseSubscriber(private val view: ICartListView?,
-                            private val presenter: CartListPresenter) : Subscriber<ValidateUsePromoRevampUiModel>() {
+class ValidateUseSubscriber(
+    private val view: ICartListView?,
+    private val presenter: CartListPresenter
+) : Subscriber<ValidateUsePromoRevampUiModel>() {
     override fun onCompleted() {}
 
     override fun onError(e: Throwable?) {
@@ -23,9 +25,11 @@ class ValidateUseSubscriber(private val view: ICartListView?,
 
     override fun onNext(response: ValidateUsePromoRevampUiModel?) {
         response?.promoUiModel?.let {
-            presenter.setUpdateCartAndValidateUseLastResponse(UpdateAndValidateUseData().apply {
-                promoUiModel = response.promoUiModel
-            })
+            presenter.setUpdateCartAndValidateUseLastResponse(
+                UpdateAndValidateUseData().apply {
+                    promoUiModel = response.promoUiModel
+                }
+            )
             presenter.isLastApplyResponseStillValid = false
             view?.updatePromoCheckoutStickyButton(it)
         }

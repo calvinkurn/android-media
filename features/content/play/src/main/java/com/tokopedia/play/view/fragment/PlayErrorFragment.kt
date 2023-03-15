@@ -128,7 +128,10 @@ class PlayErrorFragment @Inject constructor(
             when (val state = it.state) {
                 is PageResultState.Fail -> showGlobalError(state.error)
                 is PageResultState.Success -> container.hide()
-                is PageResultState.Archived -> showArchived(state.config, it.currentValue.firstOrNull() ?: "")
+                is PageResultState.Archived -> showArchived(
+                    state.config,
+                    it.currentValue.firstOrNull()?.id.orEmpty()
+                )
             }
         })
     }

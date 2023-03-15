@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels.Companion.LAYOUT_LEGO_4_IMAGE
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
@@ -29,13 +30,16 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
@@ -44,9 +48,6 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMP
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapResponseToLeftCarousel
@@ -92,6 +93,7 @@ object HomeLayoutMapper {
         CATEGORY,
         LEGO_3_IMAGE,
         LEGO_6_IMAGE,
+        LAYOUT_LEGO_4_IMAGE,
         BANNER_CAROUSEL,
         PRODUCT_RECOM,
         PRODUCT_RECOM_OOC,
@@ -533,7 +535,6 @@ object HomeLayoutMapper {
                 newRecommendationList.getOrNull(index)?.productCardModel?.copy(orderQuantity = quantity)?.apply {
                     newRecommendationList[index] = newRecommendationList[index].copy(productCardModel = this)
                 }
-
             }
 
             rtrItemList.getOrNull(rtrIndex)?.productCardModel?.copy(orderQuantity = quantity)?.apply {
@@ -583,10 +584,12 @@ object HomeLayoutMapper {
 
                 val newRealTimeRecom = realTimeRecom.copy(productList = rtrItemList)
 
-                homeLayoutItemUiModel.copy(layout = layoutUiModel.copy(
-                    productList = newProductList,
-                    realTimeRecom = newRealTimeRecom
-                ))
+                homeLayoutItemUiModel.copy(
+                    layout = layoutUiModel.copy(
+                        productList = newProductList,
+                        realTimeRecom = newRealTimeRecom
+                    )
+                )
             }
         }
     }
@@ -673,7 +676,7 @@ object HomeLayoutMapper {
         return when (response.layout) {
             // region Dynamic Channel Component
             // Layout content data already returned from dynamic channel query, set state to loaded.
-            LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, loadedState)
+            LEGO_3_IMAGE, LEGO_6_IMAGE, LAYOUT_LEGO_4_IMAGE -> mapLegoBannerDataModel(response, loadedState)
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
             PRODUCT_RECOM -> mapResponseToProductRecom(response, loadedState, miniCartData, warehouseId)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)

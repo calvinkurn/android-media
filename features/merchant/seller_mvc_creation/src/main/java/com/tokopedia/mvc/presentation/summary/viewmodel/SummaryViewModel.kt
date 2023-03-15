@@ -56,7 +56,8 @@ class SummaryViewModel @Inject constructor(
             it.copy(
                 voucherId = ADDING_VOUCHER_ID,
                 startPeriod = Date(),
-                endPeriod = Date()
+                endPeriod = Date(),
+                duplicatedVoucherId = it.voucherId
             )
         } else {
             it

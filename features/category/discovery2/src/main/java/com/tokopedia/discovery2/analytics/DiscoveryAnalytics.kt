@@ -6,6 +6,7 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.Utils.Companion.getParentPosition
 import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -1002,16 +1003,16 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         if (componentsItems.isNotEmpty()) {
             val list = ArrayList<Map<String, Any>>()
             for (coupon in componentsItems) {
-                val data: ArrayList<DataItem> = ArrayList()
-                coupon.data?.let {
+                val data: ArrayList<CatalogWithCouponList> = ArrayList()
+                coupon.claimCouponList?.let {
                     data.addAll(it)
                 }
                 val map = HashMap<String, Any>()
                 data[0].let {
-                    map[KEY_ID] = "${it.id.toString()} - ${it.promoId.toString()}"
+                    map[KEY_ID] = "${it.id.toString()} - ${it.promoID.toString()}"
                     map[KEY_POSITION] = componentsItems.indexOf(coupon) + 1
                     map[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(coupon) + 1} - ${coupon.data?.firstOrNull()?.title} - ${coupon.title} - ${coupon.sectionId} - ${coupon.name}"
-                    map[KEY_CREATIVE] = "${it.creativeName ?: EMPTY_STRING} - ${it.slug}"
+                    map[KEY_CREATIVE] = "${coupon.creativeName ?: EMPTY_STRING} - ${it.slug}"
                 }
                 list.add(map)
             }
@@ -1039,15 +1040,15 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun trackEventClickCoupon(coupon: DataItem?, position: Int, isDouble: Boolean) {
+    override fun trackEventClickCoupon(coupon: CatalogWithCouponList?, position: Int, isDouble: Boolean) {
         val list = ArrayList<Map<String, Any>>()
         coupon?.let {
             list.add(mapOf(
                     KEY_ID to it.id.toString(),
-                    KEY_CREATIVE_URL to if (isDouble) it.smallImageUrlMobile
-                            ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER,
+                    KEY_CREATIVE_URL to if (isDouble) it.smallImageURLMobile
+                            ?: NONE_OTHER else it.imageURLMobile ?: NONE_OTHER,
                     KEY_POSITION to (position + 1).toString(),
-                    KEY_PROMO_ID to it.promoId.toString(),
+                    KEY_PROMO_ID to it.promoID.toString(),
                     KEY_PROMO_CODE to it.slug.toString(),
                     KEY_NAME to CLAIM_COUPON_ITEM_NAME
             ))
@@ -1055,7 +1056,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val promotions: Map<String, ArrayList<Map<String, Any>>> = mapOf(
                 KEY_PROMOTIONS to list)
         val map = createGeneralEvent(eventName = EVENT_CLICK_COUPON, eventAction = CLAIM_COUPON_CLICK,
-                eventLabel = "${coupon?.name} - ${coupon?.couponCode}")
+                eventLabel = "${coupon?.title} - ${coupon?.couponCode}")
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = promotions

@@ -2,7 +2,6 @@
 <resources>
     <color name="liveness_dms_tip_color">#ffffff</color>
     <color name="liveness_dms_toolbar_text_color">#ffffff</color>
-    <color name="liveness_dms_toolbar_icon_color">#ffffff</color>
     <color name="liveness_dms_status_false">#ffffff</color>
     <color name="liveness_dms_status_true">#005600</color>
     <color name="liveness_dms_background_overlay">#ae000000</color>
