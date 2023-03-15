@@ -5,8 +5,12 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.analytics.addLogoToText
 import com.tokopedia.media.editor.analytics.cropRatioToText
@@ -429,6 +434,9 @@ class DetailEditorFragment @Inject constructor(
             val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER) ?: PickerResult()
             addLogoComponent.initUploadAvatar(elements.originalPaths.first())
             addLogoCacheManager.set(elements.originalPaths.first())
+        } else if (requestCode == AddTextActivity.ADD_TEXT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val element = data?.getParcelableExtra(AddTextActivity.ADD_TEXT_RESULT) ?: EditorAddTextUiModel(textValue = "")
+            implementAddTextData(element)
         }
     }
 
@@ -1324,6 +1332,63 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    private fun implementAddTextData(textData: EditorAddTextUiModel) {
+        val bitmap =
+            Bitmap.createBitmap(originalImageWidth, originalImageHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+
+        val padding = 16f.toPx()
+        val sizePercentage = 1 / 12f // 8,3%
+        val fontSize = originalImageHeight * sizePercentage
+
+        val mTextPaint = TextPaint()
+        activity?.let {
+            mTextPaint.textSize = fontSize
+            mTextPaint.color = textData.getColor(it)
+
+            val typeFace = getTypeface(it, TYPEFACE)
+            mTextPaint.typeface = Typeface.create(typeFace, textData.getTypeFaceStyle())
+        }
+
+        val alignment = textData.getLayoutAlignment()
+        val mTextLayout = StaticLayout(
+            textData.textValue,
+            mTextPaint,
+            (canvas.width - padding).toInt(),
+            alignment,
+            1.0f,
+            0.0f,
+            false
+        )
+
+        canvas.save()
+
+        when (textData.textPosition) {
+            EditorAddTextUiModel.TEXT_POSITION_RIGHT -> {
+                val yOffset = canvas.height - mTextLayout.height - padding
+                canvas.rotate(-90f)
+                canvas.translate(-canvas.width.toFloat() + padding, yOffset)
+            }
+            EditorAddTextUiModel.TEXT_POSITION_LEFT -> {
+                val yOffset = -(mTextLayout.height + padding)
+                canvas.rotate(90f)
+                canvas.translate(padding, yOffset)
+            }
+            EditorAddTextUiModel.TEXT_POSITION_BOTTOM -> {
+                var yOffset = canvas.height - mTextLayout.height - padding
+                canvas.translate(padding, yOffset)
+            }
+            EditorAddTextUiModel.TEXT_POSITION_TOP -> {
+                canvas.translate(padding, 0f)
+            }
+        }
+
+        mTextLayout.draw(canvas)
+        canvas.restore()
+
+        viewBinding?.imgPreviewOverlay?.setImageBitmap(bitmap)
+    }
+
     override fun getScreenName() = SCREEN_NAME
 
     companion object {
@@ -1350,6 +1415,8 @@ class DetailEditorFragment @Inject constructor(
 
         private const val ADD_LOGO_IMAGE_RES_MIN = 500
         private const val ADD_LOGO_IMAGE_RES_MAX = 1000
+
+        private const val TYPEFACE = "OpenSauceOneRegular.ttf"
 
         // watermark & rotate index is used 99 since the conditional need to compare which is smaller
         private const val DEFAULT_WATERMARK_ROTATE_INDEX = 99
