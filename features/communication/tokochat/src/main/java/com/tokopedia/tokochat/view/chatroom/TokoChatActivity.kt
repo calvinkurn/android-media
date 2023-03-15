@@ -42,7 +42,7 @@ open class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     private fun initializeTokoChatComponent(): TokoChatComponent {
         return DaggerTokoChatComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .tokoChatConfigComponent(TokoChatConnection.tokoChatConfigComponent)
+            .tokoChatConfigComponent(TokoChatConnection.getComponent(this))
             .build().also {
                 tokoChatComponent = it
             }

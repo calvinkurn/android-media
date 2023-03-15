@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels.Companion.LAYOUT_LEGO_4_IMAGE
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
@@ -30,13 +31,16 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
+import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
@@ -97,6 +101,7 @@ object HomeLayoutMapper {
         CATEGORY,
         LEGO_3_IMAGE,
         LEGO_6_IMAGE,
+        LAYOUT_LEGO_4_IMAGE,
         BANNER_CAROUSEL,
         PRODUCT_RECOM,
         PRODUCT_RECOM_OOC,
@@ -235,62 +240,6 @@ object HomeLayoutMapper {
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             }
             val index = indexOf(it)
-            removeAt(index)
-            add(index, newItem)
-        }
-    }
-
-    fun MutableList<HomeLayoutItemUiModel?>.mapHomeCatalogCouponList(
-        widgetId: String,
-        response: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList? = null,
-        slugs: List<String>? = null,
-        @TokoNowLayoutState state: Int
-    ) {
-        filter { it?.layout is HomeClaimCouponWidgetUiModel }.find { it?.layout?.getVisitableId() == widgetId }?.let {
-            val item = it.layout as HomeClaimCouponWidgetUiModel
-            val couponList = response.mapToClaimCouponWidgetUiModelList(item)
-
-            val layout = it.layout.copy(
-                claimCouponList = couponList,
-                state = state,
-                slugs = if (!slugs.isNullOrEmpty()) slugs else item.slugs
-            )
-            val newItem = HomeLayoutItemUiModel(
-                layout = layout,
-                state = HomeLayoutItemState.LOADED
-            )
-            val index = indexOf(it)
-
-            removeAt(index)
-            add(index, newItem)
-        }
-    }
-
-    fun MutableList<HomeLayoutItemUiModel?>.mapHomeClaimCouponList(
-        widgetId: String,
-        catalogId: String,
-        ctaText: String
-    ) {
-        filter { it?.layout is HomeClaimCouponWidgetUiModel }.find { it?.layout?.getVisitableId() == widgetId }?.let {
-            val item = it.layout as HomeClaimCouponWidgetUiModel
-
-            val layout = it.layout.copy(
-                id = item.id,
-                claimCouponList = item.claimCouponList?.map { claimCoupon ->
-                    if (claimCoupon.id == catalogId) {
-                        claimCoupon.copy(ctaText = ctaText)
-                    } else {
-                        claimCoupon
-                    }
-                },
-                state = item.state
-            )
-            val newItem = HomeLayoutItemUiModel(
-                layout = layout,
-                state = HomeLayoutItemState.LOADED
-            )
-            val index = indexOf(it)
-
             removeAt(index)
             add(index, newItem)
         }
@@ -595,7 +544,6 @@ object HomeLayoutMapper {
                 newRecommendationList.getOrNull(index)?.productCardModel?.copy(orderQuantity = quantity)?.apply {
                     newRecommendationList[index] = newRecommendationList[index].copy(productCardModel = this)
                 }
-
             }
 
             rtrItemList.getOrNull(rtrIndex)?.productCardModel?.copy(orderQuantity = quantity)?.apply {
@@ -645,10 +593,12 @@ object HomeLayoutMapper {
 
                 val newRealTimeRecom = realTimeRecom.copy(productList = rtrItemList)
 
-                homeLayoutItemUiModel.copy(layout = layoutUiModel.copy(
-                    productList = newProductList,
-                    realTimeRecom = newRealTimeRecom
-                ))
+                homeLayoutItemUiModel.copy(
+                    layout = layoutUiModel.copy(
+                        productList = newProductList,
+                        realTimeRecom = newRealTimeRecom
+                    )
+                )
             }
         }
     }
@@ -735,7 +685,7 @@ object HomeLayoutMapper {
         return when (response.layout) {
             // region Dynamic Channel Component
             // Layout content data already returned from dynamic channel query, set state to loaded.
-            LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, loadedState)
+            LEGO_3_IMAGE, LEGO_6_IMAGE, LAYOUT_LEGO_4_IMAGE -> mapLegoBannerDataModel(response, loadedState)
             BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
             PRODUCT_RECOM -> mapResponseToProductRecom(response, loadedState, miniCartData, warehouseId)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)

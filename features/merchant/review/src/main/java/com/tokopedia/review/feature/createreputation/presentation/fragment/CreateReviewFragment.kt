@@ -1,5 +1,7 @@
 package com.tokopedia.review.feature.createreputation.presentation.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -95,17 +97,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val LOTTIE_ANIM_5 =
             "https://images.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
 
-        private const val IMAGE_PEDIE_1 = "https://images.tokopedia.net/android/pedie/1star.png"
-        private const val IMAGE_PEDIE_2 = "https://images.tokopedia.net/android/pedie/2star.png"
-        private const val IMAGE_PEDIE_3 = "https://images.tokopedia.net/android/pedie/3star.png"
-        private const val IMAGE_PEDIE_4 = "https://images.tokopedia.net/android/pedie/4star.png"
-        private const val IMAGE_PEDIE_5 = "https://images.tokopedia.net/android/pedie/5star.png"
-
-        const val RATING_1 = 1
-        const val RATING_2 = 2
-        const val RATING_3 = 3
-        const val RATING_4 = 4
-        const val RATING_5 = 5
+        private const val IMAGE_PEDIE_1 = TokopediaImageUrl.IMAGE_PEDIE_1
+        private const val IMAGE_PEDIE_2 = TokopediaImageUrl.IMAGE_PEDIE_2
+        private const val IMAGE_PEDIE_3 = TokopediaImageUrl.IMAGE_PEDIE_3
+        private const val IMAGE_PEDIE_4 = TokopediaImageUrl.IMAGE_PEDIE_4
+        private const val IMAGE_PEDIE_5 = TokopediaImageUrl.IMAGE_PEDIE_5
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
@@ -544,8 +540,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun updateViewBasedOnSelectedRating(position: Int) {
         binding?.apply {
             when {
-                position < RATING_3 -> {
-                    if (position == RATING_1) {
+                position < ReviewConstants.RATING_3 -> {
+                    if (position == ReviewConstants.RATING_1) {
                         createReviewTextAreaTitle.text =
                             context?.resources?.getString(R.string.review_create_worst_title).orEmpty()
                     } else {
@@ -560,7 +556,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     )
                     createReviewContainer.setContainerColor(ContainerUnify.RED)
                 }
-                position == RATING_3 -> {
+                position == ReviewConstants.RATING_3 -> {
                     txtReviewDesc.text = MethodChecker.fromHtml(
                         getString(
                             R.string.review_text_neutral,
@@ -572,7 +568,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                         context?.resources?.getString(R.string.review_create_neutral_title).orEmpty()
                 }
                 else -> {
-                    if (position == RATING_4) {
+                    if (position == ReviewConstants.RATING_4) {
                         createReviewTextAreaTitle.text =
                             context?.resources?.getString(R.string.review_create_positive_title).orEmpty()
                     } else {
@@ -600,11 +596,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun generatePeddieImageByIndex() {
         val url = when (animatedReviewPicker.getReviewClickAt()) {
-            RATING_1 -> IMAGE_PEDIE_1
-            RATING_2 -> IMAGE_PEDIE_2
-            RATING_3 -> IMAGE_PEDIE_3
-            RATING_4 -> IMAGE_PEDIE_4
-            RATING_5 -> IMAGE_PEDIE_5
+            ReviewConstants.RATING_1 -> IMAGE_PEDIE_1
+            ReviewConstants.RATING_2 -> IMAGE_PEDIE_2
+            ReviewConstants.RATING_3 -> IMAGE_PEDIE_3
+            ReviewConstants.RATING_4 -> IMAGE_PEDIE_4
+            ReviewConstants.RATING_5 -> IMAGE_PEDIE_5
             else -> IMAGE_PEDIE_5
         }
         showImage(url)
@@ -619,19 +615,19 @@ class CreateReviewFragment : BaseDaggerFragment(),
             imgAnimationView.repeatCount = 0
             imgAnimationView.repeatCount = LottieDrawable.INFINITE
             when (index) {
-                RATING_1 -> {
+                ReviewConstants.RATING_1 -> {
                     setLottieAnimationFromUrl(LOTTIE_ANIM_1)
                 }
-                RATING_2 -> {
+                ReviewConstants.RATING_2 -> {
                     setLottieAnimationFromUrl(LOTTIE_ANIM_2)
                 }
-                RATING_3 -> {
+                ReviewConstants.RATING_3 -> {
                     setLottieAnimationFromUrl(LOTTIE_ANIM_3)
                 }
-                RATING_4 -> {
+                ReviewConstants.RATING_4 -> {
                     setLottieAnimationFromUrl(LOTTIE_ANIM_4)
                 }
-                RATING_5 -> {
+                ReviewConstants.RATING_5 -> {
                     setLottieAnimationFromUrl(LOTTIE_ANIM_5)
                 }
             }

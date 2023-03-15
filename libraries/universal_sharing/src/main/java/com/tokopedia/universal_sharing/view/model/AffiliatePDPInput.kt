@@ -1,9 +1,11 @@
 package com.tokopedia.universal_sharing.view.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.universal_sharing.tracker.PageType
 
-data class Product (
+data class Product(
     @SerializedName("ProductID")
     var productID: String? = "",
 
@@ -23,10 +25,10 @@ data class Product (
     var maxProductPrice: String? = "",
 
     @SerializedName("ProductStatus")
-    var productStatus: String? = "",
+    var productStatus: String? = ""
 )
 
-data class Shop (
+data class Shop(
     @SerializedName("ShopID")
     var shopID: String? = "",
 
@@ -38,23 +40,27 @@ data class Shop (
 
     @SerializedName("IsPM")
     var isPM: Boolean = false
-    )
-
-data class PageDetail(
-        @SerializedName("PageType")
-        val pageType: String = "",
-
-        @SerializedName("PageID")
-        val pageId: String = "",
-
-        @SerializedName("SiteID")
-        val siteId: String = "",
-
-        @SerializedName("VerticalID")
-        val verticalId: String = ""
 )
 
-data class AffiliatePDPInput (
+data class PageDetail(
+    @SerializedName("PageType")
+    val pageType: String = "",
+
+    @SerializedName("PageID")
+    val pageId: String = "",
+
+    @SerializedName("SiteID")
+    val siteId: String = "",
+
+    @SerializedName("VerticalID")
+    val verticalId: String = "",
+
+    @SerializedName("PageName")
+    val pageName: String = ""
+
+)
+
+data class AffiliatePDPInput(
     @SerializedName("PageType")
     var pageType: String? = "",
 
@@ -65,7 +71,10 @@ data class AffiliatePDPInput (
     var shop: Shop? = null,
 
     @SerializedName("PageDetail")
-    var pageDetail: PageDetail? = null
+    var pageDetail: PageDetail? = null,
+
+    @Expose(serialize = false, deserialize = false)
+    var affiliateLinkType: AffiliateLinkType? = null
 ) {
     /** get id based on page type
      * [PageType.PDP] return [Product.productID]

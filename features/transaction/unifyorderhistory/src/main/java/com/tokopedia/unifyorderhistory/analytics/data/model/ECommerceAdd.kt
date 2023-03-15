@@ -9,56 +9,57 @@ import kotlinx.parcelize.Parcelize
  */
 
 @Parcelize
-data class ECommerceAdd (
-        @SerializedName("currencyCode")
-        var currencyCode: String = "IDR",
+data class ECommerceAdd(
+    @SerializedName("currencyCode")
+    var currencyCode: String = "IDR",
 
-        @SerializedName("add")
-        var add: Add = Add()
+    @SerializedName("add")
+    var add: Add = Add()
 ) : Parcelable {
 
+    @Parcelize
+    data class Add(
+        @SerializedName("products")
+        var products: ArrayList<Products> = arrayListOf()
+    ) : Parcelable {
+
         @Parcelize
-        data class Add(
-                @SerializedName("products")
-                var products: ArrayList<Products> = arrayListOf()) : Parcelable {
+        data class Products(
+            @SerializedName("name")
+            var name: String = "",
 
-                @Parcelize
-                data class Products (
-                        @SerializedName("name")
-                        var name: String = "",
+            @SerializedName("id")
+            var id: String = "",
 
-                        @SerializedName("id")
-                        var id: String = "",
+            @SerializedName("price")
+            var price: String = "",
 
-                        @SerializedName("price")
-                        var price: String = "",
+            @SerializedName("brand")
+            var brand: String = "",
 
-                        @SerializedName("brand")
-                        var brand: String = "",
+            @SerializedName("category")
+            var category: String = "",
 
-                        @SerializedName("category")
-                        var category: String = "",
+            @SerializedName("variant")
+            var variant: String = "",
 
-                        @SerializedName("variant")
-                        var variant: String = "",
+            @SerializedName("quantity")
+            var quantity: String = "",
 
-                        @SerializedName("quantity")
-                        var quantity: String = "",
+            @SerializedName("dimension79")
+            var dimension79: String = "",
 
-                        @SerializedName("dimension79")
-                        var dimension79: String = "",
+            @SerializedName("dimension81")
+            var dimension81: String = "",
 
-                        @SerializedName("dimension81")
-                        var dimension81: String = "",
+            @SerializedName("dimension80")
+            var dimension80: String = "",
 
-                        @SerializedName("dimension80")
-                        var dimension80: String = "",
+            @SerializedName("dimension45")
+            var dimension45: String = "",
 
-                        @SerializedName("dimension45")
-                        var dimension45: String = "",
-
-                        @SerializedName("dimension40")
-                        var dimension40: String = ""
-                ) : Parcelable
-        }
+            @SerializedName("dimension40")
+            var dimension40: String = ""
+        ) : Parcelable
+    }
 }
