@@ -636,12 +636,6 @@ open class HomeRevampFragment :
         onChooseAddressUpdated()
         getSearchPlaceHolderHint()
 
-        if (isUsingNewPullRefresh) {
-            refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
-        } else {
-            refreshLayoutOld = view.findViewById(R.id.home_swipe_refresh_layout)
-        }
-
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
