@@ -32,7 +32,7 @@ class BannerIndicator : LinearLayout {
         private const val NO_DELAY = 0L
         private const val MINIMUM_PROGRESS = 0
         private const val MAXIMUM_PROGRESS = 100
-        private const val SCROLL_TRANSITION_DURATION = 5000L
+        private const val SCROLL_TRANSITION_DURATION = 6000L
         private const val WIDTH_MINIMUM_PROGRESS = 6
         private const val WIDTH_MAXIMUM_PROGRESS = 48
         private const val MINIMUM_PROGRESS_ALPHA = 0
