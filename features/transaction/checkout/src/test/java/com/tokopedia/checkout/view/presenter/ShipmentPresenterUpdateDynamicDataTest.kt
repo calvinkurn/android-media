@@ -314,7 +314,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
         // Then
         assertEquals(isDdp, presenter.isUsingDynamicDataPassing)
         verify {
-            view.updateAddOnsData(AddOnsDataModel(), 0)
+            view.updateAddOnsData(AddOnsDataModel(), 0, shipmentCartItemModelList[0].cartItemModels[0].cartString)
             view.updateAddOnsDynamicDataPassing(any(), any(), any(), any(), any())
         }
     }
@@ -378,7 +378,7 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         verify {
-            view.updateAddOnsData(AddOnsDataModel(), 0)
+            view.updateAddOnsData(AddOnsDataModel(), 0, shipmentCartItemModelList[0].cartItemModels[0].cartString)
             view.updateAddOnsDynamicDataPassing(any(), any(), any(), any(), any())
         }
     }
