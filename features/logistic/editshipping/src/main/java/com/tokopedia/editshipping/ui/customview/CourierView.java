@@ -22,14 +22,6 @@ import com.tokopedia.unifyprinciples.Typography;
  */
 public class CourierView extends EditShippingCourierView<Courier,
         EditShippingViewListener, ShippingCourierAdapterBinding>{
-
-//    LinearLayout courierNamePlaceHolder;
-//    Typography courierNameText;
-//    ImageView courierImageHolder;
-//    LinearLayout shipmentSettings;
-//    PackageView packageView;
-//    LinearLayout packageViewHolder;
-//    Typography courierUnavailableWarning;
     private EditShippingViewListener mainView;
 
     public CourierView(Context context) {

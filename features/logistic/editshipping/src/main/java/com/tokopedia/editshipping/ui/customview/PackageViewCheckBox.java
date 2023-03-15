@@ -19,7 +19,6 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
  */
 public class PackageViewCheckBox extends EditShippingCourierView<Service,
         EditShippingViewListener, PackageViewCheckboxBinding>{
-//    CheckboxUnify serviceCheckbox;
 
     EditShippingViewListener mainView;
 
