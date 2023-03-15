@@ -568,8 +568,10 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun showLoading(isLoading: Boolean) {
-        if (isLoading && !isLoadingDialogVisible()) {
-            getLoadingFragment().show(supportFragmentManager)
+        if (isLoading) {
+            if(!isLoadingDialogVisible()) {
+                getLoadingFragment().show(supportFragmentManager)
+            }
         } else if (isLoadingDialogVisible()) {
             getLoadingFragment().dismiss()
         }
