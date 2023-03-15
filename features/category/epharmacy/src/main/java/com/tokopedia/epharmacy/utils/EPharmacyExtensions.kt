@@ -15,6 +15,7 @@ fun Context.openDocument(url: String) {
         try {
             startActivity(intent)
         } catch (e: Exception) {
+            EPharmacyUtils.logException(e)
             val appLinkPdfWebView = "${WEB_LINK_PREFIX}${getPdfInWebViewUrl(url)}"
             RouteManager.route(this, appLinkPdfWebView)
         }
