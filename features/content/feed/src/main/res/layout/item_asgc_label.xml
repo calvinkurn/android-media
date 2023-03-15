@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_label_asgc_feed"
+    android:background="@drawable/feed_tag_product_background"
     android:orientation="horizontal"
     android:padding="4dp">
 
