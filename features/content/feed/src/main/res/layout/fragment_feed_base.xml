@@ -144,6 +144,17 @@
         tools:visibility="visible"
         />
 
+    <com.tokopedia.feedplus.presentation.customview.UploadProgressView
+        android:id="@+id/upload_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/btn_feed_create_post"
+        app:layout_constraintTop_toBottomOf="@id/btn_feed_create_post"
+        tools:visibility="visible"
+        />
+
     <View
         android:id="@+id/v_onboarding_prevent_interaction"
         android:layout_width="0dp"

@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -26,6 +28,7 @@ import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
+import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,6 +36,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -49,6 +54,9 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels { viewModelFactory }
+
+    @Inject
+    lateinit var uploadReceiver: FeedMultipleSourceUploadReceiver.Factory
 
     private var adapter: FeedPagerAdapter? = null
 
@@ -88,6 +96,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
         observeFeedTabData()
         observeCreateContentBottomSheetData()
+
+        observeShortsUpload()
     }
 
     override fun onDestroyView() {
@@ -162,6 +172,22 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     it.throwable.localizedMessage,
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+        }
+    }
+
+    private fun observeShortsUpload() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                uploadReceiver.create(this@FeedBaseFragment)
+                    .observe()
+                    .collectLatest { info ->
+                        binding.uploadView.show()
+                        binding.uploadView.setProgress(info.progress)
+                        binding.uploadView.setThumbnail(info.thumbnailUrl)
+
+                        if (info.progress >= 100) binding.uploadView.hide()
+                    }
             }
         }
     }

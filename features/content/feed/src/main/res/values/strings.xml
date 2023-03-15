@@ -101,4 +101,7 @@ dari Feed.</string>
     <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>
     <string name="feed_onboarding_profile_entry_point_subtitle">Kamu juga bisa buat profil yang menarik dan bikin banyak orang penasaran dengan kontenmu.</string>
 
+    <!--Uploading-->
+    <string name="feed_uploading_title">Diproses</string>
+
 </resources>
