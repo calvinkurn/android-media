@@ -1720,7 +1720,7 @@ class AddProductViewModelTest {
 
     //region TapShowCaseFilter
     @Test
-    fun `When change shop showcase filter, should emit ShowShowcasesBottomSheet effect`() {
+    fun `When change shop showcase filter with no showcase id supplied, should emit ShowShowcasesBottomSheet effect with empty showcase id`() {
         runBlockingTest {
             //Given
             val pageMode = PageMode.CREATE
@@ -1730,6 +1730,7 @@ class AddProductViewModelTest {
             val firstProduct = populateProduct().copy(id = 1, isSelected = false)
             val secondProduct = populateProduct().copy(id = 2, isSelected = false)
             val maxProductSubmission = 100
+            val selectedShowcaseIds = listOf<Long>()
 
             val mockedProductResponse = listOf(firstProduct, secondProduct)
             val mockedProductValidationResponse = listOf<VoucherValidationResult.ValidationProduct>()
@@ -1770,7 +1771,75 @@ class AddProductViewModelTest {
             val actual = emittedEffects.last()
 
             assertEquals(
-                AddProductEffect.ShowShowcasesBottomSheet(mockedShowcases , listOf()),
+                AddProductEffect.ShowShowcasesBottomSheet(mockedShowcases, selectedShowcaseIds),
+                actual
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When change shop showcase filter with showcase id supplied, should emit ShowShowcasesBottomSheet effect with the selected showcase ids`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val secondProduct = populateProduct().copy(id = 2, isSelected = false)
+            val maxProductSubmission = 100
+
+
+            val firstShopShowcase = ShopShowcase(id = 2, alias = "hp", name = "Handphone", type = 1, isSelected = false)
+            val secondShopShowcase =  ShopShowcase(id = 3, alias = "ac", name = "Air Conditioner", type = 1, isSelected = false)
+            val selectedShowcases = listOf(firstShopShowcase)
+            val expectedSelectedShowcaseIds = listOf(firstShopShowcase.id)
+
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val mockedProductValidationResponse = listOf<VoucherValidationResult.ValidationProduct>()
+            val mockedShowcases = listOf(firstShopShowcase, secondShopShowcase)
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall(showcases = mockedShowcases)
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse, totalProduct = 50)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedEffects = arrayListOf<AddProductEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            viewModel.processEvent(AddProductEvent.ApplyShowCaseFilter(selectedShowcases))
+            viewModel.processEvent(AddProductEvent.TapShowCaseFilter)
+
+            //Then
+            val actual = emittedEffects.last()
+
+            assertEquals(
+                AddProductEffect.ShowShowcasesBottomSheet(
+                    mockedShowcases,
+                    expectedSelectedShowcaseIds
+                ),
                 actual
             )
 
