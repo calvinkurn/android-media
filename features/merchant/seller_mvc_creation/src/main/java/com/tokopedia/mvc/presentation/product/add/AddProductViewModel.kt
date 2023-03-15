@@ -297,9 +297,6 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun handleCheckAllProduct() = launch(dispatchers.computation) {
-        val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
-        val currentlyDisplayedProductIds = currentState.products.map { it.id }
-
         var selectionCount = 0
         val modifiedProducts = currentState.products.map { product ->
 
