@@ -23,6 +23,7 @@ import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
 import com.tokopedia.usercomponents.userconsent.common.*
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CONSENT_OPT_IN
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CONSENT_OPT_OUT
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.MANDATORY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.NO_CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.OPTIONAL
@@ -60,6 +61,7 @@ class UserConsentWidget : FrameLayout,
     private var collection: CollectionPointDataModel? = null
     private var isErrorGetConsent = false
     private var needConsent: Boolean? = null
+    private var isConsentTypeInfo: Boolean = false
 
     private var userConsentDescription: UserConsentDescription? = null
     private var userConsentPurposeAdapter: UserConsentPurposeAdapter? = null
@@ -97,6 +99,9 @@ class UserConsentWidget : FrameLayout,
                 checkboxPurposes.setOnCheckedChangeListener { buttonView, isChecked ->
                     collection?.purposes?.let {
                         userConsentAnalytics.trackOnPurposeCheck(isChecked, it)
+                        it.forEach { purposeDataModel ->
+                            purposeDataModel.transactionType = if (isChecked) CONSENT_OPT_IN else CONSENT_OPT_OUT
+                        }
                     }
 
                     onCheckedChangeListener.invoke(isChecked)
@@ -119,14 +124,23 @@ class UserConsentWidget : FrameLayout,
             submissionParam.collectionId = consentCollectionParam?.collectionId.orEmpty()
             submissionParam.version = consentCollectionParam?.version.orEmpty()
             submissionParam.default = isErrorGetConsent
-            submissionParam.dataElements = consentCollectionParam?.dataElements
+            submissionParam.dataElements = consentCollectionParam?.dataElements.orEmpty().toMutableList()
             submissionParam.purposes.clear()
             collection?.purposes?.forEach {
                 submissionParam.purposes.add(
                     Purpose(
                         purposeID = it.id,
-                        transactionType = CONSENT_OPT_IN,
+                        /*
+                        * default value of transactionType is OPT_OUT, because the first time show checkbox always uncheck
+                        * specially for consentTypeInfo (that no checkbox show) the value must be OPT_IN.
+                        */
+                        transactionType =
+                            if (isConsentTypeInfo)
+                                CONSENT_OPT_IN
+                            else
+                                it.transactionType,
                         version = it.version,
+                        dataElementType = it.attribute.dataElementType
                     )
                 )
             }
@@ -222,7 +236,7 @@ class UserConsentWidget : FrameLayout,
         } else null
     }
 
-    private fun onSuccessGetConsentCollection(consentType: ConsentType) {
+    private fun onSuccessGetConsentCollection(consentType: ConsentType?) {
         collection?.let {
             userConsentAnalytics.trackOnConsentView(it.purposes)
             userConsentDescription = UserConsentDescription(this, it)
@@ -242,22 +256,36 @@ class UserConsentWidget : FrameLayout,
             val purposes: MutableList<UserConsentPayload.PurposeDataModel> = mutableListOf()
             collection?.purposes?.forEach {
                 purposes.add(UserConsentPayload.PurposeDataModel(
-                    it.id,
-                    it.version,
-                    collection?.consentType.orEmpty()
+                    purposeId = it.id,
+                    version = it.version,
+                    /*
+                    * default value of transactionType is OPT_OUT, because the first time show checkbox always uncheck
+                    * specially for consentTypeInfo (that no checkbox show) the value must be OPT_IN.
+                    */
+                    transactionType =
+                        if (isConsentTypeInfo)
+                            CONSENT_OPT_IN
+                        else
+                            it.transactionType,
+                    dataElementType = it.attribute.dataElementType
                 ))
+            }
+            val dataElements = mutableMapOf<String, String>()
+            consentCollectionParam?.dataElements?.forEach { it ->
+                dataElements[it.elementName] = it.elementValue
             }
             UserConsentPayload(
                 identifier = consentCollectionParam?.identifier.orEmpty(),
                 collectionId = collection?.id.orEmpty(),
-                dataElements = consentCollectionParam?.dataElements,
+                dataElements = dataElements,
                 default = isErrorGetConsent,
                 purposes = purposes
             ).toString()
         }
     }
 
-    private fun renderView(consentType: ConsentType) {
+    private fun renderView(consentType: ConsentType?) {
+        isConsentTypeInfo = consentType is ConsentType.SingleInfo
         when(consentType) {
             is ConsentType.SingleInfo -> {
                 renderSinglePurposeInfo()
@@ -399,6 +427,12 @@ class UserConsentWidget : FrameLayout,
 
         val isAllChecked = userConsentPurposeAdapter?.listCheckBoxView?.all {
             it.isChecked
+        }
+
+        collection?.purposes?.forEach {
+            if (it.id == purposeDataModel.id) {
+                it.transactionType = if (isChecked) CONSENT_OPT_IN else CONSENT_OPT_OUT
+            }
         }
 
         onAllCheckBoxCheckedListener.invoke(isAllChecked == true)
