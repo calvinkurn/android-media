@@ -170,7 +170,6 @@ class InboxDetailViewModel @Inject constructor(
                 }
             },
             onError = {
-                it.printStackTrace()
                 _uiEffect.emit(InboxDetailUiEffect.SendCSATRatingFailed(messageError = "", it))
             }
         )
@@ -444,7 +443,6 @@ class InboxDetailViewModel @Inject constructor(
                 }
             },
             onError = {
-                it.printStackTrace()
                 _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(throwable = it))
             }
         )
@@ -528,7 +526,9 @@ class InboxDetailViewModel @Inject constructor(
         chipUploadHostConfig: ChipUploadHostConfig
     ): ArrayList<ImageUpload> {
         val listOfSecureImageParmeter = getListOfSecureImageParameter(files, chipUploadHostConfig)
-        if (listOfSecureImageParmeter.isEmpty() || files.size != listOfSecureImageParmeter.size) return arrayListOf()
+        if (listOfSecureImageParmeter.isEmpty() || files.size != listOfSecureImageParmeter.size) {
+            return arrayListOf()
+        }
 
         val uploadedImageList = getUploadedImageList(imageList, files, listOfSecureImageParmeter)
         return if (uploadedImageList.isEmpty()) {
@@ -611,7 +611,6 @@ class InboxDetailViewModel @Inject constructor(
             },
             onError = {
                 _uiEffect.emit(InboxDetailUiEffect.SendTextMessageFailed(throwable = it))
-                it.printStackTrace()
             })
     }
 
