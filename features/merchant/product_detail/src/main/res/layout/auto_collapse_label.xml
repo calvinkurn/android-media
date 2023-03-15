@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp">
+
+    <View
+        android:id="@+id/bg_auto_collapse_label_text_with_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:background="@drawable/bg_pdp_label_carousel"
+        app:layout_constraintBottom_toBottomOf="@id/container_auto_collapse"
+        app:layout_constraintEnd_toEndOf="@id/container_auto_collapse"
+        app:layout_constraintStart_toStartOf="@id/container_auto_collapse"
+        app:layout_constraintTop_toTopOf="@id/container_auto_collapse"
+        tools:alpha="1" />
+
+
+    <View
+        android:id="@+id/bg_auto_collapse_label_icon_only"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:background="@drawable/bg_pdp_auto_collapse_icon_only"
+        app:layout_constraintBottom_toBottomOf="@id/container_auto_collapse"
+        app:layout_constraintEnd_toEndOf="@id/container_auto_collapse"
+        app:layout_constraintStart_toStartOf="@id/container_auto_collapse"
+        app:layout_constraintTop_toTopOf="@id/container_auto_collapse"
+        tools:alpha="1" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_auto_collapse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:alpha="1">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_auto_collapse_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingStart="0dp"
+            android:paddingEnd="4dp"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_auto_collapse_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            tools:text="Produk Serupa" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_auto_collapse_label"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_auto_collapse_label"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/qc_launcher"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

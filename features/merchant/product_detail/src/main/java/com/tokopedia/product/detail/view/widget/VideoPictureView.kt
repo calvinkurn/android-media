@@ -12,12 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -95,6 +90,7 @@ class VideoPictureView @JvmOverloads constructor(
         updateInitialThumbnail(media = media)
         updateImages(listOfImage = media)
         updateMediaLabel(position = pagerSelectedLastPosition)
+        shouldShowRecommendationLabel(position = pagerSelectedLastPosition)
         scrollToPosition(position = initialScrollPosition)
         renderVideoOnceAtPosition(position = initialScrollPosition)
     }
@@ -268,6 +264,7 @@ class VideoPictureView @JvmOverloads constructor(
             }
 
             updateMediaLabel(position)
+            shouldShowRecommendationLabel(position)
             updateThumbnail(position)
             pagerSelectedLastPosition = position
         }
@@ -335,6 +332,17 @@ class VideoPictureView @JvmOverloads constructor(
         if (ignoreUpdateLabel) return
 
         binding.txtAnimLabel.showView(stringLabel)
+    }
+
+    private fun shouldShowRecommendationLabel(position: Int) {
+        if (videoPictureAdapter?.isFirstPicture(position) == true) {
+            binding.txtAnimLabelRecommendation.showView(
+                text = "Barang Serupa",
+                iconUrl = "https://i.pinimg.com/originals/5a/74/dc/5a74dc1edc469d9a6d985338f1cdd230.jpg"
+            )
+        } else {
+            binding.txtAnimLabelRecommendation.hideView()
+        }
     }
 
     companion object {
