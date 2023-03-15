@@ -4,6 +4,7 @@ import android.util.Pair
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.checkout.R
@@ -155,12 +156,16 @@ import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import rx.Observable
 import rx.Subscriber
 import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author Irfan Khoirul on 24/04/18.
@@ -188,10 +193,14 @@ class ShipmentPresenter @Inject constructor(
     private val validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
     private val gson: Gson,
     private val executorSchedulers: ExecutorSchedulers,
+    private val dispatchers: CoroutineDispatchers,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val ratesWithScheduleUseCase: GetRatesWithScheduleUseCase,
     private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
-) : ShipmentContract.Presenter {
+) : ShipmentContract.Presenter, CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + dispatchers.immediate
 
     private var view: ShipmentContract.View? = null
 
@@ -278,6 +287,7 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun detachView() {
+        coroutineContext.cancelChildren()
         compositeSubscription.unsubscribe()
         getShipmentAddressFormV3UseCase.cancelJobs()
         eligibleForAddressUseCase.cancelJobs()
