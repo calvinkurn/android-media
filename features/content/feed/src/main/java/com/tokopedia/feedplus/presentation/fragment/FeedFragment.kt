@@ -35,18 +35,9 @@ import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
-import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
-import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
-import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
-import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
-import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -101,7 +92,6 @@ class FeedFragment :
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
     private lateinit var feedMenuSheet: ContentThreeDotsMenuBottomSheet
-
 
     private val reportPostLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -580,26 +570,40 @@ class FeedFragment :
         if ((newList?.size ?: 0) > data.rowNumber) {
             val item = newList?.get(rowNumber)
             if (item is FeedCardImageContentModel) {
-                val like = (item as FeedCardImageContentModel).like
-                like.isLiked = !like.isLiked
-                if (like.isLiked) {
+//                val like = (item as FeedCardImageContentModel).like
+//                like.isLiked = !like.isLiked
+                if (!item.like.isLiked) {
                     try {
-                        val likeValue = Integer.valueOf(like.countFmt) + 1
-                        like.countFmt = likeValue.toString()
+                        val likeValue = Integer.valueOf(item.like.countFmt) + 1
+//                        like.countFmt = likeValue.toString()
+                        adapter?.updateLikeUnlikeData(
+                            rowNumber,
+                            like = item.like.copy(
+                                isLiked = item.like.isLiked.not(),
+                                countFmt = likeValue.toString(),
+                                count = item.like.count + 1
+                            )
+                        )
                     } catch (ignored: NumberFormatException) {
                         Timber.e(ignored)
                     }
 
-                    like.count = like.count + 1
+//                    like.count = like.count + 1
                 } else {
                     try {
-                        val likeValue = Integer.valueOf(like.countFmt) - 1
-                        like.countFmt = likeValue.toString()
+                        val likeValue = Integer.valueOf(item.like.countFmt) - 1
+//                        like.countFmt = likeValue.toString()
+                        adapter?.updateLikeUnlikeData(
+                            rowNumber,
+                            like = item.like.copy(
+                                isLiked = item.like.isLiked.not(),
+                                countFmt = likeValue.toString(),
+                                count = item.like.count - 1
+                            )
+                        )
                     } catch (ignored: NumberFormatException) {
                         Timber.e(ignored)
                     }
-
-                    like.count = like.count - 1
                 }
                 adapter?.notifyItemChanged(
                     rowNumber,

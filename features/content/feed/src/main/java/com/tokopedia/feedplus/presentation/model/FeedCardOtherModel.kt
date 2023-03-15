@@ -6,15 +6,15 @@ package com.tokopedia.feedplus.presentation.model
 data class FeedViewModel(
     val label: String = "",
     val count: Int = 0,
-    val countFmt: String = "",
+    val countFmt: String = ""
 )
 
 data class FeedLikeModel(
     val label: String = "",
-    var count: Int = 0,
-    var countFmt: String = "",
+    val count: Int = 0,
+    val countFmt: String = "",
     val likedBy: List<String> = emptyList(),
-    var isLiked: Boolean = false,
+    val isLiked: Boolean = false
 )
 
 data class FeedCommentModel(
@@ -39,7 +39,7 @@ data class FeedFollowModel(
     val label: String = "",
     val count: Int = 0,
     val countFmt: String = "",
-    val isFollowed: Boolean = false,
+    val isFollowed: Boolean = false
 )
 
 data class FeedScoreModel(
