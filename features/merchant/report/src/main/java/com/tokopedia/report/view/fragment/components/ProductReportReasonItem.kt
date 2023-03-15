@@ -9,7 +9,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,7 +33,6 @@ fun ProductReportReasonItem(
     subtitleVisible: Boolean,
     onClick: (ProductReportReason) -> Unit
 ) {
-
     ConstraintLayout(
         modifier = modifier
             .clickable {
@@ -57,7 +55,7 @@ fun ProductReportReasonItem(
                     linkTo(
                         start = contentGuideLineStart,
                         top = contentGuideLineTop,
-                        bottom = if (!subtitleVisible) contentGuideLineBottom else subtitle.top,
+                        bottom = subtitle.top,
                         end = iconRight.start,
                         endMargin = 4.dp,
                         horizontalBias = 0f
@@ -69,27 +67,25 @@ fun ProductReportReasonItem(
             )
         )
 
-        if (subtitleVisible) {
-            NestTypography(
-                modifier = Modifier
-                    .constrainAs(subtitle) {
-                        width = Dimension.fillToConstraints
-                        linkTo(
-                            start = contentGuideLineStart,
-                            top = title.bottom,
-                            topMargin = 2.dp,
-                            end = iconRight.start,
-                            endMargin = 4.dp,
-                            bottom = contentGuideLineBottom,
-                            horizontalBias = 0f
-                        )
-                    },
-                text = reason.detail,
-                textStyle = NestTheme.typography.body3,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+        NestTypography(
+            modifier = Modifier
+                .constrainAs(subtitle) {
+                    width = Dimension.fillToConstraints
+                    linkTo(
+                        start = contentGuideLineStart,
+                        top = title.bottom,
+                        topMargin = 2.dp,
+                        end = iconRight.start,
+                        endMargin = 4.dp,
+                        bottom = contentGuideLineBottom,
+                        horizontalBias = 0f
+                    )
+                },
+            text = if (subtitleVisible) reason.detail else "",
+            textStyle = NestTheme.typography.body3,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
 
         Icon(
             modifier = Modifier
@@ -101,7 +97,7 @@ fun ProductReportReasonItem(
                     bottom.linkTo(contentGuideLineBottom)
                 },
             painter = painterResource(id = R.drawable.ic_arrow_right_grey),
-            tint = Color(0xffededed),
+            tint = NestTheme.colors.NN._300,
             contentDescription = "ic_button_${reason.strLabel}"
         )
 
@@ -135,6 +131,5 @@ fun ProductReportReasonItem() {
         ),
         subtitleVisible = true
     ) {
-
     }
 }

@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
-class ProductReportFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+class ProductReportFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun setupMock() {
     }
 
@@ -25,7 +25,7 @@ class ProductReportFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     }
 
     override fun pageInteractionTest(currentIteration: Int) {
-        MacroInteration.waitForComposeContent(MacroIntent.ProductReport.COLUMN_TAG)
+        MacroInteration.basicComposableListInteraction(MacroIntent.ProductReport.COLUMN_TAG)
     }
 
     override fun getIntent() = MacroIntent.ProductReport.getIntent()

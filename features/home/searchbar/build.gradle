@@ -4,7 +4,6 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "androidx.navigation.safeargs"
 apply from: '../../../jacoco_task.gradle'
-apply plugin: 'kotlin-kapt'
 
 buildscript {
     repositories {

@@ -14,7 +14,7 @@ object MacroInteration {
         packageName: String,
         scrollableViewId: String,
         flingDirection: Direction = Direction.DOWN,
-        flingSpeed: Int = 50,
+        flingSpeed: Int = 50
     ) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
@@ -35,7 +35,7 @@ object MacroInteration {
         packageName: String,
         rvResourceId: String,
         scrollDirection: Direction = Direction.DOWN,
-        scrollPercent: Float = 2f,
+        scrollPercent: Float = 2f
     ) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
@@ -72,20 +72,30 @@ object MacroInteration {
         device.waitForIdle(IDLE_DURATION)
     }
 
-    fun columnFlingInteraction(contentDescription:String) {
+    fun waitForComposableWidgetVisible(widgetContentDescription: String) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
-        val column = device.findObject(By.desc(contentDescription))
-        column.setGestureMargin(device.displayWidth / 5)
-        column.fling(Direction.DOWN)
-        device.waitForIdle()
+        device.wait(Until.hasObject(By.descContains(widgetContentDescription)), DEFAULT_TIMEOUT)
+        device.waitForIdle(IDLE_DURATION)
     }
 
-    fun waitForComposeContent(contentDescription:String){
+    fun basicComposableListInteraction(
+        contentDescription: String,
+        scrollDirection: Direction = Direction.DOWN,
+        scrollPercent: Float = 2f
+    ) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
-        val column = device.findObject(By.desc(contentDescription))
-        column.wait(Until.scrollable(true), DEFAULT_TIMEOUT)
-        device.waitForIdle(IDLE_DURATION)
+
+        device.wait(Until.hasObject(By.desc(contentDescription)), DEFAULT_TIMEOUT)
+        val list = device.findObject(By.desc(contentDescription))
+
+        // Set gesture margin to avoid triggering gesture navigation
+        // with input events from automation.
+        list.setGestureMargin(device.displayWidth / 5)
+        for (i in 1..(MacroArgs.getRecyclerViewScrollIterations(InstrumentationRegistry.getArguments()))) {
+            list.scroll(scrollDirection, scrollPercent)
+            device.waitForIdle()
+        }
     }
 }
