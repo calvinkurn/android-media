@@ -128,7 +128,6 @@ class NotificationSettingsGtmEvents constructor(
             context,
             pagePath
         )
-        sendAppPushPermissionStatusEvent(context)
     }
 
     fun sendAppPushPermissionStatusEvent(context: Context) {
@@ -137,8 +136,12 @@ class NotificationSettingsGtmEvents constructor(
             if (GlobalConfig.isSellerApp()) {
                 dataMap[GtmTrackerEvents.KEY_EVENT_NAME] =
                     GtmTrackerEvents.KEY_SELLER_APP_PUSH_PERMISSION_STATUS
+                dataMap[GtmTrackerEvents.KEY_EVENT_GA] =
+                    GtmTrackerEvents.KEY_SELLER_APP_PUSH_PERMISSION_STATUS
             } else {
                 dataMap[GtmTrackerEvents.KEY_EVENT_NAME] =
+                    GtmTrackerEvents.KEY_MAIN_APP_PUSH_PERMISSION_STATUS
+                dataMap[GtmTrackerEvents.KEY_EVENT_GA] =
                     GtmTrackerEvents.KEY_MAIN_APP_PUSH_PERMISSION_STATUS
             }
             val userId = if (userSession.userId.isEmpty() || userSession.userId.isBlank()) {
@@ -170,7 +173,7 @@ class NotificationSettingsGtmEvents constructor(
                 ActivityCompat.checkSelfPermission(
                     context,
                     Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_DENIED
+                ) == PackageManager.PERMISSION_GRANTED
             } else {
                 false
             }
