@@ -186,23 +186,6 @@ class BannerIndicator : LinearLayout {
         minAnimatorSet.start()
     }
 
-//    fun resetBannerIndicator(startFrom: Int = -1) {
-//        bannerAnimatorSet.removeAllListeners()
-//        bannerAnimatorSet.cancel()
-//        bannerAnimator.removeAllUpdateListeners()
-//        bannerAnimator.cancel()
-//        for (i in Int.ZERO until totalBanner) {
-//            getChildProgressBar(i)?.let {
-//                it.progress = Int.ZERO
-//                it.layoutParams.width = WIDTH_MINIMUM_PROGRESS.toPx()
-//                it.requestLayout()
-//            }
-//        }
-//        if (startFrom > -1) {
-//            initialAnimate()
-//        }
-//    }
-
     fun startIndicatorByPosition(position: Int) {
         if (bannerAnimator.isRunning) {
             bannerAnimatorSet.removeAllListeners()
