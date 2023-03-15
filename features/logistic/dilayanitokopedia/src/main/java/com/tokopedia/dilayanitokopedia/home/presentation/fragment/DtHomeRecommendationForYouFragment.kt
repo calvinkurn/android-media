@@ -260,10 +260,10 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
                 WIHSLIST_STATUS_IS_WISHLIST
             )
         ) {
-//            val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
-//            val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false)
-//            val position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1)
-//            updateWishlist(id, wishlistStatusFromPdp, position)
+            val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
+            val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false)
+            val position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1)
+            updateWishlist(id, wishlistStatusFromPdp, position)
         }
         handleProductCardOptionsActivityResult(
             requestCode,
@@ -359,6 +359,14 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
                 productCardOptionsModel.productName,
                 productCardOptionsModel.productImageUrl
             )
+        }
+    }
+
+    private fun updateWishlist(id: String, isWishlist: Boolean, position: Int) {
+        if (position > -1 && adapter.itemCount > 0 &&
+            adapter.itemCount > position
+        ) {
+            viewModel.updateWishlist(id, position, isWishlist)
         }
     }
 }

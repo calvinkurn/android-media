@@ -8,6 +8,7 @@ import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetRecommendationForY
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationEmpty
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationError
+import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationItemDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationLoadMore
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationLoading
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeRecommendationVisitable
@@ -73,6 +74,27 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
         if (!isContainLoadMore) {
             val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
             list.add(loadMoreModel)
+        }
+    }
+
+    fun updateWishlist(id: String, position: Int, isWishlisted: Boolean) {
+        val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
+        var recommendationItem: HomeRecommendationItemDataModel? = null
+        var recommendationItemPosition: Int = -1
+        if (list.getOrNull(position)?.getUniqueIdentity() == id) {
+            recommendationItem = list[position] as HomeRecommendationItemDataModel
+            recommendationItemPosition = position
+        } else {
+            list.withIndex().find { it.value.getUniqueIdentity() == id && it.value is HomeRecommendationItemDataModel }?.let {
+                recommendationItemPosition = it.index
+                recommendationItem = (it.value as HomeRecommendationItemDataModel)
+            }
+        }
+        if (recommendationItemPosition != -1 && recommendationItem != null) {
+            list[recommendationItemPosition] = recommendationItem!!.copy(
+                product = recommendationItem!!.product.copy(isWishlist = isWishlisted)
+            )
+            _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list))
         }
     }
 }
