@@ -310,20 +310,11 @@ class AddProductViewModel @Inject constructor(
                 hasRemainingSelection -> {
                     selectionCount++
 
-                    val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
-                    val isSelected = if (isOnSearchMode) {
-                        //If is on search product mode. Only product from search result should be selected
-                        isProductDisplayedOnSearchResult
-                    } else {
-                        //If we're not in search product mode. Select all loaded products
-                        true
-                    }
-
                     //To make sure only eligible variant will be selected
                     val eligibleVariantIdsOnly = product.originalVariants.eligibleVariantIdsOnly()
 
                     product.copy(
-                        isSelected = isSelected,
+                        isSelected = true,
                         enableCheckbox = true,
                         selectedVariantsIds = eligibleVariantIdsOnly
                     )
