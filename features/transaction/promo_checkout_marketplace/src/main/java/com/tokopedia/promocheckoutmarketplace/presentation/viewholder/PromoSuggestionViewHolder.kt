@@ -21,5 +21,4 @@ class PromoSuggestionViewHolder(val viewBinding: PromoCheckoutMarketplaceModuleI
     companion object {
         val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_suggestion
     }
-
 }

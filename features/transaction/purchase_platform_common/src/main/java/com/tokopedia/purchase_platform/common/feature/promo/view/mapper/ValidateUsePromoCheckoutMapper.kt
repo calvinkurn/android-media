@@ -34,24 +34,24 @@ class ValidateUsePromoCheckoutMapper {
     companion object {
         fun mapToValidateUseRevampPromoUiModel(validateUsePromoRevamp: ValidateUsePromoRevamp): ValidateUsePromoRevampUiModel {
             return ValidateUsePromoRevampUiModel(
-                    status = validateUsePromoRevamp.status,
-                    message = validateUsePromoRevamp.message,
-                    errorCode = validateUsePromoRevamp.errorCode,
-                    promoUiModel = mapToPromoUiModel(validateUsePromoRevamp.promo)
+                status = validateUsePromoRevamp.status,
+                message = validateUsePromoRevamp.message,
+                errorCode = validateUsePromoRevamp.errorCode,
+                promoUiModel = mapToPromoUiModel(validateUsePromoRevamp.promo)
             )
         }
 
         private fun mapToPromoUiModel(promo: PromoValidateUseResponse): PromoUiModel {
             return PromoUiModel(
-                    globalSuccess = promo.globalSuccess,
-                    success = promo.success,
-                    codes = mapCodes(promo.codes),
-                    messageUiModel = mapMessageUiModel(promo.message),
-                    additionalInfoUiModel = mapToAdditionalInfoUiModel(promo.additionalInfo),
-                    benefitSummaryInfoUiModel = mapToBenefitSummaryInfoUiModel(promo.benefitSummaryInfo),
-                    voucherOrderUiModels = mapListVoucherOrders(promo.voucherOrders),
-                    tickerInfoUiModel = mapTickerInfoUiModel(promo.tickerInfo),
-                    trackingDetailUiModels = mapTrackingDetails(promo.trackingDetails)
+                globalSuccess = promo.globalSuccess,
+                success = promo.success,
+                codes = mapCodes(promo.codes),
+                messageUiModel = mapMessageUiModel(promo.message),
+                additionalInfoUiModel = mapToAdditionalInfoUiModel(promo.additionalInfo),
+                benefitSummaryInfoUiModel = mapToBenefitSummaryInfoUiModel(promo.benefitSummaryInfo),
+                voucherOrderUiModels = mapListVoucherOrders(promo.voucherOrders),
+                tickerInfoUiModel = mapTickerInfoUiModel(promo.tickerInfo),
+                trackingDetailUiModels = mapTrackingDetails(promo.trackingDetails)
             )
         }
 
@@ -82,9 +82,10 @@ class ValidateUsePromoCheckoutMapper {
 
         private fun mapMessageUiModel(messageData: Message): MessageUiModel {
             return MessageUiModel(
-                    color = messageData.color,
-                    state = messageData.state,
-                    text = messageData.text)
+                color = messageData.color,
+                state = messageData.state,
+                text = messageData.text
+            )
         }
 
         private fun mapListVoucherOrders(voucherOrders: List<VoucherOrdersItem>): List<PromoCheckoutVoucherOrdersItemUiModel> {
@@ -93,13 +94,13 @@ class ValidateUsePromoCheckoutMapper {
 
         private fun mapToVoucherOrdersItemUiModel(voucherOrdersItem: VoucherOrdersItem): PromoCheckoutVoucherOrdersItemUiModel {
             return PromoCheckoutVoucherOrdersItemUiModel(
-                    success = voucherOrdersItem.success,
-                    code = voucherOrdersItem.code,
-                    type = voucherOrdersItem.type,
-                    uniqueId = voucherOrdersItem.uniqueId,
-                    messageUiModel = mapMessageUiModel(voucherOrdersItem.message),
-                    shippingId = voucherOrdersItem.shippingId,
-                    spId = voucherOrdersItem.spId,
+                success = voucherOrdersItem.success,
+                code = voucherOrdersItem.code,
+                type = voucherOrdersItem.type,
+                uniqueId = voucherOrdersItem.uniqueId,
+                messageUiModel = mapMessageUiModel(voucherOrdersItem.message),
+                shippingId = voucherOrdersItem.shippingId,
+                spId = voucherOrdersItem.spId
             )
         }
 
@@ -136,10 +137,10 @@ class ValidateUsePromoCheckoutMapper {
                 val mvcShippingBenefitUiModels = arrayListOf<MvcShippingBenefitUiModel>()
                 promoSpId.mvcShippingBenefits.forEach {
                     mvcShippingBenefitUiModels.add(
-                            MvcShippingBenefitUiModel().apply {
-                                benefitAmount = it.benefitAmount
-                                spId = it.spId
-                            }
+                        MvcShippingBenefitUiModel().apply {
+                            benefitAmount = it.benefitAmount
+                            spId = it.spId
+                        }
                     )
                 }
                 mvcShippingBenefits = mvcShippingBenefitUiModels
@@ -149,11 +150,12 @@ class ValidateUsePromoCheckoutMapper {
 
         private fun mapToUsageSummariesUiModel(usageSummaries: UsageSummaries): UsageSummariesUiModel {
             return UsageSummariesUiModel(
-                    desc = usageSummaries.description,
-                    type = usageSummaries.type,
-                    amountStr = usageSummaries.amountString,
-                    amount = usageSummaries.amount,
-                    currencyDetailStr = usageSummaries.currencyDetailsStr)
+                desc = usageSummaries.description,
+                type = usageSummaries.type,
+                amountStr = usageSummaries.amountString,
+                amount = usageSummaries.amount,
+                currencyDetailStr = usageSummaries.currencyDetailsStr
+            )
         }
 
         private fun mapToBenefitSummaryInfoUiModel(benefit: BenefitSummaryInfo): BenefitSummaryInfoUiModel {
@@ -169,11 +171,11 @@ class ValidateUsePromoCheckoutMapper {
         private fun mapToListSummaryInfoUiModel(listSummariesItem: List<SummariesItem>): List<SummariesItemUiModel> {
             return listSummariesItem.map { summary ->
                 SummariesItemUiModel(
-                        description = summary.description,
-                        type = summary.type,
-                        amount = summary.amount,
-                        amountStr = summary.amountStr,
-                        details = mapToDetailSummaryUiModel(summary.details)
+                    description = summary.description,
+                    type = summary.type,
+                    amount = summary.amount,
+                    amountStr = summary.amountStr,
+                    details = mapToDetailSummaryUiModel(summary.details)
                 )
             }
         }
@@ -181,10 +183,10 @@ class ValidateUsePromoCheckoutMapper {
         private fun mapToDetailSummaryUiModel(listDetailsItem: List<DetailsItem>): List<DetailsItemUiModel> {
             return listDetailsItem.map { details ->
                 DetailsItemUiModel(
-                        description = details.description,
-                        amountStr = details.amountStr,
-                        amount = details.amount,
-                        type = details.type
+                    description = details.description,
+                    amountStr = details.amountStr,
+                    amount = details.amount,
+                    type = details.type
                 )
             }
         }

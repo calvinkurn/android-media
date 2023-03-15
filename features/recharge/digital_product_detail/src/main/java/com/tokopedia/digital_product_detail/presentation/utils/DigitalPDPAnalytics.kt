@@ -33,6 +33,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_ID
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_NAME
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_TYPE
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.TRACKER_ID
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.ADD_TO_CART
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.CLICK_DIGITAL
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.OPEN_SCREEN
@@ -51,8 +52,10 @@ class DigitalPDPAnalytics {
 
     fun eventInputNumberManual(categoryName: String, operatorName: String, userId: String) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.INPUT_MANUAL_NUMBER,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.INPUT_MANUAL_NUMBER,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_$operatorName"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -60,8 +63,10 @@ class DigitalPDPAnalytics {
 
     fun eventInputNumberContact(categoryName: String, operatorName: String, userId: String) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.INPUT_FROM_CONTACT,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.INPUT_FROM_CONTACT,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_$operatorName"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -69,8 +74,10 @@ class DigitalPDPAnalytics {
 
     fun eventInputNumberFavorite(categoryName: String, operatorName: String, userId: String) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.INPUT_FROM_FAVORITE_NUMBER,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.INPUT_FROM_FAVORITE_NUMBER,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_$operatorName"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -78,8 +85,10 @@ class DigitalPDPAnalytics {
 
     fun impressionFavoriteNumberChips(categoryName: String, loyaltyStatus: String, userId: String) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.VIEW_FAVORITE_NUMBER_CHIP,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.VIEW_FAVORITE_NUMBER_CHIP,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_$loyaltyStatus"
         )
         data.viewDigitalIris(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -92,8 +101,10 @@ class DigitalPDPAnalytics {
         userId: String
     ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_FAVORITE_NUMBER_CHIP,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_FAVORITE_NUMBER_CHIP,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_$loyaltyStatus"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -105,8 +116,10 @@ class DigitalPDPAnalytics {
         userId: String
     ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.VIEW_FAVORITE_CONTACT_CHIP,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.VIEW_FAVORITE_CONTACT_CHIP,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_$loyaltyStatus"
         )
         data.viewDigitalIris(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -119,8 +132,10 @@ class DigitalPDPAnalytics {
         userId: String
     ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_FAVORITE_CONTACT_CHIP,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_FAVORITE_CONTACT_CHIP,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_$loyaltyStatus"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -133,8 +148,10 @@ class DigitalPDPAnalytics {
         userId: String
     ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_NUMBER,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_NUMBER,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_$loyaltyStatus"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -147,8 +164,46 @@ class DigitalPDPAnalytics {
         userId: String
     ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_CONTACT,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_CONTACT,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_$loyaltyStatus"
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun impressionOmniChannelWidget(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.IMPRESSION_OMNI_CHANNEL_WIDGET,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_$loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.IMPRESSION_OMNI_CHANNEL_WIDGET
+        )
+        data.viewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun clickOmniChannelWidget(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_OMNI_CHANNEL_WIDGET,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_$loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.CLICK_OMNI_CHANNEL_WIDGET
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -156,8 +211,10 @@ class DigitalPDPAnalytics {
 
     fun eventClearInputNumber(categoryName: String, userId: String) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLEAR_INPUT_NUMBER,
-            TrackAppUtils.EVENT_LABEL, categoryName
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLEAR_INPUT_NUMBER,
+            TrackAppUtils.EVENT_LABEL,
+            categoryName
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -165,8 +222,10 @@ class DigitalPDPAnalytics {
 
     fun clickOnContactIcon(categoryName: String, userId: String) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_ON_CONTACT_ICON,
-            TrackAppUtils.EVENT_LABEL, categoryName
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_ON_CONTACT_ICON,
+            TrackAppUtils.EVENT_LABEL,
+            categoryName
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -182,7 +241,7 @@ class DigitalPDPAnalytics {
     ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, IMPRESSION_PRODUCT_CLUSTER)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}")
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_$loyaltyStatus")
             putParcelableArrayList(
                 ITEMS,
                 mapperDenomToItemList(denomData, operatorName, position, "", categoryName)
@@ -205,7 +264,7 @@ class DigitalPDPAnalytics {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_PRODUCT_CLUSTER)
             putString(ITEM_LIST, productListName)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_${loyaltyStatus}")
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${operatorName}_$loyaltyStatus")
             putParcelableArrayList(
                 ITEMS,
                 mapperDenomToItemList(denomData, operatorName, position, "", categoryName)
@@ -261,24 +320,28 @@ class DigitalPDPAnalytics {
     }
 
     fun impressionBannerEmptyState(
-        creativeUrl: String, categoryId: String, categoryName: String,
-        loyaltyStatus: String, userId: String
+        creativeUrl: String,
+        categoryId: String,
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String
     ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, IMPRESSION_PDP_BANNER)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}")
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_$loyaltyStatus")
             putParcelableArrayList(PROMOTIONS, mapperBannerToItemList(creativeUrl, categoryId, categoryName))
         }
 
         eventDataLayer.viewItem(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
-
     }
 
     fun clickLoginWidget(categoryName: String, userId: String) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, CLICK_LOGIN_WIDGET,
-            TrackAppUtils.EVENT_LABEL, "${categoryName}"
+            TrackAppUtils.EVENT_ACTION,
+            CLICK_LOGIN_WIDGET,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -296,12 +359,17 @@ class DigitalPDPAnalytics {
     ) {
         val isMCCMorFlashSale =
             if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_TYPE) MCCM else FLASH_SALE
+                denomType == DenomWidgetEnum.MCCM_FULL_TYPE
+            ) {
+                MCCM
+            } else {
+                FLASH_SALE
+            }
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, VIEW_PROMO_CARD)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}"
+                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_$loyaltyStatus"
             )
             putParcelableArrayList(
                 ITEMS,
@@ -314,8 +382,11 @@ class DigitalPDPAnalytics {
     }
 
     fun clickChevronBuyWidget(
-        categoryName: String, operatorName: String, discountPrice: String,
-        normalPrice: String, userId: String
+        categoryName: String,
+        operatorName: String,
+        discountPrice: String,
+        normalPrice: String,
+        userId: String
     ) {
         val finalNormalPrice = if (normalPrice.isNullOrEmpty()) discountPrice else normalPrice
         val finalDiscountPrice =
@@ -324,7 +395,7 @@ class DigitalPDPAnalytics {
             TrackAppUtils.EVENT_ACTION,
             CLICK_CHEVRON,
             TrackAppUtils.EVENT_LABEL,
-            "${categoryName}_${operatorName}_${finalNormalPrice}_${finalDiscountPrice}"
+            "${categoryName}_${operatorName}_${finalNormalPrice}_$finalDiscountPrice"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -342,13 +413,18 @@ class DigitalPDPAnalytics {
     ) {
         val isMCCMorFlashSale =
             if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_TYPE) MCCM else FLASH_SALE
+                denomType == DenomWidgetEnum.MCCM_FULL_TYPE
+            ) {
+                MCCM
+            } else {
+                FLASH_SALE
+            }
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_PROMO_CARD)
             putString(ITEM_LIST, productListName)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}"
+                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_$loyaltyStatus"
             )
             putParcelableArrayList(
                 ITEMS,
@@ -363,11 +439,13 @@ class DigitalPDPAnalytics {
     fun impressionFilterChip(
         categoryName: String,
         operatorName: String,
-        userId: String,
-    ){
+        userId: String
+    ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.IMPRESSION_FILTER_CHIP,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.IMPRESSION_FILTER_CHIP,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_$operatorName"
         )
         data.viewDigitalIris(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -377,11 +455,13 @@ class DigitalPDPAnalytics {
         categoryName: String,
         operatorName: String,
         filterChipName: String,
-        userId: String,
-    ){
+        userId: String
+    ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_FILTER_CHIP,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${filterChipName}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_FILTER_CHIP,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_$filterChipName"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -394,8 +474,10 @@ class DigitalPDPAnalytics {
         userId: String
     ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_CHEVRON_IN_PRODUCT_CLUSTER,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_CHEVRON_IN_PRODUCT_CLUSTER,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_$loyaltyStatus"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -412,8 +494,10 @@ class DigitalPDPAnalytics {
             if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE) MCCM else FLASH_SALE
 
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_CHEVRON_IN_PROMO_SECTION,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${isMCCMorFlashSale}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_CHEVRON_IN_PROMO_SECTION,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_${isMCCMorFlashSale}_$loyaltyStatus"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -423,10 +507,12 @@ class DigitalPDPAnalytics {
         categoryName: String,
         loyaltyStatus: String,
         userId: String
-    ){
+    ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_TRANSACTION_HISTORY_ICON,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_TRANSACTION_HISTORY_ICON,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_$loyaltyStatus"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -436,10 +522,12 @@ class DigitalPDPAnalytics {
         categoryName: String,
         loyaltyStatus: String,
         userId: String
-    ){
+    ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_SCAN_BARCODE,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_SCAN_BARCODE,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_$loyaltyStatus"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -450,10 +538,12 @@ class DigitalPDPAnalytics {
         operatorName: String,
         loyaltyStatus: String,
         userId: String
-    ){
+    ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_TRANSACTION_DETAIL_INFO,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_TRANSACTION_DETAIL_INFO,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_$loyaltyStatus"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -463,10 +553,12 @@ class DigitalPDPAnalytics {
         categoryName: String,
         loyaltyStatus: String,
         userId: String
-    ){
+    ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_LIST_FAVORITE_NUMBER,
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_LIST_FAVORITE_NUMBER,
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_$loyaltyStatus"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -478,10 +570,12 @@ class DigitalPDPAnalytics {
         loyaltyStatus: String,
         userId: String,
         title: String
-    ){
+    ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, "impression '$title'",
-            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}"
+            TrackAppUtils.EVENT_ACTION,
+            "impression '$title'",
+            TrackAppUtils.EVENT_LABEL,
+            "${categoryName}_${operatorName}_$loyaltyStatus"
         )
         data.viewDigitalIris(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -496,15 +590,23 @@ class DigitalPDPAnalytics {
         productId: String,
         productName: String,
         price: String,
-        channelId: String,
-    ){
-
+        channelId: String
+    ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_LANJUT_BAYAR)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName} - ${operatorName} - ${channelId}")
-            putParcelableArrayList(ITEMS, mapperAtcToItemList(
-                categoryId, categoryName, cartId, operatorName, productId, productName, price
-            ))
+            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $channelId")
+            putParcelableArrayList(
+                ITEMS,
+                mapperAtcToItemList(
+                    categoryId,
+                    categoryName,
+                    cartId,
+                    operatorName,
+                    productId,
+                    productName,
+                    price
+                )
+            )
         }
 
         eventDataLayer.clickATCGeneralTracker(userId)
@@ -514,10 +616,12 @@ class DigitalPDPAnalytics {
     fun viewPDPPage(
         categoryName: String,
         userId: String
-    ){
+    ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.VIEW_PDP_PAGE,
-            TrackAppUtils.EVENT_LABEL,  categoryName
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.VIEW_PDP_PAGE,
+            TrackAppUtils.EVENT_LABEL,
+            categoryName
         )
         data.viewDigitalIris(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -527,25 +631,24 @@ class DigitalPDPAnalytics {
         categoryName: String,
         userId: String,
         isLogin: Boolean
-    ){
+    ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, OPEN_SCREEN)
             putString(
                 DigitalPDPEventTracking.Additional.BUSINESS_UNIT,
                 DigitalPDPEventTracking.Additional.BUSINESS_UNIT_RECHARGE
             )
-           putString(
+            putString(
                 DigitalPDPEventTracking.Additional.CURRENT_SITE,
                 DigitalPDPEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE
             )
             putString(DigitalPDPEventTracking.Additional.USER_ID, userId)
-            putString(DigitalPDPEventTracking.Additional.SCREEN_NAME, "/digital/${categoryName}")
+            putString(DigitalPDPEventTracking.Additional.SCREEN_NAME, "/digital/$categoryName")
             putString(DigitalPDPEventTracking.Additional.IS_LOGGEDIN_STATUS, "$isLogin")
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(OPEN_SCREEN, eventDataLayer)
     }
-
 
     /** Common Tracking extension function*/
 
@@ -601,7 +704,6 @@ class DigitalPDPAnalytics {
         this.putString(DigitalPDPEventTracking.Additional.USER_ID, userId)
         return this
     }
-
 
     fun Bundle.addGeneralTracker(userId: String): Bundle {
         this.putString(
@@ -690,13 +792,13 @@ class DigitalPDPAnalytics {
     ): ArrayList<Bundle> {
         val listItems = ArrayList<Bundle>()
         listItems.add(
-                Bundle().apply {
-                    putString(CREATIVE_NAME, creativeUrl)
-                    putString(CREATIVE_SLOT, "-")
-                    putString(ITEM_ID, categoryId)
-                    putString(ITEM_NAME, categoryName)
-                }
-            )
+            Bundle().apply {
+                putString(CREATIVE_NAME, creativeUrl)
+                putString(CREATIVE_SLOT, "-")
+                putString(ITEM_ID, categoryId)
+                putString(ITEM_NAME, categoryName)
+            }
+        )
         return listItems
     }
 

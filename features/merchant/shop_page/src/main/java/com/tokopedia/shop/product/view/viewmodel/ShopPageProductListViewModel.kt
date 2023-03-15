@@ -32,9 +32,9 @@ import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
-import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.common.util.ShopUtil
@@ -152,16 +152,25 @@ class ShopPageProductListViewModel @Inject constructor(
                         }
                     }
                     val shopMerchantVoucherDataAsync = async(dispatcherProvider.io) {
-                        if (isShopWidgetAlreadyShown) null
-                        else getMerchantVoucherCoupon(shopId, context)
+                        if (isShopWidgetAlreadyShown) {
+                            null
+                        } else {
+                            getMerchantVoucherCoupon(shopId, context)
+                        }
                     }
                     val shopProductFeaturedDataAsync = async(dispatcherProvider.io) {
-                        if (isShopWidgetAlreadyShown) null
-                        else getFeaturedProductData(shopId, userId, widgetUserAddressLocalData)
+                        if (isShopWidgetAlreadyShown) {
+                            null
+                        } else {
+                            getFeaturedProductData(shopId, userId, widgetUserAddressLocalData)
+                        }
                     }
                     val shopProductEtalaseHighlightDataAsync = async(dispatcherProvider.io) {
-                        if (isShopWidgetAlreadyShown) null
-                        else getShopProductEtalaseHighlightData(shopId, etalaseList, widgetUserAddressLocalData, isEnableDirectPurchase)
+                        if (isShopWidgetAlreadyShown) {
+                            null
+                        } else {
+                            getShopProductEtalaseHighlightData(shopId, etalaseList, widgetUserAddressLocalData, isEnableDirectPurchase)
+                        }
                     }
                     membershipStampProgressDataAsync.await()?.let {
                         membershipData.postValue(Success(it))

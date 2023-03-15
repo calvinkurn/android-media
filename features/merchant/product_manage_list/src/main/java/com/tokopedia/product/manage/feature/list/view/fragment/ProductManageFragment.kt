@@ -136,9 +136,6 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.S
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.SetTopAds
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.StockReminder
 import com.tokopedia.product.manage.feature.list.view.model.ProductMoreMenuModel
-import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage.AutoAds
-import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage.ManualAds
-import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage.OnBoarding
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideLoadingDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowLoadingDialog
@@ -155,8 +152,6 @@ import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.suspend.view.bottomsheet.SuspendReasonBottomSheet
 import com.tokopedia.product.manage.feature.violation.view.bottomsheet.ViolationReasonBottomSheet
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_STOCK_AVAILABLE
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
@@ -179,7 +174,6 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterId.NOTIFY_ME_ONLY
 import com.tokopedia.sortfilter.SortFilter
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -194,7 +188,6 @@ import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 open class ProductManageFragment :
     BaseListFragment<Visitable<*>, ProductManageAdapterFactoryImpl>(),

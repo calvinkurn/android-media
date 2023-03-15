@@ -93,6 +93,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
             shippingCourierBottomsheetListener?.onCourierShipmentRecommendationCloseClicked()
             bottomSheet?.dismiss()
         }
+        bottomSheet?.setOnDismissListener { bottomSheet = null }
     }
 
     fun setShippingCourierViewModels(

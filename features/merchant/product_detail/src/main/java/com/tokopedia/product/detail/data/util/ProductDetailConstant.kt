@@ -52,6 +52,7 @@ object ProductDetailConstant {
     // Mapper
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
     const val MINI_SOCIAL_PROOF_STOCK = "mini_social_proof_stock"
+    const val SHOP_REVIEW = "review_list"
     const val PRODUCT_DETAIL = "product_detail"
     const val DISCUSSION_FAQ = "discussion_faq"
     const val REVIEW = "review"
@@ -63,7 +64,6 @@ object ProductDetailConstant {
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
     const val UPCOMING_DEALS = "upcoming_deals"
-    const val VARIANT_OPTIONS = "variant_options"
     const val MINI_VARIANT_OPTIONS = "mini_variant_options"
     const val THUMB_MINI_VARIANT_OPTIONS = "thumbnail"
     const val VARIANT = "variant"

@@ -38,8 +38,11 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
         // no op
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentPaymentMethodBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -79,15 +82,15 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
 
     private fun getPayload(additionalData: OrderPaymentCreditCardAdditionalData): String {
         return "merchant_code=${getUrlEncoded(additionalData.merchantCode)}&" +
-                "profile_code=${getUrlEncoded(additionalData.profileCode)}&" +
-                "enable_add_card=${getUrlEncoded("false")}&" +
-                "user_id=${getUrlEncoded(additionalData.id)}&" +
-                "customer_name=${getUrlEncoded(additionalData.name.trim())}&" +
-                "customer_email=${getUrlEncoded(additionalData.email)}&" +
-                "customer_msisdn=${getUrlEncoded(additionalData.msisdn)}&" +
-                "signature=${getUrlEncoded(additionalData.signature)}&" +
-                "callback_url=${getUrlEncoded(additionalData.callbackUrl)}&" +
-                "version=${getUrlEncoded(generateAppVersionForPayment())}"
+            "profile_code=${getUrlEncoded(additionalData.profileCode)}&" +
+            "enable_add_card=${getUrlEncoded("false")}&" +
+            "user_id=${getUrlEncoded(additionalData.id)}&" +
+            "customer_name=${getUrlEncoded(additionalData.name.trim())}&" +
+            "customer_email=${getUrlEncoded(additionalData.email)}&" +
+            "customer_msisdn=${getUrlEncoded(additionalData.msisdn)}&" +
+            "signature=${getUrlEncoded(additionalData.signature)}&" +
+            "callback_url=${getUrlEncoded(additionalData.callbackUrl)}&" +
+            "version=${getUrlEncoded(generateAppVersionForPayment())}"
     }
 
     private fun getUrlEncoded(valueStr: String): String {
@@ -131,7 +134,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
                         try {
                             map[key] = JsonParser().parse(value)
                         } catch (e: Exception) {
-                            //failed parse json string
+                            // failed parse json string
                             map[key] = value
                         }
                     }
@@ -156,10 +159,13 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
 
     private fun goToNextStep(data: Pair<String, String>) {
         activity?.let {
-            it.setResult(RESULT_OK, Intent().apply {
-                putExtra(EXTRA_RESULT_GATEWAY_CODE, data.first)
-                putExtra(EXTRA_RESULT_METADATA, data.second)
-            })
+            it.setResult(
+                RESULT_OK,
+                Intent().apply {
+                    putExtra(EXTRA_RESULT_GATEWAY_CODE, data.first)
+                    putExtra(EXTRA_RESULT_METADATA, data.second)
+                }
+            )
             it.finish()
         }
     }

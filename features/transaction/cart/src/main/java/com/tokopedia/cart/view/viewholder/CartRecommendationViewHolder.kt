@@ -25,11 +25,11 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
     fun bind(element: CartRecommendationItemHolderData) {
         binding.productCardView.apply {
             setProductModel(
-                    element.recommendationItem.toProductCardModel(true, UnifyButton.Type.MAIN)
+                element.recommendationItem.toProductCardModel(true, UnifyButton.Type.MAIN)
             )
             setOnClickListener {
                 actionListener?.onRecommendationProductClicked(
-                        element.recommendationItem
+                    element.recommendationItem
                 )
             }
             setAddToCartOnClickListener {
@@ -37,14 +37,14 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
             }
 
             setImageProductViewHintListener(
-                    element.recommendationItem,
-                    object : ViewHintListener {
-                        override fun onViewHint() {
-                            actionListener?.onRecommendationProductImpression(
-                                    element.recommendationItem
-                            )
-                        }
+                element.recommendationItem,
+                object : ViewHintListener {
+                    override fun onViewHint() {
+                        actionListener?.onRecommendationProductImpression(
+                            element.recommendationItem
+                        )
                     }
+                }
             )
         }
 

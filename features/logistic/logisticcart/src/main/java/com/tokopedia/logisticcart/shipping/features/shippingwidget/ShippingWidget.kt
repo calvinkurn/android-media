@@ -489,7 +489,7 @@ class ShippingWidget : ConstraintLayout {
 
     private fun getTitleFromNameAndPrice(
         courierName: String?,
-        shipperPrice: Int,
+        shipperPrice: Int
     ): String {
         val price = removeDecimalSuffix(
             convertPriceValueToIdrFormat(
