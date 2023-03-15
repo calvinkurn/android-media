@@ -22,7 +22,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
-import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
+import com.tokopedia.shop.databinding.ShopPageHeaderFragmentContentLayoutBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
@@ -37,7 +37,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class ShopPageHeaderFragmentHeaderViewHolder(
-    private val viewBindingShopContentLayout: NewShopPageFragmentContentLayoutBinding?,
+    private val viewBindingShopContentLayout: ShopPageHeaderFragmentContentLayoutBinding?,
     private val listenerHeader: ShopPageHeaderFragmentViewHolderListener,
     private val shopPageTracking: ShopPageTrackingBuyer?,
     private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,

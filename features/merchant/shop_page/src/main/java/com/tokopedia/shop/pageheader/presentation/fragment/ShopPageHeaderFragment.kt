@@ -151,8 +151,8 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.C
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
-import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
 import com.tokopedia.shop.databinding.NewShopPageMainBinding
+import com.tokopedia.shop.databinding.ShopPageHeaderFragmentContentLayoutBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
@@ -418,7 +418,7 @@ class ShopPageHeaderFragment :
     private var miniCart: MiniCartGeneralWidget? = null
     private var viewBinding by autoClearedNullable<NewShopPageMainBinding>()
     private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<WidgetSellerMigrationBottomSheetHasPostBinding>()
-    private var viewBindingShopContentLayout: NewShopPageFragmentContentLayoutBinding? by viewBinding()
+    private var viewBindingShopContentLayout: ShopPageHeaderFragmentContentLayoutBinding? by viewBinding()
     private val isLogin: Boolean
         get() = shopHeaderViewModel?.isUserSessionActive ?: false
 
@@ -446,7 +446,7 @@ class ShopPageHeaderFragment :
     ): View? {
         viewBinding = NewShopPageMainBinding.inflate(LayoutInflater.from(context))
         viewBinding?.viewStubContentLayout?.setOnInflateListener { _, inflatedView ->
-            viewBindingShopContentLayout = NewShopPageFragmentContentLayoutBinding.bind(inflatedView)
+            viewBindingShopContentLayout = ShopPageHeaderFragmentContentLayoutBinding.bind(inflatedView)
         }
         return viewBinding?.root
     }
