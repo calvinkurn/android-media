@@ -56,7 +56,7 @@
     <string name="title_broadcast">Lewat Broadcast</string>
     <string name="description_broadcast">Sebar promo langsung ke tepat sasaran</string>
     <string name="content_icon_broadcast">icon broadcast</string>
-    <string name="personalized_campaign_message_ongoing_discount">Ada diskon nih %1$s jadi %2$s cuma sampe %3$s di Tokopedia. Buruan cek, biar nggak kehabisan</string>
+    <string name="personalized_campaign_message_ongoing_discount">Ada diskon %1$s nih jadi %2$s cuma sampe %3$s di Tokopedia. Buruan cek, biar nggak kehabisan</string>
     <string name="personalized_campaign_message_endsoon_discount">Tinggal %1$s menit lagi, nih. Diskon %2$s harganya jadi %3$s, lho. Buruan cek Tokopedia, biar nggak kehabisan.</string>
     <string name="personalized_campaign_message_upcoming_discount">Bakalan ada promo menarik, lho. Mulai %1$s, Sekarang diskonnya %2$s jadi %3$s. Cek Tokopedia, deh.</string>
     <string name="personalized_campaign_message_upcoming_without_discount">Bakalan ada penawaran spesial buat produk ini, lho. Harganya bisa lebih murah, mulai %1$s. Cek Tokopedia, deh.</string>
