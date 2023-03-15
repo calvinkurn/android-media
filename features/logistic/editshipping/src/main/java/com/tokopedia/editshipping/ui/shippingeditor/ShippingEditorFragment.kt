@@ -322,7 +322,9 @@ class ShippingEditorFragment :
 
     private fun updateBottomsheetData(data: ShipperDetailModel) {
         bottomSheetShipperAdapter.setShippingEditorDetailsData(data)
-        ShipperDetailBottomSheet().show(this, bottomSheetShipperAdapter)
+        context?.let {
+            ShipperDetailBottomSheet().show(it, this, bottomSheetShipperAdapter)
+        }
     }
 
     private fun setDataCourierNotCovered(data: ValidateShippingEditorModel) {

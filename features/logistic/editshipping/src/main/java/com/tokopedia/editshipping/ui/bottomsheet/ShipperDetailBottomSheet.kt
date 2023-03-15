@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.ui.bottomsheet
 
+import android.content.Context
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.editshipping.databinding.BottomsheetShipperDetailBinding
@@ -12,7 +13,7 @@ class ShipperDetailBottomSheet {
 
     private var bottomSheet: BottomSheetUnify? = null
 
-    fun show(fragment: ShippingEditorFragment, adapter: ShippingEditorDetailsAdapter) {
+    fun show(context: Context, fragment: ShippingEditorFragment, adapter: ShippingEditorDetailsAdapter) {
         fragment.fragmentManager?.let {
             bottomSheet = BottomSheetUnify().apply {
                 setTitle(BOTTOMSHEET_SHIPPER_DETAIL_TITLE)
