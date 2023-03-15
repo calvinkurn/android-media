@@ -1293,9 +1293,8 @@ open class HomeRevampFragment :
         ) { summaryModel, type, view ->
             if (type == PerformanceTrace.TYPE_TTIL) {
                 finishPageLoadTime(false)
-                performanceTrace.debugPerformanceTrace(activity, summaryModel, type, view)
-
             }
+            performanceTrace.debugPerformanceTrace(activity, summaryModel, type, view)
         }
         observeSearchHint()
     }
