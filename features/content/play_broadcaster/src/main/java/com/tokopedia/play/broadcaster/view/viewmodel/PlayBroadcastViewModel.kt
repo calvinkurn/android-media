@@ -42,10 +42,7 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
-import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
-import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
@@ -234,6 +231,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
     private val _beautificationConfig = MutableStateFlow(BeautificationConfigUiModel.Empty)
+
+    private val _allowRetryDownloadAsset = MutableStateFlow(true)
 
     var warningInfoType: WarningType = WarningType.UNKNOWN
     val tncList = mutableListOf<TermsAndConditionUiModel>()
@@ -585,10 +584,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun getBroadcasterAuthorConfig(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launchCatchError(block = {
+            _observableConfigInfo.value = NetworkResult.Loading
+
             val currConfigInfo = _configInfo.value
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
-            setBeautificationConfig(configUiModel.beautificationConfig)
             _configInfo.value = configUiModel
 
             if (!isAccountEligible(configUiModel, selectedAccount)) {
@@ -642,18 +642,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 configUiModel.durationConfig.pauseDuration
             )
 
-            if(!configUiModel.beautificationConfig.isUnknown) {
-                val isDownloadSuccess = downloadInitialBeautificationAsset(configUiModel.beautificationConfig)
-
-                if(isDownloadSuccess) {
-                    /** TODO: reinit broadcaster & setup beautification sdk */
-                }
-                else {
-                    /** TODO: handle error */
-                }
-            }
-
             updateSelectedAccount(selectedAccount)
+
+            setBeautificationConfig(configUiModel.beautificationConfig)
+
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
@@ -1785,11 +1777,26 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun setBeautificationConfig(beautificationConfig: BeautificationConfigUiModel) {
+    private suspend fun setBeautificationConfig(beautificationConfig: BeautificationConfigUiModel) {
         _beautificationConfig.value = beautificationConfig
 
         if (!beautificationConfig.isUnknown) {
-            addPreparationMenu(DynamicPreparationMenu.createFaceFilter(isMandatory = false))
+            val isDownloadSuccess = downloadInitialBeautificationAsset(beautificationConfig)
+            if(isDownloadSuccess) {
+                addPreparationMenu(DynamicPreparationMenu.createFaceFilter(isMandatory = false))
+                /** TODO: reinit broadcaster & setup beautification sdk on the next PR */
+            }
+            else {
+                removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
+
+                if(_allowRetryDownloadAsset.value) {
+                    _allowRetryDownloadAsset.value = false
+                    throw DownloadBeautificationAssetException("Download Beautificaion Asset Fails")
+                }
+            }
+        }
+        else {
+            removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
         }
     }
 
@@ -1875,6 +1882,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 else -> TYPE_SHOP
             }
         )
+
+        _allowRetryDownloadAsset.value = true
         getBroadcasterAuthorConfig(currentSelected)
     }
 
@@ -2072,6 +2081,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _menuList.value.toMutableSet().apply {
                 addAll(newMenuList)
             }.toList()
+        }
+    }
+
+    private fun removePreparationMenu(menu: DynamicPreparationMenu.Menu) {
+        _menuList.update {
+            _menuList.value.filter { it.menu.id != menu.id }
         }
     }
 
