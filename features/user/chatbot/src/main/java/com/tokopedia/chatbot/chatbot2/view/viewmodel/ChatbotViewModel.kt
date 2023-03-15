@@ -265,6 +265,8 @@ class ChatbotViewModel @Inject constructor(
     val socketReceiveMessageEvent: LiveData<ChatbotSocketReceiveEvent>
         get() = _socketReceiveMessageEvent
 
+    var pageSourceAccess = ""
+
     init {
         observeMediaUrisForUpload()
     }
@@ -320,7 +322,8 @@ class ChatbotViewModel @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_NEW_SESSION,
-            throwable
+            throwable,
+            pageSourceAccess
         )
     }
 
@@ -348,7 +351,8 @@ class ChatbotViewModel @Inject constructor(
             false,
             messageId,
             KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY,
-            throwable
+            throwable,
+            pageSourceAccess
         )
     }
 
@@ -394,7 +398,8 @@ class ChatbotViewModel @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_TICKER,
-            throwable
+            throwable,
+            pageSourceAccess
         )
     }
 
@@ -437,7 +442,8 @@ class ChatbotViewModel @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_CSAT_RATING,
-            throwable
+            throwable,
+            pageSourceAccess
         )
     }
 
@@ -460,7 +466,8 @@ class ChatbotViewModel @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
-            throwable
+            throwable,
+            pageSourceAccess
         )
     }
 
@@ -490,7 +497,8 @@ class ChatbotViewModel @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_CHAT_CSAT,
-            throwable
+            throwable,
+            pageSourceAccess
         )
     }
 
@@ -528,7 +536,8 @@ class ChatbotViewModel @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_GET_LINK_FOR_REDIRECTION,
-            throwable
+            throwable,
+            pageSourceAccess
         )
     }
 
@@ -573,7 +582,8 @@ class ChatbotViewModel @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SEND_RATING,
-            throwable
+            throwable,
+            pageSourceAccess
         )
     }
 
@@ -619,7 +629,8 @@ class ChatbotViewModel @Inject constructor(
                     false,
                     messageId,
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME,
-                    it
+                    it,
+                    pageSourceAccess
                 )
             }
         )
@@ -664,7 +675,8 @@ class ChatbotViewModel @Inject constructor(
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM,
                     it,
                     getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime
+                    getExistingChatUseCase.maxReplyTime,
+                    pageSourceAccess
                 )
             }
         )
@@ -708,7 +720,8 @@ class ChatbotViewModel @Inject constructor(
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
                     it,
                     getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime
+                    getExistingChatUseCase.maxReplyTime,
+                    pageSourceAccess
                 )
             }
         )
@@ -765,7 +778,8 @@ class ChatbotViewModel @Inject constructor(
                     true,
                     messageId,
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_RATING,
-                    it
+                    it,
+                    pageSourceAccess
                 )
             }
         )
@@ -963,7 +977,8 @@ class ChatbotViewModel @Inject constructor(
             onError = {
                 Log.d("FATAL", "connectWebSocket: Exception occured here $it")
                 ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it
+                    it,
+                    pageSourceAccess
                 )
             }
         )
@@ -1042,7 +1057,8 @@ class ChatbotViewModel @Inject constructor(
                     Timber.d("Socket Reconnecting")
                 }
                 ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it
+                    it,
+                    pageSourceAccess
                 )
             }
         )
@@ -1453,7 +1469,8 @@ class ChatbotViewModel @Inject constructor(
                     false,
                     messageId,
                     ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD,
-                    e
+                    e,
+                    pageSourceAccess
                 )
             }
 
@@ -1472,6 +1489,10 @@ class ChatbotViewModel @Inject constructor(
                 )
             }
         })
+    }
+
+    fun setPageSourceValue(pageSource: String) {
+        pageSourceAccess = pageSource
     }
 
     fun cancelImageUpload() {

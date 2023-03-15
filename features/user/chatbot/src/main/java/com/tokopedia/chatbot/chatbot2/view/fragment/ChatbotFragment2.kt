@@ -171,8 +171,10 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.TopBotNewSessionState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ValidImageAttachment
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.databinding.FragmentChatbot2Binding
+import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_URI
+import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.PAGE_SOURCE
 import com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
@@ -180,6 +182,7 @@ import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoard
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -191,6 +194,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -309,6 +313,8 @@ class ChatbotFragment2 :
 
     @Inject
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
+
+    private var pageSource: String= ""
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -680,6 +686,10 @@ class ChatbotFragment2 :
         startObservingViewModels()
         remoteConfigForCsatExperiment()
 
+        pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
+        handlingForMessageIdValidity(messageId)
+        viewModel.setPageSourceValue(pageSource)
+
         viewModel.checkForSession(messageId)
         viewModel.checkUploadVideoEligibility(messageId)
         viewModel.showTickerData(messageId)
@@ -689,6 +699,44 @@ class ChatbotFragment2 :
 
         if (savedInstanceState != null) {
             this.attribute = savedInstanceState.getParcelable(CSAT_ATTRIBUTES) ?: Attributes()
+        }
+    }
+
+    private fun setErrorLayoutForServer() {
+        getBindingView().layoutErrorGlobal.run {
+            visible()
+            getBindingView().homeGlobalError.run {
+                setType(GlobalError.SERVER_ERROR)
+                errorAction.text = context.getString(R.string.chatbot_back_to_tokopedia_care)
+                errorSecondaryAction.hide()
+                setActionClickListener {
+                    val intent = RouteManager.getIntent(requireView().context,
+                        ApplinkConst.CONTACT_US_NATIVE
+                    )
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    activity?.finish()
+                }
+            }
+        }
+    }
+
+    private fun handlingForMessageIdValidity(messageId : String){
+        try{
+            val id = messageId.toLong()
+            if(id == 0L){
+                throw NumberFormatException()
+            }
+        } catch (e: NumberFormatException) {
+            setErrorLayoutForServer()
+            ChatbotNewRelicLogger.logNewRelic(
+                false,
+                messageId,
+                ChatbotConstant.NewRelic.KEY_CHATBOT_INVALID_ID_MESSAGE,
+                e,
+                pageSource = pageSource
+            )
         }
     }
 
