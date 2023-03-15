@@ -3,12 +3,14 @@ package com.tokopedia.play.broadcaster.ui.viewholder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.broadcaster.databinding.ItemBeautificationFilterOptionBinding
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
@@ -26,6 +28,14 @@ class BeautificationFilterOptionViewHolder private constructor() {
         fun bind(item: FaceFilterUiModel) {
             binding.apply {
                 tvBeautificationFilter.text = item.name
+                tvBeautificationFilter.setTextColor(
+                    MethodChecker.getColor(
+                        itemView.context,
+                        if(item.isSelected) unifyR.color.Unify_GN500
+                        else unifyR.color.Unify_NN950
+                    )
+                )
+
                 icBeautificationFilter.setImage(item.iconUnifyId)
                 icBeautificationFilter.show()
                 icChecked.showWithCondition(item.isChecked)
@@ -73,6 +83,13 @@ class BeautificationFilterOptionViewHolder private constructor() {
         fun bind(item: PresetFilterUiModel) {
             binding.apply {
                 tvBeautificationFilter.text = item.name
+                tvBeautificationFilter.setTextColor(
+                    MethodChecker.getColor(
+                        itemView.context,
+                        if(item.active) unifyR.color.Unify_GN500
+                        else unifyR.color.Unify_NN950
+                    )
+                )
 
                 icChecked.hide()
 
