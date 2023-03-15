@@ -39,6 +39,8 @@ class BannerIndicator : LinearLayout {
         private const val MAXIMUM_PROGRESS_ALPHA = 1f
     }
 
+    var isInitialized = false
+
     private val marginHorizontalProgress = 2f.toDpInt()
     private val sizeMinimizeProgress = 6f.toDpInt()
 
@@ -82,17 +84,20 @@ class BannerIndicator : LinearLayout {
     }
 
     fun setBannerIndicators(totalBanner: Int) {
-        this.removeAllViews()
-        this.totalBanner = totalBanner
-        if (totalBanner > Int.ONE) {
-            for (i in Int.ZERO until totalBanner) {
-                addProgressBar()
-            }
-            getChildProgressBar(Int.ZERO)?.let {
-                initialAnimate(it, Int.ZERO)
-            }
-        } else {
+        if (!isInitialized || this.totalBanner != totalBanner) {
             this.removeAllViews()
+            this.totalBanner = totalBanner
+            if (totalBanner > Int.ONE) {
+                for (i in Int.ZERO until totalBanner) {
+                    addProgressBar()
+                }
+                getChildProgressBar(Int.ZERO)?.let {
+                    initialAnimate(it, Int.ZERO)
+                }
+            } else {
+                this.removeAllViews()
+            }
+            isInitialized = true
         }
     }
 
@@ -168,6 +173,20 @@ class BannerIndicator : LinearLayout {
         minAnimatorSet.play(minimizeAnimator)
         minAnimatorSet.interpolator = BannerComponentViewHolder.autoScrollInterpolator
         minAnimatorSet.start()
+    }
+
+    fun resetBannerIndicator() {
+        bannerAnimatorSet.removeAllListeners()
+        bannerAnimatorSet.cancel()
+        bannerAnimator.removeAllUpdateListeners()
+        bannerAnimator.cancel()
+        for (i in Int.ZERO until totalBanner) {
+            getChildProgressBar(i)?.let {
+                it.progress = Int.ZERO
+                it.layoutParams.width = WIDTH_MINIMUM_PROGRESS.toPx()
+                it.requestLayout()
+            }
+        }
     }
 
     fun startIndicatorByPosition(position: Int) {
