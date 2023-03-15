@@ -47,8 +47,10 @@ class BannerRevampViewHolder(
 
     private var channelModel: ChannelModel? = null
     private var totalBanner = 0
+    private var previousTotalBanner = 0
     private var currentPosition: Int = 0
     private var isFromDrag = false
+    private var isFromInitialize = false
 
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(element: BannerRevampDataModel) {

@@ -35,11 +35,11 @@ class BannerIndicator : LinearLayout {
         private const val SCROLL_TRANSITION_DURATION = 5000L
         private const val WIDTH_MINIMUM_PROGRESS = 6
         private const val WIDTH_MAXIMUM_PROGRESS = 48
-        private const val ALPHA_PROGRESS = 0.44
-        private const val CONST_FULL_PROGRESS = 0.56
         private const val MINIMUM_PROGRESS_ALPHA = 0
         private const val MAXIMUM_PROGRESS_ALPHA = 1f
     }
+
+    var isInitialized = false
 
     private val marginHorizontalProgress = 2f.toDpInt()
     private val sizeMinimizeProgress = 6f.toDpInt()
@@ -84,17 +84,20 @@ class BannerIndicator : LinearLayout {
     }
 
     fun setBannerIndicators(totalBanner: Int) {
-        this.removeAllViews()
-        this.totalBanner = totalBanner
-        if (totalBanner > Int.ONE) {
-            for (i in Int.ZERO until totalBanner) {
-                addProgressBar()
-            }
-            getChildProgressBar(Int.ZERO)?.let {
-                initialAnimate(it, Int.ZERO)
-            }
-        } else {
+        if (!isInitialized || this.totalBanner != totalBanner) {
             this.removeAllViews()
+            this.totalBanner = totalBanner
+            if (totalBanner > Int.ONE) {
+                for (i in Int.ZERO until totalBanner) {
+                    addProgressBar()
+                }
+                getChildProgressBar(Int.ZERO)?.let {
+                    initialAnimate(it, Int.ZERO)
+                }
+            } else {
+                this.removeAllViews()
+            }
+            isInitialized = true
         }
     }
 
@@ -159,9 +162,6 @@ class BannerIndicator : LinearLayout {
             .setDuration(BannerComponentViewHolder.FLING_DURATION.toLong())
         minimizeAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
-            val alpha =
-                (value.toFloat() - WIDTH_MINIMUM_PROGRESS) / (WIDTH_MAXIMUM_PROGRESS - WIDTH_MINIMUM_PROGRESS) * CONST_FULL_PROGRESS + ALPHA_PROGRESS
-            progressIndicator.alpha = alpha.toFloat()
             progressIndicator.layoutParams?.width = value.toPx()
             progressIndicator.requestLayout()
             if (value == WIDTH_MINIMUM_PROGRESS) {
@@ -175,31 +175,32 @@ class BannerIndicator : LinearLayout {
         minAnimatorSet.start()
     }
 
-    private fun minimizeAllIndicatorExceptPosition(exceptPosition: Int) {
+    fun resetBannerIndicator() {
+        bannerAnimatorSet.removeAllListeners()
+        bannerAnimatorSet.cancel()
+        bannerAnimator.removeAllUpdateListeners()
+        bannerAnimator.cancel()
         for (i in Int.ZERO until totalBanner) {
-            if (i != exceptPosition) {
-                getChildProgressBar(i)?.let {
-                    if (it.width == WIDTH_MAXIMUM_PROGRESS.toPx()) {
-                        it.progress = Int.ZERO
-                        it.layoutParams.width = WIDTH_MINIMUM_PROGRESS.toPx()
-                        it.requestLayout()
-                    }
-                }
+            getChildProgressBar(i)?.let {
+                it.progress = Int.ZERO
+                it.layoutParams.width = WIDTH_MINIMUM_PROGRESS.toPx()
+                it.requestLayout()
             }
         }
     }
+
     fun startIndicatorByPosition(position: Int) {
         if (bannerAnimator.isRunning) {
             bannerAnimatorSet.removeAllListeners()
             bannerAnimatorSet.cancel()
             bannerAnimator.removeAllUpdateListeners()
             bannerAnimator.cancel()
-            minimizeAllIndicatorExceptPosition(position)
         }
         val indicatorPosition = position % totalBanner
         try {
-            if (position == currentPosition) {
+            if (indicatorPosition == currentPosition) {
                 getChildProgressBar(indicatorPosition)?.let {
+                    it.progress = Int.ZERO
                     animateIndicatorBanner(it, indicatorPosition)
                 }
             } else {
