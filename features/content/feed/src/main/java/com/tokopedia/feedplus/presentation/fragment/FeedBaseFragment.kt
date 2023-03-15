@@ -24,7 +24,7 @@ import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreati
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedTabsModel
+import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
@@ -92,13 +92,14 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFeedBaseBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        feedMainViewModel.fetchFeedTabs()
 
         observeFeedTabData()
         observeCreateContentBottomSheetData()
@@ -156,13 +157,24 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun onResume() {
         super.onResume()
-        feedMainViewModel.fetchFeedTabs()
+        feedMainViewModel.fetchFeedMetaData()
     }
 
     private fun observeFeedTabData() {
         feedMainViewModel.feedTabs.observe(viewLifecycleOwner) {
             when (it) {
-                is Success -> initView(it.data)
+                is Success -> initTabsView(it.data)
+                is Fail -> Toast.makeText(
+                    requireContext(),
+                    it.throwable.localizedMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        feedMainViewModel.metaData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> initMetaView(it.data)
                 is Fail -> Toast.makeText(
                     requireContext(),
                     it.throwable.localizedMessage,
@@ -199,51 +211,20 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         mOnboarding = null
     }
 
-    private fun initView(data: FeedTabsModel) {
-        adapter = FeedPagerAdapter(childFragmentManager, lifecycle, data.data)
-        liveApplink = data.meta.liveApplink
-        profileApplink = data.meta.profileApplink
-
-        binding.vpFeedTabItemsContainer.adapter = adapter
-        binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                        onNonLoginGoToFollowingTab.launch(
-                            RouteManager.getIntent(
-                                context,
-                                ApplinkConst.LOGIN
-                            )
-                        )
-                    }
-                    onChangeTab(position)
-                }
-            })
-
-        var firstTabData: FeedDataModel? = null
-        var secondTabData: FeedDataModel? = null
-
-        if (data.data.isNotEmpty()) {
-            firstTabData = data.data[TAB_FIRST_INDEX]
-            if (data.data.size > TAB_SECOND_INDEX && data.data[TAB_SECOND_INDEX].isActive) {
-                secondTabData = data.data[TAB_SECOND_INDEX]
-            }
-        }
+    private fun initMetaView(meta: MetaModel) {
+        liveApplink = meta.liveApplink
+        profileApplink = meta.profileApplink
 
         mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
             .setCreateContentView(
-                if (data.meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
+                if (meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
                     binding.btnFeedCreatePost
                 } else {
                     null
                 }
             )
             .setProfileEntryPointView(
-                if (data.meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
+                if (meta.showMyProfile && !feedMainViewModel.hasShownProfileEntryPoint()) {
                     binding.feedUserProfileImage
                 } else {
                     null
@@ -272,32 +253,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             mOnboarding?.show()
         }
 
-        if (firstTabData != null) {
-            binding.tyFeedFirstTab.text = firstTabData.title
-            binding.tyFeedFirstTab.setOnClickListener { _ ->
-                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_FIRST_INDEX, true)
+        if (meta.showMyProfile) {
+            if (meta.profilePhotoUrl.isNotEmpty()) {
+                binding.feedUserProfileImage.setImageUrl(meta.profilePhotoUrl)
             }
-            binding.tyFeedFirstTab.show()
-        } else {
-            binding.tyFeedFirstTab.hide()
-        }
-
-        if (secondTabData != null) {
-            binding.tyFeedSecondTab.text = secondTabData.title
-            binding.tyFeedSecondTab.setOnClickListener { _ ->
-                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
-            }
-            binding.tyFeedSecondTab.show()
-        } else {
-            binding.tyFeedSecondTab.hide()
-        }
-
-        if (data.meta.showMyProfile) {
-            if (data.meta.profilePhotoUrl.isNotEmpty()) {
-                binding.feedUserProfileImage.setImageUrl(data.meta.profilePhotoUrl)
-            }
-            binding.feedUserProfileImage.setOnClickListener { _ ->
-                RouteManager.route(binding.root.context, data.meta.profileApplink)
+            binding.feedUserProfileImage.setOnClickListener {
+                RouteManager.route(binding.root.context, meta.profileApplink)
             }
             binding.feedUserProfileImage.show()
         } else {
@@ -316,18 +277,72 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             onNavigateToProfile()
         }
 
-        if (data.meta.isCreationActive) {
+        if (meta.isCreationActive) {
             binding.btnFeedCreatePost.show()
         } else {
             binding.btnFeedCreatePost.hide()
         }
 
-        if (data.meta.showLive) {
+        if (meta.showLive) {
             binding.btnFeedLive.show()
             binding.labelFeedLive.show()
         } else {
             binding.btnFeedLive.hide()
             binding.labelFeedLive.hide()
+        }
+    }
+
+    private fun initTabsView(data: List<FeedDataModel>) {
+        adapter = FeedPagerAdapter(childFragmentManager, lifecycle, data)
+
+        binding.vpFeedTabItemsContainer.adapter = adapter
+        binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
+                OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                        onNonLoginGoToFollowingTab.launch(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConst.LOGIN
+                            )
+                        )
+                    }
+                    onChangeTab(position)
+                }
+            })
+
+        var firstTabData: FeedDataModel? = null
+        var secondTabData: FeedDataModel? = null
+
+        if (data.isNotEmpty()) {
+            firstTabData = data[TAB_FIRST_INDEX]
+            if (data.size > TAB_SECOND_INDEX && data[TAB_SECOND_INDEX].isActive) {
+                secondTabData = data[TAB_SECOND_INDEX]
+            }
+        }
+
+        if (firstTabData != null) {
+            binding.tyFeedFirstTab.text = firstTabData.title
+            binding.tyFeedFirstTab.setOnClickListener {
+                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_FIRST_INDEX, true)
+            }
+            binding.tyFeedFirstTab.show()
+        } else {
+            binding.tyFeedFirstTab.hide()
+        }
+
+        if (secondTabData != null) {
+            binding.tyFeedSecondTab.text = secondTabData.title
+            binding.tyFeedSecondTab.setOnClickListener {
+                binding.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
+            }
+            binding.tyFeedSecondTab.show()
+        } else {
+            binding.tyFeedSecondTab.hide()
         }
     }
 
