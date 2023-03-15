@@ -81,7 +81,7 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
         val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
         var recommendationItem: HomeRecommendationItemDataModel? = null
         var recommendationItemPosition: Int = -1
-        if (list.getOrNull(position)?.getUniqueIdentity() == id) {
+        if (list.getOrNull(position)?.getUniqueIdentity().toString() == id) {
             recommendationItem = list[position] as HomeRecommendationItemDataModel
             recommendationItemPosition = position
         } else {
