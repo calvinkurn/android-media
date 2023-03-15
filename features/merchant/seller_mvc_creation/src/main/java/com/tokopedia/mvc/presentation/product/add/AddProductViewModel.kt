@@ -729,6 +729,14 @@ class AddProductViewModel @Inject constructor(
         selectedProductCount: Int,
         totalProductCount: Int
     ): AddProductUiState.CheckboxState {
+        if (selectedProductCount == totalProductCount) {
+            return AddProductUiState.CheckboxState.CHECKED
+        }
+
+        if (currentState.checkboxState.isChecked()) {
+            return AddProductUiState.CheckboxState.CHECKED
+        }
+
         if (selectedProductCount.isZero()) {
             return AddProductUiState.CheckboxState.UNCHECKED
         }
@@ -737,10 +745,7 @@ class AddProductViewModel @Inject constructor(
             return AddProductUiState.CheckboxState.INDETERMINATE
         }
 
-        if (selectedProductCount > totalProductCount) {
-            return AddProductUiState.CheckboxState.UNCHECKED
-        }
 
-        return AddProductUiState.CheckboxState.CHECKED
+        return AddProductUiState.CheckboxState.UNCHECKED
     }
 }
