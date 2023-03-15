@@ -1,0 +1,499 @@
+package com.tokopedia.mvc.presentation.product.list
+
+import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.ProductResult
+import com.tokopedia.mvc.domain.entity.SelectedProduct
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
+import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
+import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherAction
+import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
+import com.tokopedia.mvc.domain.usecase.ProductListUseCase
+import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEvent
+import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListUiState
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
+import java.util.*
+
+
+@ExperimentalCoroutinesApi
+class ProductListViewModelTest {
+
+    @RelaxedMockK
+    lateinit var getProductsUseCase: ProductListUseCase
+
+    @RelaxedMockK
+    lateinit var getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase
+
+    private lateinit var viewModel: ProductListViewModel
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
+        viewModel = ProductListViewModel(
+            CoroutineTestDispatchersProvider,
+            getInitiateVoucherPageUseCase,
+            getProductsUseCase
+        )
+    }
+
+    //region getProductsAndProductsMetadata
+    @Test
+    fun `when get products success, should set product to ui state`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+            val maxProductSelection = 100
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct()
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(id = 1)
+            val mockedGetProductResponse = listOf(product)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(selectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isLoading)
+            assertEquals(mockedGetProductResponse, actual.products)
+            assertEquals(pageMode, actual.originalPageMode)
+            assertEquals(pageMode, actual.currentPageMode)
+            assertEquals(maxProductSelection, actual.maxProductSelection)
+            assertEquals(voucherConfiguration, actual.voucherConfiguration)
+            assertEquals(false, actual.showCtaChangeProductOnToolbar)
+            assertEquals(false, actual.isEntryPointFromVoucherSummaryPage)
+            assertEquals(selectedWarehouseId, actual.selectedWarehouseId)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when get products on edit mode, product enableCheckbox and isDeletable properties should be false`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.EDIT
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct()
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(id = 1)
+            val mockedGetProductResponse = listOf(product)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(selectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(listOf(product.copy(isDeletable = false, enableCheckbox = false)), actual.products)
+
+            job.cancel()
+        }
+    }
+
+
+    @Test
+    fun `when no previous products selected, products should be an empty list`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.EDIT
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct()
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(id = 1)
+            val mockedGetProductResponse = listOf(product)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(listOf<Product>(), actual.products)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when showCtaChangeProductOnToolbar is true, showCtaChangeProductOnToolbar property on ui state should be true`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.EDIT
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct()
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(id = 1)
+            val mockedGetProductResponse = listOf(product)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(),
+                    showCtaUpdateProductOnToolbar = true,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(true, actual.showCtaChangeProductOnToolbar)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when isEntryPointFromVoucherSummaryPage is true, isEntryPointFromVoucherSummaryPage property on ui state should be true`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.EDIT
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct()
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(id = 1)
+            val mockedGetProductResponse = listOf(product)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = true,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(true, actual.isEntryPointFromVoucherSummaryPage)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when get products error, error property on ui state should be updated with the error message`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.EDIT
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct()
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(id = 1)
+            val mockedGetProductResponse = listOf(product)
+            val error = MessageErrorException("Server Error")
+
+            val initiateVoucherPageParam = GetInitiateVoucherPageUseCase.Param(
+                action = action,
+                promoType = PromoType.FREE_SHIPPING,
+                isVoucherProduct = true
+            )
+            coEvery { getInitiateVoucherPageUseCase.execute(initiateVoucherPageParam) } throws error
+
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = true,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(error, actual.error)
+            assertEquals(false, actual.isLoading)
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+
+    //region toOriginalVariant
+    //endregion
+
+
+    //region findVariantsIdsByParentId
+    //endregion
+
+
+    //region handleCheckAllProduct
+    //endregion
+
+
+    //region handleUncheckAllProduct
+    //endregion
+
+    //region handleMarkProductForDeletion
+    //endregion
+
+    //region updateProductAsSelected
+    //endregion
+
+
+    //region handleRemoveProductFromSelection
+    //endregion
+
+
+    //region handleRemoveProduct
+    //endregion
+
+
+    //region handleTapVariant
+    //endregion
+
+
+    //region handleVariantUpdated
+    //endregion
+
+
+    //region removeParentProduct
+    //endregion
+
+
+    //region updateVariants
+    //endregion
+
+
+    //region handleRedirection
+    //endregion
+
+
+    //region handleBulkDeleteProducts
+    //endregion
+
+
+    //region handleSwitchPageMode
+    //endregion
+
+
+    //region handleAddNewProductToSelection
+    //endregion
+
+
+    //region selectedProductsOnly
+    //endregion
+
+
+    //region handleCtaAddNewProduct
+    //endregion
+
+
+    //region emitRedirectToAddProductPageEvent
+    //endregion
+
+
+    //region handleTapToolbarBackIcon
+    //endregion
+
+
+    //region handleTapBackButton
+    //endregion
+
+
+    private fun buildVoucherConfiguration(): VoucherConfiguration {
+        return VoucherConfiguration().copy(
+            startPeriod = Date(2023, 1, 1, 0, 0, 0),
+            endPeriod = Date(2023, 2, 1, 0, 0, 0)
+        )
+    }
+    private fun populateSelectedProduct(): SelectedProduct {
+        return SelectedProduct(parentProductId = 1, variantProductIds = emptyList())
+    }
+
+
+    private fun mockGetProductListGqlCall(selectedProductIds: List<Long>, response: List<Product>) {
+        val getProductsParam = ProductListUseCase.Param(
+            categoryIds = listOf(),
+            page = 1,
+            pageSize = 100,
+            searchKeyword = "",
+            showcaseIds = listOf(),
+            sortDirection = "DESC",
+            sortId = "DEFAULT",
+            warehouseId = 0,
+            productIdInclude = selectedProductIds
+        )
+        val getProductsResponse = ProductResult(total = 20, products = response)
+        coEvery { getProductsUseCase.execute(getProductsParam) } returns getProductsResponse
+    }
+
+    private fun mockInitiateVoucherPageGqlCall(action : VoucherAction) {
+        val initiateVoucherPageParam = GetInitiateVoucherPageUseCase.Param(
+            action = action,
+            promoType = PromoType.FREE_SHIPPING,
+            isVoucherProduct = true
+        )
+        val initiateVoucherResponse = VoucherCreationMetadata(
+            accessToken = "accessToken",
+            isEligible = 1,
+            maxProduct = 100,
+            prefixVoucherCode = "OFC",
+            shopId = 1,
+            token = "token",
+            userId = 1,
+            discountActive = true,
+            message = ""
+        )
+        coEvery { getInitiateVoucherPageUseCase.execute(initiateVoucherPageParam) } returns initiateVoucherResponse
+    }
+
+    private fun populateProduct(): Product {
+        return Product(
+            id = 1,
+            isVariant = false,
+            name = "",
+            picture = "",
+            preorder = Product.Preorder(durationDays = 0),
+            price = Product.Price(min = 50_000, max = 50_000),
+            sku = "sku-1",
+            status = "",
+            stock = 20,
+            txStats = Product.TxStats(sold = 10),
+            warehouseCount = 1,
+            isEligible = true,
+            ineligibleReason = "",
+            originalVariants = emptyList(),
+            selectedVariantsIds = emptySet(),
+            isSelected = false,
+            enableCheckbox = true,
+            isDeletable = true,
+        )
+    }
+
+}
