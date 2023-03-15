@@ -44,7 +44,7 @@ class HomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(start
                 MacroIntent.TKPD_PACKAGE_NAME,
                 MacroIntent.Home.RV_RESOURCE_ID
         )
-        Thread.sleep(4000)
+        Thread.sleep(10000)
     }
 
     override fun traceName() = "mp_home"
