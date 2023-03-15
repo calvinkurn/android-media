@@ -133,6 +133,10 @@ class CameraControllerComponent(
         }
     }
 
+    fun setThumbnailVisibility(isVisible: Boolean) {
+        imgThumbnail.showWithCondition(isVisible)
+    }
+
     fun scrollToPhotoMode() {
         lstCameraMode.smoothScrollToPosition(CameraMode.Photo.value)
     }
@@ -147,9 +151,7 @@ class CameraControllerComponent(
             controllerListener.onThumbnailLoaded()
         }
         imgThumbnail.setOnClickListener {
-            if (controllerListener.isCameraOnRecording().not()) {
-                controllerListener.onCameraThumbnailClicked()
-            }
+            controllerListener.onCameraThumbnailClicked()
         }
     }
 
@@ -228,8 +230,7 @@ class CameraControllerComponent(
         try {
             videoDurationTimer?.cancel()
             videoDurationTimer = null
-        } catch (t: Throwable) {
-        }
+        } catch (ignored: Throwable) { }
     }
 
     private fun onTakeCamera() {

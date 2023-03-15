@@ -18,6 +18,17 @@
       "event": "openScreen"
     },
     {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management",
+      "currentSite": "tokopediaDigitalRecharge",
+      "screenName": "/initial-sbm-page",
+      "event": "clickSmartBill",
+      "userId": ".+",
+      "eventAction": "click langganan",
+      "sessionIris": ".+",
+      "eventLabel": "langganan"
+    },
+    {
       "event": "clickSmartBill",
       "eventCategory": "digital - smart bill management",
       "eventAction": "click all tagihan",
