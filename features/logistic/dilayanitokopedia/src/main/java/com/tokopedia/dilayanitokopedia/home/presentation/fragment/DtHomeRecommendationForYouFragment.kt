@@ -1,5 +1,6 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -41,7 +42,6 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import java.util.*
 import javax.inject.Inject
 
 class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener {
@@ -50,7 +50,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         private const val REQUEST_FROM_PDP = 349
         private const val MAX_RECYCLED_VIEWS = 20
 
-        private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+        private const val WISHLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
@@ -158,18 +158,6 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         }
     }
 
-    open fun goToProductDetail(productId: String, position: Int) {
-        if (activity != null) {
-            val intent = RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productId
-            )
-            intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position)
-            startActivityForResult(intent, REQUEST_FROM_PDP)
-        }
-    }
-
     private fun loadFirstPageData() {
         viewModel.loadInitialPage(getLocationParamString())
     }
@@ -269,14 +257,16 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_FROM_PDP && data != null && data.hasExtra(
-                WIHSLIST_STATUS_IS_WISHLIST
-            )
-        ) {
-            val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
-            val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false)
-            val position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1)
-            updateWishlist(id, wishlistStatusFromPdp, position)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_FROM_PDP && data != null && data.hasExtra(
+                    WISHLIST_STATUS_IS_WISHLIST
+                )
+            ) {
+                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
+                val wishlistStatusFromPdp = data.getBooleanExtra(WISHLIST_STATUS_IS_WISHLIST, false)
+                val position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1)
+                updateWishlist(id, wishlistStatusFromPdp, position)
+            }
         }
         handleProductCardOptionsActivityResult(
             requestCode,
