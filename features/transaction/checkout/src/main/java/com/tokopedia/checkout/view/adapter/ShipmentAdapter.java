@@ -385,6 +385,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public boolean validateLoadingItem(ShipmentCartItemModel shipmentCartItemModel) {
+        return shipmentCartItemModel.isStateLoadingCourierState();
+    }
+
     public void updateCheckoutButtonData(String defaultTotal) {
         if (shipmentCostModel != null && shipmentCartItemModelList != null) {
             int cartItemCounter = 0;
@@ -395,7 +399,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if ((shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null && !shipmentAdapterActionListener.isTradeInByDropOff()) ||
                             (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null && shipmentAdapterActionListener.isTradeInByDropOff())) {
                         if (!hasLoadingItem) {
-                            hasLoadingItem = shipmentCartItemModel.isStateLoadingCourierState();
+                            hasLoadingItem = validateLoadingItem(shipmentCartItemModel);
                         }
                         cartItemCounter++;
                     }
