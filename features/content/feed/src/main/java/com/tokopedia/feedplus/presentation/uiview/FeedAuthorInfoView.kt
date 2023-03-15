@@ -38,9 +38,9 @@ class FeedAuthorInfoView(
         if (showFollow) {
             binding.btnFeedFollow.setOnClickListener {
                 if (author.isShop) {
-                    feedListener.onFollowClicked(author.id, true)
+                    feedListener.onFollowClicked(author.id, "", true)
                 } else if (author.isUser) {
-                    feedListener.onFollowClicked(author.encryptedUserId, false)
+                    feedListener.onFollowClicked(author.id, author.encryptedUserId, false)
                 }
             }
             binding.btnFeedFollow.show()

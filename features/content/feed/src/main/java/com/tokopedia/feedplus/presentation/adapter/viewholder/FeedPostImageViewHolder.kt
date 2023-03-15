@@ -17,6 +17,7 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
+import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
@@ -104,6 +105,7 @@ class FeedPostImageViewHolder(
                 bindIndicators(data.media.size)
                 bindProductTag(data)
                 bindLike(data)
+                bindAsgcTags(data)
 
                 menuButton.setOnClickListener { _ ->
                     listener.onMenuClicked(data.id)
@@ -232,6 +234,11 @@ class FeedPostImageViewHolder(
             val adapter = FeedPostImageAdapter(media.map { it.mediaUrl })
             rvFeedPostImageContent.adapter = adapter
         }
+    }
+
+    private fun bindAsgcTags(model: FeedCardImageContentModel) {
+        val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
+        asgcTagsView.bindData(model.type, model.campaign)
     }
 
     private fun showClearView() {

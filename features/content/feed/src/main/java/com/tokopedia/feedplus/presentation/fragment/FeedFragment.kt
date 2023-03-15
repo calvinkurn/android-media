@@ -109,6 +109,11 @@ class FeedFragment :
             }
         }
 
+    private val followLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            feedPostViewModel.processSuspendedFollow()
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -282,8 +287,13 @@ class FeedFragment :
         }
     }
 
-    override fun onFollowClicked(id: String, isShop: Boolean) {
-        feedPostViewModel.doFollow(id, isShop)
+    override fun onFollowClicked(id: String, encryptedId: String, isShop: Boolean) {
+        if (userSession.isLoggedIn) {
+            feedPostViewModel.doFollow(id, encryptedId, isShop)
+        } else {
+            feedPostViewModel.suspendFollow(id, encryptedId, isShop)
+            followLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        }
     }
 
     override fun changeTab(type: String) {

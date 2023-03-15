@@ -75,7 +75,15 @@ data class FeedCardCampaignModel(
     val startTime: String = "",
     val endTime: String = "",
     val restrictions: List<FeedCardCampaignRestrictionModel> = emptyList()
-)
+) {
+
+    val isExclusiveForMember: Boolean
+        get() = restrictions.firstOrNull { it.label == LABEL_FOLLOWERS_ONLY } != null
+
+    companion object {
+        private const val LABEL_FOLLOWERS_ONLY = "followers_only"
+    }
+}
 
 data class FeedCardCampaignRestrictionModel(
     val isActive: Boolean,

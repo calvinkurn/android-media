@@ -42,4 +42,5 @@ class FeedPostAdapter(typeFactory: FeedAdapterTypeFactory) :
     }
 
     // TODO : Later to use DiffUtil
+
 }

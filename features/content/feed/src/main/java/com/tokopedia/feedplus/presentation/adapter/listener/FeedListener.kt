@@ -9,6 +9,9 @@ interface FeedListener {
     fun onMenuClicked(id: String)
     fun disableClearView()
     fun inClearViewMode(): Boolean
+    fun onFollowClicked(id: String, encryptedId: String, isShop: Boolean)
+    fun changeTab(type: String)
+    fun reload()
 
     fun onProductTagButtonClicked(
         postId: String,
@@ -37,8 +40,5 @@ interface FeedListener {
         weblink: String,
         imageUrl: String
     )
-    fun onFollowClicked(id: String, isShop: Boolean)
-    fun changeTab(type: String)
-    fun reload()
     fun onLikePostCLicked(model: FeedCardImageContentModel, rowNumber: Int)
 }
