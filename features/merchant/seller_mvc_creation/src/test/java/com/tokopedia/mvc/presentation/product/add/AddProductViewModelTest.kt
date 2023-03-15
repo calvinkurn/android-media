@@ -37,7 +37,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import okhttp3.internal.wait
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -1720,9 +1719,125 @@ class AddProductViewModelTest {
     //endregion
 
     //region TapShowCaseFilter
+    @Test
+    fun `When change shop showcase filter, should emit ShowShowcasesBottomSheet effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val secondProduct = populateProduct().copy(id = 2, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val mockedProductValidationResponse = listOf<VoucherValidationResult.ValidationProduct>()
+            val mockedShowcases = listOf(
+                ShopShowcase(id = 2, alias = "hp", name = "Handphone", type = 1, isSelected = false)
+            )
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall(showcases = mockedShowcases)
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse, totalProduct = 50)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedEffects = arrayListOf<AddProductEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            viewModel.processEvent(AddProductEvent.TapShowCaseFilter)
+
+            //Then
+            val actual = emittedEffects.last()
+
+            assertEquals(
+                AddProductEffect.ShowShowcasesBottomSheet(mockedShowcases , listOf()),
+                actual
+            )
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region TapSortFilter
+    @Test
+    fun `When change product sort, should emit ShowSortBottomSheet effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val previouslySelectedProducts = populateProduct()
+            val firstProduct = populateProduct().copy(id = 1, isSelected = false)
+            val secondProduct = populateProduct().copy(id = 2, isSelected = false)
+            val maxProductSubmission = 100
+
+            val mockedProductResponse = listOf(firstProduct, secondProduct)
+            val mockedProductValidationResponse = listOf<VoucherValidationResult.ValidationProduct>()
+
+            mockShopWarehouseGqlCall()
+            mockInitiateVoucherPageGqlCall(maxProductSubmission = maxProductSubmission)
+            mockGetProductListMetaGqlCall(sortOptions = mockedSortOptions, categoryOptions = mockedCategoryOption)
+            mockGetShopShowcasesGqlCall()
+            mockGetProductListGqlCall(warehouseId = WAREHOUSE_ID, products = mockedProductResponse, totalProduct = 50)
+            mockVoucherValidationPartialGqlCall(
+                "3923-02-01",
+                "3923-03-01",
+                productIds = listOf(firstProduct.id, secondProduct.id),
+                productValidationResponse = mockedProductValidationResponse
+            )
+
+            val emittedEffects = arrayListOf<AddProductEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+
+            //When
+            viewModel.processEvent(
+                AddProductEvent.FetchRequiredData(
+                    pageMode,
+                    voucherConfiguration,
+                    listOf(previouslySelectedProducts)
+                )
+            )
+
+            viewModel.processEvent(AddProductEvent.TapSortFilter)
+
+            //Then
+            val actual = emittedEffects.last()
+
+            assertEquals(
+                AddProductEffect.ShowSortBottomSheet(
+                    mockedSortOptions,
+                    ProductSortOptions("DEFAULT", "", "DESC")
+                ),
+                actual
+            )
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region handleClearSearchbar
