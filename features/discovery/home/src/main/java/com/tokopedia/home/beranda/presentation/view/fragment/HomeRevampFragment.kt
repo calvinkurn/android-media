@@ -206,6 +206,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.discovery.common.microinteraction.navtoolbar.navToolbarMicroInteraction
+import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -1290,6 +1291,11 @@ open class HomeRevampFragment :
             scope = this.lifecycleScope,
             touchListenerActivity = activity as? TouchListenerActivity
         ) { summaryModel, type, view ->
+            if (type == PerformanceTrace.TYPE_TTIL) {
+                finishPageLoadTime(false)
+                performanceTrace.debugPerformanceTrace(activity, summaryModel, type, view)
+
+            }
         }
         observeSearchHint()
     }
