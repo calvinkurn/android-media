@@ -82,24 +82,24 @@ fun String.isBlankOrZero(): Boolean {
 
 const val DEFAULT_DEBOUNCE_IN_MILIS = 250L
 fun rxViewClickDebounce(view: View, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): Observable<Boolean> =
-        Observable.create({ emitter: Emitter<Boolean> ->
-            view.setOnClickListener {
-                emitter.onNext(true)
-            }
-        }, Emitter.BackpressureMode.LATEST)
-                .debounce(timeout, TimeUnit.MILLISECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
+    Observable.create({ emitter: Emitter<Boolean> ->
+        view.setOnClickListener {
+            emitter.onNext(true)
+        }
+    }, Emitter.BackpressureMode.LATEST)
+        .debounce(timeout, TimeUnit.MILLISECONDS)
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(AndroidSchedulers.mainThread())
 
 fun rxCompoundButtonCheckDebounce(compoundButton: CompoundButton, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): Observable<Boolean> =
-        Observable.create({ emitter: Emitter<Boolean> ->
-            compoundButton.setOnCheckedChangeListener { _, isChecked ->
-                emitter.onNext(isChecked)
-            }
-        }, Emitter.BackpressureMode.LATEST)
-                .debounce(timeout, TimeUnit.MILLISECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
+    Observable.create({ emitter: Emitter<Boolean> ->
+        compoundButton.setOnCheckedChangeListener { _, isChecked ->
+            emitter.onNext(isChecked)
+        }
+    }, Emitter.BackpressureMode.LATEST)
+        .debounce(timeout, TimeUnit.MILLISECONDS)
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(AndroidSchedulers.mainThread())
 
 fun showSoftKeyboard(context: Context?, view: View) {
     if (context == null) return

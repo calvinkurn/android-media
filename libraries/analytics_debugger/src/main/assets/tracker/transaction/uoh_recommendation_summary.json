@@ -6,6 +6,7 @@
       "eventCategory": "my purchase list - mp",
       "currentSite": "tokopediamarketplace",
       "item_list": "/my_purchase_list - rekomendasi untuk anda .*",
+      "item_list_name": "/my_purchase_list - rekomendasi untuk anda .*",
       "event": "view_item_list",
       "userId": ".*",
       "eventAction": "impression - product recommendation",

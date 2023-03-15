@@ -10,10 +10,12 @@ class PlayChannelReportModelBuilder {
     fun buildChannelReport(
             totalViewFmt: String = "0",
             totalLike: Long = 0L,
-            totalLikeFmt: String = "0"
+            totalLikeFmt: String = "0",
+            performanceSummaryPageLink: String = "page_link",
     ) = PlayChannelReportUiModel(
             totalViewFmt = totalViewFmt,
             totalLike = totalLike,
             totalLikeFmt = totalLikeFmt,
+            performanceSummaryPageLink = performanceSummaryPageLink,
     )
 }

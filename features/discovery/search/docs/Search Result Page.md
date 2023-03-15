@@ -33,17 +33,19 @@ Search Result Page is a page to show list of products or shops based on the keyw
 ## Diagram
 
 ### Search Result Page
-Search Result Page is an activity with tabs: tab Product and tab Shop.
+Search Result Page is an activity with tabs: tab Product and tab Shop. Each tab is a Fragment within the ViewPager and the Search Bar is a component from NavToolbar.
 
-<!-- insert SRP Diagram here -->
+![image](res/srp_diagram.png)
 
 ### Search Result - Product Tab
-Search Result Product consists of multiple component or sub features, such as Top Ads, Broad Match, Inspiration Carousels, Inspiration Widgets, Banner, etc. This is the class diagram between Search Result Product Fragment, Presenter, and any of its components:
+Search Result Product consists of Product Cards together with other component or sub features, such as Top Ads, Broad Match, Inspiration Carousels, Inspiration Widgets, Banner, etc. This is the class diagram between Search Result Product Fragment, Presenter, and any of its components:
 
 ![image](res/product_diagram.png)
 
 ### Search Result - Shop Tab
-<!-- insert SRP Shop Tab Diagram here -->
+Search Result Shop consists of Shop Cards with other component or sub features, such as Top Ads Headline and Suggestion. However, unlike Product tab, all the logic for its main features and sub features are inside the ViewModel, because Shop tab is still relatively simple compared to Product tab.
+
+![image](res/shop_diagram.png)
 
 ## Navigation
 ![image](res/navigation.png)
