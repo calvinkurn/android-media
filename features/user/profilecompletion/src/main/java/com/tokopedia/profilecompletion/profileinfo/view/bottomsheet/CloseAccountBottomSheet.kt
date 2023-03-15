@@ -9,14 +9,14 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.profilecompletion.databinding.LayoutBottomsheetCloseAccountBinding
-import com.tokopedia.profilecompletion.profileinfo.data.Detail
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.databinding.LayoutBottomsheetCloseAccountBinding
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
+import com.tokopedia.profilecompletion.profileinfo.data.Detail
 import com.tokopedia.profilecompletion.profileinfo.tracker.CloseAccountTracker
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
 class CloseAccountBottomSheet(private val detail: Detail) : BottomSheetUnify() {
@@ -45,7 +45,8 @@ class CloseAccountBottomSheet(private val detail: Detail) : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _bindingChild = LayoutBottomsheetCloseAccountBinding.inflate(layoutInflater, container, false)
+        _bindingChild =
+            LayoutBottomsheetCloseAccountBinding.inflate(layoutInflater, container, false)
         setChild(bindingChild?.root)
 
         return super.onCreateView(inflater, container, savedInstanceState)

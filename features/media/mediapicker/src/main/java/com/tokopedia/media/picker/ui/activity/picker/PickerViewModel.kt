@@ -38,6 +38,9 @@ class PickerViewModel @Inject constructor(
     private var _medias = MutableLiveData<List<MediaUiModel>>()
     val medias: LiveData<List<MediaUiModel>> get() = _medias
 
+    private var _isOnVideoRecording = MutableLiveData<Boolean>()
+    val isOnVideoRecording: LiveData<Boolean> get() = _isOnVideoRecording
+
     private var _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
@@ -129,6 +132,10 @@ class PickerViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    fun isOnVideoRecording(isRecord: Boolean) {
+        _isOnVideoRecording.value = isRecord
     }
 
 }
