@@ -12,6 +12,7 @@ import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -26,6 +27,8 @@ import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.ON_REVIEWED
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
 import com.tokopedia.affiliate.SYSTEM_DOWN
+import com.tokopedia.affiliate.adapter.AffiliateAdapter
+import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateRecommendedAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
@@ -38,6 +41,7 @@ import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPaste
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
@@ -75,7 +79,7 @@ class AffiliatePromoFragment :
     private val tabFragments = arrayListOf<Fragment>()
     private var remoteConfig: RemoteConfig? = null
 
-        companion object {
+    companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
 
         fun getFragmentInstance(): Fragment {
@@ -89,9 +93,14 @@ class AffiliatePromoFragment :
         setObservers()
     }
 
-    private fun isAffiliateGamificationEnabled() = remoteConfig?.getBoolean(AFFILIATE_GAMIFICATION_VISIBILITY, false) ?: false
+    private fun isAffiliateGamificationEnabled() =
+        remoteConfig?.getBoolean(AFFILIATE_GAMIFICATION_VISIBILITY, false) ?: false
 
-    private fun affiliateRedirection() = remoteConfig?.getString(AFFILIATE_GAMIFICATION_REDIRECTION, AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK)
+    private fun affiliateRedirection() =
+        remoteConfig?.getString(
+            AFFILIATE_GAMIFICATION_REDIRECTION,
+            AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
+        )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -138,7 +147,8 @@ class AffiliatePromoFragment :
                 )
             }
         }
-        view?.findViewById<LinearLayout>(R.id.ssa_container)?.isVisible = affiliatePromoViewModel.isAffiliateSSAShopEnabled()
+        view?.findViewById<LinearLayout>(R.id.ssa_container)?.isVisible =
+            affiliatePromoViewModel.isAffiliateSSAShopEnabled()
 
         view?.findViewById<LinearLayout>(R.id.gamification_container)?.isVisible =
             isAffiliateGamificationEnabled()
@@ -152,6 +162,7 @@ class AffiliatePromoFragment :
         setupViewPager()
         showDefaultState()
         affiliatePromoViewModel.getAffiliateValidateUser()
+        affiliatePromoViewModel.getDiscoBanners(page = 0, limit = 7)
     }
 
     private fun sendClickEvent() {
@@ -273,6 +284,25 @@ class AffiliatePromoFragment :
                     activity,
                     source = PAGE_ANNOUNCEMENT_PROMOSIKAN
                 )
+            }
+        }
+        affiliatePromoViewModel.getDiscoCampaignBanners().observe(this) {
+            if (!it?.recommendedAffiliateDiscoveryCampaign?.data?.items.isNullOrEmpty()) {
+                view?.findViewById<Group>(R.id.disco_promotion_group)?.show()
+                view?.findViewById<Typography>(R.id.disco_inspiration_lihat_semua)
+                    ?.setOnClickListener {
+
+                    }
+                view?.findViewById<RecyclerView>(R.id.rv_disco_promotion)?.apply {
+                    val discoBannerAdapter = AffiliateAdapter(AffiliateAdapterFactory())
+                    discoBannerAdapter.setVisitables(
+                        it.recommendedAffiliateDiscoveryCampaign?.data?.items?.mapNotNull { campaign ->
+                            AffiliateDiscoBannerUiModel(campaign)
+                        }
+                    )
+                    this.adapter = discoBannerAdapter
+
+                }
             }
         }
     }

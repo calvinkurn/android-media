@@ -5,7 +5,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateDiscoveryCampaignResponse
 
 class AffiliateDiscoBannerUiModel(
-    val article: AffiliateDiscoveryCampaignResponse.RecommendedAffiliateDiscoveryCampaign.Data.Campaign
+    val article: AffiliateDiscoveryCampaignResponse.RecommendedAffiliateDiscoveryCampaign.Data.Campaign?
 ) : Visitable<AffiliateAdapterTypeFactory> {
 
     override fun type(typeFactory: AffiliateAdapterTypeFactory): Int {
