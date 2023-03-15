@@ -90,8 +90,7 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
             height = (getScreenHeight() * SHEET_HEIGHT_PERCENT).toInt()
         }
 
-        selectedContent(TAB_AUTO_GENERATED)
-        csuSetupCover.isChecked = true
+        selectedContent(TAB_UPLOAD_IMAGE)
         csuSetupCover.setOnCheckedChangeListener { _, isChecked ->
             selectedContent(if (isChecked) TAB_AUTO_GENERATED else TAB_UPLOAD_IMAGE)
         }
