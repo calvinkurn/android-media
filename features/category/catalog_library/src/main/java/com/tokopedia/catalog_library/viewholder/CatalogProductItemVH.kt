@@ -5,7 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.CatalogProductDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogProductDM
 import com.tokopedia.catalog_library.util.AnalyticsCategoryLandingPage
 import com.tokopedia.catalog_library.util.AnalyticsHomePage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
@@ -14,12 +14,12 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 
-class CatalogProductItemViewHolder(
+class CatalogProductItemVH(
     val view: View,
     private val catalogLibraryListener: CatalogLibraryListener
-) : AbstractViewHolder<CatalogProductDataModel>(view) {
+) : AbstractViewHolder<CatalogProductDM>(view) {
 
-    private var dataModel: CatalogProductDataModel? = null
+    private var dataModel: CatalogProductDM? = null
 
     private val productImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.catalog_product_image)
@@ -41,7 +41,7 @@ class CatalogProductItemViewHolder(
         val LAYOUT = R.layout.item_catalog_product
     }
 
-    override fun bind(element: CatalogProductDataModel?) {
+    override fun bind(element: CatalogProductDM?) {
         dataModel = element
         productPrice.text = String.format(
             itemView.context.getString(R.string.product_price),

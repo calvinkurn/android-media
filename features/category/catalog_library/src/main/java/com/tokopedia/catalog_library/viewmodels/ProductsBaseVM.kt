@@ -12,7 +12,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ProductsBaseViewModel @Inject constructor(
+class ProductsBaseVM @Inject constructor(
     private val catalogProductsUseCase: CatalogProductsUseCase
 ) : ViewModel() {
 
@@ -80,8 +80,8 @@ class ProductsBaseViewModel @Inject constructor(
         categoryName: String,
         catalogsProduct: ArrayList<CatalogListResponse.CatalogGetList.CatalogsProduct>,
         page: Int = 1
-    ): ArrayList<BaseCatalogLibraryDataModel> {
-        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+    ): ArrayList<BaseCatalogLibraryDM> {
+        val visitableList = arrayListOf<BaseCatalogLibraryDM>()
         val title = if (categoryName == "") {
             CatalogLibraryConstant.CATALOG_HOME_PRODUCT_TITLE
         } else {
@@ -93,7 +93,7 @@ class ProductsBaseViewModel @Inject constructor(
             CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE
         }
         if (page == 1) {
-            val productHeaderModel = CatalogContainerDataModel(
+            val productHeaderModel = CatalogContainerDM(
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 CatalogLibraryConstant.CATALOG_CONTAINER_PRODUCT_HEADER,
                 title,
@@ -108,7 +108,7 @@ class ProductsBaseViewModel @Inject constructor(
         }
         catalogsProduct.forEach { product ->
             visitableList.add(
-                CatalogProductDataModel(
+                CatalogProductDM(
                     CatalogLibraryConstant.CATALOG_PRODUCT,
                     "${CatalogLibraryConstant.CATALOG_PRODUCT}_${product.id}",
                     product,

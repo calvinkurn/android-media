@@ -6,21 +6,21 @@ import com.tokopedia.catalog_library.model.datamodel.*
 
 interface CatalogHomepageAdapterFactory {
 
-    fun type(data: CatalogSpecialDataModel): Int
-    fun type(data: CatalogRelevantDataModel): Int
-    fun type(data: CatalogPopularBrandsDataModel): Int
-    fun type(data: PopularBrandsListDataModel): Int
-    fun type(data: CatalogProductDataModel): Int
+    fun type(data: CatalogSpecialDM): Int
+    fun type(data: CatalogRelevantDM): Int
+    fun type(data: CatalogPopularBrandsDM): Int
+    fun type(data: CatalogPopularBrandsListDM): Int
+    fun type(data: CatalogProductDM): Int
 
-    fun type(data: CatalogLihatDataModel): Int
-    fun type(data: CatalogLihatItemDataModel): Int
+    fun type(data: CatalogLihatDM): Int
+    fun type(data: CatalogLihatItemDM): Int
 
-    fun type(data: CatalogTopFiveDataModel): Int
-    fun type(data: CatalogMostViralDataModel): Int
+    fun type(data: CatalogTopFiveDM): Int
+    fun type(data: CatalogMostViralDM): Int
 
-    fun type(data: CatalogShimmerDataModel): Int
-    fun type(data: CatalogContainerDataModel): Int
-    fun type(data: CatalogProductLoadMoreDataModel): Int
+    fun type(data: CatalogShimmerDM): Int
+    fun type(data: CatalogContainerDM): Int
+    fun type(data: CatalogProductLoadMoreDM): Int
 
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

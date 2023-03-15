@@ -15,9 +15,9 @@ import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDataModel
+import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDM
+import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDM
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.AnalyticsCategoryLandingPage
@@ -27,7 +27,7 @@ import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_VIRAL
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
-import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageViewModel
+import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -50,11 +50,11 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    private val landingPageViewModel: CatalogLandingPageViewModel by lazy(
+    private val landingPageViewModel: CatalogLandingPageVM by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(requireActivity(), viewModelFactory.get())
-        viewModelProvider.get(CatalogLandingPageViewModel::class.java)
+        viewModelProvider.get(CatalogLandingPageVM::class.java)
     }
 
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
@@ -63,7 +63,7 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         )
     }
     private val catalogLandingPageAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDataModel> =
+        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDM> =
             AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build()
         CatalogLibraryAdapter(asyncDifferConfig, catalogLibraryAdapterFactory)
     }
@@ -182,7 +182,7 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         submitList(newData)
     }
 
-    private fun submitList(visitable: List<BaseCatalogLibraryDataModel>) {
+    private fun submitList(visitable: List<BaseCatalogLibraryDM>) {
         catalogLandingPageAdapter.submitList(visitable)
     }
 
@@ -222,21 +222,21 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
     private fun addShimmer() {
         catalogLibraryUiUpdater.apply {
             updateModel(
-                CatalogShimmerDataModel(
+                CatalogShimmerDM(
                     CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                     CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
                     CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE
                 )
             )
             updateModel(
-                CatalogShimmerDataModel(
+                CatalogShimmerDM(
                     CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
                     CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
                     CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL
                 )
             )
             updateModel(
-                CatalogShimmerDataModel(
+                CatalogShimmerDM(
                     CatalogLibraryConstant.CATALOG_PRODUCT,
                     CatalogLibraryConstant.CATALOG_PRODUCT,
                     CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
@@ -250,7 +250,7 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         RouteManager.route(context, applink)
     }
 
-    override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>) {
+    override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDM>) {
         catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
         catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
         productsList.forEach { component ->
@@ -260,7 +260,7 @@ class CatalogLandingPageFragment : ProductsBaseFragment(), CatalogLibraryListene
         if (productsList.isEmpty()) {
             catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
         } else {
-            catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDataModel())
+            catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDM())
         }
         updateUi()
     }

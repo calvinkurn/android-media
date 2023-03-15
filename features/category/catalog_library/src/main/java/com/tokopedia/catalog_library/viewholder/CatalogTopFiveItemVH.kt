@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.CatalogTopFiveDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogTopFiveDM
 import com.tokopedia.catalog_library.util.AnalyticsCategoryLandingPage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
@@ -12,11 +12,11 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 
-class CatalogTopFiveItemViewHolder(
+class CatalogTopFiveItemVH(
     private val view: View,
     private val catalogLibraryListener: CatalogLibraryListener
-) : AbstractViewHolder<CatalogTopFiveDataModel>(view) {
-    private var dataModel: CatalogTopFiveDataModel? = null
+) : AbstractViewHolder<CatalogTopFiveDM>(view) {
+    private var dataModel: CatalogTopFiveDM? = null
 
     private val topFiveImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.catalog_top_five_product_image)
@@ -38,7 +38,7 @@ class CatalogTopFiveItemViewHolder(
         val LAYOUT = R.layout.item_catalog_top_five
     }
 
-    override fun bind(element: CatalogTopFiveDataModel?) {
+    override fun bind(element: CatalogTopFiveDM?) {
         dataModel = element
 
         val catalogTopFiveList = element?.catalogTopFiveList

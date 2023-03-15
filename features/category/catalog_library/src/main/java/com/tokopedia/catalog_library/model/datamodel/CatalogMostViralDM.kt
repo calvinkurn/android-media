@@ -4,21 +4,21 @@ import android.os.Bundle
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactory
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 
-data class CatalogTopFiveDataModel(
+data class CatalogMostViralDM(
     val name: String = "",
     val type: String = "",
-    val catalogTopFiveList: CatalogListResponse.CatalogGetList.CatalogsProduct,
+    val catalogMostViralData: CatalogListResponse.CatalogGetList.CatalogsProduct,
     val categoryName: String = ""
-) : BaseCatalogLibraryDataModel {
+) : BaseCatalogLibraryDM {
     override fun type() = type
 
     override fun name() = name
 
-    override fun equalsWith(newData: BaseCatalogLibraryDataModel): Boolean {
+    override fun equalsWith(newData: BaseCatalogLibraryDM): Boolean {
         return false
     }
 
-    override fun getChangePayload(newData: BaseCatalogLibraryDataModel): Bundle? {
+    override fun getChangePayload(newData: BaseCatalogLibraryDM): Bundle? {
         return null
     }
 

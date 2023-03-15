@@ -15,14 +15,14 @@ import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDataModel
+import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDM
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.AnalyticsHomePage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
-import com.tokopedia.catalog_library.viewmodels.CatalogHomepageViewModel
+import com.tokopedia.catalog_library.viewmodels.CatalogHomepageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -51,7 +51,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     var viewModelFactory: ViewModelProvider.Factory? = null
     private val homepageViewModel by lazy {
         viewModelFactory?.let {
-            ViewModelProvider(this, it).get(CatalogHomepageViewModel::class.java)
+            ViewModelProvider(this, it).get(CatalogHomepageVM::class.java)
         }
     }
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
@@ -67,7 +67,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     private val catalogsTrackingSet = HashSet<String>()
 
     private val catalogHomeAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDataModel> =
+        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogLibraryDM> =
             AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build()
         CatalogLibraryAdapter(asyncDifferConfig, catalogLibraryAdapterFactory)
     }
@@ -159,7 +159,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         submitList(newData)
     }
 
-    private fun submitList(visitable: List<BaseCatalogLibraryDataModel>) {
+    private fun submitList(visitable: List<BaseCatalogLibraryDM>) {
         catalogHomeAdapter.submitList(visitable)
     }
 
@@ -206,7 +206,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         )
     }
 
-    override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDataModel>) {
+    override fun onProductsLoaded(productsList: MutableList<BaseCatalogLibraryDM>) {
         catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
         catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
         productsList.forEach { component ->
@@ -216,7 +216,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
         if (productsList.isEmpty()) {
             catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_PRODUCT_LOAD)
         } else {
-            catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDataModel())
+            catalogLibraryUiUpdater.updateModel(CatalogProductLoadMoreDM())
         }
         updateUi()
     }

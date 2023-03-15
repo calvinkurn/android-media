@@ -13,17 +13,17 @@ import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
+import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDM
+import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDM
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse.CategoryListLibraryPage.CategoryData
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_LIHAT_SEMUA_ITEM
 
-class CatalogLihatViewHolder(
+class CatalogLihatVH(
     private val view: View,
     private val catalogLibraryListener: CatalogLibraryListener,
     private val sharedRecycledViewPool: RecycledViewPool
-) : AbstractViewHolder<CatalogLihatDataModel>(view) {
+) : AbstractViewHolder<CatalogLihatDM>(view) {
 
     private val accordionView: AccordionUnify by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.lihat_category_accordion_view)
@@ -40,7 +40,7 @@ class CatalogLihatViewHolder(
         const val COLUMN_COUNT = 4
     }
 
-    override fun bind(element: CatalogLihatDataModel) {
+    override fun bind(element: CatalogLihatDM) {
         accordionView.run {
             accordionData.clear()
             removeAllViews()
@@ -95,11 +95,11 @@ class CatalogLihatViewHolder(
         rootCategoryName: String?,
         rootCategoryId: String?,
         isAsc: Boolean
-    ): MutableList<BaseCatalogLibraryDataModel> {
-        val visitableList = arrayListOf<BaseCatalogLibraryDataModel>()
+    ): MutableList<BaseCatalogLibraryDM> {
+        val visitableList = arrayListOf<BaseCatalogLibraryDM>()
         childCategoryList?.forEach {
             visitableList.add(
-                CatalogLihatItemDataModel(
+                CatalogLihatItemDM(
                     CATALOG_LIHAT_SEMUA_ITEM,
                     CATALOG_LIHAT_SEMUA_ITEM,
                     it,

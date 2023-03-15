@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.CatalogMostViralDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogMostViralDM
 import com.tokopedia.catalog_library.util.AnalyticsCategoryLandingPage
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.loader.loadImage
@@ -15,10 +15,10 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 
-class CatalogMostViralItemViewHolder(
+class CatalogMostViralItemVH(
     val view: View,
     private val catalogLibraryListener: CatalogLibraryListener
-) : AbstractViewHolder<CatalogMostViralDataModel>(view) {
+) : AbstractViewHolder<CatalogMostViralDM>(view) {
 
     private val mostViralImage: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
         itemView.findViewById(R.id.catalog_product_viral_image)
@@ -44,7 +44,7 @@ class CatalogMostViralItemViewHolder(
         val LAYOUT = R.layout.item_catalog_most_viral
     }
 
-    override fun bind(element: CatalogMostViralDataModel?) {
+    override fun bind(element: CatalogMostViralDM?) {
         val mostViralProduct = element?.catalogMostViralData
 
         mostViralProduct?.imageUrl?.let { iconUrl ->

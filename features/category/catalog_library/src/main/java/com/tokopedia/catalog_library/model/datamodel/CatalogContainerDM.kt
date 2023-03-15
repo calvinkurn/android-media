@@ -4,11 +4,11 @@ import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactory
 
-data class CatalogContainerDataModel(
+data class CatalogContainerDM(
     val name: String = "",
     val type: String = "",
     val containerTitle: String = "",
-    val dataList: ArrayList<BaseCatalogLibraryDataModel>?,
+    val dataList: ArrayList<BaseCatalogLibraryDM>?,
     val orientationRecyclerView: Int = RecyclerView.HORIZONTAL,
     val hasMoreButtonAppLink: String = "",
     val hasMoreButtonEnabled: Boolean = false,
@@ -17,7 +17,7 @@ data class CatalogContainerDataModel(
     val marginForTitle: Margin = Margin(),
     val marginForRV: Margin = Margin()
 
-) : BaseCatalogLibraryDataModel {
+) : BaseCatalogLibraryDM {
 
     override fun type() = type
 
@@ -27,11 +27,11 @@ data class CatalogContainerDataModel(
 
     override fun name() = name
 
-    override fun equalsWith(newData: BaseCatalogLibraryDataModel): Boolean {
+    override fun equalsWith(newData: BaseCatalogLibraryDM): Boolean {
         return newData == this
     }
 
-    override fun getChangePayload(newData: BaseCatalogLibraryDataModel): Bundle? {
+    override fun getChangePayload(newData: BaseCatalogLibraryDM): Bundle? {
         return null
     }
 }

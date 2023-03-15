@@ -3,9 +3,9 @@ package com.tokopedia.catalog_library.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDataModel
+import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogLibraryDataModel
-import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDM
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse
 import com.tokopedia.catalog_library.usecase.CatalogLibraryUseCase
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
@@ -14,14 +14,14 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CatalogLihatSemuaPageViewModel @Inject constructor(private val catalogLibraryUseCase: CatalogLibraryUseCase) :
+class CatalogLihatSemuaPageVM @Inject constructor(private val catalogLibraryUseCase: CatalogLibraryUseCase) :
     ViewModel() {
 
     private val _catalogLihatLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
     val catalogLihatLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> =
         _catalogLihatLiveData
 
-    private val listOfComponents = mutableListOf<BaseCatalogLibraryDataModel>()
+    private val listOfComponents = mutableListOf<BaseCatalogLibraryDM>()
 
     private var isAsc = true
 
@@ -51,7 +51,7 @@ class CatalogLihatSemuaPageViewModel @Inject constructor(private val catalogLibr
 
     private fun mapLihatData(data: CatalogLibraryResponse): CatalogLibraryDataModel {
         data.categoryList.categoryDataList?.forEachIndexed { index, categoryData ->
-            val lihatDataModel = CatalogLihatDataModel(
+            val lihatDataModel = CatalogLihatDM(
                 CatalogLibraryConstant.CATALOG_LIHAT_SEMUA,
                 "${CatalogLibraryConstant.CATALOG_LIHAT_SEMUA}_$index",
                 categoryData,

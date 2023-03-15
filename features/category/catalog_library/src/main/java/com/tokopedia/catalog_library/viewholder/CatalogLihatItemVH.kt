@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
-import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDataModel
+import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDM
 import com.tokopedia.catalog_library.util.AnalyticsLihatSemuaPage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
@@ -12,12 +12,12 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import kotlin.LazyThreadSafetyMode.NONE
 
-class CatalogLihatItemViewHolder(
+class CatalogLihatItemVH(
     val view: View,
     private val catalogLibraryListener:
         CatalogLibraryListener
-) : AbstractViewHolder<CatalogLihatItemDataModel>(view) {
-    var dataModel: CatalogLihatItemDataModel? = null
+) : AbstractViewHolder<CatalogLihatItemDM>(view) {
+    var dataModel: CatalogLihatItemDM? = null
 
     private val lihatItemIcon: ImageUnify? by lazy(NONE) {
         itemView.findViewById(R.id.lihat_item_icon)
@@ -35,7 +35,7 @@ class CatalogLihatItemViewHolder(
         val LAYOUT = R.layout.item_lihat_grid
     }
 
-    override fun bind(element: CatalogLihatItemDataModel?) {
+    override fun bind(element: CatalogLihatItemDM?) {
         dataModel = element
         val childDataItem = element?.catalogLibraryChildDataListItem
         childDataItem?.categoryIconUrl?.let {
