@@ -23,6 +23,7 @@ import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
 import com.tokopedia.usercomponents.userconsent.common.*
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CONSENT_OPT_IN
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CONSENT_OPT_OUT
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.MANDATORY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.NO_CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.OPTIONAL
@@ -60,6 +61,7 @@ class UserConsentWidget : FrameLayout,
     private var collection: CollectionPointDataModel? = null
     private var isErrorGetConsent = false
     private var needConsent: Boolean? = null
+    private var isConsentTypeInfo: Boolean = false
 
     private var userConsentDescription: UserConsentDescription? = null
     private var userConsentPurposeAdapter: UserConsentPurposeAdapter? = null
@@ -119,14 +121,19 @@ class UserConsentWidget : FrameLayout,
             submissionParam.collectionId = consentCollectionParam?.collectionId.orEmpty()
             submissionParam.version = consentCollectionParam?.version.orEmpty()
             submissionParam.default = isErrorGetConsent
-            submissionParam.dataElements = consentCollectionParam?.dataElements
+            submissionParam.dataElements = consentCollectionParam?.dataElements.orEmpty().toMutableList()
             submissionParam.purposes.clear()
             collection?.purposes?.forEach {
                 submissionParam.purposes.add(
                     Purpose(
                         purposeID = it.id,
-                        transactionType = CONSENT_OPT_IN,
+                        transactionType =
+                            if (isConsentTypeInfo)
+                                CONSENT_OPT_IN
+                            else
+                                it.transactionType,
                         version = it.version,
+                        dataElementType = it.attribute.dataElementType
                     )
                 )
             }
@@ -222,7 +229,7 @@ class UserConsentWidget : FrameLayout,
         } else null
     }
 
-    private fun onSuccessGetConsentCollection(consentType: ConsentType) {
+    private fun onSuccessGetConsentCollection(consentType: ConsentType?) {
         collection?.let {
             userConsentAnalytics.trackOnConsentView(it.purposes)
             userConsentDescription = UserConsentDescription(this, it)
@@ -244,21 +251,30 @@ class UserConsentWidget : FrameLayout,
                 purposes.add(UserConsentPayload.PurposeDataModel(
                     purposeId = it.id,
                     version = it.version,
-                    transactionType = CONSENT_OPT_IN,
+                    transactionType =
+                        if (isConsentTypeInfo)
+                            CONSENT_OPT_IN
+                        else
+                            it.transactionType,
                     dataElementType = it.attribute.dataElementType
                 ))
+            }
+            val dataElements = mutableMapOf<String, String>()
+            consentCollectionParam?.dataElements?.forEach { it ->
+                dataElements[it.elementName] = it.elementValue
             }
             UserConsentPayload(
                 identifier = consentCollectionParam?.identifier.orEmpty(),
                 collectionId = collection?.id.orEmpty(),
-                dataElements = consentCollectionParam?.dataElements,
+                dataElements = dataElements,
                 default = isErrorGetConsent,
                 purposes = purposes
             ).toString()
         }
     }
 
-    private fun renderView(consentType: ConsentType) {
+    private fun renderView(consentType: ConsentType?) {
+        isConsentTypeInfo = consentType is ConsentType.SingleInfo
         when(consentType) {
             is ConsentType.SingleInfo -> {
                 renderSinglePurposeInfo()
@@ -400,6 +416,12 @@ class UserConsentWidget : FrameLayout,
 
         val isAllChecked = userConsentPurposeAdapter?.listCheckBoxView?.all {
             it.isChecked
+        }
+
+        collection?.purposes?.forEach {
+            if (it.id == purposeDataModel.id) {
+                it.transactionType = if (isChecked) CONSENT_OPT_IN else CONSENT_OPT_OUT
+            }
         }
 
         onAllCheckBoxCheckedListener.invoke(isAllChecked == true)

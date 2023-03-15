@@ -8,7 +8,7 @@ data class UserConsentPayload (
     var identifier: String = "",
     @SerializedName("collection_id")
     var collectionId: String = "",
-    @SerializedName("dataElements")
+    @SerializedName("data_elements")
     var dataElements: Map<String, String>? = mapOf(),
     @SerializedName("default")
     var default: Boolean = false,
@@ -22,7 +22,7 @@ data class UserConsentPayload (
         var version: String = "",
         @SerializedName("transaction_type")
         var transactionType: String = "",
-        @SerializedName("dataElementType")
+        @SerializedName("data_element_type")
         val dataElementType: String = ""
     )
 

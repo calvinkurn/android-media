@@ -62,6 +62,8 @@ data class PurposeDataModel(
 
     @SerializedName("attributes")
     var attribute: Attributes = Attributes(),
+
+    var transactionType: String = "OPT_OUT"
 )
 
 data class Attributes(
