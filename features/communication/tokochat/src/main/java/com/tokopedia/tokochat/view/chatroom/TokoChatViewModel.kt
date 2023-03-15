@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
@@ -247,6 +248,7 @@ class TokoChatViewModel @Inject constructor(
                         _isChatConnected.postValue(chatChannelUseCase.isChatConnected())
                     }
                 } catch (throwable: Throwable) {
+                    Timber.d(throwable)
                     _isChatConnected.postValue(false)
                 }
             }
