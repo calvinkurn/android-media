@@ -47,7 +47,7 @@
 
     <dimen name="home_dynamic_icon_title_width">56dp</dimen>
     <dimen name="home_dynamic_icon_padding_top">8dp</dimen>
-    <dimen name="home_dynamic_icon_padding_bottom">12dp</dimen>
+    <dimen name="home_dynamic_icon_padding_bottom">14dp</dimen>
     <dimen name="home_dynamic_icon_image_size">32dp</dimen>
     <dimen name="home_dynamic_icon_margin_top_title">13dp</dimen>
 
