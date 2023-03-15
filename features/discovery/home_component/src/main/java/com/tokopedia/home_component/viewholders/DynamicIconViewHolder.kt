@@ -48,7 +48,8 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
         private const val MARGIN_TOP_MACRO = 6
         private const val MARGIN_BOTTOM_MACRO = 8
         private const val MARGIN_VERTICAL_DEFAULT = 12
-        private const val MARGIN_VERTICAL_REVAMP = 8
+        private const val MARGIN_TOP_REVAMP = 8
+        private const val MARGIN_BOTTOM_REVAMP = 16
         private const val MARGIN_HORIZONTAL_BETWEEN_CARD_MACRO = 0
         private const val MARGIN_HORIZONTAL_BETWEEN_CARD = 8
         private const val PADDING_HORIZONTAL_REVAMP = 8
@@ -104,9 +105,9 @@ class DynamicIconViewHolder(itemView: View, private val listener: DynamicIconCom
                 if (isRevamp) {
                     layoutParams.setMargins(
                         Int.ZERO,
-                        MARGIN_VERTICAL_REVAMP.toPx(),
+                        MARGIN_TOP_REVAMP.toPx(),
                         Int.ZERO,
-                        MARGIN_VERTICAL_REVAMP.toPx()
+                        MARGIN_BOTTOM_REVAMP.toPx()
                     )
                 } else {
                     layoutParams.setMargins(
