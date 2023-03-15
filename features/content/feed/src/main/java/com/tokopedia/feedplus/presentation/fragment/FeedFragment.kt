@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +21,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
 import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
@@ -136,6 +139,8 @@ class FeedFragment :
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context)
     }
+
+    private var commentEntrySource : ContentCommentBottomSheet.EntrySource? = null
 
     private val reportPostLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -255,8 +260,7 @@ class FeedFragment :
             val feedMenuSheet =
                 ContentThreeDotsMenuBottomSheet.getFragment(
                     childFragmentManager,
-                    it.classLoader,
-                    TAG_FEED_MENU_BOTTOMSHEET
+                    it.classLoader
                 )
             feedMenuSheet.setListener(this)
             feedMenuSheet.setData(getMenuItemData(editable, deletable, reportable, contentData), id)
@@ -337,7 +341,11 @@ class FeedFragment :
     }
 
     override fun onMenuBottomSheetCloseClick(contentId: String) {
-        // do nothing
+        //add analytics(if any)
+    }
+
+    override fun disableClearView() {
+        feedMainViewModel.toggleClearView(false)
     }
 
     override fun onSharePostClicked(
@@ -990,6 +998,27 @@ class FeedFragment :
         } else {
             feedPostViewModel.suspendLikeContent(id, rowNumber)
             likeLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        }
+    }
+
+    override fun onCommentClick(model: FeedCardImageContentModel, rowNumber: Int) {
+         commentEntrySource = object : ContentCommentBottomSheet.EntrySource {
+            override fun getPageSource(): PageSource = PageSource.Feed(model.id)
+            override fun onCommentDismissed() {
+            }
+        }
+
+        val sheet = ContentCommentBottomSheet.getOrCreate(
+            childFragmentManager,
+            requireActivity().classLoader
+        )
+        if (!sheet.isAdded) sheet.show(childFragmentManager) else sheet.dismiss()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is ContentCommentBottomSheet -> childFragment.setEntrySource(commentEntrySource)
         }
     }
 
