@@ -15,7 +15,8 @@ data class PdpParamModel(
     val hasCampaign: String = "0",
     val campaignName: String = "",
     val campaignDiscount: Int = 0,
-    val newProductPrice: Long = 0
+    val newProductPrice: Long = 0,
+    var campaignInfo: String = ""
 ) : ImageGeneratorParamModel()
 
 //this data class can be ignored for ParamFieldAnnotation, since this class is being used to map the request on ImagePolicyResponse.generateToShopPage function

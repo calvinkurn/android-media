@@ -1,5 +1,6 @@
 package com.tokopedia.universal_sharing.model
 
+import android.content.Context
 import com.tokopedia.universal_sharing.util.DateUtil
 
 /**
@@ -34,11 +35,7 @@ data class PersonalizedCampaignModel (
         }
     }
 
-    fun getStartHourString(): String = DateUtil.getHour(startTime)
-
     fun getMinuteLeft(): Long = DateUtil.getMinuteLeft(endTime)
-
-    fun getEndHourString(): String = DateUtil.getHour(endTime)
 
     fun getEndDateCampaign(): String = DateUtil.getDateCampaign(endTime)
 
@@ -46,10 +43,30 @@ data class PersonalizedCampaignModel (
 
     fun getDiscountString(): String = discountPercentage.toInt().toString() + "%%"
 
+    fun getCampaignInfoImage(context: Context): String {
+        return when(getCampaignStatus()) {
+            CampaignStatus.UPCOMING -> {
+                context.getString(
+                    com.tokopedia.universal_sharing.R.string.start_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(startTime)
+                )
+            }
+            CampaignStatus.ON_GOING, CampaignStatus.END_SOON -> {
+                context.getString(
+                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(endTime)
+                )
+            }
+            CampaignStatus.NO_CAMPAIGN -> {
+                ""
+            }
+        }
+    }
+
     companion object {
         private const val ZERO_UNIX = 0L
 
-        // threshold for endsoon campaign in minute
+        // threshold for end soon campaign in minute
         private const val THRESHOLD_ENDSOON = 10L
     }
 }
