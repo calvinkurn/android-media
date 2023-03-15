@@ -548,6 +548,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleGetConfiguration(selectedType: String) {
         viewModelScope.launchCatchError(block = {
+            _allowRetryDownloadAsset.value = true
+
             getFeedCheckWhitelist(selectedType)
             getBroadcastingConfig()
             getBroadcasterAuthorConfig(_selectedAccount.value)
@@ -1948,6 +1950,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleSuccessOnBoardingUGC() {
         viewModelScope.launchCatchError(block = {
             getFeedCheckWhitelist(TYPE_USER)
+
+            _allowRetryDownloadAsset.value = true
             getBroadcasterAuthorConfig(_selectedAccount.value)
         }, onError = {
             _observableConfigInfo.value = NetworkResult.Fail(it) {
