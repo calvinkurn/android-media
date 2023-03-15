@@ -2069,9 +2069,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun addPreparationMenu(vararg newMenuList: DynamicPreparationMenu) {
         _menuList.update {
-            _menuList.value.toMutableList().apply {
+            _menuList.value.toMutableSet().apply {
                 addAll(newMenuList)
-            }
+            }.toList()
         }
     }
 
