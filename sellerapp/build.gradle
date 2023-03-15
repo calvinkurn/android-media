@@ -353,6 +353,12 @@ dependencies {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
 
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation projectOrAar(rootProject.ext.libraries.login_helper)
+    } else {
+        implementation projectOrAar(rootProject.ext.libraries.login_helper_no_op)
+    }
+
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.maps
