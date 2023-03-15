@@ -1,6 +1,5 @@
 package com.tokopedia.loginHelper.presentation.viewmodel
 
-import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
@@ -43,6 +42,7 @@ import kotlinx.coroutines.flow.update
 import java.lang.reflect.Type
 import javax.inject.Inject
 
+// Currently data is hardcoded , Will get the data from DB once the server side is fixed
 class LoginHelperViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getUserDetailsRestUseCase: GetUserDetailsRestUseCase,
@@ -86,14 +86,12 @@ class LoginHelperViewModel @Inject constructor(
     }
 
     private fun getLoginData() {
-        Log.d("FATAL", "callTheAPi: starting ")
         launchCatchError(
             dispatchers.io,
             block = {
-      //          val response = getUserDetailsRestUseCase.executeOnBackground()
-                //      Log.d("FATAL", "callTheAPi: ${response}")
+                //          val response = getUserDetailsRestUseCase.executeOnBackground()
                 //         updateUserDataList(convertToUserListUiModel(response))
-                val userDetails = listOfUsers()
+                val userDetails = listOfUsers(_uiState.value.envType)
                 val sortedUserList = userDetails.users?.sortedBy {
                     it.email
                 }
@@ -102,21 +100,61 @@ class LoginHelperViewModel @Inject constructor(
             },
             onError = {
                 updateUserDataList(Fail(it))
-                Log.d("FATAL", "callTheAPi: ${it.message}")
             }
         )
     }
 
-    private fun listOfUsers(): LoginDataUiModel {
+    // Currently It is hardcoded . Will get the data from server once the issue is fixed
+    private fun listOfUsers(envType: LoginHelperEnvType): LoginDataUiModel {
+        return when (envType) {
+            LoginHelperEnvType.PRODUCTION -> {
+                provideProdLoginData()
+            }
+            LoginHelperEnvType.STAGING -> {
+                provideStagingLoginData()
+            }
+        }
+    }
+
+    private fun provideStagingLoginData(): LoginDataUiModel {
         return LoginDataUiModel(
             count = HeaderUiModel(6),
             users = listOf<UserDataUiModel>(
                 UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "toped1234", "Cex"),
-                UserDataUiModel("pbs-abc.yui@tokopedia.com", "asd", "iuasdjhas"),
-                UserDataUiModel("sourav.saikia+01@tokopedia.com", "asd", "asedas"),
-                UserDataUiModel("eren.yeager+01@tokopedia.com", "asd", "qwert"),
-                UserDataUiModel("pbs-bagas.priyadi+03@tokopedia.com", "asd", "as"),
-                UserDataUiModel("pbs-hanifah.puji+buystag1@tokopedia.com", "toped123", "Cex")
+                UserDataUiModel("pbs-hanifah.puji+buystag1@tokopedia.com", "toped123", "Cex"),
+                UserDataUiModel("dwi.widodo+06@tokopedia.com", "dodopass", "Cex"),
+                UserDataUiModel("gaung.utama+01@tokopedia.com", "Q1w2e3r4", "Cex"),
+                UserDataUiModel("pbs-farhan+paylater6@tokopedia.com", "tokopedia", "Fintech"),
+                UserDataUiModel("yoshua.mandali+atomereject1@tokopedia.com", "tokopedia", "Fintech")
+            )
+        )
+    }
+
+    private fun provideProdLoginData(): LoginDataUiModel {
+        return LoginDataUiModel(
+            count = HeaderUiModel(5),
+            users = listOf<UserDataUiModel>(
+                UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "toped123", "Cex"),
+                UserDataUiModel(
+                    "android.automation.seller.h5+frontendtest@tokopedia.com",
+                    "tokopedia789",
+                    "Payment"
+                ),
+                UserDataUiModel(
+                    "pbs-adam.izzulhaq+manualbuyer.gplcicil.trx.ovrdue@tokopedia.com",
+                    "tokopedia",
+                    "Fintech"
+                ),
+                UserDataUiModel(
+                    "pbs-adam.izzulhaq+manualbuy.gplcicil+03@tokopedia.com",
+                    "tokopedia",
+                    "Fintech"
+                ),
+                UserDataUiModel(
+                    "android.automation.seller.h5+frontendtest@tokopedia.com",
+                    "tokopedia789",
+                    "Fintech"
+                )
             )
         )
     }
