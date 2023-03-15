@@ -14,8 +14,8 @@ object AtcVariantNewMapper {
     private const val VARIANT_HAVE_ONE_LEVEL = 1
     private const val VARIANT_HAVE_TWO_LEVEL = 2
 
-    const val VARIANT_LEVEL_ONE_SELECTED = 0
-    const val VARIANT_LEVEL_TWO_SELECTED = 1
+    const val VARIANT_LEVEL_ONE_INDEX = 0
+    const val VARIANT_LEVEL_TWO_INDEX = 1
 
     /***
      * process variant

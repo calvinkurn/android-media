@@ -5,7 +5,7 @@ import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.mapper.AtcVariantNewMapper.VARIANT_LEVEL_ONE_SELECTED
+import com.tokopedia.product.detail.common.mapper.AtcVariantNewMapper.VARIANT_LEVEL_ONE_INDEX
 
 /**
  * Created by yovi.putra on 08/03/23"
@@ -18,7 +18,7 @@ object VariantOneLevelUseCase {
         variantData: ProductVariant,
         mapOfSelectedVariant: Map<String, String>
     ): List<VariantCategory>? {
-        val variant = variantData.variants.getOrNull(VARIANT_LEVEL_ONE_SELECTED) ?: return null
+        val variant = variantData.variants.getOrNull(VARIANT_LEVEL_ONE_INDEX) ?: return null
         val selectedVariant = mapOfSelectedVariant.values.toList()
         val hasCustomImages = variant.options.all {
             it.picture?.url100?.isNotEmpty() == true
@@ -36,7 +36,7 @@ object VariantOneLevelUseCase {
             // looping the children and find the child containing the option id
             // set state, flash sale and stock
             variantData.children.firstOrNull {
-                option.id == it.optionIds.getOrNull(VARIANT_LEVEL_ONE_SELECTED)
+                option.id == it.optionIds.getOrNull(VARIANT_LEVEL_ONE_INDEX)
             }?.let { child ->
                 isFlashSale = child.isFlashSale
                 stock = child.stock?.stock.orZero()
@@ -60,7 +60,7 @@ object VariantOneLevelUseCase {
                 stock = stock,
                 hasCustomImages = hasCustomImages,
                 isFlashSale = isFlashSale,
-                level = VARIANT_LEVEL_ONE_SELECTED
+                level = VARIANT_LEVEL_ONE_INDEX
             )
         }
 

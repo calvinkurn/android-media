@@ -6,8 +6,8 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.mapper.AtcVariantNewMapper.VARIANT_LEVEL_ONE_SELECTED
-import com.tokopedia.product.detail.common.mapper.AtcVariantNewMapper.VARIANT_LEVEL_TWO_SELECTED
+import com.tokopedia.product.detail.common.mapper.AtcVariantNewMapper.VARIANT_LEVEL_ONE_INDEX
+import com.tokopedia.product.detail.common.mapper.AtcVariantNewMapper.VARIANT_LEVEL_TWO_INDEX
 
 /**
  * Created by yovi.putra on 08/03/23"
@@ -22,21 +22,21 @@ object VariantTwoLevelUseCase {
     ): List<VariantCategory>? {
         val selectedVariant = mapOfSelectedVariant.values.toList()
         // process variant state on level one
-        val variantOneLevel = variantData.variants.getOrNull(
-            VARIANT_LEVEL_ONE_SELECTED
+        val variantLevelOne = variantData.variants.getOrNull(
+            VARIANT_LEVEL_ONE_INDEX
         ) ?: return null
         val uiVariantLevelOne = processVariantOneLevel(
-            variantOneLevel = variantOneLevel,
+            variantLevelOne = variantLevelOne,
             variantData = variantData,
             selectedVariant = selectedVariant
         )
 
         // process variant state on level two
-        val variantTwoLevel = variantData.variants.getOrNull(
-            VARIANT_LEVEL_TWO_SELECTED
+        val variantLevelTwo = variantData.variants.getOrNull(
+            VARIANT_LEVEL_TWO_INDEX
         ) ?: return null
         val uiVariantLevelTwo = processVariantLevelTwo(
-            variantLevelTwo = variantTwoLevel,
+            variantLevelTwo = variantLevelTwo,
             selectedVariant = selectedVariant,
             variantData = variantData
         )
@@ -46,30 +46,30 @@ object VariantTwoLevelUseCase {
 
     /***
      * Process variant one level before process variant two level
-     * @param variantOneLevel is variant level one data
+     * @param variantLevelOne is variant level one data
      * @param selectedVariant is variant option one and two level selected
      * @param variantData is all variant data
      */
     private fun processVariantOneLevel(
-        variantOneLevel: Variant,
+        variantLevelOne: Variant,
         variantData: ProductVariant,
         selectedVariant: List<String>
     ): VariantCategory {
-        val hasCustomImagesLevelOne = variantOneLevel.options.all {
+        val hasCustomImagesLevelOne = variantLevelOne.options.all {
             it.picture?.url100?.isNotEmpty() == true
         }
         val uiVariantOption = processVariantOptionLevelOne(
-            variantLevelOne = variantOneLevel,
+            variantLevelOne = variantLevelOne,
             variantData = variantData,
             selectedVariant = selectedVariant,
             hasCustomImagesLevelOne = hasCustomImagesLevelOne
         )
         // create variant ui model
         return VariantCategory(
-            name = variantOneLevel.name.orEmpty(),
-            identifier = variantOneLevel.identifier.orEmpty(),
+            name = variantLevelOne.name.orEmpty(),
+            identifier = variantLevelOne.identifier.orEmpty(),
             variantGuideline = variantData.getVariantGuideline(
-                sizeIdentifier = variantOneLevel.isSizeIdentifier
+                sizeIdentifier = variantLevelOne.isSizeIdentifier
             ),
             isLeaf = false,
             hasCustomImage = hasCustomImagesLevelOne,
@@ -107,7 +107,7 @@ object VariantTwoLevelUseCase {
             } else {
                 // build variant combination for checking to children optionIds
                 // with option id in level one and  first item of selectedVariant in level two
-                val selectedVariantLevelTwo = selectedVariant.getOrNull(VARIANT_LEVEL_TWO_SELECTED)
+                val selectedVariantLevelTwo = selectedVariant.getOrNull(VARIANT_LEVEL_TWO_INDEX)
                 val combineVariant = listOf(option.id, selectedVariantLevelTwo)
 
                 if (combineVariant == child.optionIds) {
@@ -134,7 +134,7 @@ object VariantTwoLevelUseCase {
             stock = stock,
             hasCustomImages = hasCustomImagesLevelOne,
             isFlashSale = isFlashSale,
-            level = VARIANT_LEVEL_ONE_SELECTED
+            level = VARIANT_LEVEL_ONE_INDEX
         )
     }
 
@@ -153,7 +153,7 @@ object VariantTwoLevelUseCase {
             it.picture?.url100?.isNotEmpty() == true
         }
         // loop each variant options in the variant data for checking to their children
-        val uiTwoLevel = processVariantOptionLevelTwo(
+        val uiVariantOption = processVariantOptionLevelTwo(
             variantLevelTwo = variantLevelTwo,
             selectedVariant = selectedVariant,
             variantData = variantData,
@@ -167,7 +167,7 @@ object VariantTwoLevelUseCase {
             ),
             isLeaf = true,
             hasCustomImage = hasCustomImagesLevelTwo,
-            variantOptions = uiTwoLevel
+            variantOptions = uiVariantOption
         )
     }
 
@@ -201,7 +201,7 @@ object VariantTwoLevelUseCase {
             } else {
                 // build variant combination for checking to children optionIds
                 // with option id in level two and  first item of selectedVariant in level one
-                val selectedVariantLevelOne = selectedVariant.getOrNull(VARIANT_LEVEL_ONE_SELECTED)
+                val selectedVariantLevelOne = selectedVariant.getOrNull(VARIANT_LEVEL_ONE_INDEX)
                 val combineVariant = listOf(selectedVariantLevelOne, option.id)
 
                 if (combineVariant == child.optionIds) {
@@ -228,7 +228,7 @@ object VariantTwoLevelUseCase {
             stock = stock,
             hasCustomImages = hasCustomImagesLevelTwo,
             isFlashSale = isFlashSale,
-            level = VARIANT_LEVEL_TWO_SELECTED
+            level = VARIANT_LEVEL_TWO_INDEX
         )
     }
 }
