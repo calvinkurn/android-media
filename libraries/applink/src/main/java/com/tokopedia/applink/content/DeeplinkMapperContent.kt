@@ -15,6 +15,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_EXPLORE
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.TAB_POSITION_VIDEO
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_TAB_POSITION_FOR_YOU
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 
@@ -66,13 +68,19 @@ object DeeplinkMapperContent {
         return uri.host == ApplinkConstInternalContent.HOST_CONTENT && uri.pathSegments.size == 1 && lastPathSegment != null
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     fun getKolDeepLink(deepLink: String): String {
-        when {
-            deepLink.startsWithPattern(ApplinkConst.CONTENT_DETAIL) -> {
-                return deepLink.replace(ApplinkConst.CONTENT_DETAIL.substringBefore("{"), ApplinkConstInternalContent.INTERNAL_CONTENT_POST_DETAIL)
+        val uri = Uri.parse(deepLink)
+        return UriUtil.buildUriAppendParams(
+            ApplinkConsInternalHome.HOME_NAVIGATION,
+            buildMap {
+                put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
+                put(EXTRA_FEED_TAB_POSITION, UF_TAB_POSITION_FOR_YOU)
+
+                val postId = uri.lastPathSegment ?: return@buildMap
+                put(UF_EXTRA_FEED_RELEVANT_POST, postId)
             }
-        }
-        return getRegisteredNavigation(deepLink)
+        )
     }
 
     fun getContentCreatePostDeepLink(deepLink: String): String {

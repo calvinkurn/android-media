@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedcomponent.R
@@ -55,6 +56,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private var profileApplink: String = ""
 
     private var mOnboarding: ImmersiveFeedOnboarding? = null
+
+    private val appLinkTabPosition: Int
+        get() = arguments?.getInt(
+            ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
+            TAB_FIRST_INDEX
+        ) ?: TAB_FIRST_INDEX
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -171,7 +178,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun initView(data: FeedTabsModel) {
-        adapter = FeedPagerAdapter(childFragmentManager, lifecycle, data.data)
+        adapter = FeedPagerAdapter(
+            childFragmentManager,
+            lifecycle,
+            data.data,
+            appLinkExtras = arguments ?: Bundle.EMPTY,
+        )
 
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object : OnPageChangeCallback() {
@@ -286,6 +298,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         } else {
             binding.btnFeedLive.hide()
         }
+
+        scrollToDefaultTabPosition()
+    }
+
+    private fun scrollToDefaultTabPosition() {
+        binding.vpFeedTabItemsContainer.setCurrentItem(appLinkTabPosition, true)
     }
 
     private fun onChangeTab(position: Int) {

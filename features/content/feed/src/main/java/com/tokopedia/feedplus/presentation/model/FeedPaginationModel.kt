@@ -7,4 +7,13 @@ data class FeedPaginationModel(
     var cursor: String,
     val hasNext: Boolean,
     var totalData: Int
-)
+) {
+    companion object {
+        val Empty: FeedPaginationModel
+            get() = FeedPaginationModel(
+                cursor = "",
+                hasNext = false,
+                totalData = 0,
+            )
+    }
+}
