@@ -49,9 +49,6 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMP
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryLayout
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModelList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
@@ -240,6 +237,62 @@ object HomeLayoutMapper {
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             }
             val index = indexOf(it)
+            removeAt(index)
+            add(index, newItem)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapHomeCatalogCouponList(
+        widgetId: String,
+        response: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList? = null,
+        slugs: List<String>? = null,
+        @TokoNowLayoutState state: Int
+    ) {
+        filter { it?.layout is HomeClaimCouponWidgetUiModel }.find { it?.layout?.getVisitableId() == widgetId }?.let {
+            val item = it.layout as HomeClaimCouponWidgetUiModel
+            val couponList = response.mapToClaimCouponWidgetUiModelList(item)
+
+            val layout = it.layout.copy(
+                claimCouponList = couponList,
+                state = state,
+                slugs = if (!slugs.isNullOrEmpty()) slugs else item.slugs
+            )
+            val newItem = HomeLayoutItemUiModel(
+                layout = layout,
+                state = HomeLayoutItemState.LOADED
+            )
+            val index = indexOf(it)
+
+            removeAt(index)
+            add(index, newItem)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapHomeClaimCouponList(
+        widgetId: String,
+        catalogId: String,
+        ctaText: String
+    ) {
+        filter { it?.layout is HomeClaimCouponWidgetUiModel }.find { it?.layout?.getVisitableId() == widgetId }?.let {
+            val item = it.layout as HomeClaimCouponWidgetUiModel
+
+            val layout = it.layout.copy(
+                id = item.id,
+                claimCouponList = item.claimCouponList?.map { claimCoupon ->
+                    if (claimCoupon.id == catalogId) {
+                        claimCoupon.copy(ctaText = ctaText)
+                    } else {
+                        claimCoupon
+                    }
+                },
+                state = item.state
+            )
+            val newItem = HomeLayoutItemUiModel(
+                layout = layout,
+                state = HomeLayoutItemState.LOADED
+            )
+            val index = indexOf(it)
+
             removeAt(index)
             add(index, newItem)
         }
