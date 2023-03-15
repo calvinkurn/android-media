@@ -22,6 +22,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
 import com.tokopedia.editshipping.R;
+import com.tokopedia.editshipping.databinding.EditShippingWebViewBinding;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -91,7 +92,7 @@ public class EditShippingWebViewDialog extends DialogFragment {
 
     }
 
-    private TkpdWebView webView;
+//    private TkpdWebView webView;
     private boolean editButtonClicked = false;
     private int courierIndex;
     private static final String WEB_RESOURCE_KEY = "web_resource_key";
@@ -109,30 +110,31 @@ public class EditShippingWebViewDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.edit_shipping_web_view, container, false);
-        webView = view.findViewById(R.id.additional_option_dialog);
-        Typography editButton = view.findViewById(R.id.edit_option_button);
-        Typography closeButton = view.findViewById(R.id.close_option_button);
+//        View view = inflater.inflate(R.layout.edit_shipping_web_view, container, false);
+        EditShippingWebViewBinding view = EditShippingWebViewBinding.inflate(inflater, container, false);
+//        webView = view.findViewById(R.id.additional_option_dialog);
+//        Typography editButton = view.findViewById(R.id.edit_option_button);
+//        Typography closeButton = view.findViewById(R.id.close_option_button);
         courierIndex = getArguments().getInt(COURIER_INDEX_KEY);
-        webView.setWebViewClient(new AdditionalOptionsWebViewClient());
-        webView.setWebChromeClient(new WebChromeClient());
-        webView.loadData(getArguments().getString(WEB_RESOURCE_KEY), "text/html", "UTF-8");
-        webView.getSettings().setJavaScriptEnabled(true);
-        editButton.setOnClickListener(new View.OnClickListener() {
+        view.additionalOptionDialog.setWebViewClient(new AdditionalOptionsWebViewClient());
+        view.additionalOptionDialog.setWebChromeClient(new WebChromeClient());
+        view.additionalOptionDialog.loadData(getArguments().getString(WEB_RESOURCE_KEY), "text/html", "UTF-8");
+        view.additionalOptionDialog.getSettings().setJavaScriptEnabled(true);
+        view.editOptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editButtonClicked = true;
-                webView.loadUrl("javascript:SubmitNewWebview();");
+                view.additionalOptionDialog.loadUrl("javascript:SubmitNewWebview();");
             }
         });
         //webView.loadUrl("http://new.ph-peter.ndvl/web-service/v4/web-view/get_shipping_detail_info.pl?shipping_id=1&user_id=2828&os_type=2&service_id=1");
-        closeButton.setOnClickListener(new View.OnClickListener() {
+        view.closeOptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
-        return view;
+        return view.getRoot();
     }
 
     @Override
