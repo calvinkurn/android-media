@@ -87,7 +87,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
 
     private fun renderDrawerItem(element: BalanceDrawerItemModel?) {
         binding?.cardContainerBalance?.apply {
-            animateOnPress = CardUnify2.ANIMATE_OVERLAY
+            animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
             setCardUnifyBackgroundColor(
                 ContextCompat.getColor(
                     itemView.context,

@@ -39,7 +39,7 @@
 
     <!-- Balance Widget -->
     <dimen name="balance_atf2_item_max_width_balance">175dp</dimen>
-    <dimen name="balance_atf2_item_max_width_other">166dp</dimen>
+    <dimen name="balance_atf2_item_max_width_other">169dp</dimen>
     <dimen name="balance_atf2_outer_margin">4dp</dimen>
     <dimen name="balance_divider_width">1dp</dimen>
     <dimen name="balance_image_size">32dp</dimen>
