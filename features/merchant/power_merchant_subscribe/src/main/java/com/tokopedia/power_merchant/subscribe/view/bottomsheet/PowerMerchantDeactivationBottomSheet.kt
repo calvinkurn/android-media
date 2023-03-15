@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
@@ -31,6 +30,7 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
     companion object {
         private const val TAG: String = "PowerMerchantCancelBottomSheet"
         private const val ARGS_IS_PM_PRO = "is_pm_pro"
+        private const val HEIGHT_RATIO_BG_AFFECT_DEACTIVATION = 0.3F
 
         @JvmStatic
         fun newInstance(isPmPro: Boolean): PowerMerchantDeactivationBottomSheet {
@@ -81,7 +81,7 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
                 dismiss()
             }
 
-            imgAffectPmDeactivation.setImageUrl(if (isPmPro) getBgPmProDeactivation() else getBgPmDeactivation(), 0.3F)
+            imgAffectPmDeactivation.setImageUrl(if (isPmPro) getBgPmProDeactivation() else getBgPmDeactivation(), HEIGHT_RATIO_BG_AFFECT_DEACTIVATION)
             tvPmDeactivationTnC.movementMethod = LinkMovementMethod.getInstance()
             tvPmDeactivationTnC.text = getString(R.string.pm_pm_deactivation_be_rm_tnc)
         }
