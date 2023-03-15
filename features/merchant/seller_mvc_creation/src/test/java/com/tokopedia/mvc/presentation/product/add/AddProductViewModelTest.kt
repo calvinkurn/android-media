@@ -33,6 +33,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -3668,6 +3669,28 @@ class AddProductViewModelTest {
     }
     //endregion
 
+    //region
+    @Test
+    fun `When unlisted event is triggered, should not emit any effect`() {
+        runBlockingTest {
+            //When
+            viewModel.processEvent(mockk())
+
+            val emittedEffects = arrayListOf<AddProductEffect>()
+
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //Then
+            val actualEffect = emittedEffects.lastOrNull()
+
+            assertEquals(null, actualEffect)
+
+            job.cancel()
+        }
+    }
+    //endregion
 
 
     private fun buildVoucherConfiguration(): VoucherConfiguration {
