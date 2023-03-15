@@ -62,7 +62,4 @@
     <string name="personalized_campaign_message_upcoming_without_discount">Bakalan ada penawaran spesial buat produk ini, lho. Harganya bisa lebih murah, mulai %1$s. Cek Tokopedia, deh.</string>
     <string name="personalized_campaign_message_ongoing_without_disc">Liat deh, ada penawaran spesial di Tokopedia. Harganya %1$s cuma sampai %2$s.</string>
     <string name="personalized_campaign_message_endsoon_without_disc">Penawaran spesial di Tokopedia tinggal %1$s menit lagi. Harganya %2$s, lho. Buruan cek, biar nggak kehabisan.</string>
-    <string name="start_personalized_campaign_info">Mulai %1$s</string>
-    <string name="ongoing_personalized_campaign_info">Berakhir %1$s</string>
-
 </resources>
