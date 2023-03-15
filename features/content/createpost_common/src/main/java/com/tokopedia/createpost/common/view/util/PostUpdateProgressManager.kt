@@ -59,6 +59,7 @@ abstract class PostUpdateProgressManager(
         val intent = Intent(BROADCAST_SUBMIT_POST_NEW)
         intent.putExtra(SUBMIT_POST_SUCCESS_NEW, false)
         intent.putExtra(UPLOAD_ERROR_MESSAGE, errorMessage)
+        intent.putExtra(UPLOAD_FIRST_IMAGE, imgUrl)
         val cacheManager = SaveInstanceCacheManager(this.context, true)
         cacheManager.put(
             CreatePostViewModel.TAG,

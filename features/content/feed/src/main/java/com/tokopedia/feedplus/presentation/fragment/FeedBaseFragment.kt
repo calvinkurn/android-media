@@ -23,12 +23,14 @@ import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
+import com.tokopedia.feedplus.presentation.customview.UploadInfoView
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
+import com.tokopedia.feedplus.presentation.receiver.UploadInfo
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -97,7 +99,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         observeFeedTabData()
         observeCreateContentBottomSheetData()
 
-        observeShortsUpload()
+        observeUpload()
     }
 
     override fun onDestroyView() {
@@ -176,17 +178,26 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
-    private fun observeShortsUpload() {
+    private fun observeUpload() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 uploadReceiver.create(this@FeedBaseFragment)
                     .observe()
                     .collectLatest { info ->
-                        binding.uploadView.show()
-                        binding.uploadView.setProgress(info.progress)
-                        binding.uploadView.setThumbnail(info.thumbnailUrl)
-
-                        if (info.progress >= 100) binding.uploadView.hide()
+                        when (info) {
+                            is UploadInfo.Progress -> {
+                                binding.uploadView.show()
+                                binding.uploadView.setProgress(info.progress)
+                                binding.uploadView.setThumbnail(info.thumbnailUrl)
+                            }
+                            UploadInfo.Finished -> {
+                                binding.uploadView.hide()
+                            }
+                            is UploadInfo.Failed -> {
+                                binding.uploadView.setFailed()
+                                binding.uploadView.setRetryWhenFailed(info.onRetry)
+                            }
+                        }
                     }
             }
         }

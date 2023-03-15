@@ -103,5 +103,6 @@ dari Feed.</string>
 
     <!--Uploading-->
     <string name="feed_uploading_title">Diproses</string>
+    <string name="feed_upload_failed_title">Gagal Upload</string>
 
 </resources>

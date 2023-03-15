@@ -10,7 +10,8 @@ interface UploadReceiver {
     fun observe(): Flow<UploadInfo>
 }
 
-data class UploadInfo(
-    val progress: Int,
-    val thumbnailUrl: String,
-)
+sealed interface UploadInfo {
+    data class Progress(val progress: Int, val thumbnailUrl: String) : UploadInfo
+    object Finished : UploadInfo
+    data class Failed(val thumbnailUrl: String, val onRetry:() -> Unit) : UploadInfo
+}

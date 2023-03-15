@@ -8,8 +8,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * Created by kenny.hadisaputra on 15/03/23
@@ -28,14 +29,32 @@ class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
     private val shortsUploadReceiver = shortsUploadReceiverFactory.create(fragment.viewLifecycleOwner)
     private val postUploadReceiver = postUploadReceiverFactory.create(fragment.requireContext())
 
+    private var mCurrentFlow: Flow<UploadInfo>? = null
+
+    private val mutex = Mutex()
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun observe(): Flow<UploadInfo> = channelFlow {
-        listOf(shortsUploadReceiver, postUploadReceiver).map { receiver ->
-            receiver.observe().stateIn(this)
-        }.forEach { infoFlow ->
-            infoFlow.collectLatest {
-                send(it)
+        listOf(shortsUploadReceiver, postUploadReceiver).forEach { receiver ->
+            launch {
+                val flow = receiver.observe()
+                flow.collectLatest { info ->
+                    when (info) {
+                        is UploadInfo.Progress, is UploadInfo.Failed -> setCurrentFlow(flow)
+                        is UploadInfo.Finished -> clearFlow(flow)
+                    }
+
+                    send(info)
+                }
             }
         }
+    }
+
+    private suspend fun setCurrentFlow(flow: Flow<UploadInfo>) = mutex.withLock {
+        if (mCurrentFlow == null) mCurrentFlow = flow
+    }
+
+    private suspend fun clearFlow(flow: Flow<UploadInfo>) = mutex.withLock {
+        if (mCurrentFlow != null) mCurrentFlow = null
     }
 }
