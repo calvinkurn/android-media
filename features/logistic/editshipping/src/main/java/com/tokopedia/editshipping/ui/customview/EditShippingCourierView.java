@@ -37,12 +37,9 @@ public abstract class EditShippingCourierView<D, L, V> extends LinearLayout{
 
     protected void initView(Context context) {
        binding = getLayoutView(context);
-       bindView(binding);
     }
 
     protected abstract V getLayoutView(Context context);
-
-    protected abstract void bindView (V view);
 
     public abstract void renderData(@NonNull D data, int index);
 

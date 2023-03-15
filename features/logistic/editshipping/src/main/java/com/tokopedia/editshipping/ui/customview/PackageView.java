@@ -20,8 +20,6 @@ import com.tokopedia.editshipping.ui.EditShippingViewListener;
 public class PackageView extends EditShippingCourierView<Courier,
         EditShippingViewListener, ShippingCourierChildrenAdapterBinding>{
 
-//    LinearLayout checkBoxHolder;
-
     private EditShippingViewListener mainView;
 
     public PackageView(Context context) {
@@ -39,11 +37,6 @@ public class PackageView extends EditShippingCourierView<Courier,
     @Override
     protected ShippingCourierChildrenAdapterBinding getLayoutView(Context context) {
         return ShippingCourierChildrenAdapterBinding.inflate(LayoutInflater.from(context), this, true);
-    }
-
-    @Override
-    protected void bindView(ShippingCourierChildrenAdapterBinding view) {
-//        checkBoxHolder = view.findViewById(R.id.checkbox_holder);
     }
 
     @Override

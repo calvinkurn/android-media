@@ -42,11 +42,6 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
         return PackageViewCheckboxBinding.inflate(LayoutInflater.from(context), this, true);
     }
 
-    @Override
-    protected void bindView(PackageViewCheckboxBinding view) {
-//        serviceCheckbox = view.findViewById(R.id.service_checkbox);
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void renderData(@NonNull Service service, int serviceIndex) {

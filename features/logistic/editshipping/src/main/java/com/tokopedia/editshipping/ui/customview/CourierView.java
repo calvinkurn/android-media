@@ -41,20 +41,6 @@ public class CourierView extends EditShippingCourierView<Courier,
         return ShippingCourierAdapterBinding.inflate(LayoutInflater.from(context), this, true);
     }
 
-    @Override
-    protected void bindView(ShippingCourierAdapterBinding view) {
-//        courierNamePlaceHolder = view.findViewById(R.id.courier_name_placeholder);
-//        courierNameText = view.findViewById(R.id.name);
-//        courierImageHolder = view.findViewById(R.id.img_courier);
-//        shipmentSettings = view.findViewById(R.id.shipping_settings);
-//
-//        packageView = view.findViewById(R.id.children_layout);
-//        packageViewHolder = view.findViewById(R.id.package_view_holder);
-//        courierUnavailableWarning = view.findViewById(R.id.courier_unavailable_warning);
-
-    }
-
-
     @SuppressLint({"DeprecatedMethod", "PII Data Exposure"})
     @Override
     public void renderData(@NonNull final Courier courier, final int courierIndex) {

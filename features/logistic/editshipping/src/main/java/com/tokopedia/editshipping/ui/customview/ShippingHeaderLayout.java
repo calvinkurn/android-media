@@ -80,8 +80,8 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
             }
         };
         // todo make sure this one
-        getBinding().getRoot().setOnClickListener(editAddressSpinnerClickListener);
-        getBinding().textEditShippingCity.setOnClickListener(editAddressSpinnerClickListener);
+        view.getRoot().setOnClickListener(editAddressSpinnerClickListener);
+        view.textEditShippingCity.setOnClickListener(editAddressSpinnerClickListener);
 
         view.postalCode.setOnTouchListener(new View.OnTouchListener() {
             @Override
