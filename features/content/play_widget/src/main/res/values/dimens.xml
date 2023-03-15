@@ -56,4 +56,8 @@
     <dimen name="play_widget_card_large_height">284dp</dimen>
 
     <dimen name="play_widget_card_jumbo_height">410dp</dimen>
+
+    <!-- Play Widget Action Menu Bottom Sheet -->
+    <dimen name="play_widget_action_divider_height">0.5dp</dimen>
+    <dimen name="play_widget_action_height">56dp</dimen>
 </resources>

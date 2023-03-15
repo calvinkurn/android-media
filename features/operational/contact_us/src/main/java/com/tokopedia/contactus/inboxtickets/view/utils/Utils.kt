@@ -17,6 +17,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import java.util.regex.PatternSyntaxException
 
 const val CLOSED = "closed"
 const val OPEN = "open"
@@ -39,14 +40,18 @@ class Utils {
     }
 
     private fun findOccurrences(what: String, src: String): List<Int> {
-        val occurrences = ArrayList<Int>()
-        val regex = "\\b$what\\w*"
-        val pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
-        val matcher = pattern.matcher(src)
-        while (matcher.find()) {
-            occurrences.add(matcher.start())
+        return try {
+            val occurrences = ArrayList<Int>()
+            val regex = "\\b$what\\w*"
+            val pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
+            val matcher = pattern.matcher(src)
+            while (matcher.find()) {
+                occurrences.add(matcher.start())
+            }
+            occurrences
+        } catch(e : PatternSyntaxException){
+            emptyList()
         }
-        return occurrences
     }
 
     fun getHighlightText(context: Context, what: String, src: String): SpannableString {

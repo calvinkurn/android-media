@@ -3,24 +3,47 @@ package com.tokopedia.oneclickcheckout.order.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.oneclickcheckout.databinding.*
+import com.tokopedia.oneclickcheckout.databinding.CardOrderInsuranceBinding
+import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceBinding
+import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
+import com.tokopedia.oneclickcheckout.databinding.CardOrderPromoBinding
+import com.tokopedia.oneclickcheckout.databinding.CardOrderShopBinding
+import com.tokopedia.oneclickcheckout.databinding.CardOrderTickerBinding
+import com.tokopedia.oneclickcheckout.databinding.LayoutOccOnboardingNewBinding
+import com.tokopedia.oneclickcheckout.databinding.LayoutPaymentBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.view.card.*
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderOnboardingCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderTickerCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.common.databinding.ItemUploadPrescriptionBinding
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 
-class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
-                              private val shopListener: OrderShopCard.OrderShopCardListener,
-                              private val productListener: OrderProductCard.OrderProductCardListener,
-                              private val preferenceListener: OrderPreferenceCard.OrderPreferenceCardListener,
-                              private val insuranceListener: OrderInsuranceCard.OrderInsuranceCardListener,
-                              private val promoCardListener: OrderPromoCard.OrderPromoCardListener,
-                              private val uploadPrescriptionListener: UploadPrescriptionListener,
-                              private val paymentCardListener: OrderTotalPaymentCard.OrderTotalPaymentCardListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class OrderSummaryPageAdapter(
+    private val analytics: OrderSummaryAnalytics,
+    private val shopListener: OrderShopCard.OrderShopCardListener,
+    private val productListener: OrderProductCard.OrderProductCardListener,
+    private val preferenceListener: OrderPreferenceCard.OrderPreferenceCardListener,
+    private val insuranceListener: OrderInsuranceCard.OrderInsuranceCardListener,
+    private val promoCardListener: OrderPromoCard.OrderPromoCardListener,
+    private val uploadPrescriptionListener: UploadPrescriptionListener,
+    private val paymentCardListener: OrderTotalPaymentCard.OrderTotalPaymentCardListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
 
@@ -78,11 +101,14 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
         val inflater = LayoutInflater.from(parent.context)
         when (viewType) {
             OrderTickerCard.VIEW_TYPE -> {
-                return OrderTickerCard(CardOrderTickerBinding.inflate(inflater, parent, false), object : OrderTickerCard.OrderTickerCardListener {
-                    override fun onCloseTicker() {
-                        ticker = null
+                return OrderTickerCard(
+                    CardOrderTickerBinding.inflate(inflater, parent, false),
+                    object : OrderTickerCard.OrderTickerCardListener {
+                        override fun onCloseTicker() {
+                            ticker = null
+                        }
                     }
-                })
+                )
             }
             OrderOnboardingCard.VIEW_TYPE -> {
                 return OrderOnboardingCard(LayoutOccOnboardingNewBinding.inflate(inflater, parent, false))

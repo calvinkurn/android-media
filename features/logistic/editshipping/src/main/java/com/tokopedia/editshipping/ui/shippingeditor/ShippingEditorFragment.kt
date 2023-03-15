@@ -32,17 +32,37 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.data.preference.WhitelabelInstanCoachMarkSharePref
 import com.tokopedia.editshipping.di.shippingeditor.DaggerShippingEditorComponent
-import com.tokopedia.editshipping.domain.model.shippingEditor.*
+import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.HeaderTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperDetailModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperGroupModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorState
+import com.tokopedia.editshipping.domain.model.shippingEditor.TickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEditorModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
 import com.tokopedia.editshipping.ui.EditShippingActivity
 import com.tokopedia.editshipping.ui.bottomsheet.ShipperDetailBottomSheet
-import com.tokopedia.editshipping.ui.shippingeditor.adapter.*
+import com.tokopedia.editshipping.ui.shippingeditor.adapter.FeatureInfoAdapter
+import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShipperProductItemAdapter
+import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorDetailsAdapter
+import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorItemAdapter
+import com.tokopedia.editshipping.ui.shippingeditor.adapter.WarehouseInactiveAdapter
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.*
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
@@ -916,7 +936,8 @@ class ShippingEditorFragment :
             val whitelabelView = getWhitelabelView()
             if (whitelabelView != null) {
                 val normalServiceView = getNormalServiceView()
-                val coachMarkItems = generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
+                val coachMarkItems =
+                    generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
 
                 CoachMark2(it).apply {
                     setOnBoardingListener(coachMarkItems)
@@ -966,7 +987,10 @@ class ShippingEditorFragment :
         })
     }
 
-    private fun CoachMark2.manualScroll(coachMarkItems: ArrayList<CoachMark2Item>, currentIndex: Int = 0) {
+    private fun CoachMark2.manualScroll(
+        coachMarkItems: ArrayList<CoachMark2Item>,
+        currentIndex: Int = 0
+    ) {
         coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { rv ->
             scrollView?.smoothScrollTo(0, rv.top)
             this.showCoachMark(coachMarkItems, null, currentIndex)

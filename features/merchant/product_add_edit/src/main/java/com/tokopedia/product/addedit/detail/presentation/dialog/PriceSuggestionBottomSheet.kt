@@ -109,8 +109,6 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
         isKeyboardOverlap = false
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews(binding)
@@ -134,8 +132,6 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
         }
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     private fun setupListeners(binding: BottomsheetPriceSuggestionLayoutBinding?) {
         binding?.apply {
             setupRootView(this)
@@ -156,8 +152,6 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
         }
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     private fun setupProductPriceField(binding: BottomsheetPriceSuggestionLayoutBinding) {
         binding.tfuProductPrice.editText.apply {
             observeProductPriceChangeWithDebounce()
@@ -266,7 +260,6 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
         }
     }
 
-    @ExperimentalCoroutinesApi
     private fun EditText.observeProductPriceChangeWithDebounce(): Flow<String> {
         return callbackFlow {
             val listener = object : TextWatcher {
