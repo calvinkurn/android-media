@@ -266,9 +266,9 @@ dependencies {
     }
 
     if (rootProject.ext.debugToolsEnabled) {
-        implementation projectOrAar(rootProject.ext.libraries.login_helper)
+        implementation projectOrAar(rootProject.ext.libraries.loginHelper)
     } else {
-        implementation projectOrAar(rootProject.ext.libraries.login_helper_no_op)
+        implementation projectOrAar(rootProject.ext.libraries.loginHelperNoop)
     }
 
     // in~house dependencies

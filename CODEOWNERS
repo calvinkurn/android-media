@@ -346,7 +346,7 @@
 /libraries/liveness_lib/								@tokopedia/android-core-dev
 /libraries/locationmanager/								@tokopedia/android-core-dev
 /libraries/logger/										@tokopedia/android-core-dev
-/libraries/login_helper/                                @tokopedia/android-minionmark-dev
+/libraries/loginHelper/                                @tokopedia/android-minionmark-dev
 /libraries/keys/										@tokopedia/android-core-dev
 /libraries/mapviewer/								    @tokopedia/android-core-dev
 /libraries/network/                                     @tokopedia/android-core-dev
