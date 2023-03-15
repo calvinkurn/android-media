@@ -50,6 +50,7 @@ class BannerIndicator : LinearLayout {
         .setDuration(SCROLL_TRANSITION_DURATION)
     private var totalBanner = Int.ZERO
     private var currentPosition = Int.ZERO
+    private var nextTransition = 0
 
     init {
         this.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -83,22 +84,32 @@ class BannerIndicator : LinearLayout {
         bannerAnimatorSet.resume()
     }
 
-    fun setBannerIndicators(totalBanner: Int) {
-        if (!isInitialized || this.totalBanner != totalBanner) {
-            this.removeAllViews()
-            this.totalBanner = totalBanner
-            if (totalBanner > Int.ONE) {
-                for (i in Int.ZERO until totalBanner) {
-                    addProgressBar()
-                }
-                getChildProgressBar(Int.ZERO)?.let {
-                    initialAnimate(it, Int.ZERO)
-                }
-            } else {
-                this.removeAllViews()
+    fun setBannerIndicators(totalBanner: Int, startFrom: Int = -1) {
+        this.removeAllViews()
+        this.totalBanner = totalBanner
+        if (totalBanner > Int.ONE) {
+            var start = 0
+            if (startFrom > -1) {
+                cancelAllAnimation()
+                start = startFrom
             }
-            isInitialized = true
+            for (i in Int.ZERO until totalBanner) {
+                addProgressBar()
+            }
+            getChildProgressBar(start)?.let {
+                initialAnimate(it, start)
+            }
+        } else {
+            this.removeAllViews()
         }
+        isInitialized = true
+    }
+
+    private fun cancelAllAnimation() {
+        bannerAnimatorSet.removeAllListeners()
+        bannerAnimatorSet.cancel()
+        bannerAnimator.removeAllUpdateListeners()
+        bannerAnimator.cancel()
     }
 
     private fun maximizeAnimator(progressIndicator: ProgressBar, position: Int) {
@@ -132,7 +143,7 @@ class BannerIndicator : LinearLayout {
             val value = animation.animatedValue as Int
             progressIndicator.progress = value
             if (value >= MAXIMUM_PROGRESS) {
-                val nextTransition = if (position != Int.MAX_VALUE - Int.ONE) {
+                nextTransition = if (position != Int.MAX_VALUE - Int.ONE) {
                     position + Int.ONE
                 } else {
                     Int.ZERO
@@ -175,19 +186,22 @@ class BannerIndicator : LinearLayout {
         minAnimatorSet.start()
     }
 
-    fun resetBannerIndicator() {
-        bannerAnimatorSet.removeAllListeners()
-        bannerAnimatorSet.cancel()
-        bannerAnimator.removeAllUpdateListeners()
-        bannerAnimator.cancel()
-        for (i in Int.ZERO until totalBanner) {
-            getChildProgressBar(i)?.let {
-                it.progress = Int.ZERO
-                it.layoutParams.width = WIDTH_MINIMUM_PROGRESS.toPx()
-                it.requestLayout()
-            }
-        }
-    }
+//    fun resetBannerIndicator(startFrom: Int = -1) {
+//        bannerAnimatorSet.removeAllListeners()
+//        bannerAnimatorSet.cancel()
+//        bannerAnimator.removeAllUpdateListeners()
+//        bannerAnimator.cancel()
+//        for (i in Int.ZERO until totalBanner) {
+//            getChildProgressBar(i)?.let {
+//                it.progress = Int.ZERO
+//                it.layoutParams.width = WIDTH_MINIMUM_PROGRESS.toPx()
+//                it.requestLayout()
+//            }
+//        }
+//        if (startFrom > -1) {
+//            initialAnimate()
+//        }
+//    }
 
     fun startIndicatorByPosition(position: Int) {
         if (bannerAnimator.isRunning) {

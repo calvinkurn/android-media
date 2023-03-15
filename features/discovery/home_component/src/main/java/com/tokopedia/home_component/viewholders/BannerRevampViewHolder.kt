@@ -63,16 +63,21 @@ class BannerRevampViewHolder(
                 try {
                     val banners = channel.convertToBannerItemModel()
                     totalBanner = banners.size
-                    binding?.bannerIndicator?.setBannerIndicators(banners.size)
-                    binding?.bannerIndicator?.setBannerListener(object : BannerIndicatorListener {
-                        override fun onChangePosition(position: Int) {
-                            scrollTo(position)
-                        }
+                    if (previousTotalBanner != totalBanner) {
+                        binding?.bannerIndicator?.setBannerIndicators(banners.size)
+                        binding?.bannerIndicator?.setBannerListener(object :
+                                BannerIndicatorListener {
+                                override fun onChangePosition(position: Int) {
+                                    scrollTo(position)
+                                }
 
-                        override fun getCurrentPosition(position: Int) {
-                            // no-op
-                        }
-                    })
+                                override fun getCurrentPosition(position: Int) {
+                                    // no-op
+                                }
+                            })
+                    } else {
+                        isFromInitialize = true
+                    }
                     initBanner(banners)
                 } catch (_: NumberFormatException) {
                     // no-op
@@ -105,6 +110,14 @@ class BannerRevampViewHolder(
                             if (currentPagePosition != RecyclerView.NO_POSITION) {
                                 binding?.bannerIndicator?.startIndicatorByPosition(currentPagePosition)
                                 isFromDrag = false
+                            }
+                        }
+                        if (isFromInitialize) {
+                            val currentPagePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                            currentPosition = currentPagePosition
+                            if (currentPagePosition != RecyclerView.NO_POSITION) {
+                                binding?.bannerIndicator?.setBannerIndicators(totalBanner, currentPagePosition)
+                                isFromInitialize = false
                             }
                         }
                     }
