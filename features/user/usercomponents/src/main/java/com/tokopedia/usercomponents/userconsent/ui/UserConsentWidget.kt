@@ -99,6 +99,9 @@ class UserConsentWidget : FrameLayout,
                 checkboxPurposes.setOnCheckedChangeListener { buttonView, isChecked ->
                     collection?.purposes?.let {
                         userConsentAnalytics.trackOnPurposeCheck(isChecked, it)
+                        it.forEach { purposeDataModel ->
+                            purposeDataModel.transactionType = if (isChecked) CONSENT_OPT_IN else CONSENT_OPT_OUT
+                        }
                     }
 
                     onCheckedChangeListener.invoke(isChecked)
@@ -127,6 +130,10 @@ class UserConsentWidget : FrameLayout,
                 submissionParam.purposes.add(
                     Purpose(
                         purposeID = it.id,
+                        /*
+                        * default value of transactionType is OPT_OUT, because the first time show checkbox always uncheck
+                        * specially for consentTypeInfo (that no checkbox show) the value must be OPT_IN.
+                        */
                         transactionType =
                             if (isConsentTypeInfo)
                                 CONSENT_OPT_IN
@@ -251,6 +258,10 @@ class UserConsentWidget : FrameLayout,
                 purposes.add(UserConsentPayload.PurposeDataModel(
                     purposeId = it.id,
                     version = it.version,
+                    /*
+                    * default value of transactionType is OPT_OUT, because the first time show checkbox always uncheck
+                    * specially for consentTypeInfo (that no checkbox show) the value must be OPT_IN.
+                    */
                     transactionType =
                         if (isConsentTypeInfo)
                             CONSENT_OPT_IN
