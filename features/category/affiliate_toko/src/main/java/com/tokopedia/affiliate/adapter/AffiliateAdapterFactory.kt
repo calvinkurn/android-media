@@ -26,6 +26,7 @@ import com.tokopedia.affiliate.ui.viewholder.AffiliateCommisionThickDivderItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateCommissionDetailsItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateDataCardShimmerItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateDateFilterVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateDiscoBannerVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEduCategoryChipVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationArticleRVVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationArticleTopicRVVH
@@ -68,6 +69,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionThickDi
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDataPlatformShimmerModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicRVUiModel
@@ -172,6 +174,7 @@ class AffiliateAdapterFactory(
             AffiliateEducationSeeAllVH.LAYOUT -> AffiliateEducationSeeAllVH(parent, educationSeeAllCardClickInterface)
             AffiliateEduCategoryChipVH.LAYOUT -> AffiliateEduCategoryChipVH(parent, affiliateEduCategoryChipClick)
             AffiliateSSAShopItemVH.LAYOUT -> AffiliateSSAShopItemVH(parent, productClickInterface)
+            AffiliateDiscoBannerVH.LAYOUT -> AffiliateDiscoBannerVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -341,4 +344,6 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateSSAShopUiModel): Int =
         AffiliateSSAShopItemVH.LAYOUT
+
+    override fun type(viewModel: AffiliateDiscoBannerUiModel): Int = AffiliateDiscoBannerVH.LAYOUT
 }
