@@ -1,5 +1,6 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -41,6 +42,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import java.util.*
 import javax.inject.Inject
 
 class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener {
@@ -154,6 +156,22 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
             )
             intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position)
             startActivityForResult(intent, REQUEST_FROM_PDP)
+        }
+    }
+
+    open fun goToProductDetail(productId: String, position: Int) {
+        if (activity != null) {
+            val intent = RouteManager.getIntent(
+                activity,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productId
+            )
+            intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position)
+            try {
+                startActivityForResult(intent, REQUEST_FROM_PDP)
+            } catch (exception: ActivityNotFoundException) {
+                exception.printStackTrace()
+            }
         }
     }
 

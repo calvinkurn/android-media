@@ -94,7 +94,7 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
             list[recommendationItemPosition] = recommendationItem!!.copy(
                 product = recommendationItem!!.product.copy(isWishlist = isWishlisted)
             )
-            _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list))
+            _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list.toList()))
         }
     }
 }
