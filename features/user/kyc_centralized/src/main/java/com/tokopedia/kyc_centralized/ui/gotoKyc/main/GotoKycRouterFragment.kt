@@ -62,7 +62,8 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
             PAGE_DOB_CHALLENGE -> {
                 val parameter = DobChallengeParam(
                     projectId = data?.projectId.orEmpty(),
-                    challengeId = data?.challengeId.orEmpty()
+                    challengeId = data?.challengeId.orEmpty(),
+                    pageSource = data?.sourcePage.orEmpty()
                 )
                 gotoDobChallenge(parameter)
             }

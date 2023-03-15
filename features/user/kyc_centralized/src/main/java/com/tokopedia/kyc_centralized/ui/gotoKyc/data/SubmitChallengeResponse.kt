@@ -12,5 +12,8 @@ data class SubmitKYCChallenge(
 	val errorMessages: List<String>,
 
 	@SerializedName("isSuccess")
-	val isSuccess: Boolean
+	val isSuccess: Boolean,
+
+    //TODO: this is fake field, please change it when BE ready
+    val submitStatus: String = "KYC_CHALLENGE_ATTEMPTS_EXHAUSTED"
 )
