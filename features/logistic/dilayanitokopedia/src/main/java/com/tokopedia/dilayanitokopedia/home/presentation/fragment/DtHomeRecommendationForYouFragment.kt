@@ -307,6 +307,11 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
                             productCardOptionsModel
                         )
                     }
+                    updateWishlist(
+                        productCardOptionsModel.productId,
+                        wishlistResult.isAddWishlist,
+                        productCardOptionsModel.productPosition
+                    )
                 } else {
                     showMessageSuccessRemoveWishlistV2(wishlistResult)
                 }
