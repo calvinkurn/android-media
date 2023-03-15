@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -57,7 +56,6 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
-import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
 import com.tokopedia.play.broadcaster.util.asset.AssetPathHelper
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.removeUnusedField
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupAutoAddField
@@ -133,7 +131,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger,
     private val broadcastTimer: PlayBroadcastTimer,
-    private val assetPathHelper: AssetPathHelper,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -1783,17 +1780,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _beautificationConfig.value = beautificationConfig
 
         if (!beautificationConfig.isUnknown) {
-            val isDownloadSuccess = downloadInitialBeautificationAsset(beautificationConfig)
-            if(isDownloadSuccess) {
+            try {
+                downloadInitialBeautificationAsset(beautificationConfig)
                 addPreparationMenu(DynamicPreparationMenu.createFaceFilter(isMandatory = false))
                 /** TODO: reinit broadcaster & setup beautification sdk on the next PR */
-            }
-            else {
+            } catch (e: Exception) {
                 removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)
 
                 if(_allowRetryDownloadAsset.value) {
                     _allowRetryDownloadAsset.value = false
-                    throw DownloadBeautificationAssetException("Download Beautificaion Asset Fails")
+                    throw e
                 }
             }
         }
@@ -1802,30 +1798,44 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun downloadInitialBeautificationAsset(beautificationConfig: BeautificationConfigUiModel): Boolean {
-        if(beautificationConfig.isUnknown) return false
+    private suspend fun downloadInitialBeautificationAsset(beautificationConfig: BeautificationConfigUiModel) {
+        if(beautificationConfig.isUnknown) return
 
-        val isLicenseDownloaded = viewModelScope.asyncCatchError(block = {
-            repo.downloadLicense(beautificationConfig.licenseLink)
-        }) {
-            false
+        val isLicenseDownloaded = viewModelScope.async {
+            try {
+                repo.downloadLicense(beautificationConfig.licenseLink)
+            } catch (e: Exception) {
+                throw DownloadLicenseAssetException(e.message)
+            }
         }
 
-        val isModelDownloaded = viewModelScope.asyncCatchError(block = {
-            repo.downloadModel(beautificationConfig.modelLink)
-        }) {
-            false
+        val isModelDownloaded = viewModelScope.async {
+            try {
+                repo.downloadModel(beautificationConfig.modelLink)
+            } catch (e: Exception) {
+                throw DownloadModelAssetException(e.message)
+            }
         }
 
-        val isCustomFaceDownloaded = viewModelScope.asyncCatchError(block = {
-            repo.downloadCustomFace(beautificationConfig.customFaceAssetLink)
-        }) {
-            false
+        val isCustomFaceDownloaded = viewModelScope.async {
+            try {
+                repo.downloadCustomFace(beautificationConfig.customFaceAssetLink)
+            } catch (e: Exception) {
+                throw DownloadCustomFaceAssetException(e.message)
+            }
         }
 
-        return isLicenseDownloaded.await() == true &&
-            isModelDownloaded.await() == true &&
-            isCustomFaceDownloaded.await() == true
+        if(!isLicenseDownloaded.await()) {
+            throw DownloadLicenseAssetException(FAIL_SAVE_ERROR_MESSAGE)
+        }
+
+        if(!isModelDownloaded.await()) {
+            throw DownloadModelAssetException(FAIL_SAVE_ERROR_MESSAGE)
+        }
+
+        if(!isCustomFaceDownloaded.await()) {
+            throw DownloadCustomFaceAssetException(FAIL_SAVE_ERROR_MESSAGE)
+        }
     }
 
     private fun updatePresetAssetStatus(preset: PresetFilterUiModel, assetStatus: BeautificationAssetStatus) {
@@ -2111,5 +2121,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val DEFAULT_GAME_RESULT_COACHMARK_AUTO_DISMISS = 5000L
         private const val FLAG_END_CURSOR = "-1"
         private const val WEB_SOCKET_SOURCE_PLAY_BROADCASTER = "Broadcaster"
+
+        private const val FAIL_SAVE_ERROR_MESSAGE = "fail to save asset to local storage"
     }
 }
