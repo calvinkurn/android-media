@@ -62,7 +62,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.*
+import java.util.Calendar
+import java.util.TimeZone
+import java.util.Date
 import javax.inject.Inject
 
 /**
@@ -131,6 +133,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var selectedEndDate = Date()
     private var existingStartDate = Date()
     private var existingEndDate = Date()
+    private var isHolidayBottomSheetShown = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentShopSettingsOperationalHoursBinding.inflate(inflater, container, false).apply {
@@ -294,10 +297,13 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // set click listener for button add holiday schedule
         buttonAddHoliday?.apply {
             setOnClickListener {
-                isActionEdit = false
-                resetSelectedDates(isActionEdit)
-                setupHolidayCalendarPickerBottomSheet()
-                showHolidayBottomSheet()
+                if(!isHolidayBottomSheetShown){
+                    isHolidayBottomSheetShown =  true
+                    isActionEdit = false
+                    resetSelectedDates(isActionEdit)
+                    setupHolidayCalendarPickerBottomSheet()
+                    showHolidayBottomSheet()
+                }
             }
             text = getString(R.string.shop_operational_hour_set_holiday_schedule_title).split(" ").joinToString(" ") { word ->
                 word.replaceFirstChar { it.uppercase() }
@@ -597,6 +603,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         } else {
             holidayBottomSheet?.dismiss()
         }
+        isHolidayBottomSheetShown = false
     }
 
     private fun setupHolidayCalendarPickerBottomSheet() {
@@ -739,6 +746,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
             primaryCTAListener = {
                 holidayBottomSheet?.dismiss()
+                isHolidayBottomSheetShown = false
             },
             secondaryCTAListener = {}
         )?.show()
@@ -755,6 +763,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 holidayBottomSheet?.dismiss()
                 showLoader()
                 setShopHolidaySchedule(startDate, endDate)
+                isHolidayBottomSheetShown = false
             },
             secondaryCTAListener = {}
         )?.show()
