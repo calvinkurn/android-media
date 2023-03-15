@@ -32,8 +32,6 @@ import com.tokopedia.product.addedit.detail.presentation.model.PriceSuggestion
 import com.tokopedia.product.addedit.detail.presentation.viewholder.SimilarProductViewHolder
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
