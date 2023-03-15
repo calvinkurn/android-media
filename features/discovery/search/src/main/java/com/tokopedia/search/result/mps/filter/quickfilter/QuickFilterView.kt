@@ -1,6 +1,8 @@
 package com.tokopedia.search.result.mps.filter.quickfilter
 
 import com.tokopedia.filter.common.FilterState
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.search.result.mps.MPSState
 import com.tokopedia.search.result.mps.MPSViewModel
 import com.tokopedia.sortfilter.SortFilter
@@ -11,7 +13,7 @@ class QuickFilterView(
     private val mpsViewModel: MPSViewModel?,
 ) {
 
-    private var quickFilterDataViewList: List<QuickFilterDataView> = listOf()
+    private var quickFilterDataViewList: List<QuickFilterDataView>? = null
 
     fun refreshQuickFilter(
         sortFilterView: SortFilter?,
@@ -22,11 +24,23 @@ class QuickFilterView(
 
         this.quickFilterDataViewList = mpsState.quickFilterDataViewList
 
-        populateSortFilterView(sortFilterView, mpsState)
+        configureSortFilterView(sortFilterView, mpsState)
     }
 
-    private fun populateSortFilterView(sortFilterView: SortFilter, mpsState: MPSState) {
-        if (quickFilterDataViewList.isEmpty()) return
+    private fun configureSortFilterView(sortFilterView: SortFilter, mpsState: MPSState) {
+        if (quickFilterDataViewList?.isEmpty() == true) hideQuickFilterView(sortFilterView)
+        else showQuickFilterView(sortFilterView, mpsState)
+    }
+
+    private fun hideQuickFilterView(sortFilterView: SortFilter) {
+        sortFilterView.hide()
+    }
+
+    private fun showQuickFilterView(
+        sortFilterView: SortFilter,
+        mpsState: MPSState
+    ) {
+        sortFilterView.show()
 
         sortFilterView.sortFilterHorizontalScrollView.scrollX = 0
         sortFilterView.parentListener = ::openBottomSheetFilter
@@ -34,9 +48,9 @@ class QuickFilterView(
     }
 
     private fun sortFilterItemList(mpsState: MPSState) =
-        quickFilterDataViewList.mapTo(ArrayList()) {
+        quickFilterDataViewList?.mapTo(ArrayList()) {
             sortFilterItem(it, mpsState)
-        }
+        } ?: arrayListOf()
 
     private fun sortFilterItem(
         quickFilterDataView: QuickFilterDataView,

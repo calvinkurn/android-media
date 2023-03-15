@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.State
 import com.tokopedia.filter.common.FilterState
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.mps.domain.model.MPSModel
+import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterDataView
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateKeywordDataView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
@@ -19,21 +20,36 @@ data class MPSState(
     val filterState: FilterState = FilterState(),
 ): SearchUiState {
 
-    fun success(mpsModel: MPSModel) = copy(
-        result = State.Success(data = successData(mpsModel)),
-        quickFilterDataViewList = mpsModel.quickFilterModel.filter.map { QuickFilterDataView(it) },
-        filterState = filterState.from(parameter, mpsModel.quickFilterModel.filter),
-    )
+    fun success(mpsModel: MPSModel): MPSState {
+        val filterState = filterState.from(parameter, mpsModel.quickFilterModel.filter)
+        return copy(
+            result = State.Success(data = successData(mpsModel, filterState)),
+            quickFilterDataViewList = quickFilterData(mpsModel, filterState),
+            filterState = filterState,
+        )
+    }
 
-    private fun successData(mpsModel: MPSModel): List<Visitable<MPSTypeFactory>> =
+    private fun successData(mpsModel: MPSModel, filterState: FilterState): List<Visitable<MPSTypeFactory>> =
         if (mpsModel.shopList.isNotEmpty())
             listOf(ChooseAddressDataView) +
                 mpsShopWidgetList(mpsModel)
-        else
-            listOf(MPSEmptyStateKeywordDataView)
+        else {
+            if (filterState.isFilterActive)
+                listOf(MPSEmptyStateFilterDataView)
+            else
+                listOf(MPSEmptyStateKeywordDataView)
+        }
 
     private fun mpsShopWidgetList(mpsModel: MPSModel) =
         mpsModel.shopList.map(MPSShopWidgetDataView::create)
+
+    private fun quickFilterData(
+        mpsModel: MPSModel,
+        filterState: FilterState,
+    ): List<QuickFilterDataView> {
+        return if (mpsModel.shopList.isEmpty() && !filterState.isFilterActive) listOf()
+        else mpsModel.quickFilterModel.filter.map { QuickFilterDataView(it) }
+    }
 
     fun error(throwable: Throwable) = copy(
         result = State.Error(

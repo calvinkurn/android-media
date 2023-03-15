@@ -30,6 +30,7 @@ class FilterStateTest {
         )
 
         assertThat(filterState.filterViewState, `is`(setOf(filterOption.uniqueId)))
+        assertTrue(filterState.isFilterActive)
     }
 
     @Test

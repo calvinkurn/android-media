@@ -16,6 +16,9 @@ data class FilterState(
     val filterViewState: Set<String> = setOf(),
 ) {
 
+    val isFilterActive: Boolean
+        get() = filterViewState.isNotEmpty()
+
     val activeFilterOptionList: List<Option>
         get() = filterViewState.map(OptionHelper::generateOptionFromUniqueId)
 

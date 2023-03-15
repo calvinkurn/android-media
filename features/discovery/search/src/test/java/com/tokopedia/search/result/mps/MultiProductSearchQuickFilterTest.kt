@@ -8,20 +8,18 @@ import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
 import io.mockk.coVerify
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MultiProductSearchQuickFilterTest: MultiProductSearchTestFixtures() {
 
-    private val mpsViewModel = mpsViewModel(
-        MPSState(
-            mapOf(
-                SearchApiConst.ACTIVE_TAB to SearchConstant.ActiveTab.MPS,
-                SearchApiConst.Q1 to "samsung",
-                SearchApiConst.Q2 to "xiaomi",
-                SearchApiConst.Q3 to "iphone",
-            )
-        ),
+    private val parameter = mapOf(
+        SearchApiConst.ACTIVE_TAB to SearchConstant.ActiveTab.MPS,
+        SearchApiConst.Q1 to "samsung",
+        SearchApiConst.Q2 to "xiaomi",
+        SearchApiConst.Q3 to "iphone",
     )
+    private val mpsViewModel = mpsViewModel(MPSState(parameter))
 
     @Test
     fun `on view created will show list of quick filter`() {
@@ -30,15 +28,20 @@ class MultiProductSearchQuickFilterTest: MultiProductSearchTestFixtures() {
 
         `When view created`()
 
-        `Then assert quick filter data view list`(mpsModel.quickFilterModel)
+        `Then assert quick filter data view list`(
+            mpsViewModel.stateValue.quickFilterDataViewList,
+            mpsModel.quickFilterModel,
+        )
     }
 
-    private fun `When view created`() {
+    private fun `When view created`(mpsViewModel: MPSViewModel = this.mpsViewModel) {
         mpsViewModel.onViewCreated()
     }
 
-    private fun `Then assert quick filter data view list`(quickFilterModel: DataValue) {
-        val quickFilterDataViewList = mpsViewModel.stateValue.quickFilterDataViewList
+    private fun `Then assert quick filter data view list`(
+        quickFilterDataViewList: List<QuickFilterDataView>,
+        quickFilterModel: DataValue,
+    ) {
         val expectedQuickFilterList = quickFilterModel.filter
 
         assertEquals(expectedQuickFilterList.size, quickFilterDataViewList.size)
@@ -109,5 +112,40 @@ class MultiProductSearchQuickFilterTest: MultiProductSearchTestFixtures() {
 
         `Then assert state is updated with new parameter`(mpsViewModel, expectedParameter)
         `Then assert use case is executed with new parameter`(expectedParameter)
+    }
+
+    @Test
+    fun `empty state without filter active will hide quick filter`() {
+        val mpsModel = "mps/mps-emptystate.json".jsonToObject<MPSModel>()
+        `Given MPS Use Case success`(mpsModel)
+
+        `When view created`()
+
+        `Then assert quick filter is hidden`(mpsViewModel.stateValue.quickFilterDataViewList)
+    }
+
+    private fun `Then assert quick filter is hidden`(
+        quickFilterDataViewList: List<QuickFilterDataView>,
+    ) {
+        assertTrue(quickFilterDataViewList.isEmpty())
+    }
+
+    @Test
+    fun `empty state with filter active will still show quick filter`() {
+        val mpsModel = "mps/mps-emptystate.json".jsonToObject<MPSModel>()
+        val activeFilterOption = mpsModel.quickFilterModel.filter.first().options.first()
+        val activeFilterPair = activeFilterOption.run { key to value }
+        val parameterWithFilter = parameter + activeFilterPair
+        val mpsState = MPSState(parameterWithFilter)
+        val mpsViewModel = mpsViewModel(mpsState)
+
+        `Given MPS Use Case success`(mpsModel)
+
+        `When view created`(mpsViewModel)
+
+        `Then assert quick filter data view list`(
+            mpsViewModel.stateValue.quickFilterDataViewList,
+            mpsModel.quickFilterModel,
+        )
     }
 }

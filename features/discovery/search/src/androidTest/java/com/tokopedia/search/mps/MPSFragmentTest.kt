@@ -84,9 +84,11 @@ class MPSFragmentTest {
 
     @Test
     fun mps_empty_state_filter() {
-        val mpsStateSuccess = MPSState(
-            result = State.Success(listOf(MPSEmptyStateFilterDataView))
-        )
+        val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_empty_state)
+        val appliedFilter = mpsModel.quickFilterModel.filter.first().options.first()
+        val mpsStateSuccess = MPSState(mapOf(
+            appliedFilter.key to appliedFilter.value
+        )).success(mpsModel)
 
         launchFragmentInContainer {
             MPSFragment.newInstance(searchComponent(mpsStateSuccess))
