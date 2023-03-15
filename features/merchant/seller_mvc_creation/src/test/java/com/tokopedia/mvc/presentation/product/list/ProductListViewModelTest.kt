@@ -345,6 +345,141 @@ class ProductListViewModelTest {
 
 
     //region toOriginalVariant
+
+    @Test
+    fun `when finding product variants from a product, should return empty list of product variant if product is not found`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct().copy(parentProductId = 3)
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(selectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+            assertEquals(
+                listOf(
+                    firstProduct.copy(originalVariants = listOf()),
+                    secondProduct.copy(originalVariants = listOf())
+                ),
+                actual.products
+            )
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when finding a matched product, should return list its variant`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct().copy(parentProductId = 1, variantProductIds = listOf(111))
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = true
+                    )
+                )
+            )
+
+            val secondProduct = populateProduct().copy(
+                id = 2,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 211,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                ),
+            )
+
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(selectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+             assertEquals(listOf(
+                 firstProduct.copy(
+                     originalVariants = listOf(
+                         Product.Variant(
+                             variantProductId = 111,
+                             isEligible = true,
+                             reason = "",
+                             isSelected = true
+                         )
+                     ),
+                     selectedVariantsIds = setOf(111)
+                 ),
+                 secondProduct.copy(originalVariants = listOf())
+             ), actual.products)
+
+            job.cancel()
+        }
+    }
     //endregion
 
 
