@@ -34,7 +34,7 @@ class HomeHeaderAtf2ViewHolder(
     private var balanceWidgetView: BalanceWidgetView? = null
     private var chooseAddressView: ChooseAddressWidget? = null
     private var viewPullRefresh: LayoutIconPullRefreshView? = null
-    private val paddingBottomChooseAddress = 4f.toDpInt()
+    private val paddingBottomChooseAddress = 3f.toDpInt()
 
     companion object {
         @LayoutRes
