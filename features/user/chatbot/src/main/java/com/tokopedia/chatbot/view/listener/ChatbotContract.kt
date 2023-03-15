@@ -81,9 +81,12 @@ interface ChatbotContract {
         fun setBigReplyBoxTitle(text: String, placeholder: String)
 
         fun hideReplyBox()
+
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
+
+        fun setPageSource(pageSource: String)
 
         fun sendInvoiceAttachment(messageId: String, invoiceLinkPojo: InvoiceLinkPojo, startTime: String, opponentId: String, isArticleEntry: Boolean, usedBy: String)
 
