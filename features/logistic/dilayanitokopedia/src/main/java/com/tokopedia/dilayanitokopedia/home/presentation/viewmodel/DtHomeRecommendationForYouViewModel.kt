@@ -91,12 +91,9 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
             }
         }
         if (recommendationItemPosition != -1 && recommendationItem != null) {
-            val productWithWishlistUpdate = recommendationItem?.product?.copy(isWishlist = isWishlisted)
-            if (productWithWishlistUpdate != null) {
-                list[recommendationItemPosition] = recommendationItem!!.copy(
-                    product = productWithWishlistUpdate
-                )
-            }
+            list[recommendationItemPosition] = recommendationItem!!.copy(
+                product = recommendationItem!!.product.copy(isWishlist = isWishlisted)
+            )
             _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list.toList()))
         }
     }
