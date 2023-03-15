@@ -461,6 +461,9 @@ class PlayViewModel @AssistedInject constructor(
     val isAnyBottomSheetsShown: Boolean
         get() = bottomInsets.isAnyShown || _isBottomSheetsShown.value || _isFollowPopUpShown.value.shouldShow
 
+    val isLoggedIn: Boolean
+        get() = userSession.isLoggedIn
+
     /**
      * Temporary
      */

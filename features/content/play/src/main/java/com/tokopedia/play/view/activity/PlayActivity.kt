@@ -230,13 +230,6 @@ class PlayActivity :
     private fun inject() {
         PlayInjector.get(this)
             .inject(this)
-//        DaggerPlayComponent.builder()
-//                .baseAppComponent(
-//                        (applicationContext as BaseMainApplication).baseAppComponent
-//                )
-//                .playModule(PlayModule(this))
-//                .build()
-//                .inject(this)
     }
 
     private fun setupViewModel() {

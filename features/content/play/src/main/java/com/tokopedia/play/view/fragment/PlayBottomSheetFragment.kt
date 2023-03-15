@@ -9,10 +9,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultRegistry
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -33,18 +33,46 @@ import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
-import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.custom.activityresult.OpenLogin
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ProductButtonUiModel
+import com.tokopedia.play.view.type.ProductSectionType
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.type.orDefault
+import com.tokopedia.play.view.type.toAction
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
-import com.tokopedia.play.view.uimodel.action.*
-import com.tokopedia.play.view.uimodel.event.*
-import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
+import com.tokopedia.play.view.uimodel.action.AtcProductAction
+import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
+import com.tokopedia.play.view.uimodel.action.BuyProductAction
+import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
+import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
+import com.tokopedia.play.view.uimodel.action.OCCProductAction
+import com.tokopedia.play.view.uimodel.action.OCCProductVariantAction
+import com.tokopedia.play.view.uimodel.action.OpenCart
+import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
+import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
+import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
+import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
+import com.tokopedia.play.view.uimodel.event.BuySuccessEvent
+import com.tokopedia.play.view.uimodel.event.ChangeCampaignReminderFailed
+import com.tokopedia.play.view.uimodel.event.ChangeCampaignReminderSuccess
+import com.tokopedia.play.view.uimodel.event.OCCSuccessEvent
+import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
+import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
+import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
-import com.tokopedia.play.view.viewcomponent.*
+import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.ShopCouponSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -71,7 +99,8 @@ class PlayBottomSheetFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
-    private val router: Router
+    private val router: Router,
+    private val resultRegistry: ActivityResultRegistry,
 ) : TkpdBaseV4Fragment(),
     PlayFragmentContract,
     ProductSheetViewComponent.Listener,
@@ -104,6 +133,10 @@ class PlayBottomSheetFragment @Inject constructor(
         get() = requireParentFragment() as PlayFragment
 
     override fun getScreenName(): String = "Play Bottom Sheet"
+
+    private val openLoginForCart = registerForActivityResult(OpenLogin(), resultRegistry) { success ->
+        if (success) router.route(context, ApplinkConst.CART)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -155,7 +188,11 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onCartClicked(view: ProductSheetViewComponent) {
-        router.route(context, ApplinkConst.CART)
+        if (playViewModel.isLoggedIn) {
+            router.route(context, ApplinkConst.CART)
+        } else {
+            openLoginForCart.launch(Unit)
+        }
     }
 
     override fun onButtonTransactionClicked(
