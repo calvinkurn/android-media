@@ -24,7 +24,7 @@ class ReschedulePickupActivity : AppCompatActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(this, viewModelFactory)[ReschedulePickupComposeViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ReschedulePickupViewModel::class.java]
     }
 
     private var orderId: String = ""

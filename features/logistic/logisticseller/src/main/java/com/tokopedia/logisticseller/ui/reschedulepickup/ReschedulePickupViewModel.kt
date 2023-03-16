@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-class ReschedulePickupComposeViewModel @Inject constructor(
+class ReschedulePickupViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val getReschedulePickup: GetReschedulePickupUseCase,
     private val saveReschedulePickup: SaveReschedulePickupUseCase

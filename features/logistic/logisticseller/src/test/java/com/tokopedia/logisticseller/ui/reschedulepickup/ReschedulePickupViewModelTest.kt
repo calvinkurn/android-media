@@ -22,7 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class ReschedulePickupComposeViewModelTest {
+class ReschedulePickupViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -31,13 +31,13 @@ class ReschedulePickupComposeViewModelTest {
 
     private val getReschedulePickupUseCase: GetReschedulePickupUseCase = mockk(relaxed = true)
     private val saveReschedulePickupUseCase: SaveReschedulePickupUseCase = mockk(relaxed = true)
-    private lateinit var reschedulePickupViewModel: ReschedulePickupComposeViewModel
+    private lateinit var reschedulePickupViewModel: ReschedulePickupViewModel
 
     private val defaultThrowable = Throwable("test error")
 
     @Before
     fun setup() {
-        reschedulePickupViewModel = ReschedulePickupComposeViewModel(
+        reschedulePickupViewModel = ReschedulePickupViewModel(
             coroutineTestRule.dispatchers,
             getReschedulePickupUseCase,
             saveReschedulePickupUseCase
