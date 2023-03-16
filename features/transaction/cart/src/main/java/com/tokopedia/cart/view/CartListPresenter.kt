@@ -1948,18 +1948,26 @@ class CartListPresenter @Inject constructor(
     override fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest) {
         view?.showItemLoading()
         launch {
-            clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest).executeOnBackground()
-            view?.hideProgressLoading()
-            view?.onSuccessClearRedPromosThenGoToCheckout()
+            try {
+                clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest).executeOnBackground()
+                view?.hideProgressLoading()
+                view?.onSuccessClearRedPromosThenGoToCheckout()
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
         }
     }
 
     override fun doClearRedPromosBeforeGoToPromo(clearPromoRequest: ClearPromoRequest) {
         view?.showItemLoading()
         launch {
-            clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest).executeOnBackground()
-            view?.hideProgressLoading()
-            view?.onSuccessClearRedPromosThenGoToPromo()
+            try {
+                clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest).executeOnBackground()
+                view?.hideProgressLoading()
+                view?.onSuccessClearRedPromosThenGoToPromo()
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
         }
     }
 
@@ -1983,7 +1991,11 @@ class CartListPresenter @Inject constructor(
                 )
             )
             launch {
-                clearCacheAutoApplyStackUseCase.setParams(param).executeOnBackground()
+                try {
+                    clearCacheAutoApplyStackUseCase.setParams(param).executeOnBackground()
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                }
             }
 //            compositeSubscription.add(
 //                // Do nothing on subscribe
@@ -2191,12 +2203,16 @@ class CartListPresenter @Inject constructor(
 
     override fun clearAllBo(clearPromoOrderData: ClearPromoOrderData) {
         launch {
-            clearCacheAutoApplyStackUseCase.setParams(
-                ClearPromoRequest(
-                    ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                    orderData = clearPromoOrderData
-                )
-            ).executeOnBackground()
+            try {
+                clearCacheAutoApplyStackUseCase.setParams(
+                    ClearPromoRequest(
+                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        orderData = clearPromoOrderData
+                    )
+                ).executeOnBackground()
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
         }
 //        compositeSubscription.add(
 //            // Do nothing on subscribe
@@ -2227,24 +2243,28 @@ class CartListPresenter @Inject constructor(
 
     private fun clearBo(shop: CartShopHolderData) {
         launch {
-            clearCacheAutoApplyStackUseCase.setParams(
-                ClearPromoRequest(
-                    serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                    orderData = ClearPromoOrderData(
-                        orders = listOf(
-                            ClearPromoOrder(
-                                uniqueId = shop.cartString,
-                                boType = shop.boMetadata.boType,
-                                codes = mutableListOf(shop.boCode),
-                                shopId = shop.shopId.toLongOrZero(),
-                                isPo = shop.isPo,
-                                poDuration = shop.poDuration,
-                                warehouseId = shop.warehouseId
+            try {
+                clearCacheAutoApplyStackUseCase.setParams(
+                    ClearPromoRequest(
+                        serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        orderData = ClearPromoOrderData(
+                            orders = listOf(
+                                ClearPromoOrder(
+                                    uniqueId = shop.cartString,
+                                    boType = shop.boMetadata.boType,
+                                    codes = mutableListOf(shop.boCode),
+                                    shopId = shop.shopId.toLongOrZero(),
+                                    isPo = shop.isPo,
+                                    poDuration = shop.poDuration,
+                                    warehouseId = shop.warehouseId
+                                )
                             )
                         )
                     )
-                )
-            ).executeOnBackground()
+                ).executeOnBackground()
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
         }
 //        compositeSubscription.add(
 //            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe()

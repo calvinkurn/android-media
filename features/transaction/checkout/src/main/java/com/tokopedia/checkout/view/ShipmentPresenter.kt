@@ -42,7 +42,7 @@ import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil.getEnableFingerprintPayment
@@ -54,8 +54,6 @@ import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter.Compan
 import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper.getFirstProductId
 import com.tokopedia.checkout.view.helper.ShipmentGetCourierHolderData
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
-import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber
-import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber
 import com.tokopedia.checkout.view.subscriber.GetBoPromoCourierRecommendationSubscriber
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber
 import com.tokopedia.checkout.view.subscriber.GetScheduleDeliveryCourierRecommendationSubscriber
@@ -139,9 +137,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel
@@ -159,6 +156,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import rx.Observable
 import rx.Subscriber
 import rx.subjects.PublishSubject
@@ -173,13 +171,13 @@ import kotlin.coroutines.CoroutineContext
 class ShipmentPresenter @Inject constructor(
     private val compositeSubscription: CompositeSubscription,
     private val checkoutGqlUseCase: CheckoutGqlUseCase,
-    private val getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase,
+    private val getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase,
     private val editAddressUseCase: EditAddressUseCase,
     private val changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
     private val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
     private val ratesUseCase: GetRatesUseCase,
     private val ratesApiUseCase: GetRatesApiUseCase,
-    private val clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
+    private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
     private val stateConverter: RatesResponseStateConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
     private val analyticsActionListener: AnalyticsActionListener,
@@ -289,7 +287,7 @@ class ShipmentPresenter @Inject constructor(
     override fun detachView() {
         coroutineContext.cancelChildren()
         compositeSubscription.unsubscribe()
-        getShipmentAddressFormV3UseCase.cancelJobs()
+//        getShipmentAddressFormV3UseCase.cancelJobs()
         eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
         updateDynamicDataPassingUseCase.cancelJobs()
@@ -528,17 +526,69 @@ class ShipmentPresenter @Inject constructor(
         } else {
             view?.showInitialLoading()
         }
-        getShipmentAddressFormV3UseCase.setParams(
-            isOneClickShipment,
-            isTradeIn,
-            isSkipUpdateOnboardingState,
-            cornerId,
-            deviceId,
-            leasingId,
-            isPlusSelected
-        )
-        getShipmentAddressFormV3UseCase.execute(
-            { cartShipmentAddressFormData: CartShipmentAddressFormData? ->
+//        getShipmentAddressFormV3UseCase.setParams(
+//            isOneClickShipment,
+//            isTradeIn,
+//            isSkipUpdateOnboardingState,
+//            cornerId,
+//            deviceId,
+//            leasingId,
+//            isPlusSelected
+//        )
+//        getShipmentAddressFormV3UseCase.execute(
+//            { cartShipmentAddressFormData: CartShipmentAddressFormData? ->
+//                if (view != null) {
+//                    view?.stopEmbraceTrace()
+//                    if (isReloadData) {
+//                        view?.setHasRunningApiCall(false)
+//                        view?.resetPromoBenefit()
+//                        view?.clearTotalBenefitPromoStacking()
+//                        view?.hideLoading()
+//                    } else {
+//                        view?.hideInitialLoading()
+//                    }
+//                    validateShipmentAddressFormData(
+//                        cartShipmentAddressFormData,
+//                        isReloadData,
+//                        isReloadAfterPriceChangeHinger,
+//                        isOneClickShipment
+//                    )
+//                    view?.stopTrace()
+//                }
+//                Unit
+//            }
+//        ) { throwable: Throwable ->
+//            Timber.d(throwable)
+//            if (view != null) {
+//                view?.stopEmbraceTrace()
+//                if (isReloadData) {
+//                    view?.setHasRunningApiCall(false)
+//                    view?.hideLoading()
+//                } else {
+//                    view?.hideInitialLoading()
+//                }
+//                var errorMessage = throwable.message
+//                if (throwable !is CartResponseErrorException && throwable !is AkamaiErrorException) {
+//                    errorMessage = getErrorMessage(view?.activityContext, throwable)
+//                }
+//                view?.showToastError(errorMessage)
+//                view?.stopTrace()
+//                view?.logOnErrorLoadCheckoutPage(throwable)
+//            }
+//            Unit
+//        }
+        launch {
+            try {
+                getShipmentAddressFormV4UseCase.setParams(
+                    isOneClickShipment,
+                    isTradeIn,
+                    isSkipUpdateOnboardingState,
+                    cornerId,
+                    deviceId,
+                    leasingId,
+                    isPlusSelected
+                )
+                val cartShipmentAddressFormData = getShipmentAddressFormV4UseCase(Unit)
                 if (view != null) {
                     view?.stopEmbraceTrace()
                     if (isReloadData) {
@@ -557,27 +607,25 @@ class ShipmentPresenter @Inject constructor(
                     )
                     view?.stopTrace()
                 }
-                Unit
-            }
-        ) { throwable: Throwable ->
-            Timber.d(throwable)
-            if (view != null) {
-                view?.stopEmbraceTrace()
-                if (isReloadData) {
-                    view?.setHasRunningApiCall(false)
-                    view?.hideLoading()
-                } else {
-                    view?.hideInitialLoading()
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                if (view != null) {
+                    view?.stopEmbraceTrace()
+                    if (isReloadData) {
+                        view?.setHasRunningApiCall(false)
+                        view?.hideLoading()
+                    } else {
+                        view?.hideInitialLoading()
+                    }
+                    var errorMessage = throwable.message
+                    if (throwable !is CartResponseErrorException && throwable !is AkamaiErrorException) {
+                        errorMessage = getErrorMessage(view?.activityContext, throwable)
+                    }
+                    view?.showToastError(errorMessage)
+                    view?.stopTrace()
+                    view?.logOnErrorLoadCheckoutPage(throwable)
                 }
-                var errorMessage = throwable.message
-                if (throwable !is CartResponseErrorException && throwable !is AkamaiErrorException) {
-                    errorMessage = getErrorMessage(view?.activityContext, throwable)
-                }
-                view?.showToastError(errorMessage)
-                view?.stopTrace()
-                view?.logOnErrorLoadCheckoutPage(throwable)
             }
-            Unit
         }
     }
 
@@ -977,15 +1025,18 @@ class ShipmentPresenter @Inject constructor(
         }
         validateUsePromoRequest.orders = cloneOrders
         val params = ClearPromoRequest(
-            OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+            ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
             false,
             ClearPromoOrderData(globalCodes, clearOrders)
         )
         if (hasPromo) {
-            clearCacheAutoApplyStackUseCase.setParams(params)
-            compositeSubscription.add(
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
-            )
+            launch {
+                try {
+                    clearCacheAutoApplyStackUseCase.setParams(params).executeOnBackground()
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                }
+            }
         }
         lastValidateUseRequest = validateUsePromoRequest
         validateUsePromoRevampUiModel = null
@@ -2140,54 +2191,94 @@ class ShipmentPresenter @Inject constructor(
                 shipmentCartItemModel.fulfillmentId
             )
         )
-        clearCacheAutoApplyStackUseCase.setParams(
-            ClearPromoRequest(
-                OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                false,
-                ClearPromoOrderData(
-                    ArrayList(),
-                    clearOrders
+//        clearCacheAutoApplyStackUseCase.setParams(
+//            ClearPromoRequest(
+//                OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+//                false,
+//                ClearPromoOrderData(
+//                    ArrayList(),
+//                    clearOrders
+//                )
+//            )
+//        )
+//        compositeSubscription.add(
+//            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
+//                .subscribe(object : Subscriber<ClearPromoUiModel>() {
+//                    override fun onCompleted() {
+//                        val shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(
+//                            shipmentCartItemModel.cartString
+//                        )
+//                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInClearCache) {
+//                            shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
+//                        }
+//                    }
+//
+//                    override fun onError(e: Throwable) {
+//                        val shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(
+//                            shipmentCartItemModel.cartString
+//                        )
+//                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInClearCache) {
+//                            shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
+//                        }
+//                    }
+//
+//                    override fun onNext(responseData: ClearPromoUiModel) {
+//                        if (view != null) {
+//                            if (!isNullOrEmpty(responseData.successDataModel.tickerMessage)) {
+//                                tickerAnnouncementHolderData.title = ""
+//                                tickerAnnouncementHolderData.message =
+//                                    responseData.successDataModel.tickerMessage
+//                                view?.updateTickerAnnouncementMessage()
+//                            }
+//                            val isLastAppliedPromo = isLastAppliedPromo(promoCode)
+//                            if (isLastAppliedPromo) {
+//                                validateUsePromoRevampUiModel = null
+//                            }
+//                            view?.onSuccessClearPromoLogistic(itemPosition, isLastAppliedPromo)
+//                        }
+//                    }
+//                })
+//        )
+        launch {
+            try {
+                val responseData = clearCacheAutoApplyStackUseCase.setParams(
+                    ClearPromoRequest(
+                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        false,
+                        ClearPromoOrderData(
+                            ArrayList(),
+                            clearOrders
+                        )
+                    )
+                ).executeOnBackground()
+                if (view != null) {
+                    if (!isNullOrEmpty(responseData.successDataModel.tickerMessage)) {
+                        tickerAnnouncementHolderData.title = ""
+                        tickerAnnouncementHolderData.message =
+                            responseData.successDataModel.tickerMessage
+                        view?.updateTickerAnnouncementMessage()
+                    }
+                    val isLastAppliedPromo = isLastAppliedPromo(promoCode)
+                    if (isLastAppliedPromo) {
+                        validateUsePromoRevampUiModel = null
+                    }
+                    view?.onSuccessClearPromoLogistic(itemPosition, isLastAppliedPromo)
+                }
+                val shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(
+                    shipmentCartItemModel.cartString
                 )
-            )
-        )
-        compositeSubscription.add(
-            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-                .subscribe(object : Subscriber<ClearPromoUiModel>() {
-                    override fun onCompleted() {
-                        val shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(
-                            shipmentCartItemModel.cartString
-                        )
-                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInClearCache) {
-                            shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        val shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(
-                            shipmentCartItemModel.cartString
-                        )
-                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInClearCache) {
-                            shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
-                        }
-                    }
-
-                    override fun onNext(responseData: ClearPromoUiModel) {
-                        if (view != null) {
-                            if (!isNullOrEmpty(responseData.successDataModel.tickerMessage)) {
-                                tickerAnnouncementHolderData.title = ""
-                                tickerAnnouncementHolderData.message =
-                                    responseData.successDataModel.tickerMessage
-                                view?.updateTickerAnnouncementMessage()
-                            }
-                            val isLastAppliedPromo = isLastAppliedPromo(promoCode)
-                            if (isLastAppliedPromo) {
-                                validateUsePromoRevampUiModel = null
-                            }
-                            view?.onSuccessClearPromoLogistic(itemPosition, isLastAppliedPromo)
-                        }
-                    }
-                })
-        )
+                if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInClearCache) {
+                    shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
+                }
+            } catch (t: Throwable) {
+                val shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(
+                    shipmentCartItemModel.cartString
+                )
+                if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInClearCache) {
+                    shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
+                }
+            }
+        }
     }
 
     fun getClearPromoOrderByUniqueId(
@@ -2242,23 +2333,44 @@ class ShipmentPresenter @Inject constructor(
             }
         }
         if (hasPromo) {
-            clearCacheAutoApplyStackUseCase.setParams(
-                ClearPromoRequest(
-                    OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                    false,
-                    ClearPromoOrderData(globalPromoCodes, clearOrders)
-                )
-            )
-            compositeSubscription.add(
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-                    .subscribe(
-                        ClearNotEligiblePromoSubscriber(
-                            view,
-                            this,
-                            notEligiblePromoHolderdataArrayList
+//            clearCacheAutoApplyStackUseCase.setParams(
+//                ClearPromoRequest(
+//                    OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+//                    false,
+//                    ClearPromoOrderData(globalPromoCodes, clearOrders)
+//                )
+//            )
+//            compositeSubscription.add(
+//                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
+//                    .subscribe(
+//                        ClearNotEligiblePromoSubscriber(
+//                            view,
+//                            this,
+//                            notEligiblePromoHolderdataArrayList
+//                        )
+//                    )
+//            )
+            launch {
+                try {
+                    val response = clearCacheAutoApplyStackUseCase.setParams(
+                        ClearPromoRequest(
+                            ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                            false,
+                            ClearPromoOrderData(globalPromoCodes, clearOrders)
                         )
-                    )
-            )
+                    ).executeOnBackground()
+                    if (response.successDataModel.tickerMessage.isNotBlank()) {
+                        tickerAnnouncementHolderData.title = ""
+                        tickerAnnouncementHolderData.message =
+                            response.successDataModel.tickerMessage
+                        view?.updateTickerAnnouncementMessage()
+                    }
+                    view?.removeIneligiblePromo(notEligiblePromoHolderdataArrayList)
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                    view?.removeIneligiblePromo(notEligiblePromoHolderdataArrayList)
+                }
+            }
         }
     }
 
@@ -2308,18 +2420,35 @@ class ShipmentPresenter @Inject constructor(
         couponStateChanged = true
         view?.showLoading()
         view?.setHasRunningApiCall(true)
-        clearCacheAutoApplyStackUseCase.setParams(
-            ClearPromoRequest(
-                OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                false,
-                ClearPromoOrderData(globalPromoCode, clearOrders)
-            )
-        )
-        compositeSubscription.add(
-            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(
-                ClearShipmentCacheAutoApplyAfterClashSubscriber(view, this)
-            )
-        )
+//        clearCacheAutoApplyStackUseCase.setParams(
+//            ClearPromoRequest(
+//                OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+//                false,
+//                ClearPromoOrderData(globalPromoCode, clearOrders)
+//            )
+//        )
+//        compositeSubscription.add(
+//            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(
+//                ClearShipmentCacheAutoApplyAfterClashSubscriber(view, this)
+//            )
+//        )
+        launch {
+            try {
+                clearCacheAutoApplyStackUseCase.setParams(
+                    ClearPromoRequest(
+                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        false,
+                        ClearPromoOrderData(globalPromoCode, clearOrders)
+                    )
+                ).executeOnBackground()
+                view?.hideLoading()
+                view?.setHasRunningApiCall(false)
+                view?.showToastNormal("Ada perubahan pada promo yang kamu pakai")
+            } catch (t: Throwable) {
+                view?.hideLoading()
+                view?.setHasRunningApiCall(false)
+            }
+        }
     }
 
     override fun hitClearAllBo() {
@@ -2344,19 +2473,35 @@ class ShipmentPresenter @Inject constructor(
             }
         }
         if (hasBo) {
-            clearCacheAutoApplyStackUseCase.setParams(
-                ClearPromoRequest(
-                    OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                    false,
-                    ClearPromoOrderData(
-                        ArrayList(),
-                        clearOrders
-                    )
-                )
-            )
-            compositeSubscription.add(
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
-            )
+//            clearCacheAutoApplyStackUseCase.setParams(
+//                ClearPromoRequest(
+//                    OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+//                    false,
+//                    ClearPromoOrderData(
+//                        ArrayList(),
+//                        clearOrders
+//                    )
+//                )
+//            )
+//            compositeSubscription.add(
+//                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
+//            )
+            launch {
+                try {
+                    clearCacheAutoApplyStackUseCase.setParams(
+                        ClearPromoRequest(
+                            ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                            false,
+                            ClearPromoOrderData(
+                                ArrayList(),
+                                clearOrders
+                            )
+                        )
+                    ).executeOnBackground()
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                }
+            }
         }
     }
 
@@ -3308,15 +3453,18 @@ class ShipmentPresenter @Inject constructor(
                 shipmentCartItemModel.fulfillmentId
             )
         )
-        val params = ClearPromoRequest(
-            OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-            false,
-            ClearPromoOrderData(globalCodes, clearOrders)
-        )
-        clearCacheAutoApplyStackUseCase.setParams(params)
-        compositeSubscription.add(
-            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
-        )
+        launch {
+            try {
+                val params = ClearPromoRequest(
+                    ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                    false,
+                    ClearPromoOrderData(globalCodes, clearOrders)
+                )
+                clearCacheAutoApplyStackUseCase.setParams(params).executeOnBackground()
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
     }
 
     override fun clearOrderPromoCodeFromLastValidateUseRequest(
@@ -3550,17 +3698,22 @@ class ShipmentPresenter @Inject constructor(
                 }
             }
             if (hasBo) {
-                clearCacheAutoApplyStackUseCase.setParams(
-                    ClearPromoRequest(
-                        OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                        false,
-                        ClearPromoOrderData(
-                            ArrayList(),
-                            clearOrders
-                        )
-                    )
-                )
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
+                launch {
+                    try {
+                        clearCacheAutoApplyStackUseCase.setParams(
+                            ClearPromoRequest(
+                                ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                                false,
+                                ClearPromoOrderData(
+                                    ArrayList(),
+                                    clearOrders
+                                )
+                            )
+                        ).executeOnBackground()
+                    } catch (t: Throwable) {
+                        Timber.d(t)
+                    }
+                }
             }
         }
     }
