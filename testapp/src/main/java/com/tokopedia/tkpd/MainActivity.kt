@@ -11,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -67,6 +69,16 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(developerOptionsIntent, REQUEST_CODE_DEVELOPER_OPTIONS)
         }
 
+        loginHelperButton.setOnClickListener {
+            val loginHelperIntent = RouteManager.getIntent(
+                this@MainActivity,
+                ApplinkConstInternalGlobal.LOGIN_HELPER
+            )
+            startActivityForResult(loginHelperIntent,
+                REQUEST_CODE_DEVELOPER_OPTIONS
+            )
+        }
+
         etAppLink.setText(getDefaultAppLink())
 
         goToButton.setOnClickListener { goTo() }
@@ -92,12 +104,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             REQUEST_CODE_DEVELOPER_OPTIONS -> {
-                if (userSession.isLoggedIn) {
-                    Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show()
+                if (userSession.isLoggedIn)
                     goTo()
-                } else {
-                    Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()
-                }
             }
         }
     }
