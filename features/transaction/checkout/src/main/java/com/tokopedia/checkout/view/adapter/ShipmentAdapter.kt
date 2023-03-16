@@ -86,8 +86,10 @@ class ShipmentAdapter @Inject constructor(
     private val ratesDataConverter: RatesDataConverter,
     private val sellerCashbackListener: SellerCashbackListener,
     private val uploadPrescriptionListener: UploadPrescriptionListener
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ShipmentGroupHeaderViewHolder.Listener,
-    ShipmentCartItemViewHolder.Listener, ShipmentGroupProductExpandViewHolder.Listener,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
+    ShipmentGroupHeaderViewHolder.Listener,
+    ShipmentCartItemViewHolder.Listener,
+    ShipmentGroupProductExpandViewHolder.Listener,
     ShipmentGroupFooterViewHolder.Listener {
 
     companion object {
@@ -257,7 +259,9 @@ class ShipmentAdapter @Inject constructor(
 
             ITEM_VIEW_PAYMENT_BUTTON -> {
                 return ShipmentButtonPaymentViewHolder(
-                    view, actionListener, compositeSubscription!!
+                    view,
+                    actionListener,
+                    compositeSubscription!!
                 )
             }
 
@@ -299,7 +303,11 @@ class ShipmentAdapter @Inject constructor(
 
             ShipmentGroupFooterViewHolder.LAYOUT -> {
                 return ShipmentGroupFooterViewHolder(
-                    view, ratesDataConverter, this@ShipmentAdapter, actionListener, scheduleDeliverySubscription
+                    view,
+                    ratesDataConverter,
+                    this@ShipmentAdapter,
+                    actionListener,
+                    scheduleDeliverySubscription
                 )
             }
 
@@ -313,7 +321,8 @@ class ShipmentAdapter @Inject constructor(
         when (viewType) {
             ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS -> {
                 (holder as ShipmentRecipientAddressViewHolder).bindViewHolder(
-                    (data as RecipientAddressModel?)!!, isShowOnboarding
+                    (data as RecipientAddressModel?)!!,
+                    isShowOnboarding
                 )
             }
 
@@ -327,7 +336,8 @@ class ShipmentAdapter @Inject constructor(
 
             ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC -> {
                 (holder as ShipmentInsuranceTncViewHolder).bindViewHolder(
-                    (data as ShipmentInsuranceTncModel?)!!, itemCount
+                    (data as ShipmentInsuranceTncModel?)!!,
+                    itemCount
                 )
             }
 
@@ -392,7 +402,8 @@ class ShipmentAdapter @Inject constructor(
 
             ShipmentGroupFooterViewHolder.LAYOUT -> {
                 (holder as ShipmentGroupFooterViewHolder).bind(
-                    (data as ShipmentGroupFooterModel), addressShipmentData
+                    (data as ShipmentGroupFooterModel),
+                    addressShipmentData
                 )
             }
         }
@@ -464,9 +475,6 @@ class ShipmentAdapter @Inject constructor(
     fun addCartItemData(shipmentCartItems: List<ShipmentCartItemModel>) {
         // this.shipmentCartItemModelList = shipmentCartItems
 
-        // TODO: Remove shipmentDataList.addAll(shipmentCartItems)!!!
-        // shipmentDataList.addAll(shipmentCartItems)
-
         shipmentCartItems.forEach { shipmentCartItem ->
             shipmentDataList.add(ShipmentGroupHeaderModel(shipmentCartItem))
             if (shipmentCartItem.isStateAllItemViewExpanded) {
@@ -479,7 +487,8 @@ class ShipmentAdapter @Inject constructor(
             if (shipmentCartItem.cartItemModels.size > 1) {
                 shipmentDataList.add(
                     ShipmentGroupProductExpandModel(
-                        shipmentCartItem, shipmentCartItem.addOnWordingModel
+                        shipmentCartItem,
+                        shipmentCartItem.addOnWordingModel
                     )
                 )
             }
@@ -553,7 +562,8 @@ class ShipmentAdapter @Inject constructor(
                 actionListener.onTotalPaymentChange(priceTotalFormatted, true)
             } else {
                 actionListener.onTotalPaymentChange(
-                    "-", cartItemErrorCounter < shipmentCartItemModelList!!.size
+                    "-",
+                    cartItemErrorCounter < shipmentCartItemModelList!!.size
                 )
             }
         } else if (defaultTotal != null) {
@@ -596,7 +606,8 @@ class ShipmentAdapter @Inject constructor(
                 shippingCompletionTickerModel =
                     ShippingCompletionTickerModel("Pilih pengiriman dulu sebelum lanjut bayar.")
                 shipmentDataList.add(
-                    shipmentCostPosition + positionDiff, shippingCompletionTickerModel!!
+                    shipmentCostPosition + positionDiff,
+                    shippingCompletionTickerModel!!
                 )
                 notifyItemInserted(shipmentCostPosition + positionDiff)
             }
@@ -713,7 +724,10 @@ class ShipmentAdapter @Inject constructor(
     }
 
     private fun calculateBuyEgoldValue(
-        valueTOCheck: Int, minRange: Int, maxRange: Int, basisAmount: Long
+        valueTOCheck: Int,
+        minRange: Int,
+        maxRange: Int,
+        basisAmount: Long
     ): Long {
         if (basisAmount == 0L) {
             return 0
@@ -858,7 +872,10 @@ class ShipmentAdapter @Inject constructor(
                 }
             }
             actionListener.onCheckoutValidationResult(
-                false, null, errorPosition, false
+                false,
+                null,
+                errorPosition,
+                false
             )
         }
     }
@@ -915,7 +932,10 @@ class ShipmentAdapter @Inject constructor(
                 val oldCourierItemData =
                     shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier
                 checkAppliedCourierPromo(
-                    position, oldCourierItemData, newCourierItemData, shipmentCartItemModel
+                    position,
+                    oldCourierItemData,
+                    newCourierItemData,
+                    shipmentCartItemModel
                 )
                 shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier =
                     newCourierItemData
@@ -948,7 +968,11 @@ class ShipmentAdapter @Inject constructor(
         val tmpPosition = if (isForceReload) position else -1
         if (shipmentCartItemModel != null && shipmentCartItemModel.isEligibleNewShippingExperience) {
             checkHasSelectAllCourier(
-                false, tmpPosition, shipmentCartItemModel.cartString, false, skipValidateUse
+                false,
+                tmpPosition,
+                shipmentCartItemModel.cartString,
+                false,
+                skipValidateUse
             )
             updateShippingCompletionTickerVisibility()
         }
@@ -984,7 +1008,8 @@ class ShipmentAdapter @Inject constructor(
                 // If courier promo not exist anymore, cancel promo
                 if (!courierPromoStillExist) {
                     actionListener.onCourierPromoCanceled(
-                        oldCourierItemData!!.name, oldCourierItemData.promoCode
+                        oldCourierItemData!!.name,
+                        oldCourierItemData.promoCode
                     )
                 }
             }
@@ -1435,27 +1460,78 @@ class ShipmentAdapter @Inject constructor(
         lastApplyUiModel = LastApplyUiModel()
     }
 
-    private fun getFirstCartItem(shipmentCartItem: ShipmentCartItemModel): Pair<Int, ShipmentGroupProductModel> {
-        val position = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentGroupProductModel
-                && data.shipmentCartItem.cartItemModels.first() == shipmentCartItem.cartItemModels.first()
+    private fun getGroupHeaderByCartString(cartString: String): Pair<Int, ShipmentGroupHeaderModel> {
+        val index = shipmentDataList.indexOfFirst { data ->
+            data is ShipmentGroupHeaderModel && data.shipmentCartItem.cartString == cartString
         }
-        return Pair(position, shipmentDataList[position] as ShipmentGroupProductModel)
+        return Pair(index, shipmentDataList[index] as ShipmentGroupHeaderModel)
     }
 
-    private fun getFirstErrorCartItem(shipmentCartItem: ShipmentCartItemModel): Pair<Int, ShipmentGroupProductModel> {
-        val position = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentGroupProductModel && data.shipmentCartItem == shipmentCartItem
-                && data.cartItemPosition == shipmentCartItem.firstProductErrorIndex
+    private fun getFirstCartItemByCartString(cartString: String): Pair<Int, ShipmentGroupProductModel> {
+        val index = shipmentDataList.indexOfFirst { data ->
+            data is ShipmentGroupProductModel && data.shipmentCartItem.cartString == cartString &&
+                data.cartItemPosition == 0
         }
-        return Pair(position, shipmentDataList[position] as ShipmentGroupProductModel)
+        return Pair(index, shipmentDataList[index] as ShipmentGroupProductModel)
     }
 
-    private fun getGroupCartExpand(shipmentCartItem: ShipmentCartItemModel): Pair<Int, ShipmentGroupProductExpandModel> {
-        val position = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentGroupProductExpandModel && data.shipmentCartItem == shipmentCartItem
+    private fun getFirstErrorCartItemByCartString(cartString: String): Pair<Int, ShipmentGroupProductModel> {
+        val index = shipmentDataList.indexOfFirst { data ->
+            data is ShipmentGroupProductModel && data.shipmentCartItem.cartString == cartString &&
+                data.shipmentCartItem.firstProductErrorIndex == data.cartItemPosition
         }
-        return Pair(position, shipmentDataList[position] as ShipmentGroupProductExpandModel)
+        return Pair(index, shipmentDataList[index] as ShipmentGroupProductModel)
+    }
+
+    private fun getGroupCartExpandByCartString(cartString: String): Pair<Int, ShipmentGroupProductExpandModel> {
+        val index = shipmentDataList.indexOfFirst { data ->
+            data is ShipmentGroupProductExpandModel && data.shipmentCartItem.cartString == cartString
+        }
+        return Pair(index, shipmentDataList[index] as ShipmentGroupProductExpandModel)
+    }
+
+    private fun getGroupFooterByCartString(cartString: String): Pair<Int, ShipmentGroupFooterModel> {
+        val index = shipmentDataList.indexOfFirst { data ->
+            data is ShipmentGroupFooterModel && data.shipmentCartItem.cartString == cartString
+        }
+        return Pair(index, shipmentDataList[index] as ShipmentGroupFooterModel)
+    }
+
+    private fun getGroupShipmentsByCartString(cartString: String): Pair<Int, List<Any>> {
+        val (startIndex, _) = getGroupHeaderByCartString(cartString)
+        val data = shipmentDataList.filter {
+            it is ShipmentGroupHeaderModel || it is ShipmentGroupProductModel ||
+                it is ShipmentGroupProductExpandModel || it is ShipmentGroupFooterModel
+        }
+        return Pair(startIndex, data)
+    }
+
+    private fun updateGroupShipmentsByCartString(
+        cartString: String,
+        shipmentCartItem: ShipmentCartItemModel
+    ) {
+        val (startIndex, newShipmentCartItems) = getGroupShipmentsByCartString(cartString)
+        val endIndex = startIndex + newShipmentCartItems.size
+        for (index in startIndex..endIndex) {
+            when (val data = shipmentDataList[index]) {
+                is ShipmentGroupHeaderModel -> {
+                    shipmentDataList[index] = data.copy(shipmentCartItem = shipmentCartItem)
+                }
+                is ShipmentGroupProductModel -> {
+                    shipmentDataList[index] = data.copy(shipmentCartItem = shipmentCartItem)
+                }
+                is ShipmentGroupProductExpandModel -> {
+                    shipmentDataList[index] = data.copy(shipmentCartItem = shipmentCartItem)
+                }
+                is ShipmentGroupFooterModel -> {
+                    shipmentDataList[index] = data.copy(shipmentCartItem = shipmentCartItem)
+                }
+                else -> {
+                    // no-op
+                }
+            }
+            notifyItemRangeChanged(startIndex, endIndex)
+        }
     }
 
     override fun onViewFreeShippingPlusBadge() {
@@ -1467,22 +1543,28 @@ class ShipmentAdapter @Inject constructor(
     }
 
     override fun onErrorShouldExpandProduct(shipmentGroupHeader: ShipmentGroupHeaderModel) {
-        val data = getGroupCartExpand(shipmentGroupHeader.shipmentCartItem)
-        if (!data.second.shipmentCartItem.isStateAllItemViewExpanded) {
-            onClickExpandGroupProduct(
-                data.first,
-                data.second.copy(shipmentCartItem = ShipmentCartItemModel(isStateAllItemViewExpanded = true))
-            )
-        }
+        val (position, data) = getGroupCartExpandByCartString(shipmentGroupHeader.shipmentCartItem.cartString)
+        onClickExpandGroupProduct(position, data)
     }
 
     override fun onErrorShouldScrollToProduct(shipmentGroupHeader: ShipmentGroupHeaderModel) {
-        val firstErrorCartItem = getFirstErrorCartItem(shipmentGroupHeader.shipmentCartItem)
-        actionListener.scrollToPositionWithOffset(firstErrorCartItem.first)
+        val (position, _) = getFirstErrorCartItemByCartString(shipmentGroupHeader.shipmentCartItem.cartString)
+        actionListener.scrollToPositionWithOffset(position)
     }
 
     override fun onCheckPurchaseProtection(position: Int, isChecked: Boolean) {
-        // TODO
+        if (shipmentDataList[position] is ShipmentGroupProductModel) {
+            val data = shipmentDataList[position] as ShipmentGroupProductModel
+            data.shipmentCartItem.cartItemModels[data.cartItemPosition].isProtectionOptIn = isChecked
+            if (isChecked && data.shipmentCartItem.selectedShipmentDetailData?.useDropshipper == true) {
+                val updatedData = data.shipmentCartItem
+                updatedData.selectedShipmentDetailData?.useDropshipper = false
+                updateGroupShipmentsByCartString(data.shipmentCartItem.cartString, updatedData)
+                actionListener.onPurchaseProtectionLogicError()
+            }
+            actionListener.onNeedUpdateRequestData()
+            actionListener.onPurchaseProtectionChangeListener(position)
+        }
     }
 
     override fun onClickPurchaseProtectionTooltip(cartItem: CartItemModel) {
@@ -1490,7 +1572,8 @@ class ShipmentAdapter @Inject constructor(
     }
 
     override fun onClickAddOnProductLevel(
-        cartItem: CartItemModel, addOnWording: AddOnWordingModel
+        cartItem: CartItemModel,
+        addOnWording: AddOnWordingModel
     ) {
         actionListener.openAddOnProductLevelBottomSheet(cartItem, addOnWording)
     }
@@ -1500,13 +1583,14 @@ class ShipmentAdapter @Inject constructor(
     }
 
     override fun onClickCollapseGroupProduct(
-        position: Int, shipmentGroupProductExpand: ShipmentGroupProductExpandModel
+        position: Int,
+        shipmentGroupProductExpand: ShipmentGroupProductExpandModel
     ) {
         shipmentDataList[position] = shipmentGroupProductExpand
         notifyItemChanged(position)
 
-        val firstCartItemPosition =
-            getFirstCartItem(shipmentGroupProductExpand.shipmentCartItem).first
+        val (firstCartItemPosition, _) =
+            getFirstCartItemByCartString(shipmentGroupProductExpand.shipmentCartItem.cartString)
         val removedCartItemSize =
             shipmentGroupProductExpand.shipmentCartItem.cartItemModels.size - 1
         repeat(removedCartItemSize) {
@@ -1516,13 +1600,14 @@ class ShipmentAdapter @Inject constructor(
     }
 
     override fun onClickExpandGroupProduct(
-        position: Int, shipmentGroupProductExpand: ShipmentGroupProductExpandModel
+        position: Int,
+        shipmentGroupProductExpand: ShipmentGroupProductExpandModel
     ) {
         shipmentDataList[position] = shipmentGroupProductExpand
         notifyItemChanged(position)
 
-        val firstCartItemPosition =
-            getFirstCartItem(shipmentGroupProductExpand.shipmentCartItem).first
+        val (firstCartItemPosition, _) =
+            getFirstCartItemByCartString(shipmentGroupProductExpand.shipmentCartItem.cartString)
         val newCartItems =
             List(shipmentGroupProductExpand.shipmentCartItem.cartItemModels.size) { index ->
                 ShipmentGroupProductModel(shipmentGroupProductExpand.shipmentCartItem, index)

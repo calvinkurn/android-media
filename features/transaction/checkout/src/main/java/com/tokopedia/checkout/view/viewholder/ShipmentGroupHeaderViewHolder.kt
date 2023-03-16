@@ -181,8 +181,8 @@ class ShipmentGroupHeaderViewHolder(
                                         errorTitle
                                     )
                                     if (!shipmentGroupHeader.shipmentCartItem.isStateAllItemViewExpanded) {
-                                        shipmentGroupHeader.shipmentCartItem.isTriggerScrollToErrorProduct =
-                                            true
+                                        shipmentGroupHeader.shipmentCartItem.isTriggerScrollToErrorProduct = true
+                                        shipmentGroupHeader.shipmentCartItem.isStateAllItemViewExpanded = true
                                         listener?.onErrorShouldExpandProduct(shipmentGroupHeader)
                                         return
                                     }
@@ -251,9 +251,11 @@ class ShipmentGroupHeaderViewHolder(
 
     private fun renderCustomError(shipmentGroupHeader: ShipmentGroupHeaderModel) {
         with(binding.containerWarningAndError) {
-            if ((!shipmentGroupHeader.shipmentCartItem.isError && shipmentGroupHeader.shipmentCartItem.isHasUnblockingError
-                    && !TextUtils.isEmpty(shipmentGroupHeader.shipmentCartItem.unblockingErrorMessage))
-                && shipmentGroupHeader.shipmentCartItem.firstProductErrorIndex > -1
+            if ((
+                !shipmentGroupHeader.shipmentCartItem.isError && shipmentGroupHeader.shipmentCartItem.isHasUnblockingError &&
+                    !TextUtils.isEmpty(shipmentGroupHeader.shipmentCartItem.unblockingErrorMessage)
+                ) &&
+                shipmentGroupHeader.shipmentCartItem.firstProductErrorIndex > -1
             ) {
                 val errorMessage = shipmentGroupHeader.shipmentCartItem.unblockingErrorMessage
                 binding.containerWarningAndError.root.visibility = View.VISIBLE
