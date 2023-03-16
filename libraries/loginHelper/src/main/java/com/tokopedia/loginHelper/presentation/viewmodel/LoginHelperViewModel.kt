@@ -82,6 +82,9 @@ class LoginHelperViewModel @Inject constructor(
             is LoginHelperEvent.GoToLoginPage -> {
                 goToLoginPage()
             }
+            is LoginHelperEvent.LogOutUser -> {
+                logOutUser()
+            }
         }
     }
 
@@ -295,6 +298,10 @@ class LoginHelperViewModel @Inject constructor(
 
     private fun goToLoginPage() {
         _uiAction.tryEmit(LoginHelperAction.GoToLoginPage)
+    }
+
+    private fun logOutUser() {
+        userSession.logoutSession()
     }
 
     override fun onCleared() {

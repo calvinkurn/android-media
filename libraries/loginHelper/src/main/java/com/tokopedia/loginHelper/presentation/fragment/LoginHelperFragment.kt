@@ -34,6 +34,7 @@ import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -52,7 +53,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     private var loginHelperAdapter: LoginHelperRecyclerAdapter? = null
 
     private val viewModel: LoginHelperViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(this, viewModelFactory).get(LoginHelperViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[LoginHelperViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -133,19 +134,49 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     private fun FragmentLoginHelperBinding.handleChipClick() {
+        val currentEnv = getInstance().TYPE
         loginHelperChipStaging.setOnClickListener {
-            showChipToasterError()
+            if (currentEnv == Env.STAGING) {
+                showEnvironmentChipToast()
+                return@setOnClickListener
+            }
+            changeEnvForApp(LoginHelperEnvType.STAGING)
         }
         loginHelperChipProd.setOnClickListener {
-            showChipToasterError()
+            if (currentEnv == Env.LIVE) {
+                showEnvironmentChipToast()
+                return@setOnClickListener
+            }
+            changeEnvForApp(LoginHelperEnvType.PRODUCTION)
         }
     }
 
-    private fun FragmentLoginHelperBinding.showChipToasterError() {
-        footer.showToaster(
-            context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_warning_chip_click)
-                .toBlankOrString()
-        )
+    private fun changeEnvForApp(envType: LoginHelperEnvType) {
+        val currentEnvType = if (envType == LoginHelperEnvType.STAGING) {
+            Env.STAGING
+        } else {
+            Env.LIVE
+        }
+        context?.let {
+            TokopediaUrl.setEnvironment(it, currentEnvType)
+            TokopediaUrl.deleteInstance()
+            TokopediaUrl.init(it)
+            viewModel.processEvent(LoginHelperEvent.LogOutUser)
+            binding?.footer?.showToasterError(
+                context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_app_restart)
+                    .toBlankOrString()
+            )
+        }
+    }
+
+    private fun FragmentLoginHelperBinding.showEnvironmentChipToast() {
+        context?.resources?.let {
+            footer.showToaster(
+                getString(
+                    com.tokopedia.loginHelper.R.string.login_helper_warning_chip_click
+                ).toBlankOrString()
+            )
+        }
     }
 
     private fun FragmentLoginHelperBinding.bindSearch() {
@@ -302,11 +333,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
 
     private fun getTextListener(): TextWatcher {
         return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
             override fun afterTextChanged(s: Editable?) {
                 viewModel.processEvent(LoginHelperEvent.QueryEmail(getMessage()))

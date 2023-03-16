@@ -10,4 +10,6 @@ sealed class LoginHelperEvent {
     data class QueryEmail(val email: String) : LoginHelperEvent()
     object GetUserInfo : LoginHelperEvent()
     object GoToLoginPage : LoginHelperEvent()
+
+    object LogOutUser : LoginHelperEvent()
 }
