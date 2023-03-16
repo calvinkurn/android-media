@@ -14,27 +14,26 @@ internal object GetTargetedTickerNow: GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-        query $OPERATION_NAME(${'$'}${GetTargetedTickerUseCase.PARAM_PAGE}: String, ${'$'}${GetTargetedTickerUseCase.PARAM_TARGET}: [GetTargetedTickerRequestTarget]!){
-            GetTargetedTicker(input:{Page: ${'$'}page, Target: ${'$'}target}) {
-                List {
-                  ID
-                  Title
-                  Content
-                  Action {
-                    Label
-                    Type
-                    AppURL
-                    WebURL
-                  }
-                  Type
-                  Priority
-                  Metadata{
-                    Type
-                    Values
-                  }
-                }
+        query GetTargetedTicker(${'$'}input: GetTargetedTickerRequest!) {
+          GetTargetedTicker(input: ${'$'}input) {
+            List{
+              ID
+              Title
+              Content
+              Action{
+                Label
+                Type
+                AppURL
+                WebURL
+              }
+              Type
+              Priority
+              Metadata{
+                Type
+                Values
               }
             }
+          }
         }
         """.trimIndent()
     }
