@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.common.service
 
-import com.tokopedia.applink.ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
@@ -8,6 +7,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.NowAffiliateData
+import com.tokopedia.tokopedianow.common.util.ShopIdProvider.getShopId
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.PageDetail
@@ -27,12 +27,11 @@ class NowAffiliateService @Inject constructor(
         private const val SHOP_STATUS_OPEN = 1
     }
 
-    private val shopId = TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
     private var affiliateData = NowAffiliateData()
 
     suspend fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {
-        val source = AffiliateSdkPageSource.Shop(shopId)
-        val pageDetail = AffiliatePageDetail(shopId, source)
+        val source = AffiliateSdkPageSource.Shop(getShopId())
+        val pageDetail = AffiliatePageDetail(getShopId(), source)
 
         affiliateData = NowAffiliateData(
             affiliateUuid = affiliateUuid,
@@ -72,7 +71,7 @@ class NowAffiliateService @Inject constructor(
 
         val source = AffiliateSdkPageSource.DirectATC(
             atcSource = AffiliateAtcSource.SHOP_PAGE,
-            shopId = shopId,
+            shopId = getShopId(),
             productInfo = productInfo
         )
 
@@ -90,14 +89,14 @@ class NowAffiliateService @Inject constructor(
 
     fun createShareInput(): AffiliatePDPInput {
         val pageDetail = PageDetail(
-            pageId = shopId,
+            pageId = getShopId(),
             pageType = SHARE_PAGE_TYPE,
             siteId = SHARE_SITE_ID,
             verticalId = SHARE_VERTICAL_ID
         )
 
         val shop = Shop(
-            shopID = shopId,
+            shopID = getShopId(),
             shopStatus = SHOP_STATUS_OPEN,
             isOS = true,
             isPM = false

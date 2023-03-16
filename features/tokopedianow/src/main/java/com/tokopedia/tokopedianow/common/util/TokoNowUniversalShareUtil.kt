@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import com.tokopedia.applink.ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -72,7 +71,7 @@ object TokoNowUniversalShareUtil {
     ) {
         val linkerShareData = linkerDataMapper(shareTokoNowData)
         linkerShareData.linkerData.apply {
-            id = TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
+            id = ShopIdProvider.getShopId()
             type = LinkerData.SHOP_TYPE
             feature = shareModel.feature
             channel = shareModel.channel
