@@ -60,7 +60,7 @@ class ProductListViewModel @Inject constructor(
             is ProductListEvent.TapRemoveProduct -> _uiEffect.tryEmit(ProductListEffect.ShowDeleteProductConfirmationDialog(event.productId))
             is ProductListEvent.ApplyRemoveProduct -> handleRemoveProduct(event.productId)
             ProductListEvent.TapBulkDeleteProduct -> {
-                val productToDeleteCount = currentState.products.count { it.isSelected }
+                val productToDeleteCount = currentState.products.filter { it.isSelected }.size
                 _uiEffect.tryEmit(ProductListEffect.ShowBulkDeleteProductConfirmationDialog(productToDeleteCount))
             }
             ProductListEvent.ApplyBulkDeleteProduct -> handleBulkDeleteProducts()

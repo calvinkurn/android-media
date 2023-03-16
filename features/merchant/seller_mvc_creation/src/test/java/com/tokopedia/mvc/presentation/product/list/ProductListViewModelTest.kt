@@ -18,6 +18,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -1821,17 +1822,317 @@ class ProductListViewModelTest {
     //endregion
 
 
-    //region emitRedirectToAddProductPageEvent
-    //endregion
-
-
     //region handleTapToolbarBackIcon
+    @Test
+    fun `When tap toolbar back, should emit RedirectToPreviousPage effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.DUPLICATE
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(firstProduct.id))
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(secondProduct.id))
+
+            viewModel.processEvent(ProductListEvent.TapToolbarBackIcon)
+
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+            assertEquals(ProductListEffect.RedirectToPreviousPage(selectedProductCount = 2), emittedEffect)
+
+            job.cancel()
+        }
+    }
     //endregion
 
 
     //region handleTapBackButton
+    @Test
+    fun `When tap back button, should emit TapBackButton effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.DUPLICATE
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.TapBackButton)
+
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+            assertEquals(
+                ProductListEffect.TapBackButton(originalPageMode = pageMode),
+                emittedEffect
+            )
+
+            job.cancel()
+        }
+    }
     //endregion
 
+    //region TapRemoveProduct
+    @Test
+    fun `When tap remove product, should emit ShowDeleteProductConfirmationDialog effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.DUPLICATE
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.TapRemoveProduct(firstProduct.id))
+
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+            assertEquals(
+                ProductListEffect.ShowDeleteProductConfirmationDialog(productId = firstProduct.id),
+                emittedEffect
+            )
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+    //region TapBulkDeleteProduct
+    @Test
+    fun `When tap bulk delete product, should emit ShowBulkDeleteProductConfirmationDialog effect with selected product count`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.DUPLICATE
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(firstProduct.id))
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(secondProduct.id))
+
+            viewModel.processEvent(ProductListEvent.TapBulkDeleteProduct)
+
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+            assertEquals(
+                ProductListEffect.ShowBulkDeleteProductConfirmationDialog(
+                    toDeleteProductCount = 2
+                ), emittedEffect
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When tap bulk delete product with no product selected, should emit ShowBulkDeleteProductConfirmationDialog effect with 0 selected product count`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.DUPLICATE
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.TapBulkDeleteProduct)
+
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+            assertEquals(
+                ProductListEffect.ShowBulkDeleteProductConfirmationDialog(
+                    toDeleteProductCount = 0
+                ), emittedEffect
+            )
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+    //region processEvent
+    @Test
+    fun `When unlisted event is triggered, should not emit any effect`() {
+        runBlockingTest {
+            //When
+            viewModel.processEvent(mockk())
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //Then
+            val actualEffect = emittedEffects.lastOrNull()
+
+            assertEquals(null, actualEffect)
+
+            job.cancel()
+        }
+    }
+    //endregion
 
     private fun buildVoucherConfiguration(): VoucherConfiguration {
         return VoucherConfiguration().copy(

@@ -3669,7 +3669,7 @@ class AddProductViewModelTest {
     }
     //endregion
 
-    //region
+    //region processEvent
     @Test
     fun `When unlisted event is triggered, should not emit any effect`() {
         runBlockingTest {
