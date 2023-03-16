@@ -109,11 +109,10 @@ object VariantTwoLevelUseCase {
                 // with option id in level one and  first item of selectedVariant in level two
                 val selectedVariantLevelTwo = selectedVariant.getOrNull(VARIANT_LEVEL_TWO_INDEX)
                 val combineVariant = listOf(option.id, selectedVariantLevelTwo)
-
+                // this condition is the un-selected variant option
+                // [0] is variant on one level -> from variant option id
+                // [1] is variant on two level -> from variant selected get last item
                 if (combineVariant == child.optionIds) {
-                    // this condition is the un-selected variant option
-                    // [0] is variant on one level -> from variant option id
-                    // [1] is variant on two level -> from variant selected get last item
                     isFlashSale = child.isFlashSale
                     stock = child.stock?.stock.orZero()
                     state = if (child.isBuyable) { // un-selected and can to buy
@@ -203,11 +202,10 @@ object VariantTwoLevelUseCase {
                 // with option id in level two and  first item of selectedVariant in level one
                 val selectedVariantLevelOne = selectedVariant.getOrNull(VARIANT_LEVEL_ONE_INDEX)
                 val combineVariant = listOf(selectedVariantLevelOne, option.id)
-
+                // match variant id from
+                // [0] is variant on one level -> from variant selected get first item
+                // [1] is variant on two level -> from option id
                 if (combineVariant == child.optionIds) {
-                    // match variant id from
-                    // [0] is variant on one level -> from variant selected get first item
-                    // [1] is variant on two level -> from option id
                     isFlashSale = child.isFlashSale
                     stock = child.stock?.stock.orZero()
                     state = if (child.isBuyable) { // un-selected and can to buy
