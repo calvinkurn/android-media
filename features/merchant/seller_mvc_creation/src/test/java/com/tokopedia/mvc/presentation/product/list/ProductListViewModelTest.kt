@@ -1032,6 +1032,186 @@ class ProductListViewModelTest {
 
 
     //region handleVariantUpdated
+    @Test
+    fun `when update a product and all variants is unselected, should remove parent product from list`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(
+                ProductListEvent.VariantUpdated(
+                    modifiedParentProductId = firstProduct.id,
+                    selectedVariantIds = setOf()
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(listOf(secondProduct), actual.products)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when updating a variant but specified unlisted parent product id, should not update any products`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            val unlistedParentProductId: Long = 99
+            viewModel.processEvent(
+                ProductListEvent.VariantUpdated(
+                    modifiedParentProductId = unlistedParentProductId,
+                    selectedVariantIds = setOf()
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(listOf(firstProduct, secondProduct), actual.products)
+            assertEquals(2, actual.products.size)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when update a product and new variant were selected, should update the selected variants`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(
+                ProductListEvent.VariantUpdated(
+                    modifiedParentProductId = firstProduct.id,
+                    selectedVariantIds = setOf(111)
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstProduct.copy(
+                        isSelected = true,
+                        selectedVariantsIds = setOf(111)
+                    ), secondProduct
+                ),
+                actual.products
+            )
+
+            job.cancel()
+        }
+    }
     //endregion
 
 
