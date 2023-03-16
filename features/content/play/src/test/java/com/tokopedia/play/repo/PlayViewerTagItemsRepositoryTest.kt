@@ -15,6 +15,7 @@ import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.*
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -89,7 +90,7 @@ class PlayViewerTagItemsRepositoryTest {
             coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
 
             val response = tagItemRepo.getTagItem(
-                "12669", "", "PLAY"
+                "12669", "", "PLAY", PlayChannelType.VOD,
             )
 
             coVerify { mockGetProductTagUseCase.executeOnBackground() }
@@ -105,7 +106,7 @@ class PlayViewerTagItemsRepositoryTest {
             coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
 
             val response = tagItemRepo.getTagItem(
-                "12669", "0", "PLAY"
+                "12669", "0", "PLAY", PlayChannelType.VOD
             )
 
             coVerify { mockGetProductTagUseCase.executeOnBackground() }
@@ -228,7 +229,7 @@ class PlayViewerTagItemsRepositoryTest {
             val partnerName = "PLAY"
 
             val response = tagItemRepo.getTagItem(
-                "12669", "0", partnerName
+                "12669", "0", partnerName, PlayChannelType.VOD
             )
 
             coVerify { mockGetProductTagUseCase.executeOnBackground() }
@@ -250,7 +251,7 @@ class PlayViewerTagItemsRepositoryTest {
             val partnerName = "PLAY"
 
             val response = tagItemRepo.getTagItem(
-                "12669", "0", partnerName
+                "12669", "0", partnerName, PlayChannelType.VOD
             )
 
             coVerify { mockGetProductTagUseCase.executeOnBackground() }

@@ -1658,6 +1658,8 @@ class ModelBuilder {
         isPinned: Boolean = false,
         isRilisanSpesial: Boolean = false,
         buttons: List<ProductButtonUiModel> = emptyList(),
+        isProductNumerationShown: Boolean = false,
+        number: String = "0"
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -1673,6 +1675,8 @@ class ModelBuilder {
         isPinned = isPinned,
         isRilisanSpesial = isRilisanSpesial,
         buttons = buttons,
+        isNumerationShown = isProductNumerationShown,
+        number = number,
     )
 
     fun buildProductStockAvailable(
@@ -1802,7 +1806,7 @@ class ModelBuilder {
         minQty: Int = 1,
         isFreeShipping: Boolean = false,
         applink: String? = null,
-        gradient: List<String>? = null
+        gradient: List<String>? = null,
     ): ProductSection.Response {
         var productList = ""
         for (i in 1..size) {
@@ -1824,7 +1828,8 @@ class ModelBuilder {
                     price_formatted: "",
                     quantity: 0,
                     shop_id: "$shopId",
-                    web_link: "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"
+                    web_link: "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447",
+                    number: $i
               }
             """.trimIndent()
             if (i != size) productList += ","

@@ -121,7 +121,7 @@ class PlayEngagementWidgetTest {
 
     @Test
     fun `voucher is exist but no highlighted voucher`() {
-        coEvery { repo.getTagItem(any(), any(), any()) } returns uiModelBuilder.buildTagItem(
+        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns uiModelBuilder.buildTagItem(
             voucher = uiModelBuilder.buildVoucherModel(
                 voucherList = listOf(uiModelBuilder.buildMerchantVoucher())
             )
@@ -144,7 +144,7 @@ class PlayEngagementWidgetTest {
 
     @Test
     fun `voucher is exist but no highlighted voucher but socket return highlighted voucher`() {
-        coEvery { repo.getTagItem(any(), any(), any()) } returns uiModelBuilder.buildTagItem(
+        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns uiModelBuilder.buildTagItem(
             voucher = uiModelBuilder.buildVoucherModel(
                 voucherList = listOf(uiModelBuilder.buildMerchantVoucher())
             )
