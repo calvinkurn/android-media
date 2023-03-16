@@ -10,6 +10,7 @@ import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
+import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEvent
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListUiState
 import com.tokopedia.network.exception.MessageErrorException
@@ -930,10 +931,103 @@ class ProductListViewModelTest {
             job.cancel()
         }
     }
+
+    @Test
+    fun `when remove a product, should emit ProductDeleted effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(id = 1)
+            val mockedGetProductResponse = listOf(product)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(selectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.ApplyRemoveProduct(product.id))
+
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+            assertEquals(ProductListEffect.ProductDeleted, emittedEffect)
+
+
+            job.cancel()
+        }
+    }
     //endregion
 
 
     //region handleTapVariant
+    @Test
+    fun `when tap a product, should emit ShowVariantBottomSheet effect`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                isSelected = true,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = true
+                    )
+                ),
+                selectedVariantsIds = setOf(111)
+            )
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(ProductListEvent.TapVariant(product))
+
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+            assertEquals(
+                ProductListEffect.ShowVariantBottomSheet(
+                    isParentProductSelected = true,
+                    selectedProduct = SelectedProduct(parentProductId = 1, variantProductIds = listOf(111)),
+                    originalVariantIds = listOf(111),
+                    pageMode = PageMode.CREATE
+                ),
+                emittedEffect
+            )
+
+
+            job.cancel()
+        }
+    }
     //endregion
 
 
