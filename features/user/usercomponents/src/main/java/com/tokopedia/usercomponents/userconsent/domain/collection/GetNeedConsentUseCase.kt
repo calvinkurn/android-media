@@ -6,6 +6,9 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionResponse
 import javax.inject.Inject
 
@@ -16,18 +19,20 @@ import javax.inject.Inject
 class GetNeedConsentUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<ConsentCollectionParam, Boolean>(dispatchers.io) {
+) : CoroutineUseCase<ConsentCollectionParam, Result<Boolean>>(
+    dispatchers.io
+) {
 
-    override suspend fun execute(params: ConsentCollectionParam): Boolean {
+    override suspend fun execute(params: ConsentCollectionParam): Result<Boolean> {
         val result = repository.request<ConsentCollectionParam, ConsentCollectionResponse>(
             graphqlQuery(),
             params
         )
         return if (result.data.success) {
             // If error, should not show the consent widget
-            result.data.collectionPoints.firstOrNull()?.needConsent ?: false
+            Success(result.data.collectionPoints.firstOrNull()?.needConsent ?: false)
         } else {
-            throw MessageErrorException(result.data.errorMessages.joinToString())
+            Fail(MessageErrorException(result.data.errorMessages.joinToString()))
         }
     }
 

@@ -89,8 +89,8 @@ class TokoChatViewModel @Inject constructor(
     val orderTransactionStatus: LiveData<Result<TokoChatOrderProgressResponse>>
         get() = _orderTransactionStatus
 
-    private val _isNeedConsent = MutableLiveData<Boolean>()
-    val isNeedConsent: LiveData<Boolean>
+    private val _isNeedConsent = MutableLiveData<Result<Boolean>>()
+    val isNeedConsent: LiveData<Result<Boolean>>
         get() = _isNeedConsent
 
     private val _updateOrderTransactionStatus =

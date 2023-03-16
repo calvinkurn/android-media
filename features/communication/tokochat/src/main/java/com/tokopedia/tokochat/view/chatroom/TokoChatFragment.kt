@@ -851,13 +851,15 @@ open class TokoChatFragment :
 
     private fun observeUserConsent() {
         observe(viewModel.isNeedConsent) {
-            when(it) {
-                true -> {
-                    TokoChatConsentBottomSheet.show(childFragmentManager) {
-                        activity?.finish()
+            when (it) {
+                is Success -> {
+                    if (it.data) {
+                        TokoChatConsentBottomSheet.show(childFragmentManager) {
+                            activity?.finish()
+                        }
                     }
                 }
-                false -> {
+                is Fail -> {
                     // do nothing
                 }
             }
