@@ -825,6 +825,111 @@ class ProductListViewModelTest {
 
 
     //region handleRemoveProduct
+    @Test
+    fun `when remove a product from a list with only one product, the list should be empty`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(id = 1)
+            val mockedGetProductResponse = listOf(product)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(selectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.ApplyRemoveProduct(product.id))
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isSelectAllActive)
+            assertEquals(setOf<Long>(), actual.selectedProductsIdsToBeRemoved)
+            assertEquals(listOf<Product>(), actual.products)
+            assertEquals(0, actual.products.size)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when remove product with non exist product id, should not remove any product from list`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(id = 1)
+            val mockedGetProductResponse = listOf(product)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(selectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            val nonExistProductId : Long = 99
+            viewModel.processEvent(ProductListEvent.ApplyRemoveProduct(nonExistProductId))
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isSelectAllActive)
+            assertEquals(setOf<Long>(), actual.selectedProductsIdsToBeRemoved)
+            assertEquals(
+                listOf(product),
+                actual.products
+            )
+            assertEquals(1, actual.products.size)
+
+            job.cancel()
+        }
+    }
     //endregion
 
 
