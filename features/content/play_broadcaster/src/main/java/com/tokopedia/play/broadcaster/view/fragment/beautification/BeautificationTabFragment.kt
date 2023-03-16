@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.databinding.FragmentBeautificationTabBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
-import com.tokopedia.play.broadcaster.ui.itemdecoration.FaceFilterOptionItemDecoration
+import com.tokopedia.play.broadcaster.ui.itemdecoration.BeautificationOptionItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
@@ -28,8 +28,8 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on February 27, 2023
  */
 class BeautificationTabFragment @Inject constructor(
-    private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
-): TkpdBaseV4Fragment() {
+    private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator
+) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentBeautificationTabBinding? = null
     private val binding: FragmentBeautificationTabBinding
@@ -83,7 +83,7 @@ class BeautificationTabFragment @Inject constructor(
 
     private fun setupView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.recyclerView.addItemDecoration(FaceFilterOptionItemDecoration(requireContext()))
+        binding.recyclerView.addItemDecoration(BeautificationOptionItemDecoration(requireContext()))
         binding.recyclerView.adapter = adapter
     }
 
@@ -97,11 +97,11 @@ class BeautificationTabFragment @Inject constructor(
 
     private fun renderBeautificationOption(
         prev: BeautificationConfigUiModel?,
-        curr: BeautificationConfigUiModel,
+        curr: BeautificationConfigUiModel
     ) {
-        if(prev == curr) return
+        if (prev == curr) return
 
-        val finalList = when(type) {
+        val finalList = when (type) {
             Type.FaceFilter -> curr.faceFilters.map { BeautificationFilterOptionAdapter.Model.FaceFilter(it) }
             Type.Preset -> curr.presets.map { BeautificationFilterOptionAdapter.Model.Preset(it) }
             else -> emptyList()
@@ -117,28 +117,28 @@ class BeautificationTabFragment @Inject constructor(
         fun getUnknownFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): BeautificationTabFragment{
+        ): BeautificationTabFragment {
             return getFragment(fragmentManager, classLoader, Type.Unknown)
         }
 
         fun getFaceFilterFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): BeautificationTabFragment{
+        ): BeautificationTabFragment {
             return getFragment(fragmentManager, classLoader, Type.FaceFilter)
         }
 
         fun getPresetFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
-        ): BeautificationTabFragment{
+        ): BeautificationTabFragment {
             return getFragment(fragmentManager, classLoader, Type.Preset)
         }
 
         private fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            type: Type,
+            type: Type
         ): BeautificationTabFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? BeautificationTabFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
@@ -166,4 +166,3 @@ class BeautificationTabFragment @Inject constructor(
         }
     }
 }
-
