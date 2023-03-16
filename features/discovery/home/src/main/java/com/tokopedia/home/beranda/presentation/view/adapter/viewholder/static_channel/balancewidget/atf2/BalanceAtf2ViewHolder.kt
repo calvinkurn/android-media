@@ -30,7 +30,6 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
     companion object {
         val LAYOUT = R.layout.item_balance_widget_atf2
         private const val TITLE_HEADER_WEBSITE = "Tokopedia"
-        private const val SINGLE_ITEM = 1
         private const val BALANCE_FILL_WIDTH_THRESHOLD = 2
     }
 
@@ -56,12 +55,12 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
     }
 
     private fun setWidth(element: BalanceDrawerItemModel?) {
-        if(DeviceScreenInfo.isTablet(itemView.context) || totalItems <= BALANCE_FILL_WIDTH_THRESHOLD) {
+        if (DeviceScreenInfo.isTablet(itemView.context) || totalItems <= BALANCE_FILL_WIDTH_THRESHOLD) {
             setFillWidth()
         } else {
             setDynamicWidth(
                 element?.drawerItemType == TYPE_WALLET_APP_LINKED ||
-                element?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
+                    element?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
             )
         }
         binding?.containerBalance?.layoutParams = containerLayoutParams

@@ -54,11 +54,11 @@ class BalanceWidgetAtf2ViewHolder(itemView: View, val listener: HomeCategoryList
         balanceAdapter?.setItemList(itemList)
     }
 
-    private fun getUiModelList(element: HomeBalanceModel) : List<BalanceVisitable> {
+    private fun getUiModelList(element: HomeBalanceModel): List<BalanceVisitable> {
         val balanceModelList = mutableListOf<BalanceVisitable>()
-        element.balanceDrawerItemModels.forEachIndexed { idx, it ->
-            balanceModelList.add(it)
-            if(HomeRollenceController.isUsingAtf2Variant() && idx < element.balanceDrawerItemModels.size - 1) {
+        element.balanceDrawerItemModels.forEachIndexed { idx, model ->
+            balanceModelList.add(model)
+            if (HomeRollenceController.isUsingAtf2Variant() && idx < element.balanceDrawerItemModels.size - 1) {
                 balanceModelList.add(BalanceAtf2DividerModel())
             }
         }
