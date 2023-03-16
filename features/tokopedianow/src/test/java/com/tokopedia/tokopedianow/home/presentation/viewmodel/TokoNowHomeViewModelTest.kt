@@ -4154,7 +4154,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             catalogCouponList = catalogCouponList
         )
 
-        //fetch homeLayoutwhen fetching list of catalog coupons but failed then receiving success result with hide status
+        //fetch homeLayout
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf()
