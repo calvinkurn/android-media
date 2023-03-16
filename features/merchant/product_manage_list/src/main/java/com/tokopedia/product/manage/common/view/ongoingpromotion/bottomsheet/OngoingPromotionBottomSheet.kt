@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.view.model.OngoingPromotionListWrapper
@@ -17,7 +16,6 @@ import com.tokopedia.product.manage.databinding.BottomSheetProductManageOngoingP
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.ArrayList
 
 class OngoingPromotionBottomSheet : BottomSheetUnify() {
 

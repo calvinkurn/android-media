@@ -1,5 +1,6 @@
 package com.tokopedia.play.robot.parent.result
 
+import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
 import org.assertj.core.api.Assertions
@@ -8,7 +9,7 @@ import org.assertj.core.api.Assertions
  * Created by jegul on 10/02/21
  */
 class PlayParentChannelIdResult(
-        private val result: PageResult<List<String>>
+        private val result: PageResult<List<PlayChannelData>>
 ) {
 
     fun isNotEmpty(): PlayParentChannelIdResult {

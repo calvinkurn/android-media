@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.ForegroundInfo
@@ -12,10 +13,12 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play_common.shortsuploader.activity.PlayShortsPostUploadActivity
 import javax.inject.Inject
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.play_common.shortsuploader.model.orEmpty
 import com.tokopedia.play_common.shortsuploader.receiver.PlayShortsUploadReceiver
+import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.withContext
 
 /**
@@ -108,21 +111,25 @@ class PlayShortsUploadNotificationManager @Inject constructor(
     }
 
     fun onSuccess(): ForegroundInfo {
-        val intent = PlayShortsUploadReceiver.getIntent(
+        val intent = PlayShortsPostUploadActivity.getIntent(
             context,
-            uploadData.orEmpty(),
-            PlayShortsUploadReceiver.Companion.Action.OpenPlayRoom
-        )
+            channelId = uploadData?.shortsId.orEmpty(),
+            authorId = uploadData?.authorId.orEmpty(),
+            authorType = uploadData?.authorType.orEmpty(),
+            webLink = getPlayRoomWebLink(uploadData.orEmpty())
+        ).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
 
         val openPlayRoomPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getBroadcast(
+            PendingIntent.getActivity(
                 context,
                 0,
                 intent,
                 PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_MUTABLE
             )
         } else {
-            PendingIntent.getBroadcast(
+            PendingIntent.getActivity(
                 context,
                 0,
                 intent,
@@ -186,6 +193,30 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         return ForegroundInfo(notificationIdAfterUpload, notification)
     }
 
+    private fun getPlayRoomWebLink(uploadData: PlayShortsUploadModel): String {
+        return buildString {
+            append(TokopediaUrl.getInstance().WEB)
+            append(PLAY_ROOM_PATH)
+            append(uploadData.shortsId)
+            append("?")
+            append("$SOURCE_TYPE=${getSourceType(uploadData.authorType)}")
+            append("&")
+            append("$AUTHOR_TYPE=${uploadData.authorType}")
+            append("&")
+            append("$SOURCE_ID=${uploadData.authorId}")
+            append("&")
+            append("$IS_FROM_NOTIF_SUCCESS_UPLOAD=true")
+        }
+    }
+
+    private fun getSourceType(authorType: String): String {
+        return when(authorType) {
+            CONTENT_SHOP -> SOURCE_TYPE_SHOP
+            CONTENT_USER -> SOURCE_TYPE_USER
+            else -> ""
+        }
+    }
+
     private companion object {
         const val PROGRESS_MAX = 100
 
@@ -206,5 +237,17 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         const val CHANNEL_ID = "ANDROID_GENERAL_CHANNEL"
 
         const val COVER_PREVIEW_SIZE = 100
+
+        /** Web Link Const */
+        const val PLAY_ROOM_PATH = "play/channel/"
+        const val CONTENT_USER = "content-user"
+        const val CONTENT_SHOP = "content-shop"
+
+        const val SOURCE_TYPE = "source_type"
+        const val SOURCE_ID = "source_id"
+        const val AUTHOR_TYPE = "author_type"
+        const val IS_FROM_NOTIF_SUCCESS_UPLOAD = "is_from_notif_success_upload"
+        const val SOURCE_TYPE_USER = "SHORT_VIDEO_USER"
+        const val SOURCE_TYPE_SHOP = "SHORT_VIDEO_SHOP"
     }
 }

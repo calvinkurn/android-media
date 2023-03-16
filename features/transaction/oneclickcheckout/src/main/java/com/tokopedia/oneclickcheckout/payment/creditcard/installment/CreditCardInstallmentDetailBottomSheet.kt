@@ -37,8 +37,14 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
     private var bottomSheetUnify: BottomSheetUnify? = null
     private var binding: BottomSheetCreditCardInstallmentBinding? = null
 
-    fun show(fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, orderCart: OrderCart,
-             orderCost: OrderCost, userId: String, listener: InstallmentDetailBottomSheetListener) {
+    fun show(
+        fragment: OrderSummaryPageFragment,
+        creditCard: OrderPaymentCreditCard,
+        orderCart: OrderCart,
+        orderCost: OrderCost,
+        userId: String,
+        listener: InstallmentDetailBottomSheetListener
+    ) {
         val context: Context = fragment.activity ?: return
         fragment.parentFragmentManager.let {
             this.listener = listener
@@ -63,8 +69,14 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
         }
     }
 
-    private fun setupChild(context: Context, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard,
-                           orderCart: OrderCart, orderCost: OrderCost, userId: String) {
+    private fun setupChild(
+        context: Context,
+        fragment: OrderSummaryPageFragment,
+        creditCard: OrderPaymentCreditCard,
+        orderCart: OrderCart,
+        orderCost: OrderCost,
+        userId: String
+    ) {
         setupTerms(creditCard.tncInfo)
         if (creditCard.isAfpb && creditCard.availableTerms.isEmpty()) {
             binding?.termsContent?.gone()
@@ -178,7 +190,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
         $tncInfo
     </body>
 </html>
-        """.trimIndent()
+            """.trimIndent()
             webViewTerms.loadData(Base64.encodeToString(htmlText.toByteArray(), Base64.DEFAULT), "text/html", "base64")
             ivExpandTerms.setOnClickListener {
                 val newRotation = if (binding?.ivExpandTerms?.rotation == ROTATION_DEFAULT) ROTATION_REVERSE else ROTATION_DEFAULT

@@ -55,7 +55,7 @@
         android:layout_gravity="top"
         android:gravity="left|top"
         android:lineSpacingMultiplier="1.1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950"
         android:textIsSelectable="false"
         app:typographyType="body_1"
         tools:ignore="RtlHardcoded"
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:includeFontPadding="false"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN400"
             android:textIsSelectable="false"
             app:typographyType="body_3"
             tools:text="11:00" />

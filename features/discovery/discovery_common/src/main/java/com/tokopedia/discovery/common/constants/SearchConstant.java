@@ -177,6 +177,7 @@ public interface SearchConstant {
         String TYPE_CURATED = "curated";
         String TYPE_RELATED = "related";
         String TYPE_SIZE_PERSO = "size_perso";
+        String LAYOUT_FILTER = "filter";
     }
 
     interface CustomDimension {

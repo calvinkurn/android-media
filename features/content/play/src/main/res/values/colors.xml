@@ -48,4 +48,7 @@
     <color name="play_dms_product_count_color">#212121</color>
     <color name="play_dms_explore_widget_icon_bg">#B32E3137</color>
 
+    <!--Vertical Swipe-->
+    <color name="play_dms_vertical_swipe_overlay">#99212121</color>
+
 </resources>

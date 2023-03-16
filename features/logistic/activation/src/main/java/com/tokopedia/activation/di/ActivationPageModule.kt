@@ -22,7 +22,7 @@ class ActivationPageModule {
     @ActivationPageScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository =
-            GraphqlInteractor.getInstance().graphqlRepository
+        GraphqlInteractor.getInstance().graphqlRepository
 
     @ActivationPageScope
     @Provides
