@@ -27,7 +27,7 @@ class SearchInspirationWidgetModelTest {
             .flatten()
 
         optionList.forEachIndexed { optionIndex, option ->
-            val inspirationWidgetOption = inspirationWidgetOptionList[optionIndex].filters
+            val inspirationWidgetOption = inspirationWidgetOptionList[optionIndex].multiFilters!!.first()
 
             assertThat(option.key, `is`(inspirationWidgetOption.key))
             assertThat(option.name, `is`(inspirationWidgetOption.name))

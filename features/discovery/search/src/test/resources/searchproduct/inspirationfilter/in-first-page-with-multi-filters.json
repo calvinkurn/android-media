@@ -1510,14 +1510,6 @@
             "color": "",
             "applink": "",
             "component_id": "04.09.01.00",
-            "filters": {
-              "title": "",
-              "key": "sc",
-              "name": "Mobil",
-              "value": "2344",
-              "val_min": "",
-              "val_max": ""
-            },
             "multi_filters": [
               {
                 "title": "",
@@ -1544,15 +1536,16 @@
             "color": "",
             "applink": "",
             "component_id": "04.09.02.00",
-            "filters": {
-              "title": "",
-              "key": "sc",
-              "name": "Spare Part Mobil",
-              "value": "38",
-              "val_min": "",
-              "val_max": ""
-            },
-            "multi_filters": []
+            "multi_filters": [
+              {
+                "title": "",
+                "key": "sc",
+                "name": "Spare Part Mobil",
+                "value": "38",
+                "val_min": "",
+                "val_max": ""
+              }
+            ]
           }
         ],
         "tracking_option": "2"
