@@ -16,7 +16,6 @@ import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.ui.NestTheme
 
-
 @SuppressLint("UnsupportedDarkModeColor")
 @Composable
 fun HomeScreen(
@@ -48,7 +47,7 @@ fun HomeScreen(
                     .fillMaxSize()
                     .padding(horizontal = 72.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
@@ -74,6 +73,14 @@ fun HomeScreen(
                     onClick = { onNavigateTo(MainActivity.HomeDestination.DEVELOPER_OPTION) }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
+
+                NestButton(
+                    text = "Login Helper",
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onNavigateTo(MainActivity.HomeDestination.LOGINHELPER) }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
                 OutlinedTextField(
                     value = model.applink,
                     modifier = Modifier

@@ -2,11 +2,9 @@ package com.tokopedia.loginHelper.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
 import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
@@ -39,7 +37,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.lang.reflect.Type
 import javax.inject.Inject
 
 // Currently data is hardcoded , Will get the data from DB once the server side is fixed
@@ -135,7 +132,7 @@ class LoginHelperViewModel @Inject constructor(
 
     private fun provideProdLoginData(): LoginDataUiModel {
         return LoginDataUiModel(
-            count = HeaderUiModel(5),
+            count = HeaderUiModel(4),
             users = listOf<UserDataUiModel>(
                 UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "toped123", "Cex"),
                 UserDataUiModel(
@@ -154,17 +151,17 @@ class LoginHelperViewModel @Inject constructor(
                     "Fintech"
                 ),
                 UserDataUiModel(
-                    "android.automation.seller.h5+frontendtest@tokopedia.com",
-                    "tokopedia789",
-                    "Fintech"
+                    "elly.susilowati+090@tokopedia.com",
+                    "tokopedia2015",
+                    "All"
                 )
             )
         )
     }
 
-    private fun convertToUserListUiModel(typeRestResponseMap: Map<Type, RestResponse>): LoginDataResponse {
-        return typeRestResponseMap[LoginDataResponse::class.java]?.getData() as LoginDataResponse
-    }
+//    private fun convertToUserListUiModel(typeRestResponseMap: Map<Type, RestResponse>): LoginDataResponse {
+//        return typeRestResponseMap[LoginDataResponse::class.java]?.getData() as LoginDataResponse
+//    }
 
     private fun loginUser(email: String, password: String, useHash: Boolean = true) {
         launchCatchError(coroutineContext, {
