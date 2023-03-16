@@ -293,7 +293,7 @@ interface ShipmentContract {
         )
 
         fun checkPromoCheckoutFinalShipment(
-            validateUsePromoRequest: ValidateUsePromoRequest?,
+            validateUsePromoRequest: ValidateUsePromoRequest,
             lastSelectedCourierOrderIndex: Int,
             cartString: String?
         )

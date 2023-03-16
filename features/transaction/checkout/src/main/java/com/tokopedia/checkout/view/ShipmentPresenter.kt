@@ -139,6 +139,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel
@@ -188,7 +189,7 @@ class ShipmentPresenter @Inject constructor(
     private val releaseBookingUseCase: ReleaseBookingUseCase,
     private val prescriptionIdsUseCase: GetPrescriptionIdsUseCase,
     private val epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase,
-    private val validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
+    private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
     private val gson: Gson,
     private val executorSchedulers: ExecutorSchedulers,
     private val dispatchers: CoroutineDispatchers,
@@ -1043,110 +1044,195 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun checkPromoCheckoutFinalShipment(
-        validateUsePromoRequest: ValidateUsePromoRequest?,
+        validateUsePromoRequest: ValidateUsePromoRequest,
         lastSelectedCourierOrderIndex: Int,
         cartString: String?
     ) {
         couponStateChanged = true
-        val requestParams = RequestParams.create()
-        requestParams.putObject(
-            OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE,
-            validateUsePromoRequest
-        )
-        compositeSubscription.add(
-            validateUsePromoRevampUseCase.createObservable(requestParams)
-                .subscribeOn(executorSchedulers.io)
-                .observeOn(executorSchedulers.main)
-                .subscribe(
-                    object : Subscriber<ValidateUsePromoRevampUiModel>() {
-                        override fun onCompleted() {
-                            checkUnCompletedPublisher()
+        launch {
+            try {
+                val validateUsePromoRevampUiModel =
+                    validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
+                        .executeOnBackground()
+                if (view != null) {
+                    this@ShipmentPresenter.validateUsePromoRevampUiModel =
+                        validateUsePromoRevampUiModel
+                    couponStateChanged = true
+                    showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
+                    validateBBO(validateUsePromoRevampUiModel)
+                    updateTickerAnnouncementData(validateUsePromoRevampUiModel)
+                    if (!validateUsePromoRevampUiModel.status.equals(
+                            statusOK,
+                            ignoreCase = true
+                        ) || validateUsePromoRevampUiModel.errorCode != statusCode200
+                    ) {
+                        var message: String? = ""
+                        if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
+                            message = validateUsePromoRevampUiModel.message[0]
+                        } else {
+                            message = DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
                         }
-
-                        override fun onError(e: Throwable) {
-                            Timber.d(e)
-                            if (view != null) {
-                                if (e is AkamaiErrorException) {
-                                    clearAllPromo()
-                                    view?.showToastError(e.message)
-                                    view?.resetAllCourier()
-                                    view?.cancelAllCourierPromo()
-                                    view?.doResetButtonPromoCheckout()
-                                } else {
-                                    view?.renderErrorCheckPromoShipmentData(
-                                        getErrorMessage(
-                                            view?.activityContext,
-                                            e
-                                        )
+                        view?.renderErrorCheckPromoShipmentData(message)
+                        view?.resetPromoBenefit()
+                        view?.cancelAllCourierPromo()
+                    } else {
+                        view?.updateButtonPromoCheckout(
+                            validateUsePromoRevampUiModel.promoUiModel,
+                            false
+                        )
+                        if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+                            analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
+                                validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+                            )
+                        } else {
+                            for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                                if (voucherOrder.messageUiModel.state == "red") {
+                                    analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
+                                        voucherOrder.messageUiModel.text
                                     )
+                                    break
                                 }
-                                checkUnCompletedPublisher()
-                            }
-                        }
-
-                        override fun onNext(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
-                            if (view != null) {
-                                this@ShipmentPresenter.validateUsePromoRevampUiModel =
-                                    validateUsePromoRevampUiModel
-                                couponStateChanged = true
-                                showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
-                                validateBBO(validateUsePromoRevampUiModel)
-                                updateTickerAnnouncementData(validateUsePromoRevampUiModel)
-                                if (!validateUsePromoRevampUiModel.status.equals(
-                                        statusOK,
-                                        ignoreCase = true
-                                    ) || validateUsePromoRevampUiModel.errorCode != statusCode200
-                                ) {
-                                    var message: String? = ""
-                                    if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
-                                        message = validateUsePromoRevampUiModel.message[0]
-                                    } else {
-                                        message = DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
-                                    }
-                                    view?.renderErrorCheckPromoShipmentData(message)
-                                    view?.resetPromoBenefit()
-                                    view?.cancelAllCourierPromo()
-                                } else {
-                                    view?.updateButtonPromoCheckout(
-                                        validateUsePromoRevampUiModel.promoUiModel,
-                                        false
-                                    )
-                                    if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
-                                        analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
-                                            validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
-                                        )
-                                    } else {
-                                        for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
-                                            if (voucherOrder.messageUiModel.state == "red") {
-                                                analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
-                                                    voucherOrder.messageUiModel.text
-                                                )
-                                                break
-                                            }
-                                        }
-                                    }
-                                }
-                                val clashingInfoDetailUiModel =
-                                    validateUsePromoRevampUiModel.promoUiModel.clashingInfoDetailUiModel
-                                if (clashingInfoDetailUiModel.clashMessage.isNotEmpty() || clashingInfoDetailUiModel.clashReason.isNotEmpty() || clashingInfoDetailUiModel.options.isNotEmpty()) {
-                                    val clashPromoCodes = ArrayList<String>()
-                                    for (promoClashOptionUiModel in clashingInfoDetailUiModel.options) {
-                                        for (voucherOrder in promoClashOptionUiModel.voucherOrders) {
-                                            clashPromoCodes.add(voucherOrder.code)
-                                        }
-                                    }
-                                    cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel)
-                                }
-                                reloadCourierForMvc(
-                                    validateUsePromoRevampUiModel,
-                                    lastSelectedCourierOrderIndex,
-                                    cartString
-                                )
                             }
                         }
                     }
-                )
-        )
+                    val clashingInfoDetailUiModel =
+                        validateUsePromoRevampUiModel.promoUiModel.clashingInfoDetailUiModel
+                    if (clashingInfoDetailUiModel.clashMessage.isNotEmpty() || clashingInfoDetailUiModel.clashReason.isNotEmpty() || clashingInfoDetailUiModel.options.isNotEmpty()) {
+                        val clashPromoCodes = ArrayList<String>()
+                        for (promoClashOptionUiModel in clashingInfoDetailUiModel.options) {
+                            for (voucherOrder in promoClashOptionUiModel.voucherOrders) {
+                                clashPromoCodes.add(voucherOrder.code)
+                            }
+                        }
+                        cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel)
+                    }
+                    reloadCourierForMvc(
+                        validateUsePromoRevampUiModel,
+                        lastSelectedCourierOrderIndex,
+                        cartString
+                    )
+                    checkUnCompletedPublisher()
+                }
+            } catch (e: Throwable) {
+                Timber.d(e)
+                if (view != null) {
+                    if (e is AkamaiErrorException) {
+                        clearAllPromo()
+                        view?.showToastError(e.message)
+                        view?.resetAllCourier()
+                        view?.cancelAllCourierPromo()
+                        view?.doResetButtonPromoCheckout()
+                    } else {
+                        view?.renderErrorCheckPromoShipmentData(
+                            getErrorMessage(
+                                view?.activityContext,
+                                e
+                            )
+                        )
+                    }
+                    checkUnCompletedPublisher()
+                }
+            }
+        }
+//        val requestParams = RequestParams.create()
+//        requestParams.putObject(
+//            OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE,
+//            validateUsePromoRequest
+//        )
+//        compositeSubscription.add(
+//            validateUsePromoRevampUseCase.createObservable(requestParams)
+//                .subscribeOn(executorSchedulers.io)
+//                .observeOn(executorSchedulers.main)
+//                .subscribe(
+//                    object : Subscriber<ValidateUsePromoRevampUiModel>() {
+//                        override fun onCompleted() {
+//                            checkUnCompletedPublisher()
+//                        }
+//
+//                        override fun onError(e: Throwable) {
+//                            Timber.d(e)
+//                            if (view != null) {
+//                                if (e is AkamaiErrorException) {
+//                                    clearAllPromo()
+//                                    view?.showToastError(e.message)
+//                                    view?.resetAllCourier()
+//                                    view?.cancelAllCourierPromo()
+//                                    view?.doResetButtonPromoCheckout()
+//                                } else {
+//                                    view?.renderErrorCheckPromoShipmentData(
+//                                        getErrorMessage(
+//                                            view?.activityContext,
+//                                            e
+//                                        )
+//                                    )
+//                                }
+//                                checkUnCompletedPublisher()
+//                            }
+//                        }
+//
+//                        override fun onNext(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
+//                            if (view != null) {
+//                                this@ShipmentPresenter.validateUsePromoRevampUiModel =
+//                                    validateUsePromoRevampUiModel
+//                                couponStateChanged = true
+//                                showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
+//                                validateBBO(validateUsePromoRevampUiModel)
+//                                updateTickerAnnouncementData(validateUsePromoRevampUiModel)
+//                                if (!validateUsePromoRevampUiModel.status.equals(
+//                                        statusOK,
+//                                        ignoreCase = true
+//                                    ) || validateUsePromoRevampUiModel.errorCode != statusCode200
+//                                ) {
+//                                    var message: String? = ""
+//                                    if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
+//                                        message = validateUsePromoRevampUiModel.message[0]
+//                                    } else {
+//                                        message = DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+//                                    }
+//                                    view?.renderErrorCheckPromoShipmentData(message)
+//                                    view?.resetPromoBenefit()
+//                                    view?.cancelAllCourierPromo()
+//                                } else {
+//                                    view?.updateButtonPromoCheckout(
+//                                        validateUsePromoRevampUiModel.promoUiModel,
+//                                        false
+//                                    )
+//                                    if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+//                                        analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
+//                                            validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+//                                        )
+//                                    } else {
+//                                        for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+//                                            if (voucherOrder.messageUiModel.state == "red") {
+//                                                analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
+//                                                    voucherOrder.messageUiModel.text
+//                                                )
+//                                                break
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                                val clashingInfoDetailUiModel =
+//                                    validateUsePromoRevampUiModel.promoUiModel.clashingInfoDetailUiModel
+//                                if (clashingInfoDetailUiModel.clashMessage.isNotEmpty() || clashingInfoDetailUiModel.clashReason.isNotEmpty() || clashingInfoDetailUiModel.options.isNotEmpty()) {
+//                                    val clashPromoCodes = ArrayList<String>()
+//                                    for (promoClashOptionUiModel in clashingInfoDetailUiModel.options) {
+//                                        for (voucherOrder in promoClashOptionUiModel.voucherOrders) {
+//                                            clashPromoCodes.add(voucherOrder.code)
+//                                        }
+//                                    }
+//                                    cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel)
+//                                }
+//                                reloadCourierForMvc(
+//                                    validateUsePromoRevampUiModel,
+//                                    lastSelectedCourierOrderIndex,
+//                                    cartString
+//                                )
+//                            }
+//                        }
+//                    }
+//                )
+//        )
     }
 
     // Re-fetch rates to get promo mvc icon
@@ -1451,87 +1537,89 @@ class ShipmentPresenter @Inject constructor(
             if (showLoading) {
                 view?.setStateLoadingCourierStateAtIndex(cartPosition, true)
             }
-            compositeSubscription.add(
-                validateUsePromoRevampUseCase.createObservable(requestParams)
-                    .subscribeOn(executorSchedulers.io)
-                    .observeOn(executorSchedulers.main)
-                    .subscribe(object : Subscriber<ValidateUsePromoRevampUiModel>() {
-                        override fun onCompleted() {
-                            logisticDonePublisher?.onCompleted()
-                            logisticPromoDonePublisher?.onCompleted()
-                            val shipmentScheduleDeliveryMapData =
-                                getScheduleDeliveryMapData(cartString)
-                            if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
-                                shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
-                            }
-                        }
-
-                        override fun onError(e: Throwable) {
-                            Timber.d(e)
-                            if (view != null) {
-                                view?.setStateLoadingCourierStateAtIndex(cartPosition, false)
-                                mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.message)
-                                if (e is AkamaiErrorException) {
-                                    clearAllPromo()
-                                    view?.showToastError(e.message)
-                                    view?.resetAllCourier()
-                                    view?.cancelAllCourierPromo()
-                                    view?.doResetButtonPromoCheckout()
-                                } else {
-                                    view?.showToastError(e.message)
-                                    view?.resetCourier(cartPosition)
-                                }
-                                view?.logOnErrorApplyBo(e, cartPosition, promoCode)
-                                logisticDonePublisher?.onCompleted()
-                                logisticPromoDonePublisher?.onCompleted()
-                                val shipmentScheduleDeliveryMapData =
-                                    getScheduleDeliveryMapData(cartString)
-                                if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
-                                    shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
-                                }
-                            }
-                        }
-
-                        override fun onNext(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
-                            if (view != null) {
-                                view?.setStateLoadingCourierStateAtIndex(cartPosition, false)
-                                this@ShipmentPresenter.validateUsePromoRevampUiModel =
-                                    validateUsePromoRevampUiModel
-                                updateTickerAnnouncementData(validateUsePromoRevampUiModel)
-                                showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
-                                validateBBOWithSpecificOrder(
-                                    validateUsePromoRevampUiModel,
-                                    cartString,
-                                    promoCode
+            launch {
+                try {
+                    val validateUsePromoRevampUiModel =
+                        validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
+                            .executeOnBackground()
+                    if (view != null) {
+                        view?.setStateLoadingCourierStateAtIndex(
+                            cartPosition,
+                            false
+                        )
+                        this@ShipmentPresenter.validateUsePromoRevampUiModel =
+                            validateUsePromoRevampUiModel
+                        updateTickerAnnouncementData(validateUsePromoRevampUiModel)
+                        showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
+                        validateBBOWithSpecificOrder(
+                            validateUsePromoRevampUiModel,
+                            cartString,
+                            promoCode
+                        )
+                        val isValidatePromoRevampSuccess =
+                            validateUsePromoRevampUiModel.status.equals(
+                                statusOK,
+                                ignoreCase = true
+                            ) && validateUsePromoRevampUiModel.errorCode == statusCode200
+                        if (isValidatePromoRevampSuccess) {
+                            view?.updateButtonPromoCheckout(
+                                validateUsePromoRevampUiModel.promoUiModel,
+                                true
+                            )
+                        } else {
+                            if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
+                                val errMessage =
+                                    validateUsePromoRevampUiModel.message[0]
+                                mTrackerShipment.eventClickLanjutkanTerapkanPromoError(
+                                    errMessage
                                 )
-                                val isValidatePromoRevampSuccess =
-                                    validateUsePromoRevampUiModel.status.equals(
-                                        statusOK,
-                                        ignoreCase = true
-                                    ) && validateUsePromoRevampUiModel.errorCode == statusCode200
-                                if (isValidatePromoRevampSuccess) {
-                                    view?.updateButtonPromoCheckout(
-                                        validateUsePromoRevampUiModel.promoUiModel,
-                                        true
-                                    )
-                                } else {
-                                    if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
-                                        val errMessage = validateUsePromoRevampUiModel.message[0]
-                                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(
-                                            errMessage
-                                        )
-                                        eventCheckoutViewPromoMessage(errMessage)
-                                        view?.showToastError(errMessage)
-                                        view?.resetCourier(cartPosition)
-                                    } else {
-                                        view?.showToastError(DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO)
-                                        view?.resetCourier(cartPosition)
-                                    }
-                                }
+                                eventCheckoutViewPromoMessage(errMessage)
+                                view?.showToastError(errMessage)
+                                view?.resetCourier(cartPosition)
+                            } else {
+                                view?.showToastError(
+                                    DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO
+                                )
+                                view?.resetCourier(cartPosition)
                             }
                         }
-                    })
-            )
+                    }
+                    logisticDonePublisher?.onCompleted()
+                    logisticPromoDonePublisher?.onCompleted()
+                    val shipmentScheduleDeliveryMapData =
+                        getScheduleDeliveryMapData(cartString)
+                    if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
+                        shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
+                    }
+                } catch (e: Throwable) {
+                    Timber.d(e)
+                    if (view != null) {
+                        view?.setStateLoadingCourierStateAtIndex(
+                            cartPosition,
+                            false
+                        )
+                        mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.message)
+                        if (e is AkamaiErrorException) {
+                            clearAllPromo()
+                            view?.showToastError(e.message)
+                            view?.resetAllCourier()
+                            view?.cancelAllCourierPromo()
+                            view?.doResetButtonPromoCheckout()
+                        } else {
+                            view?.showToastError(e.message)
+                            view?.resetCourier(cartPosition)
+                        }
+                        view?.logOnErrorApplyBo(e, cartPosition, promoCode)
+                        logisticDonePublisher?.onCompleted()
+                        logisticPromoDonePublisher?.onCompleted()
+                        val shipmentScheduleDeliveryMapData =
+                            getScheduleDeliveryMapData(cartString)
+                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInValidateUsePromo) {
+                            shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -1661,74 +1749,61 @@ class ShipmentPresenter @Inject constructor(
         noToast: Boolean
     ) {
         couponStateChanged = true
-        val requestParams = RequestParams.create()
-        val validateUsePromoRequest = view?.generateValidateUsePromoRequest()
-        requestParams.putObject(
-            OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE,
-            validateUsePromoRequest
-        )
-        compositeSubscription.add(
-            validateUsePromoRevampUseCase.createObservable(requestParams)
-                .subscribeOn(executorSchedulers.io)
-                .observeOn(executorSchedulers.main)
-                .subscribe(object : Subscriber<ValidateUsePromoRevampUiModel>() {
-                    override fun onCompleted() {
-                        /* no-op */
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Timber.d(e)
-                        if (view != null) {
-                            if (e is AkamaiErrorException) {
-                                clearAllPromo()
-                                view?.showToastError(e.message)
-                                view?.resetAllCourier()
-                                view?.cancelAllCourierPromo()
-                                view?.doResetButtonPromoCheckout()
-                            } else {
-                                view?.showToastError(
-                                    getErrorMessage(
-                                        view?.activityContext,
-                                        e
-                                    )
-                                )
-                            }
+        val validateUsePromoRequest = view?.generateValidateUsePromoRequest() ?: return
+        launch {
+            try {
+                val validateUsePromoRevampUiModel =
+                    validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
+                        .executeOnBackground()
+                this@ShipmentPresenter.validateUsePromoRevampUiModel =
+                    validateUsePromoRevampUiModel
+                couponStateChanged = true
+                if (view != null) {
+                    updateTickerAnnouncementData(validateUsePromoRevampUiModel)
+                    showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
+                    validateBBO(validateUsePromoRevampUiModel)
+                    val isValidatePromoRevampSuccess =
+                        validateUsePromoRevampUiModel.status.equals(
+                            statusOK,
+                            ignoreCase = true
+                        ) && validateUsePromoRevampUiModel.errorCode == statusCode200
+                    if (isValidatePromoRevampSuccess) {
+                        view?.renderPromoCheckoutFromCourierSuccess(
+                            validateUsePromoRevampUiModel,
+                            itemPosition,
+                            noToast
+                        )
+                    } else {
+                        if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
+                            val errMessage = validateUsePromoRevampUiModel.message[0]
+                            view?.renderErrorCheckPromoShipmentData(errMessage)
+                        } else {
+                            view?.renderErrorCheckPromoShipmentData(
+                                DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
+                            )
                         }
                     }
-
-                    override fun onNext(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
-                        this@ShipmentPresenter.validateUsePromoRevampUiModel =
-                            validateUsePromoRevampUiModel
-                        couponStateChanged = true
-                        if (view != null) {
-                            updateTickerAnnouncementData(validateUsePromoRevampUiModel)
-                            showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
-                            validateBBO(validateUsePromoRevampUiModel)
-                            val isValidatePromoRevampSuccess =
-                                validateUsePromoRevampUiModel.status.equals(
-                                    statusOK,
-                                    ignoreCase = true
-                                ) && validateUsePromoRevampUiModel.errorCode == statusCode200
-                            if (isValidatePromoRevampSuccess) {
-                                view?.renderPromoCheckoutFromCourierSuccess(
-                                    validateUsePromoRevampUiModel,
-                                    itemPosition,
-                                    noToast
-                                )
-                            } else {
-                                if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
-                                    val errMessage = validateUsePromoRevampUiModel.message[0]
-                                    view?.renderErrorCheckPromoShipmentData(errMessage)
-                                } else {
-                                    view?.renderErrorCheckPromoShipmentData(
-                                        DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
-                                    )
-                                }
-                            }
-                        }
+                }
+            } catch (e: Throwable) {
+                Timber.d(e)
+                if (view != null) {
+                    if (e is AkamaiErrorException) {
+                        clearAllPromo()
+                        view?.showToastError(e.message)
+                        view?.resetAllCourier()
+                        view?.cancelAllCourierPromo()
+                        view?.doResetButtonPromoCheckout()
+                    } else {
+                        view?.showToastError(
+                            getErrorMessage(
+                                view?.activityContext,
+                                e
+                            )
+                        )
                     }
-                })
-        )
+                }
+            }
+        }
     }
 
     override fun generateCheckoutRequest(
