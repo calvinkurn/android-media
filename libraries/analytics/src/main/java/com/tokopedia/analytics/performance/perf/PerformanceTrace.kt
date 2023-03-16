@@ -13,11 +13,13 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
+import okhttp3.internal.checkDuration
 import java.util.concurrent.atomic.AtomicReference
 
 @FlowPreview
 class PerformanceTrace(val traceName: String) {
     companion object {
+        private const val PERF_TIMEOUT = 10000
         const val TYPE_TTFL = "TTFL"
         const val TYPE_TTIL = "TTIL"
         const val GLOBAL_LAYOUT_DEBOUNCE = 500L
@@ -26,6 +28,7 @@ class PerformanceTrace(val traceName: String) {
         const val STATE_PARTIALLY_ERROR = "page_partially_error"
         const val STATE_TOUCH = "user_touch"
         const val STATE_SUCCESS = "success"
+        const val STATE_TIMEOUT = "timeout"
     }
     private var startCurrentTimeMillis = 0L
     private var currentLoadableComponentList = mutableListOf<LoadableComponent>()
@@ -58,12 +61,21 @@ class PerformanceTrace(val traceName: String) {
     }
 
     fun checkIfLoadingIsFinished(): Boolean {
+        if (timeoutExceeded()) return true
         currentLoadableComponentList.filterIsInstance<LoadableComponent>().forEach {
             if (it.isLoading()) {
                 return false
             }
         }
         return true
+    }
+
+    private fun timeoutExceeded(): Boolean {
+        val isTimeout = System.currentTimeMillis() - startCurrentTimeMillis >= PERF_TIMEOUT
+        if (isTimeout) {
+            setPageState(STATE_TIMEOUT)
+        }
+        return isTimeout
     }
 
     fun init(

@@ -1293,7 +1293,11 @@ open class HomeRevampFragment :
             v = view.rootView,
             scope = this.lifecycleScope,
             touchListenerActivity = activity as? TouchListenerActivity
-        ) {}
+        ) { summaryModel, type, view ->
+            performanceTrace.debugPerformanceTrace(
+                activity, summaryModel, type, view
+            )
+        }
         observeSearchHint()
     }
 
