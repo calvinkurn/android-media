@@ -80,7 +80,6 @@ class InboxContactUsViewModel @Inject constructor(
             block = {
                 val topBotStatusResponse = topBotStatusUseCase(Unit)
                 if (topBotStatusResponse.getTopBotStatusInbox()
-                        .getTopBotStatusData().isSuccess == SUCCESS_HIT_API && topBotStatusResponse.getTopBotStatusInbox()
                         .getTopBotStatusData().isActive
                 ) {
                     val messageId =
