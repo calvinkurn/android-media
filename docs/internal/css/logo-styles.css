@@ -5,7 +5,7 @@
 
 .library-name a::before {
     content: '';
-    background-image: url('../assets/toped-favicon.png');
+    background-image: url('../internal/assets/toped-favicon.png');
     background-repeat: no-repeat;
     border-radius: 14%;
     background-size: 50px 50px;
