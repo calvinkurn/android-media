@@ -7,6 +7,7 @@ import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.content.common.comment.uimodel.UserType
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.util.ContentDateConverter
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import java.time.*
 import javax.inject.Inject
@@ -68,7 +69,7 @@ class CommentUiModelMapper @Inject constructor() {
             photo = comment.userInfo.photo,
             appLink = comment.userInfo.linkDetail.appLink,
             content = comment.comment.replace("\n", "<br />").parseAsHtml().toString(), // to make sure new line doesn't skip
-            createdTime = convertTime(comment.createdTime),
+            createdTime = ContentDateConverter.convertTime(comment.createdTime),
             commentType = comment.parentId.convertToCommentType,
             childCount = "0",
             isOwner = true,
@@ -76,37 +77,5 @@ class CommentUiModelMapper @Inject constructor() {
             userId = comment.userInfo.userId,
             userType = userType
         )
-    }
-
-    private fun convertTime(date: String): String {
-        return try {
-            val now = ZonedDateTime.now()
-            val convert = ZonedDateTime.parse(date)
-            val diff = Duration.between(convert, now)
-            val minute = diff.toMinutes()
-            val hour = diff.toHours()
-            val day = diff.toDays()
-
-            return if (day in 1..90) {
-                "$day $DAY"
-            } else if (day > 90) {
-                "${convert.month.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() }} ${convert.year}"
-            } else if (hour in 1..24) {
-                "$hour $HOUR"
-            } else if (minute in 1..60) {
-                "$minute $MINUTE"
-            } else {
-                DEFAULT_WORDING
-            }
-        } catch (e: Exception) {
-            DEFAULT_WORDING
-        }
-    }
-
-    companion object {
-        private const val DAY = "hari"
-        private const val HOUR = "jam"
-        private const val MINUTE = "menit"
-        private const val DEFAULT_WORDING = "Beberapa detik yang lalu"
     }
 }
