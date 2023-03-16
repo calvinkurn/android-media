@@ -20,6 +20,7 @@ import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutReques
 import com.tokopedia.checkout.data.model.request.checkout.old.EgoldData
 import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.TokopediaCornerData
+import com.tokopedia.checkout.data.model.request.saf.ShipmentAddressFormRequest
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateDropshipData
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateProductData
@@ -579,16 +580,26 @@ class ShipmentPresenter @Inject constructor(
 //        }
         launch {
             try {
-                getShipmentAddressFormV4UseCase.setParams(
-                    isOneClickShipment,
-                    isTradeIn,
-                    isSkipUpdateOnboardingState,
-                    cornerId,
-                    deviceId,
-                    leasingId,
-                    isPlusSelected
+//                getShipmentAddressFormV4UseCase.setParams(
+//                    isOneClickShipment,
+//                    isTradeIn,
+//                    isSkipUpdateOnboardingState,
+//                    cornerId,
+//                    deviceId,
+//                    leasingId,
+//                    isPlusSelected
+//                )
+                val cartShipmentAddressFormData = getShipmentAddressFormV4UseCase(
+                    ShipmentAddressFormRequest(
+                        isOneClickShipment,
+                        isTradeIn,
+                        isSkipUpdateOnboardingState,
+                        cornerId,
+                        deviceId,
+                        leasingId,
+                        isPlusSelected
+                    )
                 )
-                val cartShipmentAddressFormData = getShipmentAddressFormV4UseCase(Unit)
                 if (view != null) {
                     view?.stopEmbraceTrace()
                     if (isReloadData) {
@@ -3853,10 +3864,10 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun updateDynamicData(
-        dynamicDataPassingParamRequest: DynamicDataPassingParamRequest?,
+        dynamicDataPassingParamRequest: DynamicDataPassingParamRequest,
         isFireAndForget: Boolean
     ) {
-        updateDynamicDataPassingUseCase.setParams(dynamicDataPassingParamRequest!!, isFireAndForget)
+        updateDynamicDataPassingUseCase.setParams(dynamicDataPassingParamRequest, isFireAndForget)
         updateDynamicDataPassingUseCase.execute(
             { (dynamicData): UpdateDynamicDataPassingUiModel ->
                 this.dynamicData = dynamicData

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkout.data.model.request.saf.ShipmentAddressFormRequest
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
@@ -21,65 +22,91 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
     private val shipmentMapper: ShipmentMapper,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Unit, CartShipmentAddressFormData>(dispatchers.io) {
+) : CoroutineUseCase<ShipmentAddressFormRequest, CartShipmentAddressFormData>(dispatchers.io) {
 
-    private var params: Map<String, Any>? = null
-
-    fun setParams(
-        isOneClickShipment: Boolean,
-        isTradeIn: Boolean,
-        isSkipUpdateOnboardingState: Boolean,
-        cornerId: String?,
-        deviceId: String?,
-        leasingId: String?,
-        isPlusSelected: Boolean
-    ) {
-        val params: MutableMap<String, Any> = HashMap()
-        params[ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS] =
-            chosenAddressRequestHelper.getChosenAddress()
-        params[PARAM_KEY_LANG] = "id"
-        params[PARAM_KEY_IS_ONE_CLICK_SHIPMENT] = isOneClickShipment
-        params[PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE] = if (isSkipUpdateOnboardingState) 1 else 0
-        if (cornerId != null) {
-            try {
-                val tmpCornerId = cornerId.toIntOrZero()
-                params[PARAM_KEY_CORNER_ID] = tmpCornerId
-            } catch (e: NumberFormatException) {
-                Timber.d(e)
-            }
-        }
-        if (leasingId != null && !leasingId.isEmpty()) {
-            try {
-                val tmpLeasingId = leasingId.toIntOrZero()
-                params[PARAM_KEY_VEHICLE_LEASING_ID] = tmpLeasingId
-            } catch (e: NumberFormatException) {
-                Timber.d(e)
-            }
-        }
-        if (isTradeIn) {
-            params[PARAM_KEY_IS_TRADEIN] = true
-            params[PARAM_KEY_DEVICE_ID] = deviceId ?: ""
-        }
-        params[PARAM_KEY_IS_PLUS_SELECTED] = isPlusSelected
-
-        this.params = mapOf(
-            "params" to params
-        )
-    }
+//    private var params: Map<String, Any>? = null
+//
+//    fun setParams(
+//        isOneClickShipment: Boolean,
+//        isTradeIn: Boolean,
+//        isSkipUpdateOnboardingState: Boolean,
+//        cornerId: String?,
+//        deviceId: String?,
+//        leasingId: String?,
+//        isPlusSelected: Boolean
+//    ) {
+//        val params: MutableMap<String, Any> = HashMap()
+//        params[ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS] =
+//            chosenAddressRequestHelper.getChosenAddress()
+//        params[PARAM_KEY_LANG] = "id"
+//        params[PARAM_KEY_IS_ONE_CLICK_SHIPMENT] = isOneClickShipment
+//        params[PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE] = if (isSkipUpdateOnboardingState) 1 else 0
+//        if (cornerId != null) {
+//            try {
+//                val tmpCornerId = cornerId.toIntOrZero()
+//                params[PARAM_KEY_CORNER_ID] = tmpCornerId
+//            } catch (e: NumberFormatException) {
+//                Timber.d(e)
+//            }
+//        }
+//        if (leasingId != null && leasingId.isNotEmpty()) {
+//            try {
+//                val tmpLeasingId = leasingId.toIntOrZero()
+//                params[PARAM_KEY_VEHICLE_LEASING_ID] = tmpLeasingId
+//            } catch (e: NumberFormatException) {
+//                Timber.d(e)
+//            }
+//        }
+//        if (isTradeIn) {
+//            params[PARAM_KEY_IS_TRADEIN] = true
+//            params[PARAM_KEY_DEVICE_ID] = deviceId ?: ""
+//        }
+//        params[PARAM_KEY_IS_PLUS_SELECTED] = isPlusSelected
+//
+//        this.params = mapOf(
+//            "params" to params
+//        )
+//    }
 
     override fun graphqlQuery(): String {
         return SHIPMENT_ADDRESS_FORM_V3_QUERY
     }
 
-    override suspend fun execute(params: Unit): CartShipmentAddressFormData {
-        if (this.params == null) {
-            throw RuntimeException("Parameter is null!")
+    override suspend fun execute(params: ShipmentAddressFormRequest): CartShipmentAddressFormData {
+        val paramMap: MutableMap<String, Any> = HashMap()
+        paramMap[ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS] =
+            chosenAddressRequestHelper.getChosenAddress()
+        paramMap[PARAM_KEY_LANG] = "id"
+        paramMap[PARAM_KEY_IS_ONE_CLICK_SHIPMENT] = params.isOneClickShipment
+        paramMap[PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE] = if (params.isSkipUpdateOnboardingState) 1 else 0
+        if (params.cornerId != null) {
+            try {
+                val tmpCornerId = params.cornerId.toIntOrZero()
+                paramMap[PARAM_KEY_CORNER_ID] = tmpCornerId
+            } catch (e: NumberFormatException) {
+                Timber.d(e)
+            }
         }
+        if (params.leasingId != null && params.leasingId.isNotEmpty()) {
+            try {
+                val tmpLeasingId = params.leasingId.toIntOrZero()
+                paramMap[PARAM_KEY_VEHICLE_LEASING_ID] = tmpLeasingId
+            } catch (e: NumberFormatException) {
+                Timber.d(e)
+            }
+        }
+        if (params.isTradeIn) {
+            paramMap[PARAM_KEY_IS_TRADEIN] = true
+            paramMap[PARAM_KEY_DEVICE_ID] = params.deviceId ?: ""
+        }
+        paramMap[PARAM_KEY_IS_PLUS_SELECTED] = params.isPlusSelected
 
         val request = GraphqlRequest(
             ShipmentAddressFormQuery(),
             ShipmentAddressFormGqlResponse::class.java,
-            this.params
+            mapOf(
+                "params" to paramMap
+            )
         )
         val response = graphqlRepository.response(listOf(request))
             .getSuccessData<ShipmentAddressFormGqlResponse>()

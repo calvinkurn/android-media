@@ -459,7 +459,7 @@ interface ShipmentContract {
         fun isUsingDynamicDataPassing(): Boolean
 
         fun updateDynamicData(
-            dynamicDataPassingParamRequest: DynamicDataPassingParamRequest?,
+            dynamicDataPassingParamRequest: DynamicDataPassingParamRequest,
             isFireAndForget: Boolean
         )
     }
