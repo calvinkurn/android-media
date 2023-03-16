@@ -53,6 +53,7 @@
     <string name="searchbar_mps_placeholder_text">Cari maks. 3 produk</string>
 
     <string name="searchbar_empty_keyword_error_message">Ketik dulu minimal 1 produk di kolom pencarian, ya!</string>
+    <string name="searchbar_duplicate_keyword_error_message">Keyword tersebut sudah ada sebelumnya</string>
 
     <string name="searchbar_plus_icon_coach_mark_title">Coba cari lebih dari 1 produk, yuk!</string>
     <string name="searchbar_plus_icon_coach_mark_message">Kini kamu bisa cari maks. 3 produk yang tersedia sekaligus dalam 1 toko.</string>

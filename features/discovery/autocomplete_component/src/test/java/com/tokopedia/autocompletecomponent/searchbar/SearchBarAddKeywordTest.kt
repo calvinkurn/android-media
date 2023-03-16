@@ -1,5 +1,6 @@
 package com.tokopedia.autocompletecomponent.searchbar
 
+import com.tokopedia.autocompletecomponent.shouldBe
 import org.junit.Test
 
 internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
@@ -18,6 +19,7 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
         `When keyword is added`(query)
 
         `Then verify SearchBarKeyword list`(keywords)
+        `Then verify searchBarKeywordError`(null)
     }
 
     @Test
@@ -38,6 +40,7 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
         `When keyword is added`(query)
 
         `Then verify SearchBarKeyword list`(keywords)
+        `Then verify searchBarKeywordError`(null)
     }
 
     @Test
@@ -49,6 +52,7 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
         `When keyword is added`(query)
 
         `Then verify SearchBarKeyword list`(emptyList())
+        `Then verify searchBarKeywordError`(SearchBarKeywordError.Empty)
     }
 
     @Test
@@ -66,6 +70,7 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
         `When keyword is added`(query)
 
         `Then verify SearchBarKeyword list`(keywords)
+        `Then verify searchBarKeywordError`(SearchBarKeywordError.Duplicate)
     }
 
     @Test
@@ -86,6 +91,7 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
         `When keyword is added`(query)
 
         `Then verify SearchBarKeyword list`(keywords)
+        `Then verify searchBarKeywordError`(null)
     }
 
     private fun `When keyword is added`(
@@ -93,5 +99,9 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
     ) {
         viewModel.onQueryUpdated(query)
         viewModel.onKeywordAdded(query)
+    }
+
+    private fun `Then verify searchBarKeywordError`(expected: SearchBarKeywordError?) {
+        viewModel.searchBarKeywordErrorEvent.value shouldBe expected
     }
 }

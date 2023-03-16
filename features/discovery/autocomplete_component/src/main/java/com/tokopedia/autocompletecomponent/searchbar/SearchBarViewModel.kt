@@ -18,6 +18,7 @@ import com.tokopedia.autocompletecomponent.util.setSearchQueries
 import com.tokopedia.autocompletecomponent.util.setSearchQuery
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 
@@ -64,6 +65,10 @@ class SearchBarViewModel @Inject constructor(
 
     val isMpsEnabled: Boolean
         get() = _searchBarStateLiveData.value?.isMpsEnabled == true
+
+    private val _searchBarKeywordErrorEvent : SingleLiveEvent<SearchBarKeywordError> = SingleLiveEvent()
+    val searchBarKeywordErrorEvent: LiveData<SearchBarKeywordError>
+        get() = _searchBarKeywordErrorEvent
 
     fun restoreSearchParameter(
         searchParameter: Map<String, String>,
@@ -170,11 +175,13 @@ class SearchBarViewModel @Inject constructor(
     }
 
     fun onKeywordAdded(query: String?) {
+        if (!isMpsEnabled) return
         if (!query.isNullOrBlank()) {
             val currentKeywords = _searchBarKeywords.value ?: emptyList()
             val cleanedQuery = activeKeyword.keyword.trim()
             val hasMaxKeywords = currentKeywords.size > 2
             val hasSameKeyword = currentKeywords.any { cleanedQuery == it.keyword }
+            if (hasSameKeyword) _searchBarKeywordErrorEvent.value = SearchBarKeywordError.Duplicate
             if (hasMaxKeywords || hasSameKeyword) return
             val addedKeyword = if (coachMarkLocalCache.shouldShowAddedKeywordCoachMark()) {
                 coachMarkLocalCache.markShowAddedKeywordCoachMark()
@@ -197,6 +204,8 @@ class SearchBarViewModel @Inject constructor(
             )
 
             updateSearchBarState()
+        } else {
+            _searchBarKeywordErrorEvent.value = SearchBarKeywordError.Empty
         }
     }
 
@@ -210,6 +219,14 @@ class SearchBarViewModel @Inject constructor(
                 if (it.position == keyword.position) activeKeyword else it.copy(isSelected = false)
             }
         } else {
+            val cleanedQuery = activeKeyword.keyword.trim()
+            val currentKeywords = _searchBarKeywords.value ?: emptyList()
+            val hasSameKeyword = currentKeywords.any { cleanedQuery == it.keyword }
+            if (hasSameKeyword) {
+                _searchBarKeywordErrorEvent.value = SearchBarKeywordError.Duplicate
+                return
+            }
+            
             activeKeyword = SearchBarKeyword(position = _searchBarKeywords.value.orEmpty().size)
             _activeKeywordLiveData.value = activeKeyword
             _searchBarKeywords.value = _searchBarKeywords.value.orEmpty().map {
