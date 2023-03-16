@@ -45,11 +45,11 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
             badge.setVisibility(View.GONE);
         }
 
-        ViewExtKt.addOnImpressionListener(itemView, element.getImpressHolder(), () -> listener.onAffiliateTrack(element.getTrackingViewModelList(), false));
+        ViewExtKt.addOnImpressionListener(itemView, element.getImpressHolder(), () -> listener.onAffiliateTrack(element.getTrackingModelList(), false));
 
         image.setOnClickListener(v -> {
-            listener.goToKolPostDetail(element.getPostId(), element.getUserName(), element.getTrackingViewModelList().get(0).getRecomId());
-            listener.onAffiliateTrack(element.getTrackingViewModelList(), true);
+            listener.goToKolPostDetail(element.getPostId(), element.getUserName(), element.getTrackingModelList().get(0).getRecomId());
+            listener.onAffiliateTrack(element.getTrackingModelList(), true);
         });
 
         if (element.getItemPos() == 0 && listener.getExploreCategory() == ExploreCategoryAdapter.CAT_ID_AFFILIATE) {

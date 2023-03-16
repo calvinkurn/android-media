@@ -9,13 +9,13 @@ object Constant {
     const val DATE_FORMAT_HH_MM = "HH:mm"
     const val DATE_FORMAT_EXPIRED = "yyyy-MM-dd HH:mm:ss"
 
-    const val PM_TOP_ADS_CREDIT = "5%"
+    const val PM_TOP_ADS_CREDIT = "1,5%"
     const val PM_BROAD_CAST_CHAT = "200"
-    const val PM_PRO_ADV_TOP_ADS_CREDIT = "5,5%"
+    const val PM_PRO_ADV_TOP_ADS_CREDIT = "2%"
     const val PM_PRO_ADV_BROAD_CAST_CHAT = "400"
-    const val PM_PRO_EXP_TOP_ADS_CREDIT = "6%"
+    const val PM_PRO_EXP_TOP_ADS_CREDIT = "2,5%"
     const val PM_PRO_EXP_BROAD_CAST_CHAT = "600"
-    const val PM_PRO_ULT_TOP_ADS_CREDIT = "6,5%"
+    const val PM_PRO_ULT_TOP_ADS_CREDIT = "3%"
     const val PM_PRO_ULT_BROAD_CAST_CHAT = "1.000"
     const val PM_SPECIAL_RELEASE = 5
     const val PM_PRO_ADV_SPECIAL_RELEASE = 10
@@ -26,7 +26,6 @@ object Constant {
     const val PM_PRO_EXP_PRODUCT_BUNDLING = 15
     const val PM_PRO_ULT_PRODUCT_BUNDLING = 25
     const val PM_FREE_DELIVERY = "3%"
-    const val PM_PRO_FREE_DELIVERY = "2,5%"
 
     const val POWER_MERCHANT = "Power Merchant"
     const val PM_PRO_ADVANCED = "Advanced"
@@ -47,8 +46,8 @@ object Constant {
         const val SHOP_PERFORMANCE_TIPS = "https://seller.tokopedia.com/edu/skor-toko"
         const val PM_PRO_IDLE =
             "https://seller.tokopedia.com/edu/status-power-merchant-pro-tidak-aktif"
-        const val PM_FEE_SERVICE =
-            "https://seller.tokopedia.com/penyesuaian-layanan-toko/detail-grup-kategori"
+        const val PM_SERVICE_FEE =
+            "https://seller.tokopedia.com/edu/biaya-layanan-tokopedia"
     }
 
     object Image {
@@ -72,8 +71,6 @@ object Constant {
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_cash_back.png"
         const val IC_PM_FLASH_SALE =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_flash_sale.png"
-        const val IC_PM_FREE_DELIVERY =
-            "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_free_delivery.png"
         const val IC_PM_PRODUCT_BUNDLING =
             "https://images.tokopedia.net/img/android/power_merchant_subscribe/ic_pm_product_bundling.png"
         const val IC_PM_SPECIAL_RELEASE =

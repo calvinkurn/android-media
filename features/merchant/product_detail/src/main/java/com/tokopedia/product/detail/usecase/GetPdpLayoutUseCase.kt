@@ -31,6 +31,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
         const val QUERY = """
             query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation, ${'$'}extParam: String, ${'$'}tokonow: pdpTokoNow) {
               pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation, extParam:${'$'}extParam, tokonow:${'$'}tokonow) {
+                requestID
                 name
                 pdpSession
                 basicInfo {
@@ -96,6 +97,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                     countReview
                     countTalk
                     rating
+                  }
+                  postATCLayout {
+                    layoutID
                   }
                 }
                 components {
@@ -338,6 +342,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           additionalInfo
                         }
                       }
+                      componentType
                     },
                      ... on pdpDataOneLiner {
                        productID
@@ -357,6 +362,10 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        widgetType
                        productID
                        whID
+                    }
+                    ... on pdpDataCustomInfoTitle {
+                      title
+                      status
                     }
                   }
                 }

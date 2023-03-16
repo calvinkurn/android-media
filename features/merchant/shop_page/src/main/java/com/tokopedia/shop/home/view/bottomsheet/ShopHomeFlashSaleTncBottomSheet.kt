@@ -76,7 +76,7 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
 
     private fun observeLiveData() {
         viewModel?.flashSaleTnc?.observe(viewLifecycleOwner, {
-            when(it) {
+            when (it) {
                 is Success -> {
                     val data = it.data
                     bottomSheetTitle.text = data.title

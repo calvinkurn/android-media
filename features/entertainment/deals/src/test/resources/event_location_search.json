@@ -10,22 +10,22 @@
         "city_id": "318",
         "city_name": "",
         "priority": "0",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "image_web": "https://ecs7.tokopedia.net/assets-frontend-eventapp/production/assets/7b69387c.png",
-        "image_app": "https://ecs7.tokopedia.net/assets-frontend-eventapp/production/assets/7b69387c.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "image_web": "https://images.tokopedia.net/assets-frontend-eventapp/production/assets/7b69387c.png",
+        "image_app": "https://images.tokopedia.net/assets-frontend-eventapp/production/assets/7b69387c.png",
         "location_type": {
           "id": 2,
           "name": "city",
           "display_name": "Kota",
           "search_radius": "20km",
           "outer_radius": "10km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_kota.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png"
         }
       },
       {
@@ -37,8 +37,8 @@
         "city_id": "78180",
         "city_name": "Kota Jakarta Barat",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_area.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_area.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_area.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_area.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -47,12 +47,12 @@
           "display_name": "Area",
           "search_radius": "4km",
           "outer_radius": "2km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_area.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_area.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_area.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_area.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_area.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_area.png"
         }
       },
       {
@@ -64,8 +64,8 @@
         "city_id": "80507",
         "city_name": "Kabupaten Badung",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_region.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_region.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_region.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_region.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -74,12 +74,12 @@
           "display_name": "Wilayah",
           "search_radius": "50km",
           "outer_radius": "25km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_region.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_region.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_region.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_region.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_region.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_region.png"
         }
       },
       {
@@ -91,8 +91,8 @@
         "city_id": "78175",
         "city_name": "Jakarta",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -101,12 +101,12 @@
           "display_name": "Kota",
           "search_radius": "20km",
           "outer_radius": "10km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_kota.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png"
         }
       },
       {
@@ -118,8 +118,8 @@
         "city_id": "78180",
         "city_name": "Jakarta",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -128,12 +128,12 @@
           "display_name": "Kota",
           "search_radius": "20km",
           "outer_radius": "10km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_kota.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png"
         }
       },
       {
@@ -145,8 +145,8 @@
         "city_id": "78703",
         "city_name": "Jakarta",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -155,12 +155,12 @@
           "display_name": "Kota",
           "search_radius": "20km",
           "outer_radius": "10km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_kota.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png"
         }
       },
       {
@@ -172,8 +172,8 @@
         "city_id": "79179",
         "city_name": "Jakarta",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -182,12 +182,12 @@
           "display_name": "Kota",
           "search_radius": "20km",
           "outer_radius": "10km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_kota.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png"
         }
       },
       {
@@ -199,8 +199,8 @@
         "city_id": "78177",
         "city_name": "Jakarta",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -209,12 +209,12 @@
           "display_name": "Kota",
           "search_radius": "20km",
           "outer_radius": "10km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_kota.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png"
         }
       },
       {
@@ -226,8 +226,8 @@
         "city_id": "78246",
         "city_name": "Jakarta",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -236,12 +236,12 @@
           "display_name": "Kota",
           "search_radius": "20km",
           "outer_radius": "10km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_kota.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png"
         }
       },
       {
@@ -253,8 +253,8 @@
         "city_id": "78183",
         "city_name": "Jakarta",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -263,12 +263,12 @@
           "display_name": "Kota",
           "search_radius": "20km",
           "outer_radius": "10km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_kota.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png"
         }
       },
       {
@@ -280,8 +280,8 @@
         "city_id": "78313",
         "city_name": "Jakarta",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -290,12 +290,12 @@
           "display_name": "Kota",
           "search_radius": "20km",
           "outer_radius": "10km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_kota.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png"
         }
       },
       {
@@ -307,8 +307,8 @@
         "city_id": "78363",
         "city_name": "Jakarta",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -317,12 +317,12 @@
           "display_name": "Kota",
           "search_radius": "20km",
           "outer_radius": "10km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_kota.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png"
         }
       },
       {
@@ -334,8 +334,8 @@
         "city_id": "78216",
         "city_name": "",
         "priority": "1",
-        "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-        "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+        "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png",
         "image_web": "",
         "image_app": "",
         "location_type": {
@@ -344,12 +344,12 @@
           "display_name": "Kota",
           "search_radius": "20km",
           "outer_radius": "10km",
-          "icon": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
+          "icon": "https://images.tokopedia.net/dealsweb/ic_kota.png",
           "type_id": "0",
           "status": 1,
           "custom_text_1": "-1",
-          "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png",
-          "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_kota.png"
+          "icon_web": "https://images.tokopedia.net/dealsweb/ic_kota.png",
+          "icon_app": "https://images.tokopedia.net/dealsweb/ic_kota.png"
         }
       }
     ],

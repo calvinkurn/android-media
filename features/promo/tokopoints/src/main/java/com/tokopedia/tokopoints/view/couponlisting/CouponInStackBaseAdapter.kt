@@ -100,9 +100,9 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
             holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
             holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
         } else {
-            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
 
         if (item.usage != null) {
@@ -215,7 +215,7 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
         }
 
         if (holder.itemView != null) {
-            holder.itemView.setOnClickListener { v ->
+            holder.itemView.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.code)
                 (holder.imgBanner.context as FragmentActivity).startActivityForResult(CouponDetailActivity.getCouponDetail(holder.imgBanner.context, bundle), REQUEST_CODE_STACKED_IN_ADAPTER)
@@ -230,7 +230,7 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
         super.onViewAttachedToWindow(vh)
 
         if (vh is ViewHolder) {
-            val holder = vh as ViewHolder
+            val holder = vh
 
             val data = items[holder.getAdapterPosition()] ?: return
 

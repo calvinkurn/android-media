@@ -46,6 +46,7 @@ import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalMyBillsAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListener
+import com.tokopedia.digital_checkout.presentation.bottomsheet.DigitalPlusMoreInfoBottomSheet
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
@@ -91,7 +92,9 @@ import com.tokopedia.resources.common.R as CommonRes
  * @author by jessica on 07/01/21
  */
 
-class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
+class DigitalCartFragment :
+    BaseDaggerFragment(),
+    MyBillsActionListener,
     DigitalCartInputPriceWidget.ActionListener {
 
     @Inject
@@ -121,6 +124,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private var cartPassData: DigitalCheckoutPassData? = null
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
+    private var isATCFailed: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -133,7 +137,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         if (subParams != null) {
             digitalSubscriptionParams = subParams
         }
-
     }
 
     override fun initInjector() {
@@ -152,7 +155,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //if user activate don't keep activities
+        // if user activate don't keep activities
         if (savedInstanceState != null) {
             viewModel.setPromoData(
                 savedInstanceState.getParcelable(EXTRA_STATE_PROMO_DATA)
@@ -162,6 +165,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 savedInstanceState.getParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER)
                     ?: DigitalCheckoutDataParameter()
             cartPassData?.needGetCart = true
+            isATCFailed = savedInstanceState.getBoolean(EXTRA_IS_ATC_ERROR)
         } else {
             viewModel.requestCheckoutParam = DigitalCheckoutDataParameter()
         }
@@ -174,7 +178,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        //save userInputView value for don't keep activities
+        // save userInputView value for don't keep activities
         viewModel.requestCheckoutParam.userInputPriceValue = binding?.inputPriceHolderView?.getPriceInput()
 
         outState.putParcelable(EXTRA_STATE_PROMO_DATA, viewModel.promoData.value)
@@ -182,6 +186,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER,
             viewModel.requestCheckoutParam
         )
+        outState.putBoolean(EXTRA_IS_ATC_ERROR, isATCFailed)
         super.onSaveInstanceState(outState)
     }
 
@@ -197,7 +202,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun loadData() {
         cartPassData?.let {
-            if (it.isFromPDP || it.needGetCart) {
+            if (isATCFailed) {
+                requestAddToCart(it)
+            } else if (it.isFromPDP || it.needGetCart) {
                 requestGetCart(it)
             } else {
                 requestAddToCart(it)
@@ -216,6 +223,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun requestAddToCart(passData: DigitalCheckoutPassData) {
         hideContent()
+        resetAtcError()
         binding?.loaderCheckout?.visible()
         passData.idemPotencyKey = generateATokenRechargeCheckout(requireContext())
         addToCartViewModel.addToCart(
@@ -244,14 +252,19 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> viewModel.getCart(
-                    it.data, isSpecialProduct = cartPassData?.isSpecialProduct
+                    it.data,
+                    isSpecialProduct = cartPassData?.isSpecialProduct
                         ?: false
                 )
-                is Fail -> closeViewWithMessageAlert(it.throwable)
+                is Fail -> {
+                    updateAtcError()
+                    closeViewWithMessageAlert(it.throwable)
+                }
             }
         }
 
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
+            updateAtcError()
             showErrorPage(it)
         }
 
@@ -287,8 +300,11 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
 
         viewModel.showLoading.observe(viewLifecycleOwner) { showLoader ->
-            if (showLoader) binding?.loaderCheckout?.visible()
-            else binding?.loaderCheckout?.gone()
+            if (showLoader) {
+                binding?.loaderCheckout?.visible()
+            } else {
+                binding?.loaderCheckout?.gone()
+            }
         }
 
         viewModel.isNeedOtp.observe(viewLifecycleOwner) {
@@ -387,14 +403,22 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun renderCartBasedOnParamState() {
         viewModel.requestCheckoutParam.let { param ->
-            //render input user
+            // render input user
             if (param.userInputPriceValue != null) {
                 binding?.inputPriceHolderView?.setPriceInput(param.userInputPriceValue)
             }
 
-            //render fintechProduct & subscription
+            // render fintechProduct & subscription
             if (param.isSubscriptionChecked) myBillsAdapter.setActiveSubscriptions()
-            if (param.fintechProducts.isNotEmpty()) myBillsAdapter.setActiveFintechProducts(param.fintechProducts)
+            if (param.crossSellProducts.isNotEmpty()) {
+                val fintechProducts = hashMapOf<String, FintechProduct>()
+                param.crossSellProducts.forEach {
+                    if (!it.value.isSubscription) {
+                        fintechProducts[it.key] = it.value.product
+                    }
+                }
+                myBillsAdapter.setActiveFintechProducts(fintechProducts)
+            }
         }
     }
 
@@ -405,16 +429,16 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         // init recyclerview
         binding?.let {
             cartDetailInfoAdapter = DigitalCartDetailInfoAdapter(object : DigitalCartDetailInfoAdapter.ActionListener {
-                    override fun expandAdditionalList() {
-                        it.tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_close_label)
-                        it.ivSeeDetail.loadImage(CommonRes.drawable.ic_system_action_arrow_up_normal_24)
-                    }
+                override fun expandAdditionalList() {
+                    it.tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_close_label)
+                    it.ivSeeDetail.loadImage(CommonRes.drawable.ic_system_action_arrow_up_normal_24)
+                }
 
-                    override fun collapseAdditionalList() {
-                        it.tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_see_detail_label)
-                        it.ivSeeDetail.loadImage(CommonRes.drawable.ic_system_action_arrow_down_normal_24)
-                    }
-                })
+                override fun collapseAdditionalList() {
+                    it.tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_see_detail_label)
+                    it.ivSeeDetail.loadImage(CommonRes.drawable.ic_system_action_arrow_down_normal_24)
+                }
+            })
             it.rvDetails.layoutManager = LinearLayoutManager(context)
             it.rvDetails.isNestedScrollingEnabled = false
             it.rvDetails.adapter = cartDetailInfoAdapter
@@ -435,13 +459,14 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 RouteManager.route(context, url)
             }
         }
-
     }
 
     private fun showError(error: Throwable) {
         hideContent()
         val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-            requireContext(), error, ErrorHandler.Builder().build()
+            requireContext(),
+            error,
+            ErrorHandler.Builder().build()
         )
         binding?.viewEmptyState?.let { viewEmptyState ->
             viewEmptyState.setActionClickListener {
@@ -449,8 +474,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 loadData()
             }
 
-            if (errMsg == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL || errMsg == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
-                || errMsg == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+            if (errMsg == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL || errMsg == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION ||
+                errMsg == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
             ) {
                 viewEmptyState.setType(GlobalError.NO_CONNECTION)
             } else if (errMsg == ErrorNetMessage.MESSAGE_ERROR_SERVER || errMsg == ErrorNetMessage.MESSAGE_ERROR_DEFAULT) {
@@ -486,7 +511,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             val operatorId = cartPassData?.operatorId ?: ""
 
             if (error.atcErrorPage.buttons.isNullOrEmpty()) {
-                digitalAnalytics.eventClickErrorButton(categoryId, operatorId)
                 it.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
                 it.setActionClickListener { _ ->
                     it.gone()
@@ -538,12 +562,14 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun showToastMessage(message: String) {
-        build(requireView(),
+        build(
+            requireView(),
             message,
             Snackbar.LENGTH_LONG,
             TYPE_ERROR,
             getString(com.tokopedia.abstraction.R.string.close),
-            View.OnClickListener { /** do nothing **/ }).show()
+            View.OnClickListener { /** do nothing **/ }
+        ).show()
     }
 
     private fun closeViewWithMessageAlert(error: Throwable) {
@@ -565,18 +591,19 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             if (data?.hasExtra(EXTRA_PROMO_DATA) == true) {
                 viewModel.setPromoData(data.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData())
             }
-
         } else if (requestCode == REQUEST_CODE_OTP) {
             if (resultCode == Activity.RESULT_OK) {
                 cartPassData?.let {
                     viewModel.processPatchOtpCart(
-                        getDigitalIdentifierParam(), it,
+                        getDigitalIdentifierParam(),
+                        it,
                         getString(R.string.digital_cart_login_message),
                         cartPassData?.isSpecialProduct ?: false
                     )
                 }
-            } else activity?.finish()
-
+            } else {
+                activity?.finish()
+            }
         } else if (requestCode == PaymentConstant.REQUEST_CODE) {
             val categoryId = cartPassData?.categoryId ?: ""
             when (resultCode) {
@@ -587,10 +614,12 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 }
                 PaymentConstant.PAYMENT_FAILED -> {
                     showToastMessage(getString(R.string.digital_cart_alert_payment_canceled_or_failed))
+                    resetCrossSellData()
                     getCartAfterCheckout()
                 }
                 PaymentConstant.PAYMENT_CANCELLED -> {
                     showToastMessage(getString(R.string.digital_cart_alert_payment_canceled))
+                    resetCrossSellData()
                     getCartAfterCheckout()
                 }
                 else -> getCartAfterCheckout()
@@ -647,7 +676,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             getOperatorName(),
             userSession.userId
         )
-        viewModel.onSubscriptionChecked(isChecked)
+        viewModel.onSubscriptionChecked(fintechProduct, isChecked)
     }
 
     override fun onSubscriptionImpression(fintechProduct: FintechProduct) {
@@ -665,7 +694,13 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             getCategoryName(),
             getOperatorName()
         )
-        renderSubscriptionMoreInfoBottomSheet()
+        binding?.checkoutBottomViewWidget?.let {
+            if (it.isGoToPlusCheckout) {
+                renderPlusSubscriptionMoreInfoBottomSheet()
+            } else {
+                renderSubscriptionMoreInfoBottomSheet()
+            }
+        }
     }
 
     override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {
@@ -691,17 +726,20 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         position: Int,
         isChecked: Boolean
     ) {
-        if (isChecked) digitalAnalytics.eventTebusMurahChecked(
-            fintechProduct,
-            getCategoryName(),
-            position,
-            userSession.userId
-        )
-        else digitalAnalytics.eventTebusMurahUnchecked(
-            fintechProduct,
-            getCategoryName(),
-            userSession.userId
-        )
+        if (isChecked) {
+            digitalAnalytics.eventTebusMurahChecked(
+                fintechProduct,
+                getCategoryName(),
+                position,
+                userSession.userId
+            )
+        } else {
+            digitalAnalytics.eventTebusMurahUnchecked(
+                fintechProduct,
+                getCategoryName(),
+                userSession.userId
+            )
+        }
         viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
     }
 
@@ -728,11 +766,12 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun renderFintechProductMoreInfo(fintechProductInfo: FintechProduct.FintechProductInfo) {
-        if (fintechProductInfo.urlLink.isNotEmpty()) RouteManager.route(
-            context,
-            fintechProductInfo.urlLink
-        )
-        else if (fintechProductInfo.tooltipText.isNotEmpty()) {
+        if (fintechProductInfo.urlLink.isNotEmpty()) {
+            RouteManager.route(
+                context,
+                fintechProductInfo.urlLink
+            )
+        } else if (fintechProductInfo.tooltipText.isNotEmpty()) {
             val moreInfoView = View.inflate(
                 context,
                 R.layout.layout_digital_fintech_product_info_bottom_sheet,
@@ -740,7 +779,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             )
             val moreInfoText: Typography = moreInfoView.findViewById(R.id.egold_tooltip)
             moreInfoText.setPadding(
-                Int.ZERO, Int.ZERO, Int.ZERO,
+                Int.ZERO,
+                Int.ZERO,
+                Int.ZERO,
                 getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
             )
             moreInfoText.text = MethodChecker.fromHtml(fintechProductInfo.tooltipText)
@@ -766,8 +807,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         userInputPriceDigital?.let {
             binding?.inputPriceContainer?.visible()
 
-            if (!userInputPriceDigital.minPayment.isNullOrEmpty())
+            if (!userInputPriceDigital.minPayment.isNullOrEmpty()) {
                 binding?.inputPriceHolderView?.actionListener = this
+            }
 
             val minPayment = userInputPriceDigital.minPayment ?: ""
             val maxPayment = userInputPriceDigital.maxPayment ?: ""
@@ -775,7 +817,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 userInputPriceDigital.minPaymentPlain.toLong(),
                 userInputPriceDigital.maxPaymentPlain.toLong(),
                 minPayment,
-                maxPayment,
+                maxPayment
             )
             binding?.inputPriceHolderView?.setPriceInput(total)
         }
@@ -861,6 +903,11 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
     }
 
+    private fun renderPlusSubscriptionMoreInfoBottomSheet() {
+        val bottomSheet = DigitalPlusMoreInfoBottomSheet()
+        bottomSheet.show(childFragmentManager)
+    }
+
     private fun renderSubscriptionMoreInfoBottomSheet() {
         context?.let {
             val linearLayout = LinearLayout(it)
@@ -869,7 +916,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
                 Int.ZERO,
                 getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_24)
             )
 
             val descriptionArray =
@@ -903,6 +950,11 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
     }
 
+    private fun resetCrossSellData() {
+        viewModel.requestCheckoutParam.isSubscriptionChecked = false
+        viewModel.requestCheckoutParam.crossSellProducts = hashMapOf()
+    }
+
     private fun getPromoDigitalModel(): PromoDigitalModel =
         viewModel.getPromoDigitalModel(cartPassData, getPriceInput())
 
@@ -913,12 +965,23 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun getOperatorName(): String = getCartDigitalInfoData().attributes.operatorName
     private fun getPromoData(): PromoData = viewModel.promoData.value ?: PromoData()
     private fun getPriceInput(): Double? {
-        return if (binding?.inputPriceHolderView?.getPriceInput() == null) return null
-        else binding?.inputPriceHolderView?.getPriceInput()?.toDouble()
+        return if (binding?.inputPriceHolderView?.getPriceInput() == null) {
+            return null
+        } else {
+            binding?.inputPriceHolderView?.getPriceInput()?.toDouble()
+        }
     }
 
     private fun getDimensionPixelSize(@DimenRes id: Int): Int {
         return context?.resources?.getDimensionPixelSize(id) ?: Int.ZERO
+    }
+
+    private fun resetAtcError() {
+        isATCFailed = false
+    }
+
+    private fun updateAtcError() {
+        isATCFailed = true
     }
 
     companion object {
@@ -927,6 +990,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
 
         private const val EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA"
+        private const val EXTRA_IS_ATC_ERROR = "EXTRA_IS_ATC_ERROR"
         private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER =
             "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"
 

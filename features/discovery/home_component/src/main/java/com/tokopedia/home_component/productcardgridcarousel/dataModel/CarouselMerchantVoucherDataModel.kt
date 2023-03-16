@@ -29,8 +29,11 @@ data class CarouselMerchantVoucherDataModel(
     val topAds: String,
     val recommendationType: String,
     val campaignCode: String,
+    val channelId: String,
+    val attribution: String,
+    val brandId: String,
     val impressHolder: ImpressHolder = ImpressHolder(),
-    val merchantVoucherComponentListener: MerchantVoucherComponentListener
+    val merchantVoucherComponentListener: MerchantVoucherComponentListener,
 ) : Visitable<CommonCarouselProductCardTypeFactory> {
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {
         return typeFactory.type(this)

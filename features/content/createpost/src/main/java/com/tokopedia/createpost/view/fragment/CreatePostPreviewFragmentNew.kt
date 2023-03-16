@@ -279,7 +279,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                         val gd = GestureDetector(
                             context,
                             object : GestureDetector.SimpleOnGestureListener() {
-                                override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                                         val bitmap = postImage.drawable.toBitmap()
                                         val greyX = calculateGreyAreaY(layout, bitmap)
                                         val greyY = calculateGreyAreaX(layout, bitmap)

@@ -19,6 +19,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.test.application.TestRepeatRule
 import io.mockk.coEvery
 import io.mockk.every
@@ -39,13 +40,12 @@ class PlayPLTTest {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val repo: PlayViewerRepository = mockk(relaxed = true)
+    private val socket: PlayWebSocket = mockk(relaxed = true)
     private val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
 
     private val uiModelBuilder = UiModelBuilder.get()
 
     private val channelCount = 1
-
-    private val channelIds = List(channelCount) { it.toString() }
 
     private val channelData = List(channelCount) {
         uiModelBuilder.buildChannelData(
@@ -72,7 +72,7 @@ class PlayPLTTest {
 
     init {
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(channelData, "")
-        every { mockChannelStorage.getChannelList() } returns channelIds
+        every { mockChannelStorage.getChannelList() } returns channelData
         every { mockChannelStorage.getData(any()) } answers {
             val channelId = (invocation.args[0] as String).toInt()
             channelData[channelId]
@@ -85,7 +85,7 @@ class PlayPLTTest {
             DaggerPlayTestComponent.builder()
                 .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
-                .playTestRepositoryModule(PlayTestRepositoryModule(repo))
+                .playTestRepositoryModule(PlayTestRepositoryModule(repo, socket))
                 .build()
         )
     }

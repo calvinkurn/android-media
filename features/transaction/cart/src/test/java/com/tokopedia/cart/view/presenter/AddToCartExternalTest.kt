@@ -32,7 +32,6 @@ class AddToCartExternalTest : BaseCartTest() {
             view.showToastMessageGreen(addToCartExternalModel.message[0])
             view.refreshCartWithSwipeToRefresh()
         }
-
     }
 
     @Test
@@ -53,7 +52,6 @@ class AddToCartExternalTest : BaseCartTest() {
             view.showToastMessageRed(exception)
             view.refreshCartWithSwipeToRefresh()
         }
-
     }
 
     @Test
@@ -79,5 +77,4 @@ class AddToCartExternalTest : BaseCartTest() {
             view.showProgressLoading()
         }
     }
-
 }

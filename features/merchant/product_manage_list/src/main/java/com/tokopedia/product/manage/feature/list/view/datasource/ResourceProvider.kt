@@ -22,12 +22,17 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
         return getString(com.tokopedia.product.manage.common.R.string.product_manage_closable_stock_ticker_description).orEmpty()
     }
 
-    fun getTickerMaxStockTitle(): String {
-        return getString(com.tokopedia.product.manage.common.R.string.product_manage_maxstock_ticker_title).orEmpty()
-    }
-
-    fun getTickerMaxStockDescription(): String {
-        return getString(com.tokopedia.product.manage.common.R.string.product_manage_maxstock_ticker_description).orEmpty()
+    fun getTickerDescriptionFormat(content: String, link: String, textLink: String): String {
+        return if (link.isNotEmpty()) {
+            getString(
+                com.tokopedia.product.manage.common.R.string.product_manage_ticker_description_format,
+                content,
+                link,
+                textLink
+            ).orEmpty()
+        } else {
+            content
+        }
     }
 
     fun getTickerShopModeratedTitle(): String {
@@ -40,13 +45,5 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
 
     fun getTickerShopModeratedPermanentDescription(): String {
         return getString(com.tokopedia.product.manage.common.R.string.product_manage_shop_moderated_permanent_ticker_description).orEmpty()
-    }
-
-    fun getTickerNotifyMeTitle(): String {
-        return getString(com.tokopedia.product.manage.common.R.string.product_manage_notifyme_ticker_title).orEmpty()
-    }
-
-    fun getTickerNotifyMeDescription(): String {
-        return getString(com.tokopedia.product.manage.common.R.string.product_manage_notifyme_ticker_description).orEmpty()
     }
 }

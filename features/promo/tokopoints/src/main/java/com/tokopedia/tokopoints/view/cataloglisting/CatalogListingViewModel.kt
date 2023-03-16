@@ -9,9 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class CatalogListingViewModel @Inject constructor(private val repository : CatalogListingRepository) : BaseViewModel(Dispatchers.Main), CatalogListingContract.Presenter {
-    private var pointRange = 0
-    private var currentCategoryId = 0
-    private var currentSubCategoryId = 0
+    override var pointRangeId: Int = 0
+    override var currentCategoryId: Int = 0
+    override var currentSubCategoryId = 0
 
     val bannerLiveDate = MutableLiveData<Resources<CatalogBannerBase>>()
     val filterLiveData = MutableLiveData<Resources<CatalogFilterBase>>()
@@ -22,14 +22,14 @@ class CatalogListingViewModel @Inject constructor(private val repository : Catal
             filterLiveData.value = Loading()
             val graphqlResponse = repository.getHomePageData(slugCategory,slugSubCategory, isBannerRequire)
             val outer = graphqlResponse.getData<CatalogBannerOuter>(CatalogBannerOuter::class.java)
-            if (outer == null || outer.bannerData == null || outer.bannerData.banners == null) {
+            if (outer == null) {
                 bannerLiveDate.value = ErrorMessage("")
             } else {
                 bannerLiveDate.value = Success(outer.bannerData)
             }
             //handling the catalog listing and tabs
             val catalogFilterOuter = graphqlResponse.getData<CatalogFilterOuter>(CatalogFilterOuter::class.java)
-            if (catalogFilterOuter == null || catalogFilterOuter.filter == null) {
+            if (catalogFilterOuter == null) {
                 filterLiveData.value = ErrorMessage("")
             } else {
                 filterLiveData.value = Success(catalogFilterOuter.filter)
@@ -42,7 +42,7 @@ class CatalogListingViewModel @Inject constructor(private val repository : Catal
     override fun getPointData() {
         launchCatchError(block = {
            val  pointDetailEntity = repository.getPointData()
-            if ( pointDetailEntity.tokoPoints == null || pointDetailEntity.tokoPoints.resultStatus == null || pointDetailEntity.tokoPoints.status == null || pointDetailEntity.tokoPoints.status.points == null) {
+            if (pointDetailEntity==null) {
                 pointLiveData.value = ErrorMessage("")
             } else {
                 if (pointDetailEntity.tokoPoints.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
@@ -50,30 +50,6 @@ class CatalogListingViewModel @Inject constructor(private val repository : Catal
                 }
             }
         }){}
-    }
-
-    override fun setPointRangeId(id: Int) {
-        pointRange = id
-    }
-
-    override fun getPointRangeId(): Int {
-        return pointRange
-    }
-
-    override fun setCurrentCategoryId(id: Int) {
-        currentCategoryId = id
-    }
-
-    override fun getCurrentCategoryId(): Int {
-        return currentCategoryId
-    }
-
-    override fun setCurrentSubCategoryId(id: Int) {
-        currentSubCategoryId = id
-    }
-
-    override fun getCurrentSubCategoryId(): Int {
-        return currentSubCategoryId
     }
 
 }

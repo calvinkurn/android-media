@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -12,6 +13,7 @@ import com.tokopedia.oneclickcheckout.order.data.checkout.AddOnItem
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccRequest
 import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata
 import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
+import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata.Companion.PRESCRIPTION_IDS_METADATA
 import com.tokopedia.oneclickcheckout.order.data.checkout.ParamCart
 import com.tokopedia.oneclickcheckout.order.data.checkout.ParamData
 import com.tokopedia.oneclickcheckout.order.data.checkout.ProductData
@@ -88,7 +90,8 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
         orderPayment: OrderPayment,
         orderTotal: OrderTotal,
         userId: String,
-        orderSummaryPageEnhanceECommerce: OrderSummaryPageEnhanceECommerce
+        orderSummaryPageEnhanceECommerce: OrderSummaryPageEnhanceECommerce,
+        prescriptionIds: List<String?>?
     ): Pair<CheckoutOccResult?, OccGlobalEvent?> {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
@@ -112,7 +115,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                     }
                     checkoutProducts.add(
                         ProductData(
-                            productId = it.productId.toString(),
+                            productId = it.productId,
                             productQuantity = it.orderQuantity,
                             productNotes = it.notes,
                             isPPP = it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED,
@@ -153,17 +156,25 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                     )
                 }
             }
+            if (prescriptionIds != null && prescriptionIds.isNotEmpty()) {
+                orderMetadata.add(
+                    OrderMetadata(
+                        PRESCRIPTION_IDS_METADATA,
+                        prescriptionIds.toString()
+                    )
+                )
+            }
             val param = CheckoutOccRequest(
                 Profile(profile.profileId),
                 ParamCart(
                     data = listOf(
                         ParamData(
-                            profile.address.addressId,
+                            profile.address.addressId.toLongOrZero(),
                             listOf(
                                 ShopProduct(
-                                    shopId = shop.shopId,
+                                    shopId = shop.shopId.toLongOrZero(),
                                     isPreorder = products.first().isPreOrder,
-                                    warehouseId = shop.warehouseId,
+                                    warehouseId = shop.warehouseId.toLongOrZero(),
                                     finsurance = if (orderShipment.insurance.isCheckInsurance) 1 else 0,
                                     productData = checkoutProducts,
                                     shippingInfo = ShippingInfo(

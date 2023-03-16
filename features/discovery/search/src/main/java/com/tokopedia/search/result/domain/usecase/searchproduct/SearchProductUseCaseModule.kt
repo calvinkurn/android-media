@@ -77,10 +77,6 @@ class SearchProductUseCaseModule {
         )
     }
 
-    private fun provideSearchProductTopAdsUseCase(): UseCase<TopAdsModel> {
-        return SearchProductTopAdsUseCase(GraphqlUseCase())
-    }
-
     @SearchScope
     @Provides
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
@@ -97,9 +93,16 @@ class SearchProductUseCaseModule {
         )
     }
 
-    fun provideSearchProductLoadMoreUseCase(
+    private fun provideSearchProductLoadMoreUseCase(
         searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>
     ): UseCase<SearchProductModel> {
         return SearchProductLoadMoreGqlUseCase(GraphqlUseCase(), searchProductModelMapper)
+    }
+
+    @SearchScope
+    @Provides
+    @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_TOPADS_USE_CASE)
+    fun provideSearchProductTopAdsUseCase(): UseCase<TopAdsModel> {
+        return SearchProductTopAdsUseCase(GraphqlUseCase())
     }
 }

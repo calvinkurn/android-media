@@ -22,6 +22,7 @@ sealed class PlayProductUiModel {
         val isTokoNow: Boolean,
         val isPinned: Boolean,
         val isRilisanSpesial: Boolean,
+        val buttons: List<ProductButtonUiModel>,
     ) : PlayProductUiModel() {
 
         val impressHolder = ImpressHolder()
@@ -42,6 +43,7 @@ sealed class PlayProductUiModel {
                     isTokoNow = false,
                     isPinned = false,
                     isRilisanSpesial = false,
+                    buttons = emptyList(),
                 )
         }
     }

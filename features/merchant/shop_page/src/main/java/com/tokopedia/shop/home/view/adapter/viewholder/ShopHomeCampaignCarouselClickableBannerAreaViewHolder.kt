@@ -1,16 +1,11 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
-import android.widget.Toast
-
 import androidx.annotation.LayoutRes
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCampaignCarouselClickableBannerAreaBinding
-import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
@@ -21,10 +16,10 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 open class ShopHomeCampaignCarouselClickableBannerAreaViewHolder(
-        itemView: View,
-        private val parentPosition: Int,
-        private val shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-        private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
+    itemView: View,
+    private val parentPosition: Int,
+    private val shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
+    private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
 ) : AbstractViewHolder<ShopHomeCampaignCarouselClickableBannerAreaUiModel>(itemView) {
 
     companion object {
@@ -41,10 +36,10 @@ open class ShopHomeCampaignCarouselClickableBannerAreaViewHolder(
             setOnClickListener {
                 shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(
                     shopHomeNewProductLaunchCampaignUiModel,
-                    parentPosition
+                    parentPosition,
+                    ShopUtil.getActualPositionFromIndex(adapterPosition)
                 )
             }
         }
     }
-
 }

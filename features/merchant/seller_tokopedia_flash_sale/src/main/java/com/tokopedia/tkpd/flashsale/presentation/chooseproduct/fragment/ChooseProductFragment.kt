@@ -18,7 +18,13 @@ import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentChooseProductBinding
 import com.tokopedia.sortfilter.SortFilterItem
@@ -107,7 +113,6 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         setupSearchBar()
         setupCategorySelection()
         setupFilterData()
-        viewModel.getMaxProductSubmission()
         recyclerView?.attachOnScrollListener(onScrollDown = {
             binding?.layoutSearch?.slideDown()
         }, onScrollUp = {

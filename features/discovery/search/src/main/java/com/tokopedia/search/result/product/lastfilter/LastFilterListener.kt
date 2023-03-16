@@ -7,4 +7,6 @@ interface LastFilterListener {
     fun applyLastFilter(lastFilterDataView: LastFilterDataView)
 
     fun closeLastFilter(lastFilterDataView: LastFilterDataView)
+
+    fun updateLastFilter()
 }

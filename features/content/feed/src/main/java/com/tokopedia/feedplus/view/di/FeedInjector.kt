@@ -15,6 +15,7 @@ object FeedInjector {
             .baseAppComponent(
                 (context.applicationContext as BaseMainApplication).baseAppComponent
             )
+            .feedContainerModule(FeedContainerModule(context))
             .build()
     }
 

@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.databinding.ChipsItemInitialStatePopularSearchBinding
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.diffutil.ChipsHighlightDiffUtil
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.ChipsPopularSearch
-import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.RecentSearchItemUiModel
 
-class ChipsItemAdapter(private val chipsItemListener: ChipsItemListener) :
+class ChipsItemAdapter(private val chipsItemListener: ChipsItemListener,
+                       private val tokofoodScrollChangedListener: TokofoodScrollChangedListener) :
     RecyclerView.Adapter<ChipsItemAdapter.ChipsItemViewHolder>() {
 
     private val popularSearchList = mutableListOf<ChipsPopularSearch>()
@@ -66,7 +66,7 @@ class ChipsItemAdapter(private val chipsItemListener: ChipsItemListener) :
             item: ChipsPopularSearch,
             position: Int
         ) {
-            binding.root.addOnImpressionListener(item) {
+            binding.root.addAndReturnImpressionListener(item, tokofoodScrollChangedListener) {
                 chipsItemListener.onImpressionPopularSearch(item, position)
             }
         }

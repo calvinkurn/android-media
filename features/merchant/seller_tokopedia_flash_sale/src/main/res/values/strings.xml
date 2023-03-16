@@ -68,7 +68,6 @@
 
     <string name="stfs_placeholder_remaining_quota">Sisa %d kuota!</string>
     <string name="stfs_placeholder_original_quota">Tersedia %s kuota</string>
-    <string name="stfs_placeholder_timer_days">%s hari</string>
     <string name="stfs_placeholder_period">%s - %s</string>
     <string name="stfs_placeholder_sold_count"><![CDATA[<b>%d</b>]]> dari %d</string>
     <string name="stfs_placeholder_selected_category_count">%d Kategori</string>
@@ -113,12 +112,6 @@
     <string name="commonbs_field_limited">Dibatasi</string>
 
     <!--    CDP-->
-    <string name="fs_tkpd_detail_title">Campaign Detail</string>
-    <string name="stfs_bottom_sheet_register_period_label">Periode Pendaftaran</string>
-    <string name="stfs_bottom_sheet_add_product_label">Tambah Produk</string>
-    <string name="stfs_bottom_sheet_selection_process_label">Proses Seleksi</string>
-    <string name="stfs_bottom_sheet_active_promotion_label">Promosi Aktif</string>
-    <string name="stfs_bottom_sheet_done_label">Selesai</string>
     <string name="stfs_delete_dialog_title">Yakin hapus %d produk?</string>
     <string name="stfs_delete_dialog_description">Produk yang dihapus tidak akan diajukan. Kamu masih bisa tambah produk jika kuota di periode pendaftaran masih tersedia, ya.</string>
     <string name="stfs_delete_dialog_primary_cta_text">Ya, Hapus</string>
@@ -189,7 +182,6 @@
     <string name="stfs_sold_label">Terjual</string>
     <string name="stfs_selling_label">Penjualan</string>
     <string name="stfs_rejection_reason_placeholder"><![CDATA[<font color=#F94D63>Ditolak</font>]]> karena %s.</string>
-    <string name="stfs_normal_rejection_reason_placeholder">Ditolak karena %s.</string>
     <string name="stfs_check_another_campaign_label">Cek Campaign Lain</string>
     <string name="stfs_empty_desc_label">Yuk, cek campaign menarik lainnya yang bisa kamu ikuti!</string>
     <string name="stfs_canceled_card_title_label">Yah, campaign ini dibatalkan</string>
@@ -241,7 +233,6 @@
     <string name="bulk_apply_title">Atur Sekaligus</string>
     <string name="bulk_apply_text_stock">Stok Campaign</string>
     <string name="bulk_apply_text_stock_description">Stok wajib %1d - %2d</string>
-    <string name="stfs_success_bulk_apply_label">Info produk sudah diubah.</string>
     <string name="stfs_oke_label">Oke</string>
 
 
@@ -272,14 +263,12 @@
     <string name="stfs_product_item_total_stock_non_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]></string>
     <string name="stfs_product_item_manage_button_text">Atur Diskon</string>
     <string name="stfs_product_item_edit_button_text">Ubah</string>
+    <string name="product_sse_submission_progress_dialog_title">Tunggu sebentar, ya...</string>
+    <string name="stfs_product_sse_submission_progress_dialog_description">%1d dari %2d varian produk sedang diajukan. Jangan tutup halaman ini, ya.</string>
+
 
 
     <string name="stfs_stfs_manage_location_title">Atur Lokasi</string>
-    <string name="stfs_active_location_bulk_apply_place_holder">Atur Sekaligus %d lokasi</string>
-    <string name="stfs_inactive_location_bulk_apply_place_holder">Aktifkan lokasi untuk Atur Sekaligus</string>
-    <string name="stfs_note_stock_on_location">Stok di Lokasi Ini: %d</string>
-    <string name="stfs_note_stock_mandatory_on_location">Stok Wajib %d - %2d</string>
-    <string name="stfs_title_qty_editor_title">Stok Campaign</string>
     <string name="stfs_text_button_save">Simpan</string>
     <string name="stfs_text_ticker_warning">Harga diskon di semua lokasi Dilayani Tokopedia wajib sama. Harga akan disamakan secara otomatis, ya.</string>
     <string name="stfs_toaster_error">Beberapa info produk gagal disimpan. Periksa kembali daftar produkmu, ya.</string>
@@ -293,5 +282,17 @@
 
     <!--Accessibility: ImageView Content Description-->
     <string name="stfs_content_description_scroll_up">Scroll up</string>
+
+    <string name="stfs_bottomsheet_error_product_submission_sse_list_ticker_description">Kamu bisa perbaiki dan ajukan lagi varian produkmu yang bermasalah.</string>
+    <string name="stfs_bottomsheet_error_product_submission_sse_list_title">Varian produk gagal diajukan</string>
+    <string name="stfs_bottomsheet_error_product_submission_sse_item_sku">SKU: %1s</string>
+
+    <string name="stfs_dialog_error_product_submission_sse_title_partial_success">Yaah, beberapa varian produkmu gagal diajukan</string>
+    <string name="stfs_dialog_error_product_submission_sse_title_full_error">Yaah, semua varian produkmu gagal diajukan</string>
+    <string name="stfs_dialog_error_product_submission_sse_error_description">Periksa dan perbaiki dulu produk-produkmu ya.</string>
+    <string name="stfs_dialog_error_product_submission_sse_error_cta">Lihat Produk</string>
+
+    <string name="stfs_widget_campaign_product_submission_title_format">Sedang mengajukan produk di %1d campaign.</string>
+
 
 </resources>

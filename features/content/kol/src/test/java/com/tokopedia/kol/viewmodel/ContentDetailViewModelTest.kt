@@ -98,4 +98,36 @@ class ContentDetailViewModelTest {
             .assertThat(result)
             .isInstanceOf(Fail::class.java)
     }
+
+    @Test
+    fun `given success when fetch user profile feed post`() {
+        val expectedResult = builder.getContentDetail()
+
+        coEvery { mockRepo.getFeedPosts(any(), any(), any()) } returns expectedResult
+
+        viewModel.fetchUserProfileFeedPost("123")
+
+        val result = viewModel.userProfileFeedPost.value
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(Success::class.java)
+            .isEqualTo(Success(expectedResult))
+    }
+
+    @Test
+    fun `given error when fetch user profile feed post`() {
+        val expectedResult = Throwable("Fail fetch feed posts")
+
+        coEvery { mockRepo.getFeedPosts(any(), any(), any()) } throws expectedResult
+
+        viewModel.fetchUserProfileFeedPost("123")
+
+        val result = viewModel.userProfileFeedPost.value
+
+        Assertions
+            .assertThat(result)
+            .isInstanceOf(Fail::class.java)
+            .isEqualTo(Fail(expectedResult))
+    }
 }

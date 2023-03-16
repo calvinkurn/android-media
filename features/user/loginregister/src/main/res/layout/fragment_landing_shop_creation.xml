@@ -131,6 +131,7 @@
                 android:layout_marginBottom="@dimen/spacing_lvl5"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
+                app:layout_constraintDimensionRatio="864:780"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -1,12 +1,15 @@
 package com.tokopedia.review.common
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 object ReviewInboxConstants {
     const val REVIEW_INBOX_INITIAL_PAGE = 1
     const val REVIEW_INBOX_DATA_PER_PAGE = 10
-    const val REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE = "https://images.tokopedia.net/img/android/review/review_pending_inbox_empty.png"
-    const val REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE = "https://ecs7.tokopedia.net/android/others/review_inbox_search_empty.png"
-    const val REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION = "https://images.tokopedia.net/img/android/unify/unify_globalerrors_connection.png"
+    const val REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE = TokopediaImageUrl.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE
+    const val REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE = TokopediaImageUrl.REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE
+    const val REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION = TokopediaImageUrl.REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION
     const val CREATE_REVIEW_MESSAGE = "create_review_message"
+    const val BULK_CREATE_REVIEW_MESSAGE = "bulk_create_review_message"
     const val TAB_WAITING_REVIEW = 1
     const val TAB_MY_REVIEW = 2
     const val TAB_BUYER_REVIEW = 3
@@ -25,4 +28,5 @@ object ReviewInboxConstants {
     const val RATING_2 = 2
     const val RATING_1 = 1
 
+    const val SOURCE_REVIEW_INBOX = "review inbox"
 }

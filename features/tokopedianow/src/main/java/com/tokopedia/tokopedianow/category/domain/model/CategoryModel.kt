@@ -7,6 +7,7 @@ import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.CategoryDetail
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
+import com.tokopedia.tokopedianow.searchcategory.domain.model.GetFeedbackFieldModel
 
 data class CategoryModel(
         @SerializedName("category_detail")
@@ -31,5 +32,9 @@ data class CategoryModel(
 
         @SerializedName("TokonowRepurchaseWidget")
         @Expose
-        val tokonowRepurchaseWidget: RepurchaseData = RepurchaseData()
+        val tokonowRepurchaseWidget: RepurchaseData = RepurchaseData(),
+
+        @SerializedName("feedbackFieldToggle")
+        @Expose
+        val feedbackFieldToggle: GetFeedbackFieldModel = GetFeedbackFieldModel()
 )

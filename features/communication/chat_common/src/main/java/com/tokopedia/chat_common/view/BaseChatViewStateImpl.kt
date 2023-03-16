@@ -34,6 +34,7 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 /**
  * @author : Steven 29/11/18
@@ -59,6 +60,7 @@ abstract class BaseChatViewStateImpl(
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
     var isTyping: Boolean = false
+    var isFromBubble: Boolean = false
 
     override fun initView() {
         rootView = view.findViewById(getRootViewId())
@@ -302,13 +304,19 @@ abstract class BaseChatViewStateImpl(
     }
 
     override fun onGlobalLayout() {
+
         val screenHeight = getScreenHeight()
         val windowRect = Rect().apply {
             rootView.getWindowVisibleDisplayFrame(this)
         }
-        val windowHeight = windowRect.bottom - windowRect.top
-        val statusBarHeight = getStatusBarHeight()
 
+        val windowHeight = if (isFromBubble) {
+            ((windowRect.bottom - windowRect.top) * BUBBLE_UPSIZE_MULTIPLIER).roundToInt()
+        } else {
+            windowRect.bottom - windowRect.top
+        }
+
+        val statusBarHeight = getStatusBarHeight()
         val heightDifference = screenHeight - windowHeight - statusBarHeight
 
         if (heightDifference > KEYBOARD_OFFSET) {
@@ -383,6 +391,7 @@ abstract class BaseChatViewStateImpl(
 
     companion object {
         const val KEYBOARD_OFFSET = 100
+        const val BUBBLE_UPSIZE_MULTIPLIER = 1.235
         private const val SCROLL_DELAY: Long = 250
     }
 }

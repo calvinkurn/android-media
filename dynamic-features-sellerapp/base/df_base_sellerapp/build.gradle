@@ -3,12 +3,6 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
 apply plugin: 'robust'
 
-repositories{
-    flatDir {
-        dirs 'libs'
-        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
-    }
-}
 
 buildscript {
     repositories {
@@ -62,6 +56,8 @@ android {
 }
 
 dependencies {
+	implementation projectOrAar(rootProject.ext.features.sellerMvcCreation)
+
 	implementation projectOrAar(rootProject.ext.features.shopDiscount)
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -78,7 +74,6 @@ dependencies {
 
     //Content
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
-    implementation projectOrAar(rootProject.ext.features.people)
 
     //Discovery
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
@@ -143,5 +138,5 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
     implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
-
+    implementation projectOrAar(rootProject.ext.features.sellerPersona)
 }

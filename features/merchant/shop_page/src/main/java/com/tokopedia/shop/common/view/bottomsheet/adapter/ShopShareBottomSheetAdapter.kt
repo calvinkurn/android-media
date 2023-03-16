@@ -8,18 +8,18 @@ import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetL
 import com.tokopedia.shop.common.view.bottomsheet.viewholder.ShopShareBottomsheetViewHolder
 import com.tokopedia.shop.common.view.model.ShopShareModel
 
-class ShopShareBottomSheetAdapter (
-        val context: Context?,
-        private val bottomsheetListener: ShopShareBottomsheetListener,
-        data: List<ShopShareModel>
-): RecyclerView.Adapter<ShopShareBottomsheetViewHolder>() {
+class ShopShareBottomSheetAdapter(
+    val context: Context?,
+    private val bottomsheetListener: ShopShareBottomsheetListener,
+    data: List<ShopShareModel>
+) : RecyclerView.Adapter<ShopShareBottomsheetViewHolder>() {
 
     private var socialMediaList = data
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopShareBottomsheetViewHolder {
         return ShopShareBottomsheetViewHolder(
-                View.inflate(context, ShopShareBottomsheetViewHolder.LAYOUT, null),
-                bottomsheetListener
+            View.inflate(context, ShopShareBottomsheetViewHolder.LAYOUT, null),
+            bottomsheetListener
         )
     }
 
@@ -30,5 +30,4 @@ class ShopShareBottomSheetAdapter (
     override fun onBindViewHolder(holder: ShopShareBottomsheetViewHolder, position: Int) {
         holder.bind(socialMediaList[position])
     }
-
 }

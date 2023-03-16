@@ -16,12 +16,26 @@
         app:unify_text_field_counter="20"
         android:layout_marginBottom="20dp"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/collection_privacy_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/collection_create_name_input_text_field"
+        app:layout_constraintBottom_toTopOf="@id/collection_create_button"
+        app:typographyWeight="reguler"
+        app:typographyType="paragraph_3"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="24dp"
+        android:textColor="@color/Unify_NN600"
+        android:text="@string/collection_privacy_message"/>
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/collection_create_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/collection_create_name_input_text_field"
+        app:layout_constraintTop_toBottomOf="@id/collection_privacy_message"
         android:text="@string/collection_create_bottomsheet_button_label"
         android:layout_marginTop="20dp"/>
 

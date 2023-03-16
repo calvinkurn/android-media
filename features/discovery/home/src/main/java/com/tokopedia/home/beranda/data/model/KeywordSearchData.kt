@@ -9,7 +9,7 @@ class KeywordSearchData : Parcelable {
     @SerializedName("universe_placeholder")
      val searchData: SearchPlaceholder = SearchPlaceholder()
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {}
+    override fun writeToParcel(dest: Parcel, flags: Int) {}
 
     override fun describeContents(): Int = 0
 

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_TYPE
@@ -61,7 +62,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private var validation2 = true
     private var validation3 = true
     private var currentBudget = 0
-    private var groupId: Int? = 0
+    private var groupId: String? = "0"
     private var priceDaily = 0.0F
     private var groupName: String = ""
     private var currentAutoBidState = ""
@@ -97,10 +98,14 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            context?.resources?.getLayout(R.layout.topads_edit_activity_edit_form_ad), container, false
+            context?.resources?.getLayout(R.layout.topads_edit_activity_edit_form_ad),
+            container,
+            false
         )
         progressbar = view.findViewById(R.id.progressbar)
         txtGroupName = view.findViewById(R.id.group_name)
@@ -121,6 +126,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         }
         sharedViewModel.setBidSettings(bidSettingsList)
         priceDaily = data.daiyBudget
+        sharedViewModel.setFirstFetchMaxBudgetValue(priceDaily.toInt())
         if (priceDaily != 0.0F) {
             dailyBudget?.visible()
             setCurrentDailyBudget((priceDaily).toInt().toString())
@@ -161,10 +167,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             validation1 = false
             actionEnable()
             txtGroupName?.setMessage(error)
-            if (error == context?.resources?.getString(R.string.topads_edit_duplicate_group_name_error_wrong))
+            if (error == context?.resources?.getString(R.string.topads_edit_duplicate_group_name_error_wrong)) {
                 txtGroupName?.setMessage(context?.resources?.getString(R.string.topads_edit_duplicate_group_name_error) ?: "")
-            else
+            } else {
                 txtGroupName?.setMessage(error)
+            }
         }
     }
 
@@ -172,7 +179,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setObservers()
         if (arguments?.getString(GROUP_ID)?.isNotEmpty()!!) {
-            groupId = arguments?.getString(GROUP_ID)?.toInt()
+            groupId = arguments?.getString(GROUP_ID)
             sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
         }
         setToggleCheckedListener()
@@ -189,7 +196,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         setDailyBudgetWatcher()
     }
 
-    private fun setToggleCheckedListener () {
+    private fun setToggleCheckedListener() {
         toggle?.setOnCheckedChangeListener { _, _ ->
             if (toggle?.isChecked == true) {
                 dailyBudget?.visibility = View.VISIBLE
@@ -203,7 +210,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun updateValidation3IfDailyBudgetTFVisible(state: Boolean) = dailyBudget?.let {
-        if(!it.isVisible) return@let
+        if (!it.isVisible) return@let
         validation3 = false
     }
 
@@ -218,7 +225,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun checkErrorsDailyBudgetTF(number : Double) = when {
+    private fun checkErrorsDailyBudgetTF(number: Double) = when {
         number < AUTOBID_DEFUALT_BUDGET && currentAutoBidState.isNotEmpty() -> {
             dailyBudget?.setError(true)
             dailyBudget?.setMessage(
@@ -261,7 +268,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun setGroupNameWatcher() {
-
         txtGroupName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
@@ -280,19 +286,22 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                                 this@EditGroupAdFragment::onSuccessGroupName
                             )
                         }
-
                     }
                 }
             }
         })
-
     }
 
     private fun setObservers() {
-        sharedViewModel.getMaxBudget().observe(viewLifecycleOwner, {
-            setCurrentDailyBudget(it.toString())
+        sharedViewModel.getMaxBudget().observe(viewLifecycleOwner) {
+            if (it > currentBudget && it > dailyBudget?.textFieldInput?.text.toString().removeCommaRawString().toDoubleOrZero()) {
+                setCurrentDailyBudget(it.toString())
+            }
             currentBudget = it
-        })
+            checkErrorsDailyBudgetTF(
+                dailyBudget?.textFieldInput?.text.toString().removeCommaRawString().toDoubleOrZero()
+            )
+        }
         sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
             currentAutoBidState = it
             if (currentAutoBidState.isNotEmpty()) {
@@ -314,7 +323,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo)
+        viewModel.getGroupInfo(groupId ?: "0", this::onSuccessGroupInfo)
     }
 
     override fun onAttach(context: Context) {

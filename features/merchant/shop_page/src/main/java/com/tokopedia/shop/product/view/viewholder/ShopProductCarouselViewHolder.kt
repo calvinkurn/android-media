@@ -28,14 +28,17 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created by normansyahputa on 2/22/18.
  */
 
-class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
-                                    private val shopProductClickedListener: ShopProductClickedListener?,
-                                    private val shopProductImpressionListener: ShopProductImpressionListener?,
-                                    titleString: String,
-                                    @ShopTrackProductTypeDef private val shopTrackType: Int,
-                                    private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?) : AbstractViewHolder<Visitable<*>>(itemView) {
+class ShopProductCarouselViewHolder(
+    itemView: View,
+    deviceWidth: Int,
+    private val shopProductClickedListener: ShopProductClickedListener?,
+    private val shopProductImpressionListener: ShopProductImpressionListener?,
+    titleString: String,
+    @ShopTrackProductTypeDef private val shopTrackType: Int,
+    private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?
+) : AbstractViewHolder<Visitable<*>>(itemView) {
 
-    private val viewBinding : ItemNewShopProductCarouselBinding? by viewBinding()
+    private val viewBinding: ItemNewShopProductCarouselBinding? by viewBinding()
     private var tvTitle: TextView? = null
     private var tvSeeAll: TextView? = null
     private var recyclerView: CarouselProductCardView? = null
@@ -48,12 +51,12 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
 
     override fun bind(visitable: Visitable<*>) {
         if (visitable is ShopProductFeaturedUiModel) {
-            visitable.shopProductFeaturedViewModelList?.let{
+            visitable.shopProductFeaturedViewModelList?.let {
                 bindShopProductCarousel(it)
             }
             tvSeeAll!!.visibility = View.GONE
         } else if (visitable is EtalaseHighlightCarouselUiModel) {
-            visitable.shopProductUiModelList?.let{
+            visitable.shopProductUiModelList?.let {
                 bindShopProductCarousel(it)
             }
             val shopEtalaseViewModel = visitable.shopEtalaseViewModel
@@ -65,7 +68,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
                 ivBadge!!.visibility = View.GONE
             }
             tvSeeAll!!.setOnClickListener {
-                shopEtalaseViewModel?.let{
+                shopEtalaseViewModel?.let {
                     shopCarouselSeeAllClickedListener?.onSeeAllClicked(shopEtalaseViewModel)
                 }
             }
@@ -75,34 +78,34 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
 
     private fun bindShopProductCarousel(shopProductUiModelList: List<ShopProductUiModel>) {
         recyclerView?.bindCarouselProductCardViewGrid(
-                productCardModelList = shopProductUiModelList.map {
-                    ShopPageProductListMapper.mapToProductCardModel(it, isWideContent = false, isShowThreeDots = false)
-                },
-                carouselProductCardOnItemClickListener = object: CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val shopProductViewModel = shopProductUiModelList.getOrNull(carouselProductCardPosition) ?: return
+            productCardModelList = shopProductUiModelList.map {
+                ShopPageProductListMapper.mapToProductCardModel(it, isWideContent = false, isShowThreeDots = false)
+            },
+            carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
+                override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val shopProductViewModel = shopProductUiModelList.getOrNull(carouselProductCardPosition) ?: return
 
-                        shopProductClickedListener?.onProductClicked(shopProductViewModel, shopTrackType, carouselProductCardPosition)
-                    }
-                },
-                carouselProductCardOnItemImpressedListener = object: CarouselProductCardListener.OnItemImpressedListener {
-                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val shopProductViewModel = shopProductUiModelList.getOrNull(carouselProductCardPosition) ?: return
-
-                        shopProductImpressionListener?.onProductImpression(shopProductViewModel, shopTrackType, carouselProductCardPosition)
-                    }
-
-                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
-                        return shopProductUiModelList.getOrNull(carouselProductCardPosition)
-                    }
-                },
-                carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
-                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val shopProductViewModel = shopProductUiModelList.getOrNull(carouselProductCardPosition) ?: return
-
-                        shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
-                    }
+                    shopProductClickedListener?.onProductClicked(shopProductViewModel, shopTrackType, carouselProductCardPosition)
                 }
+            },
+            carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
+                override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val shopProductViewModel = shopProductUiModelList.getOrNull(carouselProductCardPosition) ?: return
+
+                    shopProductImpressionListener?.onProductImpression(shopProductViewModel, shopTrackType, carouselProductCardPosition)
+                }
+
+                override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                    return shopProductUiModelList.getOrNull(carouselProductCardPosition)
+                }
+            },
+            carouselProductCardOnItemThreeDotsClickListener = object : CarouselProductCardListener.OnItemThreeDotsClickListener {
+                override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val shopProductViewModel = shopProductUiModelList.getOrNull(carouselProductCardPosition) ?: return
+
+                    shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
+                }
+            }
         )
     }
 
@@ -112,13 +115,13 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
         val shopProductViewModelList = getShopProductViewModelListFromVisitable(visitable)
 
         recyclerView?.setCarouselProductCardListeners(
-                carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
-                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val shopProductViewModel = shopProductViewModelList?.getOrNull(carouselProductCardPosition) ?: return
+            carouselProductCardOnItemThreeDotsClickListener = object : CarouselProductCardListener.OnItemThreeDotsClickListener {
+                override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val shopProductViewModel = shopProductViewModelList?.getOrNull(carouselProductCardPosition) ?: return
 
-                        shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
-                    }
+                    shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
                 }
+            }
         )
     }
 
@@ -142,5 +145,4 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
         @LayoutRes
         val LAYOUT = R.layout.item_new_shop_product_carousel
     }
-
 }

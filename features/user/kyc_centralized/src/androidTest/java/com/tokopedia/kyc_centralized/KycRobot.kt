@@ -5,22 +5,23 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.VerificationModes.times
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL
 import com.tokopedia.kyc_centralized.util.waitOnView
-import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity
+import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraActivity
+import com.tokopedia.kyc_centralized.ui.tokoKyc.alacarte.UserIdentificationInfoSimpleActivity
 
 class KycRobot {
 
     fun checkTermsAndCondition() {
-        onView(withId(R.id.kyc_benefit_checkbox)).perform(click())
+        onView(withId(R.id.checkboxPurposes)).perform(click())
     }
 
     fun atInfoClickNext() {
-        onView(withId(R.id.kyc_benefit_btn)).perform(click())
+        onView(withId(R.id.buttonAction)).perform(click())
     }
 
     fun atKtpIntroClickNext() {
@@ -64,8 +65,12 @@ class KycResultRobot {
         intended(hasComponent(UserIdentificationCameraActivity::class.java.name), times(count))
     }
 
-    fun hasLivenessIntent(count: Int = 1) {
-        intended(hasData(ApplinkConstInternalUserPlatform.KYC_LIVENESS.replace("{projectId}", "-1")), times(count))
+    fun hasLivenessIntent(count: Int = 1, projectId: String) {
+        intended(hasData(ApplinkConstInternalUserPlatform.KYC_LIVENESS.replace("{projectId}", projectId)), times(count))
+    }
+
+    fun hasRedirectUrl(rule: IntentsTestRule<UserIdentificationInfoSimpleActivity>, url: String) {
+        assertThat(rule.activityResult.resultData, hasExtra(PARAM_REDIRECT_URL, url))
     }
 
 }

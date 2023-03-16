@@ -16,6 +16,7 @@ data class SaveAddressDataModel(
     var addressName: String = "",
     var receiverName: String = "",
     var address1: String = "",
+    var address1Notes: String = "",
     var address2: String = "",
     var postalCode: String = "",
     var phone: String = "",

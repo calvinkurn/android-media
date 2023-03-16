@@ -66,6 +66,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourier
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToPrintAwb
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToReturnToShipper
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
@@ -352,6 +353,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             SomNavigator.REQUEST_CHANGE_COURIER -> handleSomChangeCourierActivityResult(
                 resultCode,
                 data
+            )
+            SomNavigator.REQUEST_RETURN_TO_SHIPPER -> handleSomReturnToShipperActivityResult(
+                resultCode
             )
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
@@ -716,6 +720,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (somListBinding?.rvSomList?.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
             coachMarkManager?.showCoachMark()
         }
+    }
+
+    override fun onReturnToShipper(orderId: String) {
+        selectedOrderId = orderId
+        goToReturnToShipper(this, orderId)
     }
 
     override fun onBulkProcessOrderButtonClicked() {
@@ -1932,6 +1941,12 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
+    private fun handleSomReturnToShipperActivityResult(resultCode: Int) {
+        if (resultCode == Activity.RESULT_OK || resultCode == Activity.RESULT_FIRST_USER) {
+            onActionCompleted(true, selectedOrderId)
+        }
+    }
+
     private fun handleRequestPickUpResult(message: String?) {
         onActionCompleted(true, selectedOrderId)
         showCommonToaster(view, message)
@@ -2524,18 +2539,18 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             somListBinding?.containerBtnBulkAction?.height?.toFloat().orZero()
         )
         bulkAcceptButtonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 somListBinding?.containerBtnBulkAction?.gone()
                 bulkAcceptButtonLeaveAnimation?.removeListener(this)
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
                 bulkAcceptButtonLeaveAnimation?.removeListener(this)
             }
 
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator) {}
         })
     }
 
@@ -2571,18 +2586,18 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                             }
                         }
                         addListener(object : Animator.AnimatorListener {
-                            override fun onAnimationStart(p0: Animator?) {}
+                            override fun onAnimationStart(p0: Animator) {}
 
-                            override fun onAnimationEnd(p0: Animator?) {
+                            override fun onAnimationEnd(p0: Animator) {
                                 tickerIsReady = false
                                 if (!isEnter) {
                                     this@run.invisible()
                                 }
                             }
 
-                            override fun onAnimationCancel(p0: Animator?) {}
+                            override fun onAnimationCancel(p0: Animator) {}
 
-                            override fun onAnimationRepeat(p0: Animator?) {}
+                            override fun onAnimationRepeat(p0: Animator) {}
                         })
                     }
 

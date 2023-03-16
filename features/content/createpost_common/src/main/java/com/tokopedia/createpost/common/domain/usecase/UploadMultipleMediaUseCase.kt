@@ -3,7 +3,7 @@ package com.tokopedia.createpost.common.domain.usecase
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
+import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
 import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
 import com.tokopedia.createpost.common.domain.entity.UploadMediaDataModel

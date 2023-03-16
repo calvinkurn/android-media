@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.view.adapter.post
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -42,13 +41,11 @@ class FeedPostCarouselAdapter(
         else oldItem == newItem
     }
 
-    /**
-    Using notifyDataSetChanged() here as all the reminder button in each item of carousel needs to be updated
-    Also max items in a carousel can 5
-    ***/
-    @SuppressLint("NotifyDataSetChanged")
     fun updateReminderStatusForAllButtonsInCarousel(){
-        notifyDataSetChanged()
+        val changeReminderBtnState = Bundle().apply {
+            putBoolean(PAYLOAD_REMINDER_BTN, true)
+        }
+        notifyItemRangeChanged(0, itemList.size, changeReminderBtnState)
     }
 
     fun focusItemAt(position: Int) {
@@ -119,6 +116,9 @@ class FeedPostCarouselAdapter(
                     if (payloads.getBoolean(PAYLOAD_FOCUS)) holder.focusMedia()
                     else holder.removeFocus()
                 }
+                if (payloads.containsKey(PAYLOAD_REMINDER_BTN)) {
+                    if (payloads.getBoolean(PAYLOAD_REMINDER_BTN)) holder.updateAsgcButton()
+                }
             }
         }
 
@@ -170,6 +170,7 @@ class FeedPostCarouselAdapter(
     companion object {
         private const val PAYLOAD_FOCUS = "payload_focus"
         private const val PAYLOAD_PAUSE = "payload_pause"
+        private const val PAYLOAD_REMINDER_BTN = "payload_reminder_button"
 
         private const val FOCUS_POSITION_THRESHOLD = 2
     }

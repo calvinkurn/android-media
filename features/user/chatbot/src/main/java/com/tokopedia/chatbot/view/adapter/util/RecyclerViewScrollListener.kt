@@ -44,7 +44,6 @@ abstract class RecyclerViewScrollListener(
         when (newState) {
             SCROLL_STATE_IDLE -> {
                 scrollDone()
-                recyclerView.removeOnScrollListener(this)
             }
         }
         super.onScrollStateChanged(recyclerView, newState)

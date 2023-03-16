@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_36"
         android:layout_marginEnd="@dimen/dp_36"
-        android:layout_marginTop="@dimen/layout_lvl5"
+        android:layout_marginTop="40dp"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -18,10 +18,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reading_empty_title"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="8dp"
         android:gravity="center"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,11 +30,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reading_empty_subtitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/reading_empty_subtitle"
         android:gravity="center"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="4dp"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="@id/reading_empty_title"
@@ -46,9 +46,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/title_write_page"
-        android:layout_marginTop="@dimen/layout_lvl3"
-        android:layout_marginStart="@dimen/layout_lvl7"
-        android:layout_marginEnd="@dimen/layout_lvl7"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
         app:layout_constraintTop_toBottomOf="@id/reading_empty_subtitle"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

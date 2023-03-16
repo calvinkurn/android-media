@@ -14,24 +14,23 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowButton
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.loadLeftDrawable
+import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
+import com.tokopedia.shop.databinding.FragmentShopCampaignTncBottomSheetBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeCampaignNplTncAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeNplCampaignTncBottomSheetViewModel
-import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowButton
-import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
-import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
-import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
-import com.tokopedia.shop.common.util.loadLeftDrawable
-import com.tokopedia.shop.common.util.removeDrawable
-import com.tokopedia.shop.databinding.FragmentShopCampaignTncBottomSheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -40,7 +39,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
@@ -51,16 +49,16 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         private const val KEY_SHOP_ID = "key_shop_id"
         private const val KEY_IS_OFFICIAL_STORE = "key_is_official_store"
         private const val KEY_IS_GOLD_MERCHANT = "key_is_gold_merchant"
-        private const val KEY_RULE_ID = "key_rule_id"
-        private const val RULE_ID_33 = 33
+        private const val KEY_LIST_RULE_ID = "key_list_rule_id"
+        private const val RULE_ID_FOLLOWERS_ONLY = 33
 
         fun createInstance(
-                campaignId: String,
-                statusCampaign: String,
-                shopId: String,
-                isOfficialStore: Boolean,
-                isGoldMerchant: Boolean,
-                ruleId: String
+            campaignId: String,
+            statusCampaign: String,
+            shopId: String,
+            isOfficialStore: Boolean,
+            isGoldMerchant: Boolean,
+            listRuleId: List<String>
         ) = ShopHomeNplCampaignTncBottomSheet().apply {
             arguments = Bundle().apply {
                 putString(KEY_CAMPAIGN_ID, campaignId)
@@ -68,13 +66,14 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
                 putString(KEY_SHOP_ID, shopId)
                 putBoolean(KEY_IS_OFFICIAL_STORE, isOfficialStore)
                 putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
-                putString(KEY_RULE_ID, ruleId)
+                putStringArrayList(KEY_LIST_RULE_ID, ArrayList(listRuleId))
             }
         }
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var shopPageHomeTracking: ShopPageHomeTracking
     private var viewModel: ShopHomeNplCampaignTncBottomSheetViewModel? = null
@@ -84,7 +83,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
     private var shopId = ""
     private var isOfficialStore = false
     private var isGoldMerchant = false
-    private var ruleId: String = ""
+    private var listRuleId: List<String> = listOf()
     private var shopHomeCampaignNplTncAdapter: ShopHomeCampaignNplTncAdapter? = null
     val isOwner: Boolean
         get() = ShopUtil.isMyShop(shopId, viewModel?.userSessionShopId ?: "")
@@ -111,7 +110,6 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         getArgumentsData()
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeNplCampaignTncBottomSheetViewModel::class.java)
         shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
-
     }
 
     private fun initView() {
@@ -125,11 +123,11 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
     private fun initInjector() {
         activity?.run {
             DaggerShopPageHomeComponent
-                    .builder()
-                    .shopPageHomeModule(ShopPageHomeModule())
-                    .shopComponent(ShopComponentHelper().getComponent(application, this))
-                    .build()
-                    .inject(this@ShopHomeNplCampaignTncBottomSheet)
+                .builder()
+                .shopPageHomeModule(ShopPageHomeModule())
+                .shopComponent(ShopComponentHelper().getComponent(application, this))
+                .build()
+                .inject(this@ShopHomeNplCampaignTncBottomSheet)
         }
     }
 
@@ -147,64 +145,73 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
 
     private fun sendClickCloseTrackerTncPage() {
         shopPageHomeTracking.clickCloseTncPage(
-                isOwner,
-                statusCampaign,
-                customDimensionShopPage
+            isOwner,
+            statusCampaign,
+            customDimensionShopPage
         )
     }
 
     private fun sendImpressionTrackerTncPage() {
         shopPageHomeTracking.impressionTncPage(
-                isOwner,
-                statusCampaign,
-                customDimensionShopPage
+            isOwner,
+            statusCampaign,
+            customDimensionShopPage
         )
     }
 
     private fun observeLiveData() {
-        viewModel?.campaignTncLiveData?.observe(viewLifecycleOwner, Observer {
-            hideLoading()
-            when (it) {
-                is Success -> {
-                    onSuccessGetNplTncData(it.data)
-                }
-                is Fail -> {
-                    onErrorGetNplTncData(it.throwable)
-                }
-            }
-        })
-
-        viewModel?.campaignFollowStatusLiveData?.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (!isLoggedIn || !isRuleId33(ruleId)) {
-                        hideFollowButton()
-                    } else {
-                        isFollowShop = it.data.status?.userIsFollowing == true
-                        showFollowButton(it.data.followButton)
+        viewModel?.campaignTncLiveData?.observe(
+            viewLifecycleOwner,
+            Observer {
+                hideLoading()
+                when (it) {
+                    is Success -> {
+                        onSuccessGetNplTncData(it.data)
+                    }
+                    is Fail -> {
+                        onErrorGetNplTncData(it.throwable)
                     }
                 }
             }
-        })
+        )
 
-        viewModel?.followUnfollowShopLiveData?.observe(viewLifecycleOwner, Observer {
-            showFollowText()
-            when (it) {
-                is Success -> {
-                    toggleFollowButton(it.data.followShop)
-                    shopPageHomeTracking.clickTncBottomSheetFollowButtonNplFollower(
+        viewModel?.campaignFollowStatusLiveData?.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (!isLoggedIn || !isRuleIdFollowersOnly(listRuleId)) {
+                            hideFollowButton()
+                        } else {
+                            isFollowShop = it.data.status?.userIsFollowing == true
+                            showFollowButton(it.data.followButton)
+                        }
+                    }
+                }
+            }
+        )
+
+        viewModel?.followUnfollowShopLiveData?.observe(
+            viewLifecycleOwner,
+            Observer {
+                showFollowText()
+                when (it) {
+                    is Success -> {
+                        toggleFollowButton(it.data.followShop)
+                        shopPageHomeTracking.clickTncBottomSheetFollowButtonNplFollower(
                             isOwner,
                             isFollowShop,
                             shopId,
                             viewModel?.userId.orEmpty(),
                             customDimensionShopPage
-                    )
-                }
-                is Fail -> {
-                    onErrorFollowShop(it.throwable)
+                        )
+                    }
+                    is Fail -> {
+                        onErrorFollowShop(it.throwable)
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun onErrorFollowShop(throwable: Throwable) {
@@ -220,7 +227,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
     }
 
     private fun refreshButtonData(label: String?) {
-        if(!label.isNullOrBlank()) {
+        if (!label.isNullOrBlank()) {
             tfFollow?.text = label
         }
         btnFollow?.apply {
@@ -254,9 +261,9 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
 
         if (!voucherUrl.isNullOrBlank()) {
             tfFollow?.loadLeftDrawable(
-                    context = requireContext(),
-                    url = voucherUrl,
-                    convertIntoSize = 50
+                context = requireContext(),
+                url = voucherUrl,
+                convertIntoSize = 50
             )
         }
 
@@ -322,7 +329,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
             shopId = it.getString(KEY_SHOP_ID, "")
             isOfficialStore = it.getBoolean(KEY_IS_OFFICIAL_STORE, false)
             isGoldMerchant = it.getBoolean(KEY_IS_GOLD_MERCHANT, false)
-            ruleId = it.getString(KEY_RULE_ID, "")
+            listRuleId = it.getStringArrayList(KEY_LIST_RULE_ID)?.toList().orEmpty()
         }
     }
 
@@ -334,8 +341,8 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         loaderUnify?.hide()
     }
 
-    private fun isRuleId33(ruleId: String): Boolean {
-        return ruleId.toIntOrZero() == RULE_ID_33
+    private fun isRuleIdFollowersOnly(listRuleId: List<String>): Boolean {
+        return listRuleId.any { it.toIntOrZero() == RULE_ID_FOLLOWERS_ONLY }
     }
 
     private fun getHalfDeviceScreen(): Int = getScreenHeight() / 2

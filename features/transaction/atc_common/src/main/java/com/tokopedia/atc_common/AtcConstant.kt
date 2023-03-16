@@ -19,4 +19,5 @@ object AtcFromExternalSource {
     const val ATC_FROM_PLAY = "play"
     const val ATC_FROM_PDP = "pdp_atc"
     const val ATC_FROM_OTHERS = "others"
+    const val ATC_FROM_SHOP = "shop_page"
 }

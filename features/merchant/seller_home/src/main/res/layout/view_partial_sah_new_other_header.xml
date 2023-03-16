@@ -12,7 +12,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl4"/>
+        android:layout_height="32dp"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             android:id="@+id/tv_sah_new_other_header_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
             android:textColor="@color/Unify_N0"
             android:ellipsize="end"
             android:lines="1"
@@ -40,7 +40,7 @@
             android:id="@+id/ic_sah_new_other_header_name"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginEnd="16dp"
             app:layout_constraintStart_toEndOf="@id/tv_sah_new_other_header_name"
             app:layout_constraintEnd_toStartOf="@id/ic_sah_new_other_header_share"
             app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_header_name"
@@ -54,7 +54,7 @@
             android:id="@+id/ic_sah_new_other_header_share"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginEnd="16dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_header_name"

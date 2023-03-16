@@ -22,9 +22,9 @@ class ValidateUseMvcData(
     @SerializedName("success")
     val success: Boolean = false,
     @SerializedName("curr_purchase")
-    val currentPurchase: Long = 0,
+    val currentPurchase: Double = 0.0,
     @SerializedName("min_purchase")
-    val minimumPurchase: Long = 0,
+    val minimumPurchase: Double = 0.0,
     @SerializedName("progress_percentage")
     val progressPercentage: Int = 0,
     @SerializedName("message")

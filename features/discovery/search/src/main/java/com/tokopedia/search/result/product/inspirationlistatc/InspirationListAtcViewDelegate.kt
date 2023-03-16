@@ -5,11 +5,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.search.R
-import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
@@ -18,7 +14,8 @@ import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.addtocart.AddToCartVariantBottomSheetLauncher
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SearchIdlingResource
@@ -34,7 +31,6 @@ import javax.inject.Inject
 
 @SearchScope
 class InspirationListAtcViewDelegate @Inject constructor(
-    private val inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification,
     private val trackingQueue: TrackingQueue,
     private val searchNavigationListener: SearchNavigationListener?,
     private val topAdsUrlHitter: TopAdsUrlHitter,
@@ -54,11 +50,11 @@ class InspirationListAtcViewDelegate @Inject constructor(
     ClassNameProvider by classNameProvider {
 
     override fun trackSeeMoreClick(data: InspirationCarouselDataView.Option) {
-        inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(data.keyword, data)
+        InspirationCarouselTracking.trackCarouselClickSeeAll(data.keyword, data)
     }
 
-    override fun trackItemClick(trackingData: InspirationCarouselTrackingUnification.Data) {
-        inspirationCarouselTrackingUnification.trackCarouselClick(trackingData)
+    override fun trackItemClick(trackingData: InspirationCarouselTracking.Data) {
+        InspirationCarouselTracking.trackCarouselClick(trackingData)
     }
 
     override fun trackItemImpress(product: InspirationCarouselDataView.Option.Product) {
@@ -67,11 +63,11 @@ class InspirationListAtcViewDelegate @Inject constructor(
                 product,
                 getSearchParameter()
             )
-        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, trackingData)
+        InspirationCarouselTracking.trackCarouselImpression(trackingQueue, trackingData)
     }
 
-    override fun trackAddToCart(trackingData: InspirationCarouselTrackingUnification.Data) {
-        inspirationCarouselTrackingUnification.trackCarouselClickAtc(trackingData)
+    override fun trackAddToCart(trackingData: InspirationCarouselTracking.Data) {
+        InspirationCarouselTracking.trackCarouselClickAtc(trackingData)
     }
 
     override fun openAddToCartToaster(message: String, isSuccess: Boolean) {
@@ -97,7 +93,7 @@ class InspirationListAtcViewDelegate @Inject constructor(
         atcVariantLauncher.launch(
             productId = product.id,
             shopId = product.shopId,
-            trackerCDListName = SearchTracking.getInspirationCarouselUnificationListName(
+            trackerCDListName = getInspirationCarouselUnificationListName(
                 type,
                 product.componentId,
             )

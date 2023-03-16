@@ -28,16 +28,16 @@ class ShopRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmodera
 
     companion object {
         @LayoutRes
-        private val LAYOUT =  R.layout.shop_request_unmoderate_bottomsheet
+        private val LAYOUT = R.layout.shop_request_unmoderate_bottomsheet
         private val TAG = ShopRequestUnmoderateBottomSheet::class.java.simpleName
 
-        fun createInstance() : ShopRequestUnmoderateBottomSheet = ShopRequestUnmoderateBottomSheet()
+        fun createInstance(): ShopRequestUnmoderateBottomSheet = ShopRequestUnmoderateBottomSheet()
     }
 
     private var buttonSendUnmoderateRequest: UnifyButton? = null
     private var loaderModerateBottomsheet: LoaderUnify? = null
     private var typographyAlreadySentReq: Typography? = null
-    private var bottomSheetListener : ShopPageFragmentViewHolderListener? = null
+    private var bottomSheetListener: ShopPageFragmentViewHolderListener? = null
     private var rvRequestOptions: RecyclerView? = null
     private var choosenOptionValue = ""
     private var viewBinding by autoClearedNullable<ShopRequestUnmoderateBottomsheetBinding>()
@@ -120,5 +120,4 @@ class ShopRequestUnmoderateBottomSheet : BottomSheetUnify(), ShopRequestUnmodera
             bottomSheetListener?.onSendRequestOpenModerate(choosenOptionValue)
         }
     }
-
 }

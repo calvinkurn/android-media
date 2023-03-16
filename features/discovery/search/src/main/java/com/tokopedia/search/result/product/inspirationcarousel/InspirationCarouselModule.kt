@@ -12,4 +12,16 @@ abstract class InspirationCarouselModule {
     abstract fun provideInspirationCarouselDynamicProductView(
         delegate: InspirationCarouselDynamicProductViewDelegate
     ): InspirationCarouselDynamicProductView
+
+    @Binds
+    @SearchScope
+    abstract fun provideInspirationCarouselView(
+        delegate: InspirationCarouselViewDelegate
+    ): InspirationCarouselView
+
+    @Binds
+    @SearchScope
+    abstract fun provideInspirationCarouselPresenter(
+        delegate: InspirationCarouselPresenterDelegate
+    ): InspirationCarouselPresenter
 }

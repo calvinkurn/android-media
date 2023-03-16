@@ -5,7 +5,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.CtaLink
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
 
 object MockTitleModel {
-    fun get() = Title(text = "Promoted", textBadge = "https://ecs7.tokopedia.net/assets-tokopedia-lite/prod/terompet.png",
+    fun get() = Title(text = "Promoted", textBadge = "https://images.tokopedia.net/assets-tokopedia-lite/prod/terompet.png",
             isIsClicked = true, action = MockAction.get(), ctaLink = MockCtaLink.get()
     )
 }

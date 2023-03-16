@@ -21,38 +21,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_2"
-        app:typographyWeight="bold" />
+        app:typographyType="display_2" />
 
-    <androidx.appcompat.widget.AppCompatEditText
+    <com.tokopedia.unifycomponents.TextAreaUnify2
         android:id="@+id/et_state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:unify_text_field_counter="250"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="18dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:hint="@string/cb_bot_other_reason_text_hint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:gravity="bottom"
-        android:backgroundTint="@color/Unify_N150"
-        app:layout_constraintTop_toBottomOf="@+id/bot_reason_text" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/warning_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:text="@string/minimum_30_character"
-        android:textSize="11sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_state"
-        app:typographyType="display_3" />
+        app:layout_constraintTop_toBottomOf="@id/bot_reason_text"
+        app:unify_text_field_message="@string/minimum_30_character"
+        app:unify_text_field_label="@string/cb_bot_other_reason_text_hint"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

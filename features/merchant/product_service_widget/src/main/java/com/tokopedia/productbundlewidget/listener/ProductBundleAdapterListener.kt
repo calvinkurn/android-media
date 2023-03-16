@@ -20,6 +20,12 @@ interface ProductBundleAdapterListener {
         productDetails: List<BundleProductUiModel>
     )
 
+    fun onMultipleBundleMoreProductClicked(
+        selectedMultipleBundle: BundleDetailUiModel,
+        bundleProductGrouped: List<BundleProductUiModel>,
+        bundleProductAll: List<BundleProductUiModel>
+    )
+
     fun onSingleBundleActionButtonClicked(
         selectedBundle: BundleDetailUiModel,
         bundleProducts: BundleProductUiModel
@@ -43,7 +49,20 @@ interface ProductBundleAdapterListener {
         bundlePosition: Int,
     )
 
+    fun impressionProductBundleMultiple(
+        bundle: BundleUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        bundlePosition: Int,
+    )
+
     fun impressionProductItemBundleMultiple(
+        selectedProduct: BundleProductUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        productItemPosition: Int
+    )
+
+    fun impressionProductItemBundleMultiple(
+        bundle: BundleUiModel,
         selectedProduct: BundleProductUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
         productItemPosition: Int

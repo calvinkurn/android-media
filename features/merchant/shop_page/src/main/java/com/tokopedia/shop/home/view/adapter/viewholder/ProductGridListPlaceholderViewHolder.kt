@@ -7,7 +7,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.ProductGridListPlaceholderUiModel
 
 class ProductGridListPlaceholderViewHolder(
-        itemView: View
+    itemView: View
 ) : AbstractViewHolder<ProductGridListPlaceholderUiModel>(itemView) {
 
     companion object {
@@ -16,5 +16,4 @@ class ProductGridListPlaceholderViewHolder(
     }
 
     override fun bind(model: ProductGridListPlaceholderUiModel) {}
-
 }

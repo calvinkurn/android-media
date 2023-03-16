@@ -23,9 +23,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on August 22, 2022
  */
 @Suppress("LateinitUsage")
-class ContentAutocompleteFragment @Inject constructor(
-
-) : BaseProductTagChildFragment() {
+class ContentAutocompleteFragment @Inject constructor() : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "AutocompleteFragment"
 
@@ -73,18 +71,21 @@ class ContentAutocompleteFragment @Inject constructor(
             viewModel.submitAction(ProductTagAction.BackPressed)
         }
 
+        binding.sbAutocomplete.searchBarContainer.fitsSystemWindows = false
+
         binding.sbAutocomplete.searchBarTextField.apply {
             setText(viewModel.globalSearchQuery)
             setSelection(viewModel.globalSearchQuery.length)
 
             setOnEditorActionListener { _, actionId, _ ->
-                if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     val query = binding.sbAutocomplete.searchBarTextField.text.toString()
                     submitQuery(query)
 
                     true
+                } else {
+                    false
                 }
-                else false
             }
         }
 
@@ -104,7 +105,7 @@ class ContentAutocompleteFragment @Inject constructor(
                 ProductTagSource.GlobalSearch,
                 query,
                 "0",
-                SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER,
+                SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
             )
         )
     }
@@ -127,14 +128,14 @@ class ContentAutocompleteFragment @Inject constructor(
 
         fun getFragmentPair(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
-        ) : Pair<BaseProductTagChildFragment, String> {
+            classLoader: ClassLoader
+        ): Pair<BaseProductTagChildFragment, String> {
             return Pair(getFragment(fragmentManager, classLoader), TAG)
         }
 
         private fun getFragment(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): ContentAutocompleteFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ContentAutocompleteFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(

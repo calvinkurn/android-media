@@ -1,7 +1,7 @@
 package com.tokopedia.people.robot
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import io.mockk.mockk
 import kotlinx.coroutines.cancelChildren
@@ -12,7 +12,7 @@ import java.io.Closeable
  * Created By : Jonathan Darwin on July 06, 2022
  */
 class FollowerFollowingViewModelRobot(
-    repo: UserProfileRepository = mockk(relaxed = true),
+    repo: UserFollowRepository = mockk(relaxed = true),
 ) : Closeable {
 
     val viewModel = FollowerFollowingViewModel(
@@ -20,19 +20,17 @@ class FollowerFollowingViewModelRobot(
     )
 
     fun getFollowers(
-        username: String = "",
         cursor: String = "",
         limit: Int = 10,
     ) {
-        viewModel.getFollowers(username, cursor, limit)
+        viewModel.getFollowers(cursor, limit)
     }
 
     fun getFollowings(
-        username: String = "",
         cursor: String = "",
         limit: Int = 10,
     ) {
-        viewModel.getFollowings(username, cursor, limit)
+        viewModel.getFollowings(cursor, limit)
     }
 
     fun start(fn: suspend FollowerFollowingViewModelRobot.() -> Unit) {

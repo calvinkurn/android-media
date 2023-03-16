@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.coupondetail
 
 import android.os.Bundle
-import android.os.MemoryFile
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -20,6 +19,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class CouponDetailViewModelTest {
 
     val bundle = mockk<Bundle> {
@@ -357,7 +357,6 @@ class CouponDetailViewModelTest {
     fun `phone verification before coupon redeem`() {
         runBlockingTest {
             val userInfoObserver = mockk<Observer<PhoneVerificationResponse>>()
-            val data = mockk<PhoneVerificationResponse>()
             coEvery { repository.getUserPhoneVerificationInfo() } returns mockk {
                 every {
                     getData<PhoneVerificationResponse>(PhoneVerificationResponse::class.java)

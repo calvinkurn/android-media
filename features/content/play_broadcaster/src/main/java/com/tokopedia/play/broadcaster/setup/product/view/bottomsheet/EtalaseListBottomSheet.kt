@@ -7,6 +7,8 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroEtalaseListBinding
@@ -37,6 +39,8 @@ class EtalaseListBottomSheet @Inject constructor(
     private val binding: BottomSheetPlayBroEtalaseListBinding
         get() = _binding!!
 
+    private var mDataSource: DataSource? = null
+
     private val eventBus by viewLifecycleBound(
         creator = { EventBus<Any>() }
     )
@@ -61,6 +65,12 @@ class EtalaseListBottomSheet @Inject constructor(
 
         setupView()
         setupObserve()
+        setupAnalytic()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        eventBus.emit(Event.ViewBottomSheet)
     }
 
     override fun onDestroyView() {
@@ -72,11 +82,19 @@ class EtalaseListBottomSheet @Inject constructor(
         show(fragmentManager, TAG)
     }
 
+    fun setDataSource(dataSource: DataSource?) {
+        mDataSource = dataSource
+    }
+
     private fun setupBottomSheet() {
         _binding = BottomSheetPlayBroEtalaseListBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
         setChild(binding.root)
+
+        setOnDismissListener {
+            eventBus.emit(Event.ClickClose)
+        }
     }
 
     private fun setupView() {
@@ -106,6 +124,10 @@ class EtalaseListBottomSheet @Inject constructor(
         }
 
         analyticManager.observe(viewLifecycleOwner.lifecycleScope, eventBus)
+    }
+
+    private fun setupAnalytic() {
+        eventBus.emit(Event.SetSelectedAccount(mDataSource?.getSelectedAccount().orUnknown()))
     }
 
     private fun renderBottomSheetTitle(
@@ -150,6 +172,16 @@ class EtalaseListBottomSheet @Inject constructor(
                 dismiss()
             }
         }
+    }
+
+    interface DataSource {
+        fun getSelectedAccount(): ContentAccountUiModel
+    }
+
+    sealed interface Event {
+        data class SetSelectedAccount(val account: ContentAccountUiModel) : Event
+        object ClickClose : Event
+        object ViewBottomSheet : Event
     }
 
     companion object {

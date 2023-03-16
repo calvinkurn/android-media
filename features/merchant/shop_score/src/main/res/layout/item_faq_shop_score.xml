@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/spacing_lvl3">
+    android:paddingBottom="8dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title_faq_shop_score"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@id/ic_info_toggle_faq"
@@ -22,10 +22,10 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_info_toggle_faq"
-        android:layout_width="@dimen/spacing_lvl5"
-        android:layout_height="@dimen/spacing_lvl5"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         app:icon_name="CHEVRON_DOWN"
         app:layout_constraintBottom_toBottomOf="@id/tv_title_faq_shop_score"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,11 +43,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_desc_faq_shop_score"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginEnd="8dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,10 +57,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_card_level_faq"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,11 +70,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_desc_parameter_performance_faq"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginEnd="8dp"
         android:text="@string/desc_section_2_shop_score_calculation"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,10 +84,10 @@
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/card_shop_score_parameter_faq"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="12dp"
         app:cardBackgroundColor="@color/transparent"
         app:card_type="border"
@@ -101,13 +101,13 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title_parameter_label"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -115,9 +115,9 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_shop_score_parameter_faq"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

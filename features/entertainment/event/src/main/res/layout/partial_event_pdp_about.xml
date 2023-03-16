@@ -9,7 +9,6 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography

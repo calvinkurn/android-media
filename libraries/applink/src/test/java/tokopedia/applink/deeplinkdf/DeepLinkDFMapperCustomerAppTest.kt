@@ -7,6 +7,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -25,7 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import org.junit.Test
 
-class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
+class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check onboarding appLink then should return DF_BASE in customerapp`() {
@@ -118,12 +119,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check kol youtube appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://kolyoutube/https://www.youtube.com/watch?v=WMh0KzwTviY"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
     fun `check content report appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/content-report/12345"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
@@ -132,12 +127,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check video detail appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/video-detail/{id}"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check media preview appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/media-preview/12345"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
     }
 
@@ -214,12 +203,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check global internal digital deal slug base appLink then should return DF_ENTERTAINMENT in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/deals-slug/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
-    }
-
-    @Test
     fun `check global internal digital deal brand detail base appLink then should return DF_ENTERTAINMENT in customerapp`() {
         val appLink = "${ApplinkConstInternalDeals.INTERNAL_DEALS}/brand-detail-new/"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
@@ -253,12 +236,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     fun `check default home recommendation appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConsInternalHome.INTERNAL_HOME}/rekomendasi"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check home recent view appLink then should return DF_MERCHANT_LOGIN in customerapp`() {
-        val appLink = "${ApplinkConsInternalHome.INTERNAL_HOME}/recentlyviewed"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_LOGIN)
     }
 
     @Test
@@ -306,12 +283,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check drop off picker appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalLogistic.INTERNAL_LOGISTIC}/dropoff/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check shipping confirmation appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalLogistic.INTERNAL_LOGISTIC}/shipping-confirmation/{mode}"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
     }
 
@@ -620,7 +591,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US)
     }
 
-
     @Test
     fun `check payment setting appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalPayment.INTERNAL_PAYMENT}/setting"
@@ -744,6 +714,12 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check add phone appLink then should return DF_USER_SETTINGS in customerapp`() {
         val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/add-phone"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
+    fun `check new add phone appLink then should return DF_USER_SETTINGS in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/new-add-phone"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
     }
 
@@ -910,6 +886,36 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check privacy center appLink then should return DF_PRIVACY_CENTER in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/privacy-center"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
+    fun `check search history appLink then should return DF_PRIVACY_CENTER in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/search-history"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
+    fun `check sharing wishlist appLink then should return DF_PRIVACY_CENTER in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/sharing-wishlist"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
+    fun `check consent withdrawal appLink then should return DF_PRIVACY_CENTER in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/consent/withdrawal/new"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
+    fun `check account linking appLink then should return DF_PRIVACY_CENTER in customerapp`() {
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/account-linking-webview"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
+    }
+
+    @Test
     fun `check notification appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalNotification.INTERNAL_MARKETPLACE}/notification"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
@@ -1046,7 +1052,7 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     fun `check tokofood post purchase appLink then should return DF_TOKOFOOD in customerapp`() {
         val orderId = "123"
         val internalAppLink =
-            "${ApplinkConstInternalTokoFood.POST_PURCHASE}?orderId=${orderId}"
+            "${ApplinkConstInternalTokoFood.POST_PURCHASE}?orderId=$orderId"
         assertEqualDeepLinkCustomerApp(internalAppLink, DeeplinkDFMapper.DF_TOKOFOOD)
     }
 
@@ -1054,5 +1060,14 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     fun `check tokofood search appLink then should return DF_TOKOFOOD in customerapp`() {
         val internalApplink = "${DeeplinkConstant.SCHEME_INTERNAL}://food/search"
         assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOFOOD)
+    }
+
+    @Test
+    fun `check tokochat applink should return DF_COMM_TOKOCHAT in customerapp`() {
+        val source = "tokofood"
+        val orderId = "F-176219770"
+        val internalApplink =
+            "${ApplinkConstInternalCommunication.TOKO_CHAT}?source=$source&orderId=$orderId"
+        assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOCHAT)
     }
 }

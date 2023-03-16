@@ -14,7 +14,7 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,7 +48,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
             return@withContext mapper.mapInteractiveConfig(authorType, response)
         }
 
-    override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel =
+    override suspend fun getCurrentInteractive(channelId: String): GameUiModel =
         withContext(dispatchers.io) {
             val response = getCurrentInteractiveUseCase.apply {
                 setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))

@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import com.google.gson.GsonBuilder
@@ -55,7 +54,6 @@ class LeftChatMessageUnifyViewHolder(
 
         if (message.parentReply != null) {
             val senderName = mapSenderName(message)
-            Log.d("FATAL", "bind: senderName $senderName")
             customChatLayout?.fxChat?.background = backgroundForChat
             customChatLayout?.fxChat?.bringToFront()
             customChatLayout?.background = null
@@ -64,7 +62,6 @@ class LeftChatMessageUnifyViewHolder(
             bindBackground()
             customChatLayout?.replyBubbleContainer?.hide()
         }
-
     }
 
     private fun mapSenderName(messageUiModel: MessageUiModel): String {

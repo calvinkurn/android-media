@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -29,7 +30,6 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -45,7 +45,8 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
+import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -55,8 +56,8 @@ import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.Toko
 import com.tokopedia.tokofood.feature.search.common.util.OnScrollListenerSearch
 import com.tokopedia.tokofood.feature.search.common.util.hideKeyboardOnTouchListener
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
-import com.tokopedia.tokofood.feature.search.searchresult.analytics.TokofoodSearchResultAnalytics
 import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
+import com.tokopedia.tokofood.feature.search.searchresult.analytics.TokofoodSearchResultAnalytics
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultAdapterTypeFactory
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultDiffer
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultPageAdapter
@@ -82,7 +83,9 @@ import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 
-class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Listener,
+class SearchResultFragment :
+    BaseDaggerFragment(),
+    TokofoodSearchFilterTab.Listener,
     MerchantSearchResultViewHolder.TokoFoodMerchantSearchResultListener,
     TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
     MerchantSearchEmptyWithFilterViewHolder.Listener,
@@ -93,7 +96,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     ChooseAddressWidget.ChooseAddressWidgetListener,
     TokofoodQuickPriceRangeBottomsheet.Listener,
     TokofoodSearchErrorStateViewHolder.Listener,
-    MerchantSearchOOCViewHolder.Listener {
+    MerchantSearchOOCViewHolder.Listener,
+    TokofoodScrollChangedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -108,7 +112,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         ViewModelProvider(this, viewModelFactory).get(TokofoodSearchResultPageViewModel::class.java)
     }
     private val adapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
-        TokofoodSearchResultAdapterTypeFactory(this, this, this, this, this, this)
+        TokofoodSearchResultAdapterTypeFactory(this, this, this, this, this, this, this)
     }
     private val merchantResultAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val differ = TokofoodSearchResultDiffer()
@@ -130,7 +134,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private var keyword: String = ""
     private var itemsScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> = mutableListOf()
-    private var addressWidgetScrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -241,10 +244,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         TokofoodRouteManager.routePrioritizeInternal(context, merchant.branchApplink)
     }
 
-    override fun onImpressionListenerAdded(listener: ViewTreeObserver.OnScrollChangedListener) {
-        itemsScrollChangedListenerList.add(listener)
-    }
-
     override fun onResetFilterButtonClicked() {
         viewModel.resetFilterSearch()
     }
@@ -309,7 +308,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onOOCActionButtonClicked(type: Int) {
-        when(type) {
+        when (type) {
             MerchantSearchOOCUiModel.NO_ADDRESS -> {
                 navigateToAddAddress()
             }
@@ -333,9 +332,13 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         return true
     }
 
+    override fun onScrollChangedListenerAdded(onScrollChangedListener: ViewTreeObserver.OnScrollChangedListener) {
+        itemsScrollChangedListenerList.add(onScrollChangedListener)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_ADD_ADDRESS -> onResultFromAddAddress(resultCode, data)
             REQUEST_CODE_CHANGE_ADDRESS -> onResultFromChangeAddress(resultCode)
             REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
@@ -347,7 +350,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         tokofoodSearchFilterTab = null
         removeAllScrollListener()
         itemsScrollChangedListenerList.clear()
-        addressWidgetScrollChangedListener = null
         searchParameter = null
         sortFilterBottomSheet = null
         super.onDestroyView()
@@ -384,10 +386,9 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun setupAddressWidget() {
         binding?.addressTokofoodSearchResult?.run {
             bindChooseAddress(this@SearchResultFragment)
-            val scrollChangedListener = addAndReturnImpressionListener(addressWidgetImpressHolder) {
+            addAndReturnImpressionListener(addressWidgetImpressHolder, this@SearchResultFragment) {
                 analytics.sendAddressWidgetImpressionTracking(getDestinationId())
             }
-            addressWidgetScrollChangedListener = scrollChangedListener
         }
     }
 
@@ -448,7 +449,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.visitables.collect { result ->
                 removeScrollListener()
-                when(result) {
+                when (result) {
                     is Success -> {
                         updateAdapterVisitables(result.data)
                     }
@@ -469,7 +470,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun collectUiEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiEventFlow.collect { event ->
-                when(event.state) {
+                when (event.state) {
                     TokofoodSearchUiEvent.EVENT_OPEN_DETAIL_BOTTOMSHEET -> {
                         onOpenDetailFilterBottomSheet(event.data)
                     }
@@ -477,7 +478,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                         onSuccessLoadDetailFilter(event.data)
                     }
                     TokofoodSearchUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
-                        refreshAddressData()
+                        updateLocalAddressData(event.data)
                     }
                     TokofoodSearchUiEvent.EVENT_FAILED_LOAD_DETAIL_FILTER -> {
                         onFailedLoadDetailFilter(event.throwable)
@@ -516,6 +517,17 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                         showPinpointErrorMessage(event.throwable)
                         refreshAddressData()
                     }
+                }
+            }
+        }
+    }
+
+    private fun updateLocalAddressData(data: Any?) {
+        (data as? Pair<*, *>)?.let { (latitude, longitude) ->
+            if (latitude is String && longitude is String) {
+                context?.run {
+                    updateLocalChosenAddressPinpoint(latitude, longitude)
+                    refreshAddressData()
                 }
             }
         }
@@ -767,7 +779,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun navigateToSetPinpoint() {
-        val locationPass =  LocationPass().apply {
+        val locationPass = LocationPass().apply {
             latitude = TOTO_LATITUDE
             longitude = TOTO_LONGITUDE
         }
@@ -791,7 +803,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun showDetailFilterBottomSheet(dynamicFilterModel: DynamicFilterModel?) {
         if (!isAdded) return
         if (sortFilterBottomSheet == null) {
-            sortFilterBottomSheet = SortFilterBottomSheet()
+            val customTitle = context?.getString(com.tokopedia.tokofood.R.string.search_srp_filter_title).orEmpty()
+            sortFilterBottomSheet = SortFilterBottomSheet.createInstance(customTitle)
         }
         hideKeyboard()
         sortFilterBottomSheet?.show(
@@ -856,9 +869,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         itemsScrollChangedListenerList.forEach {
             view?.viewTreeObserver?.removeOnScrollChangedListener(it)
         }
-        addressWidgetScrollChangedListener?.let {
-            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
-        }
     }
 
     private fun getDestinationId(): String {
@@ -887,7 +897,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun navigateToNewFragment(fragment: Fragment) {
-        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
+        (activity as? BaseMultiFragActivity)?.navigateToNewFragment(fragment)
     }
 
     companion object {
@@ -904,5 +914,4 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
         private const val AND_SEPARATOR = "&"
     }
-
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.tradein.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.Gravity
@@ -111,15 +113,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             arguments?.getString(CACHE_ID, "")?.let {
                 setUpPdpData(it)
             }
-            findViewById<NavToolbar>(R.id.initial_price_navToolbar)?.run {
-                viewLifecycleOwner.lifecycle.addObserver(this)
-                setIcon(
-                    IconBuilder()
-                        .addIcon(IconList.ID_INFORMATION) {
-                            setUpEducationalFragment()
-                        }
-                )
-            }
+
             chooseAddressWidget = findViewById(R.id.tradein_choose_address_widget)
             chooseAddressWidget?.bindChooseAddress(this@TradeInHomePageFragment)
             findViewById<View>(R.id.collapse_view).setOnClickListener {
@@ -133,18 +127,6 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 }
             }
         }
-    }
-
-    private fun setUpEducationalFragment() {
-        view?.findViewById<View>(R.id.educational_frame_content_layout)?.show()
-        view?.findViewById<View>(R.id.initial_price_navToolbar)?.hide()
-        val newFragment = TradeInEducationalPageFragment.getFragmentInstance()
-        (newFragment as TradeInEducationalPageFragment).setUpTradeInClick(this)
-        childFragmentManager.beginTransaction()
-            .replace(R.id.educational_frame_content_layout, newFragment, newFragment.tag)
-            .commit()
-        tradeInAnalytics.clickEducationalButton(tradeInHomePageVM.is3PLSelected.value ?: false, tradeInHomePageVM.imei, tradeInHomePageVM.isDiagnosed)
-        tradeInAnalytics.openEducationalScreen()
     }
 
     override fun onClick() {
@@ -331,6 +313,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                         )
                     }
                 }
+
+                findViewById<View>(R.id.tradein_promo_view).isVisible = tradeInDetail.activePromo.title.isNotEmpty()
             }
         }
     }
@@ -619,8 +603,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     companion object {
         const val CACHE_ID = "Trade in cache id"
-        const val LAKU6_ERROR_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/tradein_sdk_error.png"
-        const val FRAUD_ERROR_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/tradein_fraud.png"
+        const val LAKU6_ERROR_IMAGE = TokopediaImageUrl.LAKU6_ERROR_IMAGE
+        const val FRAUD_ERROR_IMAGE = TokopediaImageUrl.FRAUD_ERROR_IMAGE
 
         fun getFragmentInstance(cacheId: String): Fragment {
             val bundle = Bundle().apply {

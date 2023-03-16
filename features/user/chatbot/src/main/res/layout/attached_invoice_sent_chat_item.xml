@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_container"
-    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:layout_marginTop="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:gravity="end"
@@ -11,18 +11,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_chat_bubble"
-        android:layout_width="@dimen/chatbot_invoice_sent_width"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_marginEnd="@dimen/unify_space_12"
-        android:minWidth="@dimen/chat_width">
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:minWidth="270dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_invoice_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/unify_space_12"
-            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
             android:maxLines="1"
             android:textColor="@color/chatbot_dms_invoice_date"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -32,24 +32,26 @@
 
         <ImageView
             android:id="@+id/iv_thumbnail"
-            android:layout_width="@dimen/dp_chatbot_50"
-            android:layout_height="@dimen/dp_chatbot_50"
-            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
             android:contentDescription="@null"
             app:layout_constraintLeft_toLeftOf="@id/tv_invoice_date"
             app:layout_constraintTop_toBottomOf="@id/tv_invoice_date"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp"
             tools:srcCompat="@tools:sample/avatars[0]" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="16dp"
             android:maxLines="1"
-            android:paddingStart="@dimen/spacing_lvl3"
-            android:paddingEnd="@dimen/spacing_lvl3"
-            android:textSize="@dimen/fontSize_lvl1"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:textSize="10sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="90.0"
@@ -62,11 +64,11 @@
             android:id="@+id/tv_invoice_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingEnd="@dimen/spacing_lvl4"
+            android:paddingEnd="16dp"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
@@ -93,10 +95,10 @@
             android:id="@+id/tv_price_prefix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
-            android:layout_marginTop="@dimen/spacing_lvl1"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
             android:gravity="top"
             android:includeFontPadding="false"
             android:maxLines="1"
@@ -113,10 +115,10 @@
             android:id="@+id/tv_price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl1"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
             android:gravity="top"
             android:includeFontPadding="false"
             android:maxLines="1"
@@ -127,6 +129,13 @@
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp 25.500" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tv_price_prefix,tv_price,tv_invoice_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

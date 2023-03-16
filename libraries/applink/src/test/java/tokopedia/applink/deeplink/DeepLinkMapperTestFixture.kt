@@ -85,6 +85,13 @@ open class DeepLinkMapperTestFixture {
             assertEquals(uri.getQueryParameter(it.first), it.second)
         }
     }
+
+    protected fun tokochatRollenceEnabler(result: String = RollenceKey.KEY_ROLLENCE_TOKOCHAT) {
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.KEY_ROLLENCE_TOKOCHAT, "")
+        } returns result
+    }
 }
 
 enum class AppType(val isMainApp: Boolean) {

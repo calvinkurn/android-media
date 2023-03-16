@@ -14,6 +14,8 @@ import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.shop_review.asUiModel
+import com.tokopedia.product.detail.data.model.social_proof.asUiModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
@@ -35,13 +37,13 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
 
     companion object {
         fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest, tokonow: TokoNowParam): RequestParams =
-                RequestParams.create().apply {
-                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
-                    putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)
-                    putString(ProductDetailCommonConstant.PARAM_DEVICE_ID, deviceId)
-                    putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
-                    putObject(ProductDetailCommonConstant.PARAM_TOKONOW, tokonow)
-                }
+            RequestParams.create().apply {
+                putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+                putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)
+                putString(ProductDetailCommonConstant.PARAM_DEVICE_ID, deviceId)
+                putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
+                putObject(ProductDetailCommonConstant.PARAM_TOKONOW, tokonow)
+            }
 
         val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String, ${'$'}userLocation: pdpUserLocation, ${'$'}tokonow: pdpTokoNow) {
           pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, tokonow: ${'$'}tokonow) {
@@ -378,8 +380,25 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
                 chipsLabel
                 hasUsedBenefit
+                tickers {
+                  title
+                  message
+                  color
+                  action
+                  link
+                }
+                isScheduled
+                boBadge {
+                  imageURL
+                  isUsingPadding
+                  imageHeight
+                }
               }
               boMetadata
+              productMetadata {
+                productID
+                value
+              }
             }
             merchantVoucherSummary{
                 animatedInfo{
@@ -494,6 +513,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 stock
               }
   	        }
+           arInfo{
+              productIDs
+              applink
+              message
+              imageUrl
+            }
             ticker {
               tickerInfo {
                 productIDs
@@ -534,8 +559,42 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               subtitle
               label
             }
+            obatKeras {
+              applink
+              subtitle
+            }
+            customInfoTitle {
+               title
+               status
+               componentName
+            }
+            socialProofComponent {
+                socialProofType
+                socialProofID
+                title
+                subtitle
+                icon
+                applink {
+                    appLink
+                }
+            }
+            reviewList {
+                title
+                applink
+                applinkTitle
+                data {
+                    userImage
+                    userName
+                    userTitle
+                    userSubtitle
+                    reviewText 
+                    applink
+                    reviewID
+                }
+            }
           }
-    }""".trimIndent()
+        }
+""".trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null
@@ -555,8 +614,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
 
     override suspend fun executeOnBackground(): ProductInfoP2UiData {
         var p2UiData = ProductInfoP2UiData()
-        val p2DataRequest = GraphqlRequest(QUERY,
-                ProductInfoP2Data.Response::class.java, requestParams.parameters)
+        val p2DataRequest = GraphqlRequest(
+            QUERY,
+            ProductInfoP2Data.Response::class.java,
+            requestParams.parameters
+        )
         val cacheStrategy = CacheStrategyUtil.getCacheStrategy(forceRefresh)
 
         try {
@@ -608,6 +670,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.navBar = navBar
             p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
             p2UiData.shopAdditional = responseData.shopAdditional
+            p2UiData.arInfo = arInfo
+            p2UiData.obatKeras = responseData.obatKeras
+            p2UiData.customInfoTitle = responseData.customInfoTitle
+            p2UiData.socialProof = responseData.socialProof.asUiModel()
+            p2UiData.shopReview = responseData.shopReview.asUiModel()
         }
         return p2UiData
     }
@@ -621,10 +688,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             initCacheManager()
             if (mCacheManager != null && mFingerprintManager != null) {
                 val request = GraphqlRequest(QUERY, ProductInfoP2Data.Response::class.java, requestParams.parameters)
-                mCacheManager!!.delete(mFingerprintManager!!.generateFingerPrint(
+                mCacheManager!!.delete(
+                    mFingerprintManager!!.generateFingerPrint(
                         request.toString(),
-                        cacheStrategy.isSessionIncluded))
-
+                        cacheStrategy.isSessionIncluded
+                    )
+                )
             }
         }) {
             it.printStackTrace()

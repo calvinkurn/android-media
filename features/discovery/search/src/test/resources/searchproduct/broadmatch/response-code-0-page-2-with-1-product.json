@@ -15,8 +15,8 @@
           "id": 574261855,
           "warehouseIdDefault": 0,
           "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
-          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
-          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
           "price": "Rp 4.155.000",
           "priceRange": "",
           "wishlist": false,
@@ -43,7 +43,7 @@
           "badges": [
             {
               "title": "Official Store",
-              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
               "show": true
             }
           ],

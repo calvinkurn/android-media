@@ -2,7 +2,7 @@ package com.tokopedia.checkout.journey.analytics
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.checkout.ShipmentActivity
 import com.tokopedia.checkout.robot.checkoutPage
 import com.tokopedia.checkout.test.R
@@ -54,7 +54,7 @@ class CheckoutAnalyticsTest {
             selectFirstShippingDurationOption()
             waitForData()
             clickChoosePaymentButton(activityRule)
-        } validateAnalytics  {
+        } validateAnalytics {
             waitForData()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
@@ -74,5 +74,4 @@ class CheckoutAnalyticsTest {
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout.json"
     }
-
 }

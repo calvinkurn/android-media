@@ -6,6 +6,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.databinding.ItemProductLineBinding
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.custom.ProductBottomSheetCardView
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
@@ -31,27 +32,17 @@ class ProductLineViewHolder(
                 )
             }
 
-            override fun onBuyProduct(
+            override fun onButtonTransactionProduct(
                 view: ProductBottomSheetCardView,
                 product: PlayProductUiModel.Product,
-                section: ProductSectionUiModel.Section
+                section: ProductSectionUiModel.Section,
+                action: ProductAction
             ) {
-                listener.onBuyProduct(
+                listener.onButtonTransactionProduct(
                     this@ProductLineViewHolder,
                     product,
                     section,
-                )
-            }
-
-            override fun onAtcProduct(
-                view: ProductBottomSheetCardView,
-                product: PlayProductUiModel.Product,
-                section: ProductSectionUiModel.Section
-            ) {
-                listener.onAtcProduct(
-                    this@ProductLineViewHolder,
-                    product,
-                    section,
+                    action,
                 )
             }
         })
@@ -82,15 +73,11 @@ class ProductLineViewHolder(
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
         )
-        fun onBuyProduct(
+        fun onButtonTransactionProduct(
             viewHolder: ProductLineViewHolder,
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
-        )
-        fun onAtcProduct(
-            viewHolder: ProductLineViewHolder,
-            product: PlayProductUiModel.Product,
-            section: ProductSectionUiModel.Section,
+            action: ProductAction,
         )
     }
 }

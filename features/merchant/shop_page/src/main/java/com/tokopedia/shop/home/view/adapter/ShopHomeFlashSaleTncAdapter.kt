@@ -6,9 +6,9 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeFlashSaleTncViewHolder
 
-class ShopHomeFlashSaleTncAdapter: RecyclerView.Adapter<ShopHomeFlashSaleTncViewHolder>() {
+class ShopHomeFlashSaleTncAdapter : RecyclerView.Adapter<ShopHomeFlashSaleTncViewHolder>() {
 
-    private var tncDescriptions : List<String> = listOf()
+    private var tncDescriptions: List<String> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopHomeFlashSaleTncViewHolder {
         return ShopHomeFlashSaleTncViewHolder(parent.inflateLayout(R.layout.item_shop_flash_sale_tnc))

@@ -48,5 +48,7 @@ internal val staging = Url(
         PCIDSS_CREDIT_CARD = "https://pulsa-staging.tokopedia.id/",
         GOJEK_OTP = "https://accounts-integration.gojek.com/",
         GOPAY_PIN = "https://integration-gws-app.gopayapi.com/",
-        SSE = "https://sse-staging.tokopedia.com/"
+        SSE = "https://sse-staging.tokopedia.com/",
+        ONE_TRUST = "https://uat-de.onetrust.com/",
+        TOKOCHAT = "https://chat-staging.tokopedia.com/tokochat/"
 )

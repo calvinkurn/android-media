@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
@@ -40,7 +39,7 @@ class LivenessErrorFragment: BaseDaggerFragment(), OnBackListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            projectId = it.getInt(PARAM_PROJECT_ID).toString()
+            projectId = it.getString(PARAM_PROJECT_ID).orEmpty()
             detectionFailedType = it.getSerializable(LivenessConstants.ARG_FAILED_TYPE) as Detector.DetectionFailedType
         }
     }
@@ -54,8 +53,11 @@ class LivenessErrorFragment: BaseDaggerFragment(), OnBackListener {
         super.onViewCreated(view, savedInstanceState)
 
         viewBinding?.apply {
-            livenessToolbarIcon.setOnClickListener {
-                activity?.onBackPressed()
+            errorLivenessToolbar.apply {
+                setTitle(com.tokopedia.liveness.R.string.liveness_title)
+                setNavigationOnClickListener {
+                    activity?.onBackPressed()
+                }
             }
 
             button.setOnClickListener {

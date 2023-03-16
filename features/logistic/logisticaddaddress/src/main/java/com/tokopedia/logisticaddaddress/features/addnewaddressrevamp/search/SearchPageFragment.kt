@@ -37,10 +37,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_PINPOINT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
@@ -72,7 +74,7 @@ import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
 
-class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoCompleteItemListener {
+class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCompleteItemListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -95,7 +97,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private var isPermissionAccessed: Boolean = false
 
-    private var saveDataModel: SaveAddressDataModel? = null
     private var currentKotaKecamatan: String? = ""
     private var currentLat: Double = DEFAULT_LAT
     private var currentLong: Double = DEFAULT_LONG
@@ -107,10 +108,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var source: String = ""
     private var isAccessAppPermissionFromSettings: Boolean = false
 
-
     private val requiredPermissions: Array<String>
-        get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION)
+        get() = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
     private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
     private var binding by autoClearedNullable<FragmentSearchAddressBinding>()
 
@@ -131,21 +133,20 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
             isFromPinpoint = it.getBoolean(EXTRA_FROM_PINPOINT)
             currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
-            saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
             isPolygon = it.getBoolean(EXTRA_IS_POLYGON)
             distrcitId = it.getLong(EXTRA_DISTRICT_ID)
             isEdit = it.getBoolean(EXTRA_IS_EDIT, false)
             source = it.getString(PARAM_SOURCE, "")
-        }
-        if (saveDataModel != null) {
-            saveDataModel?.let {
-                viewModel.setAddress(it)
+
+            it.getParcelable<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)?.let { addressData ->
+                viewModel.setAddress(addressData)
             }
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkGms()
         initView()
         showInitialLoadMessage()
         setSearchView()
@@ -153,9 +154,19 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         initObserver()
     }
 
+    private fun checkGms() {
+        context?.let {
+            val gmsAvailable = MapsAvailabilityHelper.isMapsAvailable(it)
+            viewModel.isGmsAvailable = gmsAvailable
+            if (!gmsAvailable) {
+                goToAddressForm()
+            }
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            if(requestCode == REQUEST_PINPOINT_PAGE) {
+            if (requestCode == REQUEST_PINPOINT_PAGE) {
                 val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
                 var newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 if (newAddress == null) {
@@ -176,15 +187,21 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             }
         } else {
             showInitialLoadMessage()
+            if (requestCode == REQUEST_ADDRESS_FORM_PAGE && !viewModel.isGmsAvailable) {
+                activity?.finish()
+            }
         }
     }
 
     private fun finishActivity(data: SaveAddressDataModel?, isFromAddressForm: Boolean) {
         activity?.run {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
-                putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
-            })
+            setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
+                    putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+                }
+            )
             finish()
         }
     }
@@ -263,14 +280,19 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         binding?.tvMessageSearch?.text = getString(R.string.txt_message_initial_load)
         binding?.tvMessageSearch?.setOnClickListener {
             AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
-            Intent(context, AddressFormActivity::class.java).apply {
-                putExtra(EXTRA_IS_POSITIVE_FLOW, false)
-                putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
-                putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
-                putExtra(PARAM_SOURCE, source)
-                startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
-            }
+            goToAddressForm()
         }
+    }
+
+    private fun goToAddressForm() {
+        val intent = Intent(context, AddressFormActivity::class.java).apply {
+            putExtra(EXTRA_IS_POSITIVE_FLOW, false)
+            putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
+            putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+            putExtra(PARAM_SOURCE, source)
+            putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
+        }
+        startActivityForResult(intent, REQUEST_ADDRESS_FORM_PAGE)
     }
 
     private fun setSearchView() {
@@ -293,12 +315,12 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 }
             }
 
-            addTextChangedListener(object: TextWatcher {
+            addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    //no-op
+                    // no-op
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -309,11 +331,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                         loadAutoComplete(binding?.searchPageInput?.searchBarTextField?.text.toString())
                     }
                 }
-
             })
         }
     }
-
 
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
@@ -331,7 +351,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     showBottomSheetLocUndefined(false)
                 }
             } else {
-                when(permissionState) {
+                when (permissionState) {
                     PERMISSION_DENIED, PERMISSION_NOT_DEFINED -> {
                         requestPermissionLocation()
                     }
@@ -343,7 +363,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         }
     }
 
-    private fun showBottomSheetLocUndefined(isDontAskAgain: Boolean){
+    private fun showBottomSheetLocUndefined(isDontAskAgain: Boolean) {
         isPermissionAccessed = true
         bottomSheetLocUndefined = BottomSheetUnify()
         val viewBinding = BottomsheetLocationUndefinedBinding.inflate(LayoutInflater.from(context), null, false)
@@ -383,13 +403,12 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 } else {
                     goToSettingLocationApps()
                 }
-
             }
         }
     }
 
     private fun goToSettingLocationDevice() {
-       context?.let { turnGPSOn(it) }
+        context?.let { turnGPSOn(it) }
     }
 
     private fun goToSettingLocationApps() {
@@ -422,25 +441,28 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     //  GPS is already enable, callback GPS status through listener
                     isGpsOn = true
                 }
-                .addOnFailureListener(context, OnFailureListener { e ->
-                    when ((e as ApiException).statusCode) {
-                        LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+                .addOnFailureListener(
+                    context,
+                    OnFailureListener { e ->
+                        when ((e as ApiException).statusCode) {
+                            LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
 
-                            try {
-                                // Show the dialog by calling startResolutionForResult(), and check the
-                                // result in onActivityResult().
-                                val rae = e as ResolvableApiException
-                                startIntentSenderForResult(rae.resolution.intentSender, GPS_REQUEST, null, 0, 0, 0, null)
-                            } catch (sie: IntentSender.SendIntentException) {
-                                sie.printStackTrace()
+                                try {
+                                    // Show the dialog by calling startResolutionForResult(), and check the
+                                    // result in onActivityResult().
+                                    val rae = e as ResolvableApiException
+                                    startIntentSenderForResult(rae.resolution.intentSender, GPS_REQUEST, null, 0, 0, 0, null)
+                                } catch (sie: IntentSender.SendIntentException) {
+                                    sie.printStackTrace()
+                                }
+
+                            LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                                val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                             }
-
-                        LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                            val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
-                            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                         }
                     }
-                })
+                )
         }
         return isGpsOn
     }
@@ -503,32 +525,41 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 binding?.loaderCurrentLocation?.visibility = View.GONE
                 currentLat = data.latitude
                 currentLong = data.longitude
-                goToPinpointPage(null, data.latitude, data.longitude,
+                goToPinpointPage(
+                    null,
+                    data.latitude,
+                    data.longitude,
                     isFromAddressForm = false,
                     isPositiveFlow = true
                 )
             } else {
-                fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
-                    locationCallback, null)
+                fusedLocationClient?.requestLocationUpdates(
+                    AddNewAddressUtils.getLocationRequest(),
+                    locationCallback,
+                    null
+                )
             }
-
         }
     }
 
-    private val locationCallback : LocationCallback =
+    private val locationCallback: LocationCallback =
         object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 if (!hasRequestedLocation) {
-                    //send to maps
+                    // send to maps
                     hasRequestedLocation = true
                 }
                 stopLocationUpdate()
                 binding?.loaderCurrentLocation?.visibility = View.GONE
                 currentLat = locationResult.lastLocation.latitude
                 currentLong = locationResult.lastLocation.longitude
-                goToPinpointPage(null, locationResult.lastLocation.latitude, locationResult.lastLocation.longitude,
+                goToPinpointPage(
+                    null,
+                    locationResult.lastLocation.latitude,
+                    locationResult.lastLocation.longitude,
                     isFromAddressForm = false,
-                    isPositiveFlow = true)
+                    isPositiveFlow = true
+                )
             }
         }
 
@@ -539,11 +570,17 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             EditAddressRevampAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
         }
         isPolygon = false
-        if (!isPositiveFlow && isFromPinpoint) goToPinpointPage(placeId, null, null,
-            isFromAddressForm = true,
-            isPositiveFlow = false
-        )
-        else goToPinpointPage(placeId, null, null, isFromAddressForm = false, isPositiveFlow = true)
+        if (!isPositiveFlow && isFromPinpoint) {
+            goToPinpointPage(
+                placeId,
+                null,
+                null,
+                isFromAddressForm = true,
+                isPositiveFlow = false
+            )
+        } else {
+            goToPinpointPage(placeId, null, null, isFromAddressForm = false, isPositiveFlow = true)
+        }
     }
 
     private fun goToPinpointPage(placeId: String?, latitude: Double?, longitude: Double?, isFromAddressForm: Boolean, isPositiveFlow: Boolean) {
@@ -555,21 +592,26 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
         bundle.putString(PARAM_SOURCE, source)
+        bundle.putBoolean(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
         distrcitId?.let { bundle.putLong(EXTRA_DISTRICT_ID, it) }
         if (!isEdit) {
             startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPOINT_PAGE)
         } else {
             activity?.run {
-                setResult(Activity.RESULT_OK, Intent().apply {
-                    putExtra(EXTRA_PLACE_ID, placeId)
-                    latitude?.let { putExtra(EXTRA_LAT, it) }
-                    longitude?.let { putExtra(EXTRA_LONG, it) }
-                    putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-                    putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
-                    putExtra(EXTRA_IS_POLYGON, isPolygon)
-                    distrcitId?.let { putExtra(EXTRA_DISTRICT_ID, it) }
-                    putExtra(EXTRA_IS_EDIT, isEdit)
-                })
+                setResult(
+                    Activity.RESULT_OK,
+                    Intent().apply {
+                        putExtra(EXTRA_PLACE_ID, placeId)
+                        latitude?.let { putExtra(EXTRA_LAT, it) }
+                        longitude?.let { putExtra(EXTRA_LONG, it) }
+                        putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+                        putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+                        putExtra(EXTRA_IS_POLYGON, isPolygon)
+                        distrcitId?.let { putExtra(EXTRA_DISTRICT_ID, it) }
+                        putExtra(EXTRA_IS_EDIT, isEdit)
+                        putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
+                    }
+                )
                 finish()
             }
         }

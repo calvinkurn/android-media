@@ -11,7 +11,7 @@ import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
  **/
 class ShopRecomUiMapperImpl: ShopRecomUiMapper {
 
-    override fun mapShopRecom(response: UserShopRecomModel): ShopRecomUiModel {
+    override fun mapShopRecom(response: UserShopRecomModel, limit: Int): ShopRecomUiModel {
         return with(response.feedXRecomWidget) {
             ShopRecomUiModel(
                 isShown = isShown,
@@ -29,6 +29,8 @@ class ShopRecomUiMapperImpl: ShopRecomUiMapper {
                 },
                 nextCursor = nextCursor,
                 title = title,
+                loadNextPage = nextCursor.isNotEmpty() && items.isNotEmpty(),
+                isRefresh = false,
             )
         }
     }

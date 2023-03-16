@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/bg_play_cornered"
+    android:layout_height="40dp">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_play_promo"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:icon_name="PROMO"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_play_voucher_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_GN500"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_play_promo"
+        app:layout_constraintEnd_toStartOf="@+id/iv_play_voucher_copy"
+        app:layout_constraintStart_toEndOf="@+id/iv_play_promo"
+        app:layout_constraintTop_toTopOf="@+id/iv_play_promo"
+        tools:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_play_voucher_copy"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        app:icon_name="COPY"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_play_voucher_code"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_play_voucher_code" />
+</androidx.constraintlayout.widget.ConstraintLayout>

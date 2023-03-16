@@ -26,7 +26,6 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItem
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
-
 class PromoListItemViewHolder(
     private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
     private val listener: PromoCheckoutActionListener
@@ -55,7 +54,7 @@ class PromoListItemViewHolder(
     private var colorBackgroundSelected =
         ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
     private var colorBackgroundEnabled =
-        ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
     private var colorBackgroundDisabled =
         ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
     private var colorIconLightSelected =
@@ -71,10 +70,19 @@ class PromoListItemViewHolder(
     private var colorIconDarkDisabled =
         ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
 
+    // variable to identify view holder
+    private var currentItemId: String? = null
+
     override fun bind(element: PromoListItemUiModel) {
         if (element.uiState.isUpdateSelectionStateAction) {
             element.uiState.isUpdateSelectionStateAction = false
-            renderPromoState(viewBinding, element)
+            if (currentItemId != null && currentItemId == element.id) {
+                renderPromoState(viewBinding, element)
+            } else {
+                renderPromoData(viewBinding, element)
+                renderPromoState(viewBinding, element)
+                setPromoItemClickListener(viewBinding, element)
+            }
         } else {
             renderPromoData(viewBinding, element)
             renderPromoState(viewBinding, element)
@@ -334,6 +342,7 @@ class PromoListItemViewHolder(
         renderErrorInfo(viewBinding, element)
         renderDivider(viewBinding, element)
         adjustConstraints(viewBinding)
+        currentItemId = element.id
     }
 
     private fun renderHighlightIdentifier(
@@ -553,7 +562,8 @@ class PromoListItemViewHolder(
 
     private fun renderPromoDetailButton(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-        element: PromoListItemUiModel, timeValidityInfo: PromoInfo?
+        element: PromoListItemUiModel,
+        timeValidityInfo: PromoInfo?
     ) {
         with(viewBinding) {
             if (!element.uiState.isBebasOngkir && !element.uiState.isAttempted) {

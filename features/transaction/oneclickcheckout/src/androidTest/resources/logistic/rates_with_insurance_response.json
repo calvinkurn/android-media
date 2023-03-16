@@ -105,7 +105,8 @@
                       "text_label": "",
                       "text_detail": "",
                       "url_detail": "",
-                      "icon_url": ""
+                      "icon_url": "",
+                      "url_text": ""
                     }
                   },
                   "eta": {
@@ -163,7 +164,8 @@
                       "text_label": "",
                       "text_detail": "",
                       "url_detail": "",
-                      "icon_url": ""
+                      "icon_url": "",
+                      "url_text": ""
                     }
                   },
                   "eta": {
@@ -191,7 +193,7 @@
               "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
               "service_id": 1104,
               "is_applied": 0,
-              "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+              "image_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
               "discounted_rate": 0,
               "shipping_rate": 16000,
               "benefit_amount": 20000,
@@ -233,7 +235,7 @@
             "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
             "service_id": 1104,
             "is_applied": 0,
-            "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+            "image_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
             "discounted_rate": 0,
             "shipping_rate": 16000,
             "benefit_amount": 20000,

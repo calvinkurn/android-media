@@ -130,7 +130,7 @@ class ProductPreviewViewHolder(
     private fun setupLoadingAnimation() {
         if (!ViewUtil.areSystemAnimationsEnabled(itemView.context)) {
             loader?.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-                override fun onViewAttachedToWindow(v: View?) {
+                override fun onViewAttachedToWindow(v: View) {
                     loader.apply {
                         avd?.clearAnimationCallbacks()
                         avd?.stop()
@@ -138,7 +138,7 @@ class ProductPreviewViewHolder(
                     loader.removeOnAttachStateChangeListener(this)
                 }
 
-                override fun onViewDetachedFromWindow(v: View?) {
+                override fun onViewDetachedFromWindow(v: View) {
                     loader.removeOnAttachStateChangeListener(this)
                 }
             })

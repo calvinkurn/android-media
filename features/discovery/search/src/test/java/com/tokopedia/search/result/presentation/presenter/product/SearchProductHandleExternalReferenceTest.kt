@@ -12,6 +12,8 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
 import com.tokopedia.search.result.product.broadmatch.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST
 import com.tokopedia.search.shouldBe
 import io.mockk.every
 import io.mockk.just
@@ -172,7 +174,7 @@ internal class SearchProductHandleExternalReferenceTest : ProductListPresenterTe
 
     private fun `Then verify inspiration carousel product external reference`(expectedExternalReference: String = "") {
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
+            LAYOUT_INSPIRATION_CAROUSEL_LIST,
             false
         )
 
@@ -237,7 +239,7 @@ internal class SearchProductHandleExternalReferenceTest : ProductListPresenterTe
     private fun List<Visitable<*>>.findIndexedChipsCarousel(): IndexedValue<InspirationCarouselDataView> {
         val indexedVisitable = withIndex().find {
             it.value is InspirationCarouselDataView
-                    && (it.value as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+                    && (it.value as InspirationCarouselDataView).layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS
         }!!
 
         return IndexedValue(

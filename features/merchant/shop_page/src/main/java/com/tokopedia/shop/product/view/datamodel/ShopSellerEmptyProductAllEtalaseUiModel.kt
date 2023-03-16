@@ -12,5 +12,4 @@ class ShopSellerEmptyProductAllEtalaseUiModel : BaseShopProductViewModel {
     override fun type(typeFactory: ShopProductAdapterTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
     }
-
 }

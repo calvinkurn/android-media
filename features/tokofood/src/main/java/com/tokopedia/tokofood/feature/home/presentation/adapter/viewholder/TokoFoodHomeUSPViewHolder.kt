@@ -1,9 +1,12 @@
 package com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -27,8 +30,8 @@ class TokoFoodHomeUSPViewHolder(
         val LAYOUT = R.layout.item_tokofood_usp
 
         private const val USP_SIZE = 3
-        private const val GO_FOOD_IMAGE_LIGHT = "https://images.tokopedia.net/img/powered_by_gofood_light.png"
-        private const val GO_FOOD_IMAGE_DARK = "https://images.tokopedia.net/img/powered_by_gofood_dark_new.png"
+        private const val GO_FOOD_IMAGE_LIGHT = TokopediaImageUrl.GO_FOOD_IMAGE_LIGHT
+        private const val GO_FOOD_IMAGE_DARK = TokopediaImageUrl.GO_FOOD_IMAGE_DARK
     }
 
     private var binding: ItemTokofoodUspBinding? by viewBinding()
@@ -40,6 +43,11 @@ class TokoFoodHomeUSPViewHolder(
     private var tgSecondUsp: Typography? = null
     private var tgThirdUsp: Typography? = null
     private var shimmeringLayout: View? = null
+
+    init {
+        setCardBackgroundColor()
+        setUspBackgroundColor()
+    }
 
     override fun bind(element: TokoFoodHomeUSPUiModel) {
         shimmeringLayout = binding?.uspLoadLayout?.root
@@ -55,6 +63,20 @@ class TokoFoodHomeUSPViewHolder(
             TokoFoodLayoutState.SHOW -> onShowLayout(element)
             TokoFoodLayoutState.LOADING -> onLoadLayout()
         }
+    }
+
+    private fun setCardBackgroundColor() {
+        binding?.run {
+            mainLayout.setCardBackgroundColor(
+                MethodChecker.getColor(
+                    root.context, com.tokopedia.tokofood.R.color.food_cardview_background_dms_color
+                )
+            )
+        }
+    }
+
+    private fun setUspBackgroundColor() {
+        binding?.viewUsp?.setBackgroundResource(R.drawable.background_tokofood_usp_chevron)
     }
 
     private fun onLoadLayout(){

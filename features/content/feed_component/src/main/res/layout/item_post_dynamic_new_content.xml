@@ -32,10 +32,9 @@
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@id/tv_content_sub_info"
-            app:layout_constraintStart_toEndOf="@id/iv_author_avatar"
             app:layout_constraintEnd_toStartOf="@id/menu_button"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintStart_toEndOf="@id/iv_author_avatar"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_shop_badge"
@@ -48,8 +47,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/ic_power_merchant"
-                tools:visibility="gone"
-                />
+                tools:visibility="gone" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_author_name"
@@ -67,8 +65,7 @@
                 app:layout_constraintTop_toTopOf="@id/iv_shop_badge"
                 app:layout_constraintWidth_default="wrap"
                 app:typographyType="heading_5"
-                tools:text="Fellow Official Super Long Shop Name"
-                />
+                tools:text="Fellow Official Super Long Shop Name" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_author_follow_action"
@@ -83,8 +80,7 @@
                 app:layout_constraintStart_toEndOf="@id/tv_author_name"
                 app:layout_constraintTop_toTopOf="@id/iv_shop_badge"
                 app:typographyType="heading_5"
-                tools:text="• Following"
-                />
+                tools:text="• Following" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -97,7 +93,7 @@
             app:layout_constraintStart_toStartOf="@id/author_info_container"
             app:layout_constraintTop_toBottomOf="@id/author_info_container"
             app:typographyType="body_3"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/menu_button"
@@ -131,8 +127,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gridList"
-        app:lockScroll="true"
-        >
+        app:lockScroll="true">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_carousel"
@@ -141,8 +136,7 @@
             android:layout_marginTop="@dimen/unify_space_12"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_post_video_new"
-            />
+            tools:listitem="@layout/item_post_video_new" />
 
     </com.tokopedia.feedcomponent.util.NestedScrollableHost>
 
@@ -160,16 +154,15 @@
         android:id="@+id/top_ads_detail_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/unify_space_40"
         android:background="@color/Unify_NN50"
+        android:minHeight="@dimen/unify_space_40"
         android:paddingTop="@dimen/unify_space_8"
         android:paddingBottom="@dimen/unify_space_8"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/feed_vod_viewholder"
-        tools:visibility="visible"
-        >
+        tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/top_ads_product_name"
@@ -180,42 +173,77 @@
             android:maxLines="1"
             android:text="@string/feeds_cek_sekarang"
             app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toTopOf="@id/top_ads_campaign_copywriting"
+            app:layout_constraintBottom_toTopOf="@id/top_ads_campaign_copywriting_container"
             app:layout_constraintEnd_toStartOf="@+id/chevron"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            />
+            app:layout_constraintVertical_chainStyle="packed"
+            app:typographyType="display_3"
+            app:typographyWeight="bold" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/top_ads_campaign_copywriting"
+        <FrameLayout
+            android:id="@+id/top_ads_campaign_copywriting_container"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:visibility="gone"
-            android:text="@string/feed_asgc_campaign_cta_copywriting_text"
+            android:layout_height="20dp"
+            android:layout_marginStart="16dp"
+            android:clipChildren="false"
+            android:orientation="vertical"
+            android:visibility="visible"
             app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/chevron"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/top_ads_product_name"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:typographyType="paragraph_3"
-            tools:text="Eksklusif untuk Follower Toko"
-            />
+            tools:visibility="visible">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="true"
+                android:clipToPadding="true">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/top_ads_campaign_copywriting_first"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="paragraph_3"
+                    tools:text="Eksklusif untuk Follower Toko" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/top_ads_campaign_copywriting_second"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:translationY="20dp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="paragraph_3"
+                    tools:text="Eksklusif untuk Follower Toko" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevron"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
             app:icon_name="CHEVRON_RIGHT"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -278,14 +306,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/liked_text"
         app:typographyType="body_2"
-        tools:text="      Fellow Official Fellow - Stagg EKG Electric Pour Over Kettle (Matte Black)... selengkapnya" />
+        tools:text="Fellow Official Fellow - Stagg EKG Electric Pour Over Kettle (Matte Black)... selengkapnya" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/timestamp_text"
@@ -293,9 +321,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN600"
-        app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="@id/caption_text"
         app:layout_constraintTop_toBottomOf="@id/caption_text"
+        app:typographyType="body_3"
         tools:text="17 Oktober 2020" />
 
     <com.tokopedia.unifyprinciples.Typography

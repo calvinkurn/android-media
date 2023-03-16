@@ -12,6 +12,7 @@ import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.databinding.FragmentChatbotVideoBinding
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.view.customview.videoheader.VideoScreenHeader
@@ -24,7 +25,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 
-class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideoStateListener, VideoScreenHeader.OnClickBackButton{
+class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideoStateListener,
+    VideoScreenHeader.OnClickBackButton {
 
     private var videoUrl = ""
     private var videoPlayerView : PlayerView? = null
@@ -35,40 +37,45 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
     private var parentLayout : ConstraintLayout? = null
     private var videoScreenHeader: VideoScreenHeader? = null
 
+    private var _viewBinding: FragmentChatbotVideoBinding? = null
+    private fun getBindingView() = _viewBinding!!
+
     override fun getScreenName(): String {
         return ""
     }
 
-    override fun initInjector() {
-
-    }
+    override fun initInjector() = Unit
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view =  inflater.inflate(R.layout.fragment_chatbot_video, container, false)
+    ): View {
+        _viewBinding = FragmentChatbotVideoBinding.inflate(inflater, container, false)
+        return getBindingView().root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         videoUrl = arguments?.getString(ChatbotVideoActivity.PARAM_VIDEO_URL, "") ?: ""
         initViews(view)
         initListenerForNavigation()
-        var defaultStatusBarHeight = 50
+        var defaultStatusBarHeight = DEFAULT_HEIGHT
         if (context != null) {
             defaultStatusBarHeight = getStatusBarHeight(requireContext())
         }
         setMarginForHeader(defaultStatusBarHeight)
-        return view
     }
 
     private fun setMarginForHeader(defaultStatusBarHeight : Int) {
         val param = videoScreenHeader?.layoutParams as ViewGroup.MarginLayoutParams
-        param.setMargins(0,defaultStatusBarHeight,0,0)
+        param.setMargins(0, defaultStatusBarHeight, 0, 0)
         videoScreenHeader?.layoutParams = param
     }
 
     private fun getStatusBarHeight(context: Context): Int {
         var result =
-            (DEFAULT_STATUS_BAR_HEIGHT * context.resources.displayMetrics.density + 0.5f).toInt()
+            (DEFAULT_STATUS_BAR_HEIGHT * context.resources.displayMetrics.density + DEFAULT_RATIO).toInt()
         val resourceId = context.resources.getIdentifier(
             STATUS_BAR_HEIGHT_ID,
             "dimen",
@@ -81,14 +88,14 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
     }
 
     private fun initViews(view : View) {
-        parentLayout = view.findViewById(R.id.parent_view)
+        parentLayout =  getBindingView().parentView
         parentLayout?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-        videoScreenHeader = view.findViewById(R.id.video_screen_header)
-        chatbotVideoControl = view.findViewById(R.id.video_control)
+        videoScreenHeader = getBindingView().videoScreenHeader
+        chatbotVideoControl = getBindingView().videoControl
         chatbotExoPlayer = ChatbotExoPlayer(view.context, chatbotVideoControl)
-        videoPlayerView = view.findViewById(R.id.video_player)
-        progressLoader = view.findViewById(R.id.loader)
-        errorImage = view.findViewById(R.id.error_image)
+        videoPlayerView = getBindingView().videoPlayer
+        progressLoader = getBindingView().loader
+        errorImage = getBindingView().errorImage
         videoScreenHeader?.bringToFront()
         initVideoPlayer()
 
@@ -187,6 +194,8 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
 
         const val DEFAULT_STATUS_BAR_HEIGHT = 24
         const val STATUS_BAR_HEIGHT_ID = "status_bar_height"
+        const val DEFAULT_RATIO = 0.5f
+        const val DEFAULT_HEIGHT = 50
     }
 
 }

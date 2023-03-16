@@ -1,5 +1,6 @@
 package com.tokopedia.shop.campaign.view.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -10,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
@@ -22,7 +24,8 @@ import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardSpaceUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ProductCardSeeAllViewHolder
-import com.tokopedia.shop_widget.thematicwidget.viewholder.ProductCardViewHolder
+import com.tokopedia.shop_widget.thematicwidget.viewholder.ProductCardGridViewHolder
+import com.tokopedia.shop_widget.thematicwidget.viewholder.ProductCardListViewHolder
 import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -31,7 +34,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-class ShopCampaignThematicWidgetViewHolder (
+//need to surpress this one, since there are no pii related data defined on this class
+@SuppressLint("PII Data Exposure")
+class ShopCampaignThematicWidgetViewHolder(
     itemView: View,
     private val listener: ThematicWidgetViewHolder.ThematicWidgetListener,
     private val widgetConfigListener: WidgetConfigListener
@@ -58,13 +63,14 @@ class ShopCampaignThematicWidgetViewHolder (
     private var dynamicHeaderCustomView: ShopCampaignDynamicHeaderCustomView? = null
     private var uiModel: ThematicWidgetUiModel? = null
     private var isFirstAttached: Boolean = true
-    private var trackerProductsModel = mutableListOf<ProductCardUiModel>()
 
     private val adapter by lazy {
         ProductCardAdapter(
             baseListAdapterTypeFactory = ProductCardTypeFactoryImpl(
-                productCardListener = productCardListenerImpl(),
-                productCardSeeAllListener = productCardSeeAllListenerImpl()
+                productCardGridListener = productCardGridListenerImpl(),
+                productCardListListener = productCardListListenerImpl(),
+                productCardSeeAllListener = productCardSeeAllListenerImpl(),
+                totalProductSize = uiModel?.productList?.size.orZero()
             ),
             differ = ProductCardDiffer()
         )
@@ -135,7 +141,7 @@ class ShopCampaignThematicWidgetViewHolder (
 
     private fun trackForTheFirstTimeViewHolderAttached(element: ThematicWidgetUiModel) {
         if (isFirstAttached) {
-            listener.onThematicWidgetImpressListener(element, adapterPosition)
+            listener.onThematicWidgetImpressListener(element, bindingAdapterPosition)
             isFirstAttached = false
         }
     }
@@ -174,7 +180,7 @@ class ShopCampaignThematicWidgetViewHolder (
 
     private fun restoreInstanceStateToLayoutManager() {
         launch {
-            val rvState =  uiModel?.productList?.firstOrNull()?.rvState
+            val rvState = uiModel?.productList?.firstOrNull()?.rvState
             if (null != rvState) {
                 rvProduct?.layoutManager?.onRestoreInstanceState(rvState)
             }
@@ -200,24 +206,38 @@ class ShopCampaignThematicWidgetViewHolder (
         viewParallaxBackground?.setBackgroundColor(backgroundColor)
     }
 
-    private fun productCardListenerImpl(): ProductCardViewHolder.ProductCardListener = object : ProductCardViewHolder.ProductCardListener {
+    private fun productCardGridListenerImpl(): ProductCardGridViewHolder.ProductCardListener = object : ProductCardGridViewHolder.ProductCardListener {
         override fun onProductCardClickListener(product: ProductCardUiModel) {
             listener.onProductCardThematicWidgetClickListener(
                 product = product,
-                campaignId = uiModel?.campaignId.orEmpty(),
-                campaignName = uiModel?.name.orEmpty(),
-                position = adapterPosition,
-                campaignTitle = uiModel?.header?.title.orEmpty()
+                thematicWidgetUiModel = uiModel,
+                position = bindingAdapterPosition,
             )
         }
 
         override fun onProductCardImpressListener(product: ProductCardUiModel) {
             listener.onProductCardThematicWidgetImpressListener(
                 listOf(product),
-                adapterPosition,
-                uiModel?.campaignId.orEmpty(),
-                uiModel?.name.orEmpty(),
-                uiModel?.header?.title.orEmpty()
+                bindingAdapterPosition,
+                uiModel
+            )
+        }
+    }
+
+    private fun productCardListListenerImpl(): ProductCardListViewHolder.ProductCardListener = object : ProductCardListViewHolder.ProductCardListener {
+        override fun onProductCardClickListener(product: ProductCardUiModel) {
+            listener.onProductCardThematicWidgetClickListener(
+                product = product,
+                thematicWidgetUiModel = uiModel,
+                position = bindingAdapterPosition,
+            )
+        }
+
+        override fun onProductCardImpressListener(product: ProductCardUiModel) {
+            listener.onProductCardThematicWidgetImpressListener(
+                listOf(product),
+                bindingAdapterPosition,
+                uiModel
             )
         }
     }

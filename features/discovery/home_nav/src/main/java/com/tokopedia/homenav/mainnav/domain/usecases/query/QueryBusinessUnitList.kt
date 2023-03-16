@@ -7,6 +7,7 @@ import com.tokopedia.homenav.mainnav.domain.usecases.query.QueryBusinessUnitList
 /**
  * Created by dhaba
  */
+@Deprecated("Has been migrated to QueryCategoryV2")
 @GqlQuery(BUSINESS_UNIT_LIST_QUERY_NAME, BUSINESS_UNIT_LIST_QUERY)
 internal object QueryBusinessUnitList {
     const val BUSINESS_UNIT_LIST_QUERY_NAME = "BusinessUnitListQuery"

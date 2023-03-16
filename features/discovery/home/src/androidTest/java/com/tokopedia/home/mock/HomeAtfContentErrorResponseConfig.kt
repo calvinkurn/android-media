@@ -2,7 +2,6 @@ package com.tokopedia.home.mock
 
 import android.content.Context
 import com.tokopedia.home.test.R
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
 internal open class HomeAtfContentErrorResponseConfig : HomeMockResponseConfig() {
@@ -49,7 +48,19 @@ internal open class HomeAtfContentErrorResponseConfig : HomeMockResponseConfig()
 
         addMockResponse(
             KEY_CONTAINS_HOME_BANNER_V2,
-            getRawString(context, R.raw.response_error_mock_data_slider_banner_v2),
+            getRawString(context, R.raw.response_error_mock_data),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_QUERY_DYNAMIC_POSITION_ICON_V2,
+            getRawString(context, R.raw.response_error_mock_data),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_QUERY_DYNAMIC_POSITION_TICKER_V2,
+            getRawString(context, R.raw.response_error_mock_data),
             FIND_BY_CONTAINS
         )
 

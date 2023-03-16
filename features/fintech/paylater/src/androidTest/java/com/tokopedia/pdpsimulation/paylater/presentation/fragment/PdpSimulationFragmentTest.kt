@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.pdpsimulation.PdpSimulationMockResponseConfig
 import com.tokopedia.pdpsimulation.TkpdIdlingResource
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider

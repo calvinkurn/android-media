@@ -15,24 +15,24 @@
         app:typographyWeight="reguler"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_N700"
         android:text="@string/title_detail_performa"/>
     
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPerformanceDetailDate"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="small"
         app:layout_constraintEnd_toStartOf="@id/tvPerformanceDetailDateNewSeller"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPerformanceDetailLabel"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
         tools:text="@string/title_update_date"/>
 
     <androidx.constraintlayout.widget.Barrier
@@ -41,9 +41,9 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         tools:visibility="gone"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
         app:constraint_referenced_ids="tvPerformanceDetailLabel, tvPerformanceDetailDate"
         app:layout_constraintTop_toBottomOf="@id/tvPerformanceDetailDate"
         app:layout_constraintStart_toStartOf="@id/tvPerformanceDetailLabel" />
@@ -57,8 +57,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvPerformanceDetailLabel"
         app:layout_constraintBottom_toBottomOf="@id/barrierPerformanceDetailDate"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         tools:text="@string/title_update_date"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
@@ -66,7 +66,7 @@
         android:layout_height="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrierPerformanceDetailDate"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl2"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="4dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

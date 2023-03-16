@@ -38,9 +38,9 @@ import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.silentverification.view.dialog.SilentVerificationDialogUtils
 import com.tokopedia.otp.silentverification.view.fragment.SilentVerificationFragment.Companion.RESULT_DELETE_METHOD
 import com.tokopedia.otp.verification.common.VerificationPref
-import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.data.OtpConstant.OtpMode.SILENT_VERIFICATION
+import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
@@ -95,7 +95,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     override var viewBound = VerificationMethodViewBinding()
 
-    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(requireContext())
 
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_VERIFICATION_METHOD
 
@@ -275,7 +275,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     userId = otpData.userId,
                     msisdn = otpData.msisdn,
                     email = otpData.email,
-                    authenticity = AuthenticityUtils.generateAuthenticity(otpData.msisdn, timeUnix, requireContext()),
+                    authenticity = AuthenticityUtils.generateAuthenticity(otpData.msisdn, timeUnix),
                     timeUnix = timeUnix
             )
         }

@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
@@ -76,6 +77,7 @@ class ShopCampaignFlashSaleViewHolder(
     }
 
     override fun bind(element: ShopHomeFlashSaleUiModel) {
+        productCarouselAdapter.parentPosition = ShopUtil.getActualPositionFromIndex(adapterPosition)
         this.uiModel = element
         val flashSaleItem = element.data?.firstOrNull()
         val productSize = flashSaleItem?.productList?.size ?: 0
@@ -153,7 +155,7 @@ class ShopCampaignFlashSaleViewHolder(
         doubleBackGroundView?.hide()
         multipleBackGroundView?.hide()
         // show different background based on products size
-        when(productList.size) {
+        when (productList.size) {
             SINGLE -> { singleBackGroundView?.show() }
             DOUBLE -> { doubleBackGroundView?.show() }
             else -> { multipleBackGroundView?.show() }
@@ -259,11 +261,13 @@ class ShopCampaignFlashSaleViewHolder(
         // add product place holder if product list size > 5 and metada is not empty
         val isUsingPlaceHolder = isUsingPlaceHolder(totalProduct, totalProductWording)
         if (isUsingPlaceHolder) {
-            productList.add(ShopHomeProductUiModel().apply {
-                this.isProductPlaceHolder = isUsingPlaceHolder
-                this.totalProduct = totalProduct
-                this.totalProductWording = totalProductWording
-            })
+            productList.add(
+                ShopHomeProductUiModel().apply {
+                    this.isProductPlaceHolder = isUsingPlaceHolder
+                    this.totalProduct = totalProduct
+                    this.totalProductWording = totalProductWording
+                }
+            )
         }
         // set flash sale ui model for click handling purpose
         productCarouselAdapter.setFsUiModel(model)
@@ -285,14 +289,6 @@ class ShopCampaignFlashSaleViewHolder(
 
     private fun isStatusCampaignUpcoming(statusCampaign: String): Boolean {
         return statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, true)
-    }
-
-    private fun getBackGroundColor(color: String?, colorRes: Int): Int {
-        return try {
-            Color.parseColor(getStringColor(color, colorRes))
-        } catch (e: Exception) {
-            ContextCompat.getColor(itemView.context, colorRes)
-        }
     }
 
     private fun getStringColor(color: String?, colorRes: Int): String {

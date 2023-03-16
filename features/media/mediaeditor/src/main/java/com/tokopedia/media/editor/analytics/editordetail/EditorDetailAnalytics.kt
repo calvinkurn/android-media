@@ -3,6 +3,8 @@ package com.tokopedia.media.editor.analytics.editordetail
 interface EditorDetailAnalytics {
     fun clickRotationFlip()
     fun clickRotationRotate()
+    fun clickAddLogoUpload()
+    fun clickAddLogoLoadRetry()
     fun clickSave(
         editorText: String,
         brightnessValue: Int,
@@ -10,6 +12,7 @@ interface EditorDetailAnalytics {
         cropText: String,
         rotateValue: Int,
         watermarkText: String,
-        removeBackgroundText: String
+        removeBackgroundText: String,
+        addLogoValue: String
     )
 }

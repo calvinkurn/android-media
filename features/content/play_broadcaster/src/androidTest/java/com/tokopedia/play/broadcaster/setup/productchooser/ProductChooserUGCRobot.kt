@@ -29,6 +29,8 @@ import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProduc
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.content.common.producttag.view.viewmodel.factory.ProductTagViewModelFactory
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.test.espresso.clickOnViewChild
+import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
@@ -40,8 +42,6 @@ import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
-import com.tokopedia.content.test.espresso.clickOnViewChild
-import com.tokopedia.content.test.espresso.delay
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,9 +58,9 @@ class ProductChooserUGCRobot(
     productTagViewModel: (source: String, config: ContentProductTagConfig) -> ProductTagViewModel = { source, config ->
         productUGCViewModel(
             productTagSourceRaw = source,
-            productTagConfig = config,
+            productTagConfig = config
         )
-    },
+    }
 ) {
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -111,7 +111,7 @@ class ProductChooserUGCRobot(
                     ): ProductTagViewModel {
                         return productTagViewModel(
                             productTagSourceRaw,
-                            productTagConfig,
+                            productTagConfig
                         )
                     }
                 }
@@ -140,6 +140,7 @@ class ProductChooserUGCRobot(
                         analyticUserSession,
                         ugcViewModel,
                         CoroutineDispatchersProvider,
+                        mockk(relaxed = true)
                     )
                 }
                 LastTaggedProductFragment::class.java.name -> {
@@ -149,7 +150,7 @@ class ProductChooserUGCRobot(
                 }
                 ProductTagSourceBottomSheet::class.java.name -> {
                     ProductTagSourceBottomSheet(
-                        analyticUserSession,
+                        analyticUserSession
                     )
                 }
                 ContentAutocompleteFragment::class.java.name -> {
@@ -179,12 +180,10 @@ class ProductChooserUGCRobot(
                 else -> {
                     ProductPickerUGCBottomSheet(
                         mockk(relaxed = true),
-                        parentViewModelFactoryCreator,
                         ProductPickerUGCAnalytic(analyticUserSession)
                     )
                 }
             }
-
         }
     }
 
@@ -260,7 +259,8 @@ class ProductChooserUGCRobot(
             ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_last_tagged_product)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                position, ViewActions.click()
+                position,
+                ViewActions.click()
             )
         )
     }
@@ -270,7 +270,8 @@ class ProductChooserUGCRobot(
             ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_last_purchased_product)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                position, ViewActions.click()
+                position,
+                ViewActions.click()
             )
         )
     }
@@ -280,7 +281,8 @@ class ProductChooserUGCRobot(
             ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_global_search_product)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                position, ViewActions.click()
+                position,
+                ViewActions.click()
             )
         )
     }
@@ -290,7 +292,8 @@ class ProductChooserUGCRobot(
             ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_global_search_shop)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                position, ViewActions.click()
+                position,
+                ViewActions.click()
             )
         )
     }
@@ -326,7 +329,7 @@ class ProductChooserUGCRobot(
                 ViewMatchers.withParent(
                     ViewMatchers.withId(com.tokopedia.sortfilter.R.id.sort_filter_items)
                 ),
-                ViewMatchers.withParentIndex(position),
+                ViewMatchers.withParentIndex(position)
             )
         ).perform(ViewActions.click())
     }
@@ -337,7 +340,7 @@ class ProductChooserUGCRobot(
                 ViewMatchers.isDescendantOfA(
                     ViewMatchers.withId(com.tokopedia.content.common.R.id.cl_global_search_product)
                 ),
-                ViewMatchers.withId(com.tokopedia.sortfilter.R.id.sort_filter_prefix),
+                ViewMatchers.withId(com.tokopedia.sortfilter.R.id.sort_filter_prefix)
             )
         ).perform(ViewActions.click())
 
@@ -349,7 +352,8 @@ class ProductChooserUGCRobot(
             ViewMatchers.withId(com.tokopedia.filter.R.id.optionRecyclerView)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                position, clickOnViewChild(com.tokopedia.filter.R.id.sortFilterChipsUnify)
+                position,
+                clickOnViewChild(com.tokopedia.filter.R.id.sortFilterChipsUnify)
             )
         )
     }

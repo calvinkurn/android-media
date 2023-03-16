@@ -84,6 +84,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/epharmacy_foto_resep"
         android:visibility="gone"
+        app:unifyButtonVariant="ghost"
         tools:visibility="visible"
         />
 

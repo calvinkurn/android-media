@@ -5,40 +5,49 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
-class Weaver{
-
+class Weaver {
 
     companion object {
 
-        lateinit var firebaseRemoteConfig : FirebaseRemoteConfigImpl
-        lateinit var weaverFirebaseConditionCheck : WeaverFirebaseConditionCheck
+        var firebaseRemoteConfig: FirebaseRemoteConfigImpl? = null
 
-        fun <KEY_TYPE, ACS_HLPR, DEF_VAL> executeWeave(weaverInterface: WeaveInterface, weaverConditionCheckProvider: WeaverConditionCheckProvider<KEY_TYPE, ACS_HLPR, DEF_VAL>, weaveAsyncProvider: WeaveAsyncProvider) {
+        fun <KEY_TYPE, ACS_HLPR, DEF_VAL> executeWeave(
+            weaverInterface: WeaveInterface,
+            weaverConditionCheckProvider: WeaverConditionCheckProvider<KEY_TYPE, ACS_HLPR, DEF_VAL>,
+            weaveAsyncProvider: WeaveAsyncProvider
+        ) {
             if (weaverConditionCheckProvider.checkCondition()) {
                 weaveAsyncProvider.executeAsync(weaverInterface)
-            }else{
+            } else {
                 weaverInterface.execute()
             }
         }
 
-        fun <KEY_TYPE, ACS_HLPR, DEF_VAL> executeWeaveCoRoutine(weaverInterface: WeaveInterface, weaverConditionCheckProvider: WeaverConditionCheckProvider<KEY_TYPE, ACS_HLPR, DEF_VAL>) {
+        fun <KEY_TYPE, ACS_HLPR, DEF_VAL> executeWeaveCoRoutine(
+            weaverInterface: WeaveInterface,
+            weaverConditionCheckProvider: WeaverConditionCheckProvider<KEY_TYPE, ACS_HLPR, DEF_VAL>
+        ) {
             try {
                 executeWeave(weaverInterface, weaverConditionCheckProvider, getasyncWeaveProvider())
-            }catch (ex: Exception){
+            } catch (ex: Exception) {
                 weaverInterface.execute()
-                if(ex.localizedMessage != null) {
+                if (ex.localizedMessage != null) {
                     val errorMap = mapOf("type" to "crashLog", "reason" to (ex.localizedMessage))
                     logError(errorMap)
                 }
             }
         }
 
-        fun executeWeaveCoRoutineWithFirebase(weaverInterface: WeaveInterface, remoteConfigKey: String, context: Context?,
-                                              defaultValue: Boolean = false) {
-            if(!::firebaseRemoteConfig.isInitialized) {
-                context?.let { firebaseRemoteConfig = FirebaseRemoteConfigImpl(context) } ?: weaverInterface.execute()
+        fun executeWeaveCoRoutineWithFirebase(
+            weaverInterface: WeaveInterface, remoteConfigKey: String, context: Context?,
+            defaultValue: Boolean = false
+        ) {
+            if (firebaseRemoteConfig == null) {
+                context?.let {
+                    firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+                } ?: weaverInterface.execute()
             }
-            weaverFirebaseConditionCheck = WeaverFirebaseConditionCheck(
+            val weaverFirebaseConditionCheck = WeaverFirebaseConditionCheck(
                 remoteConfigKey,
                 firebaseRemoteConfig,
                 defaultValue
@@ -50,11 +59,11 @@ class Weaver{
             getasyncWeaveProvider().executeAsync(weaverInterface)
         }
 
-        fun getasyncWeaveProvider() : WeaveAsyncProvider{
+        fun getasyncWeaveProvider(): WeaveAsyncProvider {
             return CoRoutineAsyncWeave()
         }
 
-        private fun logError(messageMap: Map<String, String>){
+        private fun logError(messageMap: Map<String, String>) {
             ServerLogger.log(Priority.P1, "WEAVER_CRASH", messageMap)
         }
     }

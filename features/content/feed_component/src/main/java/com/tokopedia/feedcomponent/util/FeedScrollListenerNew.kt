@@ -11,11 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
+import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.util.util.globalVisibleRect
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -32,7 +28,6 @@ object FeedScrollListenerNew {
     private const val THRESHOLD_VIDEO_HEIGHT_SHOWN = 90
     private const val TOTAL_VIDEO_HEIGHT_PERCENT = 100
     private const val VIDEO_HEIGHT_ZERO_PERCENT = 0
-    private const val PAYLOAD_POST_TOPADS_VISIBLE= 77
     private const val IMAGE_ITEM_IMPRESSED = "image_item_impressed"
     private const val IMAGE_ASGC_CTA_IMPRESSED = "image_asgc_cta_impressed"
     private const val VOD_ITEM_IMPRESSED = "vod_item_impressed"
@@ -76,6 +71,14 @@ object FeedScrollListenerNew {
                             )
                         }
                     }
+                }
+                topadsItem?.let {
+                    getImagePostScrollListener(
+                        layoutManager,
+                        recyclerView,
+                        i,
+                        topadsItem
+                    )
                 }
             }
         }
@@ -143,7 +146,7 @@ object FeedScrollListenerNew {
                 }
                 else
                 Objects.requireNonNull(recyclerView.adapter)
-                    .notifyItemChanged(i, PAYLOAD_POST_TOPADS_VISIBLE)
+                    .notifyItemChanged(i, DynamicPostNewViewHolder.PAYLOAD_POST_VISIBLE)
             }
             if(percentVideo <= 0)
                 item.isImageImpressedFirst = true

@@ -12,7 +12,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.*
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.navigation.broadcaster.PlayBroadcasterArgument
+import com.tokopedia.content.common.navigation.people.UserProfileNavigation
+import com.tokopedia.content.common.navigation.people.UserProfileParam
+import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
@@ -20,6 +26,7 @@ import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryPr
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
@@ -43,7 +50,8 @@ import javax.inject.Inject
  */
 class PlayBroadcastPostVideoFragment @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val router: Router,
 ) : PlayBaseBroadcastFragment(), TagListViewComponent.Listener {
 
     private var _binding: FragmentPlayBroadcastPostVideoBinding? = null
@@ -106,12 +114,16 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                         return viewModel.productList
                     }
 
-                    override fun getAuthorId(): String {
-                        return viewModel.authorId
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return viewModel.account
                     }
 
                     override fun getChannelId(): String {
                         return viewModel.channelId
+                    }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
                     }
                 })
             }
@@ -157,7 +169,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                     is PlayBroadcastSummaryEvent.PostVideo -> {
                         when (val networkResult = it.networkResult) {
                             is NetworkResult.Loading -> binding.btnPostVideo.isLoading = true
-                            is NetworkResult.Success -> openShopPageWithBroadcastStatus()
+                            is NetworkResult.Success -> redirectAfterPostVideo()
                             is NetworkResult.Fail -> {
                                 binding.btnPostVideo.isLoading = false
                                 toaster.showError(
@@ -196,19 +208,45 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
     }
 
-    private fun openShopPageWithBroadcastStatus() {
-        if (activity?.callingActivity == null) {
-            val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
-                .putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, true)
+    private fun redirectAfterPostVideo() {
+        if(GlobalConfig.isSellerApp()) {
+            /** Keep existing flow */
+            if (activity?.callingActivity == null) {
+                val intent = router.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
+                    .putExtraForPostVideoRedirection()
+                startActivity(intent)
+                activity?.finish()
+            } else {
+                activity?.setResult(
+                    Activity.RESULT_OK,
+                    Intent().putExtraForPostVideoRedirection()
+                )
+                activity?.finish()
+            }
+        }
+        else {
+            /** Go to Feed */
+            val intent = router.getIntent(context, ApplinkConst.FEED)
+                .putExtraForPostVideoRedirection()
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             activity?.finish()
-        } else {
-            activity?.setResult(
-                Activity.RESULT_OK,
-                Intent().putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, true)
-            )
-            activity?.finish()
         }
+    }
+
+    private fun Intent.putExtraForPostVideoRedirection(): Intent {
+        return this.putExtra(PlayBroadcasterArgument.NEWLY_BROADCAST_CHANNEL_SAVED, true)
+            .putExtra(PlayBroadcasterArgument.EXTRA_SEE_TRANSCODING_CHANNEL_APPLINK, generateSeeTranscodingChannelAppLink())
+    }
+
+    private fun generateSeeTranscodingChannelAppLink(): String {
+        return if(viewModel.account.isUser)
+            UserProfileNavigation.generateAppLink(viewModel.account.id) {
+                setSelectedTab(UserProfileParam.SelectedTab.Video)
+            }
+        else if(viewModel.account.isShop)
+            UriUtil.buildUri(ApplinkConst.SHOP, viewModel.account.id)
+        else ""
     }
 
     private fun openCoverSetupFragment() {
@@ -260,9 +298,5 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
             .addTransition(ChangeTransform())
             .addTransition(ChangeBounds())
             .setDuration(450)
-    }
-
-    companion object {
-        private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
     }
 }

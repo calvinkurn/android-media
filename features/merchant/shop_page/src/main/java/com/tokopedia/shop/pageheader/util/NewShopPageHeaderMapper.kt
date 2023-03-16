@@ -2,10 +2,10 @@ package com.tokopedia.shop.pageheader.util
 
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant.SHOP_PAGE_POWER_MERCHANT_ACTIVE
-import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
@@ -24,21 +24,22 @@ object NewShopPageHeaderMapper {
         shopPageHomeTypeData: ShopPageGetHomeType,
         feedWhitelistData: Whitelist,
         shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
-    ) : NewShopPageP1HeaderData {
+    ): NewShopPageP1HeaderData {
         val listShopHeaderWidget = mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData)
         val shopName = getShopHeaderWidgetComponentData<ShopHeaderBadgeTextValueComponentUiModel>(
-                listShopHeaderWidget,
-                SHOP_BASIC_INFO,
-                SHOP_NAME
+            listShopHeaderWidget,
+            SHOP_BASIC_INFO,
+            SHOP_NAME
         )?.text?.getOrNull(0)?.textHtml.orEmpty()
         val shopAvatar = getShopHeaderWidgetComponentData<ShopHeaderImageOnlyComponentUiModel>(
-                listShopHeaderWidget,
-                SHOP_BASIC_INFO,
-                SHOP_LOGO
+            listShopHeaderWidget,
+            SHOP_BASIC_INFO,
+            SHOP_LOGO
         )?.image.orEmpty()
         return NewShopPageP1HeaderData(
                 shopInfoOsData.data.isOfficial,
                 shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
+                shopInfoGoldData.data.powerMerchant.pmTier,
                 shopPageHomeTypeData.shopHomeType,
                 shopName,
                 shopAvatar,
@@ -55,7 +56,7 @@ object NewShopPageHeaderMapper {
         shopPageGetDynamicTabResponse: ShopPageGetDynamicTabResponse,
         feedWhitelistData: Whitelist,
         shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
-    ) : NewShopPageP1HeaderData {
+    ): NewShopPageP1HeaderData {
         val listShopHeaderWidget = mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData)
         val shopName = getShopHeaderWidgetComponentData<ShopHeaderBadgeTextValueComponentUiModel>(
             listShopHeaderWidget,
@@ -70,6 +71,7 @@ object NewShopPageHeaderMapper {
         return NewShopPageP1HeaderData(
             shopInfoOsData.data.isOfficial,
             shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
+            shopInfoGoldData.data.powerMerchant.pmTier,
             "",
             shopName,
             shopAvatar,
@@ -82,10 +84,10 @@ object NewShopPageHeaderMapper {
     }
 
     private inline fun <reified T> getShopHeaderWidgetComponentData(
-            listShopHeaderWidgetData: List<ShopHeaderWidgetUiModel>,
-            widgetName: String,
-            componentName: String
-    ): T?{
+        listShopHeaderWidgetData: List<ShopHeaderWidgetUiModel>,
+        widgetName: String,
+        componentName: String
+    ): T? {
         return listShopHeaderWidgetData.firstOrNull {
             it.name == widgetName
         }?.components?.firstOrNull {
@@ -95,7 +97,7 @@ object NewShopPageHeaderMapper {
 
     private var headerComponentPosition: Int = -1
     private fun mapToShopPageHeaderLayoutUiModel(
-            shopPageHeaderLayoutResponseData: ShopPageHeaderLayoutResponse
+        shopPageHeaderLayoutResponseData: ShopPageHeaderLayoutResponse
     ): List<ShopHeaderWidgetUiModel> {
         return mutableListOf<ShopHeaderWidgetUiModel>().apply {
             headerComponentPosition = 0
@@ -106,28 +108,28 @@ object NewShopPageHeaderMapper {
     }
 
     private fun mapShopHeaderWidget(
-            widgetResponseData: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget
+        widgetResponseData: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget
     ): ShopHeaderWidgetUiModel {
         return ShopHeaderWidgetUiModel(
-                widgetResponseData.widgetID,
-                widgetResponseData.name,
-                widgetResponseData.type,
-                mutableListOf<BaseShopHeaderComponentUiModel>().apply {
-                    widgetResponseData.listComponent.forEachIndexed { index, componentResponseData ->
-                        if(shouldIncrementHeaderComponentPosition(widgetResponseData, index)){
-                            headerComponentPosition++
-                        }
-                        mapShopHeaderComponent(headerComponentPosition, componentResponseData)?.let {
-                            add(it)
-                        }
+            widgetResponseData.widgetID,
+            widgetResponseData.name,
+            widgetResponseData.type,
+            mutableListOf<BaseShopHeaderComponentUiModel>().apply {
+                widgetResponseData.listComponent.forEachIndexed { index, componentResponseData ->
+                    if (shouldIncrementHeaderComponentPosition(widgetResponseData, index)) {
+                        headerComponentPosition++
+                    }
+                    mapShopHeaderComponent(headerComponentPosition, componentResponseData)?.let {
+                        add(it)
                     }
                 }
+            }
         )
     }
 
     private fun shouldIncrementHeaderComponentPosition(
-            widgetResponseData: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget,
-            index: Int
+        widgetResponseData: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget,
+        index: Int
     ): Boolean {
         return if (widgetResponseData.type.equals(SHOP_BASIC_INFO, true)) {
             index < 1
@@ -137,8 +139,8 @@ object NewShopPageHeaderMapper {
     }
 
     private fun mapShopHeaderComponent(
-            componentPosition: Int,
-            component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
+        componentPosition: Int,
+        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
     ): BaseShopHeaderComponentUiModel? {
         return when (component.type.toLowerCase()) {
             BaseShopHeaderComponentUiModel.ComponentType.IMAGE_ONLY.toLowerCase() -> mapShopHeaderImageOnlyComponent(component)
@@ -152,41 +154,41 @@ object NewShopPageHeaderMapper {
     }
 
     private fun mapShopHeaderImageTextComponent(
-            component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
+        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
     ) = ShopHeaderImageTextComponentUiModel(
-            component.name,
-            component.type,
-            mapShopHeaderImageTextComponentImagesData(component.data.images),
-            mapShopHeaderImageTextComponentTextData(component.data.textComponent)
+        component.name,
+        component.type,
+        mapShopHeaderImageTextComponentImagesData(component.data.images),
+        mapShopHeaderImageTextComponentTextData(component.data.textComponent)
     )
 
     private fun mapShopHeaderImageTextComponentTextData(
-            textComponent: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.TextComponent
+        textComponent: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.TextComponent
     ) = ShopHeaderImageTextComponentUiModel.TextComponent(
-            ShopHeaderImageTextComponentUiModel.TextComponent.Data(
-                    textComponent.data.icon,
-                    textComponent.data.isBottomSheet,
-                    textComponent.data.textHtml,
-                    textComponent.data.textLink
-            ),
-            textComponent.style
+        ShopHeaderImageTextComponentUiModel.TextComponent.Data(
+            textComponent.data.icon,
+            textComponent.data.isBottomSheet,
+            textComponent.data.textHtml,
+            textComponent.data.textLink
+        ),
+        textComponent.style
     )
 
     private fun mapShopHeaderImageTextComponentImagesData(
-            images: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.Images
+        images: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.Images
     ) = ShopHeaderImageTextComponentUiModel.Images(
-            images.data.map {
-                ShopHeaderImageTextComponentUiModel.Images.Data(
-                        it.image,
-                        it.imageLink,
-                        it.isBottomSheet
-                )
-            },
-            images.style
+        images.data.map {
+            ShopHeaderImageTextComponentUiModel.Images.Data(
+                it.image,
+                it.imageLink,
+                it.isBottomSheet
+            )
+        },
+        images.style
     )
 
     private fun mapShopHeaderButtonComponent(
-            component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
+        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
     ) = when (component.name) {
         BUTTON_PLAY -> {
             mapToPlayButtonComponent(component)
@@ -200,51 +202,52 @@ object NewShopPageHeaderMapper {
     }
 
     private fun mapToFollowButtonComponent(
-            component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
+        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
     ) = ShopHeaderActionWidgetFollowButtonComponentUiModel().apply {
         mapComponentModel(component)
     }
 
     private fun mapToPlayButtonComponent(
-            component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
+        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
     ) = ShopHeaderPlayWidgetButtonComponentUiModel().apply {
         mapComponentModel(component)
     }
 
     private fun mapToGeneralButtonComponent(
-            component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
+        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
     ) = ShopHeaderButtonComponentUiModel().apply {
         mapComponentModel(component)
     }
 
     private fun mapShopHeaderImageOnlyComponent(
-            component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
+        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
     ) = ShopHeaderImageOnlyComponentUiModel(
-            component.name,
-            component.type,
-            component.data.image,
-            component.data.imageLink,
-            component.data.isBottomSheet
+        component.name,
+        component.type,
+        component.data.image,
+        component.data.imageLink,
+        component.data.isBottomSheet
     )
 
     private fun mapShopHeaderBadgeTextValueComponent(
-            component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
+        component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
     ) = ShopHeaderBadgeTextValueComponentUiModel(
-            component.name,
-            component.type,
-            component.data.ctaText,
-            component.data.ctaLink,
-            component.data.ctaIcon,
-            mutableListOf<ShopHeaderBadgeTextValueComponentUiModel.Text>().apply {
-                component.data.listText.forEach {
-                    add(ShopHeaderBadgeTextValueComponentUiModel.Text(
-                            it.icon,
-                            it.textLink,
-                            it.textHtml,
-                            it.isBottomSheet
-                    ))
-                }
+        component.name,
+        component.type,
+        component.data.ctaText,
+        component.data.ctaLink,
+        component.data.ctaIcon,
+        mutableListOf<ShopHeaderBadgeTextValueComponentUiModel.Text>().apply {
+            component.data.listText.forEach {
+                add(
+                    ShopHeaderBadgeTextValueComponentUiModel.Text(
+                        it.icon,
+                        it.textLink,
+                        it.textHtml,
+                        it.isBottomSheet
+                    )
+                )
             }
+        }
     )
-
 }

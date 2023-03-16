@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.ui.shippingeditor.adapter
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,7 +9,7 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifycomponents.Label
 
-class ShipperFeatureAdapter: RecyclerView.Adapter<ShipperFeatureAdapter.ShipperLabelViewHolder>() {
+class ShipperFeatureAdapter : RecyclerView.Adapter<ShipperFeatureAdapter.ShipperLabelViewHolder>() {
 
     private val featureData = mutableListOf<FeatureInfoModel>()
 
@@ -24,6 +25,7 @@ class ShipperFeatureAdapter: RecyclerView.Adapter<ShipperFeatureAdapter.ShipperL
         holder.bindData(featureData[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<FeatureInfoModel>) {
         featureData.clear()
         featureData.addAll(data)
@@ -31,7 +33,7 @@ class ShipperFeatureAdapter: RecyclerView.Adapter<ShipperFeatureAdapter.ShipperL
     }
 
 
-    inner class ShipperLabelViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ShipperLabelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val labelFeature = itemView.findViewById<Label>(R.id.lbl_feature_item)
 
         fun bindData(data: FeatureInfoModel) {

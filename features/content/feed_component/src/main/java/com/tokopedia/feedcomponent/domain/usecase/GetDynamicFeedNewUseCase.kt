@@ -42,6 +42,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           logoURL
           webLink
           appLink
+          encryptedUserID
         }
         title
         subTitle
@@ -93,6 +94,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           bebasOngkirStatus
           bebasOngkirURL
           mods
+          shopID
         }
         hashtagAppLinkFmt
         hashtagWebLinkFmt
@@ -145,6 +147,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         }
         publishedAt
         mods
+        detailScore {
+          label
+          value
+        }
       }
        ... on FeedXCardPlay {
         id
@@ -158,6 +164,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           logoURL
           webLink
           appLink
+          encryptedUserID
         }
         title
         subTitle
@@ -206,6 +213,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           bebasOngkirStatus
           bebasOngkirURL
           mods
+          shopID
         }
         hashtagAppLinkFmt
         hashtagWebLinkFmt
@@ -258,6 +266,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         }
         publishedAt
         mods
+        detailScore {
+          label
+          value
+        }
       }
       ... on FeedXCardTopAds {
         a: id
@@ -304,6 +316,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
       ... on FeedXCardProductsHighlight {
         id
         type
+        hasVoucher
         author {
           id
           type
@@ -313,6 +326,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           logoURL
           webLink
           appLink
+          encryptedUserID
         }
         cta {
           text
@@ -376,6 +390,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           bebasOngkirStatus
           bebasOngkirURL
           mods
+          shopID
         }
         like {
           label
@@ -421,6 +436,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         publishedAt
         deletable
         mods
+        detailScore {
+          label
+          value
+        }
       }
       ... on FeedXCardPlaceholder {
         id
@@ -446,8 +465,10 @@ val DETAIL_ID = "sourceID"
 val SOURCE = "source"
 
 @GqlQuery("GetFeedXHomeQuery", FEED_X_QUERY)
-class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<FeedXData>(graphqlRepository) {
+class GetDynamicFeedNewUseCase @Inject constructor(
+    @ApplicationContext context: Context,
+    graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<FeedXData>(graphqlRepository) {
 
     var context: Context? = null
 
@@ -460,9 +481,9 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
 
     fun setParams(cursor: String, limit: Int, detailId: String = "", screenName: String = "") {
         val queryMap = mutableMapOf(
-                CURSOR to cursor,
-                LIMIT to limit,
-                SCREEN_NAME to screenName,
+            CURSOR to cursor,
+            LIMIT to limit,
+            SCREEN_NAME to screenName
         )
         if (!TextUtils.isEmpty(detailId)) {
             queryMap[DETAIL_ID] = detailId
@@ -473,16 +494,21 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
     }
 
     suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = "", screenName: String = ""):
-            DynamicFeedDomainModel {
+        DynamicFeedDomainModel {
         this.setParams(cursor, limit, detailId, screenName)
         val dynamicFeedResponse = executeOnBackground()
-        val shouldShowNewTopadsOnly = context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) }?:true
-        return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor, shouldShowNewTopadsOnly)
+        val shouldShowNewTopadsOnly =
+            context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) } ?: true
+        return DynamicFeedNewMapper.map(
+            dynamicFeedResponse.feedXHome,
+            cursor,
+            shouldShowNewTopadsOnly
+        )
     }
+
     suspend fun executeForCDP(cursor: String = "", limit: Int = 5, detailId: String = ""):
-            FeedXData {
+        FeedXData {
         this.setParams(cursor, limit, detailId)
         return executeOnBackground()
     }
-
 }

@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.updateScrollingChild
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroQuizDetailBinding
@@ -34,6 +34,7 @@ import com.tokopedia.play_common.R as commonR
 class PlayBroInteractiveBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
+    private val router: Router,
 ) : BottomSheetUnify(), PlayGameLeaderboardViewComponent.Listener,
     QuizOptionDetailViewComponent.Listener {
 
@@ -247,7 +248,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             parentViewModel.channelId,
             parentViewModel.channelTitle,
         )
-        RouteManager.route(
+        router.route(
             requireContext(),
             "${ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG}${ADDITIONAL_ARG}",
             winner.id,

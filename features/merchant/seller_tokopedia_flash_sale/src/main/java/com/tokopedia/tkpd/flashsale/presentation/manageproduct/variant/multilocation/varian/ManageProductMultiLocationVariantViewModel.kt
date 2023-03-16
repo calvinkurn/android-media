@@ -1,9 +1,17 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getPercentFormatted
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
@@ -14,7 +22,9 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.Validatio
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -177,7 +187,7 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
     ): List<ReservedProduct.Product.Warehouse> {
         val warehouse = warehouses[positionWarehouse]
         warehouses.forEach {
-            if (it.isToggleOn && it.isDilayaniTokopedia) {
+            if (it.isToggleOn && it.isDilayaniTokopedia && warehouse.isDilayaniTokopedia) {
                 it.discountSetup.apply {
                     price = warehouse.discountSetup.price
                     discount = warehouse.discountSetup.discount

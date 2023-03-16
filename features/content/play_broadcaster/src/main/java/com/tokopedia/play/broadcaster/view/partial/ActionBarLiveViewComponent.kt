@@ -16,7 +16,7 @@ class ActionBarLiveViewComponent(
 ) : ViewComponent(container, R.id.view_play_action_bar_live) {
 
     private val tvChannelTitle = findViewById<Typography>(R.id.tv_bro_channel_title)
-    private val ivShopIcon = findViewById<ImageUnify>(R.id.iv_bro_shop_icon)
+    private val ivAuthorImage = findViewById<ImageUnify>(R.id.iv_bro_author_icon)
     private val icEndStream = findViewById<IconUnify>(R.id.ic_bro_end_stream)
     private val icSwitchCamera = findViewById<IconUnify>(R.id.ic_bro_switch_camera)
 
@@ -29,8 +29,8 @@ class ActionBarLiveViewComponent(
         tvChannelTitle.text = title
     }
 
-    fun setShopIcon(iconUrl: String) {
-        ivShopIcon.setImageUrl(iconUrl)
+    fun setAuthorImage(iconUrl: String) {
+        ivAuthorImage.setImageUrl(iconUrl)
     }
 
     interface Listener {

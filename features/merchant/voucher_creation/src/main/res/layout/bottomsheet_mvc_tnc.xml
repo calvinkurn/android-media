@@ -18,7 +18,7 @@
             android:lineSpacingExtra="@dimen/mvc_tnc_spacing"
             android:text="@string/mvc_terms_and_condition_desc"
             android:textColor="@color/Neutral_N700_96"
-            android:textSize="@dimen/fontSize_lvl3" />
+            android:textSize="14sp" />
 
     </ScrollView>
 

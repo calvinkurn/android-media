@@ -41,11 +41,11 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
 
     private fun `Then verify view interaction when wishlist recommendation product with non-login user`(productCardOptionsModel: ProductCardOptionsModel) {
         verifyOrder {
-            productListView.trackWishlistRecommendationProductNonLoginUser()
-            productListView.launchLoginActivity(productCardOptionsModel.productId)
+            wishlistView.trackWishlistRecommendationProductNonLoginUser()
+            wishlistView.launchLoginActivity(productCardOptionsModel.productId)
         }
 
-        confirmVerified(productListView)
+        confirmVerified(wishlistView)
     }
 
     @Test
@@ -82,12 +82,12 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
 
     private fun `Then verify view interaction when wishlist non-recommendation product with non-login user`(productCardOptionsModel: ProductCardOptionsModel) {
         verifyOrder {
-            productListView.queryKey
-            productListView.trackWishlistProduct(capture(slotWishlistTrackingModel))
-            productListView.launchLoginActivity(productCardOptionsModel.productId)
+            wishlistView.queryKey
+            wishlistView.trackWishlistProduct(capture(slotWishlistTrackingModel))
+            wishlistView.launchLoginActivity(productCardOptionsModel.productId)
         }
 
-        confirmVerified(productListView)
+        confirmVerified(wishlistView)
     }
 
     private fun `Then verify wishlist tracking model is correct`(expectedWishlistTrackingModel: WishlistTrackingModel) {
@@ -146,23 +146,23 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
 
     private fun `Then verify view interaction when wishlist recommendation product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifyOrder {
-            productListView.trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted)
-            productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
-            productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
+            wishlistView.trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted)
+            wishlistView.updateWishlistStatus(productCardOptionsModel.productId, true)
+            wishlistView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
         }
 
-        confirmVerified(productListView)
+        confirmVerified(wishlistView)
     }
 
     private fun `Then verify view interaction when wishlist recommendation - topads product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifySequence {
-            productListView.trackWishlistRecommendationProductLoginUser(true)
-            productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
-            productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
-            productListView.hitWishlistClickUrl(productCardOptionsModel)
+            wishlistView.trackWishlistRecommendationProductLoginUser(true)
+            wishlistView.updateWishlistStatus(productCardOptionsModel.productId, true)
+            wishlistView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
+            wishlistView.hitWishlistClickUrl(productCardOptionsModel)
         }
 
-        confirmVerified(productListView)
+        confirmVerified(wishlistView)
     }
 
     @Test
@@ -223,25 +223,25 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
 
     private fun `Then verify view interaction for non-recommendation product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifyOrder {
-            productListView.queryKey
-            productListView.trackWishlistProduct(capture(slotWishlistTrackingModel))
-            productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
-            productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
+            wishlistView.queryKey
+            wishlistView.trackWishlistProduct(capture(slotWishlistTrackingModel))
+            wishlistView.updateWishlistStatus(productCardOptionsModel.productId, true)
+            wishlistView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
         }
 
-        confirmVerified(productListView)
+        confirmVerified(wishlistView)
     }
 
     private fun `Then verify view interaction for non-recommendation topads product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifyOrder {
-            productListView.queryKey
-            productListView.trackWishlistProduct(capture(slotWishlistTrackingModel))
-            productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
-            productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
-            productListView.hitWishlistClickUrl(productCardOptionsModel)
+            wishlistView.queryKey
+            wishlistView.trackWishlistProduct(capture(slotWishlistTrackingModel))
+            wishlistView.updateWishlistStatus(productCardOptionsModel.productId, true)
+            wishlistView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
+            wishlistView.hitWishlistClickUrl(productCardOptionsModel)
         }
 
-        confirmVerified(productListView)
+        confirmVerified(wishlistView)
     }
 
     @Test
@@ -262,10 +262,10 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
 
     private fun `Then verify view interaction when failed wishlist recommendation product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifyOrder {
-            productListView.showMessageFailedWishlistAction(productCardOptionsModel.wishlistResult)
+            wishlistView.showMessageFailedWishlistAction(productCardOptionsModel.wishlistResult)
         }
 
-        confirmVerified(productListView)
+        confirmVerified(wishlistView)
     }
 
     @Test
@@ -286,9 +286,9 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
 
     private fun `Then verify view interaction when failed wishlist non-recommendation product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifyOrder {
-            productListView.showMessageFailedWishlistAction(productCardOptionsModel.wishlistResult)
+            wishlistView.showMessageFailedWishlistAction(productCardOptionsModel.wishlistResult)
         }
 
-        confirmVerified(productListView)
+        confirmVerified(wishlistView)
     }
 }

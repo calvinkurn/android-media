@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.contactus.R
@@ -92,6 +93,9 @@ abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
 
     private fun executeInjector() {
         component = DaggerInboxComponent.builder()
+            .baseAppComponent(
+                (application as BaseMainApplication).baseAppComponent
+            )
                 .inboxModule(InboxModule(this))
                 .build()
     }
@@ -115,9 +119,21 @@ abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
 
     override fun setSnackBarErrorMessage(message: String, clickable: Boolean) {
         if (clickable) {
-            Toaster.make(getRootView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.ok), View.OnClickListener { })
+            Toaster.make(
+                getRootView(),
+                message,
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_ERROR,
+                getString(R.string.ok),
+                View.OnClickListener { })
         } else {
-            Toaster.make(getRootView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", View.OnClickListener {})
+            Toaster.make(
+                getRootView(),
+                message,
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_ERROR,
+                "",
+                View.OnClickListener {})
         }
     }
 }

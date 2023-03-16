@@ -78,6 +78,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 isQuerySafe
                 autocompleteApplink
                 backendFilters
+                backendFiltersToggle
                 keywordIntention
                 redirection {
                     redirectApplink
@@ -298,6 +299,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         url
                     }
                     customvideo_url
+                    parent_id
                 }
                 shop{
                     id
@@ -353,6 +355,11 @@ private const val HEADLINE_ADS_QUERY = """
                         full_url
                         full_ecs
                     }
+                    flash_sale_campaign_detail{
+                        start_time
+                        end_time
+                        campaign_type
+                     }
                     shop {
                         id
                         name

@@ -44,7 +44,7 @@
                         android:background="@drawable/toolbar_bg_corner"
                         android:textColorHint="@color/Unify_N200"
                         android:textSize="@dimen/sp_16"
-                        android:layout_margin="@dimen/spacing_lvl3"
+                        android:layout_margin="8dp"
                         app:search_bar_clearable="true"
                         app:search_bar_show_icon="false"
                         app:search_bar_placeholder="@string/brandlist_search_view_hint" />

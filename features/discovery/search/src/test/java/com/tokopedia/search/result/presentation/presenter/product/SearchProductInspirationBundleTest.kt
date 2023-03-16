@@ -11,6 +11,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleDataView
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
@@ -102,8 +103,8 @@ internal class SearchProductInspirationBundleTest: ProductListPresenterTestFixtu
                     visitable.shouldBeInstanceOf<InspirationProductBundleDataView>(
                             "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    assert((visitable as InspirationProductBundleDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE) {
-                        "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE}"
+                    assert((visitable as InspirationProductBundleDataView).layout == LAYOUT_INSPIRATION_CAROUSEL_BUNDLE) {
+                        "Inspiration Carousel layout should be $LAYOUT_INSPIRATION_CAROUSEL_BUNDLE"
                     }
                     visitable.assertSingleBundleDataView(
                         searchProductModel.searchInspirationCarousel.data[0],
@@ -217,8 +218,8 @@ internal class SearchProductInspirationBundleTest: ProductListPresenterTestFixtu
                     visitable.shouldBeInstanceOf<InspirationProductBundleDataView>(
                         "visitable list at index $index should be InspirationCarouselViewModel"
                     )
-                    assert((visitable as InspirationProductBundleDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE) {
-                        "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE}"
+                    assert((visitable as InspirationProductBundleDataView).layout == LAYOUT_INSPIRATION_CAROUSEL_BUNDLE) {
+                        "Inspiration Carousel layout should be $LAYOUT_INSPIRATION_CAROUSEL_BUNDLE"
                     }
                     visitable.assertMultipleBundleDataView(
                         searchProductModel.searchInspirationCarousel.data[0],

@@ -26,8 +26,7 @@ class RewardIntroFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.tp_layout_reward_intro, container, false)
-        return view
+        return inflater.inflate(R.layout.tp_layout_reward_intro, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

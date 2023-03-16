@@ -1,14 +1,15 @@
 package com.tokopedia.autocompletecomponent.initialstate
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocompletecomponent.complete
 import com.tokopedia.autocompletecomponent.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchTitleDataView
 import com.tokopedia.autocompletecomponent.jsonToObject
-import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.autocompletecomponent.shouldBe
 import com.tokopedia.autocompletecomponent.shouldNotContain
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
@@ -16,6 +17,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LA
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LONG
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_POST_CODE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
@@ -26,6 +28,7 @@ import rx.Subscriber
 
 private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 private const val initialStateWithSearchBarEducation = "autocomplete/initialstate/with-searchbar-education.json"
+private const val initialStateRecentSearchEmptyHeaderResponse = "autocomplete/initialstate/recent-search-empty-header-response.json"
 
 internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
@@ -287,5 +290,43 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `Then verify SearchBarEducationDataView`(
             visitableList, expectedData, expectedDefaultDimension90, keyword,
         )
+    }
+
+    @Test
+    fun `Test get initial state data with empty header on recent search`() {
+        val initialStateData = initialStateRecentSearchEmptyHeaderResponse.jsonToObject<InitialStateUniverse>()
+        `Test Initial State Data`(initialStateData)
+
+        `Then verify initial state view will call showInitialStateResult behavior`()
+        `Then verify visitable list has no RecentSearchTitleDataView`(initialStateData)
+    }
+
+    private fun `Then verify visitable list has no RecentSearchTitleDataView`(
+        initialStateUniverse: InitialStateUniverse
+    ) {
+        val expectedData = initialStateUniverse.data
+        val visitableList = slotVisitableList.captured
+
+        `Then verify RecentViewDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify RecentSearchDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify PopularSearchDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify DynamicInitialStateSearchDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+
+        `Then verify RecentSearchDataView only have n items`(3, visitableList[2] as RecentSearchDataView)
+        `Then verify no RecentSearchTitleDataView`(visitableList)
+    }
+
+    private fun `Then verify no RecentSearchTitleDataView`(
+        actualData: List<Visitable<*>>,
+    ) {
+        actualData.none { it is RecentSearchTitleDataView } shouldBe true
     }
 }

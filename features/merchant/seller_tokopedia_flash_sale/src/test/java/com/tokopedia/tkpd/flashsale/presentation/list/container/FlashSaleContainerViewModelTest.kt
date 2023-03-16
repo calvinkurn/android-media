@@ -4,6 +4,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tkpd.flashsale.domain.entity.SellerEligibility
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductSubmissionProgressUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSellerStatusUseCase
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEffect
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEvent
@@ -32,6 +33,9 @@ class FlashSaleContainerViewModelTest {
     lateinit var getFlashSaleSellerStatusUseCase: GetFlashSaleSellerStatusUseCase
 
     @RelaxedMockK
+    lateinit var getFlashSaleProductSubmissionProgressUseCase: GetFlashSaleProductSubmissionProgressUseCase
+
+    @RelaxedMockK
     lateinit var preferenceDataStore: PreferenceDataStore
 
     private lateinit var viewModel: FlashSaleContainerViewModel
@@ -43,6 +47,7 @@ class FlashSaleContainerViewModelTest {
             CoroutineTestDispatchersProvider,
             getFlashSaleListForSellerMetaUseCase,
             getFlashSaleSellerStatusUseCase,
+            getFlashSaleProductSubmissionProgressUseCase,
             preferenceDataStore
         )
     }

@@ -14,10 +14,14 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 
-internal fun ListItemUnify.getShownRadioButton()= run {
-    if (listLeftRadiobtn?.visibility == View.VISIBLE) listLeftRadiobtn
-    else if (listRightRadiobtn?.visibility == View.VISIBLE) listRightRadiobtn
-    else null
+internal fun ListItemUnify.getShownRadioButton() = run {
+    if (listLeftRadiobtn?.visibility == View.VISIBLE) {
+        listLeftRadiobtn
+    } else if (listRightRadiobtn?.visibility == View.VISIBLE) {
+        listRightRadiobtn
+    } else {
+        null
+    }
 }
 
 internal fun ListUnify.getSelected(items: List<ListItemUnify>) = run {
@@ -40,8 +44,8 @@ internal fun ListUnify.setSelected(items: List<ListItemUnify>, position: Int, on
         ListView.CHOICE_MODE_SINGLE -> {
             // deselect previously selected item
             items.filter { it.getShownRadioButton()?.isChecked ?: false }
-                    .filterNot { it == selectedItem }
-                    .onEach { it.getShownRadioButton()?.isChecked = false }
+                .filterNot { it == selectedItem }
+                .onEach { it.getShownRadioButton()?.isChecked = false }
             selectedItem.getShownRadioButton()?.isChecked = true
         }
     }
@@ -73,7 +77,11 @@ internal fun ListItemUnify.setPrimarySelected(context: Context?, isChecked: Bool
 internal fun ListItemUnify.setTextColorToUnify(context: Context) = let {
     val unifyBlackColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
     it.listTitle?.setTextColor(unifyBlackColor)
+}
 
+internal fun ListItemUnify.setFixedTextColorToUnify(context: Context) = let {
+    val unifyGrayColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+    it.listTitle?.setTextColor(unifyGrayColor)
 }
 
 internal fun ListItemUnify.getCategoryName() = run {
@@ -88,4 +96,14 @@ internal fun ListUnify.setToDisplayText(text: String, context: Context) = apply 
     setData(selectedList)
     show()
     onLoadFinish { selectedItemUnify.setTextColorToUnify(context) }
+}
+
+internal fun ListUnify.setToFixedText(text: String, context: Context) = apply {
+    val selectedList = ArrayList<ListItemUnify>()
+    val selectedItemUnify = ListItemUnify(text, "")
+    selectedItemUnify.isBold = false
+    selectedList.add(selectedItemUnify)
+    setData(selectedList)
+    show()
+    onLoadFinish { selectedItemUnify.setFixedTextColorToUnify(context) }
 }

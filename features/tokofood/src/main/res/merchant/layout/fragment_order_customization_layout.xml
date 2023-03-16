@@ -1,28 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/toolbar_parent"
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/toolbarOrderCustomization"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_NN0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.tokopedia.header.HeaderUnify
-            android:id="@+id/toolbarOrderCustomization"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:unify_header_is_show_back_button="true"
-            app:unify_header_is_show_shadow="true" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="true" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_custom_list"
@@ -31,7 +20,7 @@
         android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@id/du_bottom_custom_list"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbarOrderCustomization" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/du_bottom_custom_list"

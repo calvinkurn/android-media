@@ -16,9 +16,8 @@
         android:gravity="center"
         android:fontFamily="sans-serif-medium"
         android:text="@string/layanan_prioritas"
-        android:textColor="@color/purple"
+        android:textColor="@color/Unify_PN500"
         app:typographyType="small"
-        android:lineSpacingExtra="2dp"
         android:textStyle="normal"
         android:visibility="gone"
         tools:visibility="visible"
@@ -35,8 +34,7 @@
         android:layout_marginTop="7dp"
         android:layout_marginEnd="16dp"
         android:paddingBottom="8dp"
-        android:textColor="@color/contact_us_grey_n_700_96"
-        android:textStyle="normal"
+        android:textColor="@color/contact_us_dms_detail_header_text"
         app:layout_goneMarginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,10 +48,9 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         android:layout_height="wrap_content"
         app:typographyType="body_3"
         android:layout_marginTop="9dp"
-        android:textColor="@color/contact_us_grey_n_700_44"
+        android:textColor="@color/Unify_N700_44"
         app:layout_constraintStart_toStartOf="@+id/message_ticket_title"
-        app:layout_constraintTop_toBottomOf="@+id/message_ticket_title"
-        tools:text="ID: #00079468" />
+        app:layout_constraintTop_toBottomOf="@+id/message_ticket_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_view_transaction"
@@ -63,7 +60,7 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         app:typographyWeight="bold"
         android:layout_marginEnd="16dp"
         android:text="@string/contact_us_transaction_details"
-        android:textColor="@color/contact_us_g_500"
+        android:textColor="@color/contact_us_dms_detail_view_txn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_id_num"
         app:layout_goneMarginTop="12dp" />
@@ -73,7 +70,7 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginTop="16dp"
-        android:background="@color/grey_300"
+        android:background="@color/contact_us_dms_detail_header_divider"
         app:layout_constraintTop_toBottomOf="@+id/tv_id_num"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_goneMarginTop="16dp" />

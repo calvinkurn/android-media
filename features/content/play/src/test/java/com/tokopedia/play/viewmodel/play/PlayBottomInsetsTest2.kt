@@ -11,7 +11,6 @@ import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
 import com.tokopedia.play.view.uimodel.state.KebabMenuType
@@ -111,9 +110,7 @@ class PlayBottomInsetsTest2 {
         createPlayViewModelRobot {
             //when
             viewModel.onShowVariantSheet(
-                estimatedProductSheetHeight = 100,
-                action = ProductAction.Buy,
-                product = productTagBuilder.buildProductLine()
+                estimatedProductSheetHeight = 100
             )
 
             //then
@@ -198,9 +195,7 @@ class PlayBottomInsetsTest2 {
         createPlayViewModelRobot {
             //when
             viewModel.onShowVariantSheet(
-                estimatedProductSheetHeight = 100,
-                action = ProductAction.Buy,
-                product = productTagBuilder.buildProductLine()
+                estimatedProductSheetHeight = 100
             )
 
             //then
@@ -294,9 +289,7 @@ class PlayBottomInsetsTest2 {
         createPlayViewModelRobot {
             createPage(mockLiveChannelData)
             viewModel.onShowVariantSheet(
-                estimatedProductSheetHeight = 100,
-                action = ProductAction.Buy,
-                product = productTagBuilder.buildProductLine()
+                estimatedProductSheetHeight = 100
             )
 
             viewModel.observableBottomInsetsState

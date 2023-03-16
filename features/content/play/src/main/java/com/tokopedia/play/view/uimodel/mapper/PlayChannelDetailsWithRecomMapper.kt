@@ -19,7 +19,10 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.ArchivedUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import com.tokopedia.user.session.UserSessionInterface
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -27,6 +30,7 @@ import javax.inject.Inject
  */
 @PlayScope
 class PlayChannelDetailsWithRecomMapper @Inject constructor(
+    private val userSession: UserSessionInterface,
     private val htmlTextTransformer: HtmlTextTransformer,
     private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
     private val multipleLikesMapper: PlayMultipleLikesMapper,
@@ -34,6 +38,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     fun map(input: ChannelDetailsWithRecomResponse, extraParams: ExtraParams): List<PlayChannelData> {
         return input.channelDetails.dataList.map {
+            val partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton)
+            val channelType = getChannelType(it.isLive, it.airTime)
+
             PlayChannelData(
                 id = it.id,
                 channelDetail = PlayChannelDetailUiModel(
@@ -44,11 +51,13 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                         it.config.realTimeNotif
                     ),
                     videoInfo = mapVideoInfo(it.video),
-                    emptyBottomSheetInfo = mapEmptyBottomSheet(it)
+                    emptyBottomSheetInfo = mapEmptyBottomSheet(it),
+                    popupConfig = mapPopUp(it),
+                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig)
                 ),
-                partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
+                partnerInfo = partnerInfo,
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
-                channelReportInfo = mapChannelReportInfo(it.id, extraParams),
+                channelReportInfo = mapChannelReportInfo(it.id, partnerInfo, channelType, it.performanceSummaryPageLink, extraParams),
                 pinnedInfo = mapPinnedInfo(it.pinnedMessage),
                 quickReplyInfo = mapQuickReply(it.quickReplies),
                 videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
@@ -59,6 +68,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             )
         }
     }
+
     private fun mapChannelInfo(data: ChannelDetailsWithRecomResponse.Data) = PlayChannelInfoUiModel(
             id = data.id,
             channelType = getChannelType(data.isLive, data.airTime),
@@ -100,17 +110,21 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapChannelReportInfo(
         channelId: String,
+        partnerInfo: PlayPartnerInfo,
+        channelType: PlayChannelType,
+        performanceSummaryPageLink: String,
         extraParams: ExtraParams
     ) = PlayChannelReportUiModel(
         shouldTrack = if(channelId == extraParams.channelId) extraParams.shouldTrack else true,
-        sourceType = extraParams.sourceType
+        sourceType = extraParams.sourceType,
+        performanceSummaryPageLink = mapPerformanceSummaryPageLink(partnerInfo, channelType, performanceSummaryPageLink),
     )
 
     private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share): PlayShareInfoUiModel {
         val fullShareContent = try {
             shareResponse.text.replace("${'$'}{url}", shareResponse.redirectUrl)
         } catch (e: Throwable) {
-            "${shareResponse.text}/n${shareResponse.redirectUrl}"
+            "${shareResponse.text}\n${shareResponse.redirectUrl}"
         }
 
         return PlayShareInfoUiModel(
@@ -172,7 +186,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     )
 
     private fun mapQuickReply(quickRepliesResponse: List<String>) = PlayQuickReplyInfoUiModel(
-            quickReplyList = quickRepliesResponse.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() }
+        quickReplyList = quickRepliesResponse.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() }
     )
 
     private fun mapVideoMeta(
@@ -256,7 +270,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         configResponse: ChannelDetailsWithRecomResponse.Config,
         title: String
     ): PlayStatusUiModel {
-        val statusType = mapStatusType(!configResponse.active || configResponse.freezed)
+        val statusType = PlayStatusType.getByValue(
+            configResponse.status
+        )
         return PlayStatusUiModel(
             channelStatus = PlayChannelStatus(
                 statusType = statusType,
@@ -266,6 +282,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             config = PlayStatusConfig(
                 bannedModel = mapBannedModel(configResponse.bannedData),
                 freezeModel = mapFreezeUiModel(configResponse.freezeData, title),
+                archivedModel = mapArchived(configResponse.archiveConfig),
             ),
         )
     }
@@ -279,6 +296,37 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.emptyBottomSheet){
         PlayEmptyBottomSheetInfoUiModel(header = headerText, body = bodyText, button = redirectButtonText, partnerAppLink = data.partner.appLink, imageUrl = imageUrl)
+    }
+
+    private fun mapExploreWidgetConfig(
+        config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
+    ) = ExploreWidgetConfig(
+       group = config.group, sourceType = config.sourceType, sourceId = config.sourceId,
+    )
+
+    private fun mapArchived(archiveData: ChannelDetailsWithRecomResponse.ArchivedData) = with(archiveData) {
+        ArchivedUiModel(
+            title = title,
+            description = description,
+            btnTitle = buttonText,
+            appLink = appLink,
+        )
+    }
+
+    private fun mapPopUp(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.popupConfig){
+        PlayPopUpConfigUiModel(isEnabled = isEnabled, text = copyText, duration = TimeUnit.SECONDS.toMillis(duration))
+    }
+
+    private fun mapPerformanceSummaryPageLink(
+        partnerInfo: PlayPartnerInfo,
+        channelType: PlayChannelType,
+        performanceSummaryPageLink: String
+    ): String {
+        return if(partnerInfo.type == PartnerType.Buyer &&
+            partnerInfo.id.toString() == userSession.userId &&
+            channelType == PlayChannelType.VOD
+        ) performanceSummaryPageLink
+        else ""
     }
 
     companion object {

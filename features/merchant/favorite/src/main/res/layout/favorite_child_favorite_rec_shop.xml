@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -20,15 +19,18 @@
             android:background="@color/Unify_N0">
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/favorite_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/padding_vs"
-                android:paddingStart="@dimen/margin_small"
-                android:paddingEnd="@dimen/margin_small"
-                android:paddingTop="@dimen/padding_small"
                 android:maxLines="1"
-                android:text="@string/shop_reccomendation"
-                android:textStyle="bold" />
+                android:paddingStart="@dimen/margin_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingEnd="@dimen/margin_small"
+                android:paddingBottom="@dimen/padding_vs"
+                android:text="@string/recommendations_for_you"
+                android:textColor="@color/Unify_NN600"
+                android:textStyle="bold"
+                app:typographyType="display_2" />
 
         </RelativeLayout>
 
@@ -36,8 +38,6 @@
             android:id="@+id/recShopRecyclerViewContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            tools:visibility="visible"
             android:background="@color/Unify_N0">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -47,17 +47,25 @@
                 android:scrollbars="horizontal" />
         </RelativeLayout>
 
-        <com.tokopedia.topads.sdk.widget.ShopAdsWithOneProductView
-            android:id="@+id/shopAdsProductView"
-            android:layout_height="wrap_content"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:visibility="gone"
-            android:layout_marginStart="@dimen/sdk_dp_10"
-            android:layout_marginEnd="@dimen/sdk_dp_10"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:visibility="visible"/>
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_N0">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/favorite_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingStart="@dimen/margin_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingEnd="@dimen/margin_small"
+                android:paddingBottom="@dimen/padding_vs"
+                android:text="@string/my_favorite_shop"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="display_2" />
+
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>

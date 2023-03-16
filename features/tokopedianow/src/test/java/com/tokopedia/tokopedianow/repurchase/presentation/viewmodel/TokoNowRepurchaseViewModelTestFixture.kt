@@ -14,14 +14,15 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
-import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
+import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.GetRepurchaseProductListResponse
@@ -154,10 +155,23 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         Assert.assertTrue(actualObject == null)
     }
 
+    protected fun verifyProductRecommendationWidgetLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
+        val actualResponse = viewModel.getLayout.value
+        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowProductRecommendationUiModel } as TokoNowProductRecommendationUiModel)
+        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowProductRecommendationUiModel } as TokoNowProductRecommendationUiModel)
+        Assert.assertEquals(expectedObject, actualObject)
+    }
+
+    protected fun verifyProductRecommendationWidgetRemovedSuccess() {
+        val actualResponse = viewModel.getLayout.value
+        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowProductRecommendationUiModel })
+        Assert.assertTrue(actualObject == null)
+    }
+
     protected fun verifyGetCategoryGridLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
         val actualResponse = viewModel.getLayout.value
-        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowCategoryGridUiModel } as TokoNowCategoryGridUiModel)
-        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowCategoryGridUiModel } as TokoNowCategoryGridUiModel)
+        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowCategoryMenuUiModel } as TokoNowCategoryMenuUiModel)
+        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowCategoryMenuUiModel } as TokoNowCategoryMenuUiModel)
         Assert.assertEquals(expectedObject, actualObject)
     }
 
@@ -197,7 +211,11 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
-        coEvery { getCategoryListUseCase.execute("1", TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) } returns categoryListResponse
+        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } returns categoryListResponse
+    }
+
+    protected fun onGetCategoryList_thenReturn(error: Throwable) {
+        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } throws error
     }
 
     protected fun onGetRepurchaseProductList_thenReturn(response: GetRepurchaseProductListResponse) {

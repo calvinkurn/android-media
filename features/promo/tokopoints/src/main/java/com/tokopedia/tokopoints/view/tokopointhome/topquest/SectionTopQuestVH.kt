@@ -13,8 +13,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
-import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecomListener
+
 
 class SectionTopQuestVH(
     val view: View,

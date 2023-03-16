@@ -18,7 +18,7 @@ class DeveloperOptionTypeFactoryImpl(
     private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
     private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener,
     private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener
-):  BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
+) : BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int = DeveloperOptionsOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
@@ -46,6 +46,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewAnalyticsLogUiModel): Int = ViewAnalyticsLogViewHolder.LAYOUT
     override fun type(uiModel: ViewIrisLogUiModel): Int = ViewIrisLogViewHolder.LAYOUT
     override fun type(uiModel: LeakCanaryUiModel): Int = LeakCanaryViewHolder.LAYOUT
+    override fun type(uiModel: StrictModeLeakPublisherUiModel): Int = StrictModeLeakPublisherViewHolder.LAYOUT
     override fun type(uiModel: RemoteConfigEditorUiModel): Int = RemoteConfigEditorViewHolder.LAYOUT
     override fun type(uiModel: RouteManagerUiModel): Int = RouteManagerViewHolder.LAYOUT
     override fun type(uiModel: LoggingToServerUiModel): Int = LoggingToServerViewHolder.LAYOUT
@@ -59,7 +60,6 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: RequestNewFcmTokenUiModel): Int = RequestNewFcmTokenViewHolder.LAYOUT
     override fun type(uiModel: ResetOnBoardingNavigationUiModel): Int = ResetOnBoardingNavigationViewHolder.LAYOUT
     override fun type(uiModel: TranslatorUiModel): Int = TranslatorSettingViewHolder.LAYOUT
-    override fun type(uiModel: AppAuthSecretUiModel): Int = AppAuthSecretViewHolder.LAYOUT
     override fun type(uiModel: SellerAppReviewDebuggingUiModel): Int = SellerAppReviewDebuggingViewHolder.LAYOUT
     override fun type(uiModel: ShowApplinkOnToastUiModel): Int = ShowApplinkOnToastViewHolder.LAYOUT
     override fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int = PlayWebSocketSseLoggingViewHolder.LAYOUT
@@ -67,9 +67,10 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ConvertResourceIdUiModel): Int = ConvertResourceIdViewHolder.LAYOUT
     override fun type(uiModel: ForceLogoutUiModel): Int = ForceLogoutViewHolder.LAYOUT
     override fun type(uiModel: ViewHanselPatchUiModel): Int = ViewHanselPatchViewHolder.LAYOUT
+    override fun type(uiModel: TopchatWebSocketLoggingUiModel): Int = TopchatWebSocketLoggingViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
+        return when (type) {
             DeveloperOptionsOnNotificationViewHolder.LAYOUT -> DeveloperOptionsOnNotificationViewHolder(view)
             PdpDevViewHolder.LAYOUT -> PdpDevViewHolder(view)
             AccessTokenViewHolder.LAYOUT -> AccessTokenViewHolder(view, accessTokenListener)
@@ -97,6 +98,7 @@ class DeveloperOptionTypeFactoryImpl(
             ViewAnalyticsLogViewHolder.LAYOUT -> ViewAnalyticsLogViewHolder(view)
             ViewIrisLogViewHolder.LAYOUT -> ViewIrisLogViewHolder(view)
             LeakCanaryViewHolder.LAYOUT -> LeakCanaryViewHolder(view)
+            StrictModeLeakPublisherViewHolder.LAYOUT -> StrictModeLeakPublisherViewHolder(view)
             RemoteConfigEditorViewHolder.LAYOUT -> RemoteConfigEditorViewHolder(view)
             RouteManagerViewHolder.LAYOUT -> RouteManagerViewHolder(view)
             LoggingToServerViewHolder.LAYOUT -> LoggingToServerViewHolder(view)
@@ -110,15 +112,14 @@ class DeveloperOptionTypeFactoryImpl(
             RequestNewFcmTokenViewHolder.LAYOUT -> RequestNewFcmTokenViewHolder(view)
             ResetOnBoardingNavigationViewHolder.LAYOUT -> ResetOnBoardingNavigationViewHolder(view)
             TranslatorSettingViewHolder.LAYOUT -> TranslatorSettingViewHolder(view)
-            AppAuthSecretViewHolder.LAYOUT -> AppAuthSecretViewHolder(view)
             SellerAppReviewDebuggingViewHolder.LAYOUT -> SellerAppReviewDebuggingViewHolder(view)
             ShowApplinkOnToastViewHolder.LAYOUT -> ShowApplinkOnToastViewHolder(view)
             PlayWebSocketSseLoggingViewHolder.LAYOUT -> PlayWebSocketSseLoggingViewHolder(view)
             TypographySwitcherViewHolder.LAYOUT -> TypographySwitcherViewHolder(view)
             ConvertResourceIdViewHolder.LAYOUT -> ConvertResourceIdViewHolder(view)
             ViewHanselPatchViewHolder.LAYOUT -> ViewHanselPatchViewHolder(view)
+            TopchatWebSocketLoggingViewHolder.LAYOUT -> TopchatWebSocketLoggingViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
-
 }

@@ -14,7 +14,7 @@
             "attributes": {
               "name": "Lion Air",
               "shortName": "Lion",
-              "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_dac705fb-9f2b-4e6e-a63c-cbbef9c5e91a.png",
+              "logo": "https://images.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_dac705fb-9f2b-4e6e-a63c-cbbef9c5e91a.png",
               "city": ""
             }
           },
@@ -150,32 +150,32 @@
                   {
                     "title": "Penundaan Perjalanan (Travel Delay)",
                     "description": "Rp 500,000 untuk setiap 2 jam delay maksimum 3.000.000",
-                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/penerbangan-terlambat.png"
+                    "icon": "https://images.tokopedia.net/assets-insurance-frontend/flight/penerbangan-terlambat.png"
                   },
                   {
                     "title": "Kehilangan Perjalanan Lanjutan",
                     "description": "hingga Rp 7.500.000",
-                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/kehilangan-penerbangan.png"
+                    "icon": "https://images.tokopedia.net/assets-insurance-frontend/flight/kehilangan-penerbangan.png"
                   },
                   {
                     "title": "Perlindungan Bagasi Pribadi",
                     "description": "hingga Rp500.000",
-                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/perlindungan-bagasi.png"
+                    "icon": "https://images.tokopedia.net/assets-insurance-frontend/flight/perlindungan-bagasi.png"
                   },
                   {
                     "title": "Pembatalan Perjalanan",
                     "description": "hingga Rp 25.000.000",
-                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/pembatalan-perjalanan.png"
+                    "icon": "https://images.tokopedia.net/assets-insurance-frontend/flight/pembatalan-perjalanan.png"
                   },
                   {
                     "title": "Keterlambatan Bagasi",
                     "description": "Rp 500,000 untuk 2* jam berturut-turut,\r\nmaksimum Rp 3,000,000",
-                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/bagasi-terlambat.png"
+                    "icon": "https://images.tokopedia.net/assets-insurance-frontend/flight/bagasi-terlambat.png"
                   },
                   {
                     "title": "Perlindungan Kecelakaan Diri",
                     "description": "hingga Rp 300.000.000",
-                    "icon": "https://ecs7.tokopedia.net/assets-insurance-frontend/flight/perlindungan-kecelekaan-diri.png"
+                    "icon": "https://images.tokopedia.net/assets-insurance-frontend/flight/perlindungan-kecelekaan-diri.png"
                   }
                 ]
               }

@@ -52,6 +52,12 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var serverErrorView: ServerErrorView? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
+    override val activityContext: Context
+        get() = requireActivity()
+
+    override val appContext: Context
+        get() = requireContext()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
@@ -129,9 +135,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
     }
 
-    override fun getAppContext(): Context {
-        return requireContext()
-    }
 
     override fun refreshTab() {
            val fragment = mViewPagerAdapter?.getRegisteredFragment(mPagerSortType!!.currentItem) as? CatalogListItemFragment
@@ -162,7 +165,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     override fun onSuccessPoints(rewardStr: String, rewardValue: Int, membership: String, eggUrl: String) {
-        if (!rewardStr.isEmpty()) mTextPoints?.text = rewardStr
+        if (rewardStr.isNotEmpty()) mTextPoints?.text = rewardStr
         isPointsAvailable = true
         mAppBarHeader?.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
     }
@@ -172,7 +175,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     override fun onSuccessFilter(filters: CatalogFilterBase) {
         hideLoader()
         //Setting up subcategories types tabs
-        if (filters == null || filters.categories == null || filters.categories.isEmpty()) { //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
+        if (filters.categories.isEmpty()) { //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, null)
             mViewPagerAdapter?.setPointsAvailable(isPointsAvailable)
             //TODO please replace with
@@ -180,8 +183,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             mViewModel.currentSubCategoryId = 0
             mPagerSortType?.postDelayed({ refreshTab() }, CommonConstant.TAB_SETUP_DELAY_MS.toLong())
             mTabSortType?.visibility = View.GONE
-        } else if (filters.categories[0] != null
-                && (filters.categories[0].isHideSubCategory || filters.categories[0].subCategory == null || filters.categories[0].subCategory.isEmpty())) {
+        } else if (filters.categories[0].isHideSubCategory || filters.categories[0].subCategory.isEmpty()) {
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, null)
             mViewPagerAdapter?.setPointsAvailable(isPointsAvailable)
             mPagerSortType?.adapter = mViewPagerAdapter
@@ -195,9 +197,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             mViewModel.currentCategoryId = filters.categories[0].id
             mViewModel.currentSubCategoryId = 0
             mPagerSortType?.postDelayed({ refreshTab() }, CommonConstant.TAB_SETUP_DELAY_MS.toLong())
-        } else if (filters.categories[0] != null
-                && filters.categories[0].subCategory != null) {
-            mTabSortType?.visibility = View.VISIBLE
+        }  else {
+            mTabSortType!!.visibility = View.VISIBLE
             updateToolbarTitle(filters.categories[0].name)
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, filters.categories[0].subCategory)
             mViewPagerAdapter?.setPointsAvailable(isPointsAvailable)
@@ -253,9 +254,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                 "")
     }
 
-    override fun getActivityContext(): Context {
-        return requireActivity()
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

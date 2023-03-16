@@ -26,8 +26,8 @@ class CatalogSortTypePagerAdapter(fm: FragmentManager?, categoryId: Int, items: 
         return mItems.size
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return if (mItems[position].name == null) "" else mItems[position].name
+    override fun getPageTitle(position: Int): CharSequence {
+        return mItems[position].name
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {

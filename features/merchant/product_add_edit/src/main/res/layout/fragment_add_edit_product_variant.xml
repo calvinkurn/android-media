@@ -75,10 +75,10 @@
             android:layout_height="wrap_content"
             android:enabled="false"
             android:text="@string/action_save"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
             app:unifyButtonSize="medium" />
 
     </androidx.cardview.widget.CardView>

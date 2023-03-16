@@ -12,12 +12,12 @@
         android:id="@+id/play_sgc_widget_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
-        app:cardCornerRadius="@dimen/spacing_lvl3"
+        app:cardCornerRadius="8dp"
         app:layout_constraintBottom_toTopOf="@+id/tickerShopStatus"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -27,51 +27,40 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_lvl3">
+            android:padding="8dp">
 
-            <com.tokopedia.topads.sdk.view.FlowLayout
-                android:id="@+id/play_sgc_container_desc"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_start_create_content_desc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toStartOf="@id/play_sgc_btn_start_live"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_2"
+                />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/play_sgc_lets_try_live"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_96"
-                    app:typographyType="body_2"
-                    tools:text="Ayo cobain live streaming" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_lvl2"
-                    android:paddingTop="@dimen/spacing_lvl2"
-                    app:srcCompat="@drawable/ic_play_beta_badge" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/shop_page_play_widget_sgc_content"
-                    android:textColor="@color/Unify_N700_96"
-                    app:typographyType="body_2" />
-
-            </com.tokopedia.topads.sdk.view.FlowLayout>
-
-            <com.airbnb.lottie.LottieAnimationView
+            <FrameLayout
                 android:id="@+id/play_sgc_btn_start_live"
                 android:layout_width="@dimen/play_sgc_btn_start_live_width"
                 android:layout_height="@dimen/play_sgc_btn_start_live_height"
+                android:background="@drawable/bg_content_creation_button"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/play_sgc_container_desc"
-                app:layout_constraintTop_toTopOf="parent"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="false" />
+                app:layout_constraintStart_toEndOf="@+id/tv_start_create_content_desc"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_start_create_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawablePadding="6dp"
+                    android:text="@string/shop_page_start_create_content"
+                    android:textColor="@color/Unify_Static_White" />
+
+            </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

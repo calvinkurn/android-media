@@ -2,14 +2,14 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.searchcategory.EmptyProductTestHelper
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.usecase.RequestParams
 import io.mockk.verify
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
@@ -22,8 +22,10 @@ class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.C
         emptyProductTestHelper = EmptyProductTestHelper(tokoNowCategoryViewModel, this)
     }
 
-    override fun `Given first page product list is empty`() {
+    override fun `Given first page product list is empty`(feedbackFieldToggle:Boolean) {
         val emptyProductModel = "category/emptyproduct/empty-product.json".jsonToObject<CategoryModel>()
+        if(feedbackFieldToggle)
+            emptyProductModel.feedbackFieldToggle.tokonowFeedbackFieldToggle.data.isActive = true
         `Given get category first page use case will be successful`(emptyProductModel)
     }
 
@@ -46,11 +48,7 @@ class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.C
     }
 
     private fun Visitable<*>.assertTokonowCategoryGrid() {
-        assertThat(this, instanceOf(TokoNowCategoryGridUiModel::class.java))
-
-        val categoryGridUiModel = this as TokoNowCategoryGridUiModel
-
-        assertThat(categoryGridUiModel.title, shouldBe(CATEGORY_GRID_TITLE))
+        assertThat(this, instanceOf(TokoNowCategoryMenuUiModel::class.java))
     }
 
     @Test
@@ -71,5 +69,11 @@ class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.C
     @Test
     fun `empty state remove filter with exclude_ prefix`() {
         emptyProductTestHelper.`empty state remove filter with exclude_ prefix`()
+    }
+
+    @Test
+    fun `empty product list with feedback widget active should show feedback view`(){
+        emptyProductTestHelper.`empty product list with feedback widget active should show feedback view`()
+        Assert.assertEquals(tokoNowCategoryViewModel.isProductFeedbackLoopVisible(),true)
     }
 }

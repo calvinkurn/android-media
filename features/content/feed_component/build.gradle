@@ -37,7 +37,6 @@ android {
     }
     buildFeatures {
         viewBinding true
-        buildConfig true
     }
 }
 
@@ -60,6 +59,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
+    api projectOrAar(rootProject.ext.features.promoMvcWidget)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.createpostCommon)
@@ -90,6 +90,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.rxKotlin
+    implementation rootProject.ext.miscDependencies.coreKtx
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_feed"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/feed_component_dp_1">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_content"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:adjustViewBounds="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:scaleType="centerCrop"
+        app:unify_image_type="rect"
+        tools:ignore="UnusedAttribute" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginHorizontal="@dimen/unify_space_8"
+        android:layout_marginVertical="@dimen/unify_space_8"
+        android:background="@drawable/bg_up_content_feed"
+        android:paddingHorizontal="@dimen/unify_space_4"
+        android:paddingVertical="@dimen/unify_space_2">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_content"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="THUMB"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/unify_space_4"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@id/icon_content"
+            app:layout_constraintStart_toEndOf="@id/icon_content"
+            app:layout_constraintTop_toTopOf="@id/icon_content"
+            app:typographyType="small"
+            tools:text="10 rb" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_type"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_gravity="top|end"
+        android:layout_marginHorizontal="@dimen/unify_font_8"
+        android:layout_marginTop="6dp"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        tools:icon_name="SELECT_MULTIPLE" />
+
+</FrameLayout>

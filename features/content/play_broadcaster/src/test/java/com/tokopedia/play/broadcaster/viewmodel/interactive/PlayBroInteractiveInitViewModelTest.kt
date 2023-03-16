@@ -106,4 +106,66 @@ class PlayBroInteractiveInitViewModelTest {
                 .isInstanceOf(PlayBroadcastEvent.CreateInteractive.Error(mockException)::class.java)
         }
     }
+
+    @Test
+    fun `when give away upcoming ended`() {
+        val mockTitle = "Giveaway"
+        val mockDurationInMs = 1000L
+        val mockInteractiveResponse = InteractiveSessionUiModel(
+            id = "1",
+            title = mockTitle,
+            durationInMs = mockDurationInMs,
+        )
+
+        every { mockBroadcastTimer.remainingDuration } returns 10_000
+        coEvery { mockRepo.createGiveaway(any(), any(), any()) } returns mockInteractiveResponse
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref = mockSharedPref,
+            broadcastTimer = mockBroadcastTimer,
+        )
+        robot.use {
+            val events = robot.recordEvent {
+                it.getViewModel().submitAction(PlayBroadcastAction.CreateGiveaway(mockTitle, mockDurationInMs))
+            }
+            val state = robot.recordState {
+                it.getViewModel().submitAction(PlayBroadcastAction.GiveawayUpcomingEnded)
+            }
+            events.last().assertEqualTo(PlayBroadcastEvent.CreateInteractive.Success(mockDurationInMs))
+            state.game.waitingDuration.assertEqualTo(0)
+        }
+    }
+
+    @Test
+    fun `when give away ongoing ended`() {
+        val mockTitle = "Giveaway"
+        val mockDurationInMs = 1000L
+        val mockInteractiveResponse = InteractiveSessionUiModel(
+            id = "1",
+            title = mockTitle,
+            durationInMs = mockDurationInMs,
+        )
+
+        every { mockBroadcastTimer.remainingDuration } returns 10_000
+        coEvery { mockRepo.createGiveaway(any(), any(), any()) } returns mockInteractiveResponse
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref = mockSharedPref,
+            broadcastTimer = mockBroadcastTimer,
+        )
+        robot.use {
+            val events = robot.recordEvent {
+                it.getViewModel().submitAction(PlayBroadcastAction.CreateGiveaway(mockTitle, mockDurationInMs))
+            }
+            val state = robot.recordState {
+                it.getViewModel().submitAction(PlayBroadcastAction.GiveawayOngoingEnded)
+            }
+            events.last().assertEqualTo(PlayBroadcastEvent.CreateInteractive.Success(mockDurationInMs))
+            state.game.waitingDuration.assertEqualTo(0)
+        }
+    }
 }

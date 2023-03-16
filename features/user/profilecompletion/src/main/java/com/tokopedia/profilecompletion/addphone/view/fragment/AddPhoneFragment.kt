@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.play.core.splitcompat.SplitCompat
@@ -139,10 +138,16 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             val phone = etPhone?.editText?.text.toString()
             if (phone.isBlank()) {
                 setErrorText(getString(R.string.error_field_required))
-                phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
+                phoneNumberTracker.clickOnButtonNext(
+                    false,
+                    getString(R.string.add_phone_wrong_phone_format)
+                )
             } else if (!isValidPhone(phone)) {
-                setErrorText(getString(R.string.wrong_phone_format))
-                phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
+                setErrorText(getString(R.string.add_phone_wrong_phone_format))
+                phoneNumberTracker.clickOnButtonNext(
+                    false,
+                    getString(R.string.add_phone_wrong_phone_format)
+                )
             } else {
                 showLoading()
                 storeLocalSession(phone, false)
@@ -168,7 +173,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     private fun setErrorText(s: String) {
         if (TextUtils.isEmpty(s)) {
             etPhone.isInputError = false
-            etPhone.setMessage(getString(R.string.sample_phone))
+            etPhone.setMessage(getString(R.string.add_phone_sample_phone))
             buttonSubmit?.isEnabled = true
         } else {
             etPhone.isInputError = true
@@ -182,20 +187,20 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun setObserver() {
-		viewModel.addPhoneResponse.observe(viewLifecycleOwner) {
-			when (it) {
-				is Success -> onSuccessAddPhone(it.data)
-				is Fail -> onErrorAddPhone(it.throwable)
-			}
-		}
+        viewModel.addPhoneResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> onSuccessAddPhone(it.data)
+                is Fail -> onErrorAddPhone(it.throwable)
+            }
+        }
 
-		viewModel.userValidateResponse.observe(viewLifecycleOwner) {
-			when (it) {
-				is Success -> onSuccessUserValidate(it.data)
-				is Fail -> onErrorUserValidate(it.throwable)
-			}
-		}
-	}
+        viewModel.userValidateResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> onSuccessUserValidate(it.data)
+                is Fail -> onErrorUserValidate(it.throwable)
+            }
+        }
+    }
 
     private fun onErrorUserValidate(throwable: Throwable) {
         dismissLoading()
@@ -260,8 +265,8 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-		val phone = etPhone.editText.text.toString()
-		viewModel.mutateAddPhone(phone.trim(), validateToken)
+        val phone = etPhone.editText.text.toString()
+        viewModel.mutateAddPhone(phone.trim(), validateToken)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -275,27 +280,25 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     override fun onDestroy() {
-		super.onDestroy()
-		try {
-			viewModel.addPhoneResponse.removeObservers(this)
-			viewModel.userValidateResponse.removeObservers(this)
-			viewModel.flush()
-		} catch (e: Throwable) {
-			e.printStackTrace()
-		}
+        super.onDestroy()
+        try {
+            viewModel.addPhoneResponse.removeObservers(this)
+            viewModel.userValidateResponse.removeObservers(this)
+            viewModel.flush()
+        } catch (_: Throwable) { }
     }
 
-	companion object {
-		const val EXTRA_PROFILE_SCORE = "profile_score"
-		const val EXTRA_PHONE = "phone"
+    companion object {
+        const val EXTRA_PROFILE_SCORE = "profile_score"
+        const val EXTRA_PHONE = "phone"
 
-		const val REQUEST_COTP_PHONE_VERIFICATION = 101
-		const val OTP_TYPE_PHONE_VERIFICATION = 11
+        const val REQUEST_COTP_PHONE_VERIFICATION = 101
+        const val OTP_TYPE_PHONE_VERIFICATION = 11
 
-		fun createInstance(bundle: Bundle): AddPhoneFragment {
-			val fragment = AddPhoneFragment()
-			fragment.arguments = bundle
-			return fragment
-		}
-	}
+        fun createInstance(bundle: Bundle): AddPhoneFragment {
+            val fragment = AddPhoneFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 }

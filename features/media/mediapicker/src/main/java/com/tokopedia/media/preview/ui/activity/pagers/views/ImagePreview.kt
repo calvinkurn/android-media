@@ -54,7 +54,7 @@ class ImagePreview(
     }
 
     private fun scaleGestureListener() = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-            override fun onScale(detector: ScaleGestureDetector?): Boolean {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
                 detector?.let {
                     mScaleFactor *= it.scaleFactor
 

@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/spacing_lvl4">
+        android:paddingBottom="16dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivValidationSuccess"
@@ -19,8 +19,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivValidationError"
-            android:layout_width="@dimen/layout_lvl8"
-            android:layout_height="@dimen/layout_lvl8"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivValidationSuccess" />
 
@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700"
-            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/ivValidationError"
             app:layout_constraintStart_toEndOf="@+id/ivValidationError"
@@ -41,14 +41,14 @@
             android:id="@+id/tvTitleCorrection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@+id/ivValidationError"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/titleValidationSuccess"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginTop="16dp"
             android:text="@string/title_product_title_validation_bottomsheet_success"
             android:textColor="@color/Unify_N700"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,10 +57,10 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iconPoint1"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/spacing_lvl1"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:paddingBottom="2dp"
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_enable_state="true"
             app:icon_name="CHECK_CIRCLE"
@@ -71,7 +71,7 @@
             android:id="@+id/textPoint1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginStart="8dp"
             android:gravity="start"
             android:text="@string/label_product_title_validation_bottomsheet_point1"
             android:textColor="@color/Unify_N700"
@@ -84,7 +84,7 @@
             android:id="@+id/descPoint1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginTop="2dp"
             android:gravity="start"
             android:text="@string/label_product_title_validation_bottomsheet_point1_desc"
             android:textColor="@color/Unify_N700"
@@ -98,8 +98,8 @@
             android:id="@+id/btnDelete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl8"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="48dp"
             android:textAlignment="textStart"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
@@ -111,10 +111,10 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iconPoint2"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/spacing_lvl1"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:paddingBottom="2dp"
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_enable_state="true"
             app:icon_name="CHECK_CIRCLE"
@@ -125,7 +125,7 @@
             android:id="@+id/textPoint2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginStart="8dp"
             android:gravity="start"
             android:text="@string/label_product_title_validation_bottomsheet_point2"
             android:textColor="@color/Unify_N700"
@@ -136,10 +136,10 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iconPoint3"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/spacing_lvl1"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:paddingBottom="2dp"
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_enable_state="true"
             app:icon_name="CHECK_CIRCLE"
@@ -150,7 +150,7 @@
             android:id="@+id/textPoint3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginStart="8dp"
             android:gravity="start"
             android:text="@string/label_product_title_validation_bottomsheet_point3"
             android:textColor="@color/Unify_N700"
@@ -163,7 +163,7 @@
             android:id="@+id/tvDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginTop="16dp"
             android:text="@string/label_product_title_validation_bottomsheet_description"
             android:textColor="@color/Unify_N700_44"
             app:layout_constraintTop_toBottomOf="@+id/textPoint3"
@@ -173,7 +173,7 @@
             android:id="@+id/btnDismiss"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginTop="16dp"
             android:text="@string/label_product_title_validation_bottomsheet_dismiss"
             app:unifyButtonSize="medium"
             app:layout_constraintTop_toBottomOf="@+id/tvDescription" />

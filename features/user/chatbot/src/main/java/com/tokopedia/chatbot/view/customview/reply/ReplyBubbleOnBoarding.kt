@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
-import com.tokopedia.chatbot.view.util.OnboardingDismissListener
+import com.tokopedia.chatbot.view.util.OnboardingReplayDismissListener
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2.Companion.POSITION_TOP
 import com.tokopedia.coachmark.CoachMark2Item
@@ -17,7 +17,7 @@ class ReplyBubbleOnBoarding @Inject constructor(
     private var context: Context? = null
     private var anchor: View? = null
     private var coachMark: CoachMark2? = null
-    var onboardingDismissListener: OnboardingDismissListener? = null
+    var onboardingDismissListener: OnboardingReplayDismissListener? = null
 
 
     fun showReplyBubbleOnBoarding(
@@ -50,8 +50,8 @@ class ReplyBubbleOnBoarding @Inject constructor(
                 )
             )
             coachMark?.showCoachMark(coachMarkItem, null)
+            markAsShowed()
             coachMark?.setOnDismissListener {
-                markAsShowed()
                 onboardingDismissListener?.dismissReplyBubbleOnBoarding()
             }
         }

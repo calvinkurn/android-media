@@ -330,12 +330,13 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         product: PlayProductUiModel.Product,
         cartId: String,
         quantity: Int,
+        action: ProductAction,
     ) {
         val trackerMap = mapOf(
             KEY_EVENT to KEY_EVENT_ADD_TO_CART,
             KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
             KEY_EVENT_ACTION to "click buy pinned product",
-            KEY_EVENT_LABEL to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
+            KEY_EVENT_LABEL to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial} - beli langsung ${action == ProductAction.OCC}",
             KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
             KEY_CURRENT_SITE to VAL_CURRENT_SITE,
             KEY_SESSION_IRIS to irisSessionId,

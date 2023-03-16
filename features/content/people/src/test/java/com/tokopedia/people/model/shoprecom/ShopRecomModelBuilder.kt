@@ -11,21 +11,14 @@ class ShopRecomModelBuilder {
     val typeShop = 2
     val typeBuyer = 3
 
-    fun buildModelIsShown(type: Int = typeShop): ShopRecomUiModel {
+    fun buildModelIsShown(type: Int = typeShop, isShown: Boolean = true, nextCursor: String = "123"): ShopRecomUiModel {
         return ShopRecomUiModel(
-            isShown = true,
-            nextCursor = "",
-            title = "Toko lain sesuai rekomendasimu",
-            items = generateShopItem(type),
-        )
-    }
-
-    fun buildModelIsNotShown(): ShopRecomUiModel {
-        return ShopRecomUiModel(
-            isShown = false,
-            nextCursor = "",
-            title = "Toko lain sesuai rekomendasimu",
-            items = generateShopItem(),
+            isShown = isShown,
+            nextCursor = if (isShown) nextCursor else "",
+            title = if (isShown) "Toko lain sesuai rekomendasimu" else "",
+            items = if (isShown) generateShopItem(type) else emptyList(),
+            loadNextPage = if (isShown) nextCursor.isNotEmpty() && generateShopItem(type).isNotEmpty() else false,
+            isRefresh = if (isShown) nextCursor.isEmpty() else false,
         )
     }
 

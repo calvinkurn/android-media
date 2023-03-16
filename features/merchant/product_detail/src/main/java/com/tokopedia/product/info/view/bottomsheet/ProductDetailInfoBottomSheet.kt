@@ -107,11 +107,6 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         setupViewModel()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        observeData()
-    }
-
     private fun setupViewModel() {
         /**
          * fix crash when open bottom sheet in case of don't keep activity from developer setting
@@ -128,8 +123,8 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         savedInstanceState: Bundle?
     ): View? {
         _binding = BottomSheetProductDetailInfoBinding.inflate(layoutInflater)
-        getDataParcel()
         initView()
+        getDataParcel()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -193,6 +188,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
         setShowListener {
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+            observeData()
         }
     }
 
@@ -244,6 +240,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                 bsProductInfoContainer.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
                 bsProductInfoContainer.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
+            bsProductInfoContainer.requestLayout()
         } catch (_: Throwable) {
         }
     }

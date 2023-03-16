@@ -18,7 +18,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
@@ -26,7 +25,6 @@ import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListener
@@ -86,24 +84,6 @@ internal fun createProductItemListener(): ProductListener {
 internal fun createInspirationCardListener(): InspirationCardListener {
     return object: InspirationCardListener {
         override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {}
-    }
-}
-
-internal fun createInspirationCarouselListener(): InspirationCarouselListener {
-    return object: InspirationCarouselListener {
-        override fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
-        override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselListProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselGridProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselDataView.Option) {}
-        override fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselChipsProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
-        override fun onInspirationCarouselChipsClicked(inspirationCarouselAdapterPosition: Int, inspirationCarouselViewModel: InspirationCarouselDataView, inspirationCarouselOption: InspirationCarouselDataView.Option) {}
-
     }
 }
 

@@ -28,7 +28,10 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -39,7 +42,11 @@ import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameF
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
 import com.tokopedia.profilecompletion.databinding.FragmentProfileInfoBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.profilecompletion.profileinfo.data.*
+import com.tokopedia.profilecompletion.profileinfo.data.Detail
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoConstants
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoData
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
+import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
 import com.tokopedia.profilecompletion.profileinfo.domain.UrlSettingProfileConst
 import com.tokopedia.profilecompletion.profileinfo.tracker.CloseAccountTracker
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
@@ -53,7 +60,6 @@ import com.tokopedia.profilecompletion.profileinfo.view.uimodel.ProfileInfoTitle
 import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoItemViewHolder
 import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoTitleViewHolder
 import com.tokopedia.profilecompletion.profileinfo.viewmodel.ProfileViewModel
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -93,7 +99,8 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     @Inject
     lateinit var closeAccountTracker: CloseAccountTracker
 
-    @Inject lateinit var userSessionDataStore: Lazy<UserSessionDataStore>
+    @Inject
+    lateinit var userSessionDataStore: Lazy<UserSessionDataStore>
 
     private val binding: FragmentProfileInfoBinding? by viewBinding()
 
@@ -164,8 +171,9 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     private fun setProfilePicture() {
         lifecycleScope.launch {
             try {
-                var profilePicture = userSessionDataStore.get().getProfilePicture().toBlocking().ifEmpty { userSession.profilePicture  }
-                if(profilePicture != userSession.profilePicture) {
+                var profilePicture = userSessionDataStore.get().getProfilePicture().toBlocking()
+                    .ifEmpty { userSession.profilePicture }
+                if (profilePicture != userSession.profilePicture) {
                     profilePicture = userSession.profilePicture
                     logDataStoreError("profilePicture", DIFFERENT_EXCEPTION)
                 }
@@ -175,7 +183,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
                 logDataStoreError("profilePicture", e)
             }
         }
-}
+    }
 
     private fun logDataStoreError(field: String, e: Throwable) {
         ServerLogger.log(
@@ -374,7 +382,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             },
             ProfileInfoItemUiModel(
                 ProfileInfoConstants.PHONE,
-                title = getString(R.string.title_phone),
+                title = getString(R.string.add_phone_title_phone),
                 itemValue = data.profileInfoData.msisdn,
                 showVerifiedTag = showVerifiedTag(data),
                 placeholder = getString(R.string.profile_info_placeholder_phone)
@@ -728,13 +736,19 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
     private fun goToAddDob() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_BOD)
-        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE, getString(R.string.profile_info_title_add_bod))
+        intent.putExtra(
+            ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE,
+            getString(R.string.profile_info_title_add_bod)
+        )
         startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
     }
 
     private fun goToChangeDob(bod: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_BOD)
-        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE, getString(R.string.profile_info_title_change_bod))
+        intent.putExtra(
+            ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE,
+            getString(R.string.profile_info_title_change_bod)
+        )
         intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD, bod)
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
@@ -766,7 +780,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         RouteManager.route(
             context,
             "${ApplinkConst.WEBVIEW}?${WEBVIEW_PARAM_HIDE_TITLEBAR}&${WEBVIEW_PARAM_BACK_PRESSED_DISABLED}&url=" +
-                    TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CLOSE_ACCOUNT_PATH)
+                TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CLOSE_ACCOUNT_PATH)
         )
     }
 
@@ -791,11 +805,14 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val GENDER_FEMALE = 2
         private const val TAG_BOTTOM_SHEET_CLOSE_ACCOUNT = "bottom sheet close account"
         private const val EMPTY_STRING = ""
-        private const val WEBVIEW_PARAM_HIDE_TITLEBAR = "${com.tokopedia.webview.KEY_TITLEBAR}=false"
-        private const val WEBVIEW_PARAM_BACK_PRESSED_DISABLED = "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
+        private const val WEBVIEW_PARAM_HIDE_TITLEBAR =
+            "${com.tokopedia.webview.KEY_TITLEBAR}=false"
+        private const val WEBVIEW_PARAM_BACK_PRESSED_DISABLED =
+            "${com.tokopedia.webview.KEY_BACK_PRESSED_ENABLED}=false"
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
         private const val LIMIT_STACKTRACE = 1000
-        private val DIFFERENT_EXCEPTION = Throwable(message = "Value is different from User Session")
+        private val DIFFERENT_EXCEPTION =
+            Throwable(message = "Value is different from User Session")
 
         fun createInstance(): ProfileInfoFragment {
             return ProfileInfoFragment()

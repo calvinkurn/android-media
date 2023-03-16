@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
@@ -17,8 +18,8 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Produc
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.LocationCriteriaCheckBottomSheet
-import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_FLASH_SALE_ID
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapterListener
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantMultilocAdapter
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ToasterHelper
@@ -103,12 +104,14 @@ class ManageProductNonVariantMultilocFragment :
         product?.let {
             val warehouses = inputAdapter.getDataList()
             warehouses.onEachIndexed { indexEdited, warehouse ->
-                if (warehouse.isDilayaniTokopedia && indexEdited != index) {
+                if (warehouse.isDilayaniTokopedia && indexEdited != index && warehouses.getOrNull(index)?.isDilayaniTokopedia == true) {
                     warehouse.discountSetup.apply {
                         price = discountSetup.price
                         discount = discountSetup.discount
                     }
-                    inputAdapter.notifyItemChanged(indexEdited)
+                    if (rvManageProductDetail?.isComputingLayout == false && rvManageProductDetail?.scrollState == SCROLL_STATE_IDLE) {
+                        rvManageProductDetail?.adapter?.notifyItemChanged(indexEdited)
+                    }
                 }
             }
             val newProduct = it.copy(warehouses = warehouses)

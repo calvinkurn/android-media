@@ -36,7 +36,7 @@
                 "active": 1,
                 "gateway_code": "PAYMENT1",
                 "gateway_name": "Payment 1",
-                "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
+                "image": "https://images.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
                 "description": "Payment Desc 1",
                 "url": "",
                 "metadata": "{}"
@@ -74,7 +74,7 @@
                 "active": 1,
                 "gateway_code": "PAYMENT2",
                 "gateway_name": "Payment 2",
-                "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/alfamart.png",
+                "image": "https://images.tokopedia.net/img/toppay/payment-logo/alfamart.png",
                 "description": "",
                 "url": "",
                 "metadata": ""

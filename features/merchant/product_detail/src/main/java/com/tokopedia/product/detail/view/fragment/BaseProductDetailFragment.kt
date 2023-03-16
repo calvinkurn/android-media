@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.databinding.DynamicProductDetailFragmentBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.util.RecommendationItemDecoration
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -205,4 +206,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         rv.removeOnScrollListener(scrollListener)
         endlessScrollListener = null
     }
+
+    protected fun getProductDetailActivity() = activity as? ProductDetailActivity
 }

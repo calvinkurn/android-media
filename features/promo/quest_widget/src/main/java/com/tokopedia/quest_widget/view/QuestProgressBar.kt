@@ -101,21 +101,21 @@ class QuestProgressBar
         }
         
         animator.addListener(object : Animator.AnimatorListener{
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
 
             }
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 if(this@QuestProgressBar.hideProgressBar){
                     hide()
                     progressCompletionListener?.showCompletionAnimation()
                 }
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
 
         })

@@ -18,7 +18,7 @@ class DigitalRestAddToCartMockResponse: MockRestResponse<ResponseCartData>() {
             attributes = AttributesCart(
                 categoryName = "Uang Elektronik",
                 clientNumber = "6032984011276619",
-                icon = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_5ee75889-94bc-45d3-9ce6-5ecf466fb385.png",
+                icon = "https://images.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_5ee75889-94bc-45d3-9ce6-5ecf466fb385.png",
                 isCouponActive = 1,
                 crossSellingType = 0,
                 operatorName = "Mandiri E-Money",

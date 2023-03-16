@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.topads.sdk.domain.model.FreeOngkir
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics

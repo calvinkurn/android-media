@@ -36,11 +36,10 @@ import com.tokopedia.explore.view.listener.ContentExploreContract
 import com.tokopedia.explore.view.uimodel.ExploreCategoryViewModel
 import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
 import com.tokopedia.explore.view.uimodel.ExploreViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 
@@ -59,7 +58,7 @@ class ContentExploreFragment :
         const val PARAM_CATEGORY_ID = "category_id"
         private const val DEFAULT_CATEGORY: Long = 0
         private const val DEFAULT_CATEGORY_STRING = "0"
-        private const val SOURCE = "source"
+        private const val ENTRY_POINT = "entry_point"
         private const val PEFORMANCE_EXPLORE = "mp_explore"
         private const val CATEGORY_POSITION_NONE = -1
 
@@ -351,7 +350,7 @@ class ContentExploreFragment :
         val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, postId)
         val finaAppLink = Uri.parse(contentAppLink)
                 .buildUpon()
-                .appendQueryParameter(SOURCE, EXPLORE_TAB)
+                .appendQueryParameter(ENTRY_POINT, EXPLORE_TAB)
                 .build().toString()
 
         RouteManager.route(requireContext(), finaAppLink)
@@ -422,7 +421,7 @@ class ContentExploreFragment :
         }
     }
 
-    override fun onAffiliateTrack(trackingList: List<TrackingViewModel>, isClick: Boolean) {
+    override fun onAffiliateTrack(trackingList: List<TrackingModel>, isClick: Boolean) {
         if (isClick) {
             for (tracking in trackingList) {
                 presenter.trackAffiliate(tracking.clickURL)

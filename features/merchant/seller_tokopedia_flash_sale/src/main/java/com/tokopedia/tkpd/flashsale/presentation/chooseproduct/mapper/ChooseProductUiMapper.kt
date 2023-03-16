@@ -13,7 +13,7 @@ object ChooseProductUiMapper {
     private const val MAX_PRODUCT_SELECTION = 40
 
     private fun List<CriteriaSelection>.validateMax(): Boolean {
-        return !any { it.selectionCount >= it.selectionCountMax }
+        return !any { it.selectionCount > it.selectionCountMax }
     }
 
     private fun List<CriteriaSelection>.getDisabledCriteriaIds(): List<Long> {
@@ -41,9 +41,16 @@ object ChooseProductUiMapper {
     }
 
     // limit max selected to MAX_PRODUCT_SELECTION due to server limitation
-    fun getMaxSelectedProduct(maximumFromRemote: Int): Int {
-        return if (maximumFromRemote < MAX_PRODUCT_SELECTION) maximumFromRemote
-        else MAX_PRODUCT_SELECTION
+    fun getMaxSelectedProduct(
+        maximumFromRemote: Int,
+        submittedProductIds: List<Long>
+    ): Int {
+        return if (submittedProductIds.isNotEmpty()) {
+            val maximumRemaining = maximumFromRemote - submittedProductIds.size
+            maximumRemaining.coerceAtMost(MAX_PRODUCT_SELECTION) + submittedProductIds.size
+        } else {
+            maximumFromRemote.coerceAtMost(MAX_PRODUCT_SELECTION)
+        }
     }
 
     fun mapToReserveParam(campaignId: Long, reservationId: String, selectedProducts: List<ChooseProductItem>?): DoFlashSaleProductReserveUseCase.Param {
@@ -94,11 +101,11 @@ object ChooseProductUiMapper {
         }
     }
 
-    fun isExceedMaxProduct(productCount: Int): Boolean {
+    private fun isExceedMaxProduct(productCount: Int): Boolean {
         return productCount.orZero() >= MAX_PRODUCT_SELECTION
     }
 
-    fun isExceedMaxQuota(
+    private fun isExceedMaxQuota(
         productCount: Int, 
         maxProduct: Int,
         remainingQuota: Int,
@@ -113,7 +120,7 @@ object ChooseProductUiMapper {
         remainingQuota: Int,
         selectedProductList: List<ChooseProductItem>
     ): SelectionValidationResult {
-        val isExceedMaxProduct = isExceedMaxProduct(selectedProductCount)
+        val isExceedMaxProduct = isExceedMaxProduct(selectedProductList.size)
         val isExceedMaxQuota = isExceedMaxQuota(selectedProductCount, maxSelectedProduct,
             remainingQuota, selectedProductList)
         val disabledCriteriaIds = criteriaList.getDisabledCriteriaIds()

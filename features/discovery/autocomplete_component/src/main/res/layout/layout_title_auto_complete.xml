@@ -8,14 +8,14 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_22"
+        android:layout_height="18dp"
         android:layout_centerVertical="true"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="display_1"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Toko" />
 
@@ -23,7 +23,7 @@
         android:id="@+id/actionDeleteButton"
         android:contentDescription="@string/content_desc_actionDeleteButton"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_18"
+        android:layout_height="16dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
@@ -35,13 +35,14 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         app:typographyType="display_3"
         app:typographyWeight="bold"
+        tools:visibility="visible"
         android:visibility="gone"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/actionRefreshButton"
         android:contentDescription="@string/content_desc_actionRefreshButton"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_18"
+        android:layout_height="16dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
@@ -53,6 +54,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         app:typographyType="display_3"
         app:typographyWeight="bold"
+        tools:visibility="visible"
         android:visibility="gone"/>
 
 </RelativeLayout>

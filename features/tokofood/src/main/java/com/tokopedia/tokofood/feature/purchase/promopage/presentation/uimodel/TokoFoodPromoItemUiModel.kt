@@ -8,6 +8,7 @@ data class TokoFoodPromoItemUiModel(
     var title: String = "",
     var timeValidityWording: String = "",
     var isAvailable: Boolean = false,
+    var isSelected: Boolean = false,
     var additionalInformation: String = ""
 ) : Visitable<TokoFoodPromoAdapterTypeFactory> {
 

@@ -8,8 +8,8 @@
         android:id="@+id/talkSettingsOptionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:icon_name="CHEVRON_RIGHT"
-        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:layout_marginEnd="24dp"
         app:layout_constraintTop_toTopOf="@id/talkSettingsOptionText"
         app:layout_constraintBottom_toBottomOf="@id/talkSettingsOptionText"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -39,8 +39,8 @@
         android:id="@+id/talk_settings_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginStart="@dimen/layout_lvl7"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/talkSettingsOptionText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,9 +23,9 @@ import java.net.URLDecoder
  * Created by Rafli Syam 13/09/2021
  */
 class ShopProductSearchResultSuggestionViewHolder(
-        val itemView: View,
-        val listener: ShopProductSearchSuggestionListener?
-): AbstractViewHolder<ShopProductSearchResultSuggestionUiModel>(itemView) {
+    val itemView: View,
+    val listener: ShopProductSearchSuggestionListener?
+) : AbstractViewHolder<ShopProductSearchResultSuggestionUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -37,7 +37,7 @@ class ShopProductSearchResultSuggestionViewHolder(
         private const val DEFAULT_FIRST_INDEX = 0
     }
 
-    private val viewBinding : ItemShopProductSearchSuggestionViewBinding? by viewBinding()
+    private val viewBinding: ItemShopProductSearchSuggestionViewBinding? by viewBinding()
     private val suggestionTextView: Typography? = viewBinding?.suggestionText
 
     override fun bind(element: ShopProductSearchResultSuggestionUiModel) {
@@ -83,10 +83,10 @@ class ShopProductSearchResultSuggestionViewHolder(
             suggestionTextSpannedString.lastIndex
         }
         suggestionTextSpannedString.setSpan(
-                clickableSpan,
-                startClickedIndex,
-                endClickedIndex,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            clickableSpan,
+            startClickedIndex,
+            endClickedIndex,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         return suggestionTextSpannedString
     }
@@ -94,5 +94,4 @@ class ShopProductSearchResultSuggestionViewHolder(
     private fun searchProductsByKeyword(keyword: String) {
         listener?.onSearchProductsBySuggestedKeyword(keyword)
     }
-
 }

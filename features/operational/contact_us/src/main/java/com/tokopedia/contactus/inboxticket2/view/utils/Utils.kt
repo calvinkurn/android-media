@@ -2,14 +2,13 @@ package com.tokopedia.contactus.inboxticket2.view.utils
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.format.DateUtils
 import android.text.format.Time
 import android.text.style.AbsoluteSizeSpan
-import android.text.style.BackgroundColorSpan
 import android.util.TypedValue
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import org.json.JSONException
 import org.json.JSONObject
@@ -18,6 +17,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import java.util.regex.PatternSyntaxException
 
 const val CLOSED = "closed"
 const val OPEN = "open"
@@ -40,26 +40,34 @@ class Utils {
     }
 
     private fun findOccurrences(what: String, src: String): List<Int> {
-        val occurrences = ArrayList<Int>()
-        val regex = "\\b$what\\w*"
-        val pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
-        val matcher = pattern.matcher(src)
-        while (matcher.find()) {
-            occurrences.add(matcher.start())
+        return try {
+            val occurrences = ArrayList<Int>()
+            val regex = "\\b$what\\w*"
+            val pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
+            val matcher = pattern.matcher(src)
+            while (matcher.find()) {
+                occurrences.add(matcher.start())
+            }
+            occurrences
+        } catch(e : PatternSyntaxException){
+            emptyList()
         }
-        return occurrences
     }
 
-    fun getHighlightText(what: String, src: String): SpannableString {
+    fun getHighlightText(context: Context,what: String, src: String): SpannableString {
         val spannableString = SpannableString(src)
         if (what.isNotEmpty()) {
             val occurences = findOccurrences(what, src)
             for (start in occurences) {
-                val styleSpan = BackgroundColorSpan(Color.parseColor("#ecdb77"))
+                val styleSpan =  getColorResource(com.tokopedia.unifyprinciples.R.color.Unify_Y200, context)
                 spannableString.setSpan(styleSpan, start, start + what.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             }
         }
         return spannableString
+    }
+
+    private fun getColorResource(colorId: Int, context: Context): Int {
+        return MethodChecker.getColor(context, colorId)
     }
 
     fun getStatusTitle(src: String, background: Int, textColor: Int, textSize: Int, mContext: Context): SpannableString {

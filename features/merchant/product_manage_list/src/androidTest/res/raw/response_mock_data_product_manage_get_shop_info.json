@@ -14,7 +14,7 @@
             },
             "freeOngkir": {
               "isActive": false,
-              "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              "imgURL": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
             },
             "closedInfo": {
               "closedNote": "",
@@ -39,7 +39,7 @@
                 "isAvailable": 1,
                 "code": "rex",
                 "shipmentID": "16",
-                "image": "https://ecs7.tokopedia.net/img/kurir-rex.png",
+                "image": "https://images.tokopedia.net/img/kurir-rex.png",
                 "name": "REX",
                 "product": [
                   {
@@ -57,7 +57,7 @@
                 "isAvailable": 1,
                 "code": "jne",
                 "shipmentID": "1",
-                "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+                "image": "https://images.tokopedia.net/img/kurir-jne.png",
                 "name": "JNE",
                 "product": [
                   {
@@ -93,7 +93,7 @@
                 "isAvailable": 1,
                 "code": "pos",
                 "shipmentID": "4",
-                "image": "https://ecs7.tokopedia.net/img/kurir-pos.png",
+                "image": "https://images.tokopedia.net/img/kurir-pos.png",
                 "name": "Pos Indonesia",
                 "product": [
                   {
@@ -111,7 +111,7 @@
                 "isAvailable": 1,
                 "code": "sicepat",
                 "shipmentID": "11",
-                "image": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+                "image": "https://images.tokopedia.net/img/kurir-sicepat.png",
                 "name": "SiCepat",
                 "product": [
                   {
@@ -153,7 +153,7 @@
                 "isAvailable": 1,
                 "code": "anteraja",
                 "shipmentID": "23",
-                "image": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+                "image": "https://images.tokopedia.net/img/kurir-anteraja.png",
                 "name": "AnterAja",
                 "product": [
                   {
@@ -195,7 +195,7 @@
                 "isAvailable": 1,
                 "code": "ninja",
                 "shipmentID": "12",
-                "image": "https://ecs7.tokopedia.net/img/kurir-ninja.png",
+                "image": "https://images.tokopedia.net/img/kurir-ninja.png",
                 "name": "Ninja Xpress",
                 "product": [
                   {
@@ -213,7 +213,7 @@
                 "isAvailable": 1,
                 "code": "jnt",
                 "shipmentID": "14",
-                "image": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+                "image": "https://images.tokopedia.net/img/kurir-jnt.png",
                 "name": "J\u0026T",
                 "product": [
                   {
@@ -231,7 +231,7 @@
                 "isAvailable": 1,
                 "code": "wahana",
                 "shipmentID": "6",
-                "image": "https://ecs7.tokopedia.net/img/kurir-wahana.png",
+                "image": "https://images.tokopedia.net/img/kurir-wahana.png",
                 "name": "Wahana",
                 "product": [
                   {
@@ -249,7 +249,7 @@
                 "isAvailable": 1,
                 "code": "grab",
                 "shipmentID": "13",
-                "image": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+                "image": "https://images.tokopedia.net/img/kurir-grab.png",
                 "name": "GrabExpress",
                 "product": [
                   {
@@ -273,7 +273,7 @@
                 "isAvailable": 1,
                 "code": "lion",
                 "shipmentID": "24",
-                "image": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png",
+                "image": "https://images.tokopedia.net/img/kurir-lionparcel.png",
                 "name": "Lion Parcel",
                 "product": [
                   {
@@ -291,7 +291,7 @@
                 "isAvailable": 1,
                 "code": "tiki",
                 "shipmentID": "2",
-                "image": "https://ecs7.tokopedia.net/img/kurir-tiki.png",
+                "image": "https://images.tokopedia.net/img/kurir-tiki.png",
                 "name": "TIKI",
                 "product": [
                   {
@@ -315,7 +315,7 @@
                 "isAvailable": 1,
                 "code": "gojek",
                 "shipmentID": "10",
-                "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+                "image": "https://images.tokopedia.net/img/kurir-gosend.png",
                 "name": "GoSend",
                 "product": [
                   {
@@ -339,7 +339,7 @@
                 "isAvailable": 1,
                 "code": "paxel",
                 "shipmentID": "28",
-                "image": "https://ecs7.tokopedia.net/img/kurir-paxel.png",
+                "image": "https://images.tokopedia.net/img/kurir-paxel.png",
                 "name": "Paxel",
                 "product": [
                   {

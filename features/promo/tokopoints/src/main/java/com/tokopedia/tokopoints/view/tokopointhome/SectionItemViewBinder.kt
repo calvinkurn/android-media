@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class SectionItemViewBinder<M, in VH : RecyclerView.ViewHolder>(

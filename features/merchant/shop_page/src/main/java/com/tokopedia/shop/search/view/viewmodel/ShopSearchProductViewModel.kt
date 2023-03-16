@@ -3,9 +3,9 @@ package com.tokopedia.shop.search.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.domain.interactor.GetSearchShopProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -16,9 +16,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopSearchProductViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        private val getSearchShopProductUseCase: GetSearchShopProductUseCase,
-        private val coroutineDispatcherProvider: CoroutineDispatchers
+    private val userSessionInterface: UserSessionInterface,
+    private val getSearchShopProductUseCase: GetSearchShopProductUseCase,
+    private val coroutineDispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     private val _shopSearchProductResult by lazy {
@@ -37,10 +37,10 @@ class ShopSearchProductViewModel @Inject constructor(
         launchCatchError(block = {
             val result = withContext(coroutineDispatcherProvider.io) {
                 getSearchShopProductUseCase.requestParams = GetSearchShopProductUseCase
-                        .createRequestParam(
-                                shopId.toIntOrZero(),
-                                searchQuery
-                        )
+                    .createRequestParam(
+                        shopId.toIntOrZero(),
+                        searchQuery
+                    )
                 getSearchShopProductUseCase.executeOnBackground()
             }
             _shopSearchProductResult.value = Success(result)

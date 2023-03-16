@@ -166,20 +166,20 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         reversedAnimatorSet.play(slideLeftIn).with(alphaIn).after(ANIMATION_DELAY_180)
 
         animationListener = object : Animator.AnimatorListener{
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
             @SuppressLint("SyntheticAccessor")
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 val recommendation = model?.recommendationWidget?.recommendationItemList?.get(currentPosition)
                 recommendation?.let {
                     setRecommendationItemToView(it)
                 }
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
             }
 
-            override fun onAnimationStart(animation: Animator?) {
+            override fun onAnimationStart(animation: Animator) {
             }
         }
 

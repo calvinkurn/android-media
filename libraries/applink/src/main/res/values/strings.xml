@@ -140,6 +140,7 @@
     <string name="title_review_inbox">Review Inbox</string>
     <string name="title_review_detail">Review Detail</string>
     <string name="title_create_review">Create Review</string>
+    <string name="title_bulk_create_review">Kasih Ulasan Sekaligus</string>
     <string name="title_review_reminder">Review Reminder</string>
     <string name="title_review_credibility">Review Credibility</string>
     <string name="title_review_media_gallery">Foto &amp; Video Pembeli</string>
@@ -149,6 +150,7 @@
 
     <!-- Product Detail -->
     <string name="title_product_detail">Product Detail</string>
+    <string name="title_product_ar">Product Ar</string>
 
     <!--Order Management History-->
     <string name="title_order_management_history">Detail Status</string>
@@ -178,4 +180,10 @@
     <string name="title_tokomember" translatable="false">Tokomember</string>
     <string name="title_tokopedia_flash_sale_campaign_detail">Campaign Detail</string>
 
+    <string name="title_seller_mvc_redirection_page">Mvc Redirection Page</string>
+    <string name="title_seller_mvc_intro">Mvc Intro</string>
+    <string name="title_seller_mvc_list">Mvc list</string>
+    <string name="title_seller_mvc_create">Mvc Create</string>
+    <string name="title_seller_mvc_product_create">Mvc Product Create</string>
+    <string name="title_seller_mvc_detail">Mvc Detail</string>
 </resources>

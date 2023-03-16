@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -21,6 +20,8 @@ import com.tokopedia.tokofood.common.domain.response.AdditionalData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.PriceLevel
 import com.tokopedia.tokofood.common.presentation.customview.TokofoodPromoRibbonView
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodExt.clickWithDebounce
 import com.tokopedia.tokofood.databinding.ItemTokofoodMerchantListCardBinding
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
@@ -33,7 +34,8 @@ import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 class TokoFoodMerchantListViewHolder (
     itemView: View,
-    private val listener: TokoFoodMerchantListListener? = null
+    private val listener: TokoFoodMerchantListListener? = null,
+    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener?
 ): AbstractViewHolder<TokoFoodMerchantListUiModel>(itemView) {
 
     companion object {
@@ -90,9 +92,7 @@ class TokoFoodMerchantListViewHolder (
         binding?.root?.clickWithDebounce {
             listener?.onClickMerchant(merchant, adapterPosition)
         }
-        itemView.addOnImpressionListener(merchant){
-            listener?.onImpressMerchant(merchant, adapterPosition)
-        }
+        setImpressionListener(merchant)
     }
 
     private fun setImageMerchant(imageUrl: String) {
@@ -235,6 +235,14 @@ class TokoFoodMerchantListViewHolder (
             labelMerchantClosed?.show()
         } else {
             labelMerchantClosed?.hide()
+        }
+    }
+
+    private fun setImpressionListener(merchant: Merchant) {
+        tokofoodScrollChangedListener?.let { scrollChangedListener ->
+            itemView.addAndReturnImpressionListener(merchant, scrollChangedListener){
+                listener?.onImpressMerchant(merchant, adapterPosition)
+            }
         }
     }
 

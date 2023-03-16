@@ -157,15 +157,6 @@ public interface SearchConstant {
     }
 
     interface InspirationCarousel {
-        String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
-        String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
-        String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
-        String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
-        String LAYOUT_INSPIRATION_CAROUSEL_VIDEO = "video";
-        String LAYOUT_INSPIRATION_CAROUSEL_BUNDLE = "bundle";
-        String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
-        String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
-        String LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC = "product_list_atc";
         String TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS = "annotation_product_color_chips";
         String TYPE_INSPIRATION_CAROUSEL_KEYWORD = "keyword";
         String TYPE_INSPIRATION_CAROUSEL_SINGLE_BUNDLING = "single_bundling";
@@ -186,6 +177,7 @@ public interface SearchConstant {
         String TYPE_CURATED = "curated";
         String TYPE_RELATED = "related";
         String TYPE_SIZE_PERSO = "size_perso";
+        String LAYOUT_FILTER = "filter";
     }
 
     interface CustomDimension {

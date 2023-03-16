@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VoucherMenu
@@ -34,12 +33,7 @@ import java.util.*
 /**
  * @author by nisie on 23/11/18.
  */
-abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
-        , ImageAnnouncementListener, ChatLinkHandlerListener
-        , ImageUploadListener, ProductAttachmentListener, TypingListener
-        , BaseChatContract.View
-        , BaseChatActivityListener
-        , AttachmentMenu.AttachmentMenuListener {
+abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), ImageAnnouncementListener, ChatLinkHandlerListener, ImageUploadListener, ProductAttachmentListener, TypingListener, BaseChatContract.View, BaseChatActivityListener, AttachmentMenu.AttachmentMenuListener {
 
     open var viewState: BaseChatViewState? = null
 
@@ -91,11 +85,14 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         toUserId = getParamString(ApplinkConst.Chat.TO_USER_ID, arguments, savedInstanceState)
     }
 
-    open fun getParamString(paramName: String, arguments: Bundle?,
-                            savedInstanceState: Bundle?): String {
+    open fun getParamString(
+        paramName: String,
+        arguments: Bundle?,
+        savedInstanceState: Bundle?
+    ): String {
         return when {
-            savedInstanceState != null
-                    && savedInstanceState.getString(paramName, "").isNotEmpty()
+            savedInstanceState != null &&
+                savedInstanceState.getString(paramName, "").isNotEmpty()
             -> savedInstanceState.getString(paramName, "")
             arguments != null && arguments.getString(paramName, "").isNotEmpty()
             -> arguments.getString(paramName, "")
@@ -103,8 +100,11 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         }
     }
 
-    open fun getParamInt(paramName: String, arguments: Bundle?,
-                         savedInstanceState: Bundle?): Int {
+    open fun getParamInt(
+        paramName: String,
+        arguments: Bundle?,
+        savedInstanceState: Bundle?
+    ): Int {
         return when {
             savedInstanceState != null -> savedInstanceState.getInt(paramName, -1)
             arguments != null -> arguments.getInt(paramName, -1)
@@ -115,6 +115,14 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onImageAnnouncementClicked(uiModel: ImageAnnouncementUiModel) {
         if (!TextUtils.isEmpty(uiModel.redirectUrl)) {
             onGoToWebView(uiModel.redirectUrl, uiModel.attachmentId)
+        }
+    }
+
+    override fun onCtaBroadcastClicked(uiModel: ImageAnnouncementUiModel) {
+        val url: String = uiModel.broadcastCtaUrl ?: uiModel.redirectUrl
+        // Open the page when url is not null or blank
+        if (url.isNotBlank()) {
+            onGoToWebView(url, uiModel.attachmentId)
         }
     }
 
@@ -134,11 +142,15 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
             when {
                 isContactUsLink(uri) -> {
                     val intent = RouteManager.getIntent(activity, url)
-                    intent.putExtra(PARAM_URL, URLGenerator.generateURLSessionLogin(
+                    intent.putExtra(
+                        PARAM_URL,
+                        URLGenerator.generateURLSessionLogin(
                             if (TextUtils.isEmpty(url)) TkpdBaseURL.BASE_CONTACT_US else url,
 
                             getUserSession().deviceId,
-                            getUserSession().userId))
+                            getUserSession().userId
+                        )
+                    )
                     intent.putExtra(IS_CHAT_BOT, true)
                     startActivity(intent)
                 }
@@ -154,9 +166,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     private fun isContactUsLink(uri: Uri?): Boolean {
         val CONTACT_US_PATH_SEGMENT = "toped-contact-us"
-        return uri != null
-                && uri.pathSegments != null
-                && uri.pathSegments.contains(CONTACT_US_PATH_SEGMENT)
+        return uri != null &&
+            uri.pathSegments != null &&
+            uri.pathSegments.contains(CONTACT_US_PATH_SEGMENT)
     }
 
     override fun handleBranchIOLinkClick(url: String) {
@@ -191,15 +203,14 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                 }
             }
         } else {
-            //Necessary to do it this way to prevent PDP opened in seller app
-            //otherwise someone other than the owner can access PDP with topads promote page
+            // Necessary to do it this way to prevent PDP opened in seller app
+            // otherwise someone other than the owner can access PDP with topads promote page
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(element.productUrl))
             startActivity(browserIntent)
         }
     }
 
     override fun onRetrySendImage(element: ImageUploadUiModel) {
-
     }
 
     override fun onReceiveStartTypingEvent() {
@@ -220,11 +231,11 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
-        //Please override if you use
+        // Please override if you use
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
-        //Please override if you use
+        // Please override if you use
     }
 
     open fun updateViewData(it: ChatroomViewModel) {

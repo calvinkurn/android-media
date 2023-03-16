@@ -1,8 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.sellerhome">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-sdk tools:overrideLibrary="androidx.wear.remote.interactions" />
 
     <application
         android:allowBackup="true"
@@ -10,7 +13,7 @@
         android:supportsRtl="true">
         <activity
             android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
-            android:exported="false"
+            android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SellerHomeTheme"

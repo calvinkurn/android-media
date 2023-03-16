@@ -13,7 +13,8 @@ import javax.inject.Inject
 @GqlQuery("GetWishlistCollectionItemsQuery", GetWishlistCollectionItemsUseCase.query)
 class GetWishlistCollectionItemsUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
-    dispatchers: CoroutineDispatchers) :
+    dispatchers: CoroutineDispatchers
+) :
     CoroutineUseCase<GetWishlistCollectionItemsParams, GetWishlistCollectionItemsResponse>(dispatchers.io) {
 
     override fun graphqlQuery(): String = query
@@ -33,6 +34,12 @@ class GetWishlistCollectionItemsUseCase @Inject constructor(
         const val query = """
             query GetWishlistCollectionItems(${'$'}params:GetWishlistCollectionItemsParams) {
                  get_wishlist_collection_items(params:${'$'}params){
+                    add_wishlist_bulk_config {
+                      max_bulk
+                      toaster {
+                        message
+                      }
+                    }
                     page
                     limit
                     offset

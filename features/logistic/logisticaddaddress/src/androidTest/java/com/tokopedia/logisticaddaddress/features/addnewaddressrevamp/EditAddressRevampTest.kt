@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
 import com.tokopedia.logisticaddaddress.test.R
@@ -61,9 +61,9 @@ class EditAddressRevampTest {
         val queryPath = "tracker/logistic/editaddress_user_revamp_positive.json"
         editAddressRevamp {
             launchWithParam(context, mActivityTestRule)
+            fillReceiver(RECEIVER)
             fillAddress(ADDRESS)
             fillPhoneNumber(PHONE)
-            fillReceiver(RECEIVER)
             onClickChangePinpoint()
             onClickCariUlangAlamat()
             searchAddressStreet(KEYWORD)

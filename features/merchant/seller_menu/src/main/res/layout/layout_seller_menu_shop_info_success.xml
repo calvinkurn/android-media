@@ -8,9 +8,9 @@
 
     <View
         android:id="@+id/outerCircle"
-        android:layout_width="@dimen/layout_lvl8"
+        android:layout_width="96dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         android:background="@drawable/setting_image_circular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
@@ -40,7 +40,7 @@
         android:id="@+id/shopName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
@@ -91,8 +91,8 @@
         android:id="@+id/shopScoreLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/outerCircle">
@@ -129,8 +129,8 @@
             android:id="@+id/shopScoreChevronRight"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="@dimen/spacing_lvl1"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="8dp"
             app:icon_name="CHEVRON_RIGHT"
             app:icon_color_light_enable="@color/Unify_N400"
             tools:ignore="ContentDescription" />

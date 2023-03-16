@@ -1,6 +1,9 @@
 package com.tokopedia.discovery2
 
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapperTest
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ContentCard.ContentCardItemModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ContentCard.ContentCardModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewModelTest
@@ -61,6 +64,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.slid
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.thematicheader.ThematicHeaderViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale.TimerSprintSaleItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tndbanner.DiscoveryTNDBannerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsItemViewModelTest
@@ -147,6 +151,10 @@ import org.junit.runners.Suite
     ProductBundlingViewModelTest::class,
     DefaultComponentViewModelTest::class,
     ProductCardSprintSaleCarouselViewModelTest::class,
+    ThematicHeaderViewModelTest::class,
+    ContentCardModelTest::class,
+    ContentCardItemModelTest::class,
+    DiscoveryListViewModelTest::class,
 )
 
 

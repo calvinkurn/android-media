@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
@@ -46,48 +45,73 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             val shimmerView = constraintLayout.inflateLayout(multiBannerViewModel.layoutSelector(), false)
             constraintLayout.addView(shimmerView)
         }
-        multiBannerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { item ->
+        multiBannerViewModel.checkForDarkMode(itemView.context)
+        multiBannerViewModel.getComponentData().observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
 
-            if (!item.data.isNullOrEmpty()) {
-                constraintLayout.removeAllViews()
-                bannersItemList = ArrayList()
-                bannerName = item?.name ?: ""
-                addBanners(item.data!!,item.properties?.compType)
-            }
-        })
-
-        multiBannerViewModel.getPushBannerStatusData().observe(fragment.viewLifecycleOwner, Observer {
-            updateImage(it.first)
-            if (it.second.isNotEmpty()) {
-                Toaster.make(customItemView, it.second, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR)
-            }
-        })
-
-        multiBannerViewModel.getPushBannerSubscriptionData().observe(fragment.viewLifecycleOwner, Observer {
-            updateImage(it)
-        })
-        multiBannerViewModel.getShowLoginData().observe(fragment.viewLifecycleOwner, Observer {
-            if (it) context.startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
-        })
-
-        multiBannerViewModel.checkApplink().observe(fragment.viewLifecycleOwner, Observer { applink ->
-            try {
-                if (applink.isNotEmpty()) {
-                    Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL,
-                            customItemView.context.getString(R.string.coupon_code_btn_text), View.OnClickListener {
-                        multiBannerViewModel.navigate(customItemView.context, applink)
-                    })
-                } else {
-                    Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                if (!item.data.isNullOrEmpty()) {
+                    constraintLayout.removeAllViews()
+                    bannersItemList = ArrayList()
+                    bannerName = item?.name ?: ""
+                    addBanners(item.data!!, item.properties?.compType)
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
-        })
+        )
 
-        multiBannerViewModel.isPageRefresh().observe(fragment.viewLifecycleOwner, Observer {
-            if (it) fragment.startActivityForResult(RouteManager.getIntent(fragment.context, ApplinkConst.LOGIN), PAGE_REFRESH_LOGIN)
-        })
+        multiBannerViewModel.getPushBannerStatusData().observe(
+            fragment.viewLifecycleOwner,
+            Observer {
+                updateImage(it.first)
+                if (it.second.isNotEmpty()) {
+                    Toaster.make(customItemView, it.second, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                }
+            }
+        )
+
+        multiBannerViewModel.getPushBannerSubscriptionData().observe(
+            fragment.viewLifecycleOwner,
+            Observer {
+                updateImage(it)
+            }
+        )
+        multiBannerViewModel.getShowLoginData().observe(
+            fragment.viewLifecycleOwner,
+            Observer {
+                if (it) context.startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+            }
+        )
+
+        multiBannerViewModel.checkApplink().observe(
+            fragment.viewLifecycleOwner,
+            Observer { applink ->
+                try {
+                    if (applink.isNotEmpty()) {
+                        Toaster.make(
+                            customItemView,
+                            fragment.getString(R.string.coupon_code_successfully_copied),
+                            Toast.LENGTH_SHORT,
+                            Toaster.TYPE_NORMAL,
+                            customItemView.context.getString(R.string.coupon_code_btn_text),
+                            View.OnClickListener {
+                                multiBannerViewModel.navigate(customItemView.context, applink)
+                            }
+                        )
+                    } else {
+                        Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        )
+
+        multiBannerViewModel.isPageRefresh().observe(
+            fragment.viewLifecycleOwner,
+            Observer {
+                if (it) fragment.startActivityForResult(RouteManager.getIntent(fragment.context, ApplinkConst.LOGIN), PAGE_REFRESH_LOGIN)
+            }
+        )
 
         multiBannerViewModel.hideShimmer.observe(fragment.viewLifecycleOwner, { shouldHideShimmer ->
             if (shouldHideShimmer) {
@@ -100,7 +124,6 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
                 handleError()
             }
         })
-
     }
 
     private fun handleError() {
@@ -111,7 +134,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             val errorLoadUnifyView = emptyStateView.viewEmptyState
             errorLoadUnifyView.title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
             errorLoadUnifyView.description?.text =
-                    context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
+                context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
             errorLoadUnifyView.refreshBtn?.setOnClickListener {
                 hide()
                 constraintLayout.removeAllViews()
@@ -125,8 +148,8 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     }
 
     private fun updateImage(position: Int) {
-        if (bannersItemList.isNotEmpty() && position != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
-                && !bannersItemList[position].bannerItemData.registeredImageApp.isNullOrEmpty()
+        if (bannersItemList.isNotEmpty() && position != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS &&
+            !bannersItemList[position].bannerItemData.registeredImageApp.isNullOrEmpty()
         ) {
             (bannersItemList[position].bannerImageView as ImageUnify).apply {
                 scaleType = ImageView.ScaleType.FIT_CENTER
@@ -143,7 +166,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         /*coupons can be there in form of banners so we need to set hardcoded values for component_name
          (i have added componentPromoName key in dataItem for it)*/
         // purpose - we need to send different GTM in case of coupons
-        multiBannerViewModel.setComponentPromoNameForCoupons(bannerName,data)
+        multiBannerViewModel.setComponentPromoNameForCoupons(bannerName, data)
 
         for ((index, bannerItem) in data.withIndex()) {
             var bannerView: BannerItem
@@ -153,11 +176,15 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             }
             bannerItem.positionForParentItem = multiBannerViewModel.position
             bannerView = if (index == 0) {
-                BannerItem(bannerItem, constraintLayout, constraintSet, width, height,bannerItem.itemWeight, index,
-                        null, context, isLastItem,compType)
+                BannerItem(
+                    bannerItem, constraintLayout, constraintSet, width, height, bannerItem.itemWeight, index,
+                    null, context, isLastItem, compType
+                )
             } else {
-                BannerItem(bannerItem, constraintLayout, constraintSet, width, height,bannerItem.itemWeight, index,
-                        bannersItemList.get(index - 1), context, isLastItem,compType)
+                BannerItem(
+                    bannerItem, constraintLayout, constraintSet, width, height, bannerItem.itemWeight, index,
+                    bannersItemList.get(index - 1), context, isLastItem, compType
+                )
             }
             bannersItemList.add(bannerView)
 
@@ -168,15 +195,15 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     }
 
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
-        if(data.firstOrNull()?.action == BANNER_ACTION_CODE){
+        if (data.firstOrNull()?.action == BANNER_ACTION_CODE) {
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoBannerImpression(
-                    data
+                data
             )
-        }else {
+        } else {
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-                    data,
-                    null,
-                    Utils.getUserId(fragment.context)
+                data,
+                null,
+                Utils.getUserId(fragment.context)
             )
         }
     }
@@ -188,12 +215,12 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
             multiBannerViewModel.onBannerClicked(index, context)
-            if(itemData.action == BANNER_ACTION_CODE){
+            if (itemData.action == BANNER_ACTION_CODE) {
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                        ?.trackPromoBannerClick(itemData, index)
-            }else {
+                    ?.trackPromoBannerClick(itemData, index)
+            } else {
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                        ?.trackBannerClick(itemData, index, Utils.getUserId(fragment.context))
+                    ?.trackBannerClick(itemData, index, Utils.getUserId(fragment.context))
             }
         }
     }

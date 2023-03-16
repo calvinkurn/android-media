@@ -156,8 +156,13 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         val propertyLayoutWithIcon = LinearLayout(itemView.context)
         propertyLayoutWithIcon.orientation = LinearLayout.HORIZONTAL
         val propertiesBinding = LayoutInflater.from(itemView.context)
-            .inflate(R.layout.item_addon_checkout_identifier, null, false)
-        val propertyIcon = propertiesBinding.findViewById<ImageUnify>(R.id.checkout_iv_identifier)
+            .inflate(
+                com.tokopedia.purchase_platform.common.R.layout.item_product_info_add_on,
+                null,
+                false
+            )
+        val propertyIcon =
+            propertiesBinding.findViewById<ImageUnify>(com.tokopedia.purchase_platform.common.R.id.pp_iv_product_info_add_on)
         if (propertyIcon != null && !TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.iconUrl)) {
             ImageHandler.loadImageWithoutPlaceholderAndError(
                 propertyIcon,
@@ -165,7 +170,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             )
         }
         val propertyText =
-            propertiesBinding.findViewById<Typography>(R.id.checkout_label_identifier)
+            propertiesBinding.findViewById<Typography>(com.tokopedia.purchase_platform.common.R.id.pp_label_product_info_add_on)
         if (propertyText != null && !TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.text)) {
             propertyText.text = cartItemModel.ethicalDrugDataModel.text
         }
@@ -254,11 +259,17 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             if (cartItemModel.isBundlingItem) {
                 if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
                     tickerError.visible()
+                    tickerError.post {
+                        tickerError.requestLayout()
+                    }
                 } else {
                     tickerError.gone()
                 }
             } else {
                 tickerError.visible()
+                tickerError.post {
+                    tickerError.requestLayout()
+                }
             }
         } else {
             tickerError.gone()

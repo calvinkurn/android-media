@@ -1,0 +1,11 @@
+{
+  "talkCreateNewComment": {
+    "status": "OK",
+    "messageError": [],
+    "data": {
+      "isSuccess": 1,
+      "commentID": 642246118
+    },
+    "messageErrorOriginal": []
+  }
+}

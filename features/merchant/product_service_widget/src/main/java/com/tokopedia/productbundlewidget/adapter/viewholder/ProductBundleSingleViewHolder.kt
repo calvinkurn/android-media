@@ -114,12 +114,7 @@ class ProductBundleSingleViewHolder(
             )
         }
 
-        buttonAtc?.setOnClickListener {
-            listener?.onSingleBundleActionButtonClicked(
-                bundleDetail,
-                product
-            )
-        }
+        updateActionButtonListener(bundleDetail, product)
 
         bundleDetailAdapter.setSelectionListener { selectedBundle ->
             renderBundlePriceDetails(selectedBundle)
@@ -130,6 +125,7 @@ class ProductBundleSingleViewHolder(
                 selectedBundle,
                 bundle.bundleName
             )
+            updateActionButtonListener(selectedBundle, product)
         }
     }
 
@@ -138,7 +134,8 @@ class ProductBundleSingleViewHolder(
             bundleDetail.useProductSoldInfo -> bundleDetail.productSoldInfo
             bundleDetail.isPreOrder -> bundleDetail.preOrderInfo
             bundleDetail.totalSold.isZero() -> ""
-            else -> itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
+            else -> itemView.context.getString(R.string.product_bundle_bundle_sold,
+                bundleDetail.totalSold.toString())
         }
     }
 
@@ -191,6 +188,15 @@ class ProductBundleSingleViewHolder(
                 paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             }
             typographyBundleProductSavingAmount?.text = HtmlLinkHelper(ctx, bundle.savingAmountWording).spannedString
+        }
+    }
+
+    private fun updateActionButtonListener(
+        bundleDetail: BundleDetailUiModel,
+        product: BundleProductUiModel
+    ) {
+        buttonAtc?.setOnClickListener {
+            listener?.onSingleBundleActionButtonClicked(bundleDetail, product)
         }
     }
 

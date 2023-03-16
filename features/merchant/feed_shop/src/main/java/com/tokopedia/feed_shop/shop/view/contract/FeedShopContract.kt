@@ -41,7 +41,7 @@ interface FeedShopContract {
 
         fun onGotoLearnMoreClicked(url: String): Boolean
 
-        fun onAddToCartSuccess()
+        fun onAddToCartSuccess(productId: String)
 
         fun onAddToCartFailed(pdpAppLink: String)
     }

@@ -27,39 +27,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
  */
 public class NetworkErrorHelper {
 
-
-    public static void showDialog(Context context, final RetryClickedListener listener) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        LayoutInflater li = LayoutInflater.from(context);
-        @SuppressLint("InflateParams")
-        View promptsView = li.inflate(R.layout.error_network_dialog, null);
-        TextView msg = (TextView) promptsView.findViewById(R.id.msg);
-        String noConnection = context.getResources().getString(R.string.msg_no_connection) + ".\n"
-                + context.getResources().getString(R.string.error_no_connection2) + ".";
-        msg.setText(noConnection);
-        dialog.setView(promptsView);
-        if (listener != null) {
-            dialog.setPositiveButton(context.getString(R.string.title_try_again),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            listener.onRetryClicked();
-                            dialog.dismiss();
-                        }
-                    });
-        } else {
-            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-        }
-        Dialog finalDialog = dialog.create();
-        finalDialog.setCanceledOnTouchOutside(false);
-        finalDialog.show();
-    }
-
     @SuppressWarnings("Range")
     public static SnackbarRetry createSnackbarWithAction(CoordinatorLayout coordinatorLayout, final RetryClickedListener listener) {
         return new SnackbarRetry(SnackbarManager.make(coordinatorLayout,

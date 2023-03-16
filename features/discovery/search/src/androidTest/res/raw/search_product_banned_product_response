@@ -63,7 +63,7 @@
               {
                 "name": "Official Store",
                 "key": "official",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
                 "value": "true",
                 "is_new": false,
                 "input_type": "checkbox",
@@ -97,7 +97,7 @@
               {
                 "name": "Power Merchant",
                 "key": "goldmerchant",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
                 "value": "true",
                 "is_new": false,
                 "input_type": "checkbox",

@@ -55,9 +55,9 @@ internal class SearchProductFilterTest: ProductListPresenterTestFixtures() {
 
     private fun `Then verify view interactions for open filter page first time`(dynamicFilterModel: DynamicFilterModel) {
         verify {
-            productListView.sendTrackingOpenFilterPage()
-            productListView.openBottomSheetFilter(null)
-            productListView.setDynamicFilter(dynamicFilterModel)
+            bottomSheetFilterView.sendTrackingOpenFilterPage()
+            bottomSheetFilterView.openBottomSheetFilter(null, bottomSheetFilterPresenter)
+            bottomSheetFilterView.setDynamicFilter(dynamicFilterModel)
         }
     }
 
@@ -102,7 +102,7 @@ internal class SearchProductFilterTest: ProductListPresenterTestFixtures() {
 
     private fun `Given view will set default dynamic filter`(dynamicFilterModelSlot: CapturingSlot<DynamicFilterModel>) {
         every {
-            productListView.setDynamicFilter(capture(dynamicFilterModelSlot))
+            bottomSheetFilterView.setDynamicFilter(capture(dynamicFilterModelSlot))
         } just runs
     }
 
@@ -161,7 +161,7 @@ internal class SearchProductFilterTest: ProductListPresenterTestFixtures() {
         keyword: String,
         mapParameter: Map<String, Any>,
     ) {
-        every { productListView.queryKey } returns keyword
+        every { queryKeyProvider.queryKey } returns keyword
 
         productListPresenter.openFilterPage(mapParameter)
         productListPresenter.onApplySortFilter(mapParameter)
@@ -170,13 +170,13 @@ internal class SearchProductFilterTest: ProductListPresenterTestFixtures() {
 
     private fun `Then verify interactions open filter page second time after first time success`(dynamicFilterModel: DynamicFilterModel) {
         verifyOrder {
-            productListView.sendTrackingOpenFilterPage()
-            productListView.openBottomSheetFilter(null)
+            bottomSheetFilterView.sendTrackingOpenFilterPage()
+            bottomSheetFilterView.openBottomSheetFilter(null, bottomSheetFilterPresenter)
             getDynamicFilterUseCase.execute(any(), any())
-            productListView.setDynamicFilter(dynamicFilterModel)
+            bottomSheetFilterView.setDynamicFilter(dynamicFilterModel)
 
-            productListView.sendTrackingOpenFilterPage()
-            productListView.openBottomSheetFilter(dynamicFilterModel)
+            bottomSheetFilterView.sendTrackingOpenFilterPage()
+            bottomSheetFilterView.openBottomSheetFilter(dynamicFilterModel, bottomSheetFilterPresenter)
         }
     }
 
@@ -208,15 +208,15 @@ internal class SearchProductFilterTest: ProductListPresenterTestFixtures() {
 
     private fun `Then verify interactions for open filter page second time after first time failed`(dynamicFilterModelSlot: CapturingSlot<DynamicFilterModel>, dynamicFilterModel: DynamicFilterModel) {
         verifyOrder {
-            productListView.sendTrackingOpenFilterPage()
-            productListView.openBottomSheetFilter(null)
+            bottomSheetFilterView.sendTrackingOpenFilterPage()
+            bottomSheetFilterView.openBottomSheetFilter(null, bottomSheetFilterPresenter)
             getDynamicFilterUseCase.execute(any(), any())
-            productListView.setDynamicFilter(capture(dynamicFilterModelSlot))
+            bottomSheetFilterView.setDynamicFilter(capture(dynamicFilterModelSlot))
 
-            productListView.sendTrackingOpenFilterPage()
-            productListView.openBottomSheetFilter(null)
+            bottomSheetFilterView.sendTrackingOpenFilterPage()
+            bottomSheetFilterView.openBottomSheetFilter(null, bottomSheetFilterPresenter)
             getDynamicFilterUseCase.execute(any(), any())
-            productListView.setDynamicFilter(dynamicFilterModel)
+            bottomSheetFilterView.setDynamicFilter(dynamicFilterModel)
         }
     }
 
@@ -235,10 +235,10 @@ internal class SearchProductFilterTest: ProductListPresenterTestFixtures() {
 
     private fun `Then verify interactions bottom sheet filter opened only once`(dynamicFilterModel: DynamicFilterModel) {
         verify(exactly = 1) {
-            productListView.sendTrackingOpenFilterPage()
-            productListView.openBottomSheetFilter(null)
+            bottomSheetFilterView.sendTrackingOpenFilterPage()
+            bottomSheetFilterView.openBottomSheetFilter(null, bottomSheetFilterPresenter)
             getDynamicFilterUseCase.execute(any(), any())
-            productListView.setDynamicFilter(dynamicFilterModel)
+            bottomSheetFilterView.setDynamicFilter(dynamicFilterModel)
         }
     }
 

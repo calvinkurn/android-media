@@ -12,18 +12,19 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.widget.R
-import com.tokopedia.unifyprinciples.R as unifyR
-import com.tokopedia.play_common.R as playCommonR
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.getWidthAndHeight
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.play_common.R as playCommonR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 11/01/22
@@ -42,6 +43,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
     private val pvVideo: PlayerView
     private val reminderBadge: View
     private val ivReminder: IconUnify
+    private val ivAction: IconUnify
     private val liveBadge: View
     private val totalViewBadge: View
     private val tvOnlyLive: TextView
@@ -67,6 +69,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         pvVideo = view.findViewById(R.id.play_widget_player_view)
         reminderBadge = view.findViewById(R.id.view_reminder)
         ivReminder = view.findViewById(R.id.play_widget_iv_reminder)
+        ivAction = view.findViewById(R.id.play_widget_iv_action)
         liveBadge = view.findViewById(R.id.play_widget_badge_live)
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
         tvOnlyLive = view.findViewById(R.id.tv_only_live)
@@ -95,6 +98,11 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     fun setModel(model: PlayWidgetChannelUiModel) {
         this.mModel = model
+
+        layoutParams = ViewGroup.LayoutParams(
+            model.gridType.getWidthAndHeight(context).first,
+            model.gridType.getWidthAndHeight(context).second
+        )
 
         thumbnail.setImageUrl(model.video.coverUrl)
 
@@ -127,16 +135,22 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         setOnClickListener {
             mListener?.onChannelClicked(it, model)
         }
+
+        ivAction.setOnClickListener {
+            mListener?.onMenuActionButtonClicked(it, model)
+        }
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
         val isLiveBadgeShown = model.video.isLive && model.channelType == PlayWidgetChannelType.Live
+        ivAction.showWithCondition(model.hasAction)
         liveBadge.showWithCondition(isLiveBadgeShown)
         reminderBadge.gone()
         totalViewBadge.showWithCondition(model.totalView.isVisible)
     }
 
     private fun setUpcomingModel() {
+        ivAction.gone()
         liveBadge.gone()
         reminderBadge.visible()
         totalViewBadge.gone()
@@ -216,6 +230,11 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         fun onToggleReminderChannelClicked(
             item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType
+        )
+
+        fun onMenuActionButtonClicked(
+            view: View,
+            item: PlayWidgetChannelUiModel,
         )
     }
 }

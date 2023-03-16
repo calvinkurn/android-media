@@ -30,10 +30,9 @@ import com.tokopedia.play_common.sse.PlayChannelSSEImpl
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
-import com.tokopedia.play_common.websocket.PlayWebSocket
-import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -42,7 +41,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
 import javax.inject.Named
 
 /**
@@ -53,6 +51,13 @@ class PlayTestModule(
     val mContext: Context,
     val trackingQueue: TrackingQueue = TrackingQueue(mContext),
     val userSession: (appContext: Context) -> UserSessionInterface = { UserSession(it) },
+    val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(mContext),
+    val playPreference: (appContext: Context) -> PlayPreference = {
+        PlayPreference(
+            it,
+            userSession.invoke(it)
+        )
+    }
 ) {
 
     @PlayScope
@@ -123,7 +128,7 @@ class PlayTestModule(
     @PlayScope
     @Provides
     fun provideRemoteConfig(): RemoteConfig {
-        return FirebaseRemoteConfigImpl(mContext)
+        return remoteConfig
     }
 
     @PlayScope
@@ -148,17 +153,6 @@ class PlayTestModule(
     @Provides
     fun provideHtmlTextTransformer(): HtmlTextTransformer {
         return DefaultHtmlTextTransformer()
-    }
-
-    @Provides
-    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, localCacheHandler: LocalCacheHandler): PlayWebSocket {
-        return PlayWebSocketImpl(
-            OkHttpClient.Builder(),
-            userSession,
-            dispatchers,
-            mContext,
-            localCacheHandler,
-        )
     }
 
     @Provides
@@ -189,4 +183,10 @@ class PlayTestModule(
     @Provides
     fun providePlayShareExperience(@ApplicationContext context: Context): PlayShareExperience =
         PlayShareExperienceImpl(context)
+
+    @PlayScope
+    @Provides
+    fun provideSharedPref(@ApplicationContext context: Context): PlayPreference {
+        return playPreference(context)
+    }
 }
