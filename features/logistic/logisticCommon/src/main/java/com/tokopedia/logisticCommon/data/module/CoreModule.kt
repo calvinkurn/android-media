@@ -12,9 +12,8 @@ class CoreModule {
 
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository =
-            GraphqlInteractor.getInstance().graphqlRepository
+        GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
 }
