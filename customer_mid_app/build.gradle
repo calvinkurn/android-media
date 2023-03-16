@@ -264,13 +264,6 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.libraries.journeyDebuggerNoop)
     }
-
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation projectOrAar(rootProject.ext.libraries.loginHelper)
-    } else {
-        implementation projectOrAar(rootProject.ext.libraries.loginHelperNoop)
-    }
-
     // in~house dependencies
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager

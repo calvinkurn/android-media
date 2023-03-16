@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity() {
          * Put your default applink here
          */
         //   return "tokopedia-android-internal://global/login-helper"
-        return "tokopedia://customercare"
+        return ""
     }
 
     data class Model(
