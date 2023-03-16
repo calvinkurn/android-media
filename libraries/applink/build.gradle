@@ -46,7 +46,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
-
+    implementation projectOrAar(rootProject.ext.libraries.deepLinkAnnotation)
+    kapt projectOrAar(rootProject.ext.libraries.deepLinkAnnotation)
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation rootProject.ext.testDependencies.testCore

@@ -2,6 +2,7 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
+import com.example.tokopedia_deeplink_annotation.TokopediaAppLink
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory
@@ -103,6 +104,70 @@ import com.tokopedia.config.GlobalConfig
  * tokopedia://product/add and tokopedia://product/{id}
  * tokopedia://product/add will be mapped to tokopedia-android-internal:// to prevent conflict.
  */
+@TokopediaAppLink(ApplinkConst.SHOP, dlpLogic = DLP.DLPType.MATCH_PATTERN)
+object ShopCustomMapping : CustomAppLinkMapping {
+    override fun customDest(ctx: Context, uri: Uri, deeplink: String, ids: List<String>?): String {
+        return getShopPageInternalAppLink(
+            ctx,
+            uri,
+            deeplink,
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE, ids?.getOrNull(0)),
+            ids?.getOrNull(0).orEmpty()
+        )
+    }
+}
+
+@TokopediaAppLink(ApplinkConst.SHOP_HOME, dlpLogic = DLP.DLPType.MATCH_PATTERN)
+object ShopHomeCustomMapping : CustomAppLinkMapping {
+    override fun customDest(ctx: Context, uri: Uri, deeplink: String, ids: List<String>?): String {
+        return getShopPageInternalAppLink(
+            ctx,
+            uri,
+            deeplink,
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_HOME, ids?.getOrNull(0)),
+            ids?.getOrNull(0).orEmpty()
+        )
+    }
+}
+
+@TokopediaAppLink(ApplinkConst.SHOP_PRODUCT, dlpLogic = DLP.DLPType.MATCH_PATTERN)
+object ShopProductCustomMapping : CustomAppLinkMapping {
+    override fun customDest(ctx: Context, uri: Uri, deeplink: String, ids: List<String>?): String {
+        return getShopPageInternalAppLink(
+            ctx,
+            uri,
+            deeplink,
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT, ids?.getOrNull(0)),
+            ids?.getOrNull(0).orEmpty()
+        )
+    }
+}
+
+@TokopediaAppLink(ApplinkConst.SHOP_FEED, dlpLogic = DLP.DLPType.MATCH_PATTERN)
+object ShopFeedCustomMapping : CustomAppLinkMapping {
+    override fun customDest(ctx: Context, uri: Uri, deeplink: String, ids: List<String>?): String {
+        return getShopPageInternalAppLink(
+            ctx,
+            uri,
+            deeplink,
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, ids?.getOrNull(0)),
+            ids?.getOrNull(0).orEmpty()
+        )
+    }
+}
+
+@TokopediaAppLink(ApplinkConst.SHOP_REVIEW, dlpLogic = DLP.DLPType.MATCH_PATTERN)
+object ShopReviewCustomMapping : CustomAppLinkMapping {
+    override fun customDest(ctx: Context, uri: Uri, deeplink: String, ids: List<String>?): String {
+        return getShopPageInternalAppLink(
+            ctx,
+            uri,
+            deeplink,
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, ids?.getOrNull(0)),
+            ids?.getOrNull(0).orEmpty()
+        )
+    }
+}
 object DeeplinkMapper {
 
     private const val TOKOPEDIANOW_SEARCH_PATH = "/now/search"
@@ -393,16 +458,6 @@ object DeeplinkMapper {
             DLP.matchPattern(ApplinkConst.PROMO_DETAIL,
                 targetDeeplink = { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalPromo.PROMO_DETAIL, idList?.getOrNull(0)) }),
             DLP.matchPattern(ApplinkConst.CONTENT_EXPLORE) { _, _, deeplink, _ -> getRegisteredNavigationHomeContentExplore(deeplink) },
-            DLP(MatchPattern(ApplinkConst.SHOP),
-                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
-            DLP.matchPattern(ApplinkConst.SHOP_HOME,
-                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_HOME, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
-            DLP.matchPattern(ApplinkConst.SHOP_PRODUCT,
-                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
-            DLP.matchPattern(ApplinkConst.SHOP_FEED,
-                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
-            DLP.matchPattern(ApplinkConst.SHOP_REVIEW,
-                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
             DLP.matchPattern(ApplinkConst.SHOP_FOLLOWER_LIST,
                     targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST_WITH_SHOP_ID, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
             DLP.matchPattern(ApplinkConst.SHOP_SETTINGS_CUSTOMER_APP,
@@ -545,7 +600,9 @@ object DeeplinkMapper {
         )
 
     fun getTokopediaSchemeList():List<DLP>{
-        return deeplinkPatternTokopediaSchemeList
+        return deeplinkPatternTokopediaSchemeList.apply {
+            addAll(TokopediaAppLinkMapper.listCustomerAppMappedAppLink())
+        }
     }
 
     /**
@@ -738,6 +795,12 @@ class Host(target: String) : DLPLogic(logic = { _, uri, _ ->
 class DLP(
         val logic: DLPLogic,
         val targetDeeplink: (context: Context, uri: Uri, deeplink: String, idList: List<String>?) -> String) {
+    object DLPType{
+        const val START_WITH = "StartsWith"
+        const val MATCH_PATTERN = "MatchPattern"
+        const val EXACT = "Exact"
+        const val HOST = "Host"
+    }
     companion object {
         fun startWith(deeplinkCheck: String, targetDeeplink: String): DLP {
             return DLP(StartsWith(deeplinkCheck)) { _, _, _, _ -> targetDeeplink }
