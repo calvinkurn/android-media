@@ -99,7 +99,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
 /**
  * Created By : Muhammad Furqan on 01/02/23
  */
-class FeedFragment(private val commentAnalytics: ContentCommentAnalytics.Creator) :
+class FeedFragment :
     BaseDaggerFragment(),
     FeedListener,
     ContentThreeDotsMenuBottomSheet.Listener,
@@ -128,6 +128,10 @@ class FeedFragment(private val commentAnalytics: ContentCommentAnalytics.Creator
     @Inject
     lateinit var feedAnalytics: FeedAnalytics
 
+    @Inject
+    lateinit var commentAnalytics: ContentCommentAnalytics.Creator
+
+    @Inject
     lateinit var fragmentFactory: FragmentFactory
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
@@ -347,7 +351,7 @@ class FeedFragment(private val commentAnalytics: ContentCommentAnalytics.Creator
     }
 
     override fun onMenuBottomSheetCloseClick(contentId: String) {
-        //add analytics(if any)
+        // add analytics(if any)
     }
 
     override fun onSharePostClicked(
@@ -1030,7 +1034,7 @@ class FeedFragment(private val commentAnalytics: ContentCommentAnalytics.Creator
                 childFragment.setEntrySource(commentEntrySource)
                 childFragment.setAnalytic(
                     commentAnalytics.create(
-                        PageSource.Feed(currentTrackerData?.activityId.orEmpty()), //PostId
+                        PageSource.Feed(currentTrackerData?.activityId.orEmpty()), // PostId
                         model = ContentCommentAnalyticsModel(
                             eventCategory = FeedAnalytics.CATEGORY_UNIFIED_FEED,
                             eventLabel = eventLabel
