@@ -21,9 +21,9 @@
         app:use_controller="false" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_feed_video"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:id="@+id/loader_feed_video"
         android:layout_gravity="center_horizontal"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -41,6 +41,9 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintVertical_chainStyle="packed"
         tools:visibility="visible" />
 
     <include
@@ -52,24 +55,44 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/tv_feed_caption"
         app:layout_constraintEnd_toStartOf="@id/like_button"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_tag_view" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_feed_caption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_NN0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/like_button"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@id/rv_feed_asgc_tags"
+        app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
+        app:layout_constraintTop_toBottomOf="@id/layout_author_info"
+        app:layout_constraintVertical_bias="100"
         app:typographyType="paragraph_2"
         tools:text="Post Caption" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_feed_asgc_tags"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@id/v_campaign_tag"
+        app:layout_constraintEnd_toEndOf="@id/layout_author_info"
+        app:layout_constraintStart_toStartOf="@id/layout_author_info"
+        app:layout_constraintTop_toBottomOf="@id/tv_feed_caption" />
+
+    <View
+        android:id="@+id/v_campaign_tag"
+        android:layout_width="0dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/layout_author_info"
+        app:layout_constraintStart_toStartOf="@id/layout_author_info"
+        app:layout_constraintTop_toBottomOf="@id/rv_feed_asgc_tags" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/like_button"

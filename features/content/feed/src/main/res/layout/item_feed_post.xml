@@ -25,7 +25,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="100"
+        app:layout_constraintVertical_bias="1"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <include
@@ -38,8 +38,6 @@
         app:layout_constraintBottom_toTopOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/indicator_feed_content"
-        app:layout_constraintVertical_bias="100"
-        app:layout_constraintVertical_chainStyle="packed"
         tools:visibility="visible" />
 
     <include
@@ -52,9 +50,7 @@
         app:layout_constraintBottom_toTopOf="@id/tv_feed_caption"
         app:layout_constraintEnd_toStartOf="@id/like_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_tag_view"
-        app:layout_constraintVertical_bias="100"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toBottomOf="@id/product_tag_view" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_feed_caption"
@@ -68,8 +64,6 @@
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
         app:layout_constraintTop_toBottomOf="@id/layout_author_info"
-        app:layout_constraintVertical_bias="100"
-        app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="paragraph_2"
         tools:text="Post Caption" />
 
@@ -81,9 +75,7 @@
         app:layout_constraintBottom_toTopOf="@id/v_campaign_tag"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
-        app:layout_constraintTop_toBottomOf="@id/tv_feed_caption"
-        app:layout_constraintVertical_bias="100"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toBottomOf="@id/tv_feed_caption" />
 
     <View
         android:id="@+id/v_campaign_tag"
@@ -94,9 +86,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
-        app:layout_constraintTop_toBottomOf="@id/rv_feed_asgc_tags"
-        app:layout_constraintVertical_bias="100"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toBottomOf="@id/rv_feed_asgc_tags" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/like_button"

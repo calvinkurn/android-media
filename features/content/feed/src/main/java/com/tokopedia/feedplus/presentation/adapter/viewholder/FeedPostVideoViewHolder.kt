@@ -8,6 +8,7 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostVideoBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
 import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
@@ -40,6 +41,7 @@ class FeedPostVideoViewHolder(
                 bindAuthor(element)
                 bindCaption(element)
                 bindProductTag(element)
+                bindAsgcTags(element)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(data.id)
@@ -90,6 +92,11 @@ class FeedPostVideoViewHolder(
             hasVoucher = data.hasVoucher,
             totalProducts = data.totalProducts
         )
+    }
+
+    private fun bindAsgcTags(model: FeedCardVideoContentModel) {
+        val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
+        asgcTagsView.bindData(model.type, model.campaign)
     }
 
     private fun bindVideoPlayer(element: FeedCardVideoContentModel?) {
