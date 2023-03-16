@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
@@ -54,6 +55,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import timber.log.Timber
+import java.net.URLEncoder
 import javax.inject.Inject
 
 class GiftBoxDailyFragment : GiftBoxBaseFragment() {
@@ -585,6 +587,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
+    private fun setClickEventOnSeru(){
+        tokoButtonContainer.btnThird.setOnClickListener {
+            GtmEvents.clickSeruButton(viewModel.campaignSlug.orEmpty())
+            RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/seru"))
+        }
+    }
+
     override fun playLoopSound() {
         // Don't want to play sound
     }
@@ -703,6 +712,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(alphaAnim, alphaAnimReminder)
         animatorSet.duration = 200L
+        setClickEventOnSeru()
         return animatorSet
     }
 
@@ -810,6 +820,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     val rewardAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
                     val reminderAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(tokoButtonContainer.btnReminder, alphaProp)
                     animatorSet.playTogether(tapHintAnim, giftBoxAnim, rewardAlphaAnim, reminderAlphaAnim)
+                    setClickEventOnSeru()
                 } else {
                     val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(directGiftView, alphaProp)
                     animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim)

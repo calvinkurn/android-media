@@ -11,34 +11,24 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.gamification.R
-import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 import com.tokopedia.unifycomponents.LoaderUnify
 
 
-class GiftBoxReminderButton @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+class GiftBoxSeruButton @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     val LAYOUT_ID = R.layout.gami_giftbox_reminder_button
     val loaderReminder: LoaderUnify
     val imageBell: AppCompatImageView
 
-    private val bellImageSource : String
-    get() {
-        val isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
-        return if(isTablet){
-            "https://images.tokopedia.net/img/tseottk2bell4x.png"
-        }
-        else "https://images.tokopedia.net/img/tseottk2bell3x.png"
-    }
-
-    private val bellFilledImageSource : String
+    private val playImageSource : String
         get() {
             val isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
             return if(isTablet){
-                "https://images.tokopedia.net/img/tseottk2bellfilled4x.png"
+                "https://images.tokopedia.net/img/tseottk2game4x.png"
             }
-            else "https://images.tokopedia.net/img/tseottk2bellfilled3x.png"
+            else "https://images.tokopedia.net/img/tseottk2game3x.png"
         }
 
 
@@ -49,7 +39,6 @@ class GiftBoxReminderButton @JvmOverloads constructor(
 
         val paddingTop = context.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_green_gradient_btn_top_padding)?.toInt() ?: 0
         val paddingSide = context.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_green_gradient_btn_side_padding)?.toInt() ?: 0
-        val isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
 
         val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         lp.apply {
@@ -57,43 +46,23 @@ class GiftBoxReminderButton @JvmOverloads constructor(
         }
         layoutParams = lp
         background = ContextCompat.getDrawable(context, R.drawable.gami_bg_reminder)
-
-        imageBell.layoutParams.apply {
-            if (isTablet) {
-                width = dpToPx(28).toInt()
-                height = dpToPx(28).toInt()
-            }
-        }
-//        setIcon(false)
+        setIcon()
     }
 
-    fun performLoading() {
-        loaderReminder.visibility = View.VISIBLE
-        imageBell.visibility = View.INVISIBLE
-    }
-
-    fun stopLoading() {
-        loaderReminder.visibility = View.GONE
-        imageBell.visibility = View.VISIBLE
-    }
-
-    fun setIcon(isReminderSet: Boolean) {
-        val imageSource = if(isReminderSet) bellFilledImageSource else bellImageSource
+   private fun setIcon() {
         Glide.with(context)
             .asDrawable()
-            .load(imageSource)
+            .load(playImageSource)
             .into(object : CustomTarget<Drawable>(){
                 override fun onResourceReady(
                     resource: Drawable,
                     transition: Transition<in Drawable>?
                 ) {
-                    imageBell.setImageDrawable(resource)
+                   imageBell.setImageDrawable(resource)
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
                 }
-
             })
-
     }
 }
