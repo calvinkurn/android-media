@@ -1395,10 +1395,193 @@ class ProductListViewModelTest {
 
 
     //region handleSwitchPageMode
+    @Test
+    fun `when switch page mode, enableCheckbox and isDeletable should be true`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.TapCtaChangeProduct)
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstProduct.copy(enableCheckbox = true, isDeletable = true),
+                    secondProduct.copy(enableCheckbox = true, isDeletable = true)
+                ),
+                actual.products
+            )
+            assertEquals(PageMode.CREATE, actual.currentPageMode)
+
+            job.cancel()
+        }
+    }
     //endregion
 
 
     //region handleAddNewProductToSelection
+    @Test
+    fun `When add new product, then newly selected product should not be marked for removal`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(firstProduct.id))
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(secondProduct.id))
+
+            val thirdProduct = populateProduct().copy(id = 3)
+            val fourthProduct = populateProduct().copy(id = 4)
+            val newlySelectedProducts = listOf(thirdProduct, fourthProduct)
+
+            viewModel.processEvent(ProductListEvent.AddNewProductToSelection(newlySelectedProducts))
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    thirdProduct.copy(isSelected = false),
+                    fourthProduct.copy(isSelected = false)
+                ),
+                actual.products
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When add new product, if the newly added product already selected, product should be unchanged`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(firstProduct.id))
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(secondProduct.id))
+
+
+            val newlySelectedProducts = listOf(firstProduct, secondProduct)
+
+            viewModel.processEvent(ProductListEvent.AddNewProductToSelection(newlySelectedProducts))
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(firstProduct, secondProduct),
+                actual.products
+            )
+
+            job.cancel()
+        }
+    }
     //endregion
 
 
