@@ -96,6 +96,7 @@ open class BaseTokoNowViewModel(
                     deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
                 }
             }
+            miniCartItem?.quantity = quantity
         }, delay = CHANGE_QUANTITY_DELAY).let {
             changeQuantityJob = it
         }
