@@ -39,6 +39,9 @@ object TopAdsCommonConstant {
     const val CONST_3 = 3
     const val DEFAULT_NEW_KEYWORD_VALUE = "800"
     const val RECOMMENDATION_BUDGET_MULTIPLIER = 40
+    const val PRODUCT_ID = "productID"
+    const val SHOPID = "shopID"
+    const val SOURCE = "source"
 
     var TOPADS_GRAPHQL_TA_URL = when (TokopediaUrl.getInstance().TYPE) {
         Env.STAGING -> "https://gql-staging.tokopedia.com/graphql/ta"

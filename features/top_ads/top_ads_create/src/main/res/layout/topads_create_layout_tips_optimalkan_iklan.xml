@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tips"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/Unify_NN50"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_NN50"
+        android:padding="8dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/tips_logo"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/topads_horn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tips_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:text="@string/see_ads_performance_tips_heading"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintBottom_toBottomOf="@id/tips_logo"
+            app:layout_constraintStart_toEndOf="@id/tips_logo"
+            app:layout_constraintTop_toTopOf="@id/tips_logo"
+            app:typographyType="display_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/tips_expand_arrow"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_dropdown_arrow"
+            android:tint="@color/Unify_NN900"
+            app:layout_constraintBottom_toBottomOf="@id/tips_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tips_logo" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tips_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@id/tips_logo"
+            app:layout_constraintTop_toBottomOf="@id/tips_logo"
+            app:typographyType="paragraph_2"
+            tools:text="Buat produk lebih dikenal pembeli:\n   •  Tulis nama produk sesuai rumus Tokopedia: Nama Produk + Merek + Keterangan\n   •  Gunakan foto produk yang jernih\n   •  Tambahkan video produk yang menarik\n   •  Atur biaya iklan sesuai rekomendasi\n   •  Gunakan rekomendasi kata kunci\n\nTingkatkan penjualan produkmu\n   •  Tulis deskripsi produk yang informatif\n   •  Buat Diskon Toko untuk tarik minat pembeli\n   •  Upgrade toko ke Power Merchant untuk tingkatkan kepercayaan pembeli" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tips_view_more_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lihat Selengkapnya"
+            android:textColor="@color/Unify_GN500"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toBottomOf="@id/tips_description"
+            app:layout_constraintStart_toStartOf="@id/tips_description"/>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/tips_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tips_description,tips_view_more_button"
+                android:visibility="visible"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

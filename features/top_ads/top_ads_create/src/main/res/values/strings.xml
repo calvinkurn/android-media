@@ -35,6 +35,7 @@
     <string name="duplicate_group_name_error_wrong">Nama Grup Anda telah digunakan</string>
     <string name="atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk">Atur beberapa iklan sekaligus ke dalam satu grup sesuai kategori produk.</string>
     <string name="group_iklan">Grup Iklan</string>
+    <string name="no_of_products">Jumlah Produk</string>
     <string name="oops_produk_ntidak_ditemukan">Oops, produk tidak ditemukan</string>
     <string name="tip_biaya_iklan">Tips Biaya Iklan</string>
     <string name="tip_biaya_iklan_title">Tips biaya iklan</string>
@@ -192,6 +193,7 @@
     <string name="success_dailog_description">Kamu bisa tambah produk, atur biaya iklan, kata kunci, dan anggaran harian dengan klik tombol Atur Grup Iklan.</string>
     <string name="manage_ads_group">Atur Grup Iklan</string>
     <string name="ad_status">Status Iklan</string>
+    <string name="topads_create_failed_to_load">Gagal Memuat</string>
     <string name="your_product_ad_performance">Performa Iklan Produkmu</string>
     <string name="product_and_advertising_costs_are_set_automatically_by_topads">Produk dan biaya iklan diatur otomatis oleh TopAds.</string>
     <string name="see_group_settings">Lihat Pengaturan Grup</string>
@@ -209,6 +211,7 @@
     <string name="max_budget_rp">Maks. anggaran Rp</string>
     <string name="ad_groups_character_limit_error_msg">Grup iklan maksimal 70 karakter</string>
     <string name="see_ads_performance_tips_heading">Tips optimalkan iklan</string>
+    <string name="keywords">Kata Kunci</string>
     <string name="see_ads_performance_tips_description"><![CDATA[
     Buat produk lebih dikenal pembeli:
     <p>

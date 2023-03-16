@@ -51,6 +51,7 @@
     <string name="topads_hari_ini">Hari ini</string>
     <string name="topads_common_produk_terjual">Produk Terjual</string>
     <string name="topads_common_persentase_klik">Persentase Klik</string>
+    <string name="topads_common_total_sold">Total Terjual</string>
     <string name="topads_common_efektivitas_iklan">Efektivitas Iklan</string>
     <string name="topads_common_pendapatan">Pendapatan</string>
     <string name="topads_common_klik">Klik</string>

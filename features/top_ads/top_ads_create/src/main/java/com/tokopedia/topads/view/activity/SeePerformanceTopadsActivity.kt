@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spanned
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,8 +13,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.constants.MpTopadsConst
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.create.databinding.TopadsCreateBottomsheetSeePerformanceBinding
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
 import com.tokopedia.topads.view.fragment.AdsPerformanceDateRangePickerBottomSheet
@@ -22,7 +24,6 @@ import com.tokopedia.topads.view.fragment.ListBottomSheet
 import com.tokopedia.topads.view.model.SeePerformanceTopAdsViewModel
 import com.tokopedia.topads.view.uimodel.ItemListUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import java.text.DateFormat
@@ -30,6 +31,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Calendar
 import javax.inject.Inject
+
+private const val ROTATION_0 = 0f
+private const val ROTATION_180 = 180f
 
 class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAdsComponent> {
 
@@ -39,10 +43,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     private var customDate: String = ""
     private var productId: String = ""
 
-    private var creditAmount: Typography? = null
-    private var tipsDescription: Typography? = null
-    private var productImage: ImageUnify? = null
-    private var productName: Typography? = null
+    private lateinit var mainBottomSheetBinding: TopadsCreateBottomsheetSeePerformanceBinding
 
     @JvmField
     @Inject
@@ -57,6 +58,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_see_performance_topads)
         initInjector()
+        productId = intent.data?.getQueryParameter(MpTopadsConst.PRODUCT_ID_PARAM).orEmpty()
+        openMainBottomSheet()
+        firstFetch()
 //        showChooseDateBottomSheet()
 //        showAdsPlacingFilterBottomSheet()
 //        showDescriptionBottomSheet("Nama Produk","test")
@@ -69,15 +73,139 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 //            "Nama grup iklan", "test")
 //        openCalendar()
 
-        productId = intent.data?.getQueryParameter(MpTopadsConst.PRODUCT_ID_PARAM).orEmpty()
-        showMainBottomSheet()
-        seePerformanceTopAdsViewModel?.getTopAdsDeposit()
-        seePerformanceTopAdsViewModel?.getProductManage(productId)
-        getProductStatistics()
     }
 
     private fun initInjector() {
         component.inject(this)
+    }
+
+    private fun openMainBottomSheet() {
+        mainBottomSheetBinding = TopadsCreateBottomsheetSeePerformanceBinding.inflate(LayoutInflater.from(this))
+        attachObservers()
+        attachClickListeners()
+
+        seePerformanceTopadsBottomSheet = BottomSheetUnify().apply {
+            setupContent(mainBottomSheetBinding?.root)
+            setChild(mainBottomSheetBinding?.root)
+            isDragable = false
+            isHideable = false
+            showKnob = true
+            clearContentPadding = true
+            showCloseIcon = false
+            isFullpage = false
+            setTitle(this@SeePerformanceTopadsActivity.getString(R.string.your_product_ad_performance))
+        }
+        seePerformanceTopadsBottomSheet.show(supportFragmentManager, "tagFragment")
+
+        mainBottomSheetBinding.includeTips.tipsDescription.text = HtmlCompat.fromHtml(
+            getString(R.string.see_ads_performance_tips_description),
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
+    }
+
+    private fun attachObservers() {
+        seePerformanceTopAdsViewModel?.topAdsGetProductManage?.observe(this) {
+            if (it == null || it.data.adId.isNullOrEmpty()) {
+                hideMainBottomSheetContent()
+            } else {
+                showMainBottomSheetContent()
+                mainBottomSheetBinding?.productImage?.urlSrc = it.data.itemImage
+                mainBottomSheetBinding?.productName?.text = it.data.itemName
+            }
+        }
+
+        seePerformanceTopAdsViewModel?.topAdsDeposits?.observe(this) {
+            when (it) {
+                is Success -> {
+                    mainBottomSheetBinding?.creditAmount?.text =
+                        "Rp ${it.data.topadsDashboardDeposits.data.amount}"
+                }
+                else -> {}
+            }
+        }
+
+        seePerformanceTopAdsViewModel?.productStatistics?.observe(this) {
+            when (it) {
+                is Success -> {
+                    setProductStatistics(it.data.getDashboardProductStatistics.data[0])
+                }
+                else -> {}
+            }
+        }
+
+        seePerformanceTopAdsViewModel?.adId?.observe(this) {
+            getProductStatistics()
+            seePerformanceTopAdsViewModel?.getGroupId()
+        }
+
+        seePerformanceTopAdsViewModel?.topAdsGetShopInfo?.observe(this) {
+            if (it != null){
+                when(it.data.category){
+                    3 -> setManualAdsUser()
+                    4 -> setAutoAdsUser()
+                }
+            }
+        }
+
+
+    }
+
+    private fun attachClickListeners() {
+        mainBottomSheetBinding?.errorCtaButton?.setOnClickListener {
+            showMainBottomSheetLoading()
+            firstFetch()
+        }
+
+        mainBottomSheetBinding.includeTips.tips.setOnClickListener {
+            mainBottomSheetBinding.includeTips.tipsGroup.visibility =
+                if (mainBottomSheetBinding.includeTips.tipsGroup.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+
+            if (mainBottomSheetBinding.includeTips.tipsExpandArrow.rotation == ROTATION_0) {
+                mainBottomSheetBinding.includeTips.tipsExpandArrow.animate()?.rotation(ROTATION_180)?.duration = 100L
+            } else {
+                mainBottomSheetBinding.includeTips.tipsExpandArrow.animate().rotation(ROTATION_0)?.duration = 100L
+            }
+        }
+    }
+
+    private fun hideMainBottomSheetContent() {
+        mainBottomSheetBinding?.mainLoader?.visibility = View.GONE
+        mainBottomSheetBinding?.errorText?.visibility = View.VISIBLE
+        mainBottomSheetBinding?.errorCtaButton?.visibility = View.VISIBLE
+        mainBottomSheetBinding?.mainBottomSheet?.visibility = View.GONE
+    }
+
+    private fun showMainBottomSheetContent() {
+        mainBottomSheetBinding?.mainLoader?.visibility = View.GONE
+        mainBottomSheetBinding?.errorText?.visibility = View.GONE
+        mainBottomSheetBinding?.errorCtaButton?.visibility = View.GONE
+        mainBottomSheetBinding?.mainBottomSheet?.visibility = View.VISIBLE
+    }
+
+    private fun showMainBottomSheetLoading() {
+        mainBottomSheetBinding?.mainLoader?.visibility = View.VISIBLE
+        mainBottomSheetBinding?.errorText?.visibility = View.GONE
+        mainBottomSheetBinding?.errorCtaButton?.visibility = View.GONE
+        mainBottomSheetBinding?.mainBottomSheet?.visibility = View.GONE
+    }
+
+    private fun firstFetch() {
+        seePerformanceTopAdsViewModel?.getProductManage(productId)
+        seePerformanceTopAdsViewModel?.getTopAdsDeposit()
+        seePerformanceTopAdsViewModel?.getShopInfo()
+    }
+
+    private fun setAutoAdsUser(){
+//        mainBottomSheetBinding?.automaticAdGroup?.visibility = View.VISIBLE
+//        mainBottomSheetBinding?.manualAdGroup?.visibility = View.GONE
+//        mainBottomSheetBinding?.lihatPengaturanGroup?.visibility = View.GONE
+    }
+
+    private fun setManualAdsUser(){
+//        seePerformanceTopAdsViewModel?.getGroupId()
+//        mainBottomSheetBinding?.automaticAdGroup?.visibility = View.GONE
+//        mainBottomSheetBinding?.manualAdGroup?.visibility = View.VISIBLE
+//        mainBottomSheetBinding?.lihatPengaturanGroup?.visibility = View.VISIBLE
     }
 
     private fun getColoredSpanned(
@@ -89,57 +217,24 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         return MethodChecker.fromHtml("<strong><b><big><big><font color=$color>$text </font></big> <font color=#212121><big>teratas</font></big></big></b></strong> <br>${multiply}x teratas dari $other total tampil")
     }
 
-    private fun showMainBottomSheet() {
-        val contentView = View.inflate(this, R.layout.bottomsheet_see_performance, null)
-        initViews(contentView)
-        seePerformanceTopadsBottomSheet = BottomSheetUnify().apply {
-            setupContent(contentView)
-            setChild(contentView)
-            isDragable = false
-            isHideable = false
-            showKnob = true
-            clearContentPadding = true
-            showCloseIcon = false
-            isFullpage = true
-            setTitle(this@SeePerformanceTopadsActivity.getString(R.string.your_product_ad_performance))
-        }
-        seePerformanceTopadsBottomSheet.show(supportFragmentManager, "tagFragment")
-
-        seePerformanceTopAdsViewModel?.topAdsDeposits?.observe(this) {
-            when (it) {
-                is Success -> {
-                    creditAmount?.text = "Rp ${it.data.topadsDashboardDeposits.data.amount}"
-                }
-                else -> {}
-            }
-        }
-
-        seePerformanceTopAdsViewModel?.topAdsGetProductManage?.observe(this) {
-            productImage?.urlSrc = it.data.itemImage
-            productName?.text = it.data.itemName
-        }
-
-        seePerformanceTopAdsViewModel?.productStatistics?.observe(this){
-            Log.d("testing","$it")
-        }
-
-        tipsDescription?.text = HtmlCompat.fromHtml(
-            getString(R.string.see_ads_performance_tips_description),
-            HtmlCompat.FROM_HTML_MODE_LEGACY
+    private fun getProductStatistics() {
+        var startDate = "2023-01-01"
+        var endDate = "2023-03-14"
+        seePerformanceTopAdsViewModel?.getTopAdsProductStatistics(
+            this.resources,
+            startDate ?: "",
+            endDate ?: "",
+            1
         )
     }
 
-    private fun getProductStatistics() {
-        var startDate = getDaysAgo(30)
-        var endDate = getDaysAgo(0)
-        seePerformanceTopAdsViewModel?.getTopAdsProductStatistics(startDate ?: "", endDate ?: "", 1)
-    }
-
-    private fun initViews(contentView: View?) {
-        creditAmount = contentView?.findViewById<Typography>(R.id.creditAmount)
-        tipsDescription = contentView?.findViewById<Typography>(R.id.tips_description)
-        productImage = contentView?.findViewById<ImageUnify>(R.id.product_image)
-        productName = contentView?.findViewById<Typography>(R.id.product_name)
+    private fun setProductStatistics(dataItem: WithoutGroupDataItem) {
+        mainBottomSheetBinding.includeCardStatistics.tampilCount.text = dataItem.statTotalImpression
+        mainBottomSheetBinding.includeCardStatistics.klikCount.text = dataItem.statTotalClick
+        mainBottomSheetBinding.includeCardStatistics.totalTerjualCount.text = dataItem.statTotalSold
+        mainBottomSheetBinding.includeCardStatistics.pendapatanCount.text = dataItem.statTotalGrossProfit
+        mainBottomSheetBinding.includeCardStatistics.pengeluaranCount.text = dataItem.statTotalSpent
+        mainBottomSheetBinding.includeCardStatistics.efektivitasIklanCount.text = dataItem.statTotalRoas
     }
 
     private fun setupContent(content: View?) {
@@ -266,4 +361,3 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         ).build()
     }
 }
-

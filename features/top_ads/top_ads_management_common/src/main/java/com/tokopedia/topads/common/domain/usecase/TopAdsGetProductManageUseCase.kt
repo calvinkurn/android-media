@@ -1,12 +1,11 @@
 package com.tokopedia.topads.common.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PRODUCT_ID
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.SHOPID
 import com.tokopedia.topads.common.domain.model.TopAdsGetProductManage
 import com.tokopedia.topads.common.domain.model.TopAdsGetProductManageResponse
 import com.tokopedia.usecase.RequestParams
@@ -37,7 +36,7 @@ class TopAdsGetProductManageUseCase @Inject constructor(
     private val graphqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<TopAdsGetProductManage>() {
 
-    var params: RequestParams = RequestParams.EMPTY
+    var params: RequestParams = RequestParams.create()
 
     override suspend fun executeOnBackground(): TopAdsGetProductManage {
         val gqlRequest = GraphqlRequest(
@@ -65,7 +64,7 @@ class TopAdsGetProductManageUseCase @Inject constructor(
     }
 
     fun setParams(productId: String) {
-        params.putString("productID", productId)
-        params.putString("shopID", userSession.shopId)
+        params.putString(PRODUCT_ID, productId)
+        params.putString(SHOPID, userSession.shopId)
     }
 }
