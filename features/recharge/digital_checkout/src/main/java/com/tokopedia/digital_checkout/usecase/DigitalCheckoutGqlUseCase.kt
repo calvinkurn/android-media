@@ -1,12 +1,14 @@
 package com.tokopedia.digital_checkout.usecase
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
+import com.tokopedia.digital_checkout.data.model.CollectionPointMetadata
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutFintechProduct
 import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutRequest
@@ -66,13 +68,19 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
                 val checkoutMetadataMap = customGson.fromJson<HashMap<String, Any>>(it.value.product.crossSellMetadata, checkoutType)
 
                 if (it.value.isSubscription) {
-                    val additionalMetadata = customGson.toJson(it.value.additionalMetadata)
-                    val additionalType = object : TypeToken<JsonElement>() {}.type
-                    val additionalMetadataJson = customGson.fromJson<JsonElement>(additionalMetadata, additionalType)
+                    try {
+                        val additionalMetadata = customGson.toJson(it.value.additionalMetadata)
+                        val additionalType = object : TypeToken<JsonElement>() {}.type
+                        val additionalMetadataJson = customGson.fromJson<JsonElement>(additionalMetadata, additionalType)
 
-                    val jsonObject = customGson.fromJson(additionalMetadataJson.asJsonPrimitive.asString, JsonObject::class.java)
-                    jsonObject.keySet().forEach { key ->
-                        checkoutMetadataMap[key] = jsonObject.get(key)
+                        // checking metadata
+                        val metadataKey = checkoutMetadataMap[KEY_METADATA]
+                        val consentMetadata = customGson.fromJson(metadataKey.toString(), CollectionPointMetadata::class.java)
+                        consentMetadata.metadata = additionalMetadataJson.toString()
+
+                        checkoutMetadataMap[KEY_METADATA] = customGson.toJson(consentMetadata)
+                    } catch (e: JsonSyntaxException) {
+                        FirebaseCrashlytics.getInstance().recordException(e)
                     }
                 }
                 RechargeCheckoutFintechProduct(
@@ -95,7 +103,8 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
     companion object {
         private const val PARAMS_KEY = "request"
         private const val RECHARGE_MODULE_NAME = "recharge"
-        private const val KEY_CROSS_SELL_METADATA = "cross_sell_metadata"
+        private const val KEY_METADATA = "metadata"
+        private const val KEY_CONSENT_PAYLOAD = "consent_payload"
 
         const val QUERY_NAME_RECHARGE_CHECKOUT = "RechargeCheckoutQuery"
         const val QUERY_RECHARGE_CHECKOUT = """

@@ -12,5 +12,8 @@ data class CollectionPointMetadata(
     val collectionPointId: String = "",
     @SerializedName("collection_point_version")
     @Expose
-    val collectionPointVersion: String = ""
+    val collectionPointVersion: String = "",
+    @SerializedName("metadata")
+    @Expose
+    var metadata: String = ""
 ) : Parcelable
