@@ -54,16 +54,16 @@ object TokoChatValueUtil {
     /**
      * TokoChat Consent
      */
-    private const val CONSENT_ID_PROD = ""
+    private const val CONSENT_ID_PROD = "365acb97-61a9-44d8-9a68-464dc9465ec7"
     private const val CONSENT_ID_STAGING = "1f829d46-e138-42b6-8bcc-d74ada5ada04"
     val consentParam = ConsentCollectionParam(
-        collectionId = getConsentId()
+        collectionId = getCollectionId()
     )
-    private fun getConsentId(): String {
+    private fun getCollectionId(): String {
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            TokoChatValueUtil.CONSENT_ID_STAGING
+            CONSENT_ID_STAGING
         } else {
-            TokoChatValueUtil.CONSENT_ID_PROD
+            CONSENT_ID_PROD
         }
     }
 }

@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
@@ -389,16 +388,7 @@ class TokoChatViewModel @Inject constructor(
         launch {
             try {
                 val result = getNeedConsentUseCase(TokoChatValueUtil.consentParam)
-                if (result.data.success) {
-                    val consentData = result.data.collectionPoints.firstOrNull()
-                    // Default true, when response is error, bottom sheet should not shown
-                    _isNeedConsent.value = consentData?.needConsent?: false
-                } else {
-                    _error.value = Pair(MessageErrorException(
-                        result.data.errorMessages.joinToString()),
-                        ::getUserConsent.name
-                    )
-                }
+                _isNeedConsent.value = result
             } catch (throwable: Throwable) {
                 _error.value = Pair(throwable, ::getUserConsent.name)
             }
