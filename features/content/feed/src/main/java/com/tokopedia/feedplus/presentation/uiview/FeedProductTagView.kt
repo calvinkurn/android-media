@@ -28,23 +28,23 @@ class FeedProductTagView(
     ) {
         with(binding) {
             when {
+                totalProducts == PRODUCT_COUNT_ZERO -> {
+                    root.hide()
+                }
                 totalProducts == PRODUCT_COUNT_ONE -> {
                     tvTagProduct.text = products.firstOrNull()?.name
+                    root.show()
                 }
                 totalProducts > PRODUCT_COUNT_NINETY_NINE -> {
                     tvTagProduct.text =
                         root.context.getString(R.string.feeds_tag_product_99_more_text)
+                    root.show()
                 }
                 else -> {
                     tvTagProduct.text =
                         root.context.getString(R.string.feeds_tag_product_text, totalProducts)
+                    root.show()
                 }
-            }
-
-            if (totalProducts == PRODUCT_COUNT_ZERO) {
-                root.hide()
-            } else {
-                root.show()
             }
 
             root.setOnClickListener {

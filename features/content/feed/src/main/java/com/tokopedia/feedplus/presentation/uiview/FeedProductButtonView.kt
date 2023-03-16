@@ -28,18 +28,17 @@ class FeedProductButtonView(
     ) {
         with(binding) {
             when {
+                totalProducts == PRODUCT_COUNT_ZERO -> {
+                    root.hide()
+                }
                 totalProducts > PRODUCT_COUNT_NINETY_NINE -> {
                     tvPlayProductCount.text = NINETY_NINE_PLUS
+                    root.show()
                 }
                 else -> {
                     tvPlayProductCount.text = totalProducts.toString()
+                    root.show()
                 }
-            }
-
-            if (totalProducts == PRODUCT_COUNT_ZERO) {
-                root.hide()
-            } else {
-                root.show()
             }
 
             root.setOnClickListener {

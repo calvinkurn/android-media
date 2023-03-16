@@ -33,6 +33,7 @@
         layout="@layout/feed_product_tag_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/layout_author_info"
@@ -161,6 +162,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="24dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/btn_disable_clear_mode"
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="visible" />
