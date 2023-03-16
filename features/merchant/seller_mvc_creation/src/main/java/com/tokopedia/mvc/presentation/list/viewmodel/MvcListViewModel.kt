@@ -182,6 +182,7 @@ class MvcListViewModel @Inject constructor(
 
     fun getFilterCount(): Int {
         var count = 0
+        if (isFilterReseted()) return count
         filter.apply {
             if (status.isNotEmpty()) count = count.inc()
             if (voucherType.isNotEmpty()) count = count.inc()
@@ -191,6 +192,10 @@ class MvcListViewModel @Inject constructor(
             if (targetBuyer.isNotEmpty()) count = count.inc()
         }
         return count
+    }
+
+    fun isFilterReseted(): Boolean {
+        return filter == FilterModel()
     }
 
     fun stopVoucher(voucher: Voucher) {
