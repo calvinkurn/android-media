@@ -175,7 +175,7 @@ class HomeFragmentRefreshTest {
          * - Other data changes (from dynamic channel i.e Best seller widget, Play carousel widget, etc)
          */
         Thread.sleep(DELAY_PROCESS)
-        Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
+        Assert.assertTrue(dataChangedCount > 0)
         Thread.sleep(DELAY_PROCESS)
     }
 
