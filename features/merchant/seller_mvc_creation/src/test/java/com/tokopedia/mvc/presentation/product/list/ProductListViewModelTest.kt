@@ -59,7 +59,7 @@ class ProductListViewModelTest {
             val selectedWarehouseId: Long = 1
             val voucherConfiguration = buildVoucherConfiguration()
 
-            val selectedProduct = populateSelectedProduct()
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
             val selectedProductIds = listOf(selectedProduct.parentProductId)
 
             val product = populateProduct().copy(id = 1)
@@ -114,7 +114,7 @@ class ProductListViewModelTest {
             val selectedWarehouseId: Long = 1
             val voucherConfiguration = buildVoucherConfiguration()
 
-            val selectedProduct = populateSelectedProduct()
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
             val selectedProductIds = listOf(selectedProduct.parentProductId)
 
             val product = populateProduct().copy(id = 1)
@@ -161,7 +161,7 @@ class ProductListViewModelTest {
             val selectedWarehouseId: Long = 1
             val voucherConfiguration = buildVoucherConfiguration()
 
-            val selectedProduct = populateSelectedProduct()
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
             val selectedProductIds = listOf(selectedProduct.parentProductId)
 
             val product = populateProduct().copy(id = 1)
@@ -207,7 +207,7 @@ class ProductListViewModelTest {
             val selectedWarehouseId: Long = 1
             val voucherConfiguration = buildVoucherConfiguration()
 
-            val selectedProduct = populateSelectedProduct()
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
             val selectedProductIds = listOf(selectedProduct.parentProductId)
 
             val product = populateProduct().copy(id = 1)
@@ -253,7 +253,7 @@ class ProductListViewModelTest {
             val selectedWarehouseId: Long = 1
             val voucherConfiguration = buildVoucherConfiguration()
 
-            val selectedProduct = populateSelectedProduct()
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
             val selectedProductIds = listOf(selectedProduct.parentProductId)
 
             val product = populateProduct().copy(id = 1)
@@ -299,7 +299,7 @@ class ProductListViewModelTest {
             val selectedWarehouseId: Long = 1
             val voucherConfiguration = buildVoucherConfiguration()
 
-            val selectedProduct = populateSelectedProduct()
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
             val selectedProductIds = listOf(selectedProduct.parentProductId)
 
             val product = populateProduct().copy(id = 1)
@@ -356,7 +356,7 @@ class ProductListViewModelTest {
             val selectedWarehouseId: Long = 1
             val voucherConfiguration = buildVoucherConfiguration()
 
-            val selectedProduct = populateSelectedProduct().copy(parentProductId = 3)
+            val selectedProduct = populateSelectedProduct(parentProductId = 3, variantIds = emptyList())
             val selectedProductIds = listOf(selectedProduct.parentProductId)
 
             val firstProduct = populateProduct().copy(id = 1)
@@ -409,7 +409,7 @@ class ProductListViewModelTest {
             val selectedWarehouseId: Long = 1
             val voucherConfiguration = buildVoucherConfiguration()
 
-            val selectedProduct = populateSelectedProduct().copy(parentProductId = 1, variantProductIds = listOf(111))
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = listOf(111))
             val selectedProductIds = listOf(selectedProduct.parentProductId)
 
             val firstProduct = populateProduct().copy(
@@ -484,11 +484,85 @@ class ProductListViewModelTest {
     //endregion
 
 
-    //region findVariantsIdsByParentId
-    //endregion
-
-
     //region handleCheckAllProduct
+    @Test
+    fun `when check all product toggled on, all products and its variant should be selected`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = listOf(111))
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                )
+            )
+
+            val mockedGetProductResponse = listOf(product)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(selectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.EnableSelectAllCheckbox)
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(true, actual.isSelectAllActive)
+            assertEquals(setOf(product.id), actual.selectedProductsIdsToBeRemoved)
+            assertEquals(
+                listOf(
+                    product.copy(
+                        isSelected = true,
+                        selectedVariantsIds = setOf(111),
+                        originalVariants = listOf(
+                            Product.Variant(
+                                variantProductId = 111,
+                                isEligible = true,
+                                reason = "",
+                                isSelected = true
+                            )
+                        )
+                    )
+                ),
+                actual.products
+            )
+
+            job.cancel()
+        }
+    }
+
     //endregion
 
 
@@ -568,8 +642,8 @@ class ProductListViewModelTest {
             endPeriod = Date(2023, 2, 1, 0, 0, 0)
         )
     }
-    private fun populateSelectedProduct(): SelectedProduct {
-        return SelectedProduct(parentProductId = 1, variantProductIds = emptyList())
+    private fun populateSelectedProduct(parentProductId: Long, variantIds: List<Long>): SelectedProduct {
+        return SelectedProduct(parentProductId = parentProductId, variantProductIds = variantIds)
     }
 
 
