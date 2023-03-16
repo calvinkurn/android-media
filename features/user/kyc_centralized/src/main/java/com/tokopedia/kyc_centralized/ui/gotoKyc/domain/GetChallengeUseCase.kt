@@ -45,7 +45,7 @@ class GetChallengeUseCase @Inject constructor(
             }
             GetChallengeResult.Failed(MessageErrorException(message))
         } else {
-            GetChallengeResult.Success(questionId = response.data.id)
+            GetChallengeResult.Success(questionId = response.data.first().id)
         }
     }
 

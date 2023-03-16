@@ -12,7 +12,7 @@ data class GetOneKYCChallenge(
 	val errorMessages: List<String> = listOf(),
 
     @SerializedName("data")
-	val data: QuestionsData = QuestionsData(),
+	val data: List<QuestionsData> = listOf(),
 
     @SerializedName("isSuccess")
 	val isSuccess: Boolean = false
