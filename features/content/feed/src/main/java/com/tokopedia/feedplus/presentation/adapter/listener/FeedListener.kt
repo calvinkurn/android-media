@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.adapter.listener
 
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 
 interface FeedListener {
@@ -39,4 +40,5 @@ interface FeedListener {
         weblink: String,
         imageUrl: String
     )
+    fun onLikePostCLicked(model: FeedCardImageContentModel, rowNumber: Int)
 }
