@@ -167,7 +167,7 @@ class ShippingEditorItemAdapter(
                     binding.tickerShipper.setHtmlDescription(
                         itemView.context.getString(
                             R.string.shipper_ticker_yellow,
-                            data.warehouseModel.size
+                            data.warehouseModel?.size
                         )
                     )
                     binding.tickerShipper.setDescriptionClickEvent(object : TickerCallback {
@@ -231,7 +231,7 @@ class ShippingEditorItemAdapter(
 
             binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
                 data.isActive = isChecked
-                productItemAdapter.updateChecked(isChecked)
+                productItemAdapter?.updateChecked(isChecked)
                 if (isChecked) {
                     binding.itemChildLayout.visible()
                 } else {
@@ -242,11 +242,11 @@ class ShippingEditorItemAdapter(
 
         private fun initUncheckedListener() {
             productItemAdapter.setupUncheckedListener(object :
-                    ShipperProductItemAdapter.ShipperProductUncheckedListener {
-                    override fun uncheckedProduct() {
-                        binding.cbShipmentItem.isChecked = false
-                    }
-                })
+                ShipperProductItemAdapter.ShipperProductUncheckedListener {
+                override fun uncheckedProduct() {
+                    binding.cbShipmentItem.isChecked = false
+                }
+            })
         }
     }
 }

@@ -20,10 +20,7 @@ import android.webkit.WebViewClient;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
-import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.databinding.EditShippingWebViewBinding;
-import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by Kris on 5/12/2016.

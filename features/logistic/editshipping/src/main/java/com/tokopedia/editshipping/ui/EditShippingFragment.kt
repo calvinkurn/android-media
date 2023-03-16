@@ -470,8 +470,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     override fun openGeoLocation() {
         val locationPass = LocationPass()
-        if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty() == true &&
-            editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty() == true
+        if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty() ?: false &&
+            editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty() ?: false
         ) {
             locationPass.latitude = editShippingPresenter?.shopInformation?.shopLatitude
             locationPass.longitude = editShippingPresenter?.shopInformation?.shopLongitude

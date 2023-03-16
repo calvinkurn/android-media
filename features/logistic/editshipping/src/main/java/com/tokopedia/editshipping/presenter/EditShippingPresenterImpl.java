@@ -41,7 +41,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -61,11 +60,11 @@ import timber.log.Timber;
  */
 public class EditShippingPresenterImpl implements EditShippingPresenter {
 
-    private final EditShippingViewListener view;
+    private EditShippingViewListener view;
 
-    private final EditShippingRetrofitInteractor editShippingRetrofitInteractor;
+    private EditShippingRetrofitInteractor editShippingRetrofitInteractor;
 
-    private final RevGeocodeUseCase revGeocodeUseCase;
+    private RevGeocodeUseCase revGeocodeUseCase;
 
     private ShopShipping shopInformation;
 
@@ -73,11 +72,11 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private List<ProvinceCitiesDistrict> provinceCitiesDistrict;
 
-    private final List<String> activatedServices = new ArrayList<>();
+    private List<String> activatedServices = new ArrayList<>();
 
-    private final Map<String, String> serviceCourierPair = new HashMap<>();
+    private Map<String, String> serviceCourierPair = new HashMap<>();
 
-    private final Set<String> activatedCourier = new HashSet<>();
+    private Set<String> activatedCourier = new HashSet<>();
 
     private String temporaryWebViewResource;
 
@@ -87,13 +86,13 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private DistrictRecommendationAddress selectedAddress;
 
-    private final UserSessionInterface userSession;
+    private UserSessionInterface userSession;
 
-    private final ValidateShippingUseCase validateShippingUseCase;
+    private ValidateShippingUseCase validateShippingUseCase;
 
     private ValidateShippingModel validateBoData;
 
-    private final ValidateShippingMapper validateShippingMapper;
+    private ValidateShippingMapper validateShippingMapper;
 
     public EditShippingPresenterImpl(EditShippingViewListener view) {
         this.view = view;
@@ -670,15 +669,15 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     public void setSavedInstance(Bundle savedInstanceState) {
         if (savedInstanceState != null
                 && savedInstanceState.containsKey(EditShippingFragment.CURRENT_COURIER_MODEL)) {
-            setShopModelFromSavedInstance(savedInstanceState
+            setShopModelFromSavedInstance((EditShippingCouriers) savedInstanceState
                     .getParcelable(EditShippingFragment.CURRENT_COURIER_MODEL));
         } else if (savedInstanceState != null
                 && savedInstanceState.containsKey(EditShippingFragment.CURRENT_OPEN_SHOP_MODEL)) {
-            setOpenShopModelFromSavedInstance(savedInstanceState
+            setOpenShopModelFromSavedInstance((OpenShopData) savedInstanceState
                     .getParcelable(EditShippingFragment.CURRENT_OPEN_SHOP_MODEL));
         } else if (savedInstanceState != null
                 && savedInstanceState.containsKey(EditShippingFragment.RESUME_OPEN_SHOP_DATA_KEY)) {
-            setOpenShopModelFromSavedInstance(savedInstanceState
+            setOpenShopModelFromSavedInstance((OpenShopData) savedInstanceState
                     .getParcelable(EditShippingFragment.RESUME_OPEN_SHOP_DATA_KEY));
         }
     }
@@ -837,7 +836,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             String[] pairs = query.split("&");
             for (String pair : pairs) {
                 int idx = pair.indexOf("=");
-                queryPairs.put(URLDecoder.decode(pair.substring(0, idx), StandardCharsets.UTF_8), URLDecoder.decode(pair.substring(idx + 1), StandardCharsets.UTF_8));
+                queryPairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
             }
         }
         return queryPairs;
