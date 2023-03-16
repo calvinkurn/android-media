@@ -9,39 +9,39 @@ import com.tokopedia.search.result.domain.model.ProductTopAdsModel
 import com.tokopedia.usecase.RequestParams
 
 internal fun graphqlRequests(request: MutableList<GraphqlRequest>.() -> Unit) =
-    mutableListOf<GraphqlRequest>().apply {
-        request()
-    }
+        mutableListOf<GraphqlRequest>().apply {
+                request()
+        }
 
 internal fun MutableList<GraphqlRequest>.addAceSearchProductRequest(params: String) {
-    add(createAceSearchProductRequest(params))
+        add(createAceSearchProductRequest(params))
 }
 
 @GqlQuery("AceSearchProduct", ACE_SEARCH_PRODUCT_QUERY)
 internal fun createAceSearchProductRequest(params: String) =
-    GraphqlRequest(
-        AceSearchProduct.GQL_QUERY,
-        AceSearchProductModel::class.java,
-        mapOf(SearchConstant.GQL.KEY_PARAMS to params)
-    )
+        GraphqlRequest(
+                AceSearchProduct.GQL_QUERY,
+                AceSearchProductModel::class.java,
+                mapOf(SearchConstant.GQL.KEY_PARAMS to params)
+        )
 
 internal fun MutableList<GraphqlRequest>.addProductAdsRequest(requestParams: RequestParams, params: String) {
-    if (!requestParams.isSkipProductAds()) {
-        add(createTopAdsProductRequest(params = params))
-    }
+        if (!requestParams.isSkipProductAds()) {
+                add(createTopAdsProductRequest(params = params))
+        }
 }
 
 @GqlQuery("TopAdsProduct", TOPADS_PRODUCT_QUERY)
 internal fun createTopAdsProductRequest(params: String) =
-    GraphqlRequest(
-        TopAdsProduct.GQL_QUERY,
-        ProductTopAdsModel::class.java,
-        mapOf(SearchConstant.GQL.KEY_PARAMS to params)
-    )
+        GraphqlRequest(
+                TopAdsProduct.GQL_QUERY,
+                ProductTopAdsModel::class.java,
+                mapOf(SearchConstant.GQL.KEY_PARAMS to params)
+        )
 
 internal fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(
     requestParams: RequestParams,
-    headlineParams: String
+    headlineParams: String,
 ) {
     if (!requestParams.isSkipHeadlineAds()) {
         add(createHeadlineAdsRequest(headlineParams = headlineParams))
