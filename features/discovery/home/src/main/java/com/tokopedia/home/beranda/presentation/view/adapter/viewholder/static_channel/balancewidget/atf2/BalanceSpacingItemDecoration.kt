@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.ZERO
 
 /**
@@ -26,12 +25,12 @@ class BalanceSpacingItemDecoration : RecyclerView.ItemDecoration() {
                 outRect.left = margin
                 outRect.right = Int.ZERO
             }
-            //last position of card
+            // last position of card
             state.itemCount - 1 -> {
                 outRect.right = margin
                 outRect.left = Int.ZERO
             }
-            //card between first and last
+            // card between first and last
             else -> {
                 outRect.right = Int.ZERO
                 outRect.left = Int.ZERO

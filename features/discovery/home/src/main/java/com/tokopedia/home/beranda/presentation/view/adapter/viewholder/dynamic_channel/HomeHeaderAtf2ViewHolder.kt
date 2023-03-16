@@ -111,7 +111,7 @@ class HomeHeaderAtf2ViewHolder(
             try {
                 val stubChannelView = viewStub.inflate()
                 stubChannelView as T
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 null
             }
         } else {

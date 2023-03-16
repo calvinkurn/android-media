@@ -93,7 +93,7 @@ class BannerIndicator : LinearLayout {
                 cancelAllAnimation()
                 start = startFrom
             }
-            for (i in Int.ZERO until totalBanner) {
+            repeat(totalBanner) {
                 addProgressBar()
             }
             getChildProgressBar(start)?.let {
