@@ -676,11 +676,151 @@ class ProductListViewModelTest {
     }
     //endregion
 
-    //region updateProductAsSelected
-    //endregion
-
-
     //region handleRemoveProductFromSelection
+    @Test
+    fun `when remove non variant product from selection, its isSelected property should be false`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            //Tick product id 1 and product 2 checkbox
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(productId = firstProduct.id))
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(productId = secondProduct.id))
+
+            //Un-tick product id 1 checkbox
+            viewModel.processEvent(ProductListEvent.RemoveProductFromSelection(productId = firstProduct.id))
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isSelectAllActive)
+            assertEquals(setOf<Long>(2), actual.selectedProductsIdsToBeRemoved)
+            assertEquals(
+                listOf(firstProduct.copy(isSelected = false), secondProduct.copy(isSelected = true)),
+                actual.products
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when remove product with variant from selection, its selectedVariantIds property should be restored to its original variant ids`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = listOf(111))
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                )
+            )
+
+            val mockedGetProductResponse = listOf(product)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(selectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            //Tick product id 1 checkbox
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(productId = product.id))
+
+            //Un-tick product id 1 checkbox
+            viewModel.processEvent(ProductListEvent.RemoveProductFromSelection(productId = product.id))
+
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isSelectAllActive)
+            assertEquals(setOf<Long>(), actual.selectedProductsIdsToBeRemoved)
+            assertEquals(
+                listOf(
+                    product.copy(
+                        isSelected = false,
+                        selectedVariantsIds = setOf(111),
+                        originalVariants = listOf(
+                            Product.Variant(
+                                variantProductId = 111,
+                                isEligible = true,
+                                reason = "",
+                                isSelected = true
+                            )
+                        )
+                    )
+                ),
+                actual.products
+            )
+
+            job.cancel()
+        }
+    }
     //endregion
 
 
