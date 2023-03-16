@@ -279,7 +279,6 @@ class HomeVisitableFactoryImpl(
                             TYPE_BANNER -> {
                                 data.atfStatusCondition(
                                     onLoading = {
-//                                    visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
                                         visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
                                     },
                                     onError = {
@@ -342,7 +341,7 @@ class HomeVisitableFactoryImpl(
             visitableList.add(HomeInitialShimmerDataModel())
         }
 
-        if (homeData?.atfData == null && visitableList.isEmpty()) {
+        if (homeData?.atfData == null) {
             visitableList.add(ErrorStateAtfModel())
         }
         return this
