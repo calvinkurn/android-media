@@ -4131,6 +4131,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val widgetTitle = "Coupon Widget"
         val slugText = "ABC;CDE"
         val buttonStr = COUPON_STATUS_CLAIM
+        val slugs = slugText.split(";")
 
         val localCacheModel = LocalCacheModel(
             warehouse_id = warehouseId
@@ -4141,7 +4142,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             slugText = slugText
         )
         val catalogCouponList = createCatalogCouponList(
-            slugText = slugText,
+            slugs = slugs,
             buttonStr = buttonStr
         )
 
@@ -4153,7 +4154,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             catalogCouponList = catalogCouponList
         )
 
-        //fetch homeLayout
+        //fetch homeLayoutwhen fetching list of catalog coupons but failed then receiving success result with hide status
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf()
@@ -4242,6 +4243,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
         val slugText = "ABC;CDE"
+        val slugs = slugText.split(";")
         var buttonStr = COUPON_STATUS_CLAIM
 
         val localCacheModel = LocalCacheModel(
@@ -4253,7 +4255,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             slugText = slugText
         )
         var catalogCouponList = createCatalogCouponList(
-            slugText = slugText,
+            slugs = slugs,
             buttonStr = buttonStr
         )
 
@@ -4278,7 +4280,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         buttonStr = COUPON_STATUS_CLAIMED
 
         catalogCouponList = createCatalogCouponList(
-            slugText = slugText,
+            slugs = slugs,
             buttonStr = buttonStr
         )
 
@@ -4287,7 +4289,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         //refetch catalog list
-        val slugs = slugText.split(";")
         viewModel.getCatalogCouponList(widgetId, slugs)
 
         //prepare model for expectedResult
@@ -4316,6 +4317,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val widgetId = "2132"
         val widgetTitle = "Coupon Widget"
         val slugText = "ABC;CDE"
+        val slugs = slugText.split(";")
         val buttonStr = COUPON_STATUS_CLAIM
 
         val localCacheModel = LocalCacheModel(
@@ -4327,7 +4329,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             slugText = slugText
         )
         val catalogCouponList = createCatalogCouponList(
-            slugText = slugText,
+            slugs = slugs,
             buttonStr = buttonStr
         )
 
@@ -4354,7 +4356,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         //refetch catalog list
-        val slugs = slugText.split(";")
         viewModel.getCatalogCouponList(widgetId, slugs)
 
         //prepare model for expectedResult

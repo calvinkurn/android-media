@@ -25,23 +25,26 @@ object ClaimCouponDataFactory {
         )
     }
 
-    fun createCatalogCouponList(slugText: String, buttonStr: String): GetCatalogCouponListResponse.TokopointsCatalogWithCouponList {
+    fun createCatalogCouponList(
+        slugs: List<String>,
+        buttonStr: String
+    ): GetCatalogCouponListResponse.TokopointsCatalogWithCouponList {
         val resultStatus = GetCatalogCouponListResponse.TokopointsCatalogWithCouponList.ResultStatus(
             code = "200",
             message = listOf(),
             status = "success"
         )
         return GetCatalogCouponListResponse.TokopointsCatalogWithCouponList(
-            catalogWithCouponList = listOf(
+            catalogWithCouponList = slugs.map { slug ->
                 GetCatalogCouponListResponse.TokopointsCatalogWithCouponList.CatalogWithCoupon(
                     id = "1",
                     appLink = "tokopedia://now",
                     buttonStr = buttonStr,
                     imageUrlMobile = "tokopedia://now/123",
                     smallImageUrlMobile = "tokopedia://now/1234",
-                    slug = slugText
+                    slug = slug
                 )
-            ),
+            },
             resultStatus = resultStatus
         )
     }
@@ -59,7 +62,7 @@ object ClaimCouponDataFactory {
         val claimCoupon = HomeClaimCouponWidgetUiModel(
             id = widgetId,
             title = widgetTitle,
-            claimCouponList = null,
+            claimCouponList = listOf(),
             isDouble = false,
             slugs = slugs,
             state = TokoNowLayoutState.SHOW,
@@ -73,7 +76,7 @@ object ClaimCouponDataFactory {
                 if (isError) {
                     claimCoupon.copy(state = TokoNowLayoutState.HIDE)
                 } else {
-                    claimCoupon.copy(claimCouponList = createCatalogCouponList(slugText, buttonStr).mapToClaimCouponWidgetUiModelList(claimCoupon))
+                    claimCoupon.copy(claimCouponList = createCatalogCouponList(slugs, buttonStr).mapToClaimCouponWidgetUiModelList(claimCoupon, slugs))
                 }
             ),
             state = TokoNowLayoutState.UPDATE
