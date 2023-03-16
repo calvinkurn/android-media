@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.postatc.base
 
-import com.tokopedia.product.detail.postatc.model.PostAtcInfo
+import com.tokopedia.product.detail.postatc.data.model.PostAtcInfo
 import com.tokopedia.user.session.UserSessionInterface
 
 class CommonTracker(

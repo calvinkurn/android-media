@@ -54,6 +54,10 @@ class NavToolbarComponent(
         setActionColor(isTransparent)
     }
 
+    fun setVisibility(isVisible: Boolean) {
+        container().showWithCondition(isVisible)
+    }
+
     fun showContinueButtonAs(visibility: Boolean) {
         btnDone.showWithCondition(visibility)
     }
@@ -117,22 +121,11 @@ class NavToolbarComponent(
         }
     }
 
-    private fun colorForSolidMode()
-        = ContextCompat.getColor(context,
-        Unify_N700_96
-    )
+    private fun colorForSolidMode() = ContextCompat.getColor(context, Unify_N700_96)
 
-    private fun colorForTransparentMode()
-        = ContextCompat.getColor(context,
-        Unify_Static_White
-    )
+    private fun colorForTransparentMode() = ContextCompat.getColor(context, Unify_Static_White)
 
-    private fun colorActionSolidMode()
-        = ContextCompat.getColor(context,
-        Unify_G500
-    )
-
-    override fun release() {}
+    private fun colorActionSolidMode() = ContextCompat.getColor(context, Unify_G500)
 
     interface Listener {
         fun onCloseClicked()

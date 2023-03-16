@@ -13,7 +13,7 @@ data class MiniCartChatProductUiModel(
     var isChecked: Boolean = false,
     var isProductDisabled: Boolean = false,
     var size: Int = 0,
-    var productInformation: List<String> = emptyList(),
+    var productInformation: List<String> = emptyList()
 ) : Visitable<MiniCartChatListAdapterTypeFactory> {
 
     override fun type(typeFactory: MiniCartChatListAdapterTypeFactory): Int {

@@ -49,10 +49,10 @@ class UploadImageViewModelTest : BaseTopChatViewModelTest() {
         every { payloadGenerator.generateImageWsPayload(any(), any(), any(), any()) } returns wsPayload
 
         // When
-        viewModel.startUploadImages(imageUpload, true)
+        webSocketViewModel.startUploadImages(imageUpload, true)
 
         // Then
-        assertEquals(viewModel.previewMsg.value, imageUpload)
+        assertEquals(webSocketViewModel.previewMsg.value, imageUpload)
         verify {
             chatWebSocket.sendPayload(wsPayload)
         }
@@ -69,11 +69,11 @@ class UploadImageViewModelTest : BaseTopChatViewModelTest() {
         }
 
         // When
-        viewModel.startUploadImages(imageUpload, true)
+        webSocketViewModel.startUploadImages(imageUpload, true)
 
         // Then
-        assertEquals(viewModel.errorSnackbar.value, error)
-        assertEquals(viewModel.failUploadImage.value, imageUpload)
+        assertEquals(webSocketViewModel.errorSnackbar.value, error)
+        assertEquals(webSocketViewModel.failUploadImage.value, imageUpload)
     }
 
     @Test
@@ -83,14 +83,14 @@ class UploadImageViewModelTest : BaseTopChatViewModelTest() {
         every { DeviceInfo.getModelName() } returns ""
 
         // When
-        viewModel.startUploadImages(imageUpload, true)
-        viewModel.startUploadImages(imageUpload, true)
+        webSocketViewModel.startUploadImages(imageUpload, true)
+        webSocketViewModel.startUploadImages(imageUpload, true)
 
         // Then
         assertEquals(UploadImageChatService.dummyMap.size, 1)
-        assertEquals(viewModel.previewMsg.value, imageUpload)
+        assertEquals(webSocketViewModel.previewMsg.value, imageUpload)
         assertEquals(
-            viewModel.uploadImageService.value,
+            webSocketViewModel.uploadImageService.value,
             ImageUploadMapper.mapToImageUploadServer(imageUpload)
         )
     }
@@ -101,7 +101,7 @@ class UploadImageViewModelTest : BaseTopChatViewModelTest() {
         every { uploadImageUseCase.isUploading } returns true
 
         // When
-        val isUploading = viewModel.isUploading()
+        val isUploading = webSocketViewModel.isUploading()
 
         // Then
         assertEquals(isUploading, true)

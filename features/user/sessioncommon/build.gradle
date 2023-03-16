@@ -16,6 +16,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -28,7 +29,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.secUtilObs
     implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     implementation rootProject.ext.miscDependencies.dagger

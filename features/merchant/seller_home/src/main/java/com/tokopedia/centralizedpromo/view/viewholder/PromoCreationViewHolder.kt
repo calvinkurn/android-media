@@ -3,17 +3,17 @@ package com.tokopedia.centralizedpromo.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
 import com.tokopedia.sellerhome.databinding.CentralizedPromoItemPromoCreationBinding
 
-class PromoCreationViewHolder(view: View?, val impressionListener: (String) -> Unit) :
+class PromoCreationViewHolder(view: View?, private val impressionListener: (String, String, View) -> Unit) :
     AbstractViewHolder<PromoCreationUiModel>(view) {
 
     var onClickItemPromo: ((PromoCreationUiModel) -> Unit)? = null
@@ -49,8 +49,8 @@ class PromoCreationViewHolder(view: View?, val impressionListener: (String) -> U
                 openApplink(element)
             }
 
-            root.addOnImpressionListener(element.impressHolder) {
-                impressionListener.invoke(element.title)
+            tvRecommendedPromoTitle.addOnImpressionListener(element.impressHolder) {
+                impressionListener.invoke(element.title, element.pageId, tvRecommendedPromoTitle)
             }
         }
     }

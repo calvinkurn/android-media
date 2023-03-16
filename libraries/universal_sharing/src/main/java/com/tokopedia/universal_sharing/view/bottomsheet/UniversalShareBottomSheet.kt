@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ResolveInfo
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -37,6 +36,12 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -62,6 +67,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -81,6 +87,10 @@ import com.tokopedia.iconunify.R as unifyIconR
 
 /**
  * Created by Rafli Syam 20/07/2020
+ *
+ * please read the docs to implement [UniversalShareBottomSheet]
+ * link: https://tokopedia.atlassian.net/l/cp/HNSff10B
+ * @see com.tokopedia.shop.pageheader.presentation.fragment.NewShopFragment.kt
  */
 open class UniversalShareBottomSheet : BottomSheetUnify() {
 
@@ -146,6 +156,14 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         const val KEY_PRODUCT_ID = "productId"
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
+
+        /**
+         * if you're using [enableDefaultShareIntent] please create the instance using this function,
+         * otherwise the toaster after clicking `salin link` won't show
+         */
+        fun createInstance(fragmentView: View?) = UniversalShareBottomSheet().apply {
+            this.fragmentView = fragmentView
+        }
 
         fun isCustomSharingEnabled(context: Context?, remoteConfigKey: String = GLOBAL_CUSTOM_SHARING_FEATURE_FLAG): Boolean {
             val isEnabled: Boolean
@@ -257,6 +275,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         ALL(TYPE_ALL)
     }
 
+    private var fragmentView: View? = null
     private var bottomSheetListener: ShareBottomsheetListener? = null
     private var rvSocialMediaList: RecyclerView? = null
     private var thumbNailTitleTxTv: Typography? = null
@@ -298,8 +317,18 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     private var channelStr: String = ""
     private var ogImageUrl: String = ""
     private var savedImagePath: String = ""
+    private var shareText: String = ""
+    private var subjectShare: String = ""
 
-    private var affiliateQueryData: AffiliatePDPInput? = null
+    private var linkProperties: LinkProperties? = null
+
+    private var affiliatePDPQueryData: AffiliatePDPInput? = null
+
+    /**
+     * if this flag is enabled, the bottomsheet will
+     */
+    private var isAffiliateCommissionEnabled = false
+
     private var showLoader: Boolean = false
     private var handler: Handler? = null
     private var gqlCallJob: Job? = null
@@ -334,11 +363,16 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var onViewReadyAction: (() -> Unit)? = null
 
+    private var affiliateListener: ((userType: String) -> Unit)? = null
+
     private var imageGeneratorParam: ImageGeneratorParamModel? = null
 
     private var imageThumbnailListener: ((imageUrl: String) -> Unit)? = null
 
     private var isInitialClickThumbnail = true
+
+    /* flag to enable default share */
+    private var isDefaultShareIntent = false
 
     // Variable to set personalized campaign
     private var personalizedMessage = ""
@@ -366,7 +400,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         inject()
     }
-    private var affiliateListener: ((userType: String) -> Unit)? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -377,6 +410,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         initImageOptionsRecyclerView()
+        initAffiliate()
         onViewReadyAction?.invoke()
     }
 
@@ -420,6 +454,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     // call this method before show method if the request data is awaited
+    @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
     fun affiliateRequestDataAwaited() {
         showLoader = true
         handler = Handler(Looper.getMainLooper())
@@ -432,6 +467,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
      * call this method if the request data is received
      * ideally, call this method after show Bottomsheet. there is a case hitting gql is finished, but view is not ready
      */
+    @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
     fun affiliateRequestDataReceived(validRequest: Boolean) {
         val userSession = UserSession(LinkerManager.getInstance().context)
         if (userSession.isLoggedIn && validRequest && isAffiliateEnabled()) {
@@ -440,7 +476,62 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             loaderUnify?.visibility = View.VISIBLE
         } else {
             clearLoader()
-            affiliateQueryData = null
+            affiliatePDPQueryData = null
+        }
+    }
+
+    fun enableDefaultShareIntent() {
+        isDefaultShareIntent = true
+    }
+
+    private fun shareChannelClicked(shareModel: ShareModel) {
+        if (linkProperties == null) throw Exception("Please set link properties")
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                0,
+                createLinkerData(shareModel),
+                object : ShareCallback {
+                    override fun urlCreated(linkerShareResult: LinkerShareResult) {
+                        shareModel.subjectName = subjectShare
+                        SharingUtil.executeShareIntent(
+                            shareModel,
+                            linkerShareResult,
+                            activity,
+                            fragmentView,
+                            String.format(
+                                shareText,
+                                linkerShareResult.url
+                            )
+                        )
+
+                        dismiss()
+                    }
+
+                    override fun onError(linkerError: LinkerError) {
+                        dismiss()
+                    }
+                }
+            )
+        )
+    }
+
+    private fun createLinkerData(shareModel: ShareModel): LinkerShareData {
+        val linkerData = LinkerData()
+        linkerData.apply {
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            feature = shareModel.feature
+            isAffiliate = shareModel.isAffiliate
+            ogImageUrl = shareModel.ogImgUrl
+            ogTitle = linkProperties?.ogTitle
+            ogDescription = linkProperties?.ogDescription
+            uri = linkProperties?.desktopUrl
+            deepLink = linkProperties?.deeplink
+            id = linkProperties?.id
+            linkAffiliateType = affiliatePDPQueryData?.affiliateLinkType?.value
+        }
+        return LinkerShareData().apply {
+            this.linkerData = linkerData
         }
     }
 
@@ -470,7 +561,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             withContext(Dispatchers.IO) {
                 val affiliateUseCase = AffiliateEligibilityCheckUseCase(GraphqlInteractor.getInstance().graphqlRepository)
                 val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUseCase.apply {
-                    params = AffiliateEligibilityCheckUseCase.createParam(affiliateQueryData!!)
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliatePDPQueryData!!)
                 }.executeOnBackground()
                 var deeplink = ""
                 if (isExecuteExtractBranchLink(generateAffiliateLinkEligibility)) {
@@ -492,7 +583,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 gqlCallJob?.cancel()
             }
             if (affiliateCommissionTextView?.visibility != View.VISIBLE) {
-                affiliateQueryData = null
+                affiliatePDPQueryData = null
             }
         }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
     }
@@ -536,7 +627,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             generateAffiliateLinkEligibility.banner != null &&
                 generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == false
             ) && userSession.isLoggedIn &&
-            userSession.shopId != affiliateQueryData?.shop?.shopID
+            userSession.shopId != affiliatePDPQueryData?.shop?.shopID
     }
 
     private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
@@ -551,11 +642,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
             affiliateCommissionTextView?.visibility = View.VISIBLE
-            tracker.viewOnAffiliateRegisterTicker(true, affiliateQueryData?.getIdFactory() ?: "", affiliateQueryData?.pageType ?: "")
+            tracker.viewOnAffiliateRegisterTicker(true, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
             isAffiliateUser = KEY_AFFILIATE_USER
             return
         }
-        affiliateQueryData = null
+        affiliatePDPQueryData = null
     }
 
     private fun showCommissionExtra(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
@@ -574,10 +665,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             if (banner.title.isBlank() && banner.message.isBlank()) return
 
             affiliateRegisterContainer?.visible()
-            tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.getIdFactory() ?: "", affiliateQueryData?.pageType ?: "")
+            tracker.viewOnAffiliateRegisterTicker(false, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
 
-            val id = affiliateQueryData?.getIdFactory() ?: ""
-            val page = affiliateQueryData?.pageType ?: ""
+            val id = affiliatePDPQueryData?.getIdFactory() ?: ""
+            val page = affiliatePDPQueryData?.pageType ?: ""
             affiliateRegisterContainer?.setOnClickListener { _ ->
                 tracker.onClickRegisterTicker(false, id, page)
                 dismiss()
@@ -595,7 +686,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
             isAffiliateUser = KEY_GENERAL_USER
         }
-        affiliateQueryData = null
+        affiliatePDPQueryData = null
     }
 
     fun setOnGetAffiliateData(callback: (userType: String) -> Unit) {
@@ -673,7 +764,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             revImageOptionsContainer?.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                adapter = context?.let { ImageListAdapter(imageOptionsList!!, it, takeViewSS!!, ::imageSaved, ::updateThumbnailImage) }
+                adapter = context?.let { ImageListAdapter(imageOptionsList!!, it, ::imageSaved, ::updateThumbnailImage) }
             }
             revImageOptionsContainer?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -687,15 +778,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getResolvedActivity(context: Context?, intent: Intent?): ResolveInfo? = context?.let { ctx ->
-        intent?.let {
-            return ctx.packageManager.resolveActivity(it, 0)
+    private fun initAffiliate() {
+        if (isAffiliateCommissionEnabled) {
+            affiliateRequestDataReceived(true)
         }
     }
 
-    private fun getActivityIcon(context: Context?, intent: Intent?): Drawable? {
-        getResolvedActivity(context, intent).let {
-            return it?.loadIcon(context?.packageManager)
+    private fun getResolvedActivity(context: Context?, intent: Intent?): ResolveInfo? = context?.let { ctx ->
+        intent?.let {
+            return ctx.packageManager.resolveActivity(it, 0)
         }
     }
 
@@ -954,14 +1045,26 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         requestDataMap = requestPayLoad
     }
 
+    /**
+     * to enable affiliate commission
+     * @see [https://tokopedia.atlassian.net/wiki/spaces/AF/pages/1693717743/Validate+Affiliate+Link+Generation+Eligibility]
+     */
+    fun enableAffiliateCommission(affiliatePDPInput: AffiliatePDPInput) {
+        isAffiliateCommissionEnabled = true
+        setAffiliateRequestHolder(affiliatePDPInput)
+    }
+
+    fun isAffiliateCommissionEnabled() = isAffiliateCommissionEnabled
+
+    @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
     fun setAffiliateRequestHolder(affiliatePDPInput: AffiliatePDPInput) {
         if (UserSession(LinkerManager.getInstance().context).isLoggedIn) {
-            this.affiliateQueryData = affiliatePDPInput
+            this.affiliatePDPQueryData = affiliatePDPInput
         }
     }
 
     fun getAffiliateRequestHolder(): AffiliatePDPInput? {
-        return affiliateQueryData
+        return affiliatePDPQueryData
     }
 
     fun setBottomSheetTitle(title: String) {
@@ -1030,6 +1133,21 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         ogImageUrl = imgUrl
     }
 
+    /* this func is used to set subject on email */
+    fun setSubject(subject: String) {
+        subjectShare = subject
+    }
+
+    /**
+     *  this func is used to set text on textfield channel,
+     *  @param text please put string as String.format and insert `%s` to insert link into the text
+     *  @param text e.g: Hai kamu! Belanja produk dari Oreo,Kraft & Cadbury Official Store jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. %s
+     *  the [text] will be transformed to `Hai kamu! Belanja produk dari Oreo,Kraft & Cadbury Official Store jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. https://tokopedia.link/owQLAVeA3wb`
+     */
+    fun setShareText(text: String) {
+        shareText = text
+    }
+
     fun setSelectThumbnailImageListener(listener: (imgUrl: String) -> Unit) {
         imageThumbnailListener = listener
     }
@@ -1068,8 +1186,22 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         setUtmCampaignData(pageName, userId, pageIdCombined, feature)
     }
 
+    /**
+     * this function is deprecated and replaced with [setLinkProperties]
+     */
+    @Deprecated("please use setLinkProperties to set ogImage")
     fun setOgImageUrl(imgUrl: String) {
         ogImageUrl = imgUrl
+    }
+
+    /**
+     * this function to set properties that commonly used in [LinkerData]
+     * @see LinkerData is object that is used to create Branch link.
+     * @param linkProperties
+     */
+    fun setLinkProperties(linkProperties: LinkProperties) {
+        this.linkProperties = linkProperties
+        ogImageUrl = linkProperties.ogImageUrl
     }
 
     fun imageSaved(imgPath: String) {
@@ -1218,6 +1350,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = mediaImageUrl
         shareModel.savedImageFilePath = savedImagePath
+        if (isDefaultShareIntent) {
+            shareChannelClicked(shareModel)
+        }
         if (personalizedMessage.isNotEmpty()) {
             shareModel.personalizedMessageFormat = "$personalizedMessage\n%s"
         }
@@ -1231,6 +1366,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = transformOgImageURL(ogImageUrl)
         shareModel.savedImageFilePath = savedImagePath
+        if (isDefaultShareIntent) {
+            shareChannelClicked(shareModel)
+        }
         if (personalizedMessage.isNotEmpty()) {
             shareModel.personalizedMessageFormat = "$personalizedMessage\n%s"
         }
@@ -1238,7 +1376,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun setIfAffiliate(shareModel: ShareModel) {
-        if (affiliateQueryData != null &&
+        if (affiliatePDPQueryData != null &&
             affiliateCommissionTextView?.visibility == View.VISIBLE
         ) {
             shareModel.isAffiliate = true
@@ -1274,7 +1412,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             super.show(manager, tag)
         } else {
             // call the native bottom sheet share
-            bottomSheetListener?.onShareOptionClicked(getNaviteShareIntent())
+            val shareModel = getNaviteShareIntent()
+            if (isDefaultShareIntent) {
+                shareChannelClicked(shareModel)
+            }
+            bottomSheetListener?.onShareOptionClicked(shareModel)
         }
     }
 

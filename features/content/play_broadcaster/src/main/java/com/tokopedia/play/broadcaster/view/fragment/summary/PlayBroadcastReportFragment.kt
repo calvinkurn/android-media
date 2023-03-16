@@ -85,6 +85,10 @@ class PlayBroadcastReportFragment @Inject constructor(
             analytic.clickPostingVideoOnReportPage()
             viewModel.submitAction(PlayBroadcastSummaryAction.ClickPostVideo)
         }
+
+        binding.btnDone.setOnClickListener {
+            viewModel.submitAction(PlayBroadcastSummaryAction.ClickCloseReportPage)
+        }
     }
 
     private fun setupObserver() {

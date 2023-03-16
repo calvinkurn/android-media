@@ -4,4 +4,6 @@ enum class PageType(val value: String) {
     PDP("pdp"),
     SHOP("shop"),
     OTHERS("others"),
+    SHOP("shop"),
+    CAMPAIGN("campaign")
 }

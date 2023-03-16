@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
@@ -505,6 +504,9 @@ data class DataItem(
 
     @SerializedName("gtm_item_name")
         var gtmItemName : String? = "",
+
+    @SerializedName("department_id")
+    var categoryDeptId: String? = "",
 
     @field:SerializedName("products")
         val products: List<ProductsItem?>? = null,
