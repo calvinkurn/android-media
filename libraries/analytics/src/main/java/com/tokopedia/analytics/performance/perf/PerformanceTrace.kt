@@ -23,6 +23,7 @@ class PerformanceTrace(val traceName: String) {
         const val GLOBAL_LAYOUT_DEBOUNCE = 500L
         const val ATTR_CONDITION = "State"
         const val STATE_ERROR = "page_error"
+        const val STATE_PARTIALLY_ERROR = "page_partially_error"
         const val STATE_TOUCH = "user_touch"
         const val STATE_SUCCESS = "success"
     }
@@ -83,6 +84,11 @@ class PerformanceTrace(val traceName: String) {
                 touchListenerActivity?.addListener { cancelPerformancetrace(STATE_TOUCH) }
             }) {
         }
+    }
+
+    fun setPageState(state: String) {
+        performanceMonitoring.putCustomAttribute(
+            ATTR_CONDITION, state)
     }
 
     fun cancelPerformancetrace(state: String) {

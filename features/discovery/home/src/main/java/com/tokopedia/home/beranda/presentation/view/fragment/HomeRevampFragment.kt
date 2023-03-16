@@ -1167,16 +1167,19 @@ open class HomeRevampFragment :
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         onPageLoadTimeEnd()
+                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_PAGINATION -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
+                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
                     }
                     status === Result.Status.ERROR_ATF -> {
                         hideLoading()
                         showNetworkError(getErrorStringWithDefault(throwable))
                         adapter?.resetChannelErrorState()
                         adapter?.resetAtfErrorState()
+                        performanceTrace.setPageState(PerformanceTrace.STATE_PARTIALLY_ERROR)
                     }
                     status == Result.Status.ERROR_GENERAL -> {
                         val errorString = getErrorStringWithDefault(throwable)
@@ -1290,19 +1293,14 @@ open class HomeRevampFragment :
             v = view.rootView,
             scope = this.lifecycleScope,
             touchListenerActivity = activity as? TouchListenerActivity
-        ) { summaryModel, type, view ->
-            if (type == PerformanceTrace.TYPE_TTIL) {
-                finishPageLoadTime(false)
-            }
-            performanceTrace.debugPerformanceTrace(activity, summaryModel, type, view)
-        }
+        ) {}
         observeSearchHint()
     }
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if (data.isNotEmpty()) {
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
-//                finishPageLoadTime(isCache)
+                finishPageLoadTime(isCache)
             }
             this.fragmentCurrentCacheState = isCache
             this.fragmentCurrentVisitableCount = data.size
