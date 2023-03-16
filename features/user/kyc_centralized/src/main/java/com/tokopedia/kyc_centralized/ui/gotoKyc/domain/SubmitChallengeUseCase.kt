@@ -16,26 +16,14 @@ class SubmitChallengeUseCase @Inject constructor(
 ) : CoroutineUseCase<SubmitChallengeParam, SubmitChallengeResult>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
-          mutation submitKYCChallenge(
-            ${'$'}challengeID: String!,
-            ${'$'}answers: [kycSubmitGoToChallengeAnswer!]!
+          mutation kycSubmitGoToChallenge(
+            ${'$'}param: kycSubmitGoToChallengeRequest!
           ) {
-            submitKYCChallenge(
-              challengeID: ${'$'}challengeID,
-              answers: ${'$'}answers
+            kycSubmitGoToChallenge(
+              param: ${'$'}param
             ) {
               isSuccess
               errorMessages
-              data {
-                challengeID
-                questions {
-                  id
-                  questionType
-                  displayText
-                  hint
-                  type
-                }
-              }
             }
           }
         """.trimIndent()

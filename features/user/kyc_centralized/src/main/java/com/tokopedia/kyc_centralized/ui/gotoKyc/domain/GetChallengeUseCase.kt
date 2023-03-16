@@ -16,18 +16,16 @@ class GetChallengeUseCase @Inject constructor(
 ) : CoroutineUseCase<String, GetChallengeResult>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
-            query getOneKYCChallenge(${'$'}challengeID: String) {
-              getOneKYCChallenge(challengeID: ${'$'}challengeID) {
+            query kycGetGoToChallenge(${'$'}challengeID: String) {
+              kycGetGoToChallenge(challengeID: ${'$'}challengeID) {
                 isSuccess
                 errorMessages
                 data {
-                  questions {
-                    id
-                    questionType
-                    displayText
-                    hint
-                    type
-                  }
+                  id
+                  questionType
+                  displayText
+                  hint
+                  type
                 }
               }
             }
@@ -39,7 +37,7 @@ class GetChallengeUseCase @Inject constructor(
             .request<Map<String, String>, GetChallengeResponse>(graphqlQuery(), parameter)
             .getOneKYCChallenge
 
-        return if (!response.isSuccess || response.data.questions.isEmpty()) {
+        return if (!response.isSuccess) {
             val message = if (response.errorMessages.isNotEmpty()) {
                 response.errorMessages.first()
             } else {
@@ -47,7 +45,7 @@ class GetChallengeUseCase @Inject constructor(
             }
             GetChallengeResult.Failed(MessageErrorException(message))
         } else {
-            GetChallengeResult.Success(questionId = response.data.questions.first().id)
+            GetChallengeResult.Success(questionId = response.data.id)
         }
     }
 

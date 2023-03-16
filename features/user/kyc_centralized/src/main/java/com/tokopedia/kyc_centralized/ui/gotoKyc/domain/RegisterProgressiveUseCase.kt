@@ -16,8 +16,8 @@ class RegisterProgressiveUseCase @Inject constructor(
 ) : CoroutineUseCase<RegisterProgressiveParam, RegisterProgressiveResult>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
-            mutation registerProgressiveKYC(${'$'}projectID: Int!, ${'$'}challengeID: String) {
-              registerProgressiveKYC(projectID: ${'$'}projectID, challengeID: ${'$'}challengeID) {
+            mutation kycRegisterProgressive(${'$'}param: kycRegisterProgressiveRequest!) {
+              kycRegisterProgressive(param: ${'$'}param) {
                 isSuccess
                 errorMessages
                 data {

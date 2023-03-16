@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.KycStatusResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.KycStatusUseCase
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveData
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveUseCase
@@ -28,8 +29,10 @@ class FinalLoaderViewModel @Inject constructor(
         _registerProgressive.value = RegisterProgressiveResult.Loading()
 
         val parameter = RegisterProgressiveParam(
-            projectID = projectId,
-            challengeID = challengeId
+            param = RegisterProgressiveData(
+                projectID = projectId.toInt(),
+                challengeID = challengeId
+            )
         )
         launchCatchError(block = {
             val response = registerProgressiveUseCase(parameter)

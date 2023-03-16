@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.KycSubmitGoToChallengeAnswer
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeData
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeUseCase
@@ -36,11 +37,13 @@ class DobChallengeViewModel @Inject constructor(
 
     fun submitChallenge(challengeId: String, questionId: String, selectedDate: String) {
         val parameter = SubmitChallengeParam(
-            challengeID = challengeId,
-            answers = listOf(
-                KycSubmitGoToChallengeAnswer(
-                    questionId = questionId,
-                    answer = selectedDate
+            param = SubmitChallengeData(
+                challengeID = challengeId,
+                answers = listOf(
+                    KycSubmitGoToChallengeAnswer(
+                        questionId = questionId,
+                        answer = selectedDate
+                    )
                 )
             )
         )

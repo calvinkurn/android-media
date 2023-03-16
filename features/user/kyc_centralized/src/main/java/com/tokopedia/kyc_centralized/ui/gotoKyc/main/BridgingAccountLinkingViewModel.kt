@@ -9,6 +9,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResul
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityUseCase
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveData
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveUseCase
@@ -54,7 +55,11 @@ class BridgingAccountLinkingViewModel @Inject constructor(
     fun registerProgressiveUseCase(projectId: String) {
         _registerProgressive.value = RegisterProgressiveResult.Loading()
 
-        val parameter = RegisterProgressiveParam(projectID = projectId)
+        val parameter = RegisterProgressiveParam(
+            param = RegisterProgressiveData(
+                projectID = projectId.toInt()
+            )
+        )
         launchCatchError(block = {
             val response = registerProgressiveUseCase(parameter)
             _registerProgressive.value = response
