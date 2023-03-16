@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.presentation.receiver
 import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -33,11 +34,18 @@ class ShortsUploadReceiver @AssistedInject constructor(
         return callbackFlow {
             val observer = shortsUploader.observe(owner) { progress, data ->
                 val info = when {
-                    progress < 0 -> UploadInfo.Failed(data.coverUri) {
-                        shortsUploader.upload(data)
+                    progress < 0 -> {
+                        Log.d("Upload Shorts", "Failed")
+                        UploadInfo.Failed(data.uploadImageUrl) { shortsUploader.upload(data) }
                     }
-                    progress >= FULL_PROGRESS -> UploadInfo.Finished
-                    else -> UploadInfo.Progress(progress, data.coverUri)
+                    progress >= FULL_PROGRESS -> {
+                        Log.d("Upload Shorts", "Finished")
+                        UploadInfo.Finished
+                    }
+                    else -> {
+                        Log.d("Upload Shorts", "Progress: $progress")
+                        UploadInfo.Progress(progress, data.uploadImageUrl)
+                    }
                 }
                 trySendBlocking(info)
             }
@@ -45,6 +53,9 @@ class ShortsUploadReceiver @AssistedInject constructor(
             awaitClose { shortsUploader.cancelObserve(observer) }
         }
     }
+
+    private val PlayShortsUploadModel.uploadImageUrl: String
+        get() = coverUri.ifEmpty { mediaUri }
 
     companion object {
         private const val FULL_PROGRESS = 100

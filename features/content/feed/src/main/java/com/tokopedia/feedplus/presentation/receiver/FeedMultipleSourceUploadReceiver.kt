@@ -64,13 +64,15 @@ class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
             launch {
                 val flow = receiver.observe()
                 flow.collectLatest { info ->
-                    when (info) {
-                        UploadInfo.Finished -> clearReceiver(receiver)
-                        else -> setCurrentReceiver(receiver)
-                    }
+                    if (info != UploadInfo.Finished) {
+                        setCurrentReceiver(receiver)
 
-                    Log.d("Upload Info", "From Receiver: $receiver, Info: $info")
-                    send(receiver, info)
+                        Log.d("Upload Info", "From Receiver: $receiver, Info: $info")
+                        send(receiver, info)
+                    } else {
+                        send(receiver, info)
+                        clearReceiver(receiver)
+                    }
                 }
             }
         }
