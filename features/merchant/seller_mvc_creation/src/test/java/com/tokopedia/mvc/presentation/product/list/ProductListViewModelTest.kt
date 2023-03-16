@@ -567,6 +567,55 @@ class ProductListViewModelTest {
 
 
     //region handleUncheckAllProduct
+    @Test
+    fun `when uncheck all selected products, all product isSelected properties should be false`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration()
+
+            val selectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val selectedProductIds = listOf(selectedProduct.parentProductId)
+
+            val product = populateProduct().copy(id = 1)
+            val mockedGetProductResponse = listOf(product)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedValues = arrayListOf<ProductListUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(selectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.DisableSelectAllCheckbox)
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(false, actual.isSelectAllActive)
+            assertEquals(emptySet<Long>(), actual.selectedProductsIdsToBeRemoved)
+            assertEquals(listOf(product.copy(isSelected = false)), actual.products)
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region handleMarkProductForDeletion
