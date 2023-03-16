@@ -1585,11 +1585,239 @@ class ProductListViewModelTest {
     //endregion
 
 
-    //region selectedProductsOnly
-    //endregion
-
-
     //region handleCtaAddNewProduct
+
+    @Test
+    fun `When add new product and currently on create mode, should emit RedirectToAddProductPage effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.TapCtaAddProduct)
+
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+            assertEquals(
+                ProductListEffect.BackToPreviousPage,
+                emittedEffect
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When add new product and currently on create mode & entry point from voucher summary page, should emit RedirectToAddProductPage effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.CREATE
+            val action = VoucherAction.CREATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = true,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.TapCtaAddProduct)
+
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+            assertEquals(
+                ProductListEffect.RedirectToAddProductPage(
+                    voucherConfiguration = voucherConfiguration.copy(productIds = listOf(1, 2)),
+                    products = listOf(firstProduct, secondProduct)
+                ),
+                emittedEffect
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When add new product and currently on edit mode, should emit RedirectToAddProductPage effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.EDIT
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.TapCtaAddProduct)
+
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+            assertEquals(
+                ProductListEffect.RedirectToAddProductPage(
+                    voucherConfiguration = voucherConfiguration.copy(productIds = listOf(1, 2)),
+                    products = listOf(
+                        firstProduct.copy(
+                            enableCheckbox = false,
+                            isDeletable = false
+                        ), secondProduct.copy(
+                            enableCheckbox = false,
+                            isDeletable = false
+                        )
+                    )
+                ),
+                emittedEffect
+            )
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `When add new product and currently on duplicate mode, should emit no effect`() {
+        runBlockingTest {
+            //Given
+            val pageMode = PageMode.DUPLICATE
+            val action = VoucherAction.UPDATE
+
+            val selectedWarehouseId: Long = 1
+            val voucherConfiguration = buildVoucherConfiguration().copy(warehouseId = 1)
+
+            val firstSelectedProduct = populateSelectedProduct(parentProductId = 1, variantIds = emptyList())
+            val secondSelectedProduct = populateSelectedProduct(parentProductId = 2, variantIds = emptyList())
+
+            val selectedProductIds = listOf(firstSelectedProduct.parentProductId, secondSelectedProduct.parentProductId)
+
+            val firstProduct = populateProduct().copy(id = 1)
+            val secondProduct = populateProduct().copy(id = 2)
+            val mockedGetProductResponse = listOf(firstProduct, secondProduct)
+
+            mockInitiateVoucherPageGqlCall(action)
+            mockGetProductListGqlCall(selectedProductIds, mockedGetProductResponse)
+
+
+            val emittedEffects = arrayListOf<ProductListEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //When
+            viewModel.processEvent(
+                ProductListEvent.FetchProducts(
+                    pageMode = pageMode,
+                    voucherConfiguration = voucherConfiguration,
+                    selectedProducts = listOf(firstSelectedProduct, secondSelectedProduct),
+                    showCtaUpdateProductOnToolbar = false,
+                    isEntryPointFromVoucherSummaryPage = false,
+                    selectedWarehouseId = selectedWarehouseId
+                )
+            )
+
+            viewModel.processEvent(ProductListEvent.TapCtaAddProduct)
+
+
+            //Then
+            val emittedEffect = emittedEffects.lastOrNull()
+
+            assertEquals(null, emittedEffect)
+            assertEquals(0, emittedEffects.size)
+
+            job.cancel()
+        }
+    }
     //endregion
 
 
