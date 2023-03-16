@@ -156,7 +156,9 @@ open class HomeRevampViewModel @Inject constructor(
     var currentTopAdsBannerPage: String = "1"
     var isFirstLoad = true
 
-    private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> { return homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io) }
+    private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
+        return homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
+    }
 
     var getHomeDataJob: Job? = null
 
