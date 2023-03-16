@@ -105,27 +105,27 @@ public class EditShippingWebViewDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        EditShippingWebViewBinding view = EditShippingWebViewBinding.inflate(inflater, container, false);
+        EditShippingWebViewBinding viewBinding = EditShippingWebViewBinding.inflate(inflater, container, false);
         courierIndex = getArguments().getInt(COURIER_INDEX_KEY);
-        view.additionalOptionDialog.setWebViewClient(new AdditionalOptionsWebViewClient());
-        view.additionalOptionDialog.setWebChromeClient(new WebChromeClient());
-        view.additionalOptionDialog.loadData(getArguments().getString(WEB_RESOURCE_KEY), "text/html", "UTF-8");
-        view.additionalOptionDialog.getSettings().setJavaScriptEnabled(true);
-        view.editOptionButton.setOnClickListener(new View.OnClickListener() {
+        viewBinding.additionalOptionDialog.setWebViewClient(new AdditionalOptionsWebViewClient());
+        viewBinding.additionalOptionDialog.setWebChromeClient(new WebChromeClient());
+        viewBinding.additionalOptionDialog.loadData(getArguments().getString(WEB_RESOURCE_KEY), "text/html", "UTF-8");
+        viewBinding.additionalOptionDialog.getSettings().setJavaScriptEnabled(true);
+        viewBinding.editOptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editButtonClicked = true;
-                view.additionalOptionDialog.loadUrl("javascript:SubmitNewWebview();");
+                viewBinding.additionalOptionDialog.loadUrl("javascript:SubmitNewWebview();");
             }
         });
         //webView.loadUrl("http://new.ph-peter.ndvl/web-service/v4/web-view/get_shipping_detail_info.pl?shipping_id=1&user_id=2828&os_type=2&service_id=1");
-        view.closeOptionButton.setOnClickListener(new View.OnClickListener() {
+        viewBinding.closeOptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
-        return view.getRoot();
+        return viewBinding.getRoot();
     }
 
     @Override
