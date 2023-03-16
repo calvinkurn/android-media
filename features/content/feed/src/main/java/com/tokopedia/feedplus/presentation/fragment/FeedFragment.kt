@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -24,6 +26,7 @@ import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
 import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
+import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
@@ -31,13 +34,10 @@ import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
-import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
+import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -48,6 +48,7 @@ import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -56,6 +57,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedR
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -78,7 +80,6 @@ class FeedFragment :
     private var layoutManager: LinearLayoutManager? = null
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
-
     private var isInClearViewMode: Boolean = false
 
     @Inject
@@ -89,6 +90,8 @@ class FeedFragment :
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
+
+    private lateinit var feedMenuSheet: ContentThreeDotsMenuBottomSheet
 
     private val reportPostLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -146,6 +149,49 @@ class FeedFragment :
         observeAddToCart()
         observeReport()
         observeFollow()
+        observeLikeContent()
+    }
+
+    private fun observeLikeContent() {
+        feedPostViewModel.getLikeKolResp.observe(
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                FeedResult.Loading -> {}
+                is FeedResult.Success -> {
+                    onSuccessLikeResponse(it.data)
+                }
+                is FeedResult.Failure -> {
+                    when (it.error) {
+                        else -> {
+                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
+                                requireContext().getString((it.error as CustomUiMessageThrowable).errorMessageId)
+                            } else {
+                                ErrorHandler.getErrorMessage(requireContext(), it.error)
+                            }
+                            showToast(errorMessage, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
+        feedMainViewModel.run {
+            reportResponse.observe(lifecycleOwner) {
+                when (it) {
+                    is Success -> {
+                        if (::feedMenuSheet.isInitialized) {
+                            feedMenuSheet.setFinalView()
+                        }
+                    }
+                    is Fail -> Toast.makeText(context, "Laporkan fail", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -519,6 +565,64 @@ class FeedFragment :
         }
     }
 
+    override fun onLikePostCLicked(model: FeedCardImageContentModel, rowNumber: Int) {
+        val feedLikeAction = FeedLikeAction.getLikeAction(model.like.isLiked)
+        feedPostViewModel.likeContent(
+            contentId = model.id,
+            action = feedLikeAction,
+            rowNumber = rowNumber
+        )
+    }
+
+    private fun onSuccessLikeResponse(data: LikeFeedDataModel) {
+        val newList = adapter?.list
+        val rowNumber = data.rowNumber
+        if ((newList?.size ?: 0) > data.rowNumber) {
+            val item = newList?.get(rowNumber)
+            if (item is FeedCardImageContentModel) {
+//                val like = (item as FeedCardImageContentModel).like
+//                like.isLiked = !like.isLiked
+                if (!item.like.isLiked) {
+                    try {
+                        val likeValue = Integer.valueOf(item.like.countFmt) + 1
+//                        like.countFmt = likeValue.toString()
+                        adapter?.updateLikeUnlikeData(
+                            rowNumber,
+                            like = item.like.copy(
+                                isLiked = item.like.isLiked.not(),
+                                countFmt = likeValue.toString(),
+                                count = item.like.count + 1
+                            )
+                        )
+                    } catch (ignored: NumberFormatException) {
+                        Timber.e(ignored)
+                    }
+
+//                    like.count = like.count + 1
+                } else {
+                    try {
+                        val likeValue = Integer.valueOf(item.like.countFmt) - 1
+//                        like.countFmt = likeValue.toString()
+                        adapter?.updateLikeUnlikeData(
+                            rowNumber,
+                            like = item.like.copy(
+                                isLiked = item.like.isLiked.not(),
+                                countFmt = likeValue.toString(),
+                                count = item.like.count - 1
+                            )
+                        )
+                    } catch (ignored: NumberFormatException) {
+                        Timber.e(ignored)
+                    }
+                }
+                adapter?.notifyItemChanged(
+                    rowNumber,
+                    FeedPostImageViewHolder.IMAGE_POST_LIKED_UNLIKED
+                )
+            }
+        }
+    }
+
     private fun getFeedShareDataModel(
         id: String,
         authorName: String,
@@ -636,6 +740,14 @@ class FeedFragment :
             it.arguments = Bundle().apply {
                 putParcelable(ARGUMENT_DATA, data)
             }
+        }
+    }
+
+    private fun showToast(message: String, type: Int, actionText: String? = null) {
+        if (actionText?.isEmpty() == false) {
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
+        } else {
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
         }
     }
 }

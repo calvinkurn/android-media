@@ -1,5 +1,8 @@
 package com.tokopedia.feedplus.presentation.adapter.viewholder
 
+import android.annotation.SuppressLint
+import android.view.GestureDetector
+import android.view.MotionEvent
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,10 +15,13 @@ import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedPostImageAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
+import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
+import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -25,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 /**
  * Created By : Muhammad Furqan on 02/02/23
  */
+@SuppressLint("ClickableViewAccessibility")
 class FeedPostImageViewHolder(
     private val binding: ItemFeedPostBinding,
     private val listener: FeedListener
@@ -32,6 +39,11 @@ class FeedPostImageViewHolder(
 
     private val layoutManager =
         LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
+    private val likeAnimationView = FeedLikeAnimationComponent(
+        binding.root
+    )
+    private val smallLikeAnimationView =
+        FeedSmallLikeIconAnimationComponent(binding.root)
 
     init {
         with(binding) {
@@ -59,9 +71,40 @@ class FeedPostImageViewHolder(
             binding.apply {
                 bindAuthor(data)
                 bindCaption(data)
+                val authorView =
+                    FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
+                val captionView = FeedCaptionView(binding.tvFeedCaption)
+
+                val postGestureDetector = GestureDetector(
+                    itemView.context,
+                    object : GestureDetector.SimpleOnGestureListener() {
+                        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                            return true
+                        }
+
+                        override fun onDoubleTap(e: MotionEvent): Boolean {
+                            if (element.like.isLiked.not()) {
+                                listener.onLikePostCLicked(element, absoluteAdapterPosition)
+                            }
+                            return true
+                        }
+
+                        override fun onDown(e: MotionEvent): Boolean {
+                            return true
+                        }
+
+                        override fun onLongPress(e: MotionEvent) {
+                        }
+                    }
+                )
+
+                authorView.bindData(data.author, false, !data.followers.isFollowed)
+                captionView.bind(data.text)
+
                 bindImagesContent(data.media)
                 bindIndicators(data.media.size)
                 bindProductTag(data)
+                bindLike(data)
                 bindAsgcTags(data)
 
                 menuButton.setOnClickListener { _ ->
@@ -76,6 +119,9 @@ class FeedPostImageViewHolder(
                         imageUrl = data.media.firstOrNull()?.mediaUrl ?: ""
                     )
                 }
+                postLikeButton.likeButton.setOnClickListener {
+                    listener.onLikePostCLicked(element, absoluteAdapterPosition)
+                }
 
                 btnDisableClearMode.setOnClickListener {
                     if (listener.inClearViewMode()) {
@@ -89,14 +135,49 @@ class FeedPostImageViewHolder(
                     hideClearView()
                 }
 
-                root.setOnClickListener {
+                rvFeedPostImageContent.setOnTouchListener { _, event ->
+                    postGestureDetector.onTouchEvent(event)
+                    true
                 }
             }
         }
     }
 
+    private fun renderLikeView(
+        like: FeedLikeModel
+    ) {
+        val isLiked = like.isLiked
+        likeAnimationView.setEnabled(isEnabled = true)
+        smallLikeAnimationView.setEnabled(isEnabled = true)
+
+        likeAnimationView.setIsLiked(true)
+        binding.postLikeButton.likedText.text = like.countFmt
+        if (isLiked) {
+            likeAnimationView.show()
+        } else {
+            likeAnimationView.hide()
+        }
+    }
+
+    private fun setLikeUnlike(like: FeedLikeModel) {
+        val isLiked = like.isLiked
+        renderLikeView(like)
+        if (isLiked) {
+            likeAnimationView.playLikeAnimation()
+            smallLikeAnimationView.playLikeAnimation()
+        } else {
+            smallLikeAnimationView.playUnLikeAnimation()
+        }
+    }
+
     override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
+        if (element == null) {
+            return
+        }
+        if (payloads.contains(IMAGE_POST_LIKED_UNLIKED)) {
+            setLikeUnlike(element.like)
+        }
     }
 
     private fun bindAuthor(model: FeedCardImageContentModel) {
@@ -142,6 +223,12 @@ class FeedPostImageViewHolder(
         }
     }
 
+    private fun bindLike(feedCardModel: FeedCardImageContentModel) {
+        val like = feedCardModel.like
+        binding.postLikeButton.likedText.text = like.countFmt
+        likeAnimationView.setIsLiked(like.isLiked)
+    }
+
     private fun bindImagesContent(media: List<FeedMediaModel>) {
         with(binding) {
             val adapter = FeedPostImageAdapter(media.map { it.mediaUrl })
@@ -158,7 +245,7 @@ class FeedPostImageViewHolder(
         with(binding) {
             layoutAuthorInfo.root.hide()
             tvFeedCaption.hide()
-            likeButton.hide()
+            postLikeButton.root.hide()
             commentButton.hide()
             menuButton.hide()
             shareButton.hide()
@@ -172,7 +259,7 @@ class FeedPostImageViewHolder(
         with(binding) {
             layoutAuthorInfo.root.show()
             tvFeedCaption.show()
-            likeButton.show()
+            postLikeButton.root.show()
             commentButton.show()
             menuButton.show()
             shareButton.show()
@@ -183,6 +270,10 @@ class FeedPostImageViewHolder(
     }
 
     companion object {
+        const val PRODUCT_COUNT_ZERO = 0
+        const val PRODUCT_COUNT_ONE = 1
+        const val IMAGE_POST_LIKED_UNLIKED = 1011
+
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post
     }
