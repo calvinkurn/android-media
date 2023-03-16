@@ -92,7 +92,7 @@ class PostUploadReceiver @AssistedInject constructor(
         val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS, -1)
         val thumbnailUrl = intent.getStringExtra(UPLOAD_FIRST_IMAGE).orEmpty()
 
-        Log.d("Upload Posts", "Progress: $progress")
+        Log.d("Upload Posts", "Progress: $progress, Thumbnail: $thumbnailUrl, Extras: ${intent.extras}")
         return UploadInfo.Progress(progress, thumbnailUrl)
     }
 
@@ -101,10 +101,10 @@ class PostUploadReceiver @AssistedInject constructor(
         val thumbnailUrl = intent.getStringExtra(UPLOAD_FIRST_IMAGE).orEmpty()
 
         return if (isSuccess) {
-            Log.d("Upload Posts", "Finished")
+            Log.d("Upload Posts", "Finished, Extras: ${intent.extras}")
             UploadInfo.Finished
         } else {
-            Log.d("Upload Posts", "Failed")
+            Log.d("Upload Posts", "Failed, Extras: ${intent.extras}")
             UploadInfo.Failed(thumbnailUrl) {
                 val draftId = intent.getStringExtra(DRAFT_ID) ?: return@Failed
                 val context = mContext.get() ?: return@Failed
