@@ -1,15 +1,11 @@
-package com.tokopedia.tokopedianow.home.domain.query
+package com.tokopedia.tokopedianow.common.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
-import com.tokopedia.tokopedianow.home.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 
 internal object GetTargetedTickerNow: GqlQueryInterface {
 
-    private const val OPERATION_NAME = "GetTargetedTicker"
-
     override fun getOperationNameList(): List<String> {
-        return listOf(OPERATION_NAME)
+        return listOf("GetTargetedTicker")
     }
 
     override fun getQuery(): String {
@@ -39,6 +35,7 @@ internal object GetTargetedTickerNow: GqlQueryInterface {
     }
 
     override fun getTopOperationName(): String {
-        return OPERATION_NAME
+        return "GetTargetedTicker"
     }
 }
+

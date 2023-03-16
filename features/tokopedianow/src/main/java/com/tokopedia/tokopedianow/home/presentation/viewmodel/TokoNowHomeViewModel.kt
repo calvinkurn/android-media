@@ -38,6 +38,8 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.HOME_PAGE
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
@@ -625,7 +627,7 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel, localCacheModel: LocalCacheModel) {
         when (item) {
-            is HomeTickerUiModel -> getTickerDataAsync(item, localCacheModel).await()
+            is HomeTickerUiModel -> getTickerDataAsync(item).await()
             is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, localCacheModel.warehouse_id).await()
             is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
@@ -677,12 +679,11 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTickerDataAsync(item: HomeTickerUiModel, localCacheModel: LocalCacheModel?): Deferred<Unit?> {
+    private suspend fun getTickerDataAsync(item: HomeTickerUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-//            val tickerList = getTickerUseCase.execute(localCacheModel = localCacheModel).ticker.tickerList
-//            val tickerData = TickerMapper.mapTickerData(tickerList)
-//            homeLayoutItemList.mapTickerData(item, tickerData)
-            val tickerList = getTargetedTickerUseCase.execute()
+            val tickerList = getTargetedTickerUseCase.execute(
+                page = HOME_PAGE
+            )
             val tickerData = TickerMapper.mapTickerData(tickerList)
             homeLayoutItemList.mapTickerData(item, tickerData)
         }) {
