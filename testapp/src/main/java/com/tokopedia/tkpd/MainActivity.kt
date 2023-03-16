@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     val REQUEST_CODE_LOGIN = 123
     val REQUEST_CODE_LOGOUT = 456
+    val REQUEST_CODE_DEVELOPER_OPTIONS = 789
     lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +63,8 @@ class MainActivity : AppCompatActivity() {
         testGqlButton.setOnClickListener { TestGqlUseCase().execute() }
 
         devOptButton.setOnClickListener {
-            RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
+            val developerOptionsIntent = RouteManager.getIntent(this, ApplinkConst.DEVELOPER_OPTIONS)
+            startActivityForResult(developerOptionsIntent, REQUEST_CODE_DEVELOPER_OPTIONS)
         }
 
         etAppLink.setText(getDefaultAppLink())
@@ -87,6 +89,14 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Logout Success", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(this, "Logout Failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+            REQUEST_CODE_DEVELOPER_OPTIONS -> {
+                if (userSession.isLoggedIn) {
+                    Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show()
+                    goTo()
+                } else {
+                    Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -115,6 +125,20 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+
+        //       for gaung.utama
+        //      val appLink = "tokopedia://chatbot/3181924"
+        //      for sourav staging
+        //          val appLink = "tokopedia://chatbot/4058088"
+        //           val appLink = "tokopedia://chatbot/3181924"
+        //       for dwi.widodo
+        //            val appLink = "tokopedia://chatbot/3185892"
+        //     for hanifah staging
+        //                        val appLink = "tokopedia://chatbot/4053167"
+        //       val appLink =  ApplinkConstInternalGlobal.LOGIN_HELPER
+        //      val appLink = "tokopedia://topchat"
+//        val intent = Intent(this, MainParentActivity::class.java)
+//        startActivity(intent)
         val appLink = etAppLink.text.toString()
         if (appLink.isNotBlank()) {
             RouteManager.route(this, appLink)
