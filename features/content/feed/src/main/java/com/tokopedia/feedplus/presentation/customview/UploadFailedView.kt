@@ -32,7 +32,28 @@ class UploadFailedView : ConstraintLayout {
         this
     )
 
+    private var mListener: Listener? = null
+
+    init {
+        binding.iconClose.setOnClickListener {
+            mListener?.onCloseClicked(this)
+        }
+
+        binding.layoutThumbnail.setOnClickListener {
+            mListener?.onRetryClicked(this)
+        }
+    }
+
     fun setThumbnail(url: String) {
         binding.imgThumbnail.setImageUrl(url)
+    }
+
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
+    interface Listener {
+        fun onCloseClicked(view: UploadFailedView)
+        fun onRetryClicked(view: UploadFailedView)
     }
 }

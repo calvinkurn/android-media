@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.receiver
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import dagger.assisted.Assisted
@@ -8,8 +9,11 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 
 /**
  * Created by kenny.hadisaputra on 14/03/23
@@ -40,22 +44,6 @@ class ShortsUploadReceiver @AssistedInject constructor(
 
             awaitClose { shortsUploader.cancelObserve(observer) }
         }
-//        return flow {
-//            emit(UploadInfo.Progress(10, ""))
-//            delay(500)
-//            emit(UploadInfo.Progress(30, ""))
-//            delay(500)
-//            emit(UploadInfo.Progress(40, ""))
-//            delay(500)
-//            emit(UploadInfo.Progress(80, ""))
-//            delay(500)
-//            emit(UploadInfo.Progress(100, ""))
-//            delay(500)
-//            emit(UploadInfo.Failed("") {
-//                Log.d("UPLOAD FAILED", "Retry")
-//            })
-//        }
-//        return flow {}
     }
 
     companion object {

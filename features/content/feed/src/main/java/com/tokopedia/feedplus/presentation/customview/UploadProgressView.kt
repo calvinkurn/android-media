@@ -35,7 +35,11 @@ class UploadProgressView : ConstraintLayout {
         binding.imgThumbnail.setImageUrl(url)
     }
 
-    fun setProgress(progress: Int) {
-        binding.pbUploading.setValue(progress, true)
+    fun setProgress(progress: Int, isSmooth: Boolean = true) {
+        binding.pbUploading.setValue(progress, isSmooth)
+    }
+
+    fun resetProgress() {
+        binding.pbUploading.setValue(0, false)
     }
 }

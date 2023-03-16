@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
@@ -18,8 +19,10 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import java.lang.ref.WeakReference
 
 /**
@@ -70,15 +73,15 @@ class PostUploadReceiver @AssistedInject constructor(
 
 //        return flow {
 //            emit(UploadInfo.Progress(10, ""))
-//            delay(500)
+//            delay(5000)
 //            emit(UploadInfo.Progress(30, ""))
-//            delay(500)
+//            delay(5000)
 //            emit(UploadInfo.Progress(40, ""))
-//            delay(500)
+//            delay(5000)
 //            emit(UploadInfo.Progress(80, ""))
-//            delay(500)
+//            delay(5000)
 //            emit(UploadInfo.Progress(100, ""))
-//            delay(500)
+//            delay(5000)
 //            emit(UploadInfo.Failed("") {
 //                Log.d("UPLOAD FAILED", "Retry")
 //            })

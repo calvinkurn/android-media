@@ -36,9 +36,15 @@ class UploadInfoView : FrameLayout {
     private var mListener: Listener? = null
 
     init {
-        binding.failed.setOnClickListener {
-            mListener?.onRetryClicked(this)
-        }
+        binding.failed.setListener(object : UploadFailedView.Listener {
+            override fun onCloseClicked(view: UploadFailedView) {
+                mListener?.onCloseWhenFailedClicked(this@UploadInfoView)
+            }
+
+            override fun onRetryClicked(view: UploadFailedView) {
+                mListener?.onRetryClicked(this@UploadInfoView)
+            }
+        })
     }
 
     fun setThumbnail(thumbnailUrl: String) {
@@ -53,12 +59,9 @@ class UploadInfoView : FrameLayout {
     }
 
     fun setFailed() {
+        binding.progress.resetProgress()
         binding.progress.hide()
         binding.failed.show()
-    }
-
-    fun setRetryWhenFailed(onRetry: () -> Unit) {
-        binding.failed.setOnClickListener { onRetry() }
     }
 
     fun setListener(listener: Listener?) {
@@ -67,5 +70,6 @@ class UploadInfoView : FrameLayout {
 
     interface Listener {
         fun onRetryClicked(view: UploadInfoView)
+        fun onCloseWhenFailedClicked(view: UploadInfoView)
     }
 }

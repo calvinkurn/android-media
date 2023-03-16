@@ -58,7 +58,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private val feedMainViewModel: FeedMainViewModel by viewModels { viewModelFactory }
 
     @Inject
-    lateinit var uploadReceiver: FeedMultipleSourceUploadReceiver.Factory
+    lateinit var uploadReceiverFactory: FeedMultipleSourceUploadReceiver.Factory
 
     private var adapter: FeedPagerAdapter? = null
 
@@ -181,7 +181,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private fun observeUpload() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                uploadReceiver.create(this@FeedBaseFragment)
+                val uploadReceiver = uploadReceiverFactory.create(this@FeedBaseFragment)
+                uploadReceiver
                     .observe()
                     .collectLatest { info ->
                         when (info) {
@@ -195,7 +196,18 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                             }
                             is UploadInfo.Failed -> {
                                 binding.uploadView.setFailed()
-                                binding.uploadView.setRetryWhenFailed(info.onRetry)
+                                binding.uploadView.setListener(object : UploadInfoView.Listener {
+                                    override fun onRetryClicked(view: UploadInfoView) {
+                                        info.onRetry()
+                                    }
+
+                                    override fun onCloseWhenFailedClicked(view: UploadInfoView) {
+                                        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+                                            uploadReceiver.releaseCurrent()
+                                            binding.uploadView.hide()
+                                        }
+                                    }
+                                })
                             }
                         }
                     }

@@ -12,40 +12,44 @@
         app:rcl_cornerRadius="8dp"
         >
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/img_thumbnail"
+        <com.tokopedia.play_common.view.RoundedFrameLayout
+            android:id="@+id/layout_thumbnail"
             android:layout_width="32dp"
             android:layout_height="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_corner_radius="4"
-            />
-
-        <com.tokopedia.play_common.view.RoundedFrameLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/feed_dms_upload_failed_img_foreground"
-            app:layout_constraintBottom_toBottomOf="@id/img_thumbnail"
-            app:layout_constraintEnd_toEndOf="@id/img_thumbnail"
-            app:layout_constraintStart_toStartOf="@id/img_thumbnail"
-            app:layout_constraintTop_toTopOf="@id/img_thumbnail"
             app:rfl_cornerRadius="4dp"
-            />
+            >
 
-        <com.tokopedia.iconunify.IconUnify
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            app:layout_constraintStart_toStartOf="@id/img_thumbnail"
-            app:layout_constraintEnd_toEndOf="@id/img_thumbnail"
-            app:layout_constraintTop_toTopOf="@id/img_thumbnail"
-            app:layout_constraintBottom_toBottomOf="@id/img_thumbnail"
-            app:icon_name="RELOAD"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_light_disabled="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_color_night_disabled="@color/Unify_Static_White"
-            />
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                app:unify_image_corner_radius="0"
+                />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/feed_dms_upload_failed_img_foreground"
+                />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_retry"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                app:icon_color_light_disabled="@color/Unify_Static_White"
+                app:icon_color_light_enable="@color/Unify_Static_White"
+                app:icon_color_night_disabled="@color/Unify_Static_White"
+                app:icon_color_night_enable="@color/Unify_Static_White"
+                app:icon_name="RELOAD"
+                />
+
+        </com.tokopedia.play_common.view.RoundedFrameLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_failed_upload"
@@ -57,13 +61,14 @@
             android:text="@string/feed_upload_failed_title"
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/img_thumbnail"
+            app:layout_constraintStart_toEndOf="@id/layout_thumbnail"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             />
 
         <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_close"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginStart="6dp"
