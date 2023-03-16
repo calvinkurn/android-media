@@ -21,7 +21,7 @@ sealed class ShareModel {
     var isAffiliate: Boolean = false
     var socialMediaOrderingScore: Int = 100
 
-    // this variable is used for personalized campaign that has duration of campaign
+    // this variable is used for personalized campaign
     var personalizedMessageFormat: String = ""
     var pageType: PageType = PageType.OTHERS
 
