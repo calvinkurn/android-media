@@ -13,9 +13,6 @@ import com.tokopedia.unifyprinciples.Typography;
  */
 public class ShippingInfoBottomSheet {
 
-    Typography courierInformation;
-    Typography serviceNameTextView;
-
     public ShippingInfoBottomSheet(String information, String serviceName, Context activity) {
         BottomSheetDialog dialog = new BottomSheetDialog(activity);
         ShippingInfoBottomSheetBinding binding = ShippingInfoBottomSheetBinding.inflate(LayoutInflater.from(activity));

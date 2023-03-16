@@ -91,8 +91,6 @@ public class EditShippingWebViewDialog extends DialogFragment {
 
 
     }
-
-//    private TkpdWebView webView;
     private boolean editButtonClicked = false;
     private int courierIndex;
     private static final String WEB_RESOURCE_KEY = "web_resource_key";
@@ -110,11 +108,7 @@ public class EditShippingWebViewDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.edit_shipping_web_view, container, false);
         EditShippingWebViewBinding view = EditShippingWebViewBinding.inflate(inflater, container, false);
-//        webView = view.findViewById(R.id.additional_option_dialog);
-//        Typography editButton = view.findViewById(R.id.edit_option_button);
-//        Typography closeButton = view.findViewById(R.id.close_option_button);
         courierIndex = getArguments().getInt(COURIER_INDEX_KEY);
         view.additionalOptionDialog.setWebViewClient(new AdditionalOptionsWebViewClient());
         view.additionalOptionDialog.setWebChromeClient(new WebChromeClient());

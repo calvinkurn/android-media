@@ -73,7 +73,6 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
                 mainView.editAddress();
             }
         };
-        // todo make sure this one
         view.getRoot().setOnClickListener(editAddressSpinnerClickListener);
         view.textEditShippingCity.setOnClickListener(editAddressSpinnerClickListener);
 

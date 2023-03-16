@@ -120,10 +120,10 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         private fun setShipperProductEnableState(data: ShipperProductModel) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (data.isAvailable) {
-                    itemView.rootView.foreground =
+                    binding.root.foreground =
                         MethodChecker.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
                 } else {
-                    itemView.rootView.foreground =
+                    binding.root.foreground =
                         MethodChecker.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
                 }
             }

@@ -330,13 +330,13 @@ class ShippingEditorFragment :
     private fun setDataCourierNotCovered(data: ValidateShippingEditorModel) {
         bottomSheetCourierInactiveState = BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE
         bottomSheetCourierInactiveAdapter.setData(data.uiContent.warehouses)
-        openBottomSheetValidateCourierNotCovered(data)
+        context?.let { openBottomSheetValidateCourierNotCovered(it, data) }
     }
 
     private fun setDataBoAndCourierNotCovered(data: ValidateShippingEditorModel) {
         bottomSheetCourierInactiveState = BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_BO_STATE
         bottomSheetCourierInactiveAdapter.setData(data.uiContent.warehouses)
-        openBottomSheetValidateCourierNotCovered(data)
+        context?.let { openBottomSheetValidateCourierNotCovered(it, data) }
     }
 
     private fun updateHeaderTickerData(data: HeaderTickerModel) {
@@ -409,7 +409,7 @@ class ShippingEditorFragment :
         } else if (data.state == VALIDATE_BO_MULTIPLE_LOC_STATE) {
             setDataBoAndCourierNotCovered(data)
         } else if (data.state == VALIDATE_BEBAS_ONGKIR_STATE) {
-            openBottomSheetValidateBOData(data)
+            context?.let { openBottomSheetValidateBOData(it, data) }
         } else {
             viewModel.saveShippingData(
                 userSession.shopId.toLong(),
@@ -432,7 +432,8 @@ class ShippingEditorFragment :
         shipperName: String
     ) {
         bottomSheetCourierInactive = BottomSheetUnify()
-        val viewBottomSheetWarehouseInactive = BottomsheetCourierInactiveBinding.inflate(LayoutInflater.from(context), null, false)
+        val viewBottomSheetWarehouseInactive =
+            BottomsheetCourierInactiveBinding.inflate(LayoutInflater.from(ctx), null, false)
         setupChildCourierInactive(viewBottomSheetWarehouseInactive, shipperName, data.size, null)
 
         bottomSheetCourierInactive?.apply {
@@ -447,10 +448,14 @@ class ShippingEditorFragment :
         }
     }
 
-    private fun openBottomSheetValidateCourierNotCovered(data: ValidateShippingEditorModel) {
+    private fun openBottomSheetValidateCourierNotCovered(
+        ctx: Context,
+        data: ValidateShippingEditorModel
+    ) {
         val uiContentModel = data.uiContent
         bottomSheetCourierInactive = BottomSheetUnify()
-        val viewBottomSheetWarehouseInactive = BottomsheetCourierInactiveBinding.inflate(LayoutInflater.from(context), null, false)
+        val viewBottomSheetWarehouseInactive =
+            BottomsheetCourierInactiveBinding.inflate(LayoutInflater.from(ctx), null, false)
         setupChildCourierInactive(
             viewBottomSheetWarehouseInactive,
             uiContentModel.headerLocation,
@@ -475,10 +480,11 @@ class ShippingEditorFragment :
         }
     }
 
-    private fun openBottomSheetValidateBOData(data: ValidateShippingEditorModel) {
+    private fun openBottomSheetValidateBOData(context: Context, data: ValidateShippingEditorModel) {
         bottomSheetBOValidation = BottomSheetUnify()
         bottomSheetBOValidation?.setTitle(getString(R.string.bottomsheet_validation_title))
-        val viewBottomSheetBOValidation = PopupValidationBoBinding.inflate(LayoutInflater.from(context), null, false)
+        val viewBottomSheetBOValidation =
+            PopupValidationBoBinding.inflate(LayoutInflater.from(context), null, false)
         setUpChildBottomSheetValidateBOData(viewBottomSheetBOValidation, data)
 
         bottomSheetBOValidation?.apply {
@@ -575,7 +581,11 @@ class ShippingEditorFragment :
         }
     }
 
-    private fun showBottomSheetShipperWarehouseInactive(child: BottomsheetCourierInactiveBinding, header: String, courierCount: Int?) {
+    private fun showBottomSheetShipperWarehouseInactive(
+        child: BottomsheetCourierInactiveBinding,
+        header: String,
+        courierCount: Int?
+    ) {
         child.tvCourierInactive.text =
             getString(R.string.text_header_courier_not_covered, header, courierCount)
         child.btnPrimary.text = getString(R.string.button_understand)
@@ -600,7 +610,10 @@ class ShippingEditorFragment :
         child.tickerChargeBo.gone()
     }
 
-    private fun showBottomSheetValidateWarehouseInactive(child: BottomsheetCourierInactiveBinding, data: ValidateShippingEditorModel?) {
+    private fun showBottomSheetValidateWarehouseInactive(
+        child: BottomsheetCourierInactiveBinding,
+        data: ValidateShippingEditorModel?
+    ) {
         child.tvCourierInactive.text = data?.uiContent?.headerLocation
         child.btnPrimary.text = getString(R.string.button_cancel_reset)
         child.btnPrimary.setOnClickListener {
@@ -678,7 +691,8 @@ class ShippingEditorFragment :
 
     private fun openBottomSheetFeatureInfo() {
         bottomSheetFeatureInfo = BottomSheetUnify()
-        val viewBottomSheetFeatureInfo = BottomsheetShipperDetailBinding.inflate(LayoutInflater.from(context), null, false)
+        val viewBottomSheetFeatureInfo =
+            BottomsheetShipperDetailBinding.inflate(LayoutInflater.from(context), null, false)
         setupFeatureChild(viewBottomSheetFeatureInfo)
 
         bottomSheetFeatureInfo?.apply {
@@ -701,7 +715,8 @@ class ShippingEditorFragment :
 
     private fun openBottomSheetShipperInfo() {
         bottomSheetShipperInfo = BottomSheetUnify()
-        val viewBottomSheetShipperInfo = BottomsheetShipperInfoBinding.inflate(LayoutInflater.from(context), null, false)
+        val viewBottomSheetShipperInfo =
+            BottomsheetShipperInfoBinding.inflate(LayoutInflater.from(context), null, false)
         setupBottomSheetShipperInfoChild(viewBottomSheetShipperInfo)
 
         bottomSheetShipperInfo?.apply {
