@@ -3,11 +3,13 @@ package com.tokopedia.search.result.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PMAX
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PMIN
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.LAYOUT_FILTER
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.TYPE_SIZE_PERSO
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.Option.Companion.KEY_PRICE_RANGE
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -1076,10 +1078,19 @@ data class SearchProductModel(
         @Expose
         val trackingOption: String = "0",
     ) {
-        fun asFilter(): Filter =
-            Filter(
-                options = inspirationWidgetOptions.map { it.asOption() }
-            )
+        fun asFilter(): Filter {
+            return if (isPriceRangeWidget()) Filter(options = priceRangeOptions())
+            else Filter(options = inspirationWidgetAsFilterOption())
+        }
+
+        private fun isPriceRangeWidget() =
+            inspirationWidgetOptions.any { it.filters.key.contains(KEY_PRICE_RANGE) }
+
+        private fun priceRangeOptions() =
+            listOf(Option(key = PMIN), Option(key = PMAX))
+
+        private fun inspirationWidgetAsFilterOption() =
+            inspirationWidgetOptions.map { it.asOption() }
     }
 
     data class InspirationWidgetOption (

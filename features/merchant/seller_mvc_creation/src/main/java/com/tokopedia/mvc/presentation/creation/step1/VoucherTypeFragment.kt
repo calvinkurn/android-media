@@ -51,7 +51,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                         BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
                         voucherConfiguration
                     )
-                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+                    putParcelableArrayList(
+                        BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
                         ArrayList(selectedProducts)
                     )
                 }
@@ -81,7 +82,8 @@ class VoucherTypeFragment : BaseDaggerFragment() {
             ?: VoucherConfiguration()
     }
     private val selectedProducts by lazy {
-        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty() }
+        arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty()
+    }
 
     // tracker
     @Inject
@@ -156,7 +158,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
     private fun handleAction(action: VoucherCreationStepOneAction) {
         when (action) {
             is VoucherCreationStepOneAction.ShowIneligibleState -> {
-                showIneligibleState(action.isVoucherProduct)
+                showIneligibleState(action.isVoucherProduct, action.message)
             }
             is VoucherCreationStepOneAction.NavigateToNextStep -> {
                 navigateToNextStep(action.pageMode, action.voucherConfiguration)
@@ -203,7 +205,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
             }
             setNavigationOnClickListener {
                 onFragmentBackPressed()
-                tracker.sendClickKembaliArrowEvent()
+                tracker.sendClickKembaliArrowEvent(voucherConfiguration.voucherId)
             }
         }
     }
@@ -218,20 +220,15 @@ class VoucherTypeFragment : BaseDaggerFragment() {
             enable()
             setOnClickListener {
                 viewModel.processEvent(VoucherCreationStepOneEvent.NavigateToNextStep)
-                tracker.sendClickLanjutEvent()
+                tracker.sendClickLanjutEvent(voucherConfiguration.voucherId)
             }
         }
     }
 
-    /*
-    * The proper ineligible state implementation
-    * is still waiting update from the product team
-    * this is just a dummy implementation
-    */
-    private fun showIneligibleState(isVoucherProduct: Boolean) {
+    private fun showIneligibleState(isVoucherProduct: Boolean, message: String) {
         if (isVoucherProduct) setVoucherProductSelected() else setVoucherShopSelected()
         binding?.btnContinue?.apply {
-            showToasterError(getString(R.string.smvc_ineligible_voucher_creation_error_text))
+            showToasterError(message)
             disable()
         }
     }
@@ -246,7 +243,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                     isVoucherProduct
                 )
             )
-            tracker.sendClickKuponTypeEvent(isVoucherProduct)
+            tracker.sendClickKuponTypeEvent(isVoucherProduct, voucherConfiguration.voucherId)
         }
     }
 
@@ -285,7 +282,7 @@ class VoucherTypeFragment : BaseDaggerFragment() {
                     )
                 )
                 viewModel.processEvent(VoucherCreationStepOneEvent.resetFillState)
-                tracker.sendClickKuponTypeEvent(isVoucherProduct)
+                tracker.sendClickKuponTypeEvent(isVoucherProduct, voucherConfiguration.voucherId)
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }
