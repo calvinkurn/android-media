@@ -10,11 +10,14 @@ import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 fun ImageView.loadImageTopRightCrop(source: String) {
     if (context.isValid()) {
         try {
-            call(source, Properties()
-                .transform(TopRightCrop())
-                .setCacheStrategy(MediaCacheStrategy.RESOURCE)
-                .setPlaceHolder(PLACEHOLDER_RES_UNIFY)
-                .setErrorDrawable(ERROR_RES_UNIFY))
+            call(
+                source,
+                Properties()
+                    .transform(TopRightCrop())
+                    .setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                    .setPlaceHolder(PLACEHOLDER_RES_UNIFY)
+                    .setErrorDrawable(ERROR_RES_UNIFY)
+            )
         } catch (e: Exception) {
 
             /*

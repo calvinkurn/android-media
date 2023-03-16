@@ -64,8 +64,8 @@ class CommonOptions constructor(
     private fun overrideSize() {
         with(properties) {
             if (overrideSize != null && overrideSize?.width.isMoreThanZero()) {
-                val width = overrideSize?.width?: 0
-                val height = overrideSize?.height?: 0
+                val width = overrideSize?.width ?: 0
+                val height = overrideSize?.height ?: 0
 
                 options.override(width, height)
             }

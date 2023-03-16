@@ -6,6 +6,7 @@ import com.tokopedia.media.loader.internal.MediaSettingPreferences
 import com.tokopedia.media.loader.internal.NetworkManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import java.lang.ref.WeakReference
 
 class UrlBuilder constructor(
     private val context: Context
@@ -20,17 +21,17 @@ class UrlBuilder constructor(
         if (remoteConfig == null) remoteConfig = FirebaseRemoteConfigImpl(context)
         if (preferences == null) preferences = MediaSettingPreferences(context)
 
-        isAdaptive = remoteConfig?.getBoolean(KEY_ADAPTIVE_IMAGE)?: false
+        isAdaptive = remoteConfig?.getBoolean(KEY_ADAPTIVE_IMAGE) ?: false
     }
 
     fun buildUrl(url: String): String {
-        val setting = preferences?.qualitySettings()?: 0
+        val setting = preferences?.qualitySettings() ?: 0
 
         if (isAdaptiveImageSupported(url).not()) {
             return url
         }
 
-        val connectionType = when(setting) {
+        val connectionType = when (setting) {
             LOW_QUALITY_SETTINGS -> LOW_QUALITY // (2g / 3g)
             HIGH_QUALITY_SETTINGS -> HIGH_QUALITY // (4g / wifi)
             else -> NetworkManager.state(context) // adaptive
@@ -73,11 +74,11 @@ class UrlBuilder constructor(
     companion object {
         private const val KEY_ADAPTIVE_IMAGE = "is_adaptive_image_status"
 
-        private var urlBuilder: UrlBuilder? = null
+        private var urlBuilder: WeakReference<UrlBuilder>? = null
 
         fun build(context: Context): UrlBuilder {
-            return urlBuilder ?: UrlBuilder(context).also {
-                urlBuilder = it
+            return urlBuilder?.get() ?: UrlBuilder(context).also {
+                urlBuilder = WeakReference(it)
             }
         }
     }

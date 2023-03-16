@@ -14,7 +14,9 @@ import com.tokopedia.media.loader.data.Resize
 
 fun ImageView.loadAsGif(
     url: String
-) = loadGifImage(this, url,
+) = loadGifImage(
+    this,
+    url,
     Properties()
         .isGif(true)
 )
@@ -22,9 +24,12 @@ fun ImageView.loadAsGif(
 fun ImageView.loadAsGif(
     url: String,
     properties: Properties.() -> Unit
-) = loadGifImage(this, url, Properties()
-    .apply(properties)
-    .isGif(true)
+) = loadGifImage(
+    this,
+    url,
+    Properties()
+        .apply(properties)
+        .isGif(true)
 )
 
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())

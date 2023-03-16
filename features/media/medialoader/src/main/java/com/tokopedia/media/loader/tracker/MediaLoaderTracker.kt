@@ -10,7 +10,11 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.internal.MediaSettingPreferences
 import com.tokopedia.media.loader.internal.NetworkManager
 import com.tokopedia.media.loader.utils.RemoteCdnUtil
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 object MediaLoaderTracker : CoroutineScope {
@@ -119,7 +123,7 @@ object MediaLoaderTracker : CoroutineScope {
     private fun Context.pageName(): String {
         return try {
             javaClass.name.split(".").last()
-        } catch (e: Throwable) {
+        } catch (ignored: Throwable) {
             PAGE_NAME_NOT_FOUND
         }
     }

@@ -85,8 +85,8 @@ class PlaceholderOptions constructor(
 
     private fun generateBlurHash(hash: String?, width: Int?, height: Int?): Bitmap? {
         val ratio = AspectRatio.calculate(
-            (width ?: 2) * 10, // default value is 2*10 = 20 px
-            (height ?: 2) * 10 // default value is 2*10 = 20 px
+            (width ?: DEFAULT_SIZE) * BASE_PX_VALUE, // default value is 2*10 = 20 px
+            (height ?: DEFAULT_SIZE) * BASE_PX_VALUE // default value is 2*10 = 20 px
         )
 
         return BlurHashDecoder.decode(
@@ -94,5 +94,10 @@ class PlaceholderOptions constructor(
             width = ratio.first,
             height = ratio.second
         )
+    }
+
+    companion object {
+        private const val BASE_PX_VALUE = 10
+        private const val DEFAULT_SIZE = 2
     }
 }

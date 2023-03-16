@@ -2,9 +2,18 @@ package com.tokopedia.media.loader.module
 
 import android.content.Context
 import com.bumptech.glide.load.Options
-import com.bumptech.glide.load.model.*
+import com.bumptech.glide.load.model.ModelLoader
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.ModelCache
+import com.bumptech.glide.load.model.ModelLoaderFactory
+import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader
-import com.tokopedia.media.loader.data.*
+import com.tokopedia.media.loader.data.DEBUG_TIMBER_TAG
+import com.tokopedia.media.loader.data.LOW_QUALITY_SETTINGS
+import com.tokopedia.media.loader.data.LOW_QUALITY
+import com.tokopedia.media.loader.data.HIGH_QUALITY_SETTINGS
+import com.tokopedia.media.loader.data.HIGH_QUALITY
+import com.tokopedia.media.loader.data.PARAM_ECT
 import com.tokopedia.media.loader.internal.MediaSettingPreferences
 import com.tokopedia.media.loader.internal.NetworkManager
 import timber.log.Timber
