@@ -480,6 +480,7 @@ class ProductListViewModelTest {
             job.cancel()
         }
     }
+
     //endregion
 
 
