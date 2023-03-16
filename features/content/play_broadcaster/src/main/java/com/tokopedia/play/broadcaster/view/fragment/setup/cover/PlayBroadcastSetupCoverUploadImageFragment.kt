@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_UPLOAD_IMAGE
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -108,7 +109,7 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
             openCoverSetupFragment()
         }
         btnSetupCoverUploadImage.setOnClickListener {
-            if (btnSetupCoverUploadImage.isEnabled) mListener?.dismissSetupCover()
+            if (btnSetupCoverUploadImage.isEnabled) mListener?.dismissSetupCover(TAB_UPLOAD_IMAGE)
         }
     }
 

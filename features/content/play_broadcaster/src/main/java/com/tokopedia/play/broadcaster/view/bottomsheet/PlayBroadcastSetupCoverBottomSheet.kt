@@ -169,8 +169,8 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
         const val TAG = "PlayBroadcastSetupCoverBottomSheet"
         private const val SHEET_HEIGHT_PERCENT = 0.85f
         private const val COACH_MARK_DELAY = 2000L
-        private const val TAB_UPLOAD_IMAGE = 1
-        private const val TAB_AUTO_GENERATED = 2
+        const val TAB_UPLOAD_IMAGE = 1
+        const val TAB_AUTO_GENERATED = 2
 
         fun getFragment(
             fragmentManager: FragmentManager,
@@ -186,7 +186,7 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
     }
 
     interface Listener {
-        fun dismissSetupCover()
+        fun dismissSetupCover(source: Int)
         fun setupCoverProductClicked()
     }
 

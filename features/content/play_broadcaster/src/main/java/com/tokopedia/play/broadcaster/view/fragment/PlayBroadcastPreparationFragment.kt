@@ -31,6 +31,7 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -50,6 +51,8 @@ import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_AUTO_GENERATED
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_UPLOAD_IMAGE
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
@@ -870,8 +873,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         openSetupProductBottomSheet()
     }
 
-    override fun dismissSetupCover() {
+    override fun dismissSetupCover(source: Int) {
         if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
+
+        if (parentViewModel.uploadedCoverSource == TAB_AUTO_GENERATED && source != TAB_AUTO_GENERATED) {
+            showToast(R.string.play_setup_cover_upload_image_toaster)
+        } else if (parentViewModel.uploadedCoverSource == TAB_UPLOAD_IMAGE && source != TAB_UPLOAD_IMAGE) {
+            showToast(R.string.play_setup_cover_auto_generated_toaster)
+        }
+        parentViewModel.setCoverUploadedSource(source)
     }
 
     /** Others */

@@ -153,6 +153,21 @@ class HydraSharedPreferences @Inject constructor(
         )
     }
 
+    fun setUploadedCoverSource(position: Int) {
+        mSharedPrefs.edit()
+            .putInt(
+                String.format(KEY_UPLOADED_COVER_SOURCE, userSession.userId),
+                position,
+            ).apply()
+    }
+
+    fun getUploadedCoverSource(): Int {
+        return mSharedPrefs.getInt(
+            String.format(KEY_UPLOADED_COVER_SOURCE, userSession.userId),
+            -1,
+        )
+    }
+
     companion object {
 
         private const val HYDRA_PREFERENCE_NAME = "hydra_preference"
@@ -166,5 +181,6 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_SETUP_COVER_COACH_MARK = "setup_cover_coach_mark_%s"
         private const val KEY_LAST_SELECTED_ACCOUNT = "last_selected_account_%s"
         private const val KEY_SAVED_SELECTED_AUTO_GENERATED_COVER = "saved_selected_auto_generated_cover_%s"
+        private const val KEY_UPLOADED_COVER_SOURCE = "saved_cover_source_%s"
     }
 }
