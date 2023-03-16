@@ -90,10 +90,10 @@ object DynamicIconsMacroUtil {
         context: Context
     ): Int {
         var maxHeight = 0
-        val titleWidth = context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_title_width)
+        val titleWidth = context.resources.getDimensionPixelSize(R.dimen.home_dynamic_icon_title_width_revamp)
 
         for (icon in icons) {
-            val heightText = measureHeightTitle(
+            val heightText = measureHeightTitleRevamp(
                 icon.name,
                 titleWidth,
                 context
