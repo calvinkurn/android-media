@@ -23,7 +23,7 @@ object AtcVariantNewMapper {
      * @param selectedVariant is what will store the user-selected variant base on level
      *      selectedVariant value will like this
      *         index 0 : Key[productVariantID lvl1], value[variantID lvl1]
-     *         index 1: Key[productVariantID  lvl2]value[variantID lvl2]
+     *         index 1 : Key[productVariantID lvl2], value[variantID lvl2]
      *      if variant have one level so have index 0 only
      * @return
      */
