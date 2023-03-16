@@ -25,7 +25,7 @@ object VariantTwoLevelUseCase {
         val variantLevelOne = variantData.variants.getOrNull(
             VARIANT_LEVEL_ONE_INDEX
         ) ?: return null
-        val uiVariantLevelOne = processVariantOneLevel(
+        val uiVariantLevelOne = processVariantLevelOne(
             variantLevelOne = variantLevelOne,
             variantData = variantData,
             selectedVariant = selectedVariant
@@ -50,7 +50,7 @@ object VariantTwoLevelUseCase {
      * @param selectedVariant is variant option one and two level selected
      * @param variantData is all variant data
      */
-    private fun processVariantOneLevel(
+    private fun processVariantLevelOne(
         variantLevelOne: Variant,
         variantData: ProductVariant,
         selectedVariant: List<String>
