@@ -19,11 +19,7 @@ class LoginHelperViewHolder(
     override fun bind(element: LoginHelperUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.login_helper_btn)
         btn.setOnClickListener {
-//            RouteManager.route(
-//                itemView.context,
-//                ApplinkConstInternalGlobal.LOGIN_HELPER
-//            )
-            loginHelperListener?.routeToLoginHelperActivity()
+            loginHelperListener.routeToLoginHelperActivity()
         }
     }
 }
