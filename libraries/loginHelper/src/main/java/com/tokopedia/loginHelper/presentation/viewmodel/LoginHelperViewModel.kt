@@ -39,7 +39,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-// Currently data is hardcoded , Will get the data from DB once the server side is fixed
 class LoginHelperViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getUserDetailsRestUseCase: GetUserDetailsRestUseCase,
@@ -89,8 +88,6 @@ class LoginHelperViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                //          val response = getUserDetailsRestUseCase.executeOnBackground()
-                //         updateUserDataList(convertToUserListUiModel(response))
                 val userDetails = listOfUsers(_uiState.value.envType)
                 val sortedUserList = userDetails.users?.sortedBy {
                     it.email
@@ -104,7 +101,6 @@ class LoginHelperViewModel @Inject constructor(
         )
     }
 
-    // Currently It is hardcoded . Will get the data from server once the issue is fixed
     private fun listOfUsers(envType: LoginHelperEnvType): LoginDataUiModel {
         return when (envType) {
             LoginHelperEnvType.PRODUCTION -> {
@@ -118,21 +114,22 @@ class LoginHelperViewModel @Inject constructor(
 
     private fun provideStagingLoginData(): LoginDataUiModel {
         return LoginDataUiModel(
-            count = HeaderUiModel(6),
+            count = HeaderUiModel(7),
             users = listOf<UserDataUiModel>(
                 UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "toped1234", "Cex"),
                 UserDataUiModel("pbs-hanifah.puji+buystag1@tokopedia.com", "toped123", "Cex"),
                 UserDataUiModel("dwi.widodo+06@tokopedia.com", "dodopass", "Cex"),
                 UserDataUiModel("gaung.utama+01@tokopedia.com", "Q1w2e3r4", "Cex"),
                 UserDataUiModel("pbs-farhan+paylater6@tokopedia.com", "tokopedia", "Fintech"),
-                UserDataUiModel("yoshua.mandali+atomereject1@tokopedia.com", "tokopedia", "Fintech")
+                UserDataUiModel("yoshua.mandali+atomereject1@tokopedia.com", "tokopedia", "Fintech"),
+                UserDataUiModel("elly.susilowati+089@tokopedia.com", "tokopedia2015", "Digital")
             )
         )
     }
 
     private fun provideProdLoginData(): LoginDataUiModel {
         return LoginDataUiModel(
-            count = HeaderUiModel(4),
+            count = HeaderUiModel(7),
             users = listOf<UserDataUiModel>(
                 UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "toped123", "Cex"),
                 UserDataUiModel(
@@ -154,14 +151,20 @@ class LoginHelperViewModel @Inject constructor(
                     "elly.susilowati+090@tokopedia.com",
                     "tokopedia2015",
                     "All"
+                ),
+                UserDataUiModel(
+                    "te.digital@tokopedia.com",
+                    "Pikapika123",
+                    "Digital"
+                ),
+                UserDataUiModel(
+                    "qa-travent@tokopedia.com",
+                    "tokopedia789",
+                    "Digital"
                 )
             )
         )
     }
-
-//    private fun convertToUserListUiModel(typeRestResponseMap: Map<Type, RestResponse>): LoginDataResponse {
-//        return typeRestResponseMap[LoginDataResponse::class.java]?.getData() as LoginDataResponse
-//    }
 
     private fun loginUser(email: String, password: String, useHash: Boolean = true) {
         launchCatchError(coroutineContext, {

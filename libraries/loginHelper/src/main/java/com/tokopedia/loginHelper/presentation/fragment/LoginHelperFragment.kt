@@ -293,7 +293,6 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     private fun backToPreviousScreen() {
-        //  activity?.finish()
         val state = RouteManager.route(context, ApplinkConst.HOME)
         if (!state) {
             activity?.finish()
