@@ -193,6 +193,8 @@ class ProductSetupFragment @Inject constructor(
     }
 
     override fun getFactory(): ViewModelProvider.Factory {
+        val channelID = mDataSource?.creationId().orEmpty()
+        if (channelID.isEmpty()) removeFragment()
         if (!::productSetupViewModelProviderFactory.isInitialized) {
             productSetupViewModelProviderFactory = object : AbstractSavedStateViewModelFactory(
                 this,
@@ -204,7 +206,7 @@ class ProductSetupFragment @Inject constructor(
                     handle: SavedStateHandle
                 ): T {
                     return productSetupViewModelFactory.create(
-                        mDataSource?.creationId().orEmpty(),
+                        channelID,
                         mDataSource?.maxProduct().orZero(),
                         mDataSource?.getProductSectionList().orEmpty(),
                         handle,

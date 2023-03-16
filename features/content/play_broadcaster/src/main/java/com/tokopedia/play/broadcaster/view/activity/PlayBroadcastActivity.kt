@@ -191,9 +191,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         try {
-            viewModel.saveState(outState)
             outState.putString(CHANNEL_ID, viewModel.channelId)
             outState.putString(CHANNEL_TYPE, channelType.value)
+            viewModel.saveState(outState)
         } catch (e: Throwable) {}
         super.onSaveInstanceState(outState)
     }
