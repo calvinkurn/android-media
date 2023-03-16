@@ -138,7 +138,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel
@@ -1529,11 +1528,11 @@ class ShipmentPresenter @Inject constructor(
     ) {
         if (view != null) {
             couponStateChanged = true
-            val requestParams = RequestParams.create()
-            requestParams.putObject(
-                OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE,
-                validateUsePromoRequest
-            )
+//            val requestParams = RequestParams.create()
+//            requestParams.putObject(
+//                OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE,
+//                validateUsePromoRequest
+//            )
             if (showLoading) {
                 view?.setStateLoadingCourierStateAtIndex(cartPosition, true)
             }
