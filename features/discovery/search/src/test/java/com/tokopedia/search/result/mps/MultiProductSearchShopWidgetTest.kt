@@ -1,21 +1,18 @@
 package com.tokopedia.search.result.mps
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.mps.domain.model.MPSModel
-import com.tokopedia.search.result.mps.domain.model.MPSModel.AceSearchShopMPS.Shop.Product.LabelGroup
+import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop
+import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop.Product.LabelGroup
 import com.tokopedia.search.result.mps.shopwidget.MPSButtonDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSProductLabelGroupDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetProductDataView
-import com.tokopedia.search.result.stubExecute
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
-import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -34,49 +31,33 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
     )
 
     @Test
-    fun `multi product search success`() {
+    fun `multi product search success will show shop widget list`() {
         val mpsModel = MPSSuccessJSON.jsonToObject<MPSModel>()
-        `Given MPS Use Case success`(mpsModel, requestParamsSlot)
+        `Given MPS Use Case success`(mpsModel)
 
         `When view created`()
 
-        val mpsState = mpsViewModel.stateValue
-        `Then assert use case is executed with given parameters`()
-        `Then assert state is success`(mpsState)
-        `Then assert visitable list`(mpsState.result.data!!, mpsModel)
+        `Then assert shop widget visitable list first page`(mpsViewModel.visitableList, mpsModel)
     }
 
     private fun `When view created`() {
         mpsViewModel.onViewCreated()
     }
 
-    private fun `Then assert use case is executed with given parameters`() {
-        assertEquals(parameter.size, requestParamParameters.size)
-
-        parameter.forEach { (key, value) ->
-            assertEquals(value, requestParamParameters[key])
-        }
-    }
-
-    private fun `Then assert state is success`(mpsState: MPSState) {
-        assertThat(mpsState.result, `is`(instanceOf(State.Success::class.java)))
-    }
-
-    private fun `Then assert visitable list`(
+    private fun `Then assert shop widget visitable list first page`(
         mpsVisitableList: List<Visitable<*>>,
         mpsModel: MPSModel,
     ) {
-        assertMPSShopWidget(mpsVisitableList, mpsModel)
+        assertMPSShopWidget(
+            mpsVisitableList.filterIsInstance<MPSShopWidgetDataView>(),
+            mpsModel.shopList
+        )
     }
 
     private fun assertMPSShopWidget(
-        mpsVisitableList: List<Visitable<*>>,
-        mpsModel: MPSModel
+        mpsShopWidgetDataViewList: List<MPSShopWidgetDataView>,
+        shopList: List<Shop>
     ) {
-        val mpsShopWidgetDataViewList =
-            mpsVisitableList.filterIsInstance<MPSShopWidgetDataView>()
-        val shopList = mpsModel.shopList
-
         assertThat(mpsShopWidgetDataViewList.size, `is`(shopList.size))
 
         mpsShopWidgetDataViewList.forEachIndexed { index, mpsShopWidgetDataView ->
@@ -87,7 +68,7 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
 
     private fun assertMPSShopWidgetDataView(
         mpsShopWidgetDataView: MPSShopWidgetDataView,
-        shopItemModel: MPSModel.AceSearchShopMPS.Shop,
+        shopItemModel: Shop,
     ) {
         assertThat(mpsShopWidgetDataView.id, `is`(shopItemModel.id))
         assertThat(mpsShopWidgetDataView.name, `is`(shopItemModel.name))
@@ -122,10 +103,11 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
 
     private fun assertButtonDataViewList(
         buttonDataViewList: List<MPSButtonDataView>,
-        buttonList: List<MPSModel.AceSearchShopMPS.Shop.Button>
+        buttonList: List<Shop.Button>
     ) {
         assertThat(buttonDataViewList.size, `is`(buttonList.size))
         buttonDataViewList.forEachIndexed { index, mpsButtonDataView ->
+            assertThat(mpsButtonDataView.name, `is`(buttonList[index].name))
             assertThat(mpsButtonDataView.text, `is`(buttonList[index].text))
             assertThat(mpsButtonDataView.applink, `is`(buttonList[index].applink))
             assertThat(mpsButtonDataView.componentId, `is`(buttonList[index].componentId))
@@ -135,7 +117,7 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
 
     private fun assertMPSShopWidgetProductDataView(
         mpsShopWidgetProductDataView: MPSShopWidgetProductDataView,
-        shopItemProduct: MPSModel.AceSearchShopMPS.Shop.Product,
+        shopItemProduct: Shop.Product,
     ) {
         assertThat(mpsShopWidgetProductDataView.id, `is`(shopItemProduct.id))
         assertThat(mpsShopWidgetProductDataView.imageUrl, `is`(shopItemProduct.imageUrl))
@@ -174,20 +156,45 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
     }
 
     @Test
-    fun `multi product search failed`() {
-        `Given MPS Use Case failed`()
+    fun `multi product search load more success will append shop widget list`() {
+        val firstPageMPSModel = MPSSuccessJSON.jsonToObject<MPSModel>()
+        val mpsStateAfterFirstPage = MPSState(parameter).success(firstPageMPSModel)
+        val mpsViewModel = mpsViewModel(mpsStateAfterFirstPage)
 
-        `When view created`()
+        val loadMoreMPSModel = MPSLoadMoreSuccessJSON.jsonToObject<MPSModel>()
+        `Given MPS load more use case success`(loadMoreMPSModel)
 
-        val mpsState = mpsViewModel.stateValue
-        `Then assert state is error`(mpsState)
+        `When load more`(mpsViewModel)
+
+        `Then assert shop widget visitable list load more`(
+            mpsViewModel.visitableList,
+            firstPageMPSModel,
+            loadMoreMPSModel,
+        )
     }
 
-    private fun `Given MPS Use Case failed`() {
-        mpsUseCase.stubExecute() throws TestException("test exception")
+    private fun `When load more`(mpsViewModel: MPSViewModel) {
+        mpsViewModel.onViewLoadMore()
     }
 
-    private fun `Then assert state is error`(mpsState: MPSState) {
-        assertThat(mpsState.result, `is`(instanceOf(State.Error::class.java)))
+    private fun `Then assert shop widget visitable list load more`(
+        mpsVisitableList: List<Visitable<*>>,
+        firstPageMPSModel: MPSModel,
+        loadMoreMPSModel: MPSModel,
+    ) {
+        val firstPageShopListSize = firstPageMPSModel.shopList.size
+        val secondPageShopListSize = loadMoreMPSModel.shopList.size
+        val totalShopCount = firstPageShopListSize + secondPageShopListSize
+        val allShopWidgetVisitableList = mpsVisitableList.filterIsInstance<MPSShopWidgetDataView>()
+
+        assertEquals(totalShopCount, allShopWidgetVisitableList.size)
+
+        val loadMoreShopWidgetVisitableList = allShopWidgetVisitableList
+            .takeLast(secondPageShopListSize)
+
+        loadMoreShopWidgetVisitableList.forEachIndexed { index, mpsShopWidgetDataView ->
+            val shopItemModel = loadMoreMPSModel.shopList[index]
+            assertMPSShopWidgetDataView(mpsShopWidgetDataView, shopItemModel)
+        }
     }
 }

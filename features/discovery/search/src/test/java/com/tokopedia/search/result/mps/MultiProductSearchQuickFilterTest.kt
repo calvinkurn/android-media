@@ -88,10 +88,12 @@ class MultiProductSearchQuickFilterTest: MultiProductSearchTestFixtures() {
         expectedParameter: Map<String, String>,
     ) {
         coVerify(exactly = 1) {
-            mpsUseCase.execute(any(), any(), capture(requestParamsSlot))
+            mpsFirstPageUseCase.execute(any(), any(), capture(requestParamsSlot))
         }
 
-        assertEquals(expectedParameter, requestParamParameters)
+        expectedParameter.forEach { (key, value) ->
+            assertEquals(value, requestParamParameters[key])
+        }
     }
 
     @Test

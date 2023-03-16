@@ -9,12 +9,10 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.discovery.common.State
 import com.tokopedia.search.R
 import com.tokopedia.search.result.mps.MPSFragment
 import com.tokopedia.search.result.mps.MPSState
 import com.tokopedia.search.result.mps.domain.model.MPSModel
-import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 import com.tokopedia.search.utils.createFakeBaseAppComponent
 import com.tokopedia.search.utils.rawToObject
@@ -67,7 +65,27 @@ class MPSFragmentTest {
 
     @Test
     fun mps_failed() {
+        val mpsStateError = MPSState().error(Error("test exception"))
 
+        launchFragmentInContainer {
+            MPSFragment.newInstance(searchComponent(mpsStateError))
+        }
+
+        onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.mpsLoadingView)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.main_retry)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun mps_load_more_failed() {
+        val mpsModel = rawToObject<MPSModel>(RTest.raw.mps_success)
+        val mpsStateError = MPSState().success(mpsModel).errorLoadMore(Error("test exception"))
+
+        launchFragmentInContainer {
+            MPSFragment.newInstance(searchComponent(mpsStateError))
+        }
+
+        onView(withId(R.id.mpsSwipeRefreshLayout)).check(matches(isDisplayed()))
     }
 
     @Test

@@ -8,17 +8,20 @@ import com.tokopedia.filter.common.data.DataValue
 data class MPSModel(
     @SerializedName("ace_search_shop_mps")
     @Expose
-    val aceSearchShopMPS: AceSearchShopMPS = AceSearchShopMPS(),
+    val searchShopMPS: SearchShopMPS = SearchShopMPS(),
 
     @SerializedName("quick_filter")
     @Expose
     val quickFilterModel: DataValue = DataValue(),
 ) {
 
-    val shopList
-        get() = aceSearchShopMPS.shopList
+    val totalData
+        get() = searchShopMPS.header.totalData
 
-    data class AceSearchShopMPS(
+    val shopList
+        get() = searchShopMPS.shopList
+
+    data class SearchShopMPS(
         @SerializedName("header")
         @Expose
         val header: Header = Header(),
@@ -172,7 +175,7 @@ data class MPSModel(
 
                 @SerializedName("discount_percentage")
                 @Expose
-                val discountPercentage: String = "",
+                val discountPercentage: Int = 0,
 
                 @SerializedName("rating_average")
                 @Expose

@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.mps
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,7 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 
 class MPSListAdapter(
-    private val mpsTypeFactory: MPSTypeFactory
+    private val mpsTypeFactory: MPSTypeFactory,
+    private val listListener: ListListener,
 ): ListAdapter<Visitable<*>, AbstractViewHolder<Visitable<*>>>(MPSDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>> {
@@ -29,6 +31,15 @@ class MPSListAdapter(
 
         return visitableItem.type(mpsTypeFactory)
     }
+
+    override fun onCurrentListChanged(
+        previousList: List<Visitable<*>>,
+        currentList: List<Visitable<*>>
+    ) {
+        super.onCurrentListChanged(previousList, currentList)
+
+        listListener.onCurrentListChanged(previousList, currentList)
+    }
 }
 
 private class MPSDiffUtil: DiffUtil.ItemCallback<Visitable<*>>() {
@@ -36,7 +47,13 @@ private class MPSDiffUtil: DiffUtil.ItemCallback<Visitable<*>>() {
         return oldItem::class.java == newItem::class.java
     }
 
+    @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
         return oldItem == newItem
     }
+}
+
+interface ListListener {
+
+    fun onCurrentListChanged(previousList: List<Visitable<*>>, currentList: List<Visitable<*>>)
 }

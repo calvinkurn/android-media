@@ -37,7 +37,7 @@ class MultiProductSearchEmptyStateTest: MultiProductSearchTestFixtures() {
     }
 
     private fun `Then assert empty state by keyword`(mpsViewModel: MPSViewModel) {
-        assertThat(mpsViewModel.stateData, `is`(listOf(MPSEmptyStateKeywordDataView)))
+        assertThat(mpsViewModel.visitableList, `is`(listOf(MPSEmptyStateKeywordDataView)))
     }
 
     @Test
@@ -58,7 +58,7 @@ class MultiProductSearchEmptyStateTest: MultiProductSearchTestFixtures() {
 
     private fun `Then assert empty state by filter`(mpsViewModel: MPSViewModel) {
         assertEquals(
-            mpsViewModel.stateData,
+            mpsViewModel.visitableList,
             listOf(MPSEmptyStateFilterDataView)
         )
     }

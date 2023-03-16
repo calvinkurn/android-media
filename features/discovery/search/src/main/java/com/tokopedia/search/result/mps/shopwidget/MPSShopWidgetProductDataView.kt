@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.mps.shopwidget
 
-import com.tokopedia.search.result.mps.domain.model.MPSModel.AceSearchShopMPS.Shop.Product
+import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop.Product
 
 data class MPSShopWidgetProductDataView(
     val id: String = "",
@@ -9,7 +9,7 @@ data class MPSShopWidgetProductDataView(
     val applink: String = "",
     val price: Int = 0,
     val originalPrice: String = "",
-    val discountPercentage: String = "",
+    val discountPercentage: Int = 0,
     val priceFormat: String = "",
     val ratingAverage: String = "",
     val parentId: String = "",
@@ -20,6 +20,10 @@ data class MPSShopWidgetProductDataView(
     val buttonList: List<MPSButtonDataView> = listOf(),
     val labelGroupList: List<MPSProductLabelGroupDataView> = listOf(),
 ) {
+
+    fun primaryButton(): MPSButtonDataView? = buttonList.find(MPSButtonDataView::isPrimary)
+
+    fun secondaryButton(): MPSButtonDataView? = buttonList.find(MPSButtonDataView::isSecondary)
 
     companion object {
         fun create(product: Product) = MPSShopWidgetProductDataView(

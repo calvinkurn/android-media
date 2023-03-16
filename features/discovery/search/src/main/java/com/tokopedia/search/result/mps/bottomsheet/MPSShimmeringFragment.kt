@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.search.R
 import com.tokopedia.search.result.SearchViewModel
@@ -20,6 +21,8 @@ class MPSShimmeringFragment:
 
     private val searchViewModel: SearchViewModel? by viewModels { viewModelProvider }
     private var mpsQueryBottomSheet: MPSQueryBottomSheet? = null
+    private val searchParameter
+        get() = searchViewModel?.stateFlow?.value?.searchParameter ?: mapOf()
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
@@ -30,7 +33,11 @@ class MPSShimmeringFragment:
 
     private fun showMPSQueryBottomSheet(fragmentManager: FragmentManager): MPSQueryBottomSheet {
         return mpsQueryBottomSheet ?: (MPSQueryBottomSheet.create(
-            queryList = listOf("samsung", "xiaomi", "iphone"),
+            queryList = listOf(
+                searchParameter[SearchApiConst.Q1] ?: "",
+                searchParameter[SearchApiConst.Q2] ?: "",
+                searchParameter[SearchApiConst.Q3] ?: "",
+            ).filter { it.isNotBlank() },
             listener = this,
         ).apply {
             show(fragmentManager, MPSQueryBottomSheet.TAG)

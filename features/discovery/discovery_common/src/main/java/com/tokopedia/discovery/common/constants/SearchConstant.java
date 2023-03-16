@@ -92,7 +92,8 @@ public interface SearchConstant {
     }
 
     interface MPS {
-        String MPS_USE_CASE = "mps_use_case";
+        String MPS_FIRST_PAGE_USE_CASE = "mps_first_page_use_case";
+        String MPS_LOAD_MORE_USE_CASE = "mps_load_more_use_case";
     }
 
     interface ShopStatus {

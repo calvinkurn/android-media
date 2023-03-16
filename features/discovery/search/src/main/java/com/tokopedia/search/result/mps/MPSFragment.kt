@@ -8,10 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.common.State
+import com.tokopedia.discovery.common.State.Error
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.search.databinding.SearchMpsFragmentLayoutBinding
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterView
@@ -22,13 +27,15 @@ import com.tokopedia.search.utils.mvvm.SearchView
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener as EndlessScrollListener
 
 class MPSFragment:
     TkpdBaseV4Fragment(),
     SearchView,
     ChooseAddressListener,
     FragmentProvider,
-    BackToTopView {
+    BackToTopView,
+    ListListener {
 
     @Inject
     @Suppress("LateinitUsage")
@@ -42,8 +49,9 @@ class MPSFragment:
         fragmentProvider = this,
         chooseAddressListener = this,
     )
-    private val mpsListAdapter = MPSListAdapter(mpsTypeFactory)
+    private val mpsListAdapter = MPSListAdapter(mpsTypeFactory, this)
     private val quickFilterView by lazy(NONE) { QuickFilterView(viewModel) }
+    private var endlessScrollListener: EndlessScrollListener? = null
 
     override fun getScreenName(): String = ""
 
@@ -67,16 +75,48 @@ class MPSFragment:
 
     private fun initViews() {
         val context = context ?: return
-        binding?.mpsRecyclerView?.adapter = mpsListAdapter
-        binding?.mpsRecyclerView?.layoutManager = LinearLayoutManager(context)
+
+        binding?.mpsRecyclerView?.apply {
+            adapter = mpsListAdapter
+            layoutManager = LinearLayoutManager(context)
+            endlessScrollListener = endlessScrollListener(layoutManager).also(::addOnScrollListener)
+        }
     }
+
+    private fun endlessScrollListener(layoutManager: LayoutManager?): EndlessScrollListener =
+        object: EndlessScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel?.onViewLoadMore()
+            }
+        }
 
     override fun refresh() = withState(viewModel) {
         binding?.mpsLoadingView?.showWithCondition(it.result is State.Loading)
         binding?.mpsSwipeRefreshLayout?.showWithCondition(it.result is State.Success)
+        if (it.result is Error) showNetworkError(it.result)
+        if (it.loadMoreThrowable != null) showNetworkErrorLoadMore(it.loadMoreThrowable)
 
         mpsListAdapter.submitList(it.result.data)
         quickFilterView.refreshQuickFilter(binding?.mpsSortFilter, it)
+    }
+
+    private fun showNetworkError(result: Error<List<Visitable<*>>>) {
+        val context = context ?: return
+        val view = view ?: return
+        val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+
+        NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
+            viewModel?.onViewReloadData()
+        }
+    }
+
+    private fun showNetworkErrorLoadMore(throwable: Throwable) {
+        val activity = activity ?: return
+        val errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+
+        NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
+            viewModel?.onViewLoadMore()
+        }.showRetrySnackbar()
     }
 
     override fun onResume() {
@@ -93,6 +133,13 @@ class MPSFragment:
 
     override fun onLocalizingAddressSelected() {
         viewModel?.onLocalizingAddressSelected()
+    }
+
+    override fun onCurrentListChanged(
+        previousList: List<Visitable<*>>,
+        currentList: List<Visitable<*>>,
+    ) {
+        endlessScrollListener?.updateStateAfterGetData()
     }
 
     companion object {

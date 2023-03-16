@@ -1,7 +1,7 @@
 {
   "ace_search_shop_mps": {
     "header": {
-      "total_data": 4
+      "total_data": 12
     },
     "data": [
       {
@@ -32,7 +32,7 @@
             "price_format": "Rp 10.500",
             "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/12/14/9c68560f-cbeb-453a-bb32-cf7c7502fc05.jpg",
             "original_price": "",
-            "discount_percentage": "",
+            "discount_percentage": 0,
             "rating_average": 0,
             "parent_id": 0,
             "stock": 1008,
@@ -81,7 +81,7 @@
             "price_format": "Rp 8.000",
             "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/10/17/2e1dfda1-3d04-4b50-bfd8-326b313a7bb0.jpg",
             "original_price": "",
-            "discount_percentage": "",
+            "discount_percentage": 0,
             "rating_average": 0,
             "parent_id": 0,
             "stock": 1009,
@@ -201,7 +201,7 @@
             "price_format": "Rp 375.000",
             "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/12/20/519dfff9-4b6c-45fd-84de-17ed210f1991.jpg",
             "original_price": "",
-            "discount_percentage": "",
+            "discount_percentage": 0,
             "rating_average": 0,
             "parent_id": 0,
             "stock": 50,
@@ -250,7 +250,7 @@
             "price_format": "Rp 360.000",
             "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/13/768ccdea-5637-484d-bce8-ec2e25bf3561.jpg",
             "original_price": "",
-            "discount_percentage": "",
+            "discount_percentage": 0,
             "rating_average": 0,
             "parent_id": 0,
             "stock": 100,
@@ -299,7 +299,7 @@
             "price_format": "Rp 30.000",
             "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/12/21/7efa8b76-0ba8-44b2-b0ba-9477449be153.jpg",
             "original_price": "",
-            "discount_percentage": "",
+            "discount_percentage": 0,
             "rating_average": 0,
             "parent_id": 0,
             "stock": 0,

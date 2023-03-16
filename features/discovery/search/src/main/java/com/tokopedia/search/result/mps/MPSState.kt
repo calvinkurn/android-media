@@ -9,6 +9,7 @@ import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterDataView
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateKeywordDataView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
+import com.tokopedia.search.utils.PaginationState
 import com.tokopedia.search.utils.mvvm.SearchUiState
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel as ChooseAddressModel
 
@@ -18,18 +19,29 @@ data class MPSState(
     val chooseAddressModel: ChooseAddressModel? = null,
     val quickFilterDataViewList: List<QuickFilterDataView> = listOf(),
     val filterState: FilterState = FilterState(),
+    val loadMoreThrowable: Throwable? = null,
+    val paginationState: PaginationState = PaginationState(),
 ): SearchUiState {
 
-    fun success(mpsModel: MPSModel): MPSState {
-        val filterState = filterState.from(parameter, mpsModel.quickFilterModel.filter)
-        return copy(
-            result = State.Success(data = successData(mpsModel, filterState)),
-            quickFilterDataViewList = quickFilterData(mpsModel, filterState),
-            filterState = filterState,
-        )
-    }
+    val visitableList = result.data ?: listOf()
+    val startFrom = paginationState.startFrom
+    val hasNextPage = paginationState.hasNextPage
 
-    private fun successData(mpsModel: MPSModel, filterState: FilterState): List<Visitable<MPSTypeFactory>> =
+    fun success(mpsModel: MPSModel): MPSState =
+        this.updateFilterState(mpsModel)
+            .updateResult(mpsModel)
+
+    private fun updateFilterState(mpsModel: MPSModel) = copy(
+        filterState = filterState.from(parameter, mpsModel.quickFilterModel.filter)
+    )
+
+    private fun updateResult(mpsModel: MPSModel) = copy(
+        result = State.Success(data = successData(mpsModel)),
+        quickFilterDataViewList = quickFilterData(mpsModel),
+        paginationState = PaginationState(totalData = mpsModel.totalData).incrementStart()
+    )
+
+    private fun successData(mpsModel: MPSModel): List<Visitable<MPSTypeFactory>> =
         if (mpsModel.shopList.isNotEmpty())
             listOf(ChooseAddressDataView) +
                 mpsShopWidgetList(mpsModel)
@@ -43,10 +55,7 @@ data class MPSState(
     private fun mpsShopWidgetList(mpsModel: MPSModel) =
         mpsModel.shopList.map(MPSShopWidgetDataView::create)
 
-    private fun quickFilterData(
-        mpsModel: MPSModel,
-        filterState: FilterState,
-    ): List<QuickFilterDataView> {
+    private fun quickFilterData(mpsModel: MPSModel): List<QuickFilterDataView> {
         return if (mpsModel.shopList.isEmpty() && !filterState.isFilterActive) listOf()
         else mpsModel.quickFilterModel.filter.map { QuickFilterDataView(it) }
     }
@@ -63,20 +72,31 @@ data class MPSState(
         chooseAddressModel = chooseAddressModel
     )
 
-    fun loading() = copy(
-        result = State.Loading(),
-        quickFilterDataViewList = listOf(),
+    fun reload() = MPSState(
+        parameter = parameter,
+        chooseAddressModel = chooseAddressModel,
     )
 
     fun applyQuickFilter(quickFilterDataView: QuickFilterDataView): MPSState {
         val option = quickFilterDataView.firstOption ?: return this
 
         val isFilterApplied = filterState.isFilterApplied(option)
-        val filterStateSelected = filterState.setFilter(option, !isFilterApplied)
+        val filterStateUpdated = filterState.setFilter(option, !isFilterApplied)
 
         return copy(
-            parameter = filterStateSelected.parameter,
-            filterState = filterStateSelected,
+            parameter = filterStateUpdated.parameter,
+            filterState = filterStateUpdated,
         )
     }
+
+    fun loadMore() = copy(loadMoreThrowable = null)
+
+    fun successLoadMore(mpsModel: MPSModel) = copy(
+        result = State.Success(data = visitableList + mpsShopWidgetList(mpsModel)),
+        paginationState = paginationState.incrementStart(),
+    )
+
+    fun errorLoadMore(throwable: Throwable) = copy(
+        loadMoreThrowable = throwable
+    )
 }

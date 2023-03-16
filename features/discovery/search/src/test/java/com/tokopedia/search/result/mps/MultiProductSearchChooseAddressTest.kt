@@ -174,6 +174,6 @@ class MultiProductSearchChooseAddressTest: MultiProductSearchTestFixtures() {
 
         `Then verify check choose address updates is called`(dummyChooseAddressData)
 
-        confirmVerified(mpsUseCase)
+        confirmVerified(mpsFirstPageUseCase)
     }
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.mps.shopwidget
 
-import com.tokopedia.search.result.mps.domain.model.MPSModel.AceSearchShopMPS.Shop.FreeOngkir
+import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop.FreeOngkir
 
 data class MPSShopFreeOngkirDataView(
     val imageUrl: String = "",

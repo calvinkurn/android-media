@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.mps.shopwidget
 
-import com.tokopedia.search.result.mps.domain.model.MPSModel.AceSearchShopMPS.Shop.Ticker
+import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop.Ticker
 
 data class MPSShopTickerDataView(
     val type: String = "",

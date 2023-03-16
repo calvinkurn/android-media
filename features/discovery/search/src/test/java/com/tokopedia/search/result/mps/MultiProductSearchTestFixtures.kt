@@ -11,33 +11,45 @@ import io.mockk.mockk
 import io.mockk.slot
 
 const val MPSSuccessJSON = "mps/mps.json"
+const val MPSLoadMoreSuccessJSON = "mps/mps-load-more.json"
 
 abstract class MultiProductSearchTestFixtures {
 
-    protected val mpsUseCase: UseCase<MPSModel> = mockk(relaxed = true)
-    protected val chooseAddressWrapper: ChooseAddressWrapper = mockk(relaxed = true)
+    protected val mpsFirstPageUseCase = mockk<UseCase<MPSModel>>(relaxed = true)
+    protected val mpsLoadMoreUseCase = mockk<UseCase<MPSModel>>(relaxed = true)
+    protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
 
     protected val requestParamsSlot = slot<RequestParams>()
     protected val requestParams by lazy { requestParamsSlot.captured }
     protected val requestParamParameters
         get() = requestParams.parameters as Map<String, String>
 
-    fun mpsViewModel(state: MPSState = MPSState()) = MPSViewModel(
-        mpsState = state,
-        mpsUseCase = mpsUseCase,
-        chooseAddressWrapper = chooseAddressWrapper,
-    )
+    fun mpsViewModel(state: MPSState = MPSState()): MPSViewModel {
+        return MPSViewModel(
+            mpsState = state,
+            mpsFirstPageUseCase = mpsFirstPageUseCase,
+            mpsLoadMoreUseCase = mpsLoadMoreUseCase,
+            chooseAddressWrapper = chooseAddressWrapper,
+        )
+    }
 
     val MPSViewModel.stateValue: MPSState
         get() = this.stateFlow.value
 
-    val MPSViewModel.stateData: List<Visitable<*>>?
-        get() = this.stateValue.result.data
+    val MPSViewModel.visitableList: List<Visitable<*>>
+        get() = this.stateValue.visitableList
 
     protected fun `Given MPS Use Case success`(
         mpsModel: MPSModel,
         requestParamsSlot: CapturingSlot<RequestParams> = slot(),
     ) {
-        mpsUseCase.stubExecute(requestParamsSlot) returns mpsModel
+        mpsFirstPageUseCase.stubExecute(requestParamsSlot) returns mpsModel
+    }
+
+    protected fun `Given MPS load more use case success`(
+        mpsModel: MPSModel,
+        requestParamsSlot: CapturingSlot<RequestParams> = slot(),
+    ) {
+        mpsLoadMoreUseCase.stubExecute(requestParamsSlot) returns mpsModel
     }
 }

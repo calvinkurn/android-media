@@ -1,7 +1,11 @@
 package com.tokopedia.search.result.mps
 
 import androidx.lifecycle.ViewModel
-import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_ROWS
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ROWS
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.START
+import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_FIRST_PAGE_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_LOAD_MORE_USE_CASE
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
 import com.tokopedia.search.utils.ChooseAddressWrapper
@@ -18,8 +22,10 @@ import javax.inject.Named
 
 class MPSViewModel @Inject constructor(
     mpsState: MPSState = MPSState(),
-    @param:Named(MPS_USE_CASE)
-    private val mpsUseCase: UseCase<MPSModel>,
+    @param:Named(MPS_FIRST_PAGE_USE_CASE)
+    private val mpsFirstPageUseCase: UseCase<MPSModel>,
+    @param:Named(MPS_LOAD_MORE_USE_CASE)
+    private val mpsLoadMoreUseCase: UseCase<MPSModel>,
     private val chooseAddressWrapper: ChooseAddressWrapper,
 ): ViewModel(), SearchViewModel<MPSState> {
 
@@ -28,58 +34,59 @@ class MPSViewModel @Inject constructor(
     override val stateFlow: StateFlow<MPSState>
         get() = _stateFlow.asStateFlow()
 
+    private val mpsState: MPSState
+        get() = stateFlow.value
+
     private val chooseAddressModel
-        get() = stateFlow.value.chooseAddressModel
+        get() = mpsState.chooseAddressModel
+
+    private fun updateState(function: (MPSState) -> MPSState) {
+        _stateFlow.update(function)
+    }
 
     fun onViewCreated() {
         updateChooseAddress()
-        reloadData()
+        onViewReloadData()
     }
 
     private fun updateChooseAddress() {
-        _stateFlow.update { it.chooseAddress(chooseAddressWrapper.getChooseAddressData()) }
+        updateState { it.chooseAddress(chooseAddressWrapper.getChooseAddressData()) }
     }
 
-    private fun reloadData() {
-        _stateFlow.update { it.loading() }
+    fun onViewReloadData() {
+        updateState { it.reload() }
 
         multiProductSearch()
     }
 
     private fun multiProductSearch() {
-        mpsUseCase.execute(
-            onSuccess = ::onMPSSuccess,
-            onError = ::onMPSFailed,
+        mpsFirstPageUseCase.execute(
+            onSuccess = { mpsModel -> updateState { it.success(mpsModel) } },
+            onError = { throwable -> updateState { it.error(throwable) } },
             useCaseRequestParams = mpsUseCaseRequestParams(),
         )
     }
 
     private fun mpsUseCaseRequestParams(): RequestParams = RequestParams.create().apply {
         putAll(chooseAddressParams())
-        putAll(stateFlow.value.parameter)
+        putAll(mpsState.parameter)
+        putString(START, mpsState.startFrom.toString())
+        putString(ROWS, DEFAULT_VALUE_OF_PARAMETER_ROWS)
     }
 
     private fun chooseAddressParams() =
         chooseAddressModel?.toSearchParams() ?: mapOf()
 
-    private fun onMPSSuccess(mpsModel: MPSModel) {
-        _stateFlow.update { it.success(mpsModel) }
-    }
-
-    private fun onMPSFailed(throwable: Throwable) {
-        _stateFlow.update { it.error(throwable) }
-    }
-
     fun onLocalizingAddressSelected() {
         updateChooseAddress()
-        reloadData()
+        onViewReloadData()
     }
 
     fun onViewResumed() {
-        if (isChooseAddressUpdated()) {
-            updateChooseAddress()
-            reloadData()
-        }
+        if (!isChooseAddressUpdated()) return
+
+        updateChooseAddress()
+        onViewReloadData()
     }
 
     private fun isChooseAddressUpdated(): Boolean {
@@ -91,8 +98,20 @@ class MPSViewModel @Inject constructor(
     fun onQuickFilterSelected(quickFilterDataView: QuickFilterDataView) {
         quickFilterDataView.firstOption ?: return
 
-        _stateFlow.update { it.applyQuickFilter(quickFilterDataView) }
+        updateState { it.applyQuickFilter(quickFilterDataView) }
 
-        reloadData()
+        onViewReloadData()
+    }
+
+    fun onViewLoadMore() {
+        if (!mpsState.hasNextPage) return
+
+        updateState { it.loadMore() }
+
+        mpsLoadMoreUseCase.execute(
+            onSuccess = { mpsModel -> updateState { it.successLoadMore(mpsModel) } },
+            onError = { throwable -> updateState { it.errorLoadMore(throwable) } },
+            useCaseRequestParams = mpsUseCaseRequestParams()
+        )
     }
 }

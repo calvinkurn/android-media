@@ -2,7 +2,7 @@ package com.tokopedia.search.result.mps.shopwidget
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.mps.MPSTypeFactory
-import com.tokopedia.search.result.mps.domain.model.MPSModel.AceSearchShopMPS.Shop
+import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop
 
 class MPSShopWidgetDataView(
     val id: String = "",

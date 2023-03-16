@@ -86,17 +86,25 @@ class MPSShopWidgetViewHolder(
         )
     }
 
-    private fun productCardModel(shopProductItem: MPSShopWidgetProductDataView): ProductCardModel =
-        ProductCardModel(
-            productImageUrl = shopProductItem.imageUrl,
-            productName = shopProductItem.name,
-            slashedPrice = shopProductItem.originalPrice,
-            discountPercentage = shopProductItem.discountPercentage,
-            formattedPrice = shopProductItem.priceFormat,
-            ratingString = shopProductItem.ratingAverage,
-            labelGroupList = shopProductItem.labelGroupList.map(::toLabelGroup),
-            hasAddToCartButton = true,
+    private fun productCardModel(product: MPSShopWidgetProductDataView): ProductCardModel {
+        val primaryButton = product.primaryButton()
+        val secondaryButton = product.secondaryButton()
+
+        return ProductCardModel(
+            productImageUrl = product.imageUrl,
+            productName = product.name,
+            discountPercentage =
+            if (product.discountPercentage > 0) "${product.discountPercentage}%" else "",
+            slashedPrice =
+            if (product.discountPercentage > 0) product.originalPrice else "",
+            formattedPrice = product.priceFormat,
+            ratingString = product.ratingAverage,
+            labelGroupList = product.labelGroupList.map(::toLabelGroup),
+            hasAddToCartButton = primaryButton != null,
+            addToCardText = primaryButton?.text ?: "",
+            seeOtherProductText = secondaryButton?.text ?: "",
         )
+    }
 
     private fun toLabelGroup(labelGroupDataView: MPSProductLabelGroupDataView) =
         ProductCardModel.LabelGroup(
