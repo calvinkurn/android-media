@@ -25,7 +25,6 @@ class BalanceAtf2Adapter(
                 throwable = e,
                 reason = e.message ?: ""
             )
-            e.printStackTrace()
         }
     }
 

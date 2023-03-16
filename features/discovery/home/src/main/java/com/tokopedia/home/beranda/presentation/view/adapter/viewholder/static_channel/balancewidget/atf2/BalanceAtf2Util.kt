@@ -1,13 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
 
 import android.content.Context
-import android.view.ViewGroup
 import com.tokopedia.device.info.DeviceScreenInfo
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
-import com.tokopedia.home_component.util.toDpInt
 
 object BalanceAtf2Util {
-    fun getBalanceItemWidth(context: Context, totalItems: Int) : Int {
+    fun getBalanceItemWidth(context: Context, totalItems: Int): Int {
         val screenWidth = DeviceScreenInfo.getScreenWidth(context)
         val dividerCount = totalItems - 1
         val totalDividerWidth = dividerCount * context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_divider_width)
@@ -17,9 +14,11 @@ object BalanceAtf2Util {
     }
 
     fun getBalanceTextWidth(context: Context, isBalance: Boolean): Int {
-        val containerMaxWidth = if(isBalance) {
+        val containerMaxWidth = if (isBalance) {
             context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_atf2_item_max_width_balance)
-        } else context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_atf2_item_max_width_other)
+        } else {
+            context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_atf2_item_max_width_other)
+        }
         val paddings = context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_inner_left_padding) +
             context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_inner_right_padding) +
             context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_inner_content_padding)
