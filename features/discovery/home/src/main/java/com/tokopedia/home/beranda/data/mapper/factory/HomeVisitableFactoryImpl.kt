@@ -50,8 +50,8 @@ class HomeVisitableFactoryImpl(
     private var visitableList: MutableList<Visitable<*>> = mutableListOf()
 
     companion object {
-        private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - dynamic channel carousel - %s"
-        private const val VALUE_BANNER_DEFAULT = "default"
+        private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - slider banner - banner - %s"
+        private const val VALUE_BANNER_DEFAULT = ""
 
         private const val LAYOUT_FLOATING = "floating"
         private const val BE_TICKER_ANNOUNCEMENT = 0
