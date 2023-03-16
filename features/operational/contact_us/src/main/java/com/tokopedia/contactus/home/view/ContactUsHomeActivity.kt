@@ -7,11 +7,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.contactus.switcheractivity.inbox.InboxSwitcherActivity.Companion.start
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.contactus.createticket.ContactUsConstant
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import com.tokopedia.webview.BaseWebViewFragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.contactus.R
+import com.tokopedia.contactus.home.ContactUsConstant
 import java.lang.Exception
 
 /**

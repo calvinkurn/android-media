@@ -57,28 +57,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.contactus.createticket.activity.ContactUsActivity"
-            android:exported="false"
-            android:hardwareAccelerated="true"
-            android:label="@string/contact_us_title_home"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_contact_us"
-                    android:scheme="@string/tokopedia_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".inboxticket2.view.activity.InboxListActivity"
             android:exported="false"
             android:label="@string/contact_us_inbox"
@@ -129,22 +107,6 @@
                     android:host="@string/host_contactus"
                     android:pathPattern="@string/path_clear_cache"
                     android:scheme="@string/tokopedia_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".resolution.view.ResolutionSuccessActivity"
-            android:exported="false"
-            android:theme="@style/Theme.White" >
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_resolution"
-                    android:pathPrefix="@string/path_success_reso"
-                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
     </application>

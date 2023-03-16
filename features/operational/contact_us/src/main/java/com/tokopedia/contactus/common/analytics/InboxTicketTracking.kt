@@ -1,56 +1,63 @@
-package com.tokopedia.contactus.common.analytics;
+package com.tokopedia.contactus.common.analytics
 
 /**
  * Created by pranaymohapatra on 17/08/18.
  */
-
-public interface InboxTicketTracking {
-
-    interface Event{
-        String EventName = "clickInboxBantuan";
-        String EventView = "viewInboxBantuan";
-        String Event = "newContactUsEvent";
+interface InboxTicketTracking {
+    interface Event {
+        companion object {
+            const val EventName = "clickInboxBantuan"
+            const val EventView = "viewInboxBantuan"
+            const val Event = "newContactUsEvent"
+        }
     }
 
     interface Category {
-        String EventInboxTicket = "Inbox Ticket";
-        String EventHelpMessageInbox = "inbox pesan bantuan";
-        String EventCategoryInbox= "inbox pesan bantuan";
+        companion object {
+            const val EventInboxTicket = "Inbox Ticket"
+            const val EventHelpMessageInbox = "inbox pesan bantuan"
+            const val EventCategoryInbox = "inbox pesan bantuan"
+        }
     }
 
-    interface Action{
-        String EventTicketClick = "click ticket";
-        String EventClickHubungi = "Click Hubungi Kami";
-        String EventClickDetailTrasanksi = "Click Detail Transaksi";
-        String EventClickAttachImage = "Click Attach Image";
-        String EventClickReplyTicket = "click reply ticket";
-        String EventClickReason = "Click Reason";
-        String EventClickFilter = "Click Filter";
-        String EventAbandonReplySubmission = "Abandon Reply Submission";
-        String EventClickSearchDetails = "Click Search In Details";
-        String EventNotAttachImageRequired = "Not Attach Image Required";
-        String EventClickCsatPerReply = "click rating csat per reply";
-        String EventClickOnCsatRating= "click rating csat";
-        String EventRatingCsatOnSlider = "click jawaban membantu";
-        String EventClickCloseTicket = "click close ticket";
-        String EventImpressionOnCsatRating= "impression on csat rating";
-        String EventClickSubmitCsatRating= "click submit rating csat";
-        String EventClickTicketFilter= "click use filter";
-        String EventClickChatbotButton= "click use chatbot";
+    interface Action {
+        companion object {
+            const val EventTicketClick = "click ticket"
+            const val EventClickHubungi = "Click Hubungi Kami"
+            const val EventClickDetailTrasanksi = "Click Detail Transaksi"
+            const val EventClickAttachImage = "Click Attach Image"
+            const val EventClickReplyTicket = "click reply ticket"
+            const val EventClickReason = "Click Reason"
+            const val EventClickFilter = "Click Filter"
+            const val EventAbandonReplySubmission = "Abandon Reply Submission"
+            const val EventClickSearchDetails = "Click Search In Details"
+            const val EventNotAttachImageRequired = "Not Attach Image Required"
+            const val EventClickCsatPerReply = "click rating csat per reply"
+            const val EventClickOnCsatRating = "click rating csat"
+            const val EventRatingCsatOnSlider = "click jawaban membantu"
+            const val EventClickCloseTicket = "click close ticket"
+            const val EventImpressionOnCsatRating = "impression on csat rating"
+            const val EventClickSubmitCsatRating = "click submit rating csat"
+            const val EventClickTicketFilter = "click use filter"
+            const val EventClickChatbotButton = "click use chatbot"
+        }
     }
+
     interface Label {
-        String InboxEmpty = "Inbox - Empty State";
-        String TicketClosed = "Details - Closed";
-        String ImageAttached = "Image Attached";
-        String ImageError1 = "Error Message 1";
-        String ImageError2 = "Error Message 2";
-        String GetResult = "Get Result";
-        String NoResult = "No Result";
-        String EventHelpful = "helpful";
-        String EventNotHelpful = "not helpful";
-        String EventLabelYaTutup = "Ya,tutup";
-        String EventLabelBatal = "Batal";
-        String EventLabelYa = "Ya";
-        String EventLabelTidak = "Ya";
+        companion object {
+            const val InboxEmpty = "Inbox - Empty State"
+            const val TicketClosed = "Details - Closed"
+            const val ImageAttached = "Image Attached"
+            const val ImageError1 = "Error Message 1"
+            const val ImageError2 = "Error Message 2"
+            const val GetResult = "Get Result"
+            const val NoResult = "No Result"
+            const val EventHelpful = "helpful"
+            const val EventNotHelpful = "not helpful"
+            const val EventLabelYaTutup = "Ya,tutup"
+            const val EventLabelBatal = "Batal"
+            const val EventLabelYa = "Ya"
+            const val EventLabelTidak = "Ya"
+        }
     }
 }
