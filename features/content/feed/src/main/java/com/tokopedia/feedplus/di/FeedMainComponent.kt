@@ -16,6 +16,7 @@ import dagger.Component
         FeedMainModule::class,
         FeedMainViewModelModule::class,
         PlayShortsUploaderModule::class,
+        FeedFragmentModule::class,
         ContentCommentModule::class
     ], dependencies = [BaseAppComponent::class]
 )
