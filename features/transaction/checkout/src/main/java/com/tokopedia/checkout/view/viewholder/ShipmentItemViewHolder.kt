@@ -35,7 +35,7 @@ import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter
 import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryHolderData
-import com.tokopedia.checkout.view.viewholder.ShipmentCartItemViewHolder.ShipmentItemListener
+import com.tokopedia.checkout.view.viewholder.ShipmentCartItemViewHolder.Listener
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
@@ -90,7 +90,7 @@ class ShipmentItemViewHolder(
     actionListener: ShipmentAdapterActionListener?,
     private var scheduleDeliveryCompositeSubscription: CompositeSubscription?
 ) : RecyclerView.ViewHolder(itemView),
-    ShipmentItemListener,
+    Listener,
     ShippingWidgetListener {
 
     private var mActionListener: ShipmentAdapterActionListener? = actionListener
@@ -206,12 +206,12 @@ class ShipmentItemViewHolder(
     private var scheduleDeliverySubscription: Subscription? = null
     private var plusCoachmarkPrefs: PlusCoachmarkPrefs
 
-    override fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int) {
+    override fun onCheckPurchaseProtection(position: Int, isChecked: Boolean) {
         if (adapterPosition != RecyclerView.NO_POSITION) {
             if (shipmentDataList?.get(adapterPosition) is ShipmentCartItemModel) {
                 val data = shipmentDataList!![adapterPosition] as ShipmentCartItemModel
-                data.cartItemModels[position].isProtectionOptIn = checked
-                if (checked && cbDropshipper.isChecked && data.selectedShipmentDetailData?.useDropshipper == true) {
+                data.cartItemModels[position].isProtectionOptIn = isChecked
+                if (isChecked && cbDropshipper.isChecked && data.selectedShipmentDetailData?.useDropshipper == true) {
                     data.selectedShipmentDetailData?.useDropshipper = false
                     cbDropshipper.isChecked = false
                     mActionListener?.onPurchaseProtectionLogicError()
@@ -222,18 +222,18 @@ class ShipmentItemViewHolder(
         }
     }
 
-    override fun navigateToWebView(cartItemModel: CartItemModel) {
+    override fun onClickPurchaseProtectionTooltip(cartItemModel: CartItemModel) {
         mActionListener?.navigateToProtectionMore(cartItemModel)
     }
 
-    override fun openAddOnProductLevelBottomSheet(
+    override fun onClickAddOnProductLevel(
         cartItem: CartItemModel,
-        addOnWordingModel: AddOnWordingModel
+        addOnWording: AddOnWordingModel
     ) {
-        mActionListener?.openAddOnProductLevelBottomSheet(cartItem, addOnWordingModel)
+        mActionListener?.openAddOnProductLevelBottomSheet(cartItem, addOnWording)
     }
 
-    override fun addOnProductLevelImpression(productId: String) {
+    override fun onImpressionAddOnProductLevel(productId: String) {
         mActionListener?.addOnProductLevelImpression(productId)
     }
 
@@ -709,9 +709,9 @@ class ShipmentItemViewHolder(
                 cbPPP.isChecked = cartItemModel.isProtectionOptIn
                 cbPPP.skipAnimation()
                 cbPPP.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
-                    notifyOnPurchaseProtectionChecked(
-                        checked,
-                        0
+                    onCheckPurchaseProtection(
+                        0,
+                        checked
                     )
                 }
             }

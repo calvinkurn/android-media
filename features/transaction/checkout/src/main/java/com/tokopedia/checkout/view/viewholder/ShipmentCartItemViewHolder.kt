@@ -6,20 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.CompoundButton
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.flexbox.FlexboxLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.databinding.ItemShipmentProductBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.utils.WeightFormatterUtil
 import com.tokopedia.checkout.view.uimodel.ShipmentGroupProductModel
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -30,14 +25,14 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWo
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-@Deprecated("")
-class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ShipmentCartItemViewHolder(
+    itemView: View,
+    private val listener: Listener? = null
+) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
 
@@ -48,84 +43,72 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         private const val VIEW_ALPHA_DISABLED = 0.5f
     }
 
-    private var shipmentItemListener: ShipmentItemListener? = null
-    private val productBundlingInfo: ConstraintLayout =
-        itemView.findViewById(R.id.product_bundling_info)
-    private val imageBundle: ImageUnify = itemView.findViewById(R.id.image_bundle)
-    private val textBundleTitle: Typography = itemView.findViewById(R.id.text_bundle_title)
-    private val textBundlePrice: Typography = itemView.findViewById(R.id.text_bundle_price)
-    private val textBundleSlashPrice: Typography =
-        itemView.findViewById(R.id.text_bundle_slash_price)
-    private val vBundlingProductSeparator: View =
-        itemView.findViewById(R.id.v_bundling_product_separator)
-    private val llFrameItemProductContainer: LinearLayout =
-        itemView.findViewById(R.id.ll_frame_item_product_container)
-    private val rlProductInfo: ConstraintLayout = itemView.findViewById(R.id.rl_product_info)
-    private val mIvProductImage: ImageView = itemView.findViewById(R.id.iv_product_image)
-    private val mTvProductName: Typography = itemView.findViewById(R.id.tv_product_name)
-    private val mTvProductPrice: Typography = itemView.findViewById(R.id.tv_product_price)
-    private val mTvProductOriginalPrice: Typography =
-        itemView.findViewById(R.id.tv_product_original_price)
-    private val mTvProductCountAndWeight: Typography =
-        itemView.findViewById(R.id.tv_item_count_and_weight)
-    private val mTvOptionalNoteToSeller: TextView =
-        itemView.findViewById(R.id.tv_optional_note_to_seller)
-    private val mRlPurchaseProtection: RelativeLayout =
-        itemView.findViewById(R.id.rlayout_purchase_protection)
-    private val mTvPPPLinkText: TextView = itemView.findViewById(R.id.text_link_text)
-    private val mTvPPPPrice: TextView = itemView.findViewById(R.id.text_protection_desc)
-    private val mCbPPP: CheckboxUnify = itemView.findViewById(R.id.checkbox_ppp)
-    private val mSeparatorMultipleProductSameStore: View =
-        itemView.findViewById(R.id.v_separator_multiple_product_same_store)
-    private val tickerError: Ticker = itemView.findViewById(R.id.checkout_ticker_product_error)
-    private val productTicker: Ticker = itemView.findViewById(R.id.product_ticker)
-    private val mTextVariant: Typography = itemView.findViewById(R.id.text_variant)
-    private val mLayoutProductInfo: FlexboxLayout = itemView.findViewById(R.id.layout_product_info)
-    private val mIconTooltip: IconUnify = itemView.findViewById(R.id.icon_tooltip)
-    private val mPricePerProduct: Typography = itemView.findViewById(R.id.text_item_per_product)
-    private val llGiftingAddOnProductLevel: LinearLayout =
-        itemView.findViewById(R.id.ll_gifting_addon_product_level)
-    private val buttonGiftingAddOnProductLevel: ButtonGiftingAddOnView =
-        itemView.findViewById(R.id.button_gifting_addon_product_level)
+    private val binding: ItemShipmentProductBinding = ItemShipmentProductBinding.bind(itemView)
 
     fun bind(
-        shipmentProduct: ShipmentGroupProductModel
+        shipmentGroupProduct: ShipmentGroupProductModel
     ) {
-        bind(shipmentProduct.cartItem, shipmentProduct.addOnWording!!, null)
-    }
+        val cartItem = shipmentGroupProduct.shipmentCartItem.cartItemModels[shipmentGroupProduct.cartItemPosition]
+        val isFirstItem = shipmentGroupProduct.cartItemPosition == 0
 
-    fun bind(
-        cartItem: CartItemModel,
-        addOnWordingModel: AddOnWordingModel,
-        listener: ShipmentItemListener?
-    ) {
-        shipmentItemListener = listener
-        if (cartItem.isError) {
-            showShipmentWarning(cartItem)
-        } else {
-            hideShipmentWarning()
-        }
-        ImageHandler.LoadImage(mIvProductImage, cartItem.imageUrl)
-        mTvProductName.text = cartItem.name
-        mTvProductCountAndWeight.text = String.format(
-            mTvProductCountAndWeight.context
-                .getString(R.string.iotem_count_and_weight_format),
-            cartItem.quantity.toString(),
-            WeightFormatterUtil.getFormattedWeight(cartItem.weight, cartItem.quantity)
-        )
-        if (!TextUtils.isEmpty(cartItem.variant)) {
-            mTextVariant.text = cartItem.variant
-            mTextVariant.visibility = View.VISIBLE
-        } else {
-            mTextVariant.visibility = View.GONE
-        }
+        renderError(shipmentGroupProduct)
+        renderItem(cartItem)
         renderProductPrice(cartItem)
         renderNotesToSeller(cartItem)
         renderPurchaseProtection(cartItem)
         renderProductTicker(cartItem)
         renderProductProperties(cartItem)
-        renderBundlingInfo(cartItem)
+        renderBundlingInfo(cartItem, isFirstItem)
+        renderAddOnProductLevel(cartItem, shipmentGroupProduct.shipmentCartItem.addOnWordingModel!!)
+    }
+
+    @Deprecated("")
+    fun bind(
+        cartItem: CartItemModel,
+        addOnWordingModel: AddOnWordingModel,
+        isFirstItem: Boolean
+    ) {
+        renderItem(cartItem)
+        renderProductPrice(cartItem)
+        renderNotesToSeller(cartItem)
+        renderPurchaseProtection(cartItem)
+        renderProductTicker(cartItem)
+        renderProductProperties(cartItem)
+        renderBundlingInfo(cartItem, isFirstItem)
         renderAddOnProductLevel(cartItem, addOnWordingModel)
+    }
+
+    private fun renderError(shipmentGroupProduct: ShipmentGroupProductModel) {
+        if (shipmentGroupProduct.shipmentCartItem.isError) {
+            binding.llItemProductContainer.alpha = VIEW_ALPHA_DISABLED
+            binding.checkboxPpp.isEnabled = false
+            binding.iconTooltip.isClickable = false
+        } else {
+            binding.llItemProductContainer.alpha = VIEW_ALPHA_ENABLED
+            binding.checkboxPpp.isEnabled = true
+            binding.iconTooltip.isClickable = true
+        }
+    }
+
+    private fun renderItem(cartItem: CartItemModel) {
+        if (cartItem.isError) {
+            showShipmentWarning(cartItem)
+        } else {
+            hideShipmentWarning()
+        }
+        binding.ivProductImage.setImageUrl(cartItem.imageUrl)
+        binding.tvProductName.text = cartItem.name
+        binding.tvItemCountAndWeight.text = String.format(
+            binding.tvItemCountAndWeight.context.getString(R.string.iotem_count_and_weight_format),
+            cartItem.quantity.toString(),
+            WeightFormatterUtil.getFormattedWeight(cartItem.weight, cartItem.quantity)
+        )
+        if (!TextUtils.isEmpty(cartItem.variant)) {
+            binding.textVariant.text = cartItem.variant
+            binding.textVariant.visible()
+        } else {
+            binding.textVariant.gone()
+        }
     }
 
     private fun renderProductProperties(cartItemModel: CartItemModel) {
@@ -140,16 +123,16 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
                     )
                 )
                 productInfo.setType(SMALL)
-                if (mLayoutProductInfo.childCount > 0) {
+                if (binding.layoutProductInfo.childCount > 0) {
                     productInfo.text = ", " + productInformationList[i]
                 } else {
                     productInfo.text = productInformationList[i]
                 }
-                mLayoutProductInfo.addView(productInfo)
+                binding.layoutProductInfo.addView(productInfo)
             }
-            mLayoutProductInfo.visibility = View.VISIBLE
+            binding.layoutProductInfo.visibility = View.VISIBLE
         } else {
-            mLayoutProductInfo.visibility = View.GONE
+            binding.checkoutTickerProductError.visibility = View.GONE
         }
         renderEthicalDrugsProperty(cartItemModel)
     }
@@ -157,7 +140,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private fun renderEthicalDrugsProperty(cartItemModel: CartItemModel) {
         if (cartItemModel.ethicalDrugDataModel.needPrescription) {
             val ethicalDrugView: View = createProductInfoTextWithIcon(cartItemModel)
-            if (mLayoutProductInfo.childCount > 0) {
+            if (binding.checkoutTickerProductError.childCount > 0) {
                 ethicalDrugView.setPadding(
                     4.dpToPx(ethicalDrugView.resources.displayMetrics),
                     0,
@@ -165,8 +148,8 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
                     0
                 )
             }
-            mLayoutProductInfo.addView(ethicalDrugView)
-            mLayoutProductInfo.visibility = View.VISIBLE
+            binding.checkoutTickerProductError.addView(ethicalDrugView)
+            binding.checkoutTickerProductError.visibility = View.VISIBLE
         }
     }
 
@@ -197,62 +180,65 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     }
 
     private fun renderProductPrice(cartItem: CartItemModel) {
-        mTvProductPrice.text = CurrencyFormatUtil
+        binding.tvProductPrice.text = CurrencyFormatUtil
             .convertPriceValueToIdrFormat(cartItem.price.toLong(), false)
             .removeDecimalSuffix()
         val dp4 =
-            mTvProductPrice.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4)
+            binding.tvProductPrice.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4)
         if (cartItem.originalPrice > 0) {
-            mTvProductPrice.setPadding(0, dp4, 0, 0)
-            mTvProductOriginalPrice.setPadding(0, dp4, 0, 0)
-            mTvProductOriginalPrice.text = CurrencyFormatUtil
+            binding.tvProductPrice.setPadding(0, dp4, 0, 0)
+            binding.tvProductOriginalPrice.setPadding(0, dp4, 0, 0)
+            binding.tvProductOriginalPrice.text = CurrencyFormatUtil
                 .convertPriceValueToIdrFormat(cartItem.originalPrice.toLong(), false)
                 .removeDecimalSuffix()
-            mTvProductOriginalPrice.paintFlags =
-                mTvProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            mTvProductOriginalPrice.visibility = View.VISIBLE
+            binding.tvProductOriginalPrice.paintFlags =
+                binding.tvProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            binding.tvProductOriginalPrice.visibility = View.VISIBLE
         } else {
-            mTvProductPrice.setPadding(0, dp4, 0, 0)
-            mTvProductOriginalPrice.visibility = View.GONE
+            binding.tvProductPrice.setPadding(0, dp4, 0, 0)
+            binding.tvProductOriginalPrice.visibility = View.GONE
         }
     }
 
     private fun renderNotesToSeller(cartItem: CartItemModel) {
         if (!TextUtils.isEmpty(cartItem.noteToSeller)) {
-            mTvOptionalNoteToSeller.text = cartItem.noteToSeller
-            mTvOptionalNoteToSeller.visibility = View.VISIBLE
+            binding.tvOptionalNoteToSeller.text = cartItem.noteToSeller
+            binding.tvOptionalNoteToSeller.visibility = View.VISIBLE
         } else {
-            mTvOptionalNoteToSeller.visibility = View.GONE
+            binding.tvOptionalNoteToSeller.visibility = View.GONE
         }
     }
 
     private fun renderPurchaseProtection(cartItem: CartItemModel) {
-        mRlPurchaseProtection.visibility =
+        binding.rlayoutPurchaseProtection.visibility =
             if (cartItem.isProtectionAvailable && !cartItem.isError) {
                 View.VISIBLE
             } else {
                 View.GONE
             }
         if (cartItem.isProtectionAvailable && !cartItem.isError) {
-            mIconTooltip.setOnClickListener { shipmentItemListener?.navigateToWebView(cartItem) }
-            mTvPPPLinkText.text = cartItem.protectionTitle
-            mTvPPPPrice.text = cartItem.protectionSubTitle
-            mPricePerProduct.text = CurrencyFormatUtil
+            binding.iconTooltip.setOnClickListener {
+                listener?.onClickPurchaseProtectionTooltip(
+                    cartItem
+                )
+            }
+            binding.textLinkText.text = cartItem.protectionTitle
+            binding.textProtectionDesc.text = cartItem.protectionSubTitle
+            binding.textItemPerProduct.text = CurrencyFormatUtil
                 .convertPriceValueToIdrFormat(cartItem.protectionPricePerProduct.toLong(), false)
                 .removeDecimalSuffix()
             if (cartItem.isProtectionCheckboxDisabled) {
-                mCbPPP.isEnabled = false
-                mCbPPP.isChecked = true
-                mCbPPP.skipAnimation()
+                binding.checkboxPpp.isEnabled = false
+                binding.checkboxPpp.isChecked = true
+                binding.checkboxPpp.skipAnimation()
             } else {
-                mCbPPP.isEnabled = true
-                mCbPPP.isChecked = cartItem.isProtectionOptIn
-                mCbPPP.skipAnimation()
-                mCbPPP.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
-                    shipmentItemListener?.notifyOnPurchaseProtectionChecked(
-                        checked,
-                        adapterPosition + 1
-                    )
+                binding.checkboxPpp.isEnabled = true
+                binding.checkboxPpp.isChecked = cartItem.isProtectionOptIn
+                binding.checkboxPpp.skipAnimation()
+                binding.checkboxPpp.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
+                    if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                        listener?.onCheckPurchaseProtection(bindingAdapterPosition, checked)
+                    }
                 }
             }
         }
@@ -260,39 +246,39 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
 
     private fun renderProductTicker(cartItemModel: CartItemModel) {
         if (cartItemModel.isShowTicker && !TextUtils.isEmpty(cartItemModel.tickerMessage)) {
-            productTicker.visibility = View.VISIBLE
-            productTicker.setTextDescription(cartItemModel.tickerMessage)
+            binding.productTicker.visibility = View.VISIBLE
+            binding.productTicker.setTextDescription(cartItemModel.tickerMessage)
         } else {
-            productTicker.visibility = View.GONE
+            binding.productTicker.visibility = View.GONE
         }
     }
 
     private fun showShipmentWarning(cartItemModel: CartItemModel) {
         if (!TextUtils.isEmpty(cartItemModel.errorMessage)) {
             if (!TextUtils.isEmpty(cartItemModel.errorMessageDescription)) {
-                tickerError.tickerTitle = cartItemModel.errorMessage
-                tickerError.setTextDescription(cartItemModel.errorMessageDescription)
+                binding.checkoutTickerProductError.tickerTitle = cartItemModel.errorMessage
+                binding.checkoutTickerProductError.setTextDescription(cartItemModel.errorMessageDescription)
             } else {
-                tickerError.setTextDescription(cartItemModel.errorMessage)
+                binding.checkoutTickerProductError.setTextDescription(cartItemModel.errorMessage)
             }
 
             if (cartItemModel.isBundlingItem) {
                 if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
-                    tickerError.visible()
-                    tickerError.post {
-                        tickerError.requestLayout()
+                    binding.checkoutTickerProductError.visible()
+                    binding.checkoutTickerProductError.post {
+                        binding.checkoutTickerProductError.requestLayout()
                     }
                 } else {
-                    tickerError.gone()
+                    binding.checkoutTickerProductError.gone()
                 }
             } else {
-                tickerError.visible()
-                tickerError.post {
-                    tickerError.requestLayout()
+                binding.checkoutTickerProductError.visible()
+                binding.checkoutTickerProductError.post {
+                    binding.checkoutTickerProductError.requestLayout()
                 }
             }
         } else {
-            tickerError.gone()
+            binding.checkoutTickerProductError.gone()
         }
 
         if (!cartItemModel.isShopError) {
@@ -301,33 +287,33 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     }
 
     private fun hideShipmentWarning() {
-        tickerError.gone()
+        binding.checkoutTickerProductError.gone()
         enableItemView()
     }
 
     private fun enableItemView() {
-        productBundlingInfo.alpha = VIEW_ALPHA_ENABLED
-        llFrameItemProductContainer.alpha = VIEW_ALPHA_ENABLED
+        binding.productBundlingInfo.alpha = VIEW_ALPHA_ENABLED
+        binding.llFrameItemProductContainer.alpha = VIEW_ALPHA_ENABLED
     }
 
     private fun disableItemView() {
-        productBundlingInfo.alpha = VIEW_ALPHA_DISABLED
-        llFrameItemProductContainer.alpha = VIEW_ALPHA_DISABLED
+        binding.productBundlingInfo.alpha = VIEW_ALPHA_DISABLED
+        binding.llFrameItemProductContainer.alpha = VIEW_ALPHA_DISABLED
     }
 
-    private fun renderBundlingInfo(cartItemModel: CartItemModel) {
-        val ivProductImageLayoutParams = mIvProductImage.layoutParams as MarginLayoutParams
+    private fun renderBundlingInfo(cartItemModel: CartItemModel, isFirstItem: Boolean) {
+        val ivProductImageLayoutParams = binding.ivProductImage.layoutParams as MarginLayoutParams
         val tvOptionalNoteToSellerLayoutParams =
-            mTvOptionalNoteToSeller.layoutParams as MarginLayoutParams
+            binding.tvOptionalNoteToSeller.layoutParams as MarginLayoutParams
         val productContainerLayoutParams =
-            llFrameItemProductContainer.layoutParams as MarginLayoutParams
-        val productInfoLayoutParams = rlProductInfo.layoutParams as MarginLayoutParams
+            binding.llFrameItemProductContainer.layoutParams as MarginLayoutParams
+        val productInfoLayoutParams = binding.rlProductInfo.layoutParams as MarginLayoutParams
         val bottomMargin =
             itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
         if (cartItemModel.isBundlingItem) {
             if (!TextUtils.isEmpty(cartItemModel.bundleIconUrl)) {
                 ImageHandler.loadImage2(
-                    imageBundle,
+                    binding.imageBundle,
                     cartItemModel.bundleIconUrl,
                     com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder
                 )
@@ -337,40 +323,44 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
                 itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14)
             tvOptionalNoteToSellerLayoutParams.leftMargin =
                 itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14)
-            vBundlingProductSeparator.visibility = View.VISIBLE
-            val productImageLayoutParams = mIvProductImage.layoutParams as MarginLayoutParams
-            val productNameLayoutParams = mTvProductName.layoutParams as MarginLayoutParams
+            binding.vBundlingProductSeparator.visibility = View.VISIBLE
+            val productImageLayoutParams = binding.ivProductImage.layoutParams as MarginLayoutParams
+            val productNameLayoutParams = binding.tvProductName.layoutParams as MarginLayoutParams
             val productMarginTop =
                 itemView.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_12)
             if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
-                productBundlingInfo.visibility = View.VISIBLE
+                binding.productBundlingInfo.visibility = View.VISIBLE
                 productImageLayoutParams.topMargin = 0
                 productNameLayoutParams.topMargin = 0
-                mSeparatorMultipleProductSameStore.invisible()
+                binding.vSeparatorMultipleProductSameStore.invisible()
             } else {
-                productBundlingInfo.visibility = View.GONE
+                binding.productBundlingInfo.visibility = View.GONE
                 productImageLayoutParams.topMargin = productMarginTop
                 productNameLayoutParams.topMargin = productMarginTop
-                mSeparatorMultipleProductSameStore.gone()
+                binding.vSeparatorMultipleProductSameStore.gone()
             }
-            textBundleTitle.text = cartItemModel.bundleTitle
-            textBundlePrice.text =
+            binding.textBundleTitle.text = cartItemModel.bundleTitle
+            binding.textBundlePrice.text =
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemModel.bundlePrice, false)
                     .removeDecimalSuffix()
-            textBundleSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+            binding.textBundleSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                 cartItemModel.bundleOriginalPrice,
                 false
             ).removeDecimalSuffix()
-            textBundleSlashPrice.paintFlags =
-                textBundleSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            binding.textBundleSlashPrice.paintFlags =
+                binding.textBundleSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             productContainerLayoutParams.bottomMargin = 0
             productInfoLayoutParams.bottomMargin = 0
         } else {
             ivProductImageLayoutParams.leftMargin = 0
             tvOptionalNoteToSellerLayoutParams.leftMargin = 0
-            vBundlingProductSeparator.visibility = View.GONE
-            productBundlingInfo.visibility = View.GONE
-            mSeparatorMultipleProductSameStore.show()
+            binding.vBundlingProductSeparator.visibility = View.GONE
+            binding.productBundlingInfo.visibility = View.GONE
+            if (isFirstItem) {
+                binding.vSeparatorMultipleProductSameStore.gone()
+            } else {
+                binding.vSeparatorMultipleProductSameStore.show()
+            }
             productContainerLayoutParams.bottomMargin = bottomMargin
             productInfoLayoutParams.bottomMargin = bottomMargin
         }
@@ -382,39 +372,38 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     ) {
         val addOns = cartItemModel.addOnProductLevelModel
         if (addOns.status == 0) {
-            llGiftingAddOnProductLevel.visibility = View.GONE
+            binding.llGiftingAddonProductLevel.visibility = View.GONE
         } else {
-            if (addOns.status == 1) {
-                buttonGiftingAddOnProductLevel.state = ButtonGiftingAddOnView.State.ACTIVE
-            } else if (addOns.status == 2) {
-                buttonGiftingAddOnProductLevel.state = ButtonGiftingAddOnView.State.INACTIVE
+            with(binding.itemShipmentGiftingAddonProductLevel) {
+                if (addOns.status == 1) {
+                    buttonGiftingAddonProductLevel.state = ButtonGiftingAddOnView.State.ACTIVE
+                } else if (addOns.status == 2) {
+                    buttonGiftingAddonProductLevel.state = ButtonGiftingAddOnView.State.INACTIVE
+                }
+                buttonGiftingAddonProductLevel.title = addOns.addOnsButtonModel.title
+                buttonGiftingAddonProductLevel.desc = addOns.addOnsButtonModel.description
+                buttonGiftingAddonProductLevel.urlLeftIcon = addOns.addOnsButtonModel.leftIconUrl
+                buttonGiftingAddonProductLevel.urlRightIcon = addOns.addOnsButtonModel.rightIconUrl
+                buttonGiftingAddonProductLevel.setOnClickListener {
+                    listener?.onClickAddOnProductLevel(
+                        cartItemModel,
+                        addOnWordingModel
+                    )
+                }
             }
-            llGiftingAddOnProductLevel.visibility = View.VISIBLE
-            buttonGiftingAddOnProductLevel.title = addOns.addOnsButtonModel.title
-            buttonGiftingAddOnProductLevel.desc = addOns.addOnsButtonModel.description
-            buttonGiftingAddOnProductLevel.urlLeftIcon = addOns.addOnsButtonModel.leftIconUrl
-            buttonGiftingAddOnProductLevel.urlRightIcon = addOns.addOnsButtonModel.rightIconUrl
-            buttonGiftingAddOnProductLevel.setOnClickListener {
-                shipmentItemListener?.openAddOnProductLevelBottomSheet(
-                    cartItemModel,
-                    addOnWordingModel
-                )
-            }
-            shipmentItemListener?.addOnProductLevelImpression(cartItemModel.productId.toString())
+            binding.llGiftingAddonProductLevel.visibility = View.VISIBLE
+            listener?.onImpressionAddOnProductLevel(cartItemModel.productId.toString())
         }
     }
 
-    interface ShipmentItemListener {
+    interface Listener {
 
-        fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int)
+        fun onCheckPurchaseProtection(position: Int, isChecked: Boolean)
 
-        fun navigateToWebView(cartItem: CartItemModel)
+        fun onClickPurchaseProtectionTooltip(cartItem: CartItemModel)
 
-        fun openAddOnProductLevelBottomSheet(
-            cartItem: CartItemModel,
-            addOnWordingModel: AddOnWordingModel
-        )
+        fun onClickAddOnProductLevel(cartItem: CartItemModel, addOnWording: AddOnWordingModel)
 
-        fun addOnProductLevelImpression(productId: String)
+        fun onImpressionAddOnProductLevel(productId: String)
     }
 }

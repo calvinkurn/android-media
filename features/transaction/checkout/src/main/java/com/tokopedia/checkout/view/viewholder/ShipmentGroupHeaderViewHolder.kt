@@ -5,60 +5,60 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemShipmentGroupHeaderBinding
-import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentGroupHeaderModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import java.util.*
 
 class ShipmentGroupHeaderViewHolder(
     itemView: View,
-    private val actionListener: ShipmentAdapterActionListener? = null
+    private val listener: Listener? = null
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
 
         @JvmField
         val LAYOUT = R.layout.item_shipment_group_header
+
+        private const val VIEW_ALPHA_ENABLED = 1.0f
+        private const val VIEW_ALPHA_DISABLED = 0.5f
     }
 
     private val binding: ItemShipmentGroupHeaderBinding =
         ItemShipmentGroupHeaderBinding.bind(itemView)
 
     fun bind(shipmentGroupHeader: ShipmentGroupHeaderModel) {
-        val shipmentCartItem = shipmentGroupHeader.shipmentCartItem
-        renderShop(shipmentCartItem)
-        renderFulfillment(shipmentCartItem)
-        renderErrorAndWarning(shipmentCartItem)
-        renderCustomError(shipmentCartItem)
+        renderShop(shipmentGroupHeader)
+        renderFulfillment(shipmentGroupHeader)
+        renderErrorAndWarning(shipmentGroupHeader)
+        renderCustomError(shipmentGroupHeader)
     }
 
-    private fun renderShop(shipmentCartItem: ShipmentCartItemModel) {
+    private fun renderShop(shipmentGroupHeader: ShipmentGroupHeaderModel) {
         with(binding.containerSellerInfo) {
-            if (shipmentCartItem.orderNumber > 0) {
+            if (shipmentGroupHeader.shipmentCartItem.orderNumber > 0) {
                 textOrderNumber.text = itemView.context.getString(
                     R.string.label_order_counter,
-                    shipmentCartItem.orderNumber
+                    shipmentGroupHeader.shipmentCartItem.orderNumber
                 )
                 textOrderNumber.visible()
             } else {
                 textOrderNumber.gone()
             }
-            if (!shipmentCartItem.preOrderInfo.isNullOrBlank()) {
-                labelPreOrder.text = shipmentCartItem.preOrderInfo
+            if (!shipmentGroupHeader.shipmentCartItem.preOrderInfo.isNullOrBlank()) {
+                labelPreOrder.text = shipmentGroupHeader.shipmentCartItem.preOrderInfo
                 labelPreOrder.visible()
                 separatorPreOrder.visible()
             } else {
                 labelPreOrder.gone()
                 separatorPreOrder.gone()
             }
-            val freeShippingBadgeUrl = shipmentCartItem.freeShippingBadgeUrl
+            val freeShippingBadgeUrl = shipmentGroupHeader.shipmentCartItem.freeShippingBadgeUrl
             if (!freeShippingBadgeUrl.isNullOrBlank()) {
                 imgFreeShipping.setImageUrl(freeShippingBadgeUrl)
-                if (shipmentCartItem.isFreeShippingPlus) {
+                if (shipmentGroupHeader.shipmentCartItem.isFreeShippingPlus) {
                     imgFreeShipping.contentDescription =
                         itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus)
                 } else {
@@ -67,16 +67,16 @@ class ShipmentGroupHeaderViewHolder(
                 }
                 imgFreeShipping.visible()
                 separatorFreeShipping.visible()
-                if (!shipmentCartItem.hasSeenFreeShippingBadge && shipmentCartItem.isFreeShippingPlus) {
-                    shipmentCartItem.hasSeenFreeShippingBadge = true
-                    actionListener?.onViewFreeShippingPlusBadge()
+                if (!shipmentGroupHeader.shipmentCartItem.hasSeenFreeShippingBadge && shipmentGroupHeader.shipmentCartItem.isFreeShippingPlus) {
+                    shipmentGroupHeader.shipmentCartItem.hasSeenFreeShippingBadge = true
+                    listener?.onViewFreeShippingPlusBadge()
                 }
             } else {
                 imgFreeShipping.gone()
                 separatorFreeShipping.gone()
             }
-            if (!shipmentCartItem.shopAlertMessage.isNullOrBlank()) {
-                labelIncidentShopLevel.text = shipmentCartItem.shopAlertMessage
+            if (!shipmentGroupHeader.shipmentCartItem.shopAlertMessage.isNullOrBlank()) {
+                labelIncidentShopLevel.text = shipmentGroupHeader.shipmentCartItem.shopAlertMessage
                 labelIncidentShopLevel.visible()
                 separatorIncidentShopLevel.visible()
             } else {
@@ -84,7 +84,7 @@ class ShipmentGroupHeaderViewHolder(
                 separatorIncidentShopLevel.gone()
             }
             var hasTradeInItem = false
-            for (cartItemModel in shipmentCartItem.cartItemModels) {
+            for (cartItemModel in shipmentGroupHeader.shipmentCartItem.cartItemModels) {
                 if (cartItemModel.isValidTradeIn) {
                     hasTradeInItem = true
                     break
@@ -95,41 +95,41 @@ class ShipmentGroupHeaderViewHolder(
             } else {
                 tvTradeInLabel.gone()
             }
-            if (shipmentCartItem.shopTypeInfoData.shopBadge.isNotEmpty()) {
-                imgShopBadge.setImageUrl(shipmentCartItem.shopTypeInfoData.shopBadge)
+            if (shipmentGroupHeader.shipmentCartItem.shopTypeInfoData.shopBadge.isNotEmpty()) {
+                imgShopBadge.setImageUrl(shipmentGroupHeader.shipmentCartItem.shopTypeInfoData.shopBadge)
                 imgShopBadge.visible()
                 imgShopBadge.contentDescription = itemView.context.getString(
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type,
-                    shipmentCartItem.shopTypeInfoData.title.lowercase(
+                    shipmentGroupHeader.shipmentCartItem.shopTypeInfoData.title.lowercase(
                         Locale.getDefault()
                     )
                 )
             } else {
                 imgShopBadge.gone()
             }
-            val shopName = shipmentCartItem.shopName
+            val shopName = shipmentGroupHeader.shipmentCartItem.shopName
             tvShopName.text = shopName
-            if (shipmentCartItem.enablerLabel.isBlank()) {
+            if (shipmentGroupHeader.shipmentCartItem.enablerLabel.isBlank()) {
                 labelEpharmacy.gone()
             } else {
-                labelEpharmacy.setLabel(shipmentCartItem.enablerLabel)
+                labelEpharmacy.setLabel(shipmentGroupHeader.shipmentCartItem.enablerLabel)
                 labelEpharmacy.visible()
             }
         }
     }
 
-    private fun renderFulfillment(model: ShipmentCartItemModel) {
+    private fun renderFulfillment(shipmentGroupHeader: ShipmentGroupHeaderModel) {
         with(binding.containerSellerInfo) {
-            if (!model.shopLocation.isNullOrBlank()) {
-                val fulfillmentBadgeUrl = model.fulfillmentBadgeUrl
-                if (model.isFulfillment && !fulfillmentBadgeUrl.isNullOrBlank()) {
+            if (!shipmentGroupHeader.shipmentCartItem.shopLocation.isNullOrBlank()) {
+                val fulfillmentBadgeUrl = shipmentGroupHeader.shipmentCartItem.fulfillmentBadgeUrl
+                if (shipmentGroupHeader.shipmentCartItem.isFulfillment && !fulfillmentBadgeUrl.isNullOrBlank()) {
                     iuImageFulfill.setImageUrl(fulfillmentBadgeUrl)
                     iuImageFulfill.visible()
                 } else {
                     iuImageFulfill.gone()
                 }
                 tvFulfillDistrict.visible()
-                tvFulfillDistrict.text = model.shopLocation
+                tvFulfillDistrict.text = shipmentGroupHeader.shipmentCartItem.shopLocation
             } else {
                 iuImageFulfill.gone()
                 tvFulfillDistrict.gone()
@@ -137,21 +137,23 @@ class ShipmentGroupHeaderViewHolder(
         }
     }
 
-    private fun renderErrorAndWarning(shipmentCartItemModel: ShipmentCartItemModel) {
-        if (shipmentCartItemModel.isError) {
+    private fun renderErrorAndWarning(shipmentGroupHeader: ShipmentGroupHeaderModel) {
+        if (shipmentGroupHeader.shipmentCartItem.isError) {
+            binding.llHeaderContainer.alpha = VIEW_ALPHA_DISABLED
             binding.containerWarningAndError.root.visible()
         } else {
+            binding.llHeaderContainer.alpha = VIEW_ALPHA_ENABLED
             binding.containerWarningAndError.root.gone()
         }
-        renderError(shipmentCartItemModel)
-        renderWarningCloseable(shipmentCartItemModel)
+        renderError(shipmentGroupHeader)
+        renderWarningCloseable(shipmentGroupHeader)
     }
 
-    private fun renderError(shipmentCartItemModel: ShipmentCartItemModel) {
+    private fun renderError(shipmentGroupHeader: ShipmentGroupHeaderModel) {
         with(binding.containerWarningAndError) {
-            if (shipmentCartItemModel.isError) {
-                val errorTitle = shipmentCartItemModel.errorTitle
-                val errorDescription = shipmentCartItemModel.errorDescription
+            if (shipmentGroupHeader.shipmentCartItem.isError) {
+                val errorTitle = shipmentGroupHeader.shipmentCartItem.errorTitle
+                val errorDescription = shipmentGroupHeader.shipmentCartItem.errorDescription
                 if (!errorTitle.isNullOrEmpty()) {
                     if (!errorDescription.isNullOrEmpty()) {
                         tickerError.tickerTitle = errorTitle
@@ -166,7 +168,7 @@ class ShipmentGroupHeaderViewHolder(
                             }
                         })
                     } else {
-                        if (shipmentCartItemModel.isCustomEpharmacyError) {
+                        if (shipmentGroupHeader.shipmentCartItem.isCustomEpharmacyError) {
                             tickerError.setHtmlDescription(
                                 "$errorTitle " + itemView.context.getString(
                                     R.string.checkout_ticker_lihat_cta_suffix
@@ -174,26 +176,25 @@ class ShipmentGroupHeaderViewHolder(
                             )
                             tickerError.setDescriptionClickEvent(object : TickerCallback {
                                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                                    actionListener?.onClickLihatOnTickerOrderError(
-                                        shipmentCartItemModel.shopId.toString(),
+                                    listener?.onClickLihatOnTickerOrderError(
+                                        shipmentGroupHeader.shipmentCartItem.shopId.toString(),
                                         errorTitle
                                     )
-                                    if (!shipmentCartItemModel.isStateAllItemViewExpanded) {
-                                        shipmentCartItemModel.isTriggerScrollToErrorProduct = true
-//                                        showAllProductListener(shipmentCartItemModel).onClick(
-//                                            tickerError
-//                                        )
+                                    if (!shipmentGroupHeader.shipmentCartItem.isStateAllItemViewExpanded) {
+                                        shipmentGroupHeader.shipmentCartItem.isTriggerScrollToErrorProduct =
+                                            true
+                                        listener?.onErrorShouldExpandProduct(shipmentGroupHeader)
                                         return
                                     }
-//                                    scrollToErrorProduct(shipmentCartItemModel)
+                                    listener?.onErrorShouldScrollToProduct(shipmentGroupHeader)
                                 }
 
                                 override fun onDismiss() {
                                     // no op
                                 }
                             })
-                            if (shipmentCartItemModel.isTriggerScrollToErrorProduct) {
-//                                scrollToErrorProduct(shipmentCartItemModel)
+                            if (shipmentGroupHeader.shipmentCartItem.isTriggerScrollToErrorProduct) {
+                                listener?.onErrorShouldScrollToProduct(shipmentGroupHeader)
                             }
                         } else {
                             tickerError.setTextDescription(errorTitle)
@@ -222,11 +223,15 @@ class ShipmentGroupHeaderViewHolder(
         }
     }
 
-    private fun renderWarningCloseable(shipmentCartItemModel: ShipmentCartItemModel) {
+    private fun renderWarningCloseable(shipmentGroupHeader: ShipmentGroupHeaderModel) {
         with(binding) {
-            if (!shipmentCartItemModel.isError && !TextUtils.isEmpty(shipmentCartItemModel.shopTicker)) {
-                tickerWarningCloseable.tickerTitle = shipmentCartItemModel.shopTickerTitle
-                tickerWarningCloseable.setHtmlDescription(shipmentCartItemModel.shopTicker)
+            if (!shipmentGroupHeader.shipmentCartItem.isError && !TextUtils.isEmpty(
+                    shipmentGroupHeader.shipmentCartItem.shopTicker
+                )
+            ) {
+                tickerWarningCloseable.tickerTitle =
+                    shipmentGroupHeader.shipmentCartItem.shopTickerTitle
+                tickerWarningCloseable.setHtmlDescription(shipmentGroupHeader.shipmentCartItem.shopTicker)
                 tickerWarningCloseable.visible()
                 tickerWarningCloseable.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -234,7 +239,7 @@ class ShipmentGroupHeaderViewHolder(
                     }
 
                     override fun onDismiss() {
-                        shipmentCartItemModel.shopTicker = ""
+                        shipmentGroupHeader.shipmentCartItem.shopTicker = ""
                         tickerWarningCloseable.gone()
                     }
                 })
@@ -244,28 +249,31 @@ class ShipmentGroupHeaderViewHolder(
         }
     }
 
-    private fun renderCustomError(shipmentCartItemModel: ShipmentCartItemModel) {
+    private fun renderCustomError(shipmentGroupHeader: ShipmentGroupHeaderModel) {
         with(binding.containerWarningAndError) {
-            if ((
-                    !shipmentCartItemModel.isError && shipmentCartItemModel.isHasUnblockingError &&
-                        !TextUtils.isEmpty(shipmentCartItemModel.unblockingErrorMessage)
-                    ) && shipmentCartItemModel.firstProductErrorIndex > -1
+            if ((!shipmentGroupHeader.shipmentCartItem.isError && shipmentGroupHeader.shipmentCartItem.isHasUnblockingError
+                    && !TextUtils.isEmpty(shipmentGroupHeader.shipmentCartItem.unblockingErrorMessage))
+                && shipmentGroupHeader.shipmentCartItem.firstProductErrorIndex > -1
             ) {
-                val errorMessage = shipmentCartItemModel.unblockingErrorMessage
+                val errorMessage = shipmentGroupHeader.shipmentCartItem.unblockingErrorMessage
                 binding.containerWarningAndError.root.visibility = View.VISIBLE
                 tickerError.setHtmlDescription(errorMessage + " " + itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix))
                 tickerError.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(charSequence: CharSequence) {
-                        actionListener?.onClickLihatOnTickerOrderError(
-                            shipmentCartItemModel.shopId.toString(),
+
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        listener?.onClickLihatOnTickerOrderError(
+                            shipmentGroupHeader.shipmentCartItem.shopId.toString(),
                             errorMessage
                         )
-                        if (!shipmentCartItemModel.isStateAllItemViewExpanded) {
-                            shipmentCartItemModel.isTriggerScrollToErrorProduct = true
-//                            showAllProductListener(shipmentCartItemModel).onClick(tickerError)
+                        if (!shipmentGroupHeader.shipmentCartItem.isStateAllItemViewExpanded) {
+                            tickerError.setOnClickListener {
+                                shipmentGroupHeader.shipmentCartItem.isTriggerScrollToErrorProduct =
+                                    true
+                                listener?.onErrorShouldExpandProduct(shipmentGroupHeader)
+                            }
                             return
                         }
-//                        scrollToErrorProduct(shipmentCartItemModel)
+                        listener?.onErrorShouldScrollToProduct(shipmentGroupHeader)
                     }
 
                     override fun onDismiss() {
@@ -277,10 +285,21 @@ class ShipmentGroupHeaderViewHolder(
                 tickerError.closeButtonVisibility = View.GONE
                 tickerError.visibility = View.VISIBLE
                 layoutError.visibility = View.VISIBLE
-                if (shipmentCartItemModel.isTriggerScrollToErrorProduct) {
-//                    scrollToErrorProduct(shipmentCartItemModel)
+                if (shipmentGroupHeader.shipmentCartItem.isTriggerScrollToErrorProduct) {
+                    listener?.onErrorShouldScrollToProduct(shipmentGroupHeader)
                 }
             }
         }
+    }
+
+    interface Listener {
+
+        fun onViewFreeShippingPlusBadge()
+
+        fun onClickLihatOnTickerOrderError(shopId: String?, errorMessage: String?)
+
+        fun onErrorShouldExpandProduct(shipmentGroupHeader: ShipmentGroupHeaderModel)
+
+        fun onErrorShouldScrollToProduct(shipmentGroupHeader: ShipmentGroupHeaderModel)
     }
 }

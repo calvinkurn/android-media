@@ -628,7 +628,7 @@ class ShipmentFragment :
             shipmentAdapter.addNewUpsellData(shipmentNewUpsellModel)
         }
         isPlusSelected = shipmentNewUpsellModel.isSelected
-         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList)
+        shipmentAdapter.addCartItemData(shipmentCartItemModelList)
         val cartIdsStringBuilder = StringBuilder()
         for (i in shipmentCartItemModelList.indices) {
             if (shipmentCartItemModelList[i].cartItemModels.isNotEmpty()) {
@@ -4020,9 +4020,25 @@ class ShipmentFragment :
         get() = parentFragmentManager
 
     override fun scrollToPositionWithOffset(position: Int, dy: Float) {
-        val layoutManager = rvShipment!!.layoutManager
-        if (layoutManager != null) {
-            (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, dy.toInt())
+        TODO("Not yet implemented")
+    }
+
+    override fun scrollToPositionWithOffset(position: Int) {
+        rvShipment?.post {
+            val childView = rvShipment?.getChildAt(position)
+            var dy = 0f
+            if (childView != null) {
+                dy = childView.y
+                var parentView: View? = null
+                while (rvShipment !== parentView) {
+                    parentView = childView.parent as View
+                    dy += parentView.y
+                }
+            }
+            val layoutManager = rvShipment?.layoutManager
+            if (layoutManager != null) {
+                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, dy.toInt())
+            }
         }
     }
 

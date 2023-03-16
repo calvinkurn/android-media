@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutScheduleDeliveryAnalytics
@@ -30,12 +31,13 @@ import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.utils.Utils
@@ -55,15 +57,19 @@ import java.util.regex.Pattern
 
 class ShipmentGroupFooterViewHolder(
     itemView: View,
+    private val ratesDataConverter: RatesDataConverter,
+    private val listener: Listener? = null,
     private val actionListener: ShipmentAdapterActionListener? = null,
     private val scheduleDeliveryCompositeSubscription: CompositeSubscription? = null
-) : RecyclerView.ViewHolder(itemView) {
+) : RecyclerView.ViewHolder(itemView), ShippingWidget.ShippingWidgetListener {
 
     companion object {
 
         @JvmField
         val LAYOUT = R.layout.item_shipment_group_footer
 
+        private const val VIEW_ALPHA_ENABLED = 1.0f
+        private const val VIEW_ALPHA_DISABLED = 0.5f
         private const val FIRST_ELEMENT = 0
         private const val DROPSHIPPER_MIN_NAME_LENGTH = 3
         private const val DROPSHIPPER_MAX_NAME_LENGTH = 100
@@ -80,39 +86,12 @@ class ShipmentGroupFooterViewHolder(
         PlusCoachmarkPrefs(itemView.context)
     }
     private val phoneNumberRegexPattern: Pattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN)
-
-    private var shipmentDataList: List<Any>? = null
     private var isPriorityChecked: Boolean = false
     private val compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var saveStateDebounceListener: SaveStateDebounceListener? = null
     private var scheduleDeliverySubscription: Subscription? = null
     private var scheduleDeliveryDonePublisher: PublishSubject<Boolean>? = null
     private var scheduleDeliveryDebouncedListener: ScheduleDeliveryDebouncedListener? = null
-
-    private val insuranceClickListener: View.OnClickListener
-        get() = View.OnClickListener {
-            if (adapterPosition != RecyclerView.NO_POSITION) {
-                binding.containerShippingOptions.cbInsurance.isChecked =
-                    !binding.containerShippingOptions.cbInsurance.isChecked
-                actionListener?.onInsuranceChecked(adapterPosition)
-            }
-        }
-    private val dropshipperClickListener: View.OnClickListener
-        get() = View.OnClickListener {
-            binding.containerShippingOptions.cbDropshipper.isChecked =
-                !binding.containerShippingOptions.cbDropshipper.isChecked
-        }
-    private val isHavingPurchaseProtectionChecked: Boolean
-        get() {
-            if (adapterPosition != RecyclerView.NO_POSITION) {
-                val data = shipmentDataList!![adapterPosition] as ShipmentCartItemModel
-                for (cartItemModel in data.cartItemModels) {
-                    if (cartItemModel.isProtectionOptIn) return true
-                }
-            }
-            return false
-        }
-
 
     init {
         initSaveStateDebouncer()
@@ -121,58 +100,53 @@ class ShipmentGroupFooterViewHolder(
 
     fun bind(
         shipmentGroupFooter: ShipmentGroupFooterModel,
-        shipmentDataList: List<Any>,
         recipientAddress: RecipientAddressModel?,
-        ratesDataConverter: RatesDataConverter
     ) {
-        if (this.shipmentDataList == null) {
-            this.shipmentDataList = shipmentDataList
-        }
-        val shipmentCartItem = shipmentGroupFooter.shipmentCartItem
-        renderShipping(shipmentCartItem, recipientAddress, ratesDataConverter)
-        renderPrioritas(shipmentCartItem)
-//        renderInsurance(shipmentCartItem)
+        renderShipping(shipmentGroupFooter, recipientAddress, ratesDataConverter)
+        renderPrioritas(shipmentGroupFooter)
+        renderInsurance(shipmentGroupFooter)
         val isCornerAddress = recipientAddress != null && recipientAddress.isCornerAddress
-//        renderDropshipper(shipmentDataList, isCornerAddress)
-        renderCostDetail(shipmentCartItem)
-        renderError(shipmentCartItem)
-        renderShippingVibrationAnimation(shipmentCartItem)
-        renderAddOnOrderLevel(shipmentCartItem, shipmentCartItem.addOnWordingModel)
+        renderDropshipper(shipmentGroupFooter, isCornerAddress)
+        renderCostDetail(shipmentGroupFooter)
+        renderError(shipmentGroupFooter)
+        renderShippingVibrationAnimation(shipmentGroupFooter)
+        renderAddOnOrderLevel(shipmentGroupFooter)
     }
 
     private fun renderShipping(
-        shipmentCartItemModel: ShipmentCartItemModel,
+        shipmentGroupFooter: ShipmentGroupFooterModel,
         currentAddress: RecipientAddressModel?,
         ratesDataConverter: RatesDataConverter
     ) {
+        binding.shippingWidget.setupListener(this@ShipmentGroupFooterViewHolder)
         binding.shippingWidget.hideTradeInShippingInfo()
-        if (shipmentCartItemModel.isError) {
-            renderErrorCourierState(shipmentCartItemModel)
+        if (shipmentGroupFooter.shipmentCartItem.isError) {
+            renderErrorCourierState(shipmentGroupFooter.shipmentCartItem)
             return
         }
         var selectedCourierItemData: CourierItemData? = null
         val isTradeInDropOff = actionListener?.isTradeInByDropOff ?: false
-        if (shipmentCartItemModel.selectedShipmentDetailData != null) {
-            if (isTradeInDropOff && shipmentCartItemModel.selectedShipmentDetailData?.selectedCourierTradeInDropOff != null) {
+        if (shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData != null) {
+            if (isTradeInDropOff && shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData?.selectedCourierTradeInDropOff != null) {
                 selectedCourierItemData =
-                    shipmentCartItemModel.selectedShipmentDetailData?.selectedCourierTradeInDropOff
-            } else if (!isTradeInDropOff && shipmentCartItemModel.selectedShipmentDetailData?.selectedCourier != null) {
+                    shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData?.selectedCourierTradeInDropOff
+            } else if (!isTradeInDropOff && shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData?.selectedCourier != null) {
                 selectedCourierItemData =
-                    shipmentCartItemModel.selectedShipmentDetailData?.selectedCourier
+                    shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData?.selectedCourier
             }
         }
         if (selectedCourierItemData != null) {
-            if (shipmentCartItemModel.isStateLoadingCourierState) {
+            if (shipmentGroupFooter.shipmentCartItem.isStateLoadingCourierState) {
                 // Has select shipping, but still loading
                 renderLoadingCourierState()
                 return
             }
             // Has select shipping
-            renderSelectedCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData)
+            renderSelectedCourier(shipmentGroupFooter.shipmentCartItem, currentAddress, selectedCourierItemData)
         } else {
             // Has not select shipping
             prepareLoadCourierState(
-                shipmentCartItemModel,
+                shipmentGroupFooter.shipmentCartItem,
                 currentAddress,
                 ratesDataConverter,
                 isTradeInDropOff
@@ -242,7 +216,7 @@ class ShipmentGroupFooterViewHolder(
         if (shipmentCartItemModel.isError) {
             actionListener?.onCancelVoucherLogisticClicked(
                 shipmentCartItemModel.voucherLogisticItemUiModel!!.code,
-                adapterPosition,
+                bindingAdapterPosition,
                 shipmentCartItemModel
             )
         }
@@ -299,10 +273,10 @@ class ShipmentGroupFooterViewHolder(
         }
     }
 
-    private fun renderPrioritas(shipmentCartItemModel: ShipmentCartItemModel) {
+    private fun renderPrioritas(shipmentGroupFooter: ShipmentGroupFooterModel) {
         with(binding.containerShippingOptions) {
-            val cartItemModelList = ArrayList(shipmentCartItemModel.cartItemModels)
-            val selectedShipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
+            val cartItemModelList = ArrayList(shipmentGroupFooter.shipmentCartItem.cartItemModels)
+            val selectedShipmentDetailData = shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData
             var renderOrderPriority = false
             val isTradeInDropOff = actionListener?.isTradeInByDropOff ?: false
             if (selectedShipmentDetailData != null) {
@@ -312,14 +286,14 @@ class ShipmentGroupFooterViewHolder(
                     selectedShipmentDetailData.selectedCourier != null
                 }
             }
-            if (adapterPosition != RecyclerView.NO_POSITION && renderOrderPriority) {
+            if (bindingAdapterPosition != RecyclerView.NO_POSITION && renderOrderPriority) {
                 if (!cartItemModelList.removeAt(FIRST_ELEMENT).isPreOrder) {
                     cbPrioritas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                        if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                             isPriorityChecked = isChecked
                             selectedShipmentDetailData!!.isOrderPriority =
                                 isChecked
-                            actionListener?.onPriorityChecked(adapterPosition)
+                            actionListener?.onPriorityChecked(bindingAdapterPosition)
                             actionListener?.onNeedUpdateRequestData()
                         }
                     }
@@ -339,9 +313,9 @@ class ShipmentGroupFooterViewHolder(
                     selectedShipmentDetailData!!.selectedCourier
                 }
                 val isCourierSelected = courierItemData != null
-                if (isCourierSelected && !shipmentCartItemModel.isError) {
+                if (isCourierSelected && !shipmentGroupFooter.shipmentCartItem.isError) {
                     if (isCourierInstantOrSameday(courierItemData!!.shipperId)) {
-                        if (!shipmentCartItemModel.isOrderPrioritasDisable && courierItemData.now!! && !shipmentCartItemModel.isProductIsPreorder) {
+                        if (!shipmentGroupFooter.shipmentCartItem.isOrderPrioritasDisable && courierItemData.now!! && !shipmentGroupFooter.shipmentCartItem.isProductIsPreorder) {
                             tvOrderPrioritasInfo.text = courierItemData.priorityCheckboxMessage
                             llPrioritas.visibility = View.VISIBLE
                             llPrioritasTicker.visibility = View.VISIBLE
@@ -380,11 +354,11 @@ class ShipmentGroupFooterViewHolder(
         return false
     }
 
-    private fun renderInsurance(shipmentCartItemModel: ShipmentCartItemModel) {
+    private fun renderInsurance(shipmentGroupFooter: ShipmentGroupFooterModel) {
         with(binding.containerShippingOptions) {
             var renderInsurance = false
             val isTradeInDropOff = actionListener?.isTradeInByDropOff ?: false
-            val selectedShipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
+            val selectedShipmentDetailData = shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData
             if (selectedShipmentDetailData != null) {
                 renderInsurance = if (isTradeInDropOff) {
                     selectedShipmentDetailData.selectedCourierTradeInDropOff != null
@@ -392,16 +366,16 @@ class ShipmentGroupFooterViewHolder(
                     selectedShipmentDetailData.selectedCourier != null
                 }
             }
-            if (adapterPosition != RecyclerView.NO_POSITION && renderInsurance) {
+            if (bindingAdapterPosition != RecyclerView.NO_POSITION && renderInsurance) {
                 cbInsurance.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
-                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                    if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                         selectedShipmentDetailData?.useInsurance = checked
                         if (checked) {
                             actionListener?.onInsuranceCheckedForTrackingAnalytics()
                         }
-                        actionListener?.onInsuranceChecked(adapterPosition)
+                        actionListener?.onInsuranceChecked(bindingAdapterPosition)
                         actionListener?.onNeedUpdateRequestData()
-                        saveStateDebounceListener?.onNeedToSaveState(shipmentCartItemModel)
+                        saveStateDebounceListener?.onNeedToSaveState(shipmentGroupFooter.shipmentCartItem)
                     }
                 }
                 val useInsurance = selectedShipmentDetailData?.useInsurance
@@ -423,7 +397,7 @@ class ShipmentGroupFooterViewHolder(
                     cbInsurance.isChecked = true
                     if (useInsurance == null) {
                         selectedShipmentDetailData.useInsurance = true
-                        actionListener?.onInsuranceChecked(adapterPosition)
+                        actionListener?.onInsuranceChecked(bindingAdapterPosition)
                     }
                 } else if (selectedShipper.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO || selectedShipper.insuranceType == InsuranceConstant.INSURANCE_TYPE_NONE) {
                     cbInsurance.isEnabled = true
@@ -443,16 +417,22 @@ class ShipmentGroupFooterViewHolder(
                         true
                     )
                     llInsurance.setBackgroundResource(outValue.resourceId)
-                    llInsurance.setOnClickListener(insuranceClickListener)
+                    llInsurance.setOnClickListener {
+                        if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                            binding.containerShippingOptions.cbInsurance.isChecked =
+                                !binding.containerShippingOptions.cbInsurance.isChecked
+                            actionListener?.onInsuranceChecked(bindingAdapterPosition)
+                        }
+                    }
                     if (useInsurance == null) {
                         if (selectedShipper.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
                             cbInsurance.isChecked = true
                             selectedShipmentDetailData.useInsurance = true
-                            actionListener?.onInsuranceChecked(adapterPosition)
+                            actionListener?.onInsuranceChecked(bindingAdapterPosition)
                         } else if (selectedShipper.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
-                            cbInsurance.isChecked = shipmentCartItemModel.isInsurance
+                            cbInsurance.isChecked = shipmentGroupFooter.shipmentCartItem.isInsurance
                             selectedShipmentDetailData.useInsurance =
-                                shipmentCartItemModel.isInsurance
+                                shipmentGroupFooter.shipmentCartItem.isInsurance
                         }
                     }
                 }
@@ -483,234 +463,220 @@ class ShipmentGroupFooterViewHolder(
         }
     }
 
-    private fun renderDropshipper(shipmentDataList: List<Any>, isCorner: Boolean) {
+    private fun renderDropshipper(shipmentGroupFooter: ShipmentGroupFooterModel, isCorner: Boolean) {
         with(binding.containerShippingOptions) {
-            if (shipmentDataList != null && adapterPosition != RecyclerView.NO_POSITION) {
-                val shipmentCartItemModel =
-                    shipmentDataList!![adapterPosition] as ShipmentCartItemModel
-                val isTradeInDropOff = actionListener?.isTradeInByDropOff ?: false
-                var courierItemData: CourierItemData? = null
-                val selectedShipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
-                if (selectedShipmentDetailData != null) {
-                    courierItemData = if (isTradeInDropOff) {
-                        selectedShipmentDetailData.selectedCourierTradeInDropOff
-                    } else {
-                        selectedShipmentDetailData.selectedCourier
-                    }
-                }
-                if (selectedShipmentDetailData != null && courierItemData != null) {
-                    if (shipmentCartItemModel.isDropshipperDisable || !courierItemData.isAllowDropshiper || isCorner) {
-                        llDropshipper.visibility = View.GONE
-                        llDropshipperInfo.visibility = View.GONE
-                        selectedShipmentDetailData.dropshipperName = null
-                        selectedShipmentDetailData.dropshipperPhone = null
-                        textInputLayoutShipperName.textFieldInput.setText("")
-                        textInputLayoutShipperPhone.textFieldInput.setText("")
-                    } else {
-                        llDropshipper.visibility = View.VISIBLE
-                    }
-                    cbDropshipper.setOnCheckedChangeListener { compoundButton: CompoundButton, checked: Boolean ->
-                        actionListener?.hideSoftKeyboard()
-                        if (checked && isHavingPurchaseProtectionChecked) {
-                            compoundButton.isChecked = false
-                            actionListener?.onPurchaseProtectionLogicError()
-                            return@setOnCheckedChangeListener
-                        }
-                        if (adapterPosition != RecyclerView.NO_POSITION &&
-                            shipmentDataList!![adapterPosition] is ShipmentCartItemModel
-                        ) {
-                            val data = shipmentDataList!![adapterPosition] as ShipmentCartItemModel
-                            data.selectedShipmentDetailData!!.useDropshipper = checked
-                            if (checked) {
-                                textInputLayoutShipperName.textFieldInput.setText(data.dropshiperName)
-                                textInputLayoutShipperPhone.textFieldInput.setText(data.dropshiperPhone)
-                                data.selectedShipmentDetailData!!.dropshipperName =
-                                    data.dropshiperName
-                                data.selectedShipmentDetailData!!.dropshipperPhone =
-                                    data.dropshiperPhone
-                                llDropshipperInfo.visibility = View.VISIBLE
-                                actionListener?.onDropshipCheckedForTrackingAnalytics()
-                            } else {
-                                textInputLayoutShipperName.textFieldInput.setText("")
-                                textInputLayoutShipperPhone.textFieldInput.setText("")
-                                data.selectedShipmentDetailData!!.dropshipperName = ""
-                                data.selectedShipmentDetailData!!.dropshipperPhone = ""
-                                data.dropshiperName = ""
-                                data.dropshiperPhone = ""
-                                llDropshipperInfo.visibility = View.GONE
-                                data.isStateDropshipperHasError = false
-                            }
-                            actionListener?.onNeedUpdateViewItem(adapterPosition)
-                            actionListener?.onNeedUpdateRequestData()
-                            saveStateDebounceListener?.onNeedToSaveState(data)
-                        }
-                    }
-                    val useDropshipper =
-                        selectedShipmentDetailData.useDropshipper
-                    if (useDropshipper != null) {
-                        if (useDropshipper) {
-                            cbDropshipper.isChecked = true
-                        } else {
-                            checkDropshipperState(shipmentCartItemModel)
-                        }
-                    } else {
-                        checkDropshipperState(shipmentCartItemModel)
-                    }
-                    if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                        cbDropshipper.isEnabled = false
-                        cbDropshipper.isChecked = false
-                        llDropshipper.setOnClickListener(null)
-                        labelDropshipper.setTextColor(
-                            ContextCompat.getColor(
-                                itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N700_20
-                            )
-                        )
-                        imgDropshipperInfo.setOnClickListener {
-                            showBottomSheet(
-                                imgDropshipperInfo.context,
-                                imgDropshipperInfo.context.getString(R.string.title_dropshipper_army),
-                                imgDropshipperInfo.context.getString(R.string.desc_dropshipper_army),
-                                R.drawable.checkout_module_ic_dropshipper
-                            )
-                        }
-                    } else {
-                        cbDropshipper.isEnabled = true
-                        labelDropshipper.setTextColor(
-                            ContextCompat.getColor(
-                                itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                            )
-                        )
-                        llDropshipper.setOnClickListener(dropshipperClickListener)
-                        imgDropshipperInfo.setOnClickListener { view: View? ->
-                            showBottomSheet(
-                                imgDropshipperInfo.context,
-                                imgDropshipperInfo.context.getString(R.string.label_dropshipper_new),
-                                imgDropshipperInfo.context.getString(R.string.label_dropshipper_info),
-                                R.drawable.checkout_module_ic_dropshipper
-                            )
-                        }
-                    }
-                    textInputLayoutShipperName.textFieldInput.addTextChangedListener(object :
-                        TextWatcher {
-                        override fun beforeTextChanged(
-                            charSequence: CharSequence,
-                            i: Int,
-                            i1: Int,
-                            i2: Int
-                        ) {
-                        }
-
-                        override fun onTextChanged(
-                            charSequence: CharSequence,
-                            i: Int,
-                            i1: Int,
-                            i2: Int
-                        ) {
-                            if (adapterPosition != RecyclerView.NO_POSITION &&
-                                shipmentDataList!![adapterPosition] is ShipmentCartItemModel
-                            ) {
-                                val data =
-                                    shipmentDataList!![adapterPosition] as ShipmentCartItemModel
-                                if (data.selectedShipmentDetailData != null) {
-                                    if (!TextUtils.isEmpty(charSequence)) {
-                                        data.selectedShipmentDetailData!!.dropshipperName =
-                                            charSequence.toString()
-                                        validateDropshipperName(data, charSequence, true)
-                                        saveStateDebounceListener?.onNeedToSaveState(data)
-                                    }
-                                }
-                            }
-                        }
-
-                        override fun afterTextChanged(editable: Editable) {}
-                    })
-                    if (!TextUtils.isEmpty(selectedShipmentDetailData.dropshipperName) ||
-                        !TextUtils.isEmpty(shipmentCartItemModel.dropshiperName)
-                    ) {
-                        textInputLayoutShipperName.textFieldInput.setText(selectedShipmentDetailData!!.dropshipperName)
-                    } else {
-                        textInputLayoutShipperName.textFieldInput.setText("")
-                    }
-                    if (shipmentCartItemModel.isStateDropshipperHasError) {
-                        validateDropshipperName(
-                            shipmentCartItemModel,
-                            textInputLayoutShipperName.textFieldInput.text,
-                            true
-                        )
-                    } else {
-                        validateDropshipperName(
-                            shipmentCartItemModel,
-                            textInputLayoutShipperName.textFieldInput.text,
-                            false
-                        )
-                    }
-                    textInputLayoutShipperName.textFieldInput.setSelection(
-                        textInputLayoutShipperName.textFieldInput.length()
-                    )
-                    textInputLayoutShipperPhone.textFieldInput.addTextChangedListener(object :
-                        TextWatcher {
-                        override fun beforeTextChanged(
-                            charSequence: CharSequence,
-                            i: Int,
-                            i1: Int,
-                            i2: Int
-                        ) {
-                        }
-
-                        override fun onTextChanged(
-                            charSequence: CharSequence,
-                            i: Int,
-                            i1: Int,
-                            i2: Int
-                        ) {
-                            if (adapterPosition != RecyclerView.NO_POSITION &&
-                                shipmentDataList!![adapterPosition] is ShipmentCartItemModel
-                            ) {
-                                val data =
-                                    shipmentDataList!![adapterPosition] as ShipmentCartItemModel
-                                if (data.selectedShipmentDetailData != null) {
-                                    if (!TextUtils.isEmpty(charSequence)) {
-                                        data.selectedShipmentDetailData!!.dropshipperPhone =
-                                            charSequence.toString()
-                                        validateDropshipperPhone(data, charSequence, true)
-                                        saveStateDebounceListener?.onNeedToSaveState(data)
-                                    }
-                                }
-                            }
-                        }
-
-                        override fun afterTextChanged(editable: Editable) {}
-                    })
-                    if (!TextUtils.isEmpty(selectedShipmentDetailData.dropshipperPhone) ||
-                        !TextUtils.isEmpty(shipmentCartItemModel.dropshiperPhone)
-                    ) {
-                        textInputLayoutShipperPhone.textFieldInput.setText(
-                            selectedShipmentDetailData!!.dropshipperPhone
-                        )
-                    } else {
-                        textInputLayoutShipperPhone.textFieldInput.setText("")
-                    }
-                    if (shipmentCartItemModel.isStateDropshipperHasError) {
-                        validateDropshipperPhone(
-                            shipmentCartItemModel,
-                            textInputLayoutShipperPhone.textFieldInput.text,
-                            true
-                        )
-                    } else {
-                        validateDropshipperPhone(
-                            shipmentCartItemModel,
-                            textInputLayoutShipperPhone.textFieldInput.text,
-                            false
-                        )
-                    }
-                    textInputLayoutShipperPhone.textFieldInput.setSelection(
-                        textInputLayoutShipperPhone.textFieldInput.length()
-                    )
+            val isTradeInDropOff = actionListener?.isTradeInByDropOff ?: false
+            var courierItemData: CourierItemData? = null
+            val selectedShipmentDetailData = shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData
+            if (selectedShipmentDetailData != null) {
+                courierItemData = if (isTradeInDropOff) {
+                    selectedShipmentDetailData.selectedCourierTradeInDropOff
+                } else {
+                    selectedShipmentDetailData.selectedCourier
                 }
             }
+            if (selectedShipmentDetailData != null && courierItemData != null) {
+                if (shipmentGroupFooter.shipmentCartItem.isDropshipperDisable || !courierItemData.isAllowDropshiper || isCorner) {
+                    llDropshipper.visibility = View.GONE
+                    llDropshipperInfo.visibility = View.GONE
+                    selectedShipmentDetailData.dropshipperName = null
+                    selectedShipmentDetailData.dropshipperPhone = null
+                    textInputLayoutShipperName.textFieldInput.setText("")
+                    textInputLayoutShipperPhone.textFieldInput.setText("")
+                } else {
+                    llDropshipper.visibility = View.VISIBLE
+                }
+                cbDropshipper.setOnCheckedChangeListener { compoundButton: CompoundButton, checked: Boolean ->
+                    actionListener?.hideSoftKeyboard()
+                    if (checked && isHavingPurchaseProtectionChecked(shipmentGroupFooter.shipmentCartItem)) {
+                        compoundButton.isChecked = false
+                        actionListener?.onPurchaseProtectionLogicError()
+                        return@setOnCheckedChangeListener
+                    }
+                    shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData!!.useDropshipper = checked
+                    if (checked) {
+                        textInputLayoutShipperName.textFieldInput.setText(shipmentGroupFooter.shipmentCartItem.dropshiperName)
+                        textInputLayoutShipperPhone.textFieldInput.setText(shipmentGroupFooter.shipmentCartItem.dropshiperPhone)
+                        shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData!!.dropshipperName =
+                            shipmentGroupFooter.shipmentCartItem.dropshiperName
+                        shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData!!.dropshipperPhone =
+                            shipmentGroupFooter.shipmentCartItem.dropshiperPhone
+                        llDropshipperInfo.visibility = View.VISIBLE
+                        actionListener?.onDropshipCheckedForTrackingAnalytics()
+                    } else {
+                        textInputLayoutShipperName.textFieldInput.setText("")
+                        textInputLayoutShipperPhone.textFieldInput.setText("")
+                        shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData!!.dropshipperName = ""
+                        shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData!!.dropshipperPhone = ""
+                        shipmentGroupFooter.shipmentCartItem.dropshiperName = ""
+                        shipmentGroupFooter.shipmentCartItem.dropshiperPhone = ""
+                        llDropshipperInfo.visibility = View.GONE
+                        shipmentGroupFooter.shipmentCartItem.isStateDropshipperHasError = false
+                    }
+                    actionListener?.onNeedUpdateViewItem(bindingAdapterPosition)
+                    actionListener?.onNeedUpdateRequestData()
+                    saveStateDebounceListener?.onNeedToSaveState(shipmentGroupFooter.shipmentCartItem)
+                }
+                val useDropshipper =
+                    selectedShipmentDetailData.useDropshipper
+                if (useDropshipper != null) {
+                    if (useDropshipper) {
+                        cbDropshipper.isChecked = true
+                    } else {
+                        checkDropshipperState(shipmentGroupFooter.shipmentCartItem)
+                    }
+                } else {
+                    checkDropshipperState(shipmentGroupFooter.shipmentCartItem)
+                }
+                if (shipmentGroupFooter.shipmentCartItem.voucherLogisticItemUiModel != null) {
+                    cbDropshipper.isEnabled = false
+                    cbDropshipper.isChecked = false
+                    llDropshipper.setOnClickListener(null)
+                    labelDropshipper.setTextColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+                        )
+                    )
+                    imgDropshipperInfo.setOnClickListener {
+                        showBottomSheet(
+                            imgDropshipperInfo.context,
+                            imgDropshipperInfo.context.getString(R.string.title_dropshipper_army),
+                            imgDropshipperInfo.context.getString(R.string.desc_dropshipper_army),
+                            R.drawable.checkout_module_ic_dropshipper
+                        )
+                    }
+                } else {
+                    cbDropshipper.isEnabled = true
+                    labelDropshipper.setTextColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        )
+                    )
+                    llDropshipper.setOnClickListener {
+                        binding.containerShippingOptions.cbDropshipper.isChecked =
+                            !binding.containerShippingOptions.cbDropshipper.isChecked
+                    }
+                    imgDropshipperInfo.setOnClickListener { view: View? ->
+                        showBottomSheet(
+                            imgDropshipperInfo.context,
+                            imgDropshipperInfo.context.getString(R.string.label_dropshipper_new),
+                            imgDropshipperInfo.context.getString(R.string.label_dropshipper_info),
+                            R.drawable.checkout_module_ic_dropshipper
+                        )
+                    }
+                }
+                textInputLayoutShipperName.textFieldInput.addTextChangedListener(object :
+                    TextWatcher {
+                    override fun beforeTextChanged(
+                        charSequence: CharSequence,
+                        i: Int,
+                        i1: Int,
+                        i2: Int
+                    ) {
+                    }
+
+                    override fun onTextChanged(
+                        charSequence: CharSequence,
+                        i: Int,
+                        i1: Int,
+                        i2: Int
+                    ) {
+                        if (shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData != null) {
+                            if (!TextUtils.isEmpty(charSequence)) {
+                                shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData!!.dropshipperName =
+                                    charSequence.toString()
+                                validateDropshipperName(shipmentGroupFooter.shipmentCartItem, charSequence, true)
+                                saveStateDebounceListener?.onNeedToSaveState(shipmentGroupFooter.shipmentCartItem)
+                            }
+                        }
+                    }
+
+                    override fun afterTextChanged(editable: Editable) {}
+                })
+                if (!TextUtils.isEmpty(selectedShipmentDetailData.dropshipperName) ||
+                    !TextUtils.isEmpty(shipmentGroupFooter.shipmentCartItem.dropshiperName)
+                ) {
+                    textInputLayoutShipperName.textFieldInput.setText(selectedShipmentDetailData.dropshipperName)
+                } else {
+                    textInputLayoutShipperName.textFieldInput.setText("")
+                }
+                if (shipmentGroupFooter.shipmentCartItem.isStateDropshipperHasError) {
+                    validateDropshipperName(
+                        shipmentGroupFooter.shipmentCartItem,
+                        textInputLayoutShipperName.textFieldInput.text,
+                        true
+                    )
+                } else {
+                    validateDropshipperName(
+                        shipmentGroupFooter.shipmentCartItem,
+                        textInputLayoutShipperName.textFieldInput.text,
+                        false
+                    )
+                }
+                textInputLayoutShipperName.textFieldInput.setSelection(
+                    textInputLayoutShipperName.textFieldInput.length()
+                )
+                textInputLayoutShipperPhone.textFieldInput.addTextChangedListener(object :
+                    TextWatcher {
+                    override fun beforeTextChanged(
+                        charSequence: CharSequence,
+                        i: Int,
+                        i1: Int,
+                        i2: Int
+                    ) {
+                    }
+
+                    override fun onTextChanged(
+                        charSequence: CharSequence,
+                        i: Int,
+                        i1: Int,
+                        i2: Int
+                    ) {
+                        if (shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData != null) {
+                            if (!TextUtils.isEmpty(charSequence)) {
+                                shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData!!.dropshipperPhone =
+                                    charSequence.toString()
+                                validateDropshipperPhone(shipmentGroupFooter.shipmentCartItem, charSequence, true)
+                                saveStateDebounceListener?.onNeedToSaveState(shipmentGroupFooter.shipmentCartItem)
+                            }
+                        }
+                    }
+
+                    override fun afterTextChanged(editable: Editable) {}
+                })
+                if (!TextUtils.isEmpty(selectedShipmentDetailData.dropshipperPhone) ||
+                    !TextUtils.isEmpty(shipmentGroupFooter.shipmentCartItem.dropshiperPhone)
+                ) {
+                    textInputLayoutShipperPhone.textFieldInput.setText(
+                        selectedShipmentDetailData.dropshipperPhone
+                    )
+                } else {
+                    textInputLayoutShipperPhone.textFieldInput.setText("")
+                }
+                if (shipmentGroupFooter.shipmentCartItem.isStateDropshipperHasError) {
+                    validateDropshipperPhone(
+                        shipmentGroupFooter.shipmentCartItem,
+                        textInputLayoutShipperPhone.textFieldInput.text,
+                        true
+                    )
+                } else {
+                    validateDropshipperPhone(
+                        shipmentGroupFooter.shipmentCartItem,
+                        textInputLayoutShipperPhone.textFieldInput.text,
+                        false
+                    )
+                }
+                textInputLayoutShipperPhone.textFieldInput.setSelection(
+                    textInputLayoutShipperPhone.textFieldInput.length()
+                )
+            }
         }
+    }
+
+    private fun isHavingPurchaseProtectionChecked(shipmentCartItem: ShipmentCartItemModel): Boolean {
+        return shipmentCartItem.cartItemModels.any { it.isProtectionOptIn }
     }
 
     private fun showBottomSheet(context: Context, title: String, message: String, image: Int) {
@@ -823,11 +789,11 @@ class ShipmentGroupFooterViewHolder(
         }
     }
 
-    private fun renderCostDetail(shipmentCartItemModel: ShipmentCartItemModel) {
+    private fun renderCostDetail(shipmentGroupFooter: ShipmentGroupFooterModel) {
         with(binding.containerSubtotal) {
             rlCartSubTotal.visibility = View.VISIBLE
             rlShipmentCost.visibility =
-                if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded) View.VISIBLE else View.GONE
+                if (shipmentGroupFooter.shipmentCartItem.isStateDetailSubtotalViewExpanded) View.VISIBLE else View.GONE
             var totalItem = 0
             var totalWeight = 0.0
             var shippingPrice = 0
@@ -840,7 +806,7 @@ class ShipmentGroupFooterViewHolder(
             var totalItemPrice: Long = 0
             var totalAddOnPrice = 0
             var hasAddOnSelected = false
-            if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded) {
+            if (shipmentGroupFooter.shipmentCartItem.isStateDetailSubtotalViewExpanded) {
                 rlShipmentCost.visibility = View.VISIBLE
                 ivDetailOptionChevron.setImage(IconUnify.CHEVRON_UP, null, null, null, null)
             } else {
@@ -850,7 +816,7 @@ class ShipmentGroupFooterViewHolder(
             val shippingFeeLabel = tvShippingFee.context.getString(R.string.label_delivery_price)
             var totalItemLabel =
                 tvTotalItem.context.getString(R.string.label_item_count_without_format)
-            for (cartItemModel in shipmentCartItemModel.cartItemModels) {
+            for (cartItemModel in shipmentGroupFooter.shipmentCartItem.cartItemModels) {
                 if (!cartItemModel.isError) {
                     if (cartItemModel.isBundlingItem) {
                         if (cartItemModel.bundlingItemPosition == ShipmentMapper.BUNDLING_ITEM_HEADER) {
@@ -875,7 +841,7 @@ class ShipmentGroupFooterViewHolder(
                     }
                 }
             }
-            val addOnsOrderLevelModel = shipmentCartItemModel.addOnsOrderLevelModel
+            val addOnsOrderLevelModel = shipmentGroupFooter.shipmentCartItem.addOnsOrderLevelModel
             if (addOnsOrderLevelModel != null) {
                 if (addOnsOrderLevelModel.status == 1) {
                     if (addOnsOrderLevelModel.addOnsDataItemModelList.isNotEmpty()) {
@@ -893,15 +859,17 @@ class ShipmentGroupFooterViewHolder(
             @SuppressLint("DefaultLocale")
             val totalPPPItemLabel =
                 String.format("Proteksi Produk (%d Barang)", totalPurchaseProtectionItem)
-            val voucherLogisticItemUiModel = shipmentCartItemModel.voucherLogisticItemUiModel
-            val selectedShipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
+            val voucherLogisticItemUiModel =
+                shipmentGroupFooter.shipmentCartItem.voucherLogisticItemUiModel
+            val selectedShipmentDetailData =
+                shipmentGroupFooter.shipmentCartItem.selectedShipmentDetailData
             val selectedCourier = selectedShipmentDetailData?.selectedCourier
             if (
                 (
                     selectedCourier != null ||
                         selectedShipmentDetailData?.selectedCourierTradeInDropOff != null
                     ) &&
-                !shipmentCartItemModel.isError
+                !shipmentGroupFooter.shipmentCartItem.isError
             ) {
                 var courierItemData: CourierItemData? = null
                 if (actionListener?.isTradeInByDropOff == true && selectedShipmentDetailData.selectedCourierTradeInDropOff != null) {
@@ -1020,7 +988,13 @@ class ShipmentGroupFooterViewHolder(
                 tvAddOnFee.visibility = View.GONE
                 tvAddOnPrice.visibility = View.GONE
             }
-            rlCartSubTotal.setOnClickListener(getCostDetailOptionListener(shipmentCartItemModel))
+            rlCartSubTotal.setOnClickListener {
+                shipmentGroupFooter.shipmentCartItem.isStateDetailSubtotalViewExpanded =
+                    !shipmentGroupFooter.shipmentCartItem.isStateDetailSubtotalViewExpanded
+                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                    listener?.onClickExpandSubtotal(bindingAdapterPosition, shipmentGroupFooter)
+                }
+            }
         }
     }
 
@@ -1045,22 +1019,9 @@ class ShipmentGroupFooterViewHolder(
         }
     }
 
-    private fun getCostDetailOptionListener(shipmentCartItemModel: ShipmentCartItemModel): View.OnClickListener {
-        return View.OnClickListener {
-            if (adapterPosition != RecyclerView.NO_POSITION) {
-                shipmentCartItemModel.isStateDetailSubtotalViewExpanded =
-                    !shipmentCartItemModel.isStateDetailSubtotalViewExpanded
-                actionListener?.onNeedUpdateViewItem(adapterPosition)
-                actionListener?.onSubTotalItemClicked(adapterPosition)
-            }
-        }
-    }
-
-    private fun renderError(shipmentCartItem: ShipmentCartItemModel) {
-        if (shipmentCartItem.isError) {
-//            containerOrder.alpha = 0.5f
-//            cbPPP.isEnabled = false
-//            mIconTooltip.isClickable = false
+    private fun renderError(shipmentGroupFooter: ShipmentGroupFooterModel) {
+        if (shipmentGroupFooter.shipmentCartItem.isError) {
+            binding.llFooterContainer.alpha = VIEW_ALPHA_DISABLED
             with(binding.containerShippingOptions) {
                 cbInsurance.isEnabled = false
                 llInsurance.isClickable = false
@@ -1075,8 +1036,7 @@ class ShipmentGroupFooterViewHolder(
             }
             binding.containerSubtotal.rlCartSubTotal.isClickable = false
         } else {
-//            containerOrder.alpha = 1.0f
-//            mIconTooltip.isClickable = true
+            binding.llFooterContainer.alpha = VIEW_ALPHA_ENABLED
             with(binding.containerShippingOptions) {
                 llInsurance.isClickable = true
                 llDropshipper.isClickable = true
@@ -1091,16 +1051,13 @@ class ShipmentGroupFooterViewHolder(
         }
     }
 
-    private fun renderShippingVibrationAnimation(shipmentCartItem: ShipmentCartItemModel) {
-        binding.shippingWidget.renderShippingVibrationAnimation(shipmentCartItem)
+    private fun renderShippingVibrationAnimation(shipmentGroupFooter: ShipmentGroupFooterModel) {
+        binding.shippingWidget.renderShippingVibrationAnimation(shipmentGroupFooter.shipmentCartItem)
     }
 
-    private fun renderAddOnOrderLevel(
-        shipmentCartItemModel: ShipmentCartItemModel,
-        addOnWordingModel: AddOnWordingModel?
-    ) {
+    private fun renderAddOnOrderLevel(shipmentGroupFooter: ShipmentGroupFooterModel) {
         with(binding.containerGiftingAddonOrderLevel) {
-            val addOnsDataModel = shipmentCartItemModel.addOnsOrderLevelModel
+            val addOnsDataModel = shipmentGroupFooter.shipmentCartItem.addOnsOrderLevelModel
             if (addOnsDataModel != null) {
                 val addOnsButton = addOnsDataModel.addOnsButtonModel
                 val statusAddOn = addOnsDataModel.status
@@ -1119,11 +1076,11 @@ class ShipmentGroupFooterViewHolder(
                     buttonGiftingAddonOrderLevel.urlRightIcon = addOnsButton.rightIconUrl
                     buttonGiftingAddonOrderLevel.setOnClickListener {
                         actionListener?.openAddOnOrderLevelBottomSheet(
-                            shipmentCartItemModel,
-                            addOnWordingModel
+                            shipmentGroupFooter.shipmentCartItem,
+                            shipmentGroupFooter.shipmentCartItem.addOnWordingModel
                         )
                     }
-                    actionListener?.addOnOrderLevelImpression(shipmentCartItemModel.cartItemModels)
+                    actionListener?.addOnOrderLevelImpression(shipmentGroupFooter.shipmentCartItem.cartItemModels)
                 }
             }
         }
@@ -1167,7 +1124,7 @@ class ShipmentGroupFooterViewHolder(
                                 shipmentCartItemModel.isStateHasLoadCourierState
                             }
                         if (!hasLoadCourierState) {
-                            val position = adapterPosition
+                            val position = bindingAdapterPosition
                             if (position != RecyclerView.NO_POSITION) {
                                 loadCourierStateData(
                                     shipmentCartItemModel,
@@ -1407,6 +1364,81 @@ class ShipmentGroupFooterViewHolder(
         scheduleDeliveryCompositeSubscription?.add(scheduleDeliverySubscription)
     }
 
+    fun unsubscribeDebouncer() {
+        compositeSubscription.unsubscribe()
+    }
+
+    override fun onChangeDurationClickListener(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        currentAddress: RecipientAddressModel
+    ) {
+        if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+            actionListener?.onChangeShippingDuration(
+                shipmentCartItemModel,
+                currentAddress,
+                bindingAdapterPosition
+            )
+        }
+    }
+
+    override fun onChangeCourierClickListener(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        currentAddress: RecipientAddressModel
+    ) {
+        if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+            actionListener?.onChangeShippingCourier(
+                currentAddress,
+                shipmentCartItemModel,
+                bindingAdapterPosition,
+                null
+            )
+        }
+    }
+
+    override fun onOnTimeDeliveryClicked(url: String) {
+        actionListener?.onOntimeDeliveryClicked(url)
+    }
+
+    override fun onClickSetPinpoint() {
+        actionListener?.onClickSetPinpoint(bindingAdapterPosition)
+    }
+
+    override fun onClickLayoutFailedShipping(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        recipientAddressModel: RecipientAddressModel
+    ) {
+        val tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
+            shipmentCartItemModel,
+            recipientAddressModel
+        )
+        if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+            loadCourierStateData(
+                shipmentCartItemModel,
+                SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE,
+                tmpShipmentDetailData,
+                bindingAdapterPosition
+            )
+            actionListener?.onClickRefreshErrorLoadCourier()
+            initScheduleDeliveryPublisher()
+        }
+    }
+
+    override fun onViewErrorInCourierSection(logPromoDesc: String) {
+        actionListener?.onViewErrorInCourierSection(logPromoDesc)
+    }
+
+    override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
+        if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+            scheduleDeliveryDebouncedListener?.onScheduleDeliveryChanged(
+                ShipmentScheduleDeliveryHolderData(scheduleDeliveryUiModel, bindingAdapterPosition)
+            )
+        }
+    }
+
+    override fun getHostFragmentManager(): FragmentManager {
+        return actionListener?.currentFragmentManager!!
+    }
+
     private interface SaveStateDebounceListener {
 
         fun onNeedToSaveState(shipmentCartItemModel: ShipmentCartItemModel?)
@@ -1415,5 +1447,10 @@ class ShipmentGroupFooterViewHolder(
     private interface ScheduleDeliveryDebouncedListener {
 
         fun onScheduleDeliveryChanged(shipmentScheduleDeliveryHolderData: ShipmentScheduleDeliveryHolderData?)
+    }
+
+    interface Listener {
+
+        fun onClickExpandSubtotal(position: Int, shipmentGroupFooter: ShipmentGroupFooterModel)
     }
 }

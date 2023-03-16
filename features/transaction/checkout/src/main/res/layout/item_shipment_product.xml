@@ -356,6 +356,7 @@
             android:visibility="gone">
 
             <include
+                android:id="@+id/item_shipment_gifting_addon_product_level"
                 layout="@layout/item_shipment_gifting_addon_product_level"
                 tools:visibility="gone" />
 
