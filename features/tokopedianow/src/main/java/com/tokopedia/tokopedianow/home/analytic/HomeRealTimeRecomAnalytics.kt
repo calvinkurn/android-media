@@ -140,7 +140,8 @@ class HomeRealTimeRecomAnalytics(
             )
         )
 
-        val itemList = "/ - p$position - rtr widget - carousel - $headerName"
+        val itemList =
+            "/tokonow - recomproduct - carousel - ${item.recommendationType} - ${item.pageName} - $headerName"
 
         val dataLayer = getDataLayer(
             event = EVENT_VIEW_ITEM_LIST,
@@ -172,7 +173,8 @@ class HomeRealTimeRecomAnalytics(
             )
         )
 
-        val itemList = "/ - p$position - rtr widget - carousel - $headerName"
+        val itemList =
+            "/tokonow - recomproduct - carousel - ${item.recommendationType} - ${item.pageName} - $headerName"
 
         val dataLayer = getDataLayer(
             event = EVENT_SELECT_CONTENT,
