@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
-import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticRepository
+import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticUseCase
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.IMSResourceProvider
 import com.tokopedia.product.addedit.common.util.getValueOrDefault
@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 class AddEditProductShipmentViewModel @Inject constructor(
     private val saveProductDraftUseCase: SaveProductDraftUseCase,
-    private val customProductLogisticRepository: CustomProductLogisticRepository,
+    private val getCplList: CustomProductLogisticUseCase,
     private val customProductLogisticMapper: CustomProductLogisticMapper,
     private val resourceProvider: IMSResourceProvider,
     private val dispatcher: CoroutineDispatchers
@@ -80,7 +80,8 @@ class AddEditProductShipmentViewModel @Inject constructor(
         val productId = productInputModel.productId
         val productDraft = AddEditProductMapper.mapProductInputModelDetailToDraft(productInputModel)
         launchCatchError(block = {
-            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, false)
+            saveProductDraftUseCase.params =
+                SaveProductDraftUseCase.createRequestParams(productDraft, productId, false)
             withContext(dispatcher.io) {
                 saveProductDraftUseCase.executeOnBackground()
             }
@@ -89,13 +90,66 @@ class AddEditProductShipmentViewModel @Inject constructor(
         })
     }
 
-    fun getCPLList(shopId: Long, productId: String, shipmentServicesIds: List<Long>?) {
+    fun getCPLList(
+        shopId: Long,
+        productId: Long?,
+        shipmentServicesIds: List<Long>?,
+        cplParam: List<Long>?
+    ) {
         viewModelScope.launch {
             try {
-                val cplList = customProductLogisticRepository.getCPLList(shopId, productId)
-                _cplList.value = Success(customProductLogisticMapper.mapCPLData(cplList.response.data, productId, shipmentServicesIds))
+                val param = getCplList.getParam(shopId, productId, cplParam)
+                val cplList = getCplList(param)
+                _cplList.value = Success(
+                    customProductLogisticMapper.mapCPLData(
+                        cplList.response.data,
+                        shipmentServicesIds,
+                        true
+                    )
+                )
             } catch (e: Throwable) {
                 _cplList.value = Fail(e)
+            }
+        }
+    }
+
+    fun setAllCPLProductActiveState(active: Boolean) {
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shipperList.forEach { shipperGroup ->
+                    shipperGroup.shipper.forEach { s ->
+                        s.shipperProduct.forEach { sp ->
+                            sp.isActive = active
+                        }
+                        s.isActive = active
+                    }
+                }
+                _cplList.value = it
+            }
+        }
+    }
+
+    fun setProductActiveState(spIds: List<Long>) {
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shipperList.forEach { shipperGroup ->
+                    shipperGroup.shipper.forEach { s ->
+                        s.shipperProduct.forEach { sp ->
+                            sp.isActive = spIds.contains(sp.shipperProductId)
+                        }
+                        s.isActive = s.shipperProduct.any { sp -> sp.isActive }
+                    }
+                }
+                _cplList.value = it
+            }
+        }
+    }
+
+    fun setAlreadyShowOnBoarding() {
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shouldShowOnBoarding = false
+                _cplList.value = it
             }
         }
     }

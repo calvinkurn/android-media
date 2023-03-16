@@ -7,6 +7,9 @@ import java.io.IOException
 
 class PaymentTestInterceptor : BaseOccInterceptor() {
 
+    var customGetPaymentFeeResponsePath: String? = null
+    var customGetPaymentFeeThrowable: IOException? = null
+
     var customGetListingParamResponsePath: String? = null
     var customGetListingParamThrowable: IOException? = null
 
@@ -20,6 +23,14 @@ class PaymentTestInterceptor : BaseOccInterceptor() {
         val copy = chain.request().newBuilder().build()
         val requestString = readRequestString(copy)
 
+        if (requestString.contains(GET_PAYMENT_FEE_QUERY)) {
+            if (customGetPaymentFeeThrowable != null) {
+                throw customGetPaymentFeeThrowable!!
+            } else if (customGetPaymentFeeResponsePath != null) {
+                return mockResponse(copy, getJsonFromResource(customGetPaymentFeeResponsePath!!))
+            }
+            return mockResponse(copy, getJsonFromResource(GET_PAYMENT_FEE_DEFAULT_RESPONSE_PATH))
+        }
         if (requestString.contains(GET_LISTING_PARAM_QUERY)) {
             if (customGetListingParamThrowable != null) {
                 throw customGetListingParamThrowable!!
@@ -51,12 +62,20 @@ class PaymentTestInterceptor : BaseOccInterceptor() {
     }
 
     override fun resetInterceptor() {
+        customGetPaymentFeeResponsePath = null
+        customGetPaymentFeeThrowable = null
         customGetListingParamResponsePath = null
         customGetListingParamThrowable = null
         customCreditCardTenorListResponsePath = null
         customCreditCardTenorListThrowable = null
+        customGoCicilInstallmentOptionResponsePath = null
+        customGoCicilInstallmentOptionThrowable = null
     }
 }
+
+const val GET_PAYMENT_FEE_QUERY = "getPaymentFee"
+const val GET_PAYMENT_FEE_DEFAULT_RESPONSE_PATH = "payment/get_payment_fee_default_response.json"
+const val GET_PAYMENT_FEE_2_THOUSAND_RESPONSE_PATH = "payment/get_payment_fee_2_thousand_response.json"
 
 const val GET_LISTING_PARAM_QUERY = "getListingParams"
 
@@ -76,3 +95,4 @@ const val GOCICIL_INSTALLMENT_OPTION_QUERY = "getInstallmentInfo"
 const val GOCICIL_INSTALLMENT_OPTION_DEFAULT_RESPONSE_PATH = "payment/gocicil_installment_option_default_response.json"
 const val GOCICIL_INSTALLMENT_OPTION_SOME_INACTIVE_RESPONSE_PATH = "payment/gocicil_installment_option_some_inactive_response.json"
 const val GOCICIL_INSTALLMENT_OPTION_ALL_INACTIVE_RESPONSE_PATH = "payment/gocicil_installment_option_all_inactive_response.json"
+const val GOCICIL_INSTALLMENT_OPTION_WITH_TICKER_RESPONSE_PATH = "payment/gocicil_installment_option_with_ticker_response.json"

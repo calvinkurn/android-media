@@ -445,7 +445,82 @@
           "usedPrice": "0",
           "widgetString": ""
         },
-        "wishlistCount": "0"
+        "wishlistCount": "0",
+        "socialProofComponent": [
+          {
+            "socialProofType": "text",
+            "socialProofID": "",
+            "title": "Dilihat 99+",
+            "subtitle": "",
+            "icon": "",
+            "applink": {
+              "appLink": "tokopedia://shop/5537315/review"
+            }
+          },
+          {
+            "socialProofType": "orange_chip",
+            "socialProofID": "new_product",
+            "title": "Produk Terbaru",
+            "subtitle": "",
+            "icon": "",
+            "applink": {
+              "appLink": "tokopedia://product-edu/3"
+            }
+          },
+          {
+            "socialProofType": "chip",
+            "socialProofID": "media",
+            "title": "Foto Pembeli",
+            "subtitle": "(99)",
+            "icon": "https://images.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+            "applink": {
+              "appLink": "tokopedia://product/1589853923/review/gallery"
+            }
+          },
+          {
+            "socialProofType": "chip",
+            "socialProofID": "talk",
+            "title": "Diskusi",
+            "subtitle": "(9)",
+            "icon": "https://images.tokopedia.net/img/pdp/info/icon/v2/cod.png",
+            "applink": {
+              "appLink": "tokopedia://product/1589853923/talk?shop_id=5537315&is_variant_selected=true&available variants=true"
+            }
+          },
+          {
+            "socialProofType": "chip",
+            "socialProofID": "rating",
+            "title": "Ulasan",
+            "subtitle": "(9)",
+            "icon": "https://images.tokopedia.net/img/pdp/info/icon/v2/cod.png",
+            "applink": {
+              "appLink": "tokopedia://product/1589853923/review"
+            }
+          }
+        ],
+        "reviewList": {
+          "title": "Ulasan buat toko ini.",
+          "applink": "tokopedia://shop/5537315/review",
+          "applinkTitle": "Lihat Semua",
+          "data": [
+            {
+              "userImage": "https://accounts.tokopedia.com/image/v1/u/69859274/user_thumbnail/desktop",
+              "userName": "Karina Pratiwia dfas fasdf asdf asfdsaf asd",
+              "userTitle": "",
+              "userSubtitle": "6 ulasan lengkap • 6 terbantu",
+              "reviewText": "Saya sangat puas sekali!!",
+              "applink": "tokopedia://shop/5537315/review"
+            },
+            {
+              "userImage": "https://images.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
+              "userName": "Yovi Eka Putra asdf asdf asdfasdf asdf asf",
+              "userTitle": "Pergi kemana mana hatiku senang",
+              "userSubtitle": "6 ulasan lengkap • 6 terbantu",
+              "reviewText": "Packing bagus, response cepat, seller recommended, hahaha hihi huhuhu hehehe.",
+              "applink": "tokopedia://shop/5537315/review"
+            }
+          ]
+        }
       }
     }
   }

@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.ItemShopCampaignCarouselClickableBannerAreaBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
@@ -35,7 +36,8 @@ open class ShopHomeCampaignCarouselClickableBannerAreaViewHolder(
             setOnClickListener {
                 shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(
                     shopHomeNewProductLaunchCampaignUiModel,
-                    parentPosition
+                    parentPosition,
+                    ShopUtil.getActualPositionFromIndex(adapterPosition)
                 )
             }
         }

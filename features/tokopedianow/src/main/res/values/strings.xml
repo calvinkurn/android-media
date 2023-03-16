@@ -45,7 +45,6 @@
     <string name="tokopedianow_add_feedback_success_text">Saran produk kamu berhasil dikirim. Terima kasih untuk sarannya!</string>
     <string name="tokopedianow_add_feedback_failure_text">Maaf, saran gagal dikirim karena terjadi kendala. Coba kirim ulang, ya.</string>
 
-
     <string name="tokopedianow_empty_product_title">Yaah, barang itu nggak ada di Tokopedia NOW!</string>
     <string name="tokopedianow_empty_product_description">Coba cari barang yang lain, atau cek rekomendasi di bawah.</string>
     <string name="tokopedianow_empty_product_filter_title">Oops, product nggak ditemukan</string>
@@ -54,8 +53,8 @@
 
     <string name="tokopedianow_global_search_button">Cari di Tokopedia</string>
     <string name="tokopedianow_explore_tokopedia_now_button">Jelajahi Tokopedia NOW!</string>
-    <string name="tokopedianow_category_is_failed_to_display_title">Oops, bagian ini gagal ditampilkan</string>
-    <string name="tokopedianow_category_is_failed_to_display_description">Klik ikon di samping untuk coba lagi</string>
+    <string name="tokopedianow_category_is_failed_to_display_title">Kategori gagal ditampilkan</string>
+    <string name="tokopedianow_category_is_failed_to_display_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="tokopedianow_search_bar_hint">Cari di Tokopedia NOW!</string>
     <string name="tokopedianow_all_products">Semua Produk</string>
     <string name="tokopedianow_dynamic_header_subtitle_default_value">Berakhir dalam</string>
@@ -85,7 +84,7 @@
     <string name="tokopedianow_repurchase_empty_state_no_history_desc_filter">Coba ubah filter, atau cari barang di Tokopedia NOW!.</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_desc_search">Coba ubah kata kuncimu, atau cari barang di Tokopedia NOW!.</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_button">Belanja di Tokopedia NOW!</string>
-    <string name="tokopedianow_repurchase_category_grid_title">Mau belanja apa?</string>
+    <string name="tokopedianow_repurchase_category_menu_title">Cek kategori lainnya</string>
     <string name="tokopedianow_repurchase_title_page">Beli Lagi</string>
     <string name="tokopedianow_repurchase_no_result_title">Belum pernah belanja di Tokopedia NOW!</string>
     <string name="tokopedianow_repurchase_no_result_description_two_hours">Belanja sekarang, pesanan tiba dalam 2 jam!</string>
@@ -203,8 +202,6 @@
     <string name="tokopedianow_recipe_bookmark_toaster_cta_try_again">Coba Lagi</string>
     <string name="tokopedianow_recipe_bookmark_toaster_cta_cancel">Batalkan</string>
     <string name="tokopedianow_recipe_bookmark_toaster_cta_see">Lihat</string>
-    <string name="tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe">\"%s\" sudah dihapus dari Buku Resep.</string>
-    <string name="tokopedianow_recipe_bookmark_toaster_description_success_adding_recipe">\"%s\" berhasil ditambahkan ke Buku Resep.</string>
 
     <!-- Recipe Search -->
     <string name="tokopedianow_recipe_search_ingredient_title_bottomsheet">Cari berdasarkan bahan</string>
@@ -222,9 +219,10 @@
     <string name="tokopedianow_recipe_learn_more">Apa itu Tokopedia NOW! <![CDATA[<font color=#00AA5B><b>Pelajari</b>]]></string>
     <string name="tokopedianow_percentage_format">%1$s %%</string>
 
-    <string name="tokopedianow_recipe_success_add_bookmark">“%s” berhasil ditambahkan ke Buku Resep.</string>
-    <string name="tokopedianow_recipe_failed_add_bookmark">Wah belum bisa disimpan nih karena koneksi. Pastikan internetmu lancar, ya!</string>
-    <string name="tokopedianow_recipe_failed_remove_bookmark">Oops, resep gagal dihapus dari Buku Resep. Cek koneksi internetmu, ya.</string>
+    <string name="tokopedianow_recipe_toaster_description_success_removing_bookmark">\"%s\" berhasil dihapus dari Buku Resep.</string>
+    <string name="tokopedianow_recipe_toaster_description_success_adding_bookmark">\"%s\" berhasil ditambahkan ke Buku Resep.</string>
+    <string name="tokopedianow_recipe_toaster_description_failed_adding_bookmark">Wah belum bisa disimpan nih karena koneksi. Pastikan internetmu lancar, ya!</string>
+    <string name="tokopedianow_recipe_toaster_description_failed_removing_bookmark">Oops, resep gagal dihapus dari Buku Resep. Cek koneksi internetmu, ya.</string>
     <string name="tokopedianow_recipe_search_hint">Cari resep</string>
     <string name="tokopedianow_recipe_list_header_text">Pilihan resep spesial\nTokopedia NOW!</string>
     <string name="tokopedianow_recipe_list_count">%1$d resep</string>
@@ -261,5 +259,15 @@
     <string name="tokopedianow_toaster_see">Lihat</string>
 
     <string name="tokopedianow_product_card_similar_product_error_description">Tidak Ada Produk Serupa yang Tersedia</string>
+
+    <!-- Claim Coupon Widget -->
+    <string name="tokopedianow_claim_coupon_widget_button_claim_text">Klaim</string>
+    <string name="tokopedianow_claim_coupon_widget_button_claimed_text">Diklaim</string>
+    <string name="tokopedianow_claim_coupon_widget_button_used_up_text">Habis</string>
+    <string name="tokopedianow_claim_coupon_widget_local_load_title">Konten gagal ditampilkan</string>
+    <string name="tokopedianow_claim_coupon_widget_local_load_description">Klik ikon di samping buat coba lagi.</string>
+    <string name="tokopedianow_claim_coupon_widget_coupon_claimed_toaster_success_description">Selamat, kupon berhasil diklaim! Lihat kupon saya sekarang.</string>
+    <string name="tokopedianow_claim_coupon_widget_coupon_claimed_toaster_success_cta">Lihat</string>
+    <string name="tokopedianow_claim_coupon_widget_coupon_claimed_toaster_error_description_default">Ada yang salah. Silakan coba lagi.</string>
 
 </resources>

@@ -134,6 +134,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var selectedEndDate = Date()
     private var existingStartDate = Date()
     private var existingEndDate = Date()
+    private var isHolidayBottomSheetShown = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentShopSettingsOperationalHoursBinding.inflate(inflater, container, false).apply {
@@ -297,10 +298,13 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // set click listener for button add holiday schedule
         buttonAddHoliday?.apply {
             setOnClickListener {
-                isActionEdit = false
-                resetSelectedDates(isActionEdit)
-                setupHolidayCalendarPickerBottomSheet()
-                showHolidayBottomSheet()
+                if(!isHolidayBottomSheetShown){
+                    isHolidayBottomSheetShown =  true
+                    isActionEdit = false
+                    resetSelectedDates(isActionEdit)
+                    setupHolidayCalendarPickerBottomSheet()
+                    showHolidayBottomSheet()
+                }
             }
             text = getString(R.string.shop_operational_hour_set_holiday_schedule_title).split(" ").joinToString(" ") { word ->
                 word.replaceFirstChar { it.uppercase() }
@@ -316,12 +320,12 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // setup holiday ticker
         autoChatTicker?.setHtmlDescription(getString(
                 R.string.shop_operational_hour_ticker_description_auto_chat,
-                getString(R.string.shop_operational_hour_ticker_description_auto_chat_dummy_url)
+                getString(R.string.shop_operational_hour_ticker_auto_chat_reply)
         ))
         autoChatTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                if (linkUrl == getString(R.string.shop_operational_hour_ticker_description_auto_chat_dummy_url)) {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
+                if (linkUrl == getString(R.string.shop_operational_hour_ticker_auto_chat_reply)) {
+                    RouteManager.route(context, ApplinkConst.TOKOPEDIA_CHAT_AUTO_REPLY_SETTINGS)
                 }
             }
 
@@ -591,6 +595,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         } else {
             holidayBottomSheet?.dismiss()
         }
+        isHolidayBottomSheetShown = false
     }
 
     private fun setupHolidayCalendarPickerBottomSheet() {
@@ -726,6 +731,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 ctaSecondaryText = getString(R.string.shop_operational_hour_label_back),
                 primaryCTAListener = {
                     holidayBottomSheet?.dismiss()
+                    isHolidayBottomSheetShown = false
                 },
                 secondaryCTAListener = {}
         )?.show()
@@ -742,6 +748,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     holidayBottomSheet?.dismiss()
                     showLoader()
                     setShopHolidaySchedule(startDate, endDate)
+                    isHolidayBottomSheetShown = false
                 },
                 secondaryCTAListener = {}
         )?.show()

@@ -175,6 +175,11 @@ fun clickOnMixLeftSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
 }
 
+fun clickOnMixLeftPaddingSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product_mix_left_padding, 0)
+}
+
 fun clickOnMixTopSection(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
@@ -280,7 +285,7 @@ fun actionOnCueWidgetCategory(viewHolder: RecyclerView.ViewHolder, itemPosition:
 }
 
 fun actionOnVpsWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_vps_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
 }
 
 fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
@@ -289,7 +294,7 @@ fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
 
 fun actionOnLego4Product(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition, -200)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_lego_4_product_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
 }
 
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {

@@ -34,16 +34,15 @@ import com.tokopedia.tokopedianow.category.di.CategoryComponent
 import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.category.domain.model.CategoryTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
+import com.tokopedia.tokopedianow.category.presentation.listener.CategoryMenuCallback
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.THUMBNAIL_AND_OG_IMAGE_SHARE_URL
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
@@ -63,7 +62,6 @@ class TokoNowCategoryFragment:
         BaseSearchCategoryFragment(),
         CategoryAisleListener,
         ScreenShotListener,
-        TokoNowCategoryGridListener,
         ShareBottomsheetListener,
         PermissionListener {
 
@@ -181,11 +179,11 @@ class TokoNowCategoryFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
-            similarProductListener = createSimilarProductCallback(true),
+            tokoNowSimilarProductTrackerListener = createSimilarProductCallback(true),
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
-            tokoNowCategoryGridListener = this,
+            tokoNowCategoryMenuListener = createCategoryMenuCallback(),
             tokoNowProductCardListener = this,
             productRecommendationOocBindListener = createProductRecommendationOocCallback(),
             productRecommendationOocListener = createProductRecommendationOocCallback(),
@@ -545,16 +543,6 @@ class TokoNowCategoryFragment:
         return getViewModel().categoryIdTracking
     }
 
-    override fun onCategoryRetried() {
-        getViewModel().onCategoryGridRetry()
-    }
-
-    override fun onAllCategoryClicked() { }
-
-    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) { }
-
-    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
-
     override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
         super.onProductCardImpressed(position, data)
 
@@ -626,5 +614,12 @@ class TokoNowCategoryFragment:
         if (needToUpdate) {
             refreshProductRecommendation(TOKONOW_CLP)
         }
+    }
+
+    private fun createCategoryMenuCallback(): CategoryMenuCallback {
+        return CategoryMenuCallback(
+            viewModel = tokoNowCategoryViewModel,
+            userId = userSession.userId
+        )
     }
 }

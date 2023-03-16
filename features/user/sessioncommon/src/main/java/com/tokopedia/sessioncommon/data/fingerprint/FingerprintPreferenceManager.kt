@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class FingerprintPreferenceManager @Inject constructor(@ApplicationContext val context: Context): FingerprintPreference {
 
-    val name = "android_user_biometric"
+    val name = "android_user_biometric_v2"
     val preference: SharedPreferences = context.getSharedPreferences(name, MODE_PRIVATE)
 
     private fun removeOldId() {

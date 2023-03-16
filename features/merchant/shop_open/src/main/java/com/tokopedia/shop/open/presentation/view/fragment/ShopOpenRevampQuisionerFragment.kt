@@ -69,7 +69,7 @@ class ShopOpenRevampQuisionerFragment :
     private var fragmentNavigationInterface: FragmentNavigationInterface? = null
     private var isNeedLocation = false
     private var header: HeaderUnify? = null
-    private lateinit var loading: LoaderUnify
+    private var loading: LoaderUnify? = null
 
     private var shopId = 0
     private var postCode = ""
@@ -344,14 +344,14 @@ class ShopOpenRevampQuisionerFragment :
         header?.visibility =  View.INVISIBLE
         recyclerView?.visibility = View.INVISIBLE
         btnNext?.visibility = View.INVISIBLE
-        loading.visibility = View.VISIBLE
+        loading?.visibility = View.VISIBLE
     }
 
     private fun hideLoader() {
         header?.visibility =  View.VISIBLE
         recyclerView?.visibility = View.VISIBLE
         btnNext?.visibility = View.VISIBLE
-        loading.visibility = View.INVISIBLE
+        loading?.visibility = View.INVISIBLE
     }
 
     private fun saveShipmentLocation(shopId: Int, postalCode: String, courierOrigin: Int,

@@ -51,6 +51,27 @@ class SpacingViewModelTest {
     /**************************** test for setupSpacingView() *******************************************/
 
     @Test
+    fun `test for setupSpacingView when data is empty`() {
+        coEvery { componentsItem.data } returns null
+
+        viewModel.setupSpacingView()
+
+        assert(viewModel.getViewBackgroundColor().value == null)
+    }
+
+    @Test
+    fun `test for setupSpacingView when data background is empty`() {
+        val list = ArrayList<DataItem>()
+        val item = DataItem()
+        list.add(item)
+        coEvery { componentsItem.data } returns list
+
+        viewModel.setupSpacingView()
+
+        assert(viewModel.getViewBackgroundColor().value == null)
+    }
+
+    @Test
     fun `test for setupSpacingView when background is not empty`() {
         val list = ArrayList<DataItem>()
         val item = DataItem()
@@ -73,6 +94,21 @@ class SpacingViewModelTest {
         val item = DataItem()
         every { application.applicationContext } returns context
         every { context.resources } returns resource
+        item.sizeMobile = "4"
+        item.background = ""
+        list.add(item)
+        coEvery { componentsItem.data } returns list
+
+        viewModel.setupSpacingView()
+
+        assert(viewModel.getViewBackgroundColor().value != null)
+    }
+
+    @Test
+    fun `test for setupSpacingView when resources throws exception`() {
+        val list = ArrayList<DataItem>()
+        val item = DataItem()
+        every { application.applicationContext } returns context
         item.sizeMobile = "4"
         item.background = ""
         list.add(item)

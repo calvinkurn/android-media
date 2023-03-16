@@ -1,23 +1,18 @@
 package com.tokopedia.gifting.presentation.customview
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.style.ImageSpan
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
-import androidx.core.graphics.drawable.DrawableCompat
-
-import androidx.appcompat.content.res.AppCompatResources
-import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
-import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable
 
 
 class SpannableTypography : BaseCustomView {

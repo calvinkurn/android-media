@@ -51,7 +51,10 @@ object ProductDetailLogger {
     }
 
     private fun getTrimmedStackTrace(throwable: Throwable): String {
-        return throwable.stackTrace.toString().substring(0, STACK_TRACE_TRIM_LENGTH)
+        val stackTrace = throwable.stackTrace.toString()
+        return if (stackTrace.length > STACK_TRACE_TRIM_LENGTH)
+            stackTrace.substring(0, STACK_TRACE_TRIM_LENGTH)
+        else stackTrace
     }
 
     private fun isServerError(throwable: Throwable): Boolean {

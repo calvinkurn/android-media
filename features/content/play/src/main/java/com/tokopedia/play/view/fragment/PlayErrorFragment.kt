@@ -47,6 +47,8 @@ class PlayErrorFragment @Inject constructor(
     private lateinit var imgBack: IconUnify
     private lateinit var tvTitle: TextView
 
+    private var mState: PageResultState = PageResultState.Loading
+
     override fun getScreenName() = "Play Video"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,10 +123,15 @@ class PlayErrorFragment @Inject constructor(
      */
     private fun observeErrorChannel() {
         parentViewModel.observableChannelIdsResult.observe(viewLifecycleOwner, DistinctObserver {
+            mState = it.state
+
             when (val state = it.state) {
                 is PageResultState.Fail -> showGlobalError(state.error)
                 is PageResultState.Success -> container.hide()
-                is PageResultState.Archived -> showArchived(state.config, it.currentValue.firstOrNull() ?: "")
+                is PageResultState.Archived -> showArchived(
+                    state.config,
+                    it.currentValue.firstOrNull()?.id.orEmpty()
+                )
             }
         })
     }
@@ -179,10 +186,6 @@ class PlayErrorFragment @Inject constructor(
         analytic.sendScreenArchived(channelId)
 
         imgBack.setImage(newIconId = IconUnify.ARROW_BACK)
-        imgBack.setOnClickListener {
-            activity?.onBackPressed()
-            analytic.clickExitArchived(channelId)
-        }
         tvTitle.text = ""
 
         globalError.apply {
@@ -198,5 +201,11 @@ class PlayErrorFragment @Inject constructor(
             }
         }
         container.show()
+    }
+
+    fun onBackPressed(channelId: String) {
+        if(mState is PageResultState.Archived) {
+            analytic.clickExitArchived(channelId)
+        }
     }
 }

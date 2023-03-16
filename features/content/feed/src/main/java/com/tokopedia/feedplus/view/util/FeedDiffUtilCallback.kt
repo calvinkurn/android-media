@@ -6,9 +6,9 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
 
 internal class FeedDiffUtilCallback(
-        private val oldList: List<Visitable<*>> = listOf(),
-        private val newList: List<Visitable<*>> = listOf()
-): DiffUtil.Callback() {
+    private val oldList: List<Visitable<*>> = listOf(),
+    private val newList: List<Visitable<*>> = listOf()
+) : DiffUtil.Callback() {
 
     override fun areItemsTheSame(oldPosition: Int, newPosition: Int): Boolean {
         if (oldPosition >= oldList.size) return false
@@ -44,8 +44,7 @@ internal class FeedDiffUtilCallback(
         val oldItem = oldList[oldPosition]
         val newItem = newList[newPosition]
 
-        return if (oldItem is DynamicPostUiModel && newItem is DynamicPostUiModel) oldItem == newItem
-        else !(oldItem is CarouselPlayCardModel && newItem is CarouselPlayCardModel)
+        return if (oldItem is CarouselPlayCardModel && newItem is CarouselPlayCardModel) false else oldItem == newItem
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {

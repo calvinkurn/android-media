@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -32,7 +34,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class SearchContainerFragment : BaseDaggerFragment(),
+class SearchContainerFragment : BaseMultiFragment(),
     GlobalSearchBarWidget.GlobalSearchBarWidgetListener,
     GlobalSearchBarWidget.SearchTextBoxListener,
     InitialStateViewUpdateListener, SearchResultViewUpdateListener {
@@ -99,7 +101,17 @@ class SearchContainerFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = String.EMPTY
+
+    override fun getFragmentTitle(): String = String.EMPTY
+
+    override fun getFragmentToolbar(): Toolbar? {
+        return null
+    }
+
+    override fun getLaunchMode(): BaseMultiFragmentLaunchMode {
+        return BaseMultiFragmentLaunchMode.SINGLE_TASK
+    }
 
     override fun setKeywordSearchBarView(keyword: String) {
         globalSearchBarWidget?.setKeywordSearchBar(keyword)

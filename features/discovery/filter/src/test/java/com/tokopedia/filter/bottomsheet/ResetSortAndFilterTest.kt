@@ -173,6 +173,7 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
         `Then assert selected filter map is as expected`(emptyMap())
         `Then assert selected sort map is as expected`(emptyMap())
         `Then assert selected sort name`("")
+        `Then assert selected apply filter map is as expected`(emptyMap())
     }
 
     @Test

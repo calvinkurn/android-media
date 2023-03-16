@@ -32,7 +32,7 @@ import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.common.util.doOnPreDraw
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
-import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.TokoNowSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -44,16 +44,18 @@ class TokoNowProductCardView @JvmOverloads constructor(
 ) : CardView(context, attrs) {
 
     companion object {
+        const val DEFAULT_MAX_LINES = 2
+        const val MAX_LINES_NEEDED_TO_CHANGE = 1
+
         private const val VERTICAL_BIAS_RATING_TYPOGRAPHY = 0.998f
         private const val WORDING_SEGERA_HABIS = "Segera Habis"
         private const val BOUND_DEFAULT_VALUE = 0
         private const val NO_MARGIN = 0
         private const val NO_DISCOUNT_STRING = "0"
-        private const val DEFAULT_MAX_LINES = 2
-        private const val MAX_LINES_NEEDED_TO_CHANGE = 1
+        private const val PERCENTAGE_CHAR = '%'
     }
 
-    private var similarProductListener: SimilarProductListener? = null
+    private var similarProductTrackerListener: TokoNowSimilarProductTrackerListener? = null
     private var binding: LayoutTokopedianowProductCardViewBinding
 
     init {
@@ -184,7 +186,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
         val isDiscountNotBlankOrZero = (discount.isNotBlank() && discount != NO_DISCOUNT_STRING) || !discountInt.isZero()
         promoLayout.showIfWithBlock(isDiscountNotBlankOrZero || labelGroup != null) {
             if (isDiscountNotBlankOrZero) {
-                promoLabel.text = if (discountInt.isZero()) discount else context.getString(R.string.tokopedianow_product_card_percentage, discountInt)
+                promoLabel.text = if (discountInt.isZero()) {
+                    if (discount.last() != PERCENTAGE_CHAR) "$discount$PERCENTAGE_CHAR" else discount
+                } else {
+                    context.getString(R.string.tokopedianow_product_card_percentage, discountInt)
+                }
                 promoLabel.adjustLabelType(LIGHT_RED)
             } else {
                 labelGroup?.let { labelGroup ->
@@ -248,7 +254,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 )
             )
             setOnClickListener {
-                val intent = TokoNowSimilarProductActivity.createNewIntent(context, productId, similarProductListener)
+                val intent = TokoNowSimilarProductActivity.createNewIntent(context, productId, similarProductTrackerListener)
                 context.startActivity(intent)
             }
         }
@@ -500,8 +506,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
     }
 
-    fun setListeners(similarProductListener: SimilarProductListener?){
-        this.similarProductListener = similarProductListener
+    fun setSimilarProductTrackerListener(
+        similarProductTrackerListener: TokoNowSimilarProductTrackerListener?
+    ){
+        this.similarProductTrackerListener = similarProductTrackerListener
     }
 
     fun setWishlistButtonListener(

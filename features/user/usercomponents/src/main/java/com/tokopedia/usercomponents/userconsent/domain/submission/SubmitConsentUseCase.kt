@@ -21,12 +21,16 @@ class SubmitConsentUseCase @Inject constructor(
             mutation SubmitConsent(
                 ${'$'}purposes: [SubmitConsentPurposeReq]!, 
                 ${'$'}collectionId: String!, 
-                ${'$'}version: String
+                ${'$'}version: String!,
+                ${'$'}dataElements: [DataElement]!,
+                ${'$'}default: Boolean
             ) {
                 SubmitConsent(
                     purposes: ${'$'}purposes,
                     collectionId: ${'$'}collectionId,
-                    version: ${'$'}version
+                    version: ${'$'}version,
+                    dataElements: ${'$'}dataElements,
+                    default: ${'$'}default
                 ) {
                     refId
                     isSuccess

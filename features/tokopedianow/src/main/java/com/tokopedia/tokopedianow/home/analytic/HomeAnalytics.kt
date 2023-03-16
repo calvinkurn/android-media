@@ -64,52 +64,43 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_NAME
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_TYPE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_USER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_SHARING_EXPERIENCE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_CATEGORY_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_NULL_VALUE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.PAGE_NAME_TOKOPEDIA_NOW
-import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
+import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_ATC_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_ALL_CATEGORY
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM_OOC
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PAST_PURCHASE
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM_OOC
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PAST_PURCHASE
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PRODUCT_RECOM
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PRODUCT_RECOM_OOC
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_RECOM_HOME_PAGE
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LABEL_GROUP_HALAL
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NORMAL_PRICE
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_TOPADS
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.SLASH_PRICE
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_HALAL_LABEL
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_VARIANT
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_HALAL_LABEL
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_VARIANT
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CLOSE_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_BANNER_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CART_BUTTON
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CHECK_DETAIL_RECEIVER_REFERRAL_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CLAIM_COUPON
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CLOSE_QUEST_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_COUPON_DETAIL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEFT_CAROUSEL_ADD_TO_CART
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_3
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_4
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_6
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_6_VIEW_ALL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_MORE_SENDER_REFERRAL_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_LEFT_CAROUSEL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM_REMOVE_FROM_CART
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_QUEST_CARD_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_REWARD_QUEST_WIDGET
@@ -122,24 +113,52 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_USP_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_VIEW_ALL_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_CATEGORY
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_DOUBLE_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_FINISHED_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEGO_3
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEGO_4
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEGO_6
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PRODUCT_LEFT_CAROUSEL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_RECEIVER_REFERRAL_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SENDER_REFERRAL_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SINGLE_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SLIDER_BANNER
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_USP_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_VIEW_SWITCHER_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_RECOM_HOME_PAGE
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_ATC_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_LEGO_4
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_CLAIM_COUPON_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_COUPON_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_REMOVE_ATC_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_VIEW_ALL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_LEGO4
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_DOUBLE_COUPON_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_SINGLE_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOME_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LABEL_GROUP_HALAL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_4_BANNER
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_6_BANNER
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NORMAL_PRICE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW15M
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW2HR
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_PAGE_SOURCE
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_TOPADS
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.REFERRAL_STATUS
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.SLASH_PRICE
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_HALAL_LABEL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_VARIANT
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_HALAL_LABEL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_VARIANT
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -168,6 +187,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val EVENT_ACTION_CLICK_ALL_CATEGORY = "click view all category widget"
         const val EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY = "click category on category widget"
         const val EVENT_ACTION_IMPRESSION_SLIDER_BANNER = "impression slider banner"
+        const val EVENT_ACTION_IMPRESSION_DOUBLE_COUPON_WIDGET = "view double coupon widget"
+        const val EVENT_ACTION_IMPRESSION_SINGLE_COUPON_WIDGET = "view single coupon widget"
+        const val EVENT_ACTION_CLICK_COUPON_DETAIL = "click coupon detail"
+        const val EVENT_ACTION_CLICK_CLAIM_COUPON = "click claim coupon"
         const val EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM = "click view all on tokonow recom homepage"
         const val EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM_OOC =
             "click 'Cek Sekarang' on recom widget on tokonow homepage while the address is out of coverage (OOC)"
@@ -219,6 +242,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             "view tokonow referral widget - sender"
         const val EVENT_ACTION_VIEW_SWITCHER_WIDGET = "view switcher widget"
         const val EVENT_ACTION_CLICK_SWITCHER_WIDGET = "click switcher widget"
+        const val EVENT_ACTION_IMPRESSION_LEGO_4 = "impression lego 4 banner"
+        const val EVENT_ACTION_CLICK_LEGO_4 = "click lego 4 banner"
         const val EVENT_ACTION_IMPRESSION_LEGO_6 = "impression lego 6 banner"
         const val EVENT_ACTION_CLICK_LEGO_6 = "click lego 6 banner"
         const val EVENT_ACTION_CLICK_LEGO_6_VIEW_ALL = "click lego 6 banner view all"
@@ -241,6 +266,21 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val NOW2HR = "now2hr"
         const val NOW15M = "now15"
         const val LEGO_6_BANNER = "lego 6 banner"
+        const val LEGO_4_BANNER = "lego 4 - banner"
+    }
+
+    object TrackerId {
+        const val ID_CLICK_VIEW_ALL = "17134"
+        const val ID_CLICK_PRODUCT_RECOM = "17135"
+        const val ID_CLICK_ATC_PRODUCT_RECOM = "17136"
+        const val ID_IMPRESSION_PRODUCT_RECOM = "17137"
+        const val ID_CLICK_REMOVE_ATC_PRODUCT_RECOM = "20148"
+        const val ID_IMPRESSION_LEGO4 = "41955"
+        const val ID_CLICK_LEGO_4 = "41956"
+        const val ID_IMPRESSION_DOUBLE_COUPON_WIDGET = "41922"
+        const val ID_IMPRESSION_SINGLE_COUPON_WIDGET = "41923"
+        const val ID_CLICK_COUPON_WIDGET = "41924"
+        const val ID_CLICK_CLAIM_COUPON_WIDGET = "41925"
     }
 
     fun onClickSearchBar() {
@@ -291,12 +331,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     fun onImpressBannerPromo(channelModel: ChannelModel, channelGrid: ChannelGrid, warehouseId: String, position: Int) {
-        val trackerPosition = position + ADDITIONAL_POSITION
         val ecommerceDataLayerBanner = ecommerceDataLayerBanner(
             channelModel = channelModel,
             channelGrid = channelGrid,
-            position = trackerPosition,
-            itemName = "/ - p$trackerPosition - slider banner - banner - ${channelModel.channelHeader.name}"
+            position = position,
+            itemName = "/ - p${position.getTrackerPosition()} - slider banner - banner - ${channelModel.channelHeader.name}"
         )
 
         val promotions = arrayListOf(
@@ -324,7 +363,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             promotions = arrayListOf(
                 ecommerceDataLayerCategoryClicked(
                     categoryId = categoryId,
-                    position = position,
+                    position = position.getTrackerPosition(),
                     headerName = headerName
                 )
             )
@@ -332,7 +371,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun trackCategoryImpression(category: TokoNowCategoryGridUiModel, warehouseId: String) {
+    fun trackCategoryImpression(category: TokoNowCategoryMenuUiModel, warehouseId: String) {
         val eventLabel = "${category.id} - ${category.title} - $warehouseId"
 
         val event = getMarketplaceDataLayer(
@@ -349,14 +388,18 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     fun onClickAllProductRecom(channelId: String, headerName: String, isOoc: Boolean) {
-        hitCommonHomeTracker(
-            getDataLayer(
-                event = EVENT_CLICK_TOKONOW,
-                action = if (isOoc) EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM_OOC else EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM,
-                category = if (isOoc) EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN else EVENT_CATEGORY_RECOM_HOME_PAGE,
-                label = if (isOoc) " - $headerName" else "$channelId - $headerName"
-            )
+        val dataLayer = getDataLayer(
+            event = EVENT_CLICK_TOKONOW,
+            action = if (isOoc) EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM_OOC else EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM,
+            category = if (isOoc) EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN else EVENT_CATEGORY_RECOM_HOME_PAGE,
+            label = if (isOoc) " - $headerName" else "$channelId - $headerName"
         )
+
+        if (!isOoc) {
+            dataLayer[KEY_TRACKER_ID] = ID_CLICK_VIEW_ALL
+        }
+
+        hitCommonHomeTracker(dataLayer)
     }
 
     fun onClickProductRecom(
@@ -383,10 +426,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                     putString(KEY_DIMENSION_84, channelId)
                 }
             ),
-            productId = recommendationItem.productCardModel.productId,
+            productId = recommendationItem.productCardModel.productId
         )
         dataLayer.putString(KEY_PRODUCT_ID, productId)
         dataLayer.putString(KEY_ITEM_LIST, "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName")
+        dataLayer.putString(KEY_TRACKER_ID, ID_CLICK_PRODUCT_RECOM)
 
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
@@ -419,6 +463,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         )
         dataLayer.putString(KEY_PRODUCT_ID, productId)
         dataLayer.putString(KEY_ITEM_LIST, "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName")
+        dataLayer.putString(KEY_TRACKER_ID, ID_IMPRESSION_PRODUCT_RECOM)
 
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
     }
@@ -445,7 +490,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                     putString(KEY_DIMENSION_90, "$EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN.$EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN")
                 }
             ),
-            productId = recommendationItem.productId.toString(),
+            productId = recommendationItem.productId.toString()
         )
         dataLayer.putString(KEY_PRODUCT_ID, productId.toString())
         dataLayer.remove(KEY_PAGE_SOURCE)
@@ -520,6 +565,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             productId = productId
         )
         dataLayer.putString(KEY_PRODUCT_ID, productId)
+        dataLayer.putString(KEY_TRACKER_ID, ID_CLICK_ATC_PRODUCT_RECOM)
 
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
@@ -553,6 +599,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             productId = recommendationItem.productCardModel.productId,
             pageSource = ""
         )
+        dataLayer.putString(KEY_TRACKER_ID, ID_CLICK_REMOVE_ATC_PRODUCT_RECOM)
+
         getTracker().sendEnhanceEcommerceEvent(EVENT_REMOVE_FROM_CART, dataLayer)
     }
 
@@ -819,12 +867,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     fun trackImpressionLego3Banner(channelModel: ChannelModel) {
         val promotions = ArrayList(
             channelModel.channelGrids.mapIndexed { position, channelGrid ->
-                val trackerPosition = position + ADDITIONAL_POSITION
                 ecommerceDataLayerBanner(
                     channelModel = channelModel,
                     channelGrid = channelGrid,
-                    position = trackerPosition,
-                    itemName = "/ - p$trackerPosition - lego 3 banner - ${channelModel.channelHeader.name}"
+                    position = position,
+                    itemName = "/ - p${position.getTrackerPosition()} - lego 3 banner - ${channelModel.channelHeader.name}"
                 )
             }
         )
@@ -842,12 +889,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     fun trackClickLego3Banner(position: Int, channelModel: ChannelModel, channelGrid: ChannelGrid) {
-        val trackerPosition = position + ADDITIONAL_POSITION
         val dataLayerBanner = ecommerceDataLayerBanner(
             channelModel = channelModel,
             channelGrid = channelGrid,
             position = position,
-            itemName = "/ - p$trackerPosition - lego 3 banner - ${channelModel.channelHeader.name}"
+            itemName = "/ - p${position.getTrackerPosition()} - lego 3 banner - ${channelModel.channelHeader.name}"
         )
 
         val promotions = arrayListOf(dataLayerBanner)
@@ -864,20 +910,84 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
+    fun trackImpressionLego4Banner(channelModel: ChannelModel) {
+        val promotions = ArrayList(
+            channelModel.channelGrids.mapIndexed { position, channelGrid ->
+                ecommerceDataLayerBanner(
+                    channelModel = channelModel,
+                    channelGrid = channelGrid,
+                    position = position,
+                    itemName = "/ - p${position.getTrackerPosition()} - $LEGO_4_BANNER - ${channelModel.channelHeader.name}"
+                )
+            }
+        )
+
+        val dataLayer = getMarketplaceDataLayer(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_LEGO_4,
+            label = "${channelModel.id} - ${channelModel.channelHeader.name}"
+        ).apply {
+            putString(KEY_TRACKER_ID, ID_IMPRESSION_LEGO4)
+            putParcelableArrayList(KEY_PROMOTIONS, promotions)
+            putString(KEY_USER_ID, userSession.userId)
+        }
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
+    }
+
+    fun trackClickLego4Banner(
+        channelModel: ChannelModel,
+        channelGrid: ChannelGrid,
+        warehouseId: String,
+        position: Int,
+        parentPosition: Int
+    ) {
+        val nullString = "null"
+        val headerName = channelModel.channelHeader.name
+        val eventLabel = "${channelModel.id} - $headerName - $warehouseId - ${parentPosition.getTrackerPosition()}"
+
+        val promotions = arrayListOf(
+            Bundle().apply {
+                val gridPosition = position.getTrackerPosition().toString()
+                putString(KEY_CREATIVE_NAME, channelGrid.attribution)
+                putString(KEY_CREATIVE_SLOT, gridPosition)
+                putString(KEY_ITEM_ID, "${channelModel.id}_${channelGrid.id}_${nullString}_$nullString")
+                putString(KEY_ITEM_NAME, "/ - p$gridPosition - $LEGO_4_BANNER - $headerName")
+            }
+        )
+
+        val event = getMarketplaceDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_LEGO_4,
+            label = eventLabel
+        ).apply {
+            putString(KEY_CAMPAIGN_CODE, channelModel.trackingAttributionModel.campaignCode)
+            putString(KEY_CHANNEL_ID, channelModel.id)
+            putString(KEY_TRACKER_ID, ID_CLICK_LEGO_4)
+            putParcelableArrayList(KEY_PROMOTIONS, promotions)
+            putString(KEY_WAREHOUSE_ID, warehouseId)
+            putString(KEY_USER_ID, userSession.userId)
+        }
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, event)
+    }
+
     fun trackImpressionLego6Banner(channelModel: ChannelModel, warehouseId: String, position: Int) {
         val nullString = "null"
         val headerName = channelModel.channelHeader.name
         val eventLabel = "${channelModel.id} - $headerName - $warehouseId - ${position + 1}"
 
-        val promotions = ArrayList(channelModel.channelGrids.mapIndexed { index, channelGrid ->
-            Bundle().apply {
-                val gridPosition = (index + 1).toString()
-                putString(KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution)
-                putString(KEY_CREATIVE_SLOT, gridPosition)
-                putString(KEY_ITEM_ID, "${channelModel.id}_${channelGrid.id}_${nullString}_$nullString")
-                putString(KEY_ITEM_NAME, "/ - $gridPosition - $LEGO_6_BANNER - $headerName")
+        val promotions = ArrayList(
+            channelModel.channelGrids.mapIndexed { position, channelGrid ->
+                Bundle().apply {
+                    val gridPosition = position.getTrackerPosition().toString()
+                    putString(KEY_CREATIVE_NAME, channelGrid.attribution)
+                    putString(KEY_CREATIVE_SLOT, gridPosition)
+                    putString(KEY_ITEM_ID, "${channelModel.id}_${channelGrid.id}_${nullString}_$nullString")
+                    putString(KEY_ITEM_NAME, "/ - p$gridPosition - $LEGO_6_BANNER - $headerName")
+                }
             }
-        })
+        )
 
         val event = getMarketplaceDataLayer(
             event = EVENT_VIEW_ITEM,
@@ -903,15 +1013,15 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     ) {
         val nullString = "null"
         val headerName = channelModel.channelHeader.name
-        val eventLabel = "${channelModel.id} - $headerName - $warehouseId - ${parentPosition + 1}"
+        val eventLabel = "${channelModel.id} - $headerName - $warehouseId - ${parentPosition.getTrackerPosition()}"
 
         val promotions = arrayListOf(
             Bundle().apply {
-                val gridPosition = (position + 1).toString()
-                putString(KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution)
+                val gridPosition = position.getTrackerPosition().toString()
+                putString(KEY_CREATIVE_NAME, channelGrid.attribution)
                 putString(KEY_CREATIVE_SLOT, gridPosition)
                 putString(KEY_ITEM_ID, "${channelModel.id}_${channelGrid.id}_${nullString}_$nullString")
-                putString(KEY_ITEM_NAME, "/ - $gridPosition - $LEGO_6_BANNER - $headerName")
+                putString(KEY_ITEM_NAME, "/ - p$gridPosition - $LEGO_6_BANNER - $headerName")
             }
         )
 
@@ -1037,7 +1147,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     // - 1
     fun trackClickShareButtonTopNav() {
         val label = "$DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+            "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
 
         val pageSource =
             "$PAGE_NAME_TOKOPEDIA_NOW.$DEFAULT_NULL_VALUE.$DEFAULT_NULL_VALUE.$DEFAULT_NULL_VALUE"
@@ -1060,7 +1170,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     // - 2
     fun trackClickCloseShareBottomSheet() {
         val label = "$DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+            "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_COMMUNICATION,
@@ -1079,7 +1189,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     // - 3
     fun trackClickChannelShareBottomSheet(channel: String) {
         val label = "$channel - $DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+            "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_TOKONOW,
@@ -1098,7 +1208,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     // - 4
     fun trackImpressChannelShareBottomSheet() {
         val label = "$DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+            "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
 
         val dataLayer = getDataLayer(
             EVENT_VIEW_TOKONOW_IRIS,
@@ -1117,7 +1227,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     // - 5
     fun trackImpressChannelShareBottomSheetScreenShot() {
         val label = "$DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+            "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
 
         val dataLayer = getDataLayer(
             EVENT_VIEW_TOKONOW_IRIS,
@@ -1136,7 +1246,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     // - 6
     fun trackClickCloseScreenShotShareBottomSheet() {
         val label = "$DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+            "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_TOKONOW,
@@ -1155,7 +1265,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     // - 7
     fun trackClickChannelShareBottomSheetScreenshot(channel: String) {
         val label = "$channel - $DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+            "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_TOKONOW,
@@ -1174,7 +1284,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     // - 8
     fun trackClickAccessMediaAndFiles(accessText: String) {
         val label = "$accessText - $DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+            "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_COMMUNICATION,
@@ -1193,7 +1303,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     // - 9
     fun trackClickShareButtonWidget() {
         val label = "$HOME_WIDGET - $DEFAULT_CATEGORY_ID - " +
-                "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
+            "$DEFAULT_CATEGORY_ID - $DEFAULT_CATEGORY_ID"
 
         val dataLayer = getDataLayer(
             EVENT_CLICK_COMMUNICATION,
@@ -1375,6 +1485,111 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     /*
+        -- Claim Coupon Widget --
+        Thanos : https://mynakama.tokopedia.com/datatracker/requestdetail/view/3790
+     */
+
+    fun trackImpressCouponWidget(
+        couponStatus: String,
+        position: Int,
+        slugText: String,
+        couponName: String,
+        warehouseId: String,
+        isDouble: Boolean
+    ) {
+        val promotionsDataLayer = promotionsDataLayer(
+            creativeName = couponStatus,
+            creativeSlot = position,
+            itemId = slugText,
+            itemName = couponName
+        )
+
+        val promotions = arrayListOf(
+            promotionsDataLayer
+        )
+
+        val dataLayer = getDataLayer(
+            event = EVENT_VIEW_ITEM,
+            action = if (isDouble) EVENT_ACTION_IMPRESSION_DOUBLE_COUPON_WIDGET else EVENT_ACTION_IMPRESSION_SINGLE_COUPON_WIDGET,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = userSession.userId,
+            trackerId = if (isDouble) ID_IMPRESSION_DOUBLE_COUPON_WIDGET else ID_IMPRESSION_SINGLE_COUPON_WIDGET,
+            warehouseId = warehouseId,
+            businessUnit = BUSINESS_UNIT_GROCERIES,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            promotions = promotions
+        )
+        dataLayer.putString(KEY_WAREHOUSE_ID, warehouseId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
+    }
+
+    fun trackClickCouponWidget(
+        couponStatus: String,
+        position: Int,
+        slugText: String,
+        couponName: String,
+        warehouseId: String
+    ) {
+        val promotionsDataLayer = promotionsDataLayer(
+            creativeName = couponStatus,
+            creativeSlot = position,
+            itemId = slugText,
+            itemName = couponName
+        )
+
+        val promotions = arrayListOf(
+            promotionsDataLayer
+        )
+
+        val dataLayer = getDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_COUPON_DETAIL,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = userSession.userId,
+            trackerId = ID_CLICK_COUPON_WIDGET,
+            warehouseId = warehouseId,
+            businessUnit = BUSINESS_UNIT_GROCERIES,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            promotions = promotions
+        )
+        dataLayer.putString(KEY_WAREHOUSE_ID, warehouseId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    fun trackClickClaimCouponWidget(
+        couponStatus: String,
+        position: Int,
+        slugText: String,
+        couponName: String,
+        warehouseId: String
+    ) {
+        val promotionsDataLayer = promotionsDataLayer(
+            creativeName = couponStatus,
+            creativeSlot = position,
+            itemId = slugText,
+            itemName = couponName
+        )
+
+        val promotions = arrayListOf(
+            promotionsDataLayer
+        )
+
+        val dataLayer = getDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_CLAIM_COUPON,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = userSession.userId,
+            trackerId = ID_CLICK_CLAIM_COUPON_WIDGET,
+            warehouseId = warehouseId,
+            businessUnit = BUSINESS_UNIT_GROCERIES,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            promotions = promotions
+        )
+        dataLayer.putString(KEY_WAREHOUSE_ID, warehouseId)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    /*
         -- Switcher Widget --
         Thanos : https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/2972
     */
@@ -1403,12 +1618,14 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             .setEvent(EVENT_VIEW_GROWTH_IRIS)
             .setEventAction(EVENT_ACTION_VIEW_SWITCHER_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
-            .setEventLabel(getEventLabelSwitcherWidget(
-                userId,
-                whIdOrigin,
-                whIdDestination,
-                isNow15
-            ))
+            .setEventLabel(
+                getEventLabelSwitcherWidget(
+                    userId,
+                    whIdOrigin,
+                    whIdDestination,
+                    isNow15
+                )
+            )
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .setUserId(userId)
@@ -1428,12 +1645,14 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             .setEvent(EVENT_CLICK_GROWTH)
             .setEventAction(EVENT_ACTION_CLICK_SWITCHER_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
-            .setEventLabel(getEventLabelSwitcherWidget(
-                userId,
-                whIdOrigin,
-                whIdDestination,
-                isNow15
-            ))
+            .setEventLabel(
+                getEventLabelSwitcherWidget(
+                    userId,
+                    whIdOrigin,
+                    whIdDestination,
+                    isNow15
+                )
+            )
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .setUserId(userId)
@@ -1448,11 +1667,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: Int
     ): Bundle {
         return Bundle().apply {
-            val trackerPosition = position + ADDITIONAL_POSITION
-            putString(KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution)
+            val trackerPosition = position.getTrackerPosition()
+            putString(KEY_CREATIVE_NAME, channelGrid.attribution)
             putString(KEY_CREATIVE_SLOT, trackerPosition.toString())
             putString(KEY_DIMENSION_104, channelModel.trackingAttributionModel.campaignCode)
-            putString(KEY_DIMENSION_38, channelModel.trackingAttributionModel.galaxyAttribution)
+            putString(KEY_DIMENSION_38, channelGrid.attribution)
             putString(KEY_DIMENSION_79, channelModel.trackingAttributionModel.brandId)
             putString(KEY_DIMENSION_82, channelModel.trackingAttributionModel.categoryId)
             putString(
@@ -1470,12 +1689,26 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         itemName: String
     ): Bundle {
         return Bundle().apply {
-            putString(KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution)
-            putString(KEY_CREATIVE_SLOT, position.toString())
+            putString(KEY_CREATIVE_NAME, channelGrid.attribution)
+            putString(KEY_CREATIVE_SLOT, position.getTrackerPosition().toString())
             putString(
                 KEY_ITEM_ID,
                 "0_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId
             )
+            putString(KEY_ITEM_NAME, itemName)
+        }
+    }
+
+    private fun promotionsDataLayer(
+        creativeName: String,
+        creativeSlot: Int,
+        itemId: String,
+        itemName: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(KEY_CREATIVE_NAME, creativeName)
+            putInt(KEY_CREATIVE_SLOT, creativeSlot.getTrackerPosition())
+            putString(KEY_ITEM_ID, itemId)
             putString(KEY_ITEM_NAME, itemName)
         }
     }
@@ -1501,10 +1734,14 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         label: String = ""
     ): MutableMap<String, Any> {
         return DataLayer.mapOf(
-            TrackAppUtils.EVENT, event,
-            TrackAppUtils.EVENT_ACTION, action,
-            TrackAppUtils.EVENT_CATEGORY, category,
-            TrackAppUtils.EVENT_LABEL, label
+            TrackAppUtils.EVENT,
+            event,
+            TrackAppUtils.EVENT_ACTION,
+            action,
+            TrackAppUtils.EVENT_CATEGORY,
+            category,
+            TrackAppUtils.EVENT_LABEL,
+            label
         )
     }
 
@@ -1547,7 +1784,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         label: String = "",
         items: ArrayList<Bundle>,
         productId: String = "",
-        pageSource: String = PRODUCT_PAGE_SOURCE,
+        pageSource: String = PRODUCT_PAGE_SOURCE
     ): Bundle {
         return Bundle().apply {
             putString(TrackAppUtils.EVENT, event)
@@ -1564,6 +1801,31 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             if (pageSource.isNotBlank()) {
                 putString(KEY_PAGE_SOURCE, pageSource)
             }
+        }
+    }
+
+    private fun getDataLayer(
+        event: String,
+        action: String,
+        category: String,
+        label: String,
+        warehouseId: String,
+        trackerId: String,
+        businessUnit: String,
+        currentSite: String,
+        promotions: ArrayList<Bundle>,
+    ): Bundle {
+        return Bundle().apply {
+            putString(TrackAppUtils.EVENT, event)
+            putString(TrackAppUtils.EVENT_ACTION, action)
+            putString(TrackAppUtils.EVENT_CATEGORY, category)
+            putString(TrackAppUtils.EVENT_LABEL, label)
+            putString(KEY_TRACKER_ID, trackerId)
+            putString(KEY_BUSINESS_UNIT, businessUnit)
+            putString(KEY_CURRENT_SITE, currentSite)
+            putParcelableArrayList(KEY_PROMOTIONS, promotions)
+            putString(KEY_USER_ID, userSession.userId)
+            putString(KEY_WAREHOUSE_ID, warehouseId)
         }
     }
 

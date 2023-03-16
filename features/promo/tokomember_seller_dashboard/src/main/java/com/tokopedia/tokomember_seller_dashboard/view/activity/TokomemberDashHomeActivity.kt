@@ -15,8 +15,10 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallback
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ACTION
@@ -29,6 +31,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH_PROGR
 import com.tokopedia.tokomember_seller_dashboard.util.TOKOMEMBER_SCREEN
 import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmDashCouponDetailFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmDashCouponDetailFragment.Companion.TAG_COUPON_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
@@ -39,12 +42,13 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.tm_activity_tokomember_dash_home.*
 import javax.inject.Inject
 
-class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,TmCouponDetailCallback {
+class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,TmCouponDetailCallback{
 
     private lateinit var homeHeader: HeaderUnify
     private lateinit var homeTabs: TabsUnify
     private lateinit var homeViewPager: ViewPager
     private var bundleNewIntent: Bundle? = null
+    private var tmCouponListRefreshCallback: TmCouponListRefreshCallback? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -75,15 +79,19 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 1) {
-            supportFragmentManager.popBackStack()
-        }
-        else if(supportFragmentManager.backStackEntryCount == 1){
-            supportFragmentManager.popBackStack()
-            return super.onBackPressed()
-        }
-        else {
-            return super.onBackPressed()
+        when {
+            supportFragmentManager.backStackEntryCount > 1 -> {
+                if(supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount-1).name == TAG_COUPON_DETAIL)
+                    tmCouponListRefreshCallback?.refreshCouponList(ADD_QUOTA)
+                supportFragmentManager.popBackStack()
+            }
+            supportFragmentManager.backStackEntryCount == 1 -> {
+                supportFragmentManager.popBackStack()
+                return super.onBackPressed()
+            }
+            else -> {
+                return super.onBackPressed()
+            }
         }
     }
 
@@ -110,8 +118,9 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
         addFragment(TokomemberDashProgramDetailFragment.newInstance(bundle), TAG_HOME)
     }
 
-    override fun openCouponDetailFragment(voucherId:Int) {
-        addFragment(TmDashCouponDetailFragment.newInstance(voucherId), TAG_HOME)
+    override fun openCouponDetailFragment(voucherId:Int, tmCouponListRefreshCallback: TmCouponListRefreshCallback?) {
+        this.tmCouponListRefreshCallback = tmCouponListRefreshCallback
+        addFragment(TmDashCouponDetailFragment.newInstance(voucherId), TAG_COUPON_DETAIL)
     }
 
     private fun checkApplink() : Boolean{
@@ -124,7 +133,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
                             PATH_TOKOMEMBER_COUPON_DETAIL -> {
                               val couponId=segments[2]
                                 Log.i("from dash home","voicher id - $couponId")
-                                openCouponDetailFragment(couponId.toIntOrZero())
+                                openCouponDetailFragment(couponId.toIntOrZero(), tmCouponListRefreshCallback)
                                 return true
                             }
                             else -> return false

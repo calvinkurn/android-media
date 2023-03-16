@@ -17,6 +17,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.DIRECT_PURCHASE_ADD_TO_CART
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.ALL_PRODUCT_CLICKED
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.ALL_PRODUCT_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_RESET
@@ -38,6 +40,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NAME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PRODUCT_ATC_QUANTITY_DECREASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PRODUCT_ATC_QUANTITY_INCREASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
@@ -74,7 +77,10 @@ class ShopPageTrackingBuyer(
         shopId: String,
         shopRef: String,
         isFulfillmentExist: Boolean?,
-        isFreeOngkirActive: Boolean?
+        isFreeOngkirActive: Boolean?,
+        sortAndFilterValue: String,
+        listEventValue: String,
+        selectedTabName: String,
     ): List<Any> {
         val boe: String
         boe = if (isFulfillmentExist!! && isFreeOngkirActive!!) {
@@ -94,13 +100,14 @@ class ShopPageTrackingBuyer(
                     ShopPageTrackingConstant.PRICE, formatPrice(viewModel.displayedPrice!!),
                     ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE,
                     ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE,
-                    ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE,
-                    ShopPageTrackingConstant.LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseName, etalaseName), loginNonLoginString),
+                    ShopPageTrackingConstant.VARIANT, selectedTabName,
+                    ShopPageTrackingConstant.LIST, listEventValue,
                     ShopPageTrackingConstant.POSITION, productPosition,
                     ShopPageTrackingConstant.DIMENSION_81, shopTypeDef,
                     ShopPageTrackingConstant.DIMENSION_79, shopId,
                     ShopPageTrackingConstant.DIMENSION_90, shopRef,
-                    ShopPageTrackingConstant.DIMENSION_83, boe
+                    ShopPageTrackingConstant.DIMENSION_83, boe,
+                    ShopPageTrackingConstant.DIMENSION_61, sortAndFilterValue
                 )
             )
             list.add(event)
@@ -116,7 +123,10 @@ class ShopPageTrackingBuyer(
         shopTypeDef: String?,
         loginNonLoginString: String,
         shopId: String,
-        dimension90: String
+        dimension90: String,
+        sortAndFilterValue: String,
+        listEventValue: String,
+        selectedTabName: String
     ): List<Any> {
         val list: MutableList<Any> = ArrayList()
         for (i in shopProductUiModelList.indices) {
@@ -128,13 +138,14 @@ class ShopPageTrackingBuyer(
                     ShopPageTrackingConstant.PRICE, formatPrice(viewModel.displayedPrice!!),
                     ShopPageTrackingConstant.BRAND, ShopPageTrackingConstant.NONE,
                     ShopPageTrackingConstant.CATEGORY, ShopPageTrackingConstant.NONE,
-                    ShopPageTrackingConstant.VARIANT, ShopPageTrackingConstant.NONE,
-                    ShopPageTrackingConstant.LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseName, etalaseName), loginNonLoginString, ShopPageTrackingConstant.SEARCH_RESULT),
+                    ShopPageTrackingConstant.VARIANT, selectedTabName,
+                    ShopPageTrackingConstant.LIST, listEventValue,
                     ShopPageTrackingConstant.POSITION, productPosition,
                     ShopPageTrackingConstant.DIMENSION_81, shopTypeDef,
                     ShopPageTrackingConstant.DIMENSION_79, shopId,
-                    ShopPageTrackingConstant.DIMENSION_90, dimension90
-                )
+                    ShopPageTrackingConstant.DIMENSION_90, dimension90,
+                    ShopPageTrackingConstant.DIMENSION_61, sortAndFilterValue,
+                    )
             )
             list.add(event)
         }
@@ -143,7 +154,6 @@ class ShopPageTrackingBuyer(
 
     private fun createProductImpressionMap(
         event: String,
-        isOwner: Boolean,
         category: String,
         loginNonLoginString: String,
         action: String,
@@ -153,7 +163,10 @@ class ShopPageTrackingBuyer(
         selectedEtalaseChipName: String,
         etalaseName: String,
         productPositionStart: Int,
-        shopId: String
+        shopId: String,
+        sortAndFilterValue: String,
+        listEventValue: String,
+        selectedTabName: String
     ): HashMap<String, Any> {
         val shopProductUiModelArrayList = ArrayList<ShopProductUiModel>()
         shopProductUiModelArrayList.add(shopProductUiModel)
@@ -172,7 +185,10 @@ class ShopPageTrackingBuyer(
                 shopId,
                 customDimensionShopPage.shopRef,
                 customDimensionShopPage.isFulfillmentExist,
-                customDimensionShopPage.isFreeOngkirActive
+                customDimensionShopPage.isFreeOngkirActive,
+                sortAndFilterValue,
+                listEventValue,
+                selectedTabName
             )
         )
         return eventMap
@@ -191,7 +207,10 @@ class ShopPageTrackingBuyer(
         productPositionStart: Int,
         shopId: String,
         shopName: String,
-        navSource: String
+        navSource: String,
+        sortAndFilterValue: String,
+        listEventValue: String,
+        selectedTabName: String
     ): HashMap<String, Any> {
         val shopProductUiModelArrayList = ArrayList<ShopProductUiModel>()
         shopProductUiModelArrayList.add(shopProductUiModel)
@@ -209,7 +228,10 @@ class ShopPageTrackingBuyer(
                 customDimensionShopPage.shopType,
                 loginNonLoginString,
                 shopId,
-                dimension90Value
+                dimension90Value,
+                sortAndFilterValue,
+                listEventValue,
+                selectedTabName
             )
         )
         return eventMap
@@ -217,7 +239,6 @@ class ShopPageTrackingBuyer(
 
     private fun createProductClickMap(
         event: String,
-        isOwner: Boolean,
         category: String,
         loginNonLoginString: String,
         action: String,
@@ -227,7 +248,10 @@ class ShopPageTrackingBuyer(
         selectedEtalaseChipName: String,
         etalaseName: String,
         productPositionStart: Int,
-        shopId: String
+        shopId: String,
+        sortAndFilterValue: String,
+        listEventValue: String,
+        selectedTabName: String
     ): HashMap<String, Any> {
         val shopProductUiModelArrayList = ArrayList<ShopProductUiModel>()
         shopProductUiModelArrayList.add(shopProductUiModel)
@@ -248,7 +272,10 @@ class ShopPageTrackingBuyer(
                     shopId,
                     customDimensionShopPage.shopRef,
                     customDimensionShopPage.isFulfillmentExist,
-                    customDimensionShopPage.isFreeOngkirActive
+                    customDimensionShopPage.isFreeOngkirActive,
+                    sortAndFilterValue,
+                    listEventValue,
+                    selectedTabName
                 )
             )
         )
@@ -268,7 +295,10 @@ class ShopPageTrackingBuyer(
         productPositionStart: Int,
         shopId: String,
         shopName: String,
-        navSource: String
+        navSource: String,
+        sortAndFilterValue: String,
+        listEventValue: String,
+        selectedTabName: String
     ): HashMap<String, Any> {
         val shopProductUiModelArrayList = ArrayList<ShopProductUiModel>()
         shopProductUiModelArrayList.add(shopProductUiModel)
@@ -300,7 +330,10 @@ class ShopPageTrackingBuyer(
                     customDimensionShopPage.shopType,
                     loginNonLoginString,
                     shopId,
-                    dimension90Value
+                    dimension90Value,
+                    sortAndFilterValue,
+                    listEventValue,
+                    selectedTabName
                 )
             )
         )
@@ -335,18 +368,6 @@ class ShopPageTrackingBuyer(
             ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS,
             ShopPageTrackingConstant.VIEW_COACHMARK_FOLLOW,
             ShopPageTrackingConstant.SHOP_PAGE_LABEL + shopId,
-            userId
-        )
-    }
-
-    fun impressionCoachMarkDissapearFollowUnfollowShop(
-        shopId: String,
-        userId: String?
-    ) {
-        followUnfollowShop(
-            ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS,
-            ShopPageTrackingConstant.VIEW_COACHMARK_FOLLOW,
-            ShopPageTrackingConstant.SHOP_PAGE_LABEL + shopId + ShopPageTrackingConstant.COACHMARK_DISAPPEAR,
             userId
         )
     }
@@ -491,7 +512,6 @@ class ShopPageTrackingBuyer(
     }
 
     fun clickProduct(
-        isOwner: Boolean,
         isLogin: Boolean,
         selectedEtalaseChipName: String?,
         etalaseSection: String,
@@ -501,29 +521,52 @@ class ShopPageTrackingBuyer(
         shopId: String,
         isSelectedEtalaseCampaign: Boolean,
         isEtalaseSectionCampaign: Boolean,
-        isUpcoming: Boolean
+        isUpcoming: Boolean,
+        sortAndFilterValue: String = "",
+        userId: String = "",
+        selectedTabName: String = ""
     ) {
         val loginNonLoginString = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
         val etalaseNameTrackerString = if (isSelectedEtalaseCampaign) String.format(ShopPageTrackingConstant.LABEL_ETALASE_CAMPAIGN, selectedEtalaseChipName) else selectedEtalaseChipName!!
         val etalaseSectionTrackerString = getEtalaseNameTrackerString(isEtalaseSectionCampaign, isUpcoming, etalaseSection, ShopPageConstant.DEFAULT_VALUE_ETALASE_TYPE)
-        val event: Map<String, Any> = createProductClickMap(
-            ShopPageTrackingConstant.PRODUCT_CLICK,
-            isOwner,
-            getShopPageCategory(isOwner),
+        val etalaseChip = String.format(
+            ShopPageTrackingConstant.SELECTED_ETALASE_CHIP,
+            ShopPageTrackingConstant.ALL_PRODUCT
+        )
+        val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginString,
+            ShopPageTrackingConstant.NOT_SEARCH_RESULT
+        )
+        val eventAction = joinDash(
+            ALL_PRODUCT_CLICKED,
+            etalaseChip,
             loginNonLoginString,
-            joinDash(ShopPageTrackingConstant.CLICK_PRODUCT, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSectionTrackerString), loginNonLoginString),
-            shopProductUiModel.id,
+            ShopPageTrackingConstant.NOT_SEARCH_RESULT
+        )
+        val event = createProductClickMap(
+            ShopPageTrackingConstant.PRODUCT_CLICK,
+            SHOP_PAGE_BUYER,
+            loginNonLoginString,
+            eventAction,
+            "",
             customDimensionShopPage,
             shopProductUiModel,
             etalaseNameTrackerString, etalaseSectionTrackerString,
             productPosStart,
-            shopId
+            shopId,
+            sortAndFilterValue,
+            listEventValue,
+            selectedTabName
         )
+        event[TRACKER_ID] = ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_CLICKED
+        event[BUSINESS_UNIT] = PHYSICAL_GOODS
+        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        event[ShopPageTrackingConstant.ITEM_LIST] = listEventValue
+        event[SHOP_ID] = customDimensionShopPage.shopId.orEmpty()
+        event[USER_ID] = userId
         sendDataLayerEvent(event)
     }
 
     fun clickProductSearchResult(
-        isOwner: Boolean,
         isLogin: Boolean,
         selectedEtalaseChipName: String,
         etalaseSection: String,
@@ -533,24 +576,34 @@ class ShopPageTrackingBuyer(
         shopId: String,
         isEtalaseCampaign: Boolean,
         isUpcoming: Boolean,
-        keyword: String,
         etalaseType: Int,
         shopName: String,
-        navSource: String
+        navSource: String,
+        sortAndFilterValue: String = "",
+        userId: String,
+        selectedTabName: String
     ) {
         val loginNonLoginString = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
         val etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign, isUpcoming, selectedEtalaseChipName, etalaseType)
-        val event: Map<String, Any> = createProductClickSearchResultMap(
-            ShopPageTrackingConstant.PRODUCT_CLICK,
-            getShopPageCategory(isOwner),
+        val etalaseChip = String.format(
+            ShopPageTrackingConstant.SELECTED_ETALASE_CHIP,
+            etalaseNameTrackerString
+        )
+        val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginString,
+            ShopPageTrackingConstant.SEARCH_RESULT
+        )
+        val eventAction = joinDash(
+            ALL_PRODUCT_CLICKED,
+            etalaseChip,
             loginNonLoginString,
-            joinDash(
-                ShopPageTrackingConstant.CLICK_PRODUCT,
-                getProductEtalaseEvent(etalaseNameTrackerString, etalaseSection),
-                loginNonLoginString,
-                ShopPageTrackingConstant.SEARCH_RESULT
-            ),
-            keyword,
+            ShopPageTrackingConstant.SEARCH_RESULT
+        )
+        val event = createProductClickSearchResultMap(
+            ShopPageTrackingConstant.PRODUCT_CLICK,
+            SHOP_PAGE_BUYER,
+            loginNonLoginString,
+            eventAction,
+            "",
             customDimensionShopPage,
             shopProductUiModel,
             etalaseNameTrackerString,
@@ -558,8 +611,17 @@ class ShopPageTrackingBuyer(
             productPosStart,
             shopId,
             shopName,
-            navSource
+            navSource,
+            sortAndFilterValue,
+            listEventValue,
+            selectedTabName
         )
+        event[TRACKER_ID] = ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_CLICKED
+        event[BUSINESS_UNIT] = PHYSICAL_GOODS
+        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        event[ShopPageTrackingConstant.ITEM_LIST] = listEventValue
+        event[SHOP_ID] = customDimensionShopPage.shopId.orEmpty()
+        event[USER_ID] = userId
         sendDataLayerEvent(event)
     }
 
@@ -619,7 +681,6 @@ class ShopPageTrackingBuyer(
     }
 
     fun impressionProductList(
-        isOwner: Boolean,
         isLogin: Boolean,
         selectedEtalaseChipName: String?,
         etalaseSection: String,
@@ -629,29 +690,52 @@ class ShopPageTrackingBuyer(
         shopId: String,
         isSelectedEtalaseCampaign: Boolean,
         isEtalaseSectionCampaign: Boolean,
-        isUpcoming: Boolean
+        isUpcoming: Boolean,
+        sortAndFilterValue: String = "",
+        userId: String = "",
+        selectedTabName: String = ""
     ) {
         val loginNonLoginString = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
         val etalaseNameTrackerString = if (isSelectedEtalaseCampaign) String.format(ShopPageTrackingConstant.LABEL_ETALASE_CAMPAIGN, selectedEtalaseChipName) else selectedEtalaseChipName!!
         val etalaseSectionTrackerString = getEtalaseNameTrackerString(isEtalaseSectionCampaign, isUpcoming, etalaseSection, ShopPageConstant.DEFAULT_VALUE_ETALASE_TYPE)
-        val event: Map<String, Any> = createProductImpressionMap(
-            ShopPageTrackingConstant.PRODUCT_VIEW,
-            isOwner,
-            getShopPageCategory(isOwner),
+        val etalaseChip = String.format(
+            ShopPageTrackingConstant.SELECTED_ETALASE_CHIP,
+            ShopPageTrackingConstant.ALL_PRODUCT
+        )
+        val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginString,
+            ShopPageTrackingConstant.NOT_SEARCH_RESULT
+        )
+        val eventAction = joinDash(
+            ALL_PRODUCT_IMPRESSION,
+            etalaseChip,
             loginNonLoginString,
-            joinDash(ShopPageTrackingConstant.PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSectionTrackerString), loginNonLoginString),
+            ShopPageTrackingConstant.NOT_SEARCH_RESULT
+        )
+        val event = createProductImpressionMap(
+            ShopPageTrackingConstant.PRODUCT_VIEW,
+            SHOP_PAGE_BUYER,
+            loginNonLoginString,
+            eventAction,
             "",
             customDimensionShopPage,
             shopProductUiModel,
             etalaseNameTrackerString, etalaseSectionTrackerString,
             productPosStart,
-            shopId
-        )
+            shopId,
+            sortAndFilterValue,
+            listEventValue,
+            selectedTabName
+        ).toMutableMap()
+        event[TRACKER_ID] = ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_IMPRESSION
+        event[BUSINESS_UNIT] = PHYSICAL_GOODS
+        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        event[ShopPageTrackingConstant.ITEM_LIST] = listEventValue
+        event[SHOP_ID] = customDimensionShopPage.shopId.orEmpty()
+        event[USER_ID] = userId
         sendDataLayerEvent(event)
     }
 
     fun impressionProductListSearchResult(
-        isOwner: Boolean,
         isLogin: Boolean,
         selectedEtalaseChipName: String,
         etalaseSection: String,
@@ -661,27 +745,51 @@ class ShopPageTrackingBuyer(
         shopId: String,
         isEtalaseCampaign: Boolean,
         isUpcoming: Boolean,
-        keyword: String,
         etalaseType: Int,
         shopName: String,
-        navSource: String
+        navSource: String,
+        sortAndFilterValue: String = "",
+        userId: String,
+        selectedTabName: String
     ) {
         val loginNonLoginString = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
         val etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign, isUpcoming, selectedEtalaseChipName, etalaseType)
-        val event: Map<String, Any> = createProductImpressionSearchResultMap(
-            ShopPageTrackingConstant.PRODUCT_VIEW,
-            getShopPageCategory(isOwner),
+        val etalaseChip = String.format(
+            ShopPageTrackingConstant.SELECTED_ETALASE_CHIP,
+            etalaseNameTrackerString
+        )
+        val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginString,
+            ShopPageTrackingConstant.SEARCH_RESULT
+        )
+        val eventAction = joinDash(
+            ALL_PRODUCT_IMPRESSION,
+            etalaseChip,
             loginNonLoginString,
-            joinDash(ShopPageTrackingConstant.PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSection), loginNonLoginString, ShopPageTrackingConstant.SEARCH_RESULT),
-            keyword,
+            ShopPageTrackingConstant.SEARCH_RESULT
+        )
+        val event = createProductImpressionSearchResultMap(
+            ShopPageTrackingConstant.PRODUCT_VIEW,
+            SHOP_PAGE_BUYER,
+            loginNonLoginString,
+            eventAction,
+            "",
             customDimensionShopPage,
             shopProductUiModel,
             etalaseNameTrackerString,
             etalaseSection, productPosStart,
             shopId,
             shopName,
-            navSource
+            navSource,
+            sortAndFilterValue,
+            listEventValue,
+            selectedTabName
         )
+        event[TRACKER_ID] = ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_IMPRESSION
+        event[BUSINESS_UNIT] = PHYSICAL_GOODS
+        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        event[ShopPageTrackingConstant.ITEM_LIST] = listEventValue
+        event[SHOP_ID] = customDimensionShopPage.shopId.orEmpty()
+        event[USER_ID] = userId
         sendDataLayerEvent(event)
     }
 
@@ -860,32 +968,6 @@ class ShopPageTrackingBuyer(
         val eventName: String
         eventName = if (isFollowed) ShopPageTrackingConstant.SELLER_ADDED_TO_FAVORITE else ShopPageTrackingConstant.SELLER_REMOVED_FROM_FAVORITE
         TrackApp.getInstance().moEngage.sendTrackEvent(mapData, eventName)
-    }
-
-    fun searchProduct(
-        keyword: String?,
-        isProductSearchResultEmpty: Boolean,
-        isOwner: Boolean,
-        customDimensionShopPage: CustomDimensionShopPage?
-    ) {
-        val productResultLabel = if (isProductSearchResultEmpty) ShopPageTrackingConstant.SEARCH_PRODUCT_NO_RESULT else ShopPageTrackingConstant.SEARCH_PRODUCT_RESULT
-        sendGeneralEvent(
-            ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-            getShopPageCategory(isOwner),
-            ShopPageTrackingConstant.SEARCH_PRODUCT,
-            joinSpace(ShopPageTrackingConstant.SEARCH, joinDash(keyword, productResultLabel)),
-            customDimensionShopPage
-        )
-    }
-
-    fun clickAddEtalase(customDimensionShopPage: CustomDimensionShopPage?) {
-        sendGeneralEvent(
-            ShopPageTrackingConstant.CLICK_SHOP_PAGE,
-            ShopPageTrackingConstant.SHOP_PAGE_SELLER,
-            ShopPageTrackingConstant.CLICK_ADD_ETALASE_BUTTON,
-            "",
-            customDimensionShopPage
-        )
     }
 
     private fun getProductEtalaseEvent(
@@ -1175,12 +1257,16 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun clickCloseNewShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+    fun clickCloseNewShareBottomSheet(
+        customDimensionShopPage: CustomDimensionShopPage,
+        userId: String,
+        userType: String
+    ) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
             ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_CLOSE_SHARE_BOTTOM_SHEET,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-            ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+            ShopPageTrackingConstant.EVENT_LABEL to "${customDimensionShopPage.shopId.orEmpty()} - $userType",
             ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_CLOSE_SHARE_BOTTOM_SHEET,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
@@ -1190,12 +1276,18 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun clickShareBottomSheetOption(socialMediaName: String, customDimensionShopPage: CustomDimensionShopPage, userId: String, userType: String) {
+    fun clickShareBottomSheetOption(
+        socialMediaName: String,
+        customDimensionShopPage: CustomDimensionShopPage,
+        userId: String,
+        imageType: String,
+        userType: String
+    ) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
             ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SHARE_BOTTOM_SHEET_OPTION,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-            ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()} - ${UniversalShareBottomSheet.Companion.KEY_CONTEXTUAL_IMAGE} - $userType",
+            ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()} - $userType - $imageType",
             ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_CLICK_SHARING_CHANNEL,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
@@ -1235,12 +1327,12 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun onImpressionScreenshotShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+    fun onImpressionScreenshotShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String, userShareType: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.VIEW_COMMUNICATION_IRIS,
             ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.VIEW_SCREENSHOT_SHARE_BOTTOM_SHEET,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-            ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+            ShopPageTrackingConstant.EVENT_LABEL to "${customDimensionShopPage.shopId.orEmpty()} - $userShareType",
             ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_VIEW_SCREEN_SHOT_BOTTOM_SHEET,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
@@ -1250,12 +1342,12 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+    fun clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String, userShareType: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
             ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-            ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+            ShopPageTrackingConstant.EVENT_LABEL to "${customDimensionShopPage.shopId.orEmpty()} - $userShareType",
             ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_CLOSE_SCREEN_SHOT_SHARE_BOTTOM_SHEET,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
@@ -1265,12 +1357,12 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun clickScreenshotShareBottomSheetOption(socialMediaName: String, customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+    fun clickScreenshotShareBottomSheetOption(socialMediaName: String, customDimensionShopPage: CustomDimensionShopPage, userId: String, userShareType: String, imageType: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
             ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
             ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SCREENSHOT_SHARE_BOTTOM_SHEET_OPTION,
             ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-            ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()}",
+            ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()} - $userShareType - $imageType",
             ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_SCREEN_SHOT_CLICK_SHARING_CHANNEL,
             ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
             ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,

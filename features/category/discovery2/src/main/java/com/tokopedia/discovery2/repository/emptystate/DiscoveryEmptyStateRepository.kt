@@ -19,21 +19,41 @@ class DiscoveryEmptyStateRepository @Inject constructor() : EmptyStateRepository
 
     private fun handleEmptyState(component: ComponentsItem): EmptyStateModel {
         getComponent(component.parentComponentId, component.pageEndPoint)?.let {
+            val redirection = it.compAdditionalInfo?.redirection
             if (it.areFiltersApplied()) {
                 return EmptyStateModel(
-                    isHorizontal = (it.name == ComponentsList.ProductCardCarousel.componentName ||
-                        it.name == ComponentsList.ProductCardSprintSaleCarousel.componentName ||
-                        it.name == ComponentsList.MerchantVoucherCarousel.componentName),
+                    isHorizontal = (
+                        it.name == ComponentsList.ProductCardCarousel.componentName ||
+                            it.name == ComponentsList.ProductCardSprintSaleCarousel.componentName ||
+                            it.name == ComponentsList.MerchantVoucherCarousel.componentName ||
+                            it.name == ComponentsList.ShopCardView.componentName
+                        ),
                     title = FILTER_TITLE,
                     description = FILTER_DESCRIPTION,
                     buttonText = FILTER_BUTTON_TEXT,
                     isFilterState = true
                 )
-
+            } else if (redirection != null && !redirection.bodyText.isNullOrEmpty()) {
+                return EmptyStateModel(
+                    isHorizontal = (
+                        it.name == ComponentsList.ProductCardCarousel.componentName ||
+                            it.name == ComponentsList.ProductCardSprintSaleCarousel.componentName ||
+                            it.name == ComponentsList.MerchantVoucherCarousel.componentName ||
+                            it.name == ComponentsList.ShopCardView.componentName
+                        ),
+                    title = redirection.title ?: TITLE,
+                    description = redirection.bodyText,
+                    buttonText = redirection.ctaText ?: "Cek Promo Lainnya",
+                    imageURL = redirection.image,
+                    buttonApplink = redirection.applink ,
+                    isRedirectionState = true
+                )
             }
         }
-        return EmptyStateModel(isHorizontal = false,
-                title = TITLE,
-                description = DESCRIPTION)
+        return EmptyStateModel(
+            isHorizontal = false,
+            title = TITLE,
+            description = DESCRIPTION
+        )
     }
 }

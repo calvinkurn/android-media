@@ -25,6 +25,7 @@ fun accountListResponse(
                 badge = "icon.badge",
                 hasUsername = false,
                 hasAcceptTnc = false,
+                enable = false,
             ),
             ContentAccountUiModel(
                 id = "67890",
@@ -34,6 +35,7 @@ fun accountListResponse(
                 badge = "icon.badge",
                 hasUsername = buyerHasUsername,
                 hasAcceptTnc = buyerHasAcceptTnc,
+                enable = buyerHasAcceptTnc,
             ),
         )
     } else {
@@ -46,6 +48,7 @@ fun accountListResponse(
                 badge = "icon.badge",
                 hasUsername = true,
                 hasAcceptTnc = true,
+                enable = true,
             ),
             ContentAccountUiModel(
                 id = "67890",
@@ -54,7 +57,8 @@ fun accountListResponse(
                 iconUrl = "icon.url.buyer",
                 badge = "icon.badge",
                 hasUsername = buyerHasUsername,
-                hasAcceptTnc = buyerHasAcceptTnc,
+                hasAcceptTnc=  buyerHasAcceptTnc,
+                enable = buyerHasAcceptTnc,
             ),
         )
     }
@@ -69,6 +73,7 @@ val channelResponse = GetChannelResponse.Channel(
 
 fun buildConfigurationUiModel(
     streamAllowed: Boolean = true,
+    shortVideoAllowed: Boolean = false,
     channelId: String = "12345",
     channelStatus: ChannelStatus = ChannelStatus.Draft,
     durationConfig: DurationConfigUiModel = buildDurationConfigUiModel(),
@@ -79,6 +84,7 @@ fun buildConfigurationUiModel(
     tnc: List<TermsAndConditionUiModel> = emptyList(),
 ) = ConfigurationUiModel(
     streamAllowed = streamAllowed,
+    shortVideoAllowed = shortVideoAllowed,
     channelId = channelId,
     channelStatus = channelStatus,
     durationConfig = durationConfig,

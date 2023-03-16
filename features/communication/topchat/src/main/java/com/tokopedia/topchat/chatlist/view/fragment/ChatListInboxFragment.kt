@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatlist.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -81,6 +83,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -500,7 +503,7 @@ open class ChatListInboxFragment :
         viewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
             if (it is Success && it.data.showTicker == true) {
                 adapter?.addElement(0, it.data)
-            } else if (viewModel.shouldShowBubbleTicker()) {
+            } else if (viewModel.shouldShowBubbleTicker() && Utils.getShouldBubbleChatEnabled()) {
                 addBubbleChatTicker()
             }
         }
@@ -764,16 +767,30 @@ open class ChatListInboxFragment :
     override fun onChatListTickerClicked(appLink: String) {
         if (appLink.isNotBlank()) {
             context?.let {
-                if (appLink == ApplinkConst.TokoFood.TOKOFOOD_ORDER) {
-                    chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                when (appLink) {
+                    ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
+                        TopChatAnalyticsKt.eventClickBubbleChatRecommendationTicker(userSession.shopId)
+                    }
+                    ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                        chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                    }
                 }
                 RouteManager.route(it, appLink)
             }
         }
     }
 
-    override fun onChatListTickerImpressed() {
-        chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+    override fun onChatListTickerImpressed(appLink: String) {
+        if (appLink.isNotBlank()) {
+            when (appLink) {
+                ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION -> {
+                    TopChatAnalyticsKt.eventImpressionBubbleChatRecommendationTicker(userSession.shopId)
+                }
+                ApplinkConst.TokoFood.TOKOFOOD_ORDER -> {
+                    chatListAnalytics.impressOnChatDriverTicker(getRoleStr())
+                }
+            }
+        }
     }
 
     protected open fun generateChatListComponent() = DaggerChatListComponent.builder()
@@ -1079,8 +1096,8 @@ open class ChatListInboxFragment :
 
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
-        const val CHAT_SELLER_EMPTY = "https://images.tokopedia.net/img/android/others/chat-seller-empty.png"
-        const val CHAT_BUYER_EMPTY = "https://images.tokopedia.net/img/android/others/chat-buyer-empty.png"
+        const val CHAT_SELLER_EMPTY = TokopediaImageUrl.CHAT_SELLER_EMPTY
+        const val CHAT_BUYER_EMPTY = TokopediaImageUrl.CHAT_BUYER_EMPTY
         const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://images.tokopedia.net/android/others/toped_confused.webp"
         const val TAG = "ChatListFragment"
         private const val NO_INT_ARGUMENT = 0

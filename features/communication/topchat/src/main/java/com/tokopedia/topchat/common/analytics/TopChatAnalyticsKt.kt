@@ -1047,6 +1047,58 @@ object TopChatAnalyticsKt {
         TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
     }
 
+    fun eventImpressionBubbleChatRecommendationTicker(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.VIEW_COMMUNICATION_IRIS,
+            Category.INBOX_CHAT,
+            Bubbles.IMPRESSION_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40953
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickBubbleChatRecommendationTicker(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Category.INBOX_CHAT,
+            Bubbles.CLICK_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40954
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventImpressionBubbleChatIntroduction(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.VIEW_COMMUNICATION_IRIS,
+            Category.CHAT_SETTINGS,
+            Bubbles.IMPRESSION_OF_SELLER_BUBBLE_INTRODUCTION_PAGE,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40956
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickBubbleHelpPage(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Category.CHAT_SETTINGS,
+            Bubbles.CLICK_ON_DIRECTION_TO_HELP_PAGE,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40957
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -1118,6 +1170,7 @@ object TopChatAnalyticsKt {
         const val CHAT_DETAIL = "chat detail"
         const val INBOX_CHAT = "inbox-chat"
         const val PUSH_NOTIF_CHAT = "push notification chat"
+        const val CHAT_SETTINGS = "chat settings"
     }
 
     object Bubbles {
@@ -1142,6 +1195,10 @@ object TopChatAnalyticsKt {
         const val CLICK_NEW_NOTIFICATION_BUBBLE_CHAT = "click on new notification bubble chat"
         const val CLICK_DISMISS_NEW_NOTIFICATION_BUBBLE_CHAT = "click dismiss new notification bubble chat"
         const val CLICK_ADD_STICKER = "click add sticker"
+        const val IMPRESSION_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER = "impression on bubble chat recommendation ticker"
+        const val CLICK_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER = "click on bubble chat recommendation ticker"
+        const val IMPRESSION_OF_SELLER_BUBBLE_INTRODUCTION_PAGE = "impression of seller bubble introduction page"
+        const val CLICK_ON_DIRECTION_TO_HELP_PAGE = "click on direction to help page"
 
         // tracker ID
         const val TRACKER_ID_37516 = "37516"
@@ -1163,6 +1220,10 @@ object TopChatAnalyticsKt {
         const val TRACKER_ID_37707 = "37707"
         const val TRACKER_ID_37708 = "37708"
         const val TRACKER_ID_38044 = "38044"
+        const val TRACKER_ID_40953 = "40953"
+        const val TRACKER_ID_40954 = "40954"
+        const val TRACKER_ID_40956 = "40956"
+        const val TRACKER_ID_40957 = "40957"
     }
 
     object Action {

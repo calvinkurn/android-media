@@ -17,7 +17,9 @@ import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment.ContactUsFaqListener;
 import com.tokopedia.contactus.createticket.fragment.CreateTicketFormFragment;
+import com.tokopedia.contactus.createticket.utilities.LoggingOnNewRelic;
 import com.tokopedia.core.analytics.AppScreen;
+
 
 /**
  * Created by nisie on 8/12/16.
@@ -38,11 +40,15 @@ public class ContactUsActivity extends BaseSimpleActivity implements
     String url;
     Bundle bundleCreateTicket;
     private BackButtonListener listener;
+    private final LoggingOnNewRelic newRelicLogging= new LoggingOnNewRelic();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        String dataAppLink = getIntent().getData().toString();
+        newRelicLogging.sendToNewRelicLog(dataAppLink);
     }
 
     @Override

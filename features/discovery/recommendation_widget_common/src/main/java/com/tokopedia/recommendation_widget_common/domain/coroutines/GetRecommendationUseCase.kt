@@ -24,8 +24,9 @@ import javax.inject.Inject
 
 // [GetRecommendationUseCase] already sent choose address location params
 open class GetRecommendationUseCase @Inject
-constructor(private val context: Context, private val graphqlRepository: GraphqlRepository) :
-    UseCase<GetRecommendationRequestParam, List<RecommendationWidget>>() {
+constructor(private val context: Context, private val graphqlRepository: GraphqlRepository)
+    : UseCase<GetRecommendationRequestParam, List<RecommendationWidget>>() {
+
     private val graphqlUseCase = GraphqlUseCase<RecommendationEntity>(graphqlRepository)
     init {
         graphqlUseCase.setTypeClass(RecommendationEntity::class.java)

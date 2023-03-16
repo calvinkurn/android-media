@@ -1,18 +1,15 @@
 package com.tokopedia.usercomponents.userconsent
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.usercomponents.databinding.FragmentDebugUserConsentBinding
-import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentActionListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 open class UserConsentDebugFragment: BaseDaggerFragment() {
@@ -41,29 +38,20 @@ open class UserConsentDebugFragment: BaseDaggerFragment() {
             viewBinding?.sampleUserConsent?.show()
             viewBinding?.textPayloadData?.hide()
         }
+        viewBinding?.buttonAction?.setOnClickListener {
+            viewBinding?.sampleUserConsent?.submitConsent()
+        }
+        viewBinding?.sampleUserConsent?.setOnNeedConsentListener { needConsent ->
+            viewBinding?.buttonAction?.showWithCondition(needConsent)
+        }
     }
 
     private fun loadConsentComponent(collectionId: String, version: String) {
-        val consentParam = ConsentCollectionParam(collectionId,version)
-        viewBinding?.sampleUserConsent?.apply {
-            actionText = viewBinding?.textActionButton?.editText?.text.toString()
-        }?.load(viewLifecycleOwner, this, consentParam, object : UserConsentActionListener {
-            override fun onCheckedChange(isChecked: Boolean) {
-
-            }
-
-            @SuppressLint("SetTextI18n")
-            override fun onActionClicked(payload: UserConsentPayload, isDefaultTemplate: Boolean) {
-                viewBinding?.textPayloadData?.apply {
-                    text = if (isDefaultTemplate) "this widget use default template"
-                    else "PAYLOAD: \n\n$payload"
-                }?.show()
-            }
-
-            override fun onFailed(throwable: Throwable) {
-                Toast.makeText(context, throwable.message.orEmpty(), Toast.LENGTH_LONG).show()
-            }
-        })
+        val consentParam = ConsentCollectionParam(
+            collectionId = collectionId,
+            version = version
+        )
+        viewBinding?.sampleUserConsent?.load(viewLifecycleOwner, this, consentParam)
     }
 
     override fun onDestroy() {

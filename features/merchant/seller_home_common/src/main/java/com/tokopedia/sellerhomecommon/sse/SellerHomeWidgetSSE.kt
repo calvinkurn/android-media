@@ -14,4 +14,6 @@ interface SellerHomeWidgetSSE {
     fun closeSse()
 
     fun listen(): Flow<BaseDataUiModel?>
+
+    fun isConnected(): Boolean
 }

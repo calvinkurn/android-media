@@ -1693,12 +1693,7 @@
           "destination_activity": "com.tokopedia.homenav.view.activity.HomeNavActivity", 
           "deeplink": "tokopedia-android-internal://navigation/main", 
           "deeplink_variable": "ApplinkConsInternalNavigation.MAIN_NAVIGATION"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.recentview.view.activity.RecentViewActivity", 
-          "deeplink": "tokopedia-android-internal://home/recentlyviewed", 
-          "deeplink_variable": "ApplinkConsInternalHome.HOME_RECENT_VIEW"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.home_recom.HomeRecommendationActivity", 
           "deeplink": "tokopedia-android-internal://home/rekomendasi", 
@@ -2005,15 +2000,10 @@
           "deeplink_variable": "ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2"
      }, 
      {
-          "destination_activity": "com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity", 
+          "destination_activity": "com.tokopedia.kol.feature.comment.view.activity.ContentCommentActivity",
           "deeplink": "tokopedia-android-internal://content/comment/.*\\", 
           "deeplink_variable": "ApplinkConstInternalContent.COMMENT"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity", 
-          "deeplink": "tokopedia-android-internal://content/comment-new/.*\\", 
-          "deeplink_variable": "ApplinkConstInternalContent.COMMENT_NEW"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.kol.feature.postdetail.view.activity.ContentDetailActivity", 
           "deeplink": "tokopedia-android-internal://content/post-detail/.*\\", 
