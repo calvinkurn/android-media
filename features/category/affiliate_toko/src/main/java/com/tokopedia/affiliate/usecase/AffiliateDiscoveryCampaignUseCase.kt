@@ -20,6 +20,11 @@ class AffiliateDiscoveryCampaignUseCase @Inject constructor(
         commission {
           percentage
         }
+        additionalInformation {
+          htmlText
+          type
+          color
+        }
         title
         pageId
         url

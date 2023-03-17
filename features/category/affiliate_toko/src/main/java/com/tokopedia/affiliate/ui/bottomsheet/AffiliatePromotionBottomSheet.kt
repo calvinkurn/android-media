@@ -114,6 +114,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         const val ORIGIN_PERNAH_DIBELI_PROMOSIKA = 4
         const val ORIGIN_TERAKHIR_DILIHAT = 5
         const val ORIGIN_HOME_GENERATED = 6
+        const val ORIGIN_PROMO_DISCO_BANNER = 7
 
         const val OTHERS_ID = 0
         const val FACEBOOK_ID = 1
@@ -236,8 +237,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                         } else {
                             Html.fromHtml(params.ssaInfo.message)
                         }
-                    findViewById<Label>(R.id.ssa_label).text =
-                        params.ssaInfo.label.labelText
+                    findViewById<Label>(R.id.ssa_label).isVisible =
+                        params.ssaInfo.label.labelText.isNotBlank()
+                    findViewById<Label>(R.id.ssa_label).text = params.ssaInfo.label.labelText
                     findViewById<Typography>(R.id.ssa_expiry_date).text = params.ssaInfo.ssaMessage
                 }
                 productId =
