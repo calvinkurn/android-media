@@ -15,10 +15,10 @@ import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeRecommendat
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
 
-class DtHomeRecommendationForYouViewModel @Inject constructor(
+class DtHomeRecommendationViewModel @Inject constructor(
     private val getRecommendationForYouUseCase: GetRecommendationForYouUseCase,
-    homeDispatcher: CoroutineDispatchers
-) : BaseViewModel(homeDispatcher.io) {
+    dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     companion object {
         const val TAB_DILAYANI_TOKOPEDIA = "dt"

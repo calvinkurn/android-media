@@ -27,7 +27,7 @@ class DtHomeViewModel @Inject constructor(
     private val getLayoutDataUseCase: GetLayoutDataUseCase,
     private val getHomeAnchorTabUseCase: GetAnchorTabUseCase,
     dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.io) {
+) : BaseViewModel(dispatchers.main) {
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
 

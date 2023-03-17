@@ -26,7 +26,7 @@ import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendatio
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationItemDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.factory.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.recomendation.HomeRecommendationFeedViewHolder
-import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeRecommendationForYouViewModel
+import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeRecommendationViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -64,7 +64,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
     var appExecutors: SmartExecutors
 
     @Inject
-    lateinit var viewModel: DtHomeRecommendationForYouViewModel
+    lateinit var viewModel: DtHomeRecommendationViewModel
 
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
 

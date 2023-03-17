@@ -15,8 +15,8 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -32,13 +32,13 @@ class DtHomeRecommendationForYouViewModelTest {
     private val homeRecommendationDataModelObserver =
         mockk<Observer<HomeRecommendationDataModel>>(relaxed = true)
 
-    lateinit var viewModel: DtHomeRecommendationForYouViewModel
+    lateinit var viewModel: DtHomeRecommendationViewModel
 
     private val mockThrowable = mockk<Throwable>(relaxed = true)
 
     @Before
     fun setup() {
-        viewModel = DtHomeRecommendationForYouViewModel(
+        viewModel = DtHomeRecommendationViewModel(
             dtGetRecommendationForYouUseCase,
             CoroutineTestDispatchersProvider
         )
