@@ -14,7 +14,7 @@ interface PlayBroadcastBeautificationAnalytic {
      */
 
     /** Row 1 */
-    fun clickEntryPointOnPreparationPage(account: ContentAccountUiModel)
+    fun clickBeautificationEntryPointOnPreparationPage(account: ContentAccountUiModel)
 
     /** Row 2 */
     fun viewBeautificationCoachmark(account: ContentAccountUiModel)
@@ -23,7 +23,7 @@ interface PlayBroadcastBeautificationAnalytic {
     fun clickCloseBeautificationCoachmark(account: ContentAccountUiModel)
 
     /** Row 4 */
-    fun openScreenEntryPointOnPreparationPage()
+    fun openScreenBeautificationEntryPointOnPreparationPage()
 
     /** Row 5 */
     fun openScreenBeautificationBottomSheet()
@@ -71,10 +71,10 @@ interface PlayBroadcastBeautificationAnalytic {
     fun clickRetryApplyBeautyFilter(account: ContentAccountUiModel, page: Page, customFace: String)
 
     /** Row 20 */
-    fun clickEntryPointOnLivePage(account: ContentAccountUiModel)
+    fun clickBeautificationEntryPointOnLivePage(account: ContentAccountUiModel)
 
     /** Row 21 */
-    fun viewEntryPointOnLivePage(account: ContentAccountUiModel)
+    fun viewBeautificationEntryPointOnLivePage(account: ContentAccountUiModel)
 
     /** Row 22 */
     fun clickRetryReapplyBeautyFilter(account: ContentAccountUiModel) /** TOOD: ini apa ya? */

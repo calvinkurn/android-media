@@ -72,7 +72,8 @@ class DynamicPreparationMenuView : FrameLayout {
     fun showCoachMark(
         menu: DynamicPreparationMenu.Menu,
         title: String,
-        subtitle: String
+        subtitle: String,
+        onClickClose: () -> Unit,
     ) {
         binding.rvMenu.addOneTimeGlobalLayoutListener {
             val menuIdx = adapter.getItems().indexOfFirst {
@@ -90,7 +91,10 @@ class DynamicPreparationMenuView : FrameLayout {
                         CoachMark2.POSITION_TOP,
                     )
                 )
-
+                coachMark.simpleCloseIcon?.setOnClickListener {
+                    onClickClose()
+                    dismissCoachMark()
+                }
                 coachMark.showCoachMark(coachMarkItem)
             }
         }

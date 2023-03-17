@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentBeautificationSetupBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
@@ -40,6 +42,7 @@ import javax.inject.Inject
 class BeautificationSetupFragment @Inject constructor(
     private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val beautificationUiBridge: BeautificationUiBridge,
+    private val beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = TAG
@@ -55,6 +58,9 @@ class BeautificationSetupFragment @Inject constructor(
     private val bottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(bottomSheet: View, newState: Int) {
             when(newState) {
+                BottomSheetBehavior.STATE_EXPANDED -> {
+                    beautificationAnalytic.openScreenBeautificationBottomSheet()
+                }
                 BottomSheetBehavior.STATE_HIDDEN -> {
                     beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
                 }

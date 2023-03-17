@@ -12,7 +12,7 @@ class PlayBroadcastBeautificationAnalyticImpl @Inject constructor(
     private val analyticSender: PlayBroadcasterAnalyticSender
 ) : PlayBroadcastBeautificationAnalytic {
 
-    override fun clickEntryPointOnPreparationPage(account: ContentAccountUiModel) {
+    override fun clickBeautificationEntryPointOnPreparationPage(account: ContentAccountUiModel) {
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - beautification entry point",
             account = account,
@@ -45,7 +45,7 @@ class PlayBroadcastBeautificationAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun openScreenEntryPointOnPreparationPage() {
+    override fun openScreenBeautificationEntryPointOnPreparationPage() {
         analyticSender.sendGeneralOpenScreen(
             screenName = "/play broadcast - beautification filter entry point",
             trackerId = PlayBroadcasterAnalyticHelper.getTrackerIdBySite(
@@ -325,7 +325,7 @@ class PlayBroadcastBeautificationAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickEntryPointOnLivePage(account: ContentAccountUiModel) {
+    override fun clickBeautificationEntryPointOnLivePage(account: ContentAccountUiModel) {
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - beauty filter ongoing livestream",
             account = account,
@@ -336,7 +336,7 @@ class PlayBroadcastBeautificationAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun viewEntryPointOnLivePage(account: ContentAccountUiModel) {
+    override fun viewBeautificationEntryPointOnLivePage(account: ContentAccountUiModel) {
         analyticSender.sendGeneralViewEvent(
             eventAction = "view - beauty filter ongoing livestream",
             account = account,
