@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.MimeTypeMap
 import androidx.fragment.app.Fragment
@@ -310,11 +311,13 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     private fun goToFeed(createPostViewModel: CreatePostViewModel) {
         this.let {
-            val applink = ApplinkConst.HOME_FEED
+//            val applink = ApplinkConst.HOME_FEED
+            val applink = ApplinkConst.FEED_FOLLOWING
             val intent = RouteManager.getIntent(it, applink)
             intent.putExtra(PARAM_SHOW_PROGRESS_BAR, true)
             val isEditState = createPostViewModel.isEditState
             intent.putExtra(PARAM_IS_EDIT_STATE, isEditState)
+            Log.d("Go to Feed", createPostViewModel.toString())
             intent.putExtra(PARAM_MEDIA_PREVIEW,
                 if (!isEditState) createPostViewModel.completeImageList.first().path else "")
             startActivity(intent)

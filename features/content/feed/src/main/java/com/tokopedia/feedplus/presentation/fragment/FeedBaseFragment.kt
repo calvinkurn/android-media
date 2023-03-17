@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.launch
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -21,6 +22,7 @@ import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
+import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
 import com.tokopedia.feedplus.presentation.customview.UploadInfoView
@@ -72,6 +74,13 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
             TAB_FIRST_INDEX
         ) ?: TAB_FIRST_INDEX
+
+    private val openCreateShorts = registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
+        if (isCreatingNewShorts) binding.vpFeedTabItemsContainer.setCurrentItem(
+            TAB_SECOND_INDEX,
+            true,
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -145,7 +154,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
 
             CreateContentType.CREATE_SHORT_VIDEO -> {
-                RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
+                openCreateShorts.launch()
             }
             else -> {}
         }
