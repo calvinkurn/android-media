@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.analytic.beautification
 
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
+import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
 import javax.inject.Inject
 
 /**
@@ -8,5 +9,7 @@ import javax.inject.Inject
  */
 @ActivityRetainedScope
 class PlayBroadcastBeautificationAnalyticStateHolder @Inject constructor() {
+
     var isBeautificationMenuShown = false
+    var pageSource = BeautificationSetupFragment.PageSource.Unknown
 }

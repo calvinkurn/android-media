@@ -481,7 +481,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         BeautificationSetupFragment.getFragment(
                             childFragmentManager,
                             requireActivity().classLoader
-                        ).showFaceSetupBottomSheet()
+                        ).showFaceSetupBottomSheet(BeautificationSetupFragment.PageSource.Preparation)
                     }
                 }
             }

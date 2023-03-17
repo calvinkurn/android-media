@@ -29,7 +29,7 @@ interface PlayBroadcastBeautificationAnalytic {
     fun openScreenBeautificationBottomSheet()
 
     /** Row 6 */
-    fun clickCustomFace(account: ContentAccountUiModel, page: Page, customFace: String)
+    fun clickCustomFace(account: ContentAccountUiModel, page: Page, customFace: String) /** TODO: how to determine shaping/buffing/toning? */
 
     /** Row 7 */
     fun clickNoneCustomFace(account: ContentAccountUiModel, page: Page)
@@ -83,11 +83,13 @@ interface PlayBroadcastBeautificationAnalytic {
     fun viewFailReapplyBeautyFilter(account: ContentAccountUiModel) /** TOOD: ini apa ya? */
 
     enum class Page(val value: String) {
+        Unknown(""),
         Preparation("prep page"),
         Live("ongoing livestream")
     }
 
     enum class Tab(val value: String) {
+        Unknown(""),
         FaceShaping("face shaping"),
         Makeup("makeup")
     }

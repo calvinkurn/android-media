@@ -343,7 +343,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             BeautificationSetupFragment.getFragment(
                 childFragmentManager,
                 requireActivity().classLoader
-            ).showFaceSetupBottomSheet()
+            ).showFaceSetupBottomSheet(BeautificationSetupFragment.PageSource.Live)
         }
 
         childFragmentManager.commit {
