@@ -334,6 +334,8 @@ object ShopPageTrackingConstant {
     const val SHOP_NOT_AFFILIATE = "not affiliate"
     const val FESTIVITY = "festivity"
     const val NULL_VALUE = "null"
+    const val CLICK_SHOP_HEADER = "click shop header"
+    const val CLICK_SELLER = "click - seller"
 
     // trackerId
     const val TRACKER_ID_CLICK_SHARE_BUTTON = "10544"
