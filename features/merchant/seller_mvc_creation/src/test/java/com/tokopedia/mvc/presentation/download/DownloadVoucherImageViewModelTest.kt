@@ -1,13 +1,10 @@
 package com.tokopedia.mvc.presentation.download
 
-
-import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.presentation.download.uimodel.VoucherImageEffect
 import com.tokopedia.mvc.presentation.download.uimodel.VoucherImageEvent
 import com.tokopedia.mvc.presentation.download.uimodel.VoucherImageUiModel
 import com.tokopedia.mvc.presentation.download.uimodel.VoucherImageUiState
-import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.mockk
