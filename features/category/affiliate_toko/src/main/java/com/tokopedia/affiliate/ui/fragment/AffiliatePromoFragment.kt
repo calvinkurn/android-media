@@ -295,6 +295,7 @@ class AffiliatePromoFragment :
                 view?.findViewById<Group>(R.id.disco_promotion_group)?.show()
                 view?.findViewById<Typography>(R.id.disco_inspiration_lihat_semua)
                     ?.setOnClickListener {
+                        sendDiscoLihatEvent()
                     }
                 view?.findViewById<RecyclerView>(R.id.rv_disco_promotion)?.apply {
                     val discoBannerAdapter =
@@ -308,6 +309,16 @@ class AffiliatePromoFragment :
                 }
             }
         }
+    }
+
+    private fun sendDiscoLihatEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_LIHAT_DISCO_BANNER,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            "",
+            userSessionInterface.userId
+        )
     }
 
     private fun sendTickerImpression(tickerType: String?, tickerId: Long?) {

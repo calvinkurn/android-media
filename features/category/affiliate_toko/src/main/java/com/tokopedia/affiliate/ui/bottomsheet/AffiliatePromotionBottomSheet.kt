@@ -568,6 +568,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
                 eventLabel = "$linkID - active - $status - komisi extra"
             }
+            ORIGIN_PROMO_DISCO_BANNER -> {
+                event = AffiliateAnalytics.EventKeys.CLICK_CONTENT
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_DISCO_BANNER
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+                eventLabel = "$linkID - $status"
+            }
         }
         AffiliateAnalytics.sendEvent(
             event,

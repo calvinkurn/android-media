@@ -3,12 +3,15 @@ package com.tokopedia.affiliate.ui.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_TYPE_CAMPAIGN
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
+import com.tokopedia.affiliate.model.response.AffiliateDiscoveryCampaignResponse
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.user.session.UserSession
 
 class AffiliateDiscoBannerVH(
     itemView: View,
@@ -27,6 +30,7 @@ class AffiliateDiscoBannerVH(
     override fun bind(element: AffiliateDiscoBannerUiModel?) {
         discoBannerImage.setImageUrl(element?.article?.imageBanner.toString())
         discoBannerImage.setOnClickListener {
+            sendBannerClickEvent(element?.article)
             promotionClickInterface?.onPromotionClick(
                 itemID = element?.article?.pageId.toString(),
                 itemName = element?.article?.title.orEmpty(),
@@ -43,5 +47,17 @@ class AffiliateDiscoBannerVH(
                 )
             )
         }
+    }
+
+    private fun sendBannerClickEvent(
+        item: AffiliateDiscoveryCampaignResponse.RecommendedAffiliateDiscoveryCampaign.Data.Campaign?
+    ) {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_EVENT_DISCO_BANNER,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            item?.pageId.toString(),
+            UserSession(itemView.context).userId
+        )
     }
 }
