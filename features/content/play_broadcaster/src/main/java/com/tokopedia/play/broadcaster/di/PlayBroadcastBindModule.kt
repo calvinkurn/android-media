@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.di
 
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
@@ -113,6 +115,10 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @ActivityRetainedScope
     abstract fun bindPlayBroCoverPickerAnalytic(analytic: PlayBroCoverPickerAnalyticImpl): PlayBroCoverPickerAnalytic
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindPlayBroadcastBeautificationAnalytic(analytic: PlayBroadcastBeautificationAnalyticImpl): PlayBroadcastBeautificationAnalytic
 
     @ActivityRetainedScope
     @Binds
