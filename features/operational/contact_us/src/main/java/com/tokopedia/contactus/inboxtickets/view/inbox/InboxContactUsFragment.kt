@@ -210,7 +210,7 @@ class InboxContactUsFragment :
         }
     }
 
-    private fun showToastWhenNeeded(throwable: Throwable){
+    private fun showToastWhenNeeded(throwable: Throwable) {
         if(!throwable.isInternetException() || !mAdapter.isEmpty) {
             val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
             binding?.rvEmailList.showToasterErrorWithCta(
@@ -220,7 +220,7 @@ class InboxContactUsFragment :
         }
     }
 
-    private fun showErrorPage(throwable: Throwable){
+    private fun showErrorPage(throwable: Throwable) {
         if(mAdapter.isEmpty) {
             binding?.viewOfContent?.hide()
             binding?.layoutErrorGlobal?.show()
@@ -238,7 +238,7 @@ class InboxContactUsFragment :
         }
     }
 
-    private fun Throwable.isInternetException() : Boolean{
+    private fun Throwable.isInternetException() : Boolean {
         return  this is SocketException || this is SocketTimeoutException || this is UnknownHostException
     }
 

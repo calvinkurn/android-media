@@ -1,13 +1,9 @@
 package com.tokopedia.contactus.inboxdetail.di
 
 import android.content.Context
-import com.google.gson.Gson
-import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
-import com.tokopedia.contactus.test.R
-import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import timber.log.Timber
