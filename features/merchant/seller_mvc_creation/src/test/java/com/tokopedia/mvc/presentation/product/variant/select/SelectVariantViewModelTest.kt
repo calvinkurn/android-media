@@ -169,6 +169,211 @@ class SelectVariantViewModelTest {
 
 
     //region isVariantEligible
+    @Test
+    fun `when variant is previously selected and also eligible, it should be selected`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                ),
+                selectedVariantsIds = setOf(111)
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0))
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0))
+            val thirdVariant = populateVariant().copy(variantId = 113, combinations = listOf(0))
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant, thirdVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Ungu"))
+                    )
+                )
+            )
+
+            val emittedValues = arrayListOf<SelectVariantUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                SelectVariantEvent.FetchProductVariants(product)
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstVariant.copy(variantName = "Biru", isSelected = true),
+                    secondVariant.copy(variantName = "Biru")
+                ),
+                actual.variants
+            )
+
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when variant is previously selected but not eligible, isSelected should be false`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = false,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                ),
+                selectedVariantsIds = setOf(111)
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0))
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0))
+            val thirdVariant = populateVariant().copy(variantId = 113, combinations = listOf(0))
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant, thirdVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Ungu"))
+                    )
+                )
+            )
+
+            val emittedValues = arrayListOf<SelectVariantUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                SelectVariantEvent.FetchProductVariants(product)
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstVariant.copy(variantName = "Biru", isSelected = false, isEligible = false),
+                    secondVariant.copy(variantName = "Biru")
+                ),
+                actual.variants
+            )
+
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when get variant from remote not found, isEligible should be false`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                )
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0))
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0))
+            val thirdVariant = populateVariant().copy(variantId = 113, combinations = listOf(0))
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant, thirdVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Ungu"))
+                    )
+                )
+            )
+
+            val emittedValues = arrayListOf<SelectVariantUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                SelectVariantEvent.FetchProductVariants(product)
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstVariant.copy(variantName = "Biru"),
+                    secondVariant.copy(variantName = "Biru")
+                ),
+                actual.variants
+            )
+
+
+            job.cancel()
+        }
+    }
     //endregion
 
 
