@@ -89,4 +89,8 @@
     <string name="discovery_this_section_is_still_empty">Oops, bagian ini masih kosong.</string>
     <string name="product_bundling_atc_applink">tokopedia://product-bundle/%s?source=discovery&amp;bundleId=%s</string>
     <string name="content_card_image">Content Card Image</string>
+    <string name="content_card_empty_text_last_component">Saatnya berburu promo paling oke!</string>
+    <string name="content_card_empty_toast_last_component">Promonya bisa dicek lewat halaman ini, yaa</string>
+    <string name="content_card_empty_text_not_last_component">Lanjut intip promo kece di bawah, yuk~</string>
+    <string name="content_card_empty_toast_not_last_component">Mau cek promo lainnya, ya? Geser ke bawah aja~</string>
 </resources>
