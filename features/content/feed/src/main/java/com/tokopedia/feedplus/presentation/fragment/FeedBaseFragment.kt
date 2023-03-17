@@ -492,7 +492,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             Toaster.TYPE_NORMAL,
             actionText,
             actionListener,
-        )
+        ).show()
     }
 
     companion object {
