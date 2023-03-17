@@ -8,8 +8,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.device.info.DeviceInfo
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.notifications.common.CMConstant.GtmTrackerEvents
 import com.tokopedia.notifications.settings.NotificationGeneralPromptSharedPreferences
@@ -136,10 +136,10 @@ class NotificationSettingsGtmEvents constructor(
             val dataMap = mutableMapOf<String, Any>()
             if (GlobalConfig.isSellerApp()) {
                 dataMap[GtmTrackerEvents.KEY_EVENT_NAME] =
-                    GtmTrackerEvents.KEY_SELLER_APP_PUSH_PERMISSION_STATUS;
+                    GtmTrackerEvents.KEY_SELLER_APP_PUSH_PERMISSION_STATUS
             } else {
                 dataMap[GtmTrackerEvents.KEY_EVENT_NAME] =
-                    GtmTrackerEvents.KEY_MAIN_APP_PUSH_PERMISSION_STATUS;
+                    GtmTrackerEvents.KEY_MAIN_APP_PUSH_PERMISSION_STATUS
             }
             val userId = if (userSession.userId.isEmpty() || userSession.userId.isBlank()) {
                 ZERO
@@ -166,13 +166,14 @@ class NotificationSettingsGtmEvents constructor(
             dataMap[GtmTrackerEvents.KEY_OS_NAME] = Build.VERSION.CODENAME
             dataMap[GtmTrackerEvents.KEY_APP_VERSION] = GlobalConfig.VERSION_NAME
             dataMap[GtmTrackerEvents.KEY_DEVICE_MANUFACTURER] = Build.MANUFACTURER
-            dataMap[GtmTrackerEvents.KEY_PROMO_APP_PUSHPERMISSION_LATESTSTATUS] =  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            dataMap[GtmTrackerEvents.KEY_PROMO_APP_PUSHPERMISSION_LATESTSTATUS] = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 ActivityCompat.checkSelfPermission(
                     context,
                     Manifest.permission.POST_NOTIFICATIONS
                 ) == PackageManager.PERMISSION_DENIED
-            else
+            } else {
                 false
+            }
             dataMap[GtmTrackerEvents.KEY_DEVICE_PUSHPERMISSION_LATESTSTATUS] = FALSE
             IrisAnalytics.getInstance(context).saveEvent(dataMap)
         } catch (e: Exception) {
@@ -239,7 +240,6 @@ class NotificationSettingsGtmEvents constructor(
         const val TRACKER_PREF_NAME = "NotificationSettingsTracker"
         const val FREQ_KEY_NATIVE_PROMPT = "frequencyNativePrompt"
         const val FREQ_KEY_GENERAL_PROMPT = "frequencyGeneralPrompt"
-        const val FREQ_KEY_REMINDER_PROMPT = "frequencyReminderPrompt"
         const val ZERO = "0"
         const val JOURNEY = "Journey"
         const val HOMEPAGE = "Homepage"

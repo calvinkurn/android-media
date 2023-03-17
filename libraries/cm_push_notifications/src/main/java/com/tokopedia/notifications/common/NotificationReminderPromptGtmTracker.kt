@@ -25,12 +25,12 @@ class NotificationReminderPromptGtmTracker constructor(
             Context.MODE_PRIVATE
         )
     }
-    private var frequencyReminderPrompt: Int = 0
     private var eventCategory = CMConstant.GtmTrackerEvents.VALUE_REMINDER_CATEGORY
     private var trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_REMINDER_VIEW
+    private var pageType = ""
 
     fun sendReminderPromptImpressionEvent(context: Context, pagePath: String) {
-        updateReminderPromptFrequency()
+        updateReminderPromptFrequency(useCase)
         createMapAndSendEvent(
             CMConstant.GtmTrackerEvents.VALUE_EVENT_VIEW_CONTENT,
             CMConstant.GtmTrackerEvents.VALUE_ACTION_IMPRESSION,
@@ -62,10 +62,10 @@ class NotificationReminderPromptGtmTracker constructor(
         )
     }
 
-    private fun updateReminderPromptFrequency() {
-        frequencyReminderPrompt = sharedPreference.getInt(NotificationSettingsGtmEvents.FREQ_KEY_REMINDER_PROMPT, 0)
+    private fun updateReminderPromptFrequency(frequencyKey: String) {
+        val frequency = sharedPreference.getInt(frequencyKey, 0)
         val editor = sharedPreference.edit()
-        editor.putInt(NotificationSettingsGtmEvents.FREQ_KEY_REMINDER_PROMPT, frequencyReminderPrompt + 1)
+        editor.putInt(frequencyKey, frequency + 1)
         editor.apply()
     }
 
@@ -74,15 +74,14 @@ class NotificationReminderPromptGtmTracker constructor(
         eventAction: String,
         trackerId: String,
         context: Context,
-        pagePath: String = "",
-        pageType: String = ""
+        pagePath: String = ""
     ) {
         val userId = if (userSession.userId.isEmpty() || userSession.userId.isBlank()) {
             NotificationSettingsGtmEvents.ZERO
         } else {
             userSession.userId
         }
-        val frequency = sharedPreference.getInt(NotificationSettingsGtmEvents.FREQ_KEY_REMINDER_PROMPT, 0)
+        val frequency = sharedPreference.getInt(useCase, 0)
 
         val adsId = DeviceInfo.getAdsId(context)
         val useCase = getUseCaseValue()
@@ -110,18 +109,21 @@ class NotificationReminderPromptGtmTracker constructor(
     }
 
     private fun getUseCaseValue(): String {
-        return when (useCase) {
+        when (useCase) {
             NotificationGeneralPromptBottomSheet.KEJAR_DISKON -> {
-                KEJAR_DISKON
+                pageType = "general"
+                return KEJAR_DISKON
             }
             NotificationGeneralPromptBottomSheet.TAP_TAP_KOTAK -> {
-                TAP_TAP_KOTAK
+                pageType = "view gift box page"
+                return TAP_TAP_KOTAK
             }
             NotificationGeneralPromptBottomSheet.LIVE_SHOPPING -> {
-                LIVE_SHOPPING
+                pageType = "upcoming page"
+                return LIVE_SHOPPING
             }
             else -> {
-                ""
+                return ""
             }
         }
     }
