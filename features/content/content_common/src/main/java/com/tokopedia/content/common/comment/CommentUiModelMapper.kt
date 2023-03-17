@@ -1,6 +1,5 @@
 package com.tokopedia.content.common.comment
 
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.comment.model.Comments
 import com.tokopedia.content.common.comment.model.PostComment
 import com.tokopedia.content.common.comment.uimodel.CommentType
@@ -8,6 +7,7 @@ import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.CommentWidgetUiModel
 import com.tokopedia.content.common.comment.uimodel.UserType
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import java.time.*
 import javax.inject.Inject
 
@@ -49,14 +49,14 @@ class CommentUiModelMapper @Inject constructor() {
             username = username,
             photo = comment.photo,
             appLink = comment.linkDetail.appLink,
-            content = MethodChecker.fromHtml(comment.comment).toString(), //dont escape new line
+            content = comment.comment.replace("\n", "<br />").parseAsHtml().toString(),
             createdTime = convertTime(comment.createdTime),
             commentType = parentId.convertToCommentType,
             childCount = comment.repliesCountFmt,
             isOwner = comment.isCommentOwner,
             isReportAllowed = comment.allowReport,
             userId = comment.userId,
-            userType = if (comment.isShop) UserType.Shop else UserType.People,
+            userType = if (comment.isShop) UserType.Shop else UserType.People
         )
     }
 
@@ -67,7 +67,7 @@ class CommentUiModelMapper @Inject constructor() {
             username = username,
             photo = comment.userInfo.photo,
             appLink = comment.userInfo.linkDetail.appLink,
-            content = MethodChecker.fromHtml(comment.comment).toString(), //dont escape new line
+            content = comment.comment.replace("\n", "<br />").parseAsHtml().toString(),
             createdTime = convertTime(comment.createdTime),
             commentType = comment.parentId.convertToCommentType.apply {
                 isNewlyAdded = true
@@ -76,7 +76,7 @@ class CommentUiModelMapper @Inject constructor() {
             isOwner = true,
             isReportAllowed = false,
             userId = comment.userInfo.userId,
-            userType = userType,
+            userType = userType
         )
     }
 
