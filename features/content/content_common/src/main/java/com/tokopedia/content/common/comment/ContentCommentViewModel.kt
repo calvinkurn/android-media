@@ -243,7 +243,7 @@ class ContentCommentViewModel @AssistedInject constructor(
         }) {
             undoComment()
             _event.emit(
-                CommentEvent.ShowErrorToaster(message = it) {
+                CommentEvent.ShowErrorToaster(message = MessageErrorException(CommentException.FailedDelete.message)) {
                     deleteComment(isFromToaster = false)
                 }
             )
@@ -289,7 +289,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                 _event.emit(CommentEvent.HideKeyboard)
                 if (regex.findAll(comment)
                         .count() > 0
-                ) throw MessageErrorException("Oops, kamu tidak bisa memberikan komentar dalam bentuk tautan, ya.")
+                ) throw MessageErrorException(CommentException.LinkNotAllowed.message)
                 val result =
                     repo.replyComment(source, commentType, comment, _comments.value.commenterType)
                 _comments.getAndUpdate {

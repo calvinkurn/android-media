@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.comment.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.comment.CommentException
 import com.tokopedia.content.common.comment.CommentUiModelMapper
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.uimodel.CommentType
@@ -49,7 +50,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
         comment: String,
         commenterType: UserType
     ): CommentUiModel = withContext(dispatchers.io) {
-        return@withContext if (!isCommentAllowed) throw MessageErrorException(ERROR_SPAM_MESSAGE)
+        return@withContext if (!isCommentAllowed) throw MessageErrorException(CommentException.SpammedComment.message)
         else {
             val type =
                 if (commenterType == UserType.Shop) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER
@@ -95,7 +96,5 @@ class ContentCommentRepositoryImpl @Inject constructor(
 
     companion object {
         private const val DELAY_MS = 5000L
-
-        private const val ERROR_SPAM_MESSAGE = "Oops, tidak bisa memberi komentar."
     }
 }

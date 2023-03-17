@@ -234,7 +234,7 @@ class ContentCommentBottomSheet @Inject constructor(
                             if (sheetMenu.isVisible) sheetMenu.requireView().rootView else requireView().rootView
                         Toaster.build(
                             view,
-                            text = event.message.message.orEmpty(),
+                            text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
                             actionText = getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
