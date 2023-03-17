@@ -3,7 +3,7 @@ package com.tokopedia.checkout.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.view.uimodel.ShipmentGroupProductModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 
 class ShipmentGroupProductViewHolder(
     itemView: View
@@ -18,6 +18,6 @@ class ShipmentGroupProductViewHolder(
         private const val VIEW_ALPHA_DISABLED = 0.5f
     }
 
-    fun bind(shipmentGroupProduct: ShipmentGroupProductModel) {
+    fun bind(shipmentCartItemModel: ShipmentCartItemModel) {
     }
 }

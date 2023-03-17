@@ -622,7 +622,7 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
             shipmentAdapter.addNewUpsellData(shipmentNewUpsellModel);
         }
         isPlusSelected = shipmentNewUpsellModel.isSelected();
-        shipmentAdapter.addCartItemData(shipmentCartItemModelList);
+        shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
         StringBuilder cartIdsStringBuilder = new StringBuilder();
         for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
             if (shipmentCartItemModelList.get(i).getCartItemModels() != null &&

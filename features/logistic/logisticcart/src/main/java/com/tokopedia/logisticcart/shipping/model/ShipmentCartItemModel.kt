@@ -135,7 +135,14 @@ data class ShipmentCartItemModel(
     var tokoConsultationId: String = "",
     var partnerConsultationId: String = "",
     var consultationDataString: String = "",
-    var shouldResetCourier: Boolean = false
+    var shouldResetCourier: Boolean = false,
+
+    // RecyclerView UI State
+    var isGroupHeader: Boolean = false,
+    var isGroupProduct: Boolean = false,
+    var groupProductPosition: Int = 0,
+    var isGroupProductExpand: Boolean = false,
+    var isGroupFooter: Boolean = false
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean
@@ -213,6 +220,11 @@ data class ShipmentCartItemModel(
             newShipmentCartItemModel.tokoConsultationId = shipmentCartItemModel.tokoConsultationId
             newShipmentCartItemModel.partnerConsultationId = shipmentCartItemModel.partnerConsultationId
             newShipmentCartItemModel.consultationDataString = shipmentCartItemModel.consultationDataString
+            newShipmentCartItemModel.isGroupHeader = shipmentCartItemModel.isGroupHeader
+            newShipmentCartItemModel.isGroupProduct = shipmentCartItemModel.isGroupProduct
+            newShipmentCartItemModel.groupProductPosition = shipmentCartItemModel.groupProductPosition
+            newShipmentCartItemModel.isGroupProductExpand = shipmentCartItemModel.isGroupProductExpand
+            newShipmentCartItemModel.isGroupFooter = shipmentCartItemModel.isGroupFooter
             return newShipmentCartItemModel
         }
     }

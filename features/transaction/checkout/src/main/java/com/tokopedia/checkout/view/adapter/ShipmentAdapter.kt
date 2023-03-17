@@ -17,10 +17,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
-import com.tokopedia.checkout.view.uimodel.ShipmentGroupFooterModel
-import com.tokopedia.checkout.view.uimodel.ShipmentGroupHeaderModel
-import com.tokopedia.checkout.view.uimodel.ShipmentGroupProductExpandModel
-import com.tokopedia.checkout.view.uimodel.ShipmentGroupProductModel
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
@@ -140,7 +136,7 @@ class ShipmentAdapter @Inject constructor(
     }
 
     override fun getItemViewType(position: Int): Int {
-        when (shipmentDataList[position]) {
+        when (val data = shipmentDataList[position]) {
             is RecipientAddressModel -> {
                 return ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS
             }
@@ -201,20 +197,18 @@ class ShipmentAdapter @Inject constructor(
                 return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL
             }
 
-            is ShipmentGroupHeaderModel -> {
-                return ShipmentGroupHeaderViewHolder.LAYOUT
-            }
-
-            is ShipmentGroupProductModel -> {
-                return ShipmentCartItemViewHolder.LAYOUT
-            }
-
-            is ShipmentGroupProductExpandModel -> {
-                return ShipmentGroupProductExpandViewHolder.LAYOUT
-            }
-
-            is ShipmentGroupFooterModel -> {
-                return ShipmentGroupFooterViewHolder.LAYOUT
+            is ShipmentCartItemModel -> {
+                return if (data.isGroupHeader) {
+                    ShipmentGroupHeaderViewHolder.LAYOUT
+                } else if (data.isGroupProduct) {
+                    ShipmentCartItemViewHolder.LAYOUT
+                } else if (data.isGroupProductExpand) {
+                    ShipmentGroupProductExpandViewHolder.LAYOUT
+                } else if (data.isGroupFooter) {
+                    ShipmentGroupFooterViewHolder.LAYOUT
+                } else {
+                    super.getItemViewType(position)
+                }
             }
 
             else -> return super.getItemViewType(position)
@@ -388,21 +382,20 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentGroupHeaderViewHolder.LAYOUT -> {
-                (holder as ShipmentGroupHeaderViewHolder).bind((data as ShipmentGroupHeaderModel))
+                (holder as ShipmentGroupHeaderViewHolder).bind((data as ShipmentCartItemModel))
             }
 
             ShipmentCartItemViewHolder.LAYOUT -> {
-                // TODO: Update listener after testing!!!
-                (holder as ShipmentCartItemViewHolder).bind(data as ShipmentGroupProductModel)
+                (holder as ShipmentCartItemViewHolder).bind(data as ShipmentCartItemModel)
             }
 
             ShipmentGroupProductExpandViewHolder.LAYOUT -> {
-                (holder as ShipmentGroupProductExpandViewHolder).bind(data as ShipmentGroupProductExpandModel)
+                (holder as ShipmentGroupProductExpandViewHolder).bind(data as ShipmentCartItemModel)
             }
 
             ShipmentGroupFooterViewHolder.LAYOUT -> {
                 (holder as ShipmentGroupFooterViewHolder).bind(
-                    (data as ShipmentGroupFooterModel),
+                    (data as ShipmentCartItemModel),
                     addressShipmentData
                 )
             }
@@ -472,27 +465,21 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    fun addCartItemData(shipmentCartItems: List<ShipmentCartItemModel>) {
-        // this.shipmentCartItemModelList = shipmentCartItems
-
+    fun addCartItemDataList(shipmentCartItems: List<ShipmentCartItemModel>) {
+        this.shipmentCartItemModelList = shipmentCartItems
         shipmentCartItems.forEach { shipmentCartItem ->
-            shipmentDataList.add(ShipmentGroupHeaderModel(shipmentCartItem))
+            shipmentDataList.add(shipmentCartItem.copy(isGroupHeader = true))
             if (shipmentCartItem.isStateAllItemViewExpanded) {
                 shipmentCartItem.cartItemModels.forEachIndexed { index, _ ->
-                    shipmentDataList.add(ShipmentGroupProductModel(shipmentCartItem, index))
+                    shipmentDataList.add(shipmentCartItem.copy(isGroupProduct = true, groupProductPosition = index))
                 }
             } else {
-                shipmentDataList.add(ShipmentGroupProductModel(shipmentCartItem, 0))
+                shipmentDataList.add(shipmentCartItem.copy(isGroupProduct = true))
             }
             if (shipmentCartItem.cartItemModels.size > 1) {
-                shipmentDataList.add(
-                    ShipmentGroupProductExpandModel(
-                        shipmentCartItem,
-                        shipmentCartItem.addOnWordingModel
-                    )
-                )
+                shipmentDataList.add(shipmentCartItem.copy(isGroupProductExpand = true))
             }
-            shipmentDataList.add(ShipmentGroupFooterModel(shipmentCartItem))
+            shipmentDataList.add(shipmentCartItem.copy(isGroupFooter = true))
         }
         checkDataForCheckout()
     }
@@ -1460,71 +1447,68 @@ class ShipmentAdapter @Inject constructor(
         lastApplyUiModel = LastApplyUiModel()
     }
 
-    private fun getGroupHeaderByCartString(cartString: String): Pair<Int, ShipmentGroupHeaderModel> {
+    private fun getGroupHeaderByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentGroupHeaderModel && data.shipmentCartItem.cartString == cartString
+            data is ShipmentCartItemModel && data.isGroupHeader &&
+                data.cartString == cartString
         }
-        return Pair(index, shipmentDataList[index] as ShipmentGroupHeaderModel)
+        return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
     }
 
-    private fun getFirstCartItemByCartString(cartString: String): Pair<Int, ShipmentGroupProductModel> {
+    private fun getFirstCartItemByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentGroupProductModel && data.shipmentCartItem.cartString == cartString &&
-                data.cartItemPosition == 0
+            data is ShipmentCartItemModel && data.cartString == cartString &&
+                data.isGroupProduct && data.groupProductPosition == 0
         }
-        return Pair(index, shipmentDataList[index] as ShipmentGroupProductModel)
+        return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
     }
 
-    private fun getFirstErrorCartItemByCartString(cartString: String): Pair<Int, ShipmentGroupProductModel> {
+    private fun getFirstErrorCartItemByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentGroupProductModel && data.shipmentCartItem.cartString == cartString &&
-                data.shipmentCartItem.firstProductErrorIndex == data.cartItemPosition
+            data is ShipmentCartItemModel && data.cartString == cartString &&
+                data.firstProductErrorIndex == data.groupProductPosition
         }
-        return Pair(index, shipmentDataList[index] as ShipmentGroupProductModel)
+        return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
     }
 
-    private fun getGroupCartExpandByCartString(cartString: String): Pair<Int, ShipmentGroupProductExpandModel> {
+    private fun getGroupCartExpandByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentGroupProductExpandModel && data.shipmentCartItem.cartString == cartString
+            data is ShipmentCartItemModel && data.isGroupProductExpand &&
+                data.cartString == cartString
         }
-        return Pair(index, shipmentDataList[index] as ShipmentGroupProductExpandModel)
+        return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
     }
 
-    private fun getGroupFooterByCartString(cartString: String): Pair<Int, ShipmentGroupFooterModel> {
+    private fun getGroupFooterByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentGroupFooterModel && data.shipmentCartItem.cartString == cartString
+            data is ShipmentCartItemModel && data.isGroupFooter &&
+                data.cartString == cartString
         }
-        return Pair(index, shipmentDataList[index] as ShipmentGroupFooterModel)
+        return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
     }
 
     private fun getGroupShipmentsByCartString(cartString: String): Pair<Int, List<Any>> {
         val (startIndex, _) = getGroupHeaderByCartString(cartString)
-        val data = shipmentDataList.filter {
-            it is ShipmentGroupHeaderModel || it is ShipmentGroupProductModel ||
-                it is ShipmentGroupProductExpandModel || it is ShipmentGroupFooterModel
-        }
+        val data = shipmentDataList.filterIsInstance<ShipmentCartItemModel>()
         return Pair(startIndex, data)
     }
 
     private fun updateGroupShipmentsByCartString(
         cartString: String,
-        shipmentCartItem: ShipmentCartItemModel
+        shipmentCartItemModel: ShipmentCartItemModel
     ) {
         val (startIndex, newShipmentCartItems) = getGroupShipmentsByCartString(cartString)
         val endIndex = startIndex + newShipmentCartItems.size
         for (index in startIndex..endIndex) {
             when (val data = shipmentDataList[index]) {
-                is ShipmentGroupHeaderModel -> {
-                    shipmentDataList[index] = data.copy(shipmentCartItem = shipmentCartItem)
-                }
-                is ShipmentGroupProductModel -> {
-                    shipmentDataList[index] = data.copy(shipmentCartItem = shipmentCartItem)
-                }
-                is ShipmentGroupProductExpandModel -> {
-                    shipmentDataList[index] = data.copy(shipmentCartItem = shipmentCartItem)
-                }
-                is ShipmentGroupFooterModel -> {
-                    shipmentDataList[index] = data.copy(shipmentCartItem = shipmentCartItem)
+                is ShipmentCartItemModel -> {
+                    shipmentDataList[index] = shipmentCartItemModel.copy(
+                        isGroupHeader = data.isGroupHeader,
+                        isGroupProduct = data.isGroupProduct,
+                        groupProductPosition = data.groupProductPosition,
+                        isGroupProductExpand = data.isGroupProductExpand,
+                        isGroupFooter = data.isGroupFooter
+                    )
                 }
                 else -> {
                     // no-op
@@ -1532,6 +1516,10 @@ class ShipmentAdapter @Inject constructor(
             }
             notifyItemRangeChanged(startIndex, endIndex)
         }
+
+        val (_, updatedData) = getGroupShipmentsByCartString(cartString)
+        this.shipmentCartItemModelList = updatedData.filterIsInstance<ShipmentCartItemModel>()
+            .filter { it.isGroupHeader }.map { it.copy(isGroupHeader = false) }
     }
 
     override fun onViewFreeShippingPlusBadge() {
@@ -1542,24 +1530,23 @@ class ShipmentAdapter @Inject constructor(
         actionListener.onClickLihatOnTickerOrderError(shopId, errorMessage)
     }
 
-    override fun onErrorShouldExpandProduct(shipmentGroupHeader: ShipmentGroupHeaderModel) {
-        val (position, data) = getGroupCartExpandByCartString(shipmentGroupHeader.shipmentCartItem.cartString)
+    override fun onErrorShouldExpandProduct(shipmentCartItemModel: ShipmentCartItemModel) {
+        val (position, data) = getGroupCartExpandByCartString(shipmentCartItemModel.cartString)
         onClickExpandGroupProduct(position, data)
     }
 
-    override fun onErrorShouldScrollToProduct(shipmentGroupHeader: ShipmentGroupHeaderModel) {
-        val (position, _) = getFirstErrorCartItemByCartString(shipmentGroupHeader.shipmentCartItem.cartString)
+    override fun onErrorShouldScrollToProduct(shipmentCartItemModel: ShipmentCartItemModel) {
+        val (position, _) = getFirstErrorCartItemByCartString(shipmentCartItemModel.cartString)
         actionListener.scrollToPositionWithOffset(position)
     }
 
     override fun onCheckPurchaseProtection(position: Int, isChecked: Boolean) {
-        if (shipmentDataList[position] is ShipmentGroupProductModel) {
-            val data = shipmentDataList[position] as ShipmentGroupProductModel
-            data.shipmentCartItem.cartItemModels[data.cartItemPosition].isProtectionOptIn = isChecked
-            if (isChecked && data.shipmentCartItem.selectedShipmentDetailData?.useDropshipper == true) {
-                val updatedData = data.shipmentCartItem
-                updatedData.selectedShipmentDetailData?.useDropshipper = false
-                updateGroupShipmentsByCartString(data.shipmentCartItem.cartString, updatedData)
+        val data = shipmentDataList[position]
+        if (data is ShipmentCartItemModel && data.isGroupProduct) {
+            data.cartItemModels[data.groupProductPosition].isProtectionOptIn = isChecked
+            if (isChecked && data.selectedShipmentDetailData?.useDropshipper == true) {
+                data.selectedShipmentDetailData?.useDropshipper = false
+                updateGroupShipmentsByCartString(data.cartString, data)
                 actionListener.onPurchaseProtectionLogicError()
             }
             actionListener.onNeedUpdateRequestData()
@@ -1584,15 +1571,15 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onClickCollapseGroupProduct(
         position: Int,
-        shipmentGroupProductExpand: ShipmentGroupProductExpandModel
+        shipmentCartItemModel: ShipmentCartItemModel
     ) {
-        shipmentDataList[position] = shipmentGroupProductExpand
+        shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
 
         val (firstCartItemPosition, _) =
-            getFirstCartItemByCartString(shipmentGroupProductExpand.shipmentCartItem.cartString)
+            getFirstCartItemByCartString(shipmentCartItemModel.cartString)
         val removedCartItemSize =
-            shipmentGroupProductExpand.shipmentCartItem.cartItemModels.size - 1
+            shipmentCartItemModel.cartItemModels.size - 1
         repeat(removedCartItemSize) {
             shipmentDataList.removeAt(firstCartItemPosition + 1)
         }
@@ -1601,16 +1588,19 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onClickExpandGroupProduct(
         position: Int,
-        shipmentGroupProductExpand: ShipmentGroupProductExpandModel
+        shipmentCartItemModel: ShipmentCartItemModel
     ) {
-        shipmentDataList[position] = shipmentGroupProductExpand
+        shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
 
-        val (firstCartItemPosition, _) =
-            getFirstCartItemByCartString(shipmentGroupProductExpand.shipmentCartItem.cartString)
+        val (firstCartItemPosition, firstShipmentCartItem) =
+            getFirstCartItemByCartString(shipmentCartItemModel.cartString)
         val newCartItems =
-            List(shipmentGroupProductExpand.shipmentCartItem.cartItemModels.size) { index ->
-                ShipmentGroupProductModel(shipmentGroupProductExpand.shipmentCartItem, index)
+            List(shipmentCartItemModel.cartItemModels.size) { index ->
+                firstShipmentCartItem.copy(
+                    isGroupProduct = true,
+                    groupProductPosition = index
+                )
             }.drop(1)
         shipmentDataList.addAll(firstCartItemPosition + 1, newCartItems)
         notifyItemRangeInserted(firstCartItemPosition + 1, newCartItems.size)
@@ -1618,9 +1608,9 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onClickExpandSubtotal(
         position: Int,
-        shipmentGroupFooter: ShipmentGroupFooterModel
+        shipmentCartItemModel: ShipmentCartItemModel
     ) {
-        shipmentDataList[position] = shipmentGroupFooter
+        shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
     }
 }
