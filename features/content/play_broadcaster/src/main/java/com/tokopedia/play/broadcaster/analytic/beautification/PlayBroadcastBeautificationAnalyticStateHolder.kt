@@ -12,4 +12,6 @@ class PlayBroadcastBeautificationAnalyticStateHolder @Inject constructor() {
 
     var isBeautificationMenuShown = false
     var pageSource = BeautificationSetupFragment.PageSource.Unknown
+
+    fun getPageSourceForAnalytic(): PlayBroadcastBeautificationAnalytic.Page = pageSource.mapToAnalytic()
 }

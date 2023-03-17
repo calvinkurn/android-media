@@ -152,7 +152,7 @@ class BeautificationSetupFragment @Inject constructor(
 
                     beautificationAnalytic.clickBeautificationTab(
                         account = viewModel.selectedAccount,
-                        page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                        page = beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
                         tab = when(selectedTabIdx) {
                             BeautificationTabFragment.Companion.Type.FaceFilter.value -> {
                                 PlayBroadcastBeautificationAnalytic.Tab.FaceShaping
@@ -195,7 +195,7 @@ class BeautificationSetupFragment @Inject constructor(
                     BeautificationTabFragment.Companion.Type.FaceFilter.value -> {
                         beautificationAnalytic.clickSliderBeautyFilter(
                             viewModel.selectedAccount,
-                            beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                            beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
                             PlayBroadcastBeautificationAnalytic.Tab.FaceShaping,
                             viewModel.selectedFaceFilter?.id.orEmpty(),
                         )
@@ -205,7 +205,7 @@ class BeautificationSetupFragment @Inject constructor(
                         viewModel.submitAction(PlayBroadcastAction.ChangePresetValue(p0.first))
                         beautificationAnalytic.clickSliderBeautyFilter(
                             viewModel.selectedAccount,
-                            beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                            beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
                             PlayBroadcastBeautificationAnalytic.Tab.Makeup,
                             viewModel.selectedPreset?.id.orEmpty(),
                         )
@@ -218,7 +218,12 @@ class BeautificationSetupFragment @Inject constructor(
         bottomSheetBehavior.addBottomSheetCallback(bottomSheetBehaviorCallback)
 
         binding.tvBottomSheetAction.setOnClickListener {
-            beautificationAnalytic.clickBeautyFilterReset(viewModel.selectedAccount, beautificationAnalyticStateHolder.pageSource.mapToAnalytic())
+            beautificationAnalytic.clickBeautyFilterReset(viewModel.selectedAccount, beautificationAnalyticStateHolder.getPageSourceForAnalytic())
+            beautificationAnalytic.viewResetFilterPopup(
+                viewModel.selectedAccount,
+                beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                BeautificationTabFragment.Companion.Type.getByValue(selectedTabIdx).mapToAnalytic(),
+            )
 
             requireContext().getDialog(
                 actionType = DialogUnify.HORIZONTAL_ACTION,
@@ -227,6 +232,8 @@ class BeautificationSetupFragment @Inject constructor(
                 primaryCta = getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_reset_filter_confirm),
                 primaryListener = { dialog ->
                     dialog.dismiss()
+
+                    beautificationAnalytic.clickYesResetFilter(viewModel.selectedAccount, beautificationAnalyticStateHolder.getPageSourceForAnalytic())
                     viewModel.submitAction(PlayBroadcastAction.ResetBeautification)
                 },
                 secondaryCta = getString(com.tokopedia.play.broadcaster.R.string.play_broadcaster_reset_filter_cancel),

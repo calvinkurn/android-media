@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeaut
 import com.tokopedia.play.broadcaster.databinding.FragmentBeautificationTabBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.itemdecoration.BeautificationOptionItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
@@ -52,13 +53,13 @@ class BeautificationTabFragment @Inject constructor(
                     if(item.isRemoveEffect) {
                         beautificationAnalytic.clickNoneCustomFace(
                             viewModel.selectedAccount,
-                            beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                            beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
                         )
                     }
                     else {
                         beautificationAnalytic.clickCustomFace(
                             viewModel.selectedAccount,
-                            beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                            beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
                             item.id,
                         )
                     }
@@ -68,8 +69,19 @@ class BeautificationTabFragment @Inject constructor(
             },
             presetListener = object : BeautificationFilterOptionViewHolder.Preset.Listener {
                 override fun onClick(item: PresetFilterUiModel) {
+                    if(item.isRemoveEffect) {
+                        beautificationAnalytic.clickNonePreset(viewModel.selectedAccount, beautificationAnalyticStateHolder.getPageSourceForAnalytic())
+                    } else {
+                        when(item.assetStatus) {
+                            BeautificationAssetStatus.NotDownloaded -> {
+                                beautificationAnalytic.clickDownloadPreset(viewModel.selectedAccount, beautificationAnalyticStateHolder.getPageSourceForAnalytic(), item.id)
+                            }
+                            BeautificationAssetStatus.Available -> {
+                                beautificationAnalytic.clickPresetMakeup(viewModel.selectedAccount, beautificationAnalyticStateHolder.getPageSourceForAnalytic(), item.id)
+                            }
+                        }
+                    }
 
-                    /** TODO: dont forget to hit analytic based on download status */
                     viewModel.submitAction(PlayBroadcastAction.SelectPresetOption(item))
                 }
             }
@@ -175,6 +187,14 @@ class BeautificationTabFragment @Inject constructor(
             Unknown(-1),
             FaceFilter(0),
             Preset(1);
+
+            fun mapToAnalytic(): PlayBroadcastBeautificationAnalytic.Tab {
+                return when(this) {
+                    Unknown -> PlayBroadcastBeautificationAnalytic.Tab.Unknown
+                    FaceFilter -> PlayBroadcastBeautificationAnalytic.Tab.FaceShaping
+                    Preset -> PlayBroadcastBeautificationAnalytic.Tab.Makeup
+                }
+            }
 
             companion object {
                 fun getByValue(value: Int): Type {
