@@ -2934,7 +2934,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     String keyProductLevel = cartItemModel.getCartString() + "-" + cartItemModel.getCartId();
                     if (keyProductLevel.equalsIgnoreCase(addOnResult.getAddOnKey())) {
                         AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
-                        setAddOnsData(addOnsDataModel, addOnResult, 0, cartItemModel.getCartString());
+                        setAddOnsData(addOnsDataModel, addOnResult, 0, cartItemModel.getCartString(), cartItemModel.getCartId());
                     }
                 }
             }
