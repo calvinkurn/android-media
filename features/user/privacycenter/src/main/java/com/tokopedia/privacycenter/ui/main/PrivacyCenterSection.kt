@@ -1,6 +1,7 @@
 package com.tokopedia.privacycenter.ui.main
 
 import android.widget.LinearLayout
+import com.tokopedia.privacycenter.common.PrivacyCenterConst
 import com.tokopedia.privacycenter.ui.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.ui.main.section.accountlinking.AccountLinkingSection
 import com.tokopedia.privacycenter.ui.main.section.activity.ActivitySection
@@ -10,6 +11,7 @@ import com.tokopedia.privacycenter.ui.main.section.faqPrivacySection.FaqPrivacyS
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicySection
 import com.tokopedia.privacycenter.ui.main.section.recommendation.RecommendationSection
 import com.tokopedia.privacycenter.ui.main.section.tokopediacare.TokopediaCareSection
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 /**
  * ## Centralize Privacy Center Sections Initialize
@@ -31,20 +33,31 @@ class PrivacyCenterSection constructor(
     private val delegate: PrivacyCenterSectionDelegate
 ) {
 
+    /**
+     * list position will reflect with section index
+     */
     fun privacyCenterSections(): MutableMap<String, BasePrivacyCenterSection> {
-        /**
-         * list position will reflect with section index
-         */
-        return mutableMapOf(
-            AccountLinkingSection.TAG to delegate.accountLinkingSection,
-            ActivitySection.TAG to delegate.activitySection,
-            RecommendationSection.TAG to delegate.recommendationSection,
-            ConsentWithdrawalSection.TAG to delegate.consentWithdrawalSection,
-            DSARSection.TAG to delegate.dsarSection,
-            PrivacyPolicySection.TAG to delegate.privacyPolicySection,
-            FaqPrivacySection.TAG to delegate.faqPrivacySection,
-            TokopediaCareSection.TAG to delegate.tokopediaCareSection
+        return removeSectionByConfig(
+            mutableMapOf(
+                AccountLinkingSection.TAG to delegate.accountLinkingSection,
+                ActivitySection.TAG to delegate.activitySection,
+                RecommendationSection.TAG to delegate.recommendationSection,
+                ConsentWithdrawalSection.TAG to delegate.consentWithdrawalSection,
+                DSARSection.TAG to delegate.dsarSection,
+                PrivacyPolicySection.TAG to delegate.privacyPolicySection,
+                FaqPrivacySection.TAG to delegate.faqPrivacySection,
+                TokopediaCareSection.TAG to delegate.tokopediaCareSection
+            )
         )
+    }
+
+    private fun removeSectionByConfig(sections: MutableMap<String, BasePrivacyCenterSection>): MutableMap<String, BasePrivacyCenterSection> {
+        val remoteConfig = FirebaseRemoteConfigImpl(parentView?.context)
+        val isEnableDsar = remoteConfig.getBoolean(PrivacyCenterConst.DSAR_REMOTE_CONFIG_KEY)
+        if (!isEnableDsar) {
+            sections.remove(DSARSection.TAG)
+        }
+        return sections
     }
 
     fun renderSections() {

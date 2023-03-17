@@ -536,16 +536,18 @@ class ShopPageTrackingBuyer(
         val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginString,
             ShopPageTrackingConstant.NOT_SEARCH_RESULT
         )
-        val eventLabel = joinDash(
-            ShopPageTrackingConstant.ALL_ETALASE, loginNonLoginString,
+        val eventAction = joinDash(
+            ALL_PRODUCT_CLICKED,
+            etalaseChip,
+            loginNonLoginString,
             ShopPageTrackingConstant.NOT_SEARCH_RESULT
         )
         val event = createProductClickMap(
             ShopPageTrackingConstant.PRODUCT_CLICK,
             SHOP_PAGE_BUYER,
             loginNonLoginString,
-            ALL_PRODUCT_CLICKED,
-            eventLabel,
+            eventAction,
+            "",
             customDimensionShopPage,
             shopProductUiModel,
             etalaseNameTrackerString, etalaseSectionTrackerString,
@@ -555,7 +557,7 @@ class ShopPageTrackingBuyer(
             listEventValue,
             selectedTabName
         )
-        event[TRACKER_ID] = ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_IMPRESSION
+        event[TRACKER_ID] = ShopPageTrackingConstant.TrackerId.TRACKER_ID_ALL_PRODUCT_CLICKED
         event[BUSINESS_UNIT] = PHYSICAL_GOODS
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[ShopPageTrackingConstant.ITEM_LIST] = listEventValue
@@ -590,16 +592,18 @@ class ShopPageTrackingBuyer(
         val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginString,
             ShopPageTrackingConstant.SEARCH_RESULT
         )
-        val eventLabel = joinDash(
-            ShopPageTrackingConstant.ALL_ETALASE, loginNonLoginString,
+        val eventAction = joinDash(
+            ALL_PRODUCT_CLICKED,
+            etalaseChip,
+            loginNonLoginString,
             ShopPageTrackingConstant.SEARCH_RESULT
         )
         val event = createProductClickSearchResultMap(
             ShopPageTrackingConstant.PRODUCT_CLICK,
             SHOP_PAGE_BUYER,
             loginNonLoginString,
-            ALL_PRODUCT_CLICKED,
-            eventLabel,
+            eventAction,
+            "",
             customDimensionShopPage,
             shopProductUiModel,
             etalaseNameTrackerString,
@@ -701,16 +705,18 @@ class ShopPageTrackingBuyer(
         val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginString,
             ShopPageTrackingConstant.NOT_SEARCH_RESULT
         )
-        val eventLabel = joinDash(
-            ShopPageTrackingConstant.ALL_ETALASE, loginNonLoginString,
+        val eventAction = joinDash(
+            ALL_PRODUCT_IMPRESSION,
+            etalaseChip,
+            loginNonLoginString,
             ShopPageTrackingConstant.NOT_SEARCH_RESULT
         )
         val event = createProductImpressionMap(
             ShopPageTrackingConstant.PRODUCT_VIEW,
             SHOP_PAGE_BUYER,
             loginNonLoginString,
-            ALL_PRODUCT_IMPRESSION,
-            eventLabel,
+            eventAction,
+            "",
             customDimensionShopPage,
             shopProductUiModel,
             etalaseNameTrackerString, etalaseSectionTrackerString,
@@ -755,16 +761,18 @@ class ShopPageTrackingBuyer(
         val listEventValue = joinDash(SHOPPAGE, customDimensionShopPage.shopId, etalaseChip, loginNonLoginString,
             ShopPageTrackingConstant.SEARCH_RESULT
         )
-        val eventLabel = joinDash(
-            ShopPageTrackingConstant.ALL_ETALASE, loginNonLoginString,
+        val eventAction = joinDash(
+            ALL_PRODUCT_IMPRESSION,
+            etalaseChip,
+            loginNonLoginString,
             ShopPageTrackingConstant.SEARCH_RESULT
         )
         val event = createProductImpressionSearchResultMap(
             ShopPageTrackingConstant.PRODUCT_VIEW,
             SHOP_PAGE_BUYER,
             loginNonLoginString,
-            ALL_PRODUCT_IMPRESSION,
-            eventLabel,
+            eventAction,
+            "",
             customDimensionShopPage,
             shopProductUiModel,
             etalaseNameTrackerString,

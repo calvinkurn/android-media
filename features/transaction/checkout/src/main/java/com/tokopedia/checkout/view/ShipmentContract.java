@@ -184,7 +184,7 @@ public interface ShipmentContract {
 
         void showPopUp(PopUpData popUpData);
 
-        void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
+        void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier, String cartString);
 
         void onNeedUpdateViewItem(int position);
 

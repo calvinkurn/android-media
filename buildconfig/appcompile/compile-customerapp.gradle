@@ -134,7 +134,6 @@ includeIfEnabled("features:logistic:localizationchooseaddress_common")
 includeIfEnabled("features:logistic:dilayanitokopedia")
 
 includeIfEnabled("features:media:mediauploader")
-includeIfEnabled("features:media:media-common")
 includeIfEnabled("features:media:medialoader")
 includeIfEnabled("features:media:mediaeditor")
 includeIfEnabled("features:media:mediapicker")
