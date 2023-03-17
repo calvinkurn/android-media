@@ -10,7 +10,10 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.core.animation.addListener
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.databinding.AutoCollapseLabelBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.toPx
@@ -33,21 +36,29 @@ class AutoCollapseLabel @JvmOverloads constructor(
 
     private val binding = AutoCollapseLabelBinding.inflate(LayoutInflater.from(context), this, true)
     private val animator = ViewAnimator()
+    private var canShow: Boolean = false
 
-    fun showView(text: String, iconUrl: String) {
-        binding.tvAutoCollapseLabel.text = text
-        binding.ivAutoCollapseLabel.loadImage(iconUrl)
-        animator.animateShow()
+    fun setup(recommendation: ProductMediaRecomData) {
+        canShow = recommendation.shouldShow()
+        if (canShow) {
+            binding.tvAutoCollapseLabel.text = recommendation.iconText
+            binding.ivAutoCollapseLabel.loadImage(recommendation.getIconUrl(context))
+        }
+    }
+
+    fun showView() {
+        if (canShow) animator.animateShow()
     }
 
     fun hideView() {
-        animator.animateHide()
+        if (canShow) animator.animateHide()
     }
 
     inner class ViewAnimator {
         private var showAnimator: Animator? = null
         private var showAnimatorListener: Animator.AnimatorListener? = null
         private var hideAnimator: Animator? = null
+        private var hideAnimatorListener: Animator.AnimatorListener? = null
         private var collapseAnimator: Animator? = null
         private var collapseAnimatorListener: Animator.AnimatorListener? = null
 
@@ -84,6 +95,7 @@ class AutoCollapseLabel @JvmOverloads constructor(
             }
             showAnimatorListener = addListener(
                 onStart = {
+                    show()
                     binding.tvAutoCollapseLabel.maxWidth = Int.MAX_VALUE
                     binding.tvAutoCollapseLabel.ellipsize = TextUtils.TruncateAt.END
                     binding.bgAutoCollapseLabelIconOnly.alpha = MIN_ALPHA
@@ -118,6 +130,7 @@ class AutoCollapseLabel @JvmOverloads constructor(
                     update.animatedValue as Float
                 )
             }
+            hideAnimatorListener = addListener(onEnd = { gone() })
         }
 
         private fun createCollapseAnimator() = ValueAnimator.ofInt(

@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.data.model.datamodel.ThumbnailDataModel
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.view.adapter.ProductMainThumbnailAdapter
@@ -72,7 +73,8 @@ class VideoPictureView @JvmOverloads constructor(
         listener: DynamicProductDetailListener?,
         componentTrackDataModel: ComponentTrackDataModel?,
         initialScrollPosition: Int,
-        containerType: MediaContainerType
+        containerType: MediaContainerType,
+        recommendation: ProductMediaRecomData
     ) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
@@ -90,6 +92,7 @@ class VideoPictureView @JvmOverloads constructor(
         updateInitialThumbnail(media = media)
         updateImages(listOfImage = media)
         updateMediaLabel(position = pagerSelectedLastPosition)
+        setupRecommendationLabel(recommendation = recommendation)
         shouldShowRecommendationLabel(position = pagerSelectedLastPosition)
         scrollToPosition(position = initialScrollPosition)
         renderVideoOnceAtPosition(position = initialScrollPosition)
@@ -334,12 +337,16 @@ class VideoPictureView @JvmOverloads constructor(
         binding.txtAnimLabel.showView(stringLabel)
     }
 
+    private fun setupRecommendationLabel(recommendation: ProductMediaRecomData) {
+        binding.txtAnimLabelRecommendation.setup(recommendation)
+        binding.txtAnimLabelRecommendation.setOnClickListener {
+            mListener?.onShowProductMediaRecommendationClicked()
+        }
+    }
+
     private fun shouldShowRecommendationLabel(position: Int) {
         if (videoPictureAdapter?.isFirstPicture(position) == true) {
-            binding.txtAnimLabelRecommendation.showView(
-                text = "Barang Serupa",
-                iconUrl = "https://i.pinimg.com/originals/5a/74/dc/5a74dc1edc469d9a6d985338f1cdd230.jpg"
-            )
+            binding.txtAnimLabelRecommendation.showView()
         } else {
             binding.txtAnimLabelRecommendation.hideView()
         }

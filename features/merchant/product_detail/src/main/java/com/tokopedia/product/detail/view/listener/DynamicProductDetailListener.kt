@@ -59,6 +59,7 @@ interface DynamicProductDetailListener {
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
     fun showThumbnailImage(): Boolean
+    fun onShowProductMediaRecommendationClicked()
 
     /**
      * ProductSnapshotViewHolder

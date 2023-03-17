@@ -23,6 +23,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
@@ -46,6 +47,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleD
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
@@ -341,7 +343,8 @@ object DynamicProductDetailMapper {
         val newDataWithMedia = contentData?.copy(
             media = mediaData.media,
             youtubeVideos = mediaData.youtubeVideos,
-            containerType = mediaData.containerType
+            containerType = mediaData.containerType,
+            productMediaRecomBasicInfo = mediaData.productMediaRecomBasicInfo
         ) ?: ComponentData()
 
         assignIdToMedia(newDataWithMedia.media)
@@ -783,6 +786,14 @@ object DynamicProductDetailMapper {
             type = component.type,
             title = data.title,
             status = ProductCustomInfoTitleDataModel.Status.fromString(data.status)
+        )
+    }
+
+    fun convertRecomToDataModel(productMediaRecomBasicInfo: ProductMediaRecomBasicInfo): ProductMediaRecomData {
+        return ProductMediaRecomData(
+            lightIcon = productMediaRecomBasicInfo.lightIcon,
+            darkIcon = productMediaRecomBasicInfo.darkIcon,
+            iconText = productMediaRecomBasicInfo.iconText
         )
     }
 }

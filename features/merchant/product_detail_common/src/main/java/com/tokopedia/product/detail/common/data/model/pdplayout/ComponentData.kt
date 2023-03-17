@@ -57,6 +57,8 @@ data class ComponentData(
     val isWishlist: Boolean = false,
     @SerializedName("media")
     val media: List<Media> = listOf(),
+    @SerializedName("recommendation")
+    val productMediaRecomBasicInfo: ProductMediaRecomBasicInfo = ProductMediaRecomBasicInfo(),
     @SerializedName("containerType")
     val containerType: String = "",
     @SerializedName("name")

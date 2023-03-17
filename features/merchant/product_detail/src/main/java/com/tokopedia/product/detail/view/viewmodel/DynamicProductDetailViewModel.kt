@@ -23,6 +23,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -51,10 +52,7 @@ import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodState
@@ -75,19 +73,8 @@ import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_E
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_GENERAL_ERROR
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_DYNAMIC_SLOTTING
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_TIMEOUT_EXCEEDED
-import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
-import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
-import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
-import com.tokopedia.product.detail.usecase.GetProductInfoP2DataUseCase
-import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
-import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
-import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
-import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
-import com.tokopedia.product.detail.view.util.ProductDetailLogger
-import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
-import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
-import com.tokopedia.product.detail.view.util.asFail
-import com.tokopedia.product.detail.view.util.asSuccess
+import com.tokopedia.product.detail.usecase.*
+import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -279,6 +266,11 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val _loadViewToView = MutableLiveData<Result<RecommendationWidget>>()
     val loadViewToView: LiveData<Result<RecommendationWidget>>
         get() = _loadViewToView
+
+    private var _productMediaRecomBottomSheetData: ProductMediaRecomBottomSheetData? = null
+    private val _productMediaRecomBottomSheetState = MutableLiveData<ProductMediaRecomBottomSheetState>()
+    val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
+        get() = _productMediaRecomBottomSheetState
 
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
@@ -820,7 +812,7 @@ open class DynamicProductDetailViewModel @Inject constructor(
         launchCatchError(dispatcher.io, block = {
             if (!GlobalConfig.isSellerApp()) {
                 val requestParams = GetRecommendationRequestParam(
-                    pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
+                    pageNumber = DEFAULT_PAGE_NUMBER,
                     pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
                     queryParam = if (annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
                     productIds = arrayListOf(productId)
@@ -1430,5 +1422,74 @@ open class DynamicProductDetailViewModel @Inject constructor(
                 // noop
             }
         }
+    }
+
+    fun showProductMediaRecomBottomSheet(
+        title: String,
+        pageName: String,
+        productId: String,
+        isTokoNow: Boolean
+    ) {
+        launchCatchError(dispatcher.main, block = {
+            val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
+                if (productMediaRecomBottomSheetData?.pageName == pageName) {
+                    productMediaRecomBottomSheetData
+                } else {
+                    setProductMediaRecomBottomSheetLoading(title)
+                    loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                }
+            }
+            setProductMediaRecomBottomSheetData(title, data)
+        }) {
+            setProductMediaRecomBottomSheetError(title = title, error = it)
+        }
+    }
+
+    private suspend fun loadProductMediaRecomBottomSheetData(
+        pageName: String,
+        productId: String,
+        isTokoNow: Boolean
+    ): ProductMediaRecomBottomSheetData {
+        val requestParams = GetRecommendationRequestParam(
+            pageNumber = DEFAULT_PAGE_NUMBER,
+            pageName = pageName,
+            productIds = arrayListOf(productId),
+            isTokonow = isTokoNow
+        )
+        val response = getRecommendationUseCase
+            .get()
+            .getData(requestParams)
+            .first()
+            .copy(title = String.EMPTY)
+        return ProductMediaRecomBottomSheetData(
+            pageName = pageName,
+            recommendationWidget = response
+        ).also { _productMediaRecomBottomSheetData = it }
+    }
+
+    private fun setProductMediaRecomBottomSheetLoading(title: String) {
+        _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.Loading(
+            title = title
+        )
+    }
+
+    private fun setProductMediaRecomBottomSheetData(
+        title: String,
+        data: ProductMediaRecomBottomSheetData
+    ) {
+        _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.ShowingData(
+            title = title,
+            recomWidgetData = data.recommendationWidget
+        )
+    }
+
+    private fun setProductMediaRecomBottomSheetError(
+        title: String,
+        error: Throwable
+    ) {
+        _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.ShowingError(
+            title = title,
+            error = error
+        )
     }
 }
