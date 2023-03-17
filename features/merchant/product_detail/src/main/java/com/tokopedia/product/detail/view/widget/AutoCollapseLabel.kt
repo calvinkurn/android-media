@@ -144,16 +144,16 @@ class AutoCollapseLabel @JvmOverloads constructor(
 
         @Suppress("UNUSED_PARAMETER")
         private fun onStartShowAnimator(animator: Animator) {
-            animateCollapse()
-        }
-
-        @Suppress("UNUSED_PARAMETER")
-        private fun onEndShowAnimator(animator: Animator) {
             show()
             binding.tvAutoCollapseLabel.maxWidth = Int.MAX_VALUE
             binding.tvAutoCollapseLabel.ellipsize = TextUtils.TruncateAt.END
             binding.bgAutoCollapseLabelIconOnly.alpha = MIN_ALPHA
             updateContainerHorizontalPadding(PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx())
+        }
+
+        @Suppress("UNUSED_PARAMETER")
+        private fun onEndShowAnimator(animator: Animator) {
+            animateCollapse()
         }
 
         @Suppress("UNUSED_PARAMETER")
