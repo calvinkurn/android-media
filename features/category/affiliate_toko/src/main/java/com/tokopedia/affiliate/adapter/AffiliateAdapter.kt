@@ -50,7 +50,6 @@ class AffiliateAdapter(
         const val SOURCE_HOME = "home"
         const val SOURCE_PROMOSIKAN = "promosikan"
         const val SOURCE_SSA_SHOP = "ssa_shop"
-        const val SOURCE_DISCO_BANNER = "promo_disco_banner"
     }
 
     private val itemImpressionSet = HashSet<Int>()
@@ -92,7 +91,6 @@ class AffiliateAdapter(
             SOURCE_HOME -> handleHomeImpressions(holder)
             SOURCE_PROMOSIKAN -> handlePromoImpressions(holder)
             SOURCE_SSA_SHOP -> handleSSAShopImpression(holder)
-            SOURCE_DISCO_BANNER -> handlePromoDiscoImpression(holder)
         }
 
         super.onViewAttachedToWindow(holder)
@@ -118,6 +116,12 @@ class AffiliateAdapter(
                         item?.promotionItem,
                         holder.bindingAdapterPosition
                     )
+                }
+            }
+            is AffiliateDiscoBannerVH -> {
+                if (!itemImpressionSet.add(holder.bindingAdapterPosition)) {
+                    val item = list[holder.bindingAdapterPosition] as? AffiliateDiscoBannerUiModel
+                    sendPromoDiscoImpression(item?.article, holder.bindingAdapterPosition)
                 }
             }
         }
@@ -150,19 +154,6 @@ class AffiliateAdapter(
                     sendHomeProductImpression(item.product, holder.bindingAdapterPosition)
                 } else {
                     sendHomeShopImpression(item?.product, holder.bindingAdapterPosition)
-                }
-            }
-        }
-    }
-
-    private fun handlePromoDiscoImpression(
-        holder: AbstractViewHolder<*>
-    ) {
-        when (holder) {
-            is AffiliateDiscoBannerVH -> {
-                if (!itemImpressionSet.add(holder.bindingAdapterPosition)) {
-                    val item = list[holder.bindingAdapterPosition] as? AffiliateDiscoBannerUiModel
-                    sendPromoDiscoImpression(item?.article, holder.bindingAdapterPosition)
                 }
             }
         }

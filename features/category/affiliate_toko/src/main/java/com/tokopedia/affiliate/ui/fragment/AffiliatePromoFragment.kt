@@ -299,7 +299,13 @@ class AffiliatePromoFragment :
                     }
                 view?.findViewById<RecyclerView>(R.id.rv_disco_promotion)?.apply {
                     val discoBannerAdapter =
-                        AffiliateAdapter(AffiliateAdapterFactory(promotionClickInterface = this@AffiliatePromoFragment))
+                        AffiliateAdapter(
+                            source = AffiliateAdapter.SOURCE_PROMOSIKAN,
+                            affiliateAdapterFactory = AffiliateAdapterFactory(
+                                promotionClickInterface = this@AffiliatePromoFragment
+                            ),
+                            userId = userSessionInterface.userId
+                        )
                     discoBannerAdapter.setVisitables(
                         it.recommendedAffiliateDiscoveryCampaign?.data?.items?.mapNotNull { campaign ->
                             AffiliateDiscoBannerUiModel(campaign)
