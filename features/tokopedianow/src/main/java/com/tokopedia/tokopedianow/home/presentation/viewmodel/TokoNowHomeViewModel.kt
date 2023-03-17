@@ -43,13 +43,16 @@ import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
+import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHomeLayout
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProgressBar
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getItem
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCatalogCouponList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryMenuData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeClaimCouponList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapPlayWidgetData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
@@ -78,15 +81,18 @@ import com.tokopedia.tokopedianow.home.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getVisitableId
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
+import com.tokopedia.tokopedianow.home.domain.usecase.GetCatalogCouponListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeReferralUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.RedeemCouponUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.ReferralEvaluateJoinUseCase
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.DEFAULT_QUANTITY
+import com.tokopedia.tokopedianow.home.presentation.model.HomeClaimCouponDataModel
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
@@ -101,6 +107,9 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferral
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIMED
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -123,6 +132,8 @@ class TokoNowHomeViewModel @Inject constructor(
     private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     private val getHomeReferralUseCase: GetHomeReferralUseCase,
     private val referralEvaluateJoinUseCase: ReferralEvaluateJoinUseCase,
+    private val getCatalogCouponListUseCase: GetCatalogCouponListUseCase,
+    private val redeemCouponUseCase: RedeemCouponUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
@@ -172,6 +183,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _updateToolbarNotification
     val referralEvaluate: LiveData<Result<HomeReceiverReferralDialogUiModel>>
         get() = _referralEvaluate
+    val couponClaimed: LiveData<Result<HomeClaimCouponDataModel>>
+        get() = _couponClaimed
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -186,6 +199,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _invalidatePlayImpression = MutableLiveData<Boolean>()
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
     private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
+    private val _couponClaimed = MutableLiveData<Result<HomeClaimCouponDataModel>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel?>()
     private var hasTickerBeenRemoved = false
@@ -362,6 +376,78 @@ class TokoNowHomeViewModel @Inject constructor(
                 state = TokoNowLayoutState.UPDATE
             )
             _homeLayoutList.postValue(Success(data))
+        }
+    }
+
+    fun getCatalogCouponList(
+        widgetId: String,
+        slugs: List<String>
+    ) {
+        launchCatchError(block = {
+            val response = getCatalogCouponListUseCase.execute(
+                catalogSlugs = slugs
+            )
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                response = response,
+                widgetId = widgetId,
+                slugs = slugs,
+                state = TokoNowLayoutState.SHOW,
+            )
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.UPDATE
+            )
+            _homeLayoutList.postValue(Success(data))
+        }) {
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                widgetId = widgetId,
+                slugs = slugs,
+                state = TokoNowLayoutState.HIDE
+            )
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.UPDATE
+            )
+            _homeLayoutList.postValue(Success(data))
+        }
+    }
+
+    fun claimCoupon(
+        widgetId: String,
+        catalogId: String,
+        couponStatus: String,
+        position: Int,
+        slugText: String,
+        couponName: String,
+        warehouseId: String
+    ) {
+        launchCatchError(block = {
+            if (userSession.isLoggedIn) {
+                val response = redeemCouponUseCase.execute(catalogId)
+                val coupon = response.mapToClaimCouponDataModel(
+                    couponStatus = couponStatus,
+                    position = position,
+                    slugText = slugText,
+                    couponName = couponName,
+                    warehouseId = warehouseId
+                )
+                _couponClaimed.postValue(Success(coupon))
+
+                homeLayoutItemList.mapHomeClaimCouponList(
+                    widgetId = widgetId,
+                    catalogId = catalogId,
+                    ctaText = COUPON_STATUS_CLAIMED
+                )
+                val data = HomeLayoutListUiModel(
+                    items = getHomeVisitableList(),
+                    state = TokoNowLayoutState.UPDATE
+                )
+                _homeLayoutList.postValue(Success(data))
+            } else {
+                _couponClaimed.postValue(Success(HomeClaimCouponDataModel(code = COUPON_STATUS_LOGIN)))
+            }
+        }) {
+            _couponClaimed.postValue(Fail(it))
         }
     }
 
@@ -639,6 +725,7 @@ class TokoNowHomeViewModel @Inject constructor(
             is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
             is HomePlayWidgetUiModel -> getPlayWidgetAsync(item).await()
+            is HomeClaimCouponWidgetUiModel -> getCatalogCouponListAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
     }
@@ -683,6 +770,24 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.mapHomeCategoryMenuData(response, warehouseId)
         }) {
             homeLayoutItemList.mapHomeCategoryMenuData(emptyList())
+        }
+    }
+
+    private suspend fun getCatalogCouponListAsync(item: HomeClaimCouponWidgetUiModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getCatalogCouponListUseCase.execute(
+                catalogSlugs = item.slugs
+            )
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                widgetId = item.id,
+                response = response,
+                state = TokoNowLayoutState.SHOW
+            )
+        }) {
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                widgetId = item.id,
+                state = TokoNowLayoutState.HIDE
+            )
         }
     }
 
