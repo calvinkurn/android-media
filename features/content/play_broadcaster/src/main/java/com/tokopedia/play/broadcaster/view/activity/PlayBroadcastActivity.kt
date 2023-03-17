@@ -39,6 +39,7 @@ import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PREPARE_PA
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_RENDER_PAGE
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_REQUEST_NETWORK
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
@@ -111,6 +112,9 @@ class PlayBroadcastActivity : BaseActivity(),
     @Inject
     lateinit var remoteConfig: RemoteConfig
 
+    @Inject
+    lateinit var hydraConfigStore: HydraConfigStore
+
     private lateinit var viewModel: PlayBroadcastViewModel
 
     private lateinit var containerSetup: FrameLayout
@@ -148,6 +152,9 @@ class PlayBroadcastActivity : BaseActivity(),
         inject()
         setFragmentFactory()
         startPageMonitoring()
+        if (savedInstanceState != null) {
+            hydraConfigStore.setChannelId(savedInstanceState.getString(CHANNEL_ID).orEmpty())
+        }
         super.onCreate(savedInstanceState)
         initViewModel()
         observeUiState()

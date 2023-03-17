@@ -158,12 +158,7 @@ class PlayBroadcastSetupBottomSheet :
                     }
 
                     override fun getChannelId(): String {
-                        return try {
-                            mDataSource?.getChannelId().orEmpty()
-                        } catch (e: Exception) {
-                            dismiss()
-                            ""
-                        }
+                        return mDataSource?.getChannelId().orEmpty()
                     }
 
                     override fun getPageSource(): PlayBroPageSource {
