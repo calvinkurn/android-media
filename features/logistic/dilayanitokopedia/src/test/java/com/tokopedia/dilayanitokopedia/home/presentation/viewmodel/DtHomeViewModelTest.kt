@@ -4,8 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType
-import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
+import com.tokopedia.dilayanitokopedia.ui.home.constant.HomeLayoutItemState
+import com.tokopedia.dilayanitokopedia.ui.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.AnchorTabMapper.KEYWOARD_CHANNEL_GROUP_ID
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.AnchorTabMapper.KEY_ANCHOR_IDENTIFIER
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeAnchorTabResponse
@@ -232,11 +232,11 @@ class DtHomeViewModelTest {
     @Test
     fun `verify function switchServiceOrLoadLayout is correctly`() {
         // Inject
-        val loadingLayout = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
+        val loadingLayout = HomeLoadingStateUiModel(id = com.tokopedia.dilayanitokopedia.ui.home.constant.HomeStaticLayoutId.LOADING_STATE)
         val data = HomeLayoutListUiModel(
             items = HomeLayoutItemUiModel(
                 loadingLayout,
-                HomeLayoutItemState.LOADED,
+                com.tokopedia.dilayanitokopedia.ui.home.constant.HomeLayoutItemState.LOADED,
                 null
             ).layout?.let {
                 listOf(it)
@@ -257,11 +257,11 @@ class DtHomeViewModelTest {
     @Test
     fun `verify function loadLayout is correctly`() {
         // Inject
-        val loadingLayout = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
+        val loadingLayout = HomeLoadingStateUiModel(id = com.tokopedia.dilayanitokopedia.ui.home.constant.HomeStaticLayoutId.LOADING_STATE)
         val data = HomeLayoutListUiModel(
             items = HomeLayoutItemUiModel(
                 loadingLayout,
-                HomeLayoutItemState.LOADED,
+                com.tokopedia.dilayanitokopedia.ui.home.constant.HomeLayoutItemState.LOADED,
                 null
             ).layout?.let {
                 listOf(it)
