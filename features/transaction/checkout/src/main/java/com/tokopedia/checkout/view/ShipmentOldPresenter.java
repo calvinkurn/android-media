@@ -2999,7 +2999,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
             listAddOnDataItem.add(addOnDataItemModel);
         }
         addOnsDataModel.setAddOnsDataItemModelList(listAddOnDataItem);
-        getView().updateAddOnsData(addOnsDataModel, identifier);
+        getView().updateAddOnsData(addOnsDataModel, identifier, cartString);
         if (isUsingDynamicDataPassing()) {
             getView().updateAddOnsDynamicDataPassing(addOnsDataModel, addOnResult, identifier, cartString, cartId);
         }

@@ -4113,12 +4113,12 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
     }
 
     @Override
-    public void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier) {
+    public void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier, String cartString) {
         // identifier : 0 = product level, 1  = order level
         if (identifier == 0) {
-            shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnProductLevelPosition());
+            shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnProductLevelPosition(cartString));
         } else {
-            shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnOrderLevelPosition());
+            shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnOrderLevelPosition(cartString));
         }
         shipmentAdapter.updateShipmentCostModel();
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
