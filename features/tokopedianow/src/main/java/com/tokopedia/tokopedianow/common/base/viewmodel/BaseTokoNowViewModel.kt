@@ -51,7 +51,7 @@ open class BaseTokoNowViewModel(
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
 
-    var miniCartData: MiniCartSimplifiedData? = null
+    protected var miniCartData: MiniCartSimplifiedData? = null
         private set
 
     private val _addItemToCart = MutableLiveData<Result<AddToCartDataModel>>()
