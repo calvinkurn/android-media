@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -20,6 +19,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -37,6 +37,7 @@ import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.channel.analytic.PlayChannelAnalyticManager
+import com.tokopedia.play.channel.ui.component.CommentIconUiComponent
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.databinding.FragmentPlayInteractionBinding
@@ -124,7 +125,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private val pipAnalytic: PlayPiPAnalytic,
     private val analytic: PlayAnalytic,
     private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
-    private val castAnalyticHelper: CastAnalyticHelper,
     private val performanceClassConfig: PerformanceClassConfig,
     private val newAnalytic: PlayNewAnalytic,
     private val analyticManager: PlayChannelAnalyticManager,
@@ -166,7 +166,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
-    private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
+
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it) }
     private val likeBubbleView by viewComponent {
         LikeBubbleViewComponent(
@@ -187,6 +187,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val interactiveResultView by viewComponentOrNull(isEagerInit = true) { InteractiveGameResultViewComponent(it, this, viewLifecycleOwner.lifecycleScope) }
 
     private val exploreView by viewComponentOrNull { ExploreWidgetViewComponent(it, this) }
+
+    private val glQuick by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.gl_quick_reply) }
 
     private val activityResultHelper by lifecycleBound({
         ActivityResultHelper(this)
@@ -599,6 +601,16 @@ class PlayUserInteractionFragment @Inject constructor(
             )
         }
 
+        val commentIconBinding = binding.viewVodComment
+        if (commentIconBinding != null) {
+            components.add(
+                CommentIconUiComponent(
+                    binding = commentIconBinding,
+                    bus = eventBus
+                )
+            )
+        }
+
         fun setupLandscapeView() {
             container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
             container.setOnClickListener {
@@ -702,7 +714,6 @@ class PlayUserInteractionFragment @Inject constructor(
         observeChats()
 
         observeLoggedInInteractionEvent()
-        observeCastState()
 
         observeAnalytic()
 
@@ -855,7 +866,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.partner)
+                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderAddressWidget(state.address)
 
@@ -1019,12 +1030,6 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun observeCastState() {
-        playViewModel.observableCastState.observe(viewLifecycleOwner) {
-            sendCastAnalytic(it)
-        }
-    }
-
     private fun observeAnalytic() {
         analyticManager.observe(
             viewLifecycleOwner.lifecycleScope,
@@ -1043,22 +1048,6 @@ class PlayUserInteractionFragment @Inject constructor(
                     widthFromEnd = (FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER * it.width).toInt()
                 )
             )
-        }
-    }
-
-    private fun sendCastAnalytic(cast: PlayCastUiModel) {
-        when {
-            cast.connectFailed() -> {
-                analytic.connectCast(false)
-            }
-            cast.currentState == PlayCastState.CONNECTED -> {
-                val channelData = playViewModel.latestCompleteChannelData
-                analytic.connectCast(true, channelData.id, channelData.channelDetail.channelInfo.channelType)
-                castAnalyticHelper.startRecording()
-            }
-            cast.previousState == PlayCastState.CONNECTED -> {
-                castAnalyticHelper.stopRecording()
-            }
         }
     }
 
@@ -1655,16 +1644,15 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         address: AddressWidgetUiState,
-        partner: PlayPartnerInfo
     ) {
-        if (!bottomInsets.isAnyShown && !address.shouldShow) {
+        val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
+            it.productList.size
+        }
+
+        if (!bottomInsets.isAnyShown && !address.shouldShow && productListSize.isMoreThanZero()) {
             productSeeMoreView?.show()
         } else {
             productSeeMoreView?.hide()
-        }
-
-        val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
-            it.productList.size
         }
 
         productSeeMoreView?.setTotalProduct(productListSize)
@@ -1754,14 +1742,14 @@ class PlayUserInteractionFragment @Inject constructor(
          * and I don't know why arghhh
          */
         val quickReplyViewId = quickReplyView?.id ?: return
-        val topmostLikeView = this.topmostLikeView ?: return
+        val glScreen = this.glQuick ?: return
         view?.changeConstraint {
             if (isShown) {
                 sendChatView?.let {
                     connect(quickReplyViewId, ConstraintSet.BOTTOM, it.id, ConstraintSet.TOP, offset8)
                 }
             } else {
-                connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
+                connect(quickReplyViewId, ConstraintSet.BOTTOM, glScreen.id, ConstraintSet.TOP)
             }
         }
     }

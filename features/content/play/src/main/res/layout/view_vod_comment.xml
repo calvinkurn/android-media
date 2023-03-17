@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:background="@color/Neutral_N700_96">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/view_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CHAT" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/view_comment_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_common_space_6"
+        android:text="@string/play_zero"
+        tools:text="123"
+        android:textColor="@color/Unify_NN0"
+        app:typographyType="display_3"
+        android:includeFontPadding="false"
+        android:textAlignment="center"
+        android:gravity="center"
+        app:typographyWeight="bold" />
+</LinearLayout>

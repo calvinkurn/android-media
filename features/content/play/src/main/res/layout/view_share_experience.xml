@@ -12,6 +12,6 @@
         android:layout_height="match_parent"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="SHARE_MOBILE" />
+        app:icon_name="SHARE" />
 
 </FrameLayout>
