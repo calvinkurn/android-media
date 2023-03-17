@@ -74,14 +74,24 @@ data class FeedCardCampaignModel(
     val shortName: String = "",
     val startTime: String = "",
     val endTime: String = "",
-    val restrictions: List<FeedCardCampaignRestrictionModel> = emptyList()
+    val restrictions: List<FeedCardCampaignRestrictionModel> = emptyList(),
+    var isReminderActive: Boolean = false
 ) {
 
     val isExclusiveForMember: Boolean
-        get() = restrictions.firstOrNull { it.label == LABEL_FOLLOWERS_ONLY } != null
+        get() = restrictions.firstOrNull { it.label == LABEL_FOLLOWERS_ONLY && it.isActive } != null
+
+    val isOngoing: Boolean
+        get() = status == ONGOING
+
+    val isUpcoming: Boolean
+        get() = status == UPCOMING
 
     companion object {
         private const val LABEL_FOLLOWERS_ONLY = "followers_only"
+
+        private const val ONGOING = "ongoing"
+        private const val UPCOMING = "upcoming"
     }
 }
 

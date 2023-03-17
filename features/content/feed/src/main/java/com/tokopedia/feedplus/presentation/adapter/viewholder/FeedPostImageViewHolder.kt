@@ -19,11 +19,12 @@ import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
 import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
+import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
 import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
-import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
-import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
+import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -69,12 +70,6 @@ class FeedPostImageViewHolder(
     override fun bind(element: FeedCardImageContentModel?) {
         element?.let { data ->
             binding.apply {
-                bindAuthor(data)
-                bindCaption(data)
-                val authorView =
-                    FeedAuthorInfoView(binding.layoutAuthorInfo, listener)
-                val captionView = FeedCaptionView(binding.tvFeedCaption)
-
                 val postGestureDetector = GestureDetector(
                     itemView.context,
                     object : GestureDetector.SimpleOnGestureListener() {
@@ -98,14 +93,14 @@ class FeedPostImageViewHolder(
                     }
                 )
 
-                authorView.bindData(data.author, false, !data.followers.isFollowed)
-                captionView.bind(data.text)
-
+                bindAuthor(data)
+                bindCaption(data)
                 bindImagesContent(data.media)
                 bindIndicators(data.media.size)
                 bindProductTag(data)
                 bindLike(data)
                 bindAsgcTags(data)
+                bindCampaignRibbon(data)
 
                 menuButton.setOnClickListener { _ ->
                     listener.onMenuClicked(data.id)
@@ -239,6 +234,11 @@ class FeedPostImageViewHolder(
     private fun bindAsgcTags(model: FeedCardImageContentModel) {
         val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
         asgcTagsView.bindData(model.type, model.campaign)
+    }
+
+    private fun bindCampaignRibbon(model: FeedCardImageContentModel) {
+        val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
+        campaignView.bindData(model.campaign, model.isTypeProductHighlight)
     }
 
     private fun showClearView() {

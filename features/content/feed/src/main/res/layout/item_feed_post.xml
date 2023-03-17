@@ -33,9 +33,9 @@
         layout="@layout/feed_product_tag_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/indicator_feed_content"
@@ -49,7 +49,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/tv_feed_caption"
-        app:layout_constraintEnd_toStartOf="@id/like_button"
+        app:layout_constraintEnd_toStartOf="@id/post_like_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_tag_view" />
 
@@ -73,13 +73,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@id/v_campaign_tag"
+        app:layout_constraintBottom_toTopOf="@id/feed_campaign_ribbon"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
         app:layout_constraintTop_toBottomOf="@id/tv_feed_caption" />
 
-    <View
-        android:id="@+id/v_campaign_tag"
+    <include
+        android:id="@+id/feed_campaign_ribbon"
+        layout="@layout/layout_feed_campaign_ribbon"
         android:layout_width="0dp"
         android:layout_height="10dp"
         android:layout_marginTop="8dp"
@@ -87,8 +88,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
-        app:layout_constraintTop_toBottomOf="@id/rv_feed_asgc_tags" />
-
+        app:layout_constraintTop_toBottomOf="@id/rv_feed_asgc_tags"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <include
         android:id="@+id/post_like_button"
@@ -196,13 +198,11 @@
         android:layout_height="@dimen/layout_lvl7"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible"
-        />
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

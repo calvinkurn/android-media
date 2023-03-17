@@ -13,6 +13,10 @@ interface FeedListener {
     fun changeTab(type: String)
     fun reload()
 
+    fun setReminder()
+    fun onTimerFinishUpcoming()
+    fun onTimerFinishOnGoing()
+
     fun onProductTagButtonClicked(
         postId: String,
         author: FeedAuthorModel,

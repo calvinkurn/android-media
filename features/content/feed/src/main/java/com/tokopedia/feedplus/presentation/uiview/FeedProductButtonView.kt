@@ -41,7 +41,17 @@ class FeedProductButtonView(
                 }
             }
 
-            root.setOnClickListener {
+            icPlayProductSeeMore.setOnClickListener {
+                listener.onProductTagButtonClicked(
+                    postId,
+                    author,
+                    postType,
+                    isFollowing,
+                    campaign,
+                    hasVoucher
+                )
+            }
+            tvPlayProductCount.setOnClickListener {
                 listener.onProductTagButtonClicked(
                     postId,
                     author,
