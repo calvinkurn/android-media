@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.fragment.AddTextFragment
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
 import javax.inject.Inject
 
@@ -28,6 +30,20 @@ class AddTextActivity: BaseEditorActivity() {
         ).get(AddTextViewModel::class.java)
     }
 
+    fun finishPage() {
+        val intent = Intent()
+
+        try {
+            val result = (fragment as AddTextFragment).getInputResult()
+            intent.putExtra(ADD_TEXT_RESULT, result)
+            setResult(Activity.RESULT_OK, intent)
+        } catch (_: Exception) {
+            setResult(Activity.RESULT_CANCELED, intent)
+        }
+
+        finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory
@@ -39,8 +55,9 @@ class AddTextActivity: BaseEditorActivity() {
     override fun initBundle(savedInstanceState: Bundle?) {
         setHeader(HEADER_TITLE, HEADER_ACTION)
 
-        intent.getStringExtra(ADD_TEXT_PARAM)?.apply {
-            viewModel.setImageUrl(this)
+        intent.getParcelableExtra<EditorDetailUiModel>(ADD_TEXT_PARAM)?.apply {
+            this.resultUrl?.let { viewModel.setImageUrl(it) }
+            this.addTextValue?.let { viewModel.textData = it }
         }
 
         initObserver()
@@ -53,17 +70,7 @@ class AddTextActivity: BaseEditorActivity() {
     }
 
     override fun onHeaderActionClick() {
-        val intent = Intent()
-
-        try {
-            val result = (fragment as AddTextFragment).getInputResult()
-            intent.putExtra(ADD_TEXT_RESULT, result)
-            setResult(Activity.RESULT_OK, intent)
-        } catch (_: Exception) {
-            setResult(Activity.RESULT_CANCELED, intent)
-        }
-
-        finish()
+        finishPage()
     }
 
     override fun onBackClicked() {}

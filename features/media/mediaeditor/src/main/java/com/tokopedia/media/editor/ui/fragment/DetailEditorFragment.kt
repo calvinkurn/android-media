@@ -412,7 +412,7 @@ class DetailEditorFragment @Inject constructor(
     // === Listener add text
     override fun onAddFreeText() {
         val intent = Intent(activity, AddTextActivity::class.java)
-        intent.putExtra(AddTextActivity.ADD_TEXT_PARAM, data.resultUrl ?: "empty")
+        intent.putExtra(AddTextActivity.ADD_TEXT_PARAM, data)
         startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
     }
 
@@ -1351,7 +1351,7 @@ class DetailEditorFragment @Inject constructor(
         }
 
         val alignment = textData.getLayoutAlignment()
-        val mTextLayout = StaticLayout(
+        var mTextLayout = StaticLayout(
             textData.textValue,
             mTextPaint,
             (canvas.width - padding).toInt(),
@@ -1360,16 +1360,36 @@ class DetailEditorFragment @Inject constructor(
             0.0f,
             false
         )
+//        var mTextLayout: StaticLayout? = null
 
         canvas.save()
 
         when (textData.textPosition) {
             EditorAddTextUiModel.TEXT_POSITION_RIGHT -> {
-                val yOffset = canvas.height - mTextLayout.height - padding
+                mTextLayout = StaticLayout(
+                    textData.textValue,
+                    mTextPaint,
+                    (canvas.height - padding).toInt(),
+                    alignment,
+                    1.0f,
+                    0.0f,
+                    false
+                )
+                val yOffset = canvas.width - mTextLayout.height - padding
                 canvas.rotate(-90f)
-                canvas.translate(-canvas.width.toFloat() + padding, yOffset)
+                canvas.translate(-(canvas.height.toFloat() + padding), yOffset)
             }
             EditorAddTextUiModel.TEXT_POSITION_LEFT -> {
+                mTextLayout = StaticLayout(
+                    textData.textValue,
+                    mTextPaint,
+                    (canvas.height - padding).toInt(),
+                    alignment,
+                    1.0f,
+                    0.0f,
+                    false
+                )
+
                 val yOffset = -(mTextLayout.height + padding)
                 canvas.rotate(90f)
                 canvas.translate(padding, yOffset)

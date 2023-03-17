@@ -9,11 +9,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class EditorAddTextUiModel(
-    val textValue: String,
-    val textStyle: Int = TEXT_STYLE_REGULAR,
-    val textColor: Int = 0,
-    val textAlignment: Int = TEXT_ALIGNMENT_CENTER,
-    val textPosition: Int = TEXT_POSITION_LEFT
+    var textValue: String,
+    var textStyle: Int = TEXT_STYLE_REGULAR,
+    var textColor: Int = 0,
+    var textAlignment: Int = TEXT_ALIGNMENT_CENTER,
+    var textPosition: Int = TEXT_POSITION_BOTTOM
 ) : Parcelable {
     fun getColor(context: Context?): Int {
         if (context == null) return 0
@@ -48,9 +48,9 @@ class EditorAddTextUiModel(
         const val TEXT_STYLE_BOLD = 1
         const val TEXT_STYLE_ITALIC = 2
 
-        const val TEXT_POSITION_BOTTOM = 0
-        const val TEXT_POSITION_TOP = 1
-        const val TEXT_POSITION_LEFT = 2
-        const val TEXT_POSITION_RIGHT = 3
+        const val TEXT_POSITION_LEFT = 0
+        const val TEXT_POSITION_RIGHT = 1
+        const val TEXT_POSITION_TOP = 2
+        const val TEXT_POSITION_BOTTOM = 3
     }
 }

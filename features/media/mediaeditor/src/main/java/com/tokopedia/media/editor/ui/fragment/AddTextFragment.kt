@@ -7,7 +7,9 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -16,11 +18,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentAddTextLayoutBinding
+import com.tokopedia.media.editor.ui.activity.addtext.AddTextActivity
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextViewModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_ALIGNMENT_CENTER
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_ALIGNMENT_LEFT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_ALIGNMENT_RIGHT
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_POSITION_BOTTOM
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_REGULAR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_BOLD
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_ITALIC
@@ -42,6 +46,11 @@ class AddTextFragment @Inject constructor(
 
     private var defaultPadding = 0
 
+    private val colorList = listOf(
+        editorR.color.Unify_NN0,
+        editorR.color.Unify_NN1000
+    )
+
     /**
      * 0 -> regular
      * 1 -> bold
@@ -62,17 +71,15 @@ class AddTextFragment @Inject constructor(
 
     private var isColorState = false
 
-    private val colorList = listOf(
-        editorR.color.Unify_NN0,
-        editorR.color.Unify_NN1000
-    )
+    private var positionIndex = TEXT_POSITION_BOTTOM
 
     fun getInputResult(): EditorAddTextUiModel {
         return EditorAddTextUiModel(
             textAlignment = alignmentIndex,
             textColor = colorList[activeColorIndex],
             textStyle = activeStyleIndex,
-            textValue = getUserInput()
+            textValue = getUserInput(),
+            textPosition = positionIndex
         )
     }
 
@@ -91,6 +98,7 @@ class AddTextFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initStartValue()
         initScreenHeight()
         initFontSelection()
         initListener()
@@ -116,6 +124,17 @@ class AddTextFragment @Inject constructor(
 
             it.textColor.setOnClickListener { _ ->
                 changeTextAndColor(it.textColor)
+            }
+
+            // left -> right -> top -> bottom
+            val positionViewContainer = it.positionOverlayContainer
+            for (i in 0 until positionViewContainer.childCount) {
+                positionViewContainer.getChildAt(i).setOnClickListener {
+                    try {
+                        positionIndex = i
+                        (activity as AddTextActivity).finishPage()
+                    } catch (_: Exception) {}
+                }
             }
         }
     }
@@ -278,12 +297,20 @@ class AddTextFragment @Inject constructor(
 
     private fun initTextChangeListener() {
         viewBinding?.addTextInput?.let {
+            it.setText(viewModel.textData.textValue)
             it.doAfterTextChanged { result ->
                 result?.let { text ->
                     viewModel.setTextInput(text.toString())
                 }
             }
         }
+    }
+
+    private fun initStartValue() {
+        activeStyleIndex = viewModel.textData.textStyle
+        alignmentIndex = viewModel.textData.textAlignment
+        activeColorIndex = colorList.find { viewModel.textData.textColor == it } ?: 0
+        positionIndex = viewModel.textData.textPosition
     }
 
     companion object {
