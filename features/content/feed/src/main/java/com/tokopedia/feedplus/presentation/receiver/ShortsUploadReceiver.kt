@@ -36,15 +36,24 @@ class ShortsUploadReceiver @AssistedInject constructor(
                 val info = when {
                     progress < 0 -> {
                         Log.d("Upload Shorts", "Failed")
-                        UploadInfo.Failed(data.uploadImageUrl) { shortsUploader.upload(data) }
+                        UploadInfo(
+                            UploadType.Shorts,
+                            UploadStatus.Failed(data.uploadImageUrl) { shortsUploader.upload(data) },
+                        )
                     }
                     progress >= FULL_PROGRESS -> {
                         Log.d("Upload Shorts", "Finished")
-                        UploadInfo.Finished
+                        UploadInfo(
+                            UploadType.Shorts,
+                            UploadStatus.Finished(data.shortsId),
+                        )
                     }
                     else -> {
                         Log.d("Upload Shorts", "Progress: $progress")
-                        UploadInfo.Progress(progress, data.uploadImageUrl)
+                        UploadInfo(
+                            UploadType.Shorts,
+                            UploadStatus.Progress(progress, data.uploadImageUrl),
+                        )
                     }
                 }
                 trySendBlocking(info)

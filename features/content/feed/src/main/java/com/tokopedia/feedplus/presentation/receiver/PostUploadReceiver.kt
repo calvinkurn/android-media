@@ -88,12 +88,15 @@ class PostUploadReceiver @AssistedInject constructor(
 //        }
     }
 
-    private fun onProgress(intent: Intent): UploadInfo.Progress {
+    private fun onProgress(intent: Intent): UploadInfo {
         val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS, -1)
         val thumbnailUrl = intent.getStringExtra(UPLOAD_FIRST_IMAGE).orEmpty()
 
         Log.d("Upload Posts", "Progress: $progress, Thumbnail: $thumbnailUrl, Extras: ${intent.extras}")
-        return UploadInfo.Progress(progress, thumbnailUrl)
+        return UploadInfo(
+            UploadType.Post,
+            UploadStatus.Progress(progress, thumbnailUrl)
+        )
     }
 
     private fun onFinished(intent: Intent): UploadInfo {
@@ -102,14 +105,20 @@ class PostUploadReceiver @AssistedInject constructor(
 
         return if (isSuccess) {
             Log.d("Upload Posts", "Finished, Extras: ${intent.extras}")
-            UploadInfo.Finished
+            UploadInfo(
+                UploadType.Post,
+                UploadStatus.Finished(""),
+            )
         } else {
             Log.d("Upload Posts", "Failed, Extras: ${intent.extras}")
-            UploadInfo.Failed(thumbnailUrl) {
-                val draftId = intent.getStringExtra(DRAFT_ID) ?: return@Failed
-                val context = mContext.get() ?: return@Failed
-                SubmitPostService.startService(context = context, draftId)
-            }
+            UploadInfo(
+                UploadType.Post,
+                UploadStatus.Failed(thumbnailUrl) {
+                    val draftId = intent.getStringExtra(DRAFT_ID) ?: return@Failed
+                    val context = mContext.get() ?: return@Failed
+                    SubmitPostService.startService(context = context, draftId)
+                }
+            )
         }
     }
 }

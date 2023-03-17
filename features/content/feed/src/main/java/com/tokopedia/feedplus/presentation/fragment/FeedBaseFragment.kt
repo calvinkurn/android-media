@@ -37,15 +37,17 @@ import com.tokopedia.feedplus.presentation.receiver.UploadInfo
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.receiver.UploadStatus
+import com.tokopedia.feedplus.presentation.receiver.UploadType
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showToast
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -203,7 +205,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
                     when (event) {
                         is FeedMainEvent.HasJustLoggedIn -> {
-                            showToast(
+                            showNormalToaster(
                                 getString(
                                     R.string.feed_report_login_success_toaster_text,
                                     event.userName,
@@ -225,20 +227,40 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                 uploadReceiver
                     .observe()
                     .collect { info ->
-                        when (info) {
-                            is UploadInfo.Progress -> {
+                        when (val status = info.status) {
+                            is UploadStatus.Progress -> {
                                 binding.uploadView.show()
-                                binding.uploadView.setProgress(info.progress)
-                                binding.uploadView.setThumbnail(info.thumbnailUrl)
+                                binding.uploadView.setProgress(status.progress)
+                                binding.uploadView.setThumbnail(status.thumbnailUrl)
                             }
-                            UploadInfo.Finished -> {
+                            is UploadStatus.Finished -> {
                                 binding.uploadView.hide()
+
+                                if (info.type == UploadType.Shorts) {
+                                    showNormalToaster(
+                                        getString(R.string.feed_upload_shorts_success),
+                                        duration = Toaster.LENGTH_LONG,
+                                        actionText = getString(R.string.feed_upload_shorts_see_video),
+                                        actionListener = {
+//                                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
+//                                                uploadData.authorId,
+//                                                uploadData.authorType,
+//                                                uploadData.shortsId
+//                                            )
+                                            RouteManager.route(
+                                                requireContext(),
+                                                ApplinkConst.PLAY_DETAIL,
+                                                status.contentId,
+                                            )
+                                        }
+                                    )
+                                }
                             }
-                            is UploadInfo.Failed -> {
+                            is UploadStatus.Failed -> {
                                 binding.uploadView.setFailed()
                                 binding.uploadView.setListener(object : UploadInfoView.Listener {
                                     override fun onRetryClicked(view: UploadInfoView) {
-                                        info.onRetry()
+                                        status.onRetry()
                                     }
 
                                     override fun onCloseWhenFailedClicked(view: UploadInfoView) {
@@ -451,6 +473,22 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         context?.let {
             RouteManager.route(it, liveApplink)
         }
+    }
+
+    private fun showNormalToaster(
+        text: String,
+        duration: Int = Toaster.LENGTH_SHORT,
+        actionText: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener {},
+    ) {
+        Toaster.build(
+            binding.layoutToaster,
+            text,
+            duration,
+            Toaster.TYPE_NORMAL,
+            actionText,
+            actionListener,
+        )
     }
 
     companion object {
