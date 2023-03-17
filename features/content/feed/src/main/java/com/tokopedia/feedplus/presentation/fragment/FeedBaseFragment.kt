@@ -17,8 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.content.common.producttag.util.extension.isNotChanged
-import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedcomponent.R as feedComponentR
@@ -38,6 +36,7 @@ import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadRece
 import com.tokopedia.feedplus.presentation.receiver.UploadInfo
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.kotlin.extensions.view.hide
@@ -71,19 +70,21 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private var adapter: FeedPagerAdapter? = null
 
     private var liveApplink: String = ""
-    private var profileApplink: String = ""
 
     private var mOnboarding: ImmersiveFeedOnboarding? = null
 
-    private val appLinkTabPosition: Int
+    private var appLinkTabPosition: Int
         get() = arguments?.getInt(
             ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
             TAB_FIRST_INDEX
         ) ?: TAB_FIRST_INDEX
+        set(value) {
+            arguments?.putInt(ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION, value)
+        }
 
     private val openCreateShorts = registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
         if (!isCreatingNewShorts) return@registerForActivityResult
-        binding.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
+        appLinkTabPosition = TAB_SECOND_INDEX
     }
 
     private val openLogin = registerForActivityResult(OpenLoginContract()) {}
@@ -113,7 +114,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
         observeFeedTabData()
         observeCreateContentBottomSheetData()
-        observeUserInfo()
+        observeEvent()
 
         observeUpload()
     }
@@ -194,16 +195,24 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
-    private fun observeUserInfo() {
+    private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                feedMainViewModel.userInfo.withCache().collectLatest { state ->
-                    if (state.isNotChanged { it.isLoggedIn }) return@collectLatest
+                feedMainViewModel.uiEvent.collect { event ->
+                    if (event == null) return@collect
 
-                    if (state.value.name.isBlank()) return@collectLatest
-                    showToast(
-                        getString(R.string.feed_report_login_success_toaster_text, state.value.name)
-                    )
+                    when (event) {
+                        is FeedMainEvent.HasJustLoggedIn -> {
+                            showToast(
+                                getString(
+                                    R.string.feed_report_login_success_toaster_text,
+                                    event.userName,
+                                )
+                            )
+                        }
+                    }
+
+                    feedMainViewModel.consumeEvent(event)
                 }
             }
         }
@@ -371,10 +380,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             onNavigateToLive()
         }
 
-        binding.feedUserProfileImage.setOnClickListener {
-            onNavigateToProfile()
-        }
-
         if (data.meta.isCreationActive) {
             binding.btnFeedCreatePost.show()
         } else {
@@ -445,12 +450,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private fun onNavigateToLive() {
         context?.let {
             RouteManager.route(it, liveApplink)
-        }
-    }
-
-    private fun onNavigateToProfile() {
-        context?.let {
-            RouteManager.route(it, profileApplink)
         }
     }
 

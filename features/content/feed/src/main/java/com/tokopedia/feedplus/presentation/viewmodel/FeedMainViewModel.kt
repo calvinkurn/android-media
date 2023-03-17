@@ -6,32 +6,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
-import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
-import com.tokopedia.content.common.usecase.GetWhiteListUseCase
-import com.tokopedia.feedplus.data.FeedXHeader
+import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
 import com.tokopedia.feedplus.domain.usecase.FeedXHeaderUseCase
 import com.tokopedia.feedplus.presentation.model.ContentCreationItem
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreatorType
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
-import com.tokopedia.feedplus.presentation.model.UserInfoModel
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 /**
@@ -43,6 +38,7 @@ class FeedMainViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val onboardingPreferences: OnboardingPreferences,
     private val userSession: UserSessionInterface,
+    private val uiEventManager: UiEventManager<FeedMainEvent>,
 ) : ViewModel(), OnboardingPreferences by onboardingPreferences {
 
     private val _isInClearView = MutableLiveData<Boolean>(false)
@@ -62,15 +58,24 @@ class FeedMainViewModel @Inject constructor(
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
 
-    private val _userInfo = MutableStateFlow(UserInfoModel.from(userSession))
-    val userInfo: StateFlow<UserInfoModel>
-        get() = _userInfo.asStateFlow()
+    val uiEvent: Flow<FeedMainEvent?>
+        get() = uiEventManager.event
 
+    private val _isLoggedIn = AtomicBoolean(userSession.isLoggedIn)
     val isLoggedIn: Boolean
-        get() = userSession.isLoggedIn
+        get() = _isLoggedIn.get()
+
+    fun consumeEvent(event: FeedMainEvent) {
+        viewModelScope.launch {
+            uiEventManager.clearEvent(event.id)
+        }
+    }
 
     fun updateUserInfo() {
-        _userInfo.update { UserInfoModel.from(userSession) }
+        val isPrevLoggedIn = _isLoggedIn.getAndSet(userSession.isLoggedIn)
+        if (!isPrevLoggedIn && isLoggedIn) {
+            emitEvent(FeedMainEvent.HasJustLoggedIn(userSession.name))
+        }
     }
 
     fun fetchFeedTabs() {
@@ -128,5 +133,11 @@ class FeedMainViewModel @Inject constructor(
             (authorUserdataList?.filter { it.isActive ?: false } ?: emptyList()) +
                 (authorShopDataList?.filter { it.isActive ?: false } ?: emptyList()).distinct()
         _feedCreateContentBottomSheetData.value = Success(creatorList)
+    }
+
+    private fun emitEvent(event: FeedMainEvent) {
+        viewModelScope.launch {
+            uiEventManager.emitEvent(event)
+        }
     }
 }
