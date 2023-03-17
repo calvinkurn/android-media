@@ -1,6 +1,7 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
-import android.content.Context
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dilayanitokopedia.R
@@ -26,15 +28,20 @@ import com.tokopedia.dilayanitokopedia.home.presentation.factory.HomeRecommendat
 import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.recomendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeRecommendationForYouViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import javax.inject.Inject
 
 class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener {
@@ -42,6 +49,10 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
     companion object {
         private const val REQUEST_FROM_PDP = 349
         private const val MAX_RECYCLED_VIEWS = 20
+
+        private const val WISHLIST_STATUS_IS_WISHLIST = "isWishlist"
+        private const val PDP_EXTRA_PRODUCT_ID = "product_id"
+        private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
         fun newInstance(): DtHomeRecommendationForYouFragment {
             return DtHomeRecommendationForYouFragment()
@@ -241,6 +252,129 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 viewModel.loadNextData(page, getLocationParamString())
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_FROM_PDP && data != null && data.hasExtra(
+                    WISHLIST_STATUS_IS_WISHLIST
+                )
+            ) {
+                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
+                val wishlistStatusFromPdp = data.getBooleanExtra(WISHLIST_STATUS_IS_WISHLIST, false)
+                val position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1)
+                updateWishlist(id, wishlistStatusFromPdp, position)
+            }
+        }
+        handleProductCardOptionsActivityResult(
+            requestCode,
+            resultCode,
+            data,
+            object : ProductCardOptionsWishlistCallback {
+                override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                    handleWishlistAction(productCardOptionsModel)
+                }
+            }
+        )
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
+        if (productCardOptionsModel == null) return
+        val wishlistResult = productCardOptionsModel.wishlistResult
+        if (wishlistResult.isUserLoggedIn) {
+            if (wishlistResult.isSuccess) {
+                if (wishlistResult.isAddWishlist) {
+                    showMessageSuccessAddWishlistV2(wishlistResult)
+                    if (productCardOptionsModel.isTopAds) {
+                        hitWishlistClickUrl(
+                            productCardOptionsModel
+                        )
+                    }
+                } else {
+                    showMessageSuccessRemoveWishlistV2(wishlistResult)
+                }
+                updateWishlist(
+                    productCardOptionsModel.productId,
+                    wishlistResult.isAddWishlist,
+                    productCardOptionsModel.productPosition
+                )
+            } else {
+                showMessageFailedWishlistV2Action(wishlistResult)
+            }
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    private fun showMessageSuccessRemoveWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        if (activity == null) return
+        val view = requireActivity().findViewById<View>(android.R.id.content)
+
+        context?.let { context ->
+            AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(
+                wishlistResult,
+                context,
+                view
+            )
+        }
+    }
+
+    private fun showMessageFailedWishlistV2Action(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        if (activity == null) return
+        val view = activity?.findViewById<View>(android.R.id.content)
+
+        var msgError = ErrorHandler.getErrorMessage(activity, Throwable())
+        if (wishlistResult.messageV2.isNotEmpty()) msgError = wishlistResult.messageV2
+
+        if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
+            activity?.let { activity ->
+                view?.let {
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(
+                        msgError,
+                        wishlistResult.ctaTextV2,
+                        wishlistResult.ctaActionV2,
+                        it,
+                        activity
+                    )
+                }
+            }
+        } else {
+            view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(msgError, it) }
+        }
+    }
+
+    private fun showMessageSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        if (activity == null) return
+        val view = requireActivity().findViewById<View>(android.R.id.content)
+
+        context?.let { context ->
+            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
+                wishlistResult,
+                context,
+                view
+            )
+        }
+    }
+
+    private fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel) {
+        context?.let {
+            TopAdsUrlHitter(it).hitClickUrl(
+                this::class.java.simpleName,
+                productCardOptionsModel.topAdsClickUrl + CLICK_TYPE_WISHLIST,
+                productCardOptionsModel.productId,
+                productCardOptionsModel.productName,
+                productCardOptionsModel.productImageUrl
+            )
+        }
+    }
+
+    private fun updateWishlist(id: String, isWishlist: Boolean, position: Int) {
+        if (position > -1 && adapter.itemCount > 0 &&
+            adapter.itemCount > position
+        ) {
+            viewModel.updateWishlist(id, position, isWishlist)
         }
     }
 }
