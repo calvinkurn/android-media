@@ -42,7 +42,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/error_content_card_title"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/error_loader"
+            app:srcCompat="@drawable/ic_empty_content_card"
             app:unify_image_type="rect" />
 
 
