@@ -35,7 +35,14 @@ import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
+import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
@@ -150,31 +157,6 @@ class FeedFragment :
         observeReport()
         observeFollow()
         observeLikeContent()
-    }
-
-    private fun observeLikeContent() {
-        feedPostViewModel.getLikeKolResp.observe(
-            viewLifecycleOwner
-        ) {
-            when (it) {
-                FeedResult.Loading -> {}
-                is FeedResult.Success -> {
-                    onSuccessLikeResponse(it.data)
-                }
-                is FeedResult.Failure -> {
-                    when (it.error) {
-                        else -> {
-                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
-                                requireContext().getString((it.error as CustomUiMessageThrowable).errorMessageId)
-                            } else {
-                                ErrorHandler.getErrorMessage(requireContext(), it.error)
-                            }
-                            showToast(errorMessage, Toaster.TYPE_ERROR)
-                        }
-                    }
-                }
-            }
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -448,6 +430,18 @@ class FeedFragment :
         dissmisByGreyArea = false
     }
 
+    override fun setReminder() {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onTimerFinishUpcoming() {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onTimerFinishOnGoing() {
+//        TODO("Not yet implemented")
+    }
+
     private fun observeAddToCart() {
         feedPostViewModel.atcRespData.observe(
             viewLifecycleOwner
@@ -554,6 +548,31 @@ class FeedFragment :
                     )
                 }
                 is Fail -> {}
+            }
+        }
+    }
+
+    private fun observeLikeContent() {
+        feedPostViewModel.getLikeKolResp.observe(
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                FeedResult.Loading -> {}
+                is FeedResult.Success -> {
+                    onSuccessLikeResponse(it.data)
+                }
+                is FeedResult.Failure -> {
+                    when (it.error) {
+                        else -> {
+                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
+                                requireContext().getString((it.error as CustomUiMessageThrowable).errorMessageId)
+                            } else {
+                                ErrorHandler.getErrorMessage(requireContext(), it.error)
+                            }
+                            showToast(errorMessage, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
             }
         }
     }
