@@ -65,6 +65,7 @@ class ProductDetailRobot {
 
     fun clickBeliLangsungOcc() {
         selectVariantOnVbs(3)
+        Thread.sleep(5_000)
         onView(withId(R.id.btn_buy_variant))
             .check(matches(isDisplayed()))
             .check(matches(ViewMatchers.withText("Beli Langsung")))
