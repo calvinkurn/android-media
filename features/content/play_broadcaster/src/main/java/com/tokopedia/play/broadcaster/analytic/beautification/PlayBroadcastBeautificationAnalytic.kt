@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.analytic.beautification
 
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+
 /**
  * Created By : Jonathan Darwin on March 17, 2023
  */
@@ -12,13 +14,13 @@ interface PlayBroadcastBeautificationAnalytic {
      */
 
     /** Row 1 */
-    fun clickEntryPointOnPreparationPage(authorId: String, authorType: String)
+    fun clickEntryPointOnPreparationPage(account: ContentAccountUiModel)
 
     /** Row 2 */
-    fun viewBeautificationCoachmark(authorId: String, authorType: String)
+    fun viewBeautificationCoachmark(account: ContentAccountUiModel)
 
     /** Row 3 */
-    fun clickCloseBeautificationCoachmark(authorId: String, authorType: String)
+    fun clickCloseBeautificationCoachmark(account: ContentAccountUiModel)
 
     /** Row 4 */
     fun openScreenEntryPointOnPreparationPage()
@@ -27,58 +29,58 @@ interface PlayBroadcastBeautificationAnalytic {
     fun openScreenBeautificationBottomSheet()
 
     /** Row 6 */
-    fun clickCustomFace(authorId: String, authorType: String, page: Page, customFace: String)
+    fun clickCustomFace(account: ContentAccountUiModel, page: Page, customFace: String)
 
     /** Row 7 */
-    fun clickNoneCustomFace(authorId: String, authorType: String, page: Page)
+    fun clickNoneCustomFace(account: ContentAccountUiModel, page: Page)
 
     /** Row 8 */
-    fun clickBeautificationTab(authorId: String, authorType: String, page: Page, tab: Tab)
+    fun clickBeautificationTab(account: ContentAccountUiModel, page: Page, tab: Tab)
 
     /** Row 9 */
-    fun clickBeautyFilterReset(authorId: String, authorType: String, page: Page)
+    fun clickBeautyFilterReset(account: ContentAccountUiModel, page: Page)
 
     /** Row 10 */
-    fun clickSliderBeautyFilter(authorId: String, authorType: String, page: Page, tab: Tab, customFace: String) /** TODO: not only customFace but also make up */
+    fun clickSliderBeautyFilter(account: ContentAccountUiModel, page: Page, tab: Tab, customFace: String) /** TODO: not only customFace but also make up */
 
     /** Row 11 */
-    fun viewResetFilterPopup(authorId: String, authorType: String, page: Page, tab: Tab) /** TODO: tab is not important */
+    fun viewResetFilterPopup(account: ContentAccountUiModel, page: Page, tab: Tab) /** TODO: tab is not important */
 
     /** Row 12 */
-    fun clickYesResetFilter(authorId: String, authorType: String, page: Page)
+    fun clickYesResetFilter(account: ContentAccountUiModel, page: Page)
 
     /** Row 13 */
-    fun clickPresetMakeup(authorId: String, authorType: String, page: Page, preset: String)
+    fun clickPresetMakeup(account: ContentAccountUiModel, page: Page, preset: String)
 
     /** Row 14 */
-    fun clickNonePreset(authorId: String, authorType: String, page: Page)
+    fun clickNonePreset(account: ContentAccountUiModel, page: Page)
 
     /** Row 15 */
-    fun clickDownloadPreset(authorId: String, authorType: String, page: Page, preset: String)
+    fun clickDownloadPreset(account: ContentAccountUiModel, page: Page, preset: String)
 
     /** Row 16 */
-    fun clickRetryDownloadPreset(authorId: String, authorType: String, page: Page, preset: String)
+    fun clickRetryDownloadPreset(account: ContentAccountUiModel, page: Page, preset: String)
 
     /** Row 17 */
-    fun viewFailDownloadPreset(authorId: String, authorType: String, page: Page, preset: String)
+    fun viewFailDownloadPreset(account: ContentAccountUiModel, page: Page, preset: String)
 
     /** Row 18 */
-    fun viewFailApplyBeautyFilter(authorId: String, authorType: String, page: Page, customFace: String)
+    fun viewFailApplyBeautyFilter(account: ContentAccountUiModel, page: Page, customFace: String)
 
     /** Row 19 */
-    fun clickRetryApplyBeautyFilter(authorId: String, authorType: String, page: Page, customFace: String)
+    fun clickRetryApplyBeautyFilter(account: ContentAccountUiModel, page: Page, customFace: String)
 
     /** Row 20 */
-    fun clickEntryPointOnLivePage(authorId: String, authorType: String)
+    fun clickEntryPointOnLivePage(account: ContentAccountUiModel)
 
     /** Row 21 */
-    fun viewEntryPointOnLivePage(authorId: String, authorType: String)
+    fun viewEntryPointOnLivePage(account: ContentAccountUiModel)
 
     /** Row 22 */
-    fun clickRetryReapplyBeautyFilter(authorId: String, authorType: String) /** TOOD: ini apa ya? */
+    fun clickRetryReapplyBeautyFilter(account: ContentAccountUiModel) /** TOOD: ini apa ya? */
 
     /** Row 23 */
-    fun viewFailReapplyBeautyFilter(authorId: String, authorType: String) /** TOOD: ini apa ya? */
+    fun viewFailReapplyBeautyFilter(account: ContentAccountUiModel) /** TOOD: ini apa ya? */
 
     enum class Page(val value: String) {
         Preparation("prep page"),
