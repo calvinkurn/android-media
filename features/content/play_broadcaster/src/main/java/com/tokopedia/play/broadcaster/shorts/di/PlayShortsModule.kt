@@ -18,6 +18,7 @@ import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
@@ -108,6 +109,7 @@ class PlayShortsModule(
         pinProductAnalytic: PlayBroadcastPinProductAnalytic,
         accountAnalytic: PlayBroadcastAccountAnalytic,
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
+        beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -121,6 +123,7 @@ class PlayShortsModule(
             pinProductAnalytic,
             accountAnalytic,
             shortsEntryPointAnalytic,
+            beautificationAnalytic,
         )
     }
 

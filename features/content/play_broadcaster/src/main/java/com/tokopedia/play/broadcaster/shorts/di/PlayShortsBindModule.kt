@@ -1,12 +1,16 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalyticImpl
+import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSender
+import com.tokopedia.play.broadcaster.analytic.sender.PlayBroadcasterAnalyticSenderImpl
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
@@ -164,6 +168,14 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsEntryPointAnalytic(shortsEntryPointAnalytic: PlayShortsEntryPointAnalyticImpl): PlayShortsEntryPointAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayBroadcastBeautificationAnalytic(analytic: PlayBroadcastBeautificationAnalyticImpl): PlayBroadcastBeautificationAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayBroadcasterAnalyticSender(analytic: PlayBroadcasterAnalyticSenderImpl): PlayBroadcasterAnalyticSender
 
     /** Play Broadcaster Config Store */
     @Binds
