@@ -143,8 +143,6 @@ class PlayViewModel @AssistedInject constructor(
         get() = _observableVideoProperty
     val observableEventPiPState: LiveData<Event<PiPState>>
         get() = _observableEventPiPState
-    val observableOnboarding: LiveData<Event<Unit>>
-        get() = _observableOnboarding
     val observableCastState: LiveData<PlayCastUiModel>
         get() = _observableCastState
     val observableKebabMenuSheet: LiveData<Map<KebabMenuType, BottomInsetsState>>
@@ -479,6 +477,9 @@ class PlayViewModel @AssistedInject constructor(
     val videoLatency: Long
         get() = videoLatencyPerformanceMonitoring.totalDuration
 
+    val performanceSummaryPageLink: String
+        get() = _channelReport.value.performanceSummaryPageLink
+
     private var mChannelData: PlayChannelData? = null
 
     val latestCompleteChannelData: PlayChannelData
@@ -564,7 +565,6 @@ class PlayViewModel @AssistedInject constructor(
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observableKebabSheets = MutableLiveData<Map<KebabMenuType, BottomInsetsState>>()
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
-    private val _observableOnboarding = MutableLiveData<Event<Unit>>()
 
     /**Added**/
     private val _observableCastState = MutableLiveData<PlayCastUiModel>()
@@ -1138,7 +1138,6 @@ class PlayViewModel @AssistedInject constructor(
         mChannelData = channelData
         handleChannelDetail(channelData.channelDetail)
         handleChannelInfo(channelData.channelDetail.channelInfo)
-        handleOnboarding(channelData.videoMetaInfo)
         handleVideoMetaInfo(channelData.videoMetaInfo)
         handlePartnerInfo(channelData.partnerInfo)
         handleChannelReportInfo(channelData.channelReportInfo)
@@ -1284,9 +1283,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun updateChannelInfo(channelData: PlayChannelData) {
         updatePartnerInfo(channelData)
-        if (!channelData.status.channelStatus.statusType.isFreeze) {
-            updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
-        }
+        updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
     }
 
     /**
@@ -1466,19 +1463,6 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handlePartnerInfo(partnerInfo: PlayPartnerInfo) {
         this._partnerInfo.value = partnerInfo
-    }
-
-    private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        if (videoMetaInfo.videoPlayer.isYouTube) return
-        cancelJob(ONBOARDING_COACHMARK_ID)
-
-        jobMap[ONBOARDING_COACHMARK_ID] = viewModelScope.launch(dispatchers.computation) {
-            delay(ONBOARDING_DELAY)
-
-            withContext(dispatchers.main) {
-                _observableOnboarding.value = Event(Unit)
-            }
-        }
     }
 
     private fun handleChannelReportInfo(channelReport: PlayChannelReportUiModel) {

@@ -8,7 +8,14 @@ import com.tokopedia.editshipping.data.repository.ShippingEditorRepository
 import com.tokopedia.editshipping.domain.mapper.ShipperDetailMapper
 import com.tokopedia.editshipping.domain.mapper.ShippingEditorMapper
 import com.tokopedia.editshipping.domain.mapper.ValidateShippingNewMapper
-import com.tokopedia.editshipping.domain.model.shippingEditor.*
+import com.tokopedia.editshipping.domain.model.shippingEditor.CourierTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperDetailModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperListModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorState
+import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEditorModel
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingResponse
@@ -41,7 +48,8 @@ class ShippingEditorViewModel @Inject constructor(
     val shipperDetail: LiveData<ShippingEditorState<ShipperDetailModel>>
         get() = _shipperDetail
 
-    private val _validateDataShipper = MutableLiveData<ShippingEditorState<ValidateShippingEditorModel>>()
+    private val _validateDataShipper =
+        MutableLiveData<ShippingEditorState<ValidateShippingEditorModel>>()
     val validateDataShipper: LiveData<ShippingEditorState<ValidateShippingEditorModel>>
         get() = _validateDataShipper
 
@@ -71,7 +79,8 @@ class ShippingEditorViewModel @Inject constructor(
         viewModelScope.launch(getOnErrorGetShipperTicker(shipperList)) {
             val getShipperTickerData = shippingEditorRepo.getShippingEditorShipperTicker(shopId)
             val data = mapper.mapShipperTickerList(getShipperTickerData)
-            _shipperList.value = ShippingEditorState.Success(combineTickerAndShipperList(shipperList, data))
+            _shipperList.value =
+                ShippingEditorState.Success(combineTickerAndShipperList(shipperList, data))
             _shipperTickerList.value = ShippingEditorState.Success(data)
         }
     }
@@ -80,7 +89,8 @@ class ShippingEditorViewModel @Inject constructor(
         _shipperDetail.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorGetShipperDetails) {
             val getShipperDetail = shippingEditorRepo.getShipperDetails()
-            val data = detailMapper.mapShipperDetails(getShipperDetail.ongkirShippingEditorGetShipperDetail.data)
+            val data =
+                detailMapper.mapShipperDetails(getShipperDetail.ongkirShippingEditorGetShipperDetail.data)
             _shipperDetail.value = ShippingEditorState.Success(data)
         }
     }
@@ -89,15 +99,19 @@ class ShippingEditorViewModel @Inject constructor(
         _validateDataShipper.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorValidateShippingEditor) {
             val getValidateData = shippingEditorRepo.validateShippingEditor(shopId, activatedSpIds)
-            _validateDataShipper.value = ShippingEditorState.Success(validateShippingMapper.mapShippingEditorData(getValidateData.ongkirShippingEditorPopup.data))
+            _validateDataShipper.value = ShippingEditorState.Success(
+                validateShippingMapper.mapShippingEditorData(getValidateData.ongkirShippingEditorPopup.data)
+            )
         }
     }
 
     fun saveShippingData(shopId: Long, activatedSpIds: String, featuresId: String?) {
         _saveShippingData.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorSaveShippingEditor) {
-            val saveShippingEditor = shippingEditorRepo.saveShippingEditor(shopId, activatedSpIds, featuresId)
-            _saveShippingData.value = ShippingEditorState.Success(saveShippingEditor.saveShippingEditor)
+            val saveShippingEditor =
+                shippingEditorRepo.saveShippingEditor(shopId, activatedSpIds, featuresId)
+            _saveShippingData.value =
+                ShippingEditorState.Success(saveShippingEditor.saveShippingEditor)
         }
     }
 
@@ -161,10 +175,11 @@ class ShippingEditorViewModel @Inject constructor(
         _shipperList.value = ShippingEditorState.Fail(e, "")
     }
 
-    private fun getOnErrorGetShipperTicker(shipperList: ShipperListModel) = CoroutineExceptionHandler { _, e ->
-        _shipperList.value = ShippingEditorState.Success(shipperList)
-        _shipperTickerList.value = ShippingEditorState.Fail(e, "")
-    }
+    private fun getOnErrorGetShipperTicker(shipperList: ShipperListModel) =
+        CoroutineExceptionHandler { _, e ->
+            _shipperList.value = ShippingEditorState.Success(shipperList)
+            _shipperTickerList.value = ShippingEditorState.Fail(e, "")
+        }
 
     private val onErrorGetShipperDetails = CoroutineExceptionHandler { _, e ->
         _shipperDetail.value = ShippingEditorState.Fail(e, "")
