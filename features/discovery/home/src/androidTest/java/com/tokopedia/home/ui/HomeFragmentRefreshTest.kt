@@ -58,7 +58,7 @@ class HomeFragmentRefreshTest {
          *
          * But if 3 minutes rule reached, total refresh will be above 2
          */
-        private const val TOTAL_PARTIAL_HEADER_REFRESH_COUNT = 3
+        private const val TOTAL_PARTIAL_HEADER_REFRESH_COUNT = 2
         private const val TOTAL_PARTIAL_HEADER_RESUME_COUNT = 1
 
         private const val BELOW_THREE_MINUTES_ELAPSED_TIME = 5000L
@@ -170,12 +170,11 @@ class HomeFragmentRefreshTest {
         /**
          * Assert data changes count
          * Full refresh will trigger more than 2 data changes
-         * - Wallet data changes
-         * - Membership data changes
+         * - Get Home Balance Widget
          * - Other data changes (from dynamic channel i.e Best seller widget, Play carousel widget, etc)
          */
         Thread.sleep(DELAY_PROCESS)
-        Assert.assertTrue(dataChangedCount > 0)
+        Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         Thread.sleep(DELAY_PROCESS)
     }
 
