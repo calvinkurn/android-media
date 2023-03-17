@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * Created by frenzel
  */
 data class DismissTodoWidgetResponse(
-    @SerializedName("closeToDoWidget")
+    @SerializedName("closeHomeToDoWidget")
     @Expose
     val closeToDoWidget: CloseMultisource = CloseMultisource()
 ) {
