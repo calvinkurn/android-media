@@ -114,7 +114,7 @@ data class CartShopHolderData(
 }
 
 data class CartShopBottomHolderData(
-    var shopData: CartShopHolderData
+    val shopData: CartShopHolderData
 )
 
 data class CartShopGroupTickerData(

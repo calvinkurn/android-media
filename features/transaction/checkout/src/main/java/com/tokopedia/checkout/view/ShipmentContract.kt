@@ -171,7 +171,7 @@ interface ShipmentContract {
 
         fun logOnErrorCheckout(throwable: Throwable, request: String)
         fun showPopUp(popUpData: PopUpData)
-        fun updateAddOnsData(addOnsDataModel: AddOnsDataModel?, identifier: Int)
+        fun updateAddOnsData(addOnsDataModel: AddOnsDataModel?, identifier: Int, cartString: String)
         fun doCheckout()
         fun updateAddOnsDynamicDataPassing(
             addOnsDataModel: AddOnsDataModel?,

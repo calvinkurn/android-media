@@ -1184,36 +1184,37 @@ class ShipmentAdapter @Inject constructor(
             }
             return 0
         }
-    val addOnOrderLevelPosition: Int
-        get() {
-            for (i in shipmentDataList.indices) {
-                if (shipmentDataList[i] is ShipmentCartItemModel) {
-                    val shipmentCartItemModel = shipmentDataList[i] as ShipmentCartItemModel?
-                    if (shipmentCartItemModel!!.addOnsOrderLevelModel != null) {
-                        if (!shipmentCartItemModel.addOnsOrderLevelModel!!.addOnsButtonModel.title.isEmpty()) {
+
+    fun getAddOnOrderLevelPosition(cartString: String): Int {
+        for (i in shipmentDataList.indices) {
+            if (shipmentDataList[i] is ShipmentCartItemModel) {
+                val shipmentCartItemModel = shipmentDataList[i] as ShipmentCartItemModel
+                if (shipmentCartItemModel.cartString == cartString && shipmentCartItemModel.addOnsOrderLevelModel != null) {
+                    if (shipmentCartItemModel.addOnsOrderLevelModel!!.addOnsButtonModel.title.isNotEmpty()) {
+                        return i
+                    }
+                }
+            }
+        }
+        return 0
+    }
+
+    fun getAddOnProductLevelPosition(cartString: String): Int {
+        for (i in shipmentDataList.indices) {
+            if (shipmentDataList[i] is ShipmentCartItemModel) {
+                val shipmentCartItemModel = shipmentDataList[i] as ShipmentCartItemModel
+                if (shipmentCartItemModel.cartString == cartString && shipmentCartItemModel.cartItemModels.isNotEmpty()) {
+                    for (j in shipmentCartItemModel.cartItemModels.indices) {
+                        if (shipmentCartItemModel.cartItemModels[j].addOnProductLevelModel.addOnsButtonModel.title.isNotEmpty()) {
                             return i
                         }
                     }
                 }
             }
-            return 0
         }
-    val addOnProductLevelPosition: Int
-        get() {
-            for (i in shipmentDataList.indices) {
-                if (shipmentDataList[i] is ShipmentCartItemModel) {
-                    val shipmentCartItemModel = shipmentDataList[i] as ShipmentCartItemModel
-                    if (shipmentCartItemModel.cartItemModels.isNotEmpty()) {
-                        for (j in shipmentCartItemModel.cartItemModels.indices) {
-                            if (!shipmentCartItemModel.cartItemModels[j].addOnProductLevelModel.addOnsButtonModel.title.isEmpty()) {
-                                return i
-                            }
-                        }
-                    }
-                }
-            }
-            return 0
-        }
+        return 0
+    }
+
     val promoCheckoutPosition: Int
         get() {
             for (i in shipmentDataList.indices) {
