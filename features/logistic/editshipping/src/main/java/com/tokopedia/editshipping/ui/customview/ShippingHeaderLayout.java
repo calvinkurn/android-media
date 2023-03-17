@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.ui.customview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -49,6 +50,7 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
         super(context, attrs, defStyleAttr);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void bindView(EditShippingLocationLayoutBinding view) {
         view.postalCode.addTextChangedListener(new TextWatcher() {
