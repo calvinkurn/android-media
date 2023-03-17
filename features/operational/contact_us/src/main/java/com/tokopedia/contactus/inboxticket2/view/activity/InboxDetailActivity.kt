@@ -307,7 +307,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     private fun onClickUpload() {
         showImagePickerDialog()
-        ContactUsTracking.sendGTMInboxTicket(this,"",
+        ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickAttachImage,
                 "")
@@ -340,7 +340,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     private fun sendMessage() {
         (mPresenter as InboxDetailContract.Presenter).sendMessage()
         edMessage?.setHint(R.string.contact_us_type_here)
-        ContactUsTracking.sendGTMInboxTicket(this, InboxTicketTracking.Event.Event,
+        ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.Event,
                 InboxTicketTracking.Category.EventCategoryInbox,
                 InboxTicketTracking.Action.EventClickReplyTicket,
                 getTicketId())
@@ -352,7 +352,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         val id = v.id
         if (id == R.id.txt_hyper) {
             setResult(InboxBaseView.RESULT_FINISH)
-            ContactUsTracking.sendGTMInboxTicket(this, "",
+            ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickHubungi,
                     InboxTicketTracking.Label.TicketClosed)
@@ -530,7 +530,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
             ) { dialog: DialogInterface, i: Int -> dialog.dismiss() }
             builder.setPositiveButton(getString(R.string.inbox_exit)
             ) { _, _ ->
-                ContactUsTracking.sendGTMInboxTicket(this, "",
+                ContactUsTracking.sendGTMInboxTicket("",
                         InboxTicketTracking.Category.EventInboxTicket,
                         InboxTicketTracking.Action.EventAbandonReplySubmission,
                         getString(R.string.inbox_cancel))
@@ -677,7 +677,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     private fun sendGTmEvent(eventLabel: String, action: String) {
-        ContactUsTracking.sendGTMInboxTicket(this, InboxTicketTracking.Event.Event,
+        ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.Event,
                 InboxTicketTracking.Category.EventCategoryInbox,
                 action,
                 "${getTicketId()} - $eventLabel")
@@ -690,7 +690,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     override fun onTransactionDetailsClick() {
-        ContactUsTracking.sendGTMInboxTicket(this, "",
+        ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickDetailTrasanksi,
                 "")

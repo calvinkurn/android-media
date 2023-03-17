@@ -90,6 +90,9 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
+    implementation projectOrAar(rootProject.ext.libraries.track)
+
+
 }
 
 project.ext {

@@ -268,7 +268,6 @@ class InboxContactUsFragment :
     fun sendTrackingClickToDetailTicketMessage(positionItem: Int) {
         val itemTicket = viewModel.getItemTicketOnPosition(positionItem)
         ContactUsTracking.sendGTMInboxTicket(
-            context,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventTicketClick,
@@ -424,7 +423,6 @@ class InboxContactUsFragment :
             contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(contactUsHome)
             ContactUsTracking.sendGTMInboxTicket(
-                context ?: return,
                 "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickHubungi,
@@ -441,7 +439,6 @@ class InboxContactUsFragment :
     @SuppressLint("DeprecatedMethod")
     private fun sendGTMClickChatButton() {
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickChatbotButton,
@@ -452,7 +449,6 @@ class InboxContactUsFragment :
     @SuppressLint("DeprecatedMethod")
     private fun sendGtmClickTicketFilter(selected: String) {
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickTicketFilter,

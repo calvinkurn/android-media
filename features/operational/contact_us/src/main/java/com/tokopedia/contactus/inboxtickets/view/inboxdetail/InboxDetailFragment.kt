@@ -414,7 +414,6 @@ class TicketFragment :
     @SuppressLint("DeprecatedMethod")
     private fun sendTrackerImageError1() {
         ContactUsTracking.sendGTMInboxTicket(
-            context ?: return,
             "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickAttachImage,
@@ -425,7 +424,6 @@ class TicketFragment :
     @SuppressLint("DeprecatedMethod")
     private fun sendTrackerImageError2() {
         ContactUsTracking.sendGTMInboxTicket(
-            context ?: return,
             "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickAttachImage,
@@ -588,7 +586,6 @@ class TicketFragment :
         val reasonListAsString = viewModel.getReasonListAsString(reasonListAsInt)
         val reasonAsString = reasonListAsString.joinToString(";")
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickSubmitCsatRating,
@@ -794,7 +791,6 @@ class TicketFragment :
 
     private fun sendGTMEventView() {
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             InboxTicketTracking.Event.EventView,
             InboxTicketTracking.Category.EventHelpMessageInbox,
             InboxTicketTracking.Action.EventImpressionOnCsatRating,
@@ -804,7 +800,6 @@ class TicketFragment :
 
     private fun sendGTMEventClick(number: Int, ticketNumber: String) {
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickOnCsatRating,
@@ -833,7 +828,6 @@ class TicketFragment :
 
     private fun sendGTmEvent(eventLabel: String, action: String) {
         ContactUsTracking.sendGTMInboxTicket(
-            context,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             action,
@@ -927,7 +921,6 @@ class TicketFragment :
     private fun onClickUpload() {
         showImagePickerDialog()
         ContactUsTracking.sendGTMInboxTicket(
-            context,
             "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickAttachImage,
@@ -961,7 +954,6 @@ class TicketFragment :
         viewModel.sendMessage(isUploadImageValid, imageList, message = userMessage)
         edMessage?.setHint(R.string.contact_us_type_here)
         ContactUsTracking.sendGTMInboxTicket(
-            context,
             InboxTicketTracking.Event.Event,
             InboxTicketTracking.Category.EventCategoryInbox,
             InboxTicketTracking.Action.EventClickReplyTicket,
@@ -985,7 +977,6 @@ class TicketFragment :
         )
         hideSendProgress()
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventNotAttachImageRequired,
@@ -1015,7 +1006,6 @@ class TicketFragment :
     @SuppressLint("DeprecatedMethod")
     private fun sendTrackerSearchFindResult() {
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickSearchDetails,
@@ -1026,7 +1016,6 @@ class TicketFragment :
     @SuppressLint("DeprecatedMethod")
     private fun sendTrackerSearchNotFindResult() {
         ContactUsTracking.sendGTMInboxTicket(
-            activity,
             "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickSearchDetails,
@@ -1039,7 +1028,6 @@ class TicketFragment :
         if (id == R.id.txt_hyper) {
             activity?.setResult(RESULT_FINISH)
             ContactUsTracking.sendGTMInboxTicket(
-                context,
                 "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickHubungi,
@@ -1180,7 +1168,6 @@ class TicketFragment :
 
     fun onCommentTransactionDetailsClick() {
         ContactUsTracking.sendGTMInboxTicket(
-            context ?: return,
             "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickDetailTrasanksi,
@@ -1208,7 +1195,6 @@ class TicketFragment :
 
     private fun sendTrackingImagePreview() {
         ContactUsTracking.sendGTMInboxTicket(
-            context,
             "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventClickAttachImage,
@@ -1277,7 +1263,6 @@ class TicketFragment :
 
     private fun sendTrackerBackPress() {
         ContactUsTracking.sendGTMInboxTicket(
-            context,
             "",
             InboxTicketTracking.Category.EventInboxTicket,
             InboxTicketTracking.Action.EventAbandonReplySubmission,
