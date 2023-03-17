@@ -76,10 +76,10 @@
         app:icon_color_night_disabled="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_enable_state="true"
+        app:icon_name="BELL"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/timer_feed_campaign_ribbon"
-        app:layout_constraintTop_toTopOf="parent"
-        app:name="Bell" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
