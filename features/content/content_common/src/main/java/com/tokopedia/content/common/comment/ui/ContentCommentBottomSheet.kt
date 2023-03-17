@@ -3,6 +3,7 @@ package com.tokopedia.content.common.comment.ui
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
@@ -452,6 +453,11 @@ class ContentCommentBottomSheet @Inject constructor(
                 )
             )
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        dismiss()
     }
 
     interface EntrySource {
