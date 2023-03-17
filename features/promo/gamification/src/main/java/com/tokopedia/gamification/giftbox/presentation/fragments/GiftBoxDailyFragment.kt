@@ -55,7 +55,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import timber.log.Timber
-import java.net.URLEncoder
+import java.util.Locale
+
 import javax.inject.Inject
 
 class GiftBoxDailyFragment : GiftBoxBaseFragment() {
@@ -590,7 +591,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     private fun setClickEventOnSeru(){
         tokoButtonContainer.btnThird.setOnClickListener {
             GtmEvents.clickSeruButton(viewModel.campaignSlug.orEmpty())
-            RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/seru"))
+            RouteManager.route(context,String.format(Locale.getDefault(),"%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/seru"))
         }
     }
 
