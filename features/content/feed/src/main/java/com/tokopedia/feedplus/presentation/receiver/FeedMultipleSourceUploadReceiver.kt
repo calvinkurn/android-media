@@ -7,6 +7,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -31,32 +32,11 @@ class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
     private val shortsUploadReceiver = shortsUploadReceiverFactory.create(fragment.viewLifecycleOwner)
     private val postUploadReceiver = postUploadReceiverFactory.create(fragment.requireContext())
 
-    private var mCurrentFlow: Flow<UploadInfo>? = null
-
     private val mutex = Mutex()
 
     private val receiverList = listOf(shortsUploadReceiver, postUploadReceiver)
 
-    private var receiverIndex = 0
-
     private var mReceiver: UploadReceiver? = null
-
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    override fun observe(): Flow<UploadInfo> = channelFlow {
-//        listOf(shortsUploadReceiver, postUploadReceiver).forEach { receiver ->
-//            launch {
-//                val flow = receiver.observe()
-//                flow.collectLatest { info ->
-//                    when (info) {
-//                        is UploadInfo.Progress, is UploadInfo.Failed -> setCurrentFlow(flow)
-//                        is UploadInfo.Finished -> clearFlow(flow)
-//                    }
-//
-//                    send(info)
-//                }
-//            }
-//        }
-//    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun observe(): Flow<UploadInfo> = channelFlow {
@@ -88,6 +68,7 @@ class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
         if (mReceiver != receiver) return@withLock
         Log.d("Upload Info", "Sending from Receiver: $receiver, Info: $info")
         send(info)
+        delay(2000)
     }
 
     private suspend fun setCurrentReceiver(receiver: UploadReceiver) = mutex.withLock {
