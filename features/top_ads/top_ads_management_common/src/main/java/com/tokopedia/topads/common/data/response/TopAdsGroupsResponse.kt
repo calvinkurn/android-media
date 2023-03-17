@@ -43,7 +43,15 @@ data class DashboardGroupDataType(
     @SerializedName("group_type")
     val groupType:String = "",
     @SerializedName("group_bid_setting")
-    val groupBidSetting:GroupBidSetting = GroupBidSetting()
+    val groupBidSetting:GroupBidSetting = GroupBidSetting(),
+    @SerializedName("total_item")
+    val totalItem:Int = 0,
+    @SerializedName("total_keyword")
+    val totalKeyword:Int = 0,
+    @SerializedName("group_price_daily")
+    val groupPriceDaily:Float = 0f,
+    @SerializedName("group_price_daily_spent_fmt")
+    val groupPriceDailySpentFmt:String = ""
 )
 
 data class GroupBidSetting(

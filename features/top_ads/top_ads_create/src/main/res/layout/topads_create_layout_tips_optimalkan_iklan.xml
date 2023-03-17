@@ -45,7 +45,8 @@
             android:tint="@color/Unify_NN900"
             app:layout_constraintBottom_toBottomOf="@id/tips_logo"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tips_logo" />
+            app:layout_constraintTop_toTopOf="@id/tips_logo"
+            android:rotation="180"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tips_description"
@@ -73,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:constraint_referenced_ids="tips_description,tips_view_more_button"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

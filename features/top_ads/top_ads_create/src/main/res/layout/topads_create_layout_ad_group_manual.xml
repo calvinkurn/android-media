@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/ad_type"
+        android:id="@+id/group_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/group_iklan"
@@ -17,38 +17,42 @@
         app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/ad_name"
+        android:id="@+id/group_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="-------------"
         tools:text="Kumpulan Sepatu Impor"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ad_type"
+        app:layout_constraintTop_toBottomOf="@id/group_type"
         app:typographyType="display_2"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/ad_detail"
+    <LinearLayout
+        android:id="@+id/lihat_pengaturan_group_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/see_group_settings"
-        android:textColor="@color/Unify_GN500"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ad_name"
-        app:typographyType="display_2"
-        app:typographyWeight="bold"/>
+        app:layout_constraintTop_toBottomOf="@id/group_name">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ad_detail_dropdown"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
-        android:tint="@color/Unify_GN500"
-        app:layout_constraintTop_toTopOf="@id/ad_detail"
-        app:layout_constraintStart_toEndOf="@id/ad_detail"
-        app:layout_constraintBottom_toBottomOf="@id/ad_detail"
-        app:srcCompat="@drawable/ic_dropdown_arrow"
-        android:layout_marginStart="8dp"/>
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/see_group_settings"
+            android:textColor="@color/Unify_GN500"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"/>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/group_detail_dropdown"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:tint="@color/Unify_GN500"
+            app:srcCompat="@drawable/ic_dropdown_arrow"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/products_count_heading"
@@ -58,14 +62,13 @@
         android:text="@string/no_of_products"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ad_detail"
+        app:layout_constraintTop_toBottomOf="@id/lihat_pengaturan_group_btn"
         app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/products_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-------------"
         tools:text="128"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="@id/products_count_heading"
@@ -88,7 +91,6 @@
         android:id="@+id/keywords_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-------------"
         tools:text="128"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="@id/keywords"
@@ -112,7 +114,6 @@
         android:id="@+id/ad_cost_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-------------"
         tools:text="Rp1.500"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="@id/ad_cost_search_heading"
@@ -136,7 +137,6 @@
         android:id="@+id/ad_cost_recommend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-------------"
         tools:text="Rp1.500"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="@id/ad_cost_recommend_heading"
@@ -160,7 +160,6 @@
         android:id="@+id/daily_budget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-------------"
         tools:text="Rp.123.500"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="@id/daily_budget_heading"
@@ -174,7 +173,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="------------"
         tools:text="Rp12.000 dari Rp123.000"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
@@ -186,7 +184,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="ad_detail,daily_budget_desc"/>
+        app:constraint_referenced_ids="lihat_pengaturan_group_btn,daily_budget_desc"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/manual_btn_submit"
@@ -202,5 +200,12 @@
         app:layout_constraintTop_toBottomOf="@id/lihat_pengaturan_grup_barrier"
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/lihat_pengaturan_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="products_count_heading,products_count,keywords,keywords_count,ad_cost_search_heading,ad_cost_search,ad_cost_recommend_heading,ad_cost_recommend,daily_budget_heading,daily_budget,daily_budget_desc"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

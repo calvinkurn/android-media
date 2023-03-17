@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -167,7 +168,7 @@
                 android:layout_width="match_parent"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="16dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/include_card_statistics"/>
 
             <androidx.constraintlayout.widget.Barrier
@@ -291,27 +292,6 @@
                     app:unifyButtonType="alternate"
                     app:unifyButtonVariant="ghost" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--            <androidx.constraintlayout.widget.Group-->
-<!--                android:id="@+id/lihat_pengaturan_group"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:constraint_referenced_ids="products_count_heading,products_count,keywords,keywords_count,ad_cost_search_heading,ad_cost_search,ad_cost_recommend_heading,ad_cost_recommend,daily_budget_heading,daily_budget,daily_budget_desc"-->
-<!--                android:visibility="gone"/>-->
-
-<!--            <androidx.constraintlayout.widget.Group-->
-<!--                android:id="@+id/manual_ad_group"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:constraint_referenced_ids="tips,ad_type,ad_name,ad_detail,ad_detail_dropdown,manual_btn_submit"-->
-<!--                android:visibility="gone"/>-->
-
-<!--            <androidx.constraintlayout.widget.Group-->
-<!--                android:id="@+id/automatic_ad_group"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:constraint_referenced_ids="group_status_logo,auto_ads_heading,group_status_description,ad_status_heading,ad_status_indicator,ad_status,daily_budget_heading2,daily_budget2,daily_budget_desc2,automatic_btn_submit"-->
-<!--                android:visibility="visible"/>-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>

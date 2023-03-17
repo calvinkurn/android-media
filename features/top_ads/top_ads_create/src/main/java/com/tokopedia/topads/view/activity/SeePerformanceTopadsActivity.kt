@@ -1,6 +1,7 @@
 package com.tokopedia.topads.view.activity
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spanned
@@ -13,10 +14,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.constants.MpTopadsConst
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.create.databinding.TopadsCreateBottomsheetSeePerformanceBinding
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
 import com.tokopedia.topads.view.fragment.AdsPerformanceDateRangePickerBottomSheet
@@ -34,6 +39,7 @@ import javax.inject.Inject
 
 private const val ROTATION_0 = 0f
 private const val ROTATION_180 = 180f
+private const val REQUEST_CODE = 99
 
 class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAdsComponent> {
 
@@ -80,13 +86,14 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     }
 
     private fun openMainBottomSheet() {
-        mainBottomSheetBinding = TopadsCreateBottomsheetSeePerformanceBinding.inflate(LayoutInflater.from(this))
+        mainBottomSheetBinding =
+            TopadsCreateBottomsheetSeePerformanceBinding.inflate(LayoutInflater.from(this))
         attachObservers()
         attachClickListeners()
 
         seePerformanceTopadsBottomSheet = BottomSheetUnify().apply {
-            setupContent(mainBottomSheetBinding?.root)
-            setChild(mainBottomSheetBinding?.root)
+            setupContent(mainBottomSheetBinding.root)
+            setChild(mainBottomSheetBinding.root)
             isDragable = false
             isHideable = false
             showKnob = true
@@ -96,6 +103,14 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             setTitle(this@SeePerformanceTopadsActivity.getString(R.string.your_product_ad_performance))
         }
         seePerformanceTopadsBottomSheet.show(supportFragmentManager, "tagFragment")
+
+        seePerformanceTopadsBottomSheet.setCloseClickListener {
+            finish()
+        }
+
+        seePerformanceTopadsBottomSheet.setOnDismissListener {
+            finish()
+        }
 
         mainBottomSheetBinding.includeTips.tipsDescription.text = HtmlCompat.fromHtml(
             getString(R.string.see_ads_performance_tips_description),
@@ -109,15 +124,15 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 hideMainBottomSheetContent()
             } else {
                 showMainBottomSheetContent()
-                mainBottomSheetBinding?.productImage?.urlSrc = it.data.itemImage
-                mainBottomSheetBinding?.productName?.text = it.data.itemName
+                mainBottomSheetBinding.productImage.urlSrc = it.data.itemImage
+                mainBottomSheetBinding.productName.text = it.data.itemName
             }
         }
 
         seePerformanceTopAdsViewModel?.topAdsDeposits?.observe(this) {
             when (it) {
                 is Success -> {
-                    mainBottomSheetBinding?.creditAmount?.text =
+                    mainBottomSheetBinding.creditAmount.text =
                         "Rp ${it.data.topadsDashboardDeposits.data.amount}"
                 }
                 else -> {}
@@ -139,19 +154,76 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         seePerformanceTopAdsViewModel?.topAdsGetShopInfo?.observe(this) {
-            if (it != null){
-                when(it.data.category){
+            if (it != null) {
+                when (it.data.category) {
                     3 -> setManualAdsUser()
                     4 -> setAutoAdsUser()
                 }
             }
         }
 
+        seePerformanceTopAdsViewModel?.isSingleAds?.observe(this) {
+            if(seePerformanceTopAdsViewModel?.topAdsGetShopInfo?.value?.data?.category == 3) {
+                if (it) {
+                    mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.GONE
+                    mainBottomSheetBinding.statisticsSep.visibility = View.GONE
+                } else {
+                    mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.VISIBLE
+                    mainBottomSheetBinding.statisticsSep.visibility = View.VISIBLE
+                    seePerformanceTopAdsViewModel?.getGroupInfo()
+                }
+            }
+        }
 
+        seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.observe(this) {
+            if (it != null && it.response?.errors.isNullOrEmpty()) {
+                mainBottomSheetBinding.includeAdGroupManual.groupName.text =
+                    it.response?.data?.get(0)?.groupName
+                mainBottomSheetBinding.includeAdGroupManual.productsCount.text =
+                    it.response?.data?.get(0)?.totalItem.toString()
+                mainBottomSheetBinding.includeAdGroupManual.keywordsCount.text =
+                    it.response?.data?.get(0)?.totalKeyword.toString()
+                mainBottomSheetBinding.includeAdGroupManual.adCostSearch.text =
+                    it.response?.data?.get(0)?.groupBidSetting?.productSearch.toString()
+                mainBottomSheetBinding.includeAdGroupManual.adCostRecommend.text =
+                    it.response?.data?.get(0)?.groupBidSetting?.productBrowse.toString()
+                mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text =
+                    if (it.response?.data?.get(0)?.groupPriceDaily == 0f) getString(R.string.tidak_dibatasi) else "Rp ${
+                        it.response?.data?.get(
+                            0
+                        )?.groupPriceDaily
+                    }"
+                if (it.response?.data?.get(0)?.groupPriceDaily != 0f) {
+                    mainBottomSheetBinding.includeAdGroupManual.dailyBudgetDesc.text =
+                        "Rp ${it.response?.data?.get(0)?.groupPriceDailySpentFmt} dari ${
+                            it.response?.data?.get(0)?.groupPriceDaily
+                        }"
+                }
+            }
+        }
+
+        seePerformanceTopAdsViewModel?.topAdsGetAutoAds?.observe(this) {
+            if (it != null) {
+                mainBottomSheetBinding.includeAdGroupAutomatic.adStatus.text =
+                    when (it.data.status) {
+                        100 -> "Tidak Aktif"
+                        200, 300, 400 -> "Dalam Proses"
+                        500 -> "Aktif"
+                        600 -> "Tidak Tampil"
+                        else -> ""
+                    }
+                mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudget2.text =
+                    "Rp ${it.data.dailyBudget}"
+                mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetDesc2.text =
+                    "Rp ${it.data.dailyUsage} dari ${
+                        it.data.dailyBudget
+                    }"
+            }
+        }
     }
 
     private fun attachClickListeners() {
-        mainBottomSheetBinding?.errorCtaButton?.setOnClickListener {
+        mainBottomSheetBinding.errorCtaButton.setOnClickListener {
             showMainBottomSheetLoading()
             firstFetch()
         }
@@ -161,32 +233,74 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 if (mainBottomSheetBinding.includeTips.tipsGroup.visibility == View.VISIBLE) View.GONE else View.VISIBLE
 
             if (mainBottomSheetBinding.includeTips.tipsExpandArrow.rotation == ROTATION_0) {
-                mainBottomSheetBinding.includeTips.tipsExpandArrow.animate()?.rotation(ROTATION_180)?.duration = 100L
+                mainBottomSheetBinding.includeTips.tipsExpandArrow.animate()
+                    .rotation(ROTATION_180).duration = 100L
             } else {
-                mainBottomSheetBinding.includeTips.tipsExpandArrow.animate().rotation(ROTATION_0)?.duration = 100L
+                mainBottomSheetBinding.includeTips.tipsExpandArrow.animate()
+                    .rotation(ROTATION_0).duration = 100L
             }
+        }
+
+        mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroupBtn.setOnClickListener {
+            mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroup.visibility =
+                if (mainBottomSheetBinding.includeAdGroupManual.lihatPengaturanGroup.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+
+            if (mainBottomSheetBinding.includeAdGroupManual.groupDetailDropdown.rotation == ROTATION_0) {
+                mainBottomSheetBinding.includeAdGroupManual.groupDetailDropdown.animate()
+                    .rotation(ROTATION_180).duration = 100L
+            } else {
+                mainBottomSheetBinding.includeAdGroupManual.groupDetailDropdown.animate()
+                    .rotation(ROTATION_0).duration = 100L
+            }
+        }
+
+        mainBottomSheetBinding.includeAdGroupManual.manualBtnSubmit.setOnClickListener {
+            val intent =
+                RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS).apply {
+                    putExtra(TopAdsDashboardConstant.TAB_POSITION, MpTopadsConst.CONST_2)
+                    putExtra(
+                        TopAdsDashboardConstant.GROUPID,
+                        seePerformanceTopAdsViewModel?.groupId?.value
+                    )
+                    putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, "see_ads_performance")
+                }
+            startActivity(intent)
+            finish()
+        }
+
+        mainBottomSheetBinding.includeAdGroupAutomatic.automaticBtnSubmit.setOnClickListener {
+            val intent = RouteManager.getIntent(this,
+                ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
+            startActivity(intent)
+            finish()
+        }
+
+        mainBottomSheetBinding.addCredit.setOnClickListener {
+            val intent = Intent(this, TopAdsAddCreditActivity::class.java)
+            intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+            startActivityForResult(intent, REQUEST_CODE)
         }
     }
 
     private fun hideMainBottomSheetContent() {
-        mainBottomSheetBinding?.mainLoader?.visibility = View.GONE
-        mainBottomSheetBinding?.errorText?.visibility = View.VISIBLE
-        mainBottomSheetBinding?.errorCtaButton?.visibility = View.VISIBLE
-        mainBottomSheetBinding?.mainBottomSheet?.visibility = View.GONE
+        mainBottomSheetBinding.mainLoader.visibility = View.GONE
+        mainBottomSheetBinding.errorText.visibility = View.VISIBLE
+        mainBottomSheetBinding.errorCtaButton.visibility = View.VISIBLE
+        mainBottomSheetBinding.mainBottomSheet.visibility = View.GONE
     }
 
     private fun showMainBottomSheetContent() {
-        mainBottomSheetBinding?.mainLoader?.visibility = View.GONE
-        mainBottomSheetBinding?.errorText?.visibility = View.GONE
-        mainBottomSheetBinding?.errorCtaButton?.visibility = View.GONE
-        mainBottomSheetBinding?.mainBottomSheet?.visibility = View.VISIBLE
+        mainBottomSheetBinding.mainLoader.visibility = View.GONE
+        mainBottomSheetBinding.errorText.visibility = View.GONE
+        mainBottomSheetBinding.errorCtaButton.visibility = View.GONE
+        mainBottomSheetBinding.mainBottomSheet.visibility = View.VISIBLE
     }
 
     private fun showMainBottomSheetLoading() {
-        mainBottomSheetBinding?.mainLoader?.visibility = View.VISIBLE
-        mainBottomSheetBinding?.errorText?.visibility = View.GONE
-        mainBottomSheetBinding?.errorCtaButton?.visibility = View.GONE
-        mainBottomSheetBinding?.mainBottomSheet?.visibility = View.GONE
+        mainBottomSheetBinding.mainLoader.visibility = View.VISIBLE
+        mainBottomSheetBinding.errorText.visibility = View.GONE
+        mainBottomSheetBinding.errorCtaButton.visibility = View.GONE
+        mainBottomSheetBinding.mainBottomSheet.visibility = View.GONE
     }
 
     private fun firstFetch() {
@@ -195,17 +309,17 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         seePerformanceTopAdsViewModel?.getShopInfo()
     }
 
-    private fun setAutoAdsUser(){
-//        mainBottomSheetBinding?.automaticAdGroup?.visibility = View.VISIBLE
-//        mainBottomSheetBinding?.manualAdGroup?.visibility = View.GONE
-//        mainBottomSheetBinding?.lihatPengaturanGroup?.visibility = View.GONE
+    private fun setAutoAdsUser() {
+        seePerformanceTopAdsViewModel?.getAutoAdsInfo()
+        mainBottomSheetBinding.includeAdGroupAutomatic.root.visibility = View.VISIBLE
+        mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.GONE
+        mainBottomSheetBinding.includeTips.root.visibility = View.GONE
     }
 
-    private fun setManualAdsUser(){
-//        seePerformanceTopAdsViewModel?.getGroupId()
-//        mainBottomSheetBinding?.automaticAdGroup?.visibility = View.GONE
-//        mainBottomSheetBinding?.manualAdGroup?.visibility = View.VISIBLE
-//        mainBottomSheetBinding?.lihatPengaturanGroup?.visibility = View.VISIBLE
+    private fun setManualAdsUser() {
+        mainBottomSheetBinding.includeAdGroupAutomatic.root.visibility = View.GONE
+        mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.VISIBLE
+        mainBottomSheetBinding.includeTips.root.visibility = View.VISIBLE
     }
 
     private fun getColoredSpanned(
@@ -232,9 +346,11 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         mainBottomSheetBinding.includeCardStatistics.tampilCount.text = dataItem.statTotalImpression
         mainBottomSheetBinding.includeCardStatistics.klikCount.text = dataItem.statTotalClick
         mainBottomSheetBinding.includeCardStatistics.totalTerjualCount.text = dataItem.statTotalSold
-        mainBottomSheetBinding.includeCardStatistics.pendapatanCount.text = dataItem.statTotalGrossProfit
+        mainBottomSheetBinding.includeCardStatistics.pendapatanCount.text =
+            dataItem.statTotalGrossProfit
         mainBottomSheetBinding.includeCardStatistics.pengeluaranCount.text = dataItem.statTotalSpent
-        mainBottomSheetBinding.includeCardStatistics.efektivitasIklanCount.text = dataItem.statTotalRoas
+        mainBottomSheetBinding.includeCardStatistics.efektivitasIklanCount.text =
+            dataItem.statTotalRoas
     }
 
     private fun setupContent(content: View?) {
