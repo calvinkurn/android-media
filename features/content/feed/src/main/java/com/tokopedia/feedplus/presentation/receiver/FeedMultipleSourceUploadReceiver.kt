@@ -68,7 +68,6 @@ class FeedMultipleSourceUploadReceiver @AssistedInject constructor(
         if (mReceiver != receiver) return@withLock
         Log.d("Upload Info", "Sending from Receiver: $receiver, Info: $info")
         send(info)
-        delay(2000)
     }
 
     private suspend fun setCurrentReceiver(receiver: UploadReceiver) = mutex.withLock {

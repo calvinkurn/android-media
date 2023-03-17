@@ -38,7 +38,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -184,7 +184,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                 val uploadReceiver = uploadReceiverFactory.create(this@FeedBaseFragment)
                 uploadReceiver
                     .observe()
-                    .collectLatest { info ->
+                    .collect { info ->
                         when (info) {
                             is UploadInfo.Progress -> {
                                 binding.uploadView.show()
