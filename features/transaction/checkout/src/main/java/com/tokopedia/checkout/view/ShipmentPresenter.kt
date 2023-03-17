@@ -514,7 +514,7 @@ class ShipmentPresenter @Inject constructor(
         isReloadData: Boolean,
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
-        isSkipUpdateOnboardingState: Boolean,
+        skipUpdateOnboardingState: Boolean,
         isReloadAfterPriceChangeHinger: Boolean,
         cornerId: String?,
         deviceId: String?,
@@ -593,7 +593,7 @@ class ShipmentPresenter @Inject constructor(
                     ShipmentAddressFormRequest(
                         isOneClickShipment,
                         isTradeIn,
-                        isSkipUpdateOnboardingState,
+                        skipUpdateOnboardingState,
                         cornerId,
                         deviceId,
                         leasingId,
@@ -1119,9 +1119,10 @@ class ShipmentPresenter @Inject constructor(
             for (indexShopError in indexShopErrorList) {
                 newShipmentCartItemModelList.remove(indexShopError)
             }
-            dataCheckoutRequestList =
-                view?.generateNewCheckoutRequest(newShipmentCartItemModelList, false)
         }
+        // workaround: always generate new to make sure latest data
+        dataCheckoutRequestList =
+            view?.generateNewCheckoutRequest(newShipmentCartItemModelList, false)
     }
 
     // This is for akamai error case
@@ -1939,7 +1940,7 @@ class ShipmentPresenter @Inject constructor(
     override fun generateCheckoutRequest(
         analyticsDataCheckoutRequests: List<DataCheckoutRequest>?,
         isDonation: Int,
-        listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>?,
+        crossSellModelArrayList: ArrayList<ShipmentCrossSellModel>,
         leasingId: String?
     ): CheckoutRequest? {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
@@ -1970,9 +1971,9 @@ class ShipmentPresenter @Inject constructor(
         }
         val crossSellRequest = CrossSellRequest()
         val listCrossSellItemRequest = ArrayList<CrossSellItemRequestModel>()
-        if (listShipmentCrossSellModel!!.isNotEmpty()) {
+        if (crossSellModelArrayList.isNotEmpty()) {
             val crossSellItemRequestModel = CrossSellItemRequestModel()
-            for (shipmentCrossSellModel in listShipmentCrossSellModel) {
+            for (shipmentCrossSellModel in crossSellModelArrayList) {
                 if (shipmentCrossSellModel.isChecked) {
                     crossSellItemRequestModel.id =
                         shipmentCrossSellModel.crossSellModel.id
@@ -2017,7 +2018,7 @@ class ShipmentPresenter @Inject constructor(
 
             // Then set the data promo global
             val promoModel = validateUsePromoRevampUiModel!!.promoUiModel
-            if (promoModel.codes.size > 0 && promoModel.messageUiModel.state != "red") {
+            if (promoModel.codes.isNotEmpty() && promoModel.messageUiModel.state != "red") {
                 val codes = ArrayList(promoModel.codes)
                 checkoutRequest.promoCodes = codes
                 val promoRequests: MutableList<PromoRequest> = ArrayList()

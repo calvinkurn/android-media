@@ -401,7 +401,7 @@ interface ShipmentContract {
         fun generateCheckoutRequest(
             analyticsDataCheckoutRequests: List<DataCheckoutRequest>?,
             isDonation: Int,
-            crossSellModelArrayList: ArrayList<ShipmentCrossSellModel>?,
+            crossSellModelArrayList: ArrayList<ShipmentCrossSellModel>,
             leasingId: String?
         ): CheckoutRequest?
 
