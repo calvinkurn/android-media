@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.analytic.setup.cover
 import com.tokopedia.play.broadcaster.analytic.KEY_SESSION_IRIS
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACKER_ID
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_BUSINESS_UNIT
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY_PLAY
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT_SELLER
@@ -33,7 +34,7 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_EVENT)
             .setEventAction("click - cover thumbnail to add cover")
-            .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
+            .setEventCategory(KEY_TRACK_CATEGORY)
             .setEventLabel(userId)
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(currentSite)
@@ -44,26 +45,11 @@ class PlayBroSetupCoverAnalyticImpl @Inject constructor(
             .send()
     }
 
-    override fun clickSaveCover() {
-        Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT)
-            .setEventAction("click - simpan cover")
-            .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
-            .setEventLabel(userSession.userId)
-            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
-            .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
-            .setUserId(userId)
-            .setCustomProperty(KEY_TRACKER_ID, "26715")
-            .build()
-            .send()
-    }
-
     override fun clickEditCover() {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_EVENT)
             .setEventAction("click - edit cover")
-            .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
+            .setEventCategory(KEY_TRACK_CATEGORY)
             .setEventLabel(userSession.userId)
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(currentSite)

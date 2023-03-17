@@ -8,7 +8,7 @@ import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_CATEGORY
 import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_LABEL
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACKER_ID
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_BUSINESS_UNIT
-import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY_PLAY
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT
 import com.tokopedia.play.broadcaster.analytic.KEY_USER_ID
 import com.tokopedia.play.broadcaster.analytic.currentSite
@@ -28,7 +28,7 @@ class PlayBroSetupTitleAnalyticImpl @Inject constructor(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_EVENT,
                 KEY_EVENT_ACTION to "click - simpan",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_PLAY,
+                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
                 KEY_EVENT_LABEL to userSession.shopId,
                 KEY_CURRENT_SITE to currentSite,
                 KEY_USER_ID to userSession.userId,
