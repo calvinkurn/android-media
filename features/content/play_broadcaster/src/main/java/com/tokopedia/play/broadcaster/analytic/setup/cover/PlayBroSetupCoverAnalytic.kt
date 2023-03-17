@@ -9,6 +9,8 @@ interface PlayBroSetupCoverAnalytic {
 
     fun clickAddNewCover()
 
+    fun clickSaveCover()
+
     fun clickEditCover()
 
     fun clickCloseTemplateTabCoachMark()

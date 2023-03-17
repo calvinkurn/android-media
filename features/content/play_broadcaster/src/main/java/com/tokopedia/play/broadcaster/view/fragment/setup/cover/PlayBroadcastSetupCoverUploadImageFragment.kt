@@ -109,7 +109,10 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
             openCoverSetupFragment()
         }
         btnSetupCoverUploadImage.setOnClickListener {
-            if (btnSetupCoverUploadImage.isEnabled) mListener?.dismissSetupCover(TAB_UPLOAD_IMAGE)
+            if (btnSetupCoverUploadImage.isEnabled) {
+                analytic.clickSaveCover()
+                mListener?.dismissSetupCover(TAB_UPLOAD_IMAGE)
+            }
         }
     }
 

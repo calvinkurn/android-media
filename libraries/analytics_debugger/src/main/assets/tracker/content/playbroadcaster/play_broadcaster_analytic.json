@@ -5,12 +5,13 @@
     {
       "event": "clickSellerBroadcast",
       "eventAction": "click - simpan",
-      "eventCategory": "seller broadcast",
+      "eventCategory": "play broadcast",
       "eventLabel": "\\d+",
       "businessUnit": "play",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "trackerId": "26705"
     },
     {
       "event": "clickSellerBroadcast",
@@ -85,22 +86,35 @@
     {
       "event": "clickSellerBroadcast",
       "eventAction": "click - cover thumbnail to add cover",
-      "eventCategory": "seller broadcast",
+      "eventCategory": "play broadcast",
       "eventLabel": "\\d+",
       "businessUnit": "play",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "trackerId": "26713"
+    },
+    {
+      "event": "clickSellerBroadcast",
+      "eventAction": "click - simpan cover",
+      "eventCategory": "play broadcast",
+      "eventLabel": "\\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*",
+      "trackerId": "26715"
     },
     {
       "event": "clickSellerBroadcast",
       "eventAction": "click - edit cover",
-      "eventCategory": "seller broadcast",
+      "eventCategory": "play broadcast",
       "eventLabel": "\\d+",
       "businessUnit": "play",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "trackerId": "26716"
     },
     {
       "event": "(clickSellerBroadcast|clickPG)",
