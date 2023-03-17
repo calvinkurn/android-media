@@ -1,12 +1,15 @@
 package com.tokopedia.dilayanitokopedia.home.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.LocationParamMapper
+import com.tokopedia.dilayanitokopedia.home.domain.model.GetAnchorTabParam
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeAnchorTabResponse
-import com.tokopedia.dilayanitokopedia.home.domain.query.GetAnchorTabQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
@@ -15,33 +18,53 @@ import javax.inject.Inject
  * Created by irpan on 10/01/23.
  */
 class GetAnchorTabUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<GetHomeAnchorTabResponse>(graphqlRepository) {
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<GetAnchorTabParam, GetHomeAnchorTabResponse>(dispatcher.io) {
 
     companion object {
-        private const val PARAM = "param"
-        private const val PARAM_LOCATION = "location"
+        private const val QUERY_NAME = "DTGetHomeIconV2"
+        private const val QUERY = """
+            query getHomeIconV2(${'$'}param: String, ${'$'}location: String) {
+              getHomeIconV2(param: ${'$'}param, location: ${'$'}location) {
+                icons {
+                  id
+                  url
+                  name
+                  page
+                  persona
+                  brandID
+                  applinks
+                  imageUrl
+                  buIdentifier
+                  campaignCode
+                  withBackground
+                  categoryPersona
+                  galaxyAttribution
+                  feParam
+                }
+              }
+            }
+
+        """
 
         // value hardcode for dt anchor tab icons
         private const val PARAM_VALUE_PAGE_DT = "page=dt&type=anchor-icon"
+
+        fun getParam(location: LocalCacheModel): GetAnchorTabParam {
+            return GetAnchorTabParam(
+                param = PARAM_VALUE_PAGE_DT,
+                location = LocationParamMapper.mapLocation(location)
+            )
+        }
     }
 
-    init {
-        setGraphqlQuery(GetAnchorTabQuery)
-        setTypeClass(GetHomeAnchorTabResponse::class.java)
+    override fun graphqlQuery(): String {
+        return QUERY
     }
 
-    suspend fun execute(
-        localCacheModel: LocalCacheModel
-    ): GetHomeAnchorTabResponse.GetHomeIconV2 {
-        setRequestParams(
-            RequestParams.create()
-                .apply {
-                    putString(PARAM, PARAM_VALUE_PAGE_DT)
-                    putString(PARAM_LOCATION, LocationParamMapper.mapLocation(localCacheModel))
-                }.parameters
-        )
-
-        return executeOnBackground().response
+    @GqlQuery(QUERY_NAME, QUERY)
+    override suspend fun execute(params: GetAnchorTabParam): GetHomeAnchorTabResponse {
+        return graphqlRepository.request(DTGetHomeIconV2(), params)
     }
 }

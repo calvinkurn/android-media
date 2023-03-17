@@ -1,6 +1,5 @@
 package com.tokopedia.dilayanitokopedia.home.domain.model.common
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -8,9 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class FreeOngkir(
     @SerializedName("imageUrl")
-    @Expose
     val imageUrl: String = "",
     @SerializedName("isActive")
-    @Expose
     val isActive: Boolean = false
 )
