@@ -43,7 +43,6 @@ import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -76,12 +75,17 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private var mOnboarding: ImmersiveFeedOnboarding? = null
 
     private var appLinkTabPosition: Int
-        get() = arguments?.getInt(
-            ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
-            TAB_FIRST_INDEX
-        ) ?: TAB_FIRST_INDEX
+        get() = arguments?.getString(
+            ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION
+        )?.toInt() ?: TAB_FIRST_INDEX
         set(value) {
-            arguments?.putInt(ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION, value)
+            val arguments = this.arguments ?: Bundle().apply {
+                this@FeedBaseFragment.arguments = this
+            }
+            arguments.putString(
+                ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
+                value.toString(),
+            )
         }
 
     private val openCreateShorts = registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
