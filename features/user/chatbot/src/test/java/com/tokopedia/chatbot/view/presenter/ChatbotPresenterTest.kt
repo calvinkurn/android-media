@@ -379,6 +379,23 @@ class ChatbotPresenterTest {
     }
 
     @Test
+    fun `handleReplyBoxWSToggle if content_code=105, render= all`() {
+        val fullResponse =
+            SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CONTENT_CODE_105)
+        chatResponse = Gson().fromJson(fullResponse.jsonObject, ChatSocketPojo::class.java)
+
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
+
+        val dynamicContentCode =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
+
+        presenter.handleDynamicAttachment34(chatResponse)
+
+        assertEquals(dynamicContentCode, 105)
+    }
+
+    @Test
     fun `validateHistoryForAttachment34 if content_code=101, render=android, hidden=false`() {
         val fullResponse =
             SocketResponse.getResponse(SocketResponse.DYNAMIC_ATTACHMENT_CODE_101_RENDER_ANDROID_HIDDEN_FALSE)
@@ -2511,5 +2528,40 @@ class ChatbotPresenterTest {
             ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT to "123",
             ChatbotConstant.ChatbotUnification.USED_BY to "Article"
         )
+    }
+
+    @Test
+    fun `sendDynamicAttachmentText through socket`() {
+        mockkObject(ChatbotSendableWebSocketParam)
+
+        every {
+            ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(any(), any(), any(), any())
+        } returns mockk(relaxed = true)
+
+        every {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        } just runs
+
+        presenter.sendDynamicAttachmentText("123", ChatActionBubbleUiModel(), "", "")
+
+        verify {
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        }
     }
 }

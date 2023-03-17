@@ -2542,28 +2542,6 @@ class ChatbotFragment :
             opponentId
         )
         getViewState()?.removeDynamicStickyButton()
-
-//        getViewState()?.onSendingMessage(
-//            messageId,
-//            getUserSession().userId,
-//            getUserSession()
-//                .name,
-//            bubble.text,
-//            startTime,
-//            null
-//        )
-
-        //TODO fake message here
-//        presenter.sendMessage(
-//            messageId,
-//            "ABCC",
-//            startTime,
-//            opponentId,
-//            replyBubbleContainer?.referredMsg,
-//            onSendingMessage("ABCC", startTime, replyBubbleContainer?.referredMsg)
-//        )
-
-
         getViewState()?.scrollToBottom()
     }
 }

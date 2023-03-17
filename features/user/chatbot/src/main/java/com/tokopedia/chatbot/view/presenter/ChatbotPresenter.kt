@@ -449,11 +449,8 @@ class ChatbotPresenter @Inject constructor(
                 REPLY_BOX_TOGGLE_VALUE -> {
                     convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
                 }
-//                DYNAMIC_STICKY_BUTTON_RECEIVE -> {
-//                    convertToDynamicStickyButton(replyBoxAttribute.dynamicContent)
-//                }
                 else -> {
-                    // TODO need to show fallback message
+                    // need to show fallback message
                     mapToVisitable(pojo)
                 }
             }
@@ -481,15 +478,6 @@ class ChatbotPresenter @Inject constructor(
         )
         handleSmallReplyBoxWS(smallReplyBoxContent)
     }
-
-//    private fun convertToDynamicStickyButton(dynamicContent: String?) {
-//        if(dynamicContent == null)
-//            return
-//        val dynamicStickyButton = Gson().fromJson(
-//            dynamicContent,
-//            DynamicStickyButton::class.java
-//        )
-//    }
 
     private fun handleBigReplyBoxWS(bigReplyBoxContent: BigReplyBoxAttribute) {
         if (bigReplyBoxContent.isActive) {
