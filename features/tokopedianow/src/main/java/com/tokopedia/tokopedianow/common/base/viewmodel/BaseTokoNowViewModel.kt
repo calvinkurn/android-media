@@ -12,7 +12,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem.MiniCartItemProduct
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
@@ -81,22 +81,16 @@ open class BaseTokoNowViewModel(
         changeQuantityJob?.cancel()
 
         val miniCartItem = getMiniCartItem(productId)
-        val cartQuantity = miniCartItem?.quantity
+        val cartQuantity = miniCartItem.quantity
         if (cartQuantity == quantity) return
 
         launchWithDelay(block = {
+            miniCartItem.quantity = quantity
             when {
-                miniCartItem == null && quantity.isMoreThanZero() -> {
-                    addItemToCart(productId, shopId, quantity, onSuccessAddToCart, onError)
-                }
-                miniCartItem != null && quantity.isMoreThanZero() -> {
-                    updateCartItem(miniCartItem, quantity, onSuccessUpdateCart, onError)
-                }
-                miniCartItem != null -> {
-                    deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
-                }
+                cartQuantity.isZero() -> addItemToCart(productId, shopId, quantity, onSuccessAddToCart, onError)
+                quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
+                else -> updateCartItem(miniCartItem, quantity, onSuccessUpdateCart, onError)
             }
-            miniCartItem?.quantity = quantity
         }, delay = CHANGE_QUANTITY_DELAY).let {
             changeQuantityJob = it
         }
@@ -128,9 +122,9 @@ open class BaseTokoNowViewModel(
         }
     }
 
-    fun getMiniCartItem(productId: String): MiniCartItemProduct? {
+    fun getMiniCartItem(productId: String): MiniCartItemProduct {
         val items = miniCartData?.miniCartItems.orEmpty()
-        return items.getMiniCartItemProduct(productId)
+        return items.getMiniCartItemProduct(productId) ?: MiniCartItemProduct()
     }
 
     fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {

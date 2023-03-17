@@ -17,7 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
+class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     companion object {
         private const val CHANGE_QUANTITY_DELAY = 500L
@@ -97,10 +97,10 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
 
             mockProductModels()
 
-            mockMiniCartSimplifiedData(productId)
+            mockMiniCartSimplifiedData(productId = productId, quantity = 1)
 
             val response = UpdateCartV2Data(
-                error = listOf(message),
+                error = listOf(message)
             )
 
             onUpdateItemCart_thenReturn(response)
@@ -124,7 +124,7 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
 
             mockProductModels()
 
-            mockMiniCartSimplifiedData(productId)
+            mockMiniCartSimplifiedData(productId = productId, quantity = 1)
 
             onUpdateItemCart_thenReturn(Throwable())
 
@@ -279,5 +279,4 @@ class AddToCartTest: TokoNowProductRecommendationViewModelTestFixture() {
             viewModel.removeCartItem.verifyValueEquals(null)
         }
     }
-
 }
