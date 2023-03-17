@@ -25,7 +25,7 @@
         android:layout_marginRight="16dp"
         app:typographyType="heading_2"
         android:gravity="center"
-        android:text="Mudah komunikasi dengan driver untuk pesananmu"/>
+        android:text="@string/tokochat_consent_subtitle"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokochat_tv_desc_consent"
@@ -40,16 +40,18 @@
         app:typographyType="paragraph_2"
         android:gravity="center"
         android:textColor="@color/Unify_NN600"
-        android:text="Kami perlu beberapa datamu agar komunikasi kamu dengan driver lewat Chat bisa lancar."/>
+        android:text="@string/tokochat_consent_desc"/>
 
     <com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
         android:id="@+id/tokochat_widget_consent"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tokochat_tv_desc_consent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:hide_when_already_have_consent="true"
         app:defaultTemplate="TNC_PRIVACY_OPTIONAL" />
 
@@ -60,10 +62,9 @@
         app:layout_constraintTop_toBottomOf="@id/tokochat_widget_consent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Mulai Chat Driver"/>
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/tokochat_consent_button"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

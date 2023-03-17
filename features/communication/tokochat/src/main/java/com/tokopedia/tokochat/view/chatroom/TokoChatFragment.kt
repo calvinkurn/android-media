@@ -131,8 +131,8 @@ open class TokoChatFragment :
         super.initViews(view, savedInstanceState)
         setupBackground()
         setupTrackers()
+        setDataFromArguments(savedInstanceState)
         askTokoChatConsent()
-        initializeChatRoom(savedInstanceState)
     }
 
     private fun askTokoChatConsent() {
@@ -141,13 +141,39 @@ open class TokoChatFragment :
 
     protected open fun initializeChatRoom(savedInstanceState: Bundle?) {
         setDataFromArguments(savedInstanceState)
-        if (viewModel.gojekOrderId.isNotBlank()) { // Do not init when order id empty
+        loadChatRoomData()
+    }
+
+    private fun loadChatRoomData() {
+        // Do not init when order id empty
+        if (viewModel.gojekOrderId.isNotBlank()) {
             initGroupBooking()
         }
     }
 
     fun onRestoreInstanceState(savedInstanceState: Bundle) {
         initializeChatRoom(savedInstanceState)
+    }
+
+    private fun observeUserConsent() {
+        observe(viewModel.isNeedConsent) {
+            when (it) {
+                is Success -> {
+                    if (it.data) {
+                        TokoChatConsentBottomSheet.show(childFragmentManager) {
+                            activity?.finish()
+                        }
+                    } else {
+                        // Show chat room
+                        loadChatRoomData()
+                    }
+                }
+                is Fail -> {
+                    // Show chat room
+                    loadChatRoomData()
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -850,23 +876,6 @@ open class TokoChatFragment :
                 showInterlocutorTypingStatus()
             } else {
                 hideInterlocutorTypingStatus()
-            }
-        }
-    }
-
-    private fun observeUserConsent() {
-        observe(viewModel.isNeedConsent) {
-            when (it) {
-                is Success -> {
-                    if (it.data) {
-                        TokoChatConsentBottomSheet.show(childFragmentManager) {
-                            activity?.finish()
-                        }
-                    }
-                }
-                is Fail -> {
-                    // do nothing
-                }
             }
         }
     }

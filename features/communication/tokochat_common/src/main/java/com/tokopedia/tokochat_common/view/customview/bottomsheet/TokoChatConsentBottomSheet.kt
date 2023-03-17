@@ -13,6 +13,7 @@ import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IMAGE_TOKOCHAT_CONSENT
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 
 class TokoChatConsentBottomSheet(
     private val dismissAction: (() -> Unit)
@@ -48,11 +49,16 @@ class TokoChatConsentBottomSheet(
 
     private fun setupViews() {
         setMainImage()
+        setMainButton(false) // False when first show up
         setListener()
     }
 
     private fun setMainImage() {
         binding?.tokochatImageConsent?.loadImage(IMAGE_TOKOCHAT_CONSENT)
+    }
+
+    private fun setMainButton(isEnabled: Boolean) {
+        binding?.tokochatBtnConsent?.isEnabled = isEnabled
     }
 
     private fun loadConsentWidget() {
@@ -79,11 +85,25 @@ class TokoChatConsentBottomSheet(
         setCloseClickListener {
             dismissAction()
         }
-
         setShowListener {
             Handler(Looper.getMainLooper()).postDelayed({
                 loadConsentWidget()
             }, DELAY)
+        }
+        binding?.tokochatWidgetConsent?.setOnFailedGetCollectionListener {
+            this.dismiss()
+        }
+        binding?.tokochatWidgetConsent?.setSubmitResultListener(
+            onSuccess = {
+                this.dismiss()
+            },
+            onError = {
+                Timber.d(it)
+                this.dismiss()
+            }
+        )
+        binding?.tokochatWidgetConsent?.setOnCheckedChangeListener {
+            setMainButton(it) // Change button enable based on checkbox
         }
     }
 

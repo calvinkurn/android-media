@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
 import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
@@ -11,6 +12,7 @@ import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollect
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetCollectionPointWithConsentUseCase
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetConsentCollectionUseCase
 import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionResponse
 import com.tokopedia.usercomponents.userconsent.domain.submission.SubmitConsentUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
@@ -26,6 +28,10 @@ class UserConsentViewModel @Inject constructor(
     private val _consentCollection = SingleLiveEvent<UserComponentsStateResult<UserConsentCollectionDataModel>>()
     val consentCollection: LiveData<UserComponentsStateResult<UserConsentCollectionDataModel>>
         get() = _consentCollection
+
+    private val _submitResult = SingleLiveEvent<UserComponentsStateResult<ConsentSubmissionResponse>>()
+    val submitResult: LiveData<UserComponentsStateResult<ConsentSubmissionResponse>>
+        get() = _submitResult
 
     fun getConsentCollection(consentCollectionParam: ConsentCollectionParam, hideWhenAlreadyHaveConsent: Boolean) {
         launchCatchError(coroutineContext, {
@@ -55,8 +61,17 @@ class UserConsentViewModel @Inject constructor(
 
     fun submitConsent(param: ConsentSubmissionParam) {
         launchCatchError(block =  {
-            submitConsentUseCase(param)
-        }, onError = {})
+            val result = submitConsentUseCase(param)
+            if (result.submitConsentRes.isSuccess) {
+                _submitResult.value = UserComponentsStateResult.Success(result)
+            } else {
+                _submitResult.value = UserComponentsStateResult.Fail(
+                    MessageErrorException(result.submitConsentRes.errorMessages.joinToString())
+                )
+            }
+        }, onError = {
+            _submitResult.value = UserComponentsStateResult.Fail(it)
+        })
     }
 
     companion object {

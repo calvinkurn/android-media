@@ -11,14 +11,11 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
 import com.tokopedia.usercomponents.databinding.UiUserConsentBinding
@@ -29,12 +26,11 @@ import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CONSENT_
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.MANDATORY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.NO_CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.OPTIONAL
-import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION
-import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION_POLICY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentType.*
 import com.tokopedia.usercomponents.userconsent.di.DaggerUserConsentComponent
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionResponse
 import com.tokopedia.usercomponents.userconsent.domain.submission.Purpose
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeAdapter
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
@@ -72,6 +68,8 @@ class UserConsentWidget : FrameLayout,
     private var onCheckedChangeListener: (Boolean) -> Unit = {}
     private var onAllCheckBoxCheckedListener: (Boolean) -> Unit = {}
     private var onNeedConsentListener: (Boolean) -> Unit = {}
+    private var onSubmitSuccessListener: (ConsentSubmissionResponse?) -> Unit = {}
+    private var onSubmitErrorListener: (Throwable) -> Unit = {}
     private var onFailedGetCollectionListener: (Throwable) -> Unit = {}
 
     /** set Default State if user got error when trying to get data collection from BE **/
@@ -199,6 +197,20 @@ class UserConsentWidget : FrameLayout,
                             }
                             onNeedConsentListener.invoke(needConsent != false)
                         }
+                    }
+                }
+            }
+
+            viewModel?.submitResult?.observe(it) { result ->
+                when (result) {
+                    is UserComponentsStateResult.Success -> {
+                        onSubmitSuccessListener(result.data)
+                    }
+                    is UserComponentsStateResult.Fail -> {
+                        onSubmitErrorListener(result.error)
+                    }
+                    else -> {
+                        // do nothing
                     }
                 }
             }
@@ -473,6 +485,14 @@ class UserConsentWidget : FrameLayout,
 
     fun setOnNeedConsentListener(listener: (Boolean) -> Unit) {
         onNeedConsentListener = listener
+    }
+
+    fun setSubmitResultListener(
+        onSuccess: ((ConsentSubmissionResponse?) -> Unit),
+        onError: ((Throwable) -> Unit)
+    ) {
+        onSubmitSuccessListener = onSuccess
+        onSubmitErrorListener = onError
     }
 
     fun isNeedConsent(): Boolean {

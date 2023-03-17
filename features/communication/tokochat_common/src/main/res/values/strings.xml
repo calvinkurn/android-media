@@ -39,4 +39,8 @@
     <string name="tokochat_message_censored_terms_condition">Buat tahu lebih lanjut, cek Syarat &amp; Ketentuan</string>
     <string name="tokochat_message_censored_terms_condition_span">Syarat &amp; Ketentuan</string>
 
+    <string name="tokochat_consent_subtitle">Mudah komunikasi dengan driver untuk pesananmu</string>
+    <string name="tokochat_consent_desc">Kami perlu beberapa datamu agar komunikasi kamu dengan driver lewat Chat bisa lancar.</string>
+    <string name="tokochat_consent_button">Mulai Chat Driver</string>
+
 </resources>
