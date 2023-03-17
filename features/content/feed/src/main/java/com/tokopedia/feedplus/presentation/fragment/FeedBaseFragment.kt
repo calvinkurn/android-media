@@ -17,12 +17,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.content.common.producttag.util.extension.isNotChanged
+import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
-import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedplus.databinding.FragmentFeedBaseBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShortsContract
+import com.tokopedia.feedplus.presentation.activityresultcontract.OpenLoginContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.adapter.bottomsheet.FeedContentCreationTypeBottomSheet
 import com.tokopedia.feedplus.presentation.customview.UploadInfoView
@@ -34,13 +37,16 @@ import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.receiver.UploadInfo
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
+import com.tokopedia.feedplus.R
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -76,11 +82,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         ) ?: TAB_FIRST_INDEX
 
     private val openCreateShorts = registerForActivityResult(OpenCreateShortsContract()) { isCreatingNewShorts ->
-        if (isCreatingNewShorts) binding.vpFeedTabItemsContainer.setCurrentItem(
-            TAB_SECOND_INDEX,
-            true,
-        )
+        if (!isCreatingNewShorts) return@registerForActivityResult
+        binding.vpFeedTabItemsContainer.setCurrentItem(TAB_SECOND_INDEX, true)
     }
+
+    private val openLogin = registerForActivityResult(OpenLoginContract()) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -107,6 +113,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
         observeFeedTabData()
         observeCreateContentBottomSheetData()
+        observeUserInfo()
 
         observeUpload()
     }
@@ -143,7 +150,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                 )
                 intent.putExtra(
                     BundleData.TITLE,
-                    getString(R.string.feed_post_sebagai)
+                    getString(feedComponentR.string.feed_post_sebagai)
                 )
                 intent.putExtra(
                     BundleData.APPLINK_FOR_GALLERY_PROCEED,
@@ -187,6 +194,21 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
+    private fun observeUserInfo() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.userInfo.withCache().collectLatest { state ->
+                    if (state.isNotChanged { it.isLoggedIn }) return@collectLatest
+
+                    if (state.value.name.isBlank()) return@collectLatest
+                    showToast(
+                        getString(R.string.feed_report_login_success_toaster_text, state.value.name)
+                    )
+                }
+            }
+        }
+    }
+
     private fun observeUpload() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -226,6 +248,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun onResume() {
         super.onResume()
+        feedMainViewModel.updateUserInfo()
         feedMainViewModel.fetchFeedTabs()
     }
 
@@ -323,11 +346,18 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
 
         if (data.meta.showMyProfile) {
-            if (data.meta.profilePhotoUrl.isNotEmpty())
+            if (data.meta.profilePhotoUrl.isNotEmpty()) {
                 binding.feedUserProfileImage.setImageUrl(data.meta.profilePhotoUrl)
-            binding.feedUserProfileImage.setOnClickListener { _ ->
-                RouteManager.route(binding.root.context, data.meta.profileApplink)
             }
+
+            binding.feedUserProfileImage.setOnClickListener {
+                if (feedMainViewModel.isLoggedIn) {
+                    RouteManager.route(binding.root.context, data.meta.profileApplink)
+                } else {
+                    openLogin.launch()
+                }
+            }
+
             binding.feedUserProfileImage.show()
         } else {
             binding.feedUserProfileImage.hide()

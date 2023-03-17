@@ -17,6 +17,7 @@ import com.tokopedia.feedplus.presentation.model.ContentCreationItem
 import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
+import com.tokopedia.feedplus.presentation.model.UserInfoModel
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -26,6 +27,10 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -56,6 +61,17 @@ class FeedMainViewModel @Inject constructor(
         MutableLiveData<Result<List<ContentCreationTypeItem>>>()
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
+
+    private val _userInfo = MutableStateFlow(UserInfoModel.from(userSession))
+    val userInfo: StateFlow<UserInfoModel>
+        get() = _userInfo.asStateFlow()
+
+    val isLoggedIn: Boolean
+        get() = userSession.isLoggedIn
+
+    fun updateUserInfo() {
+        _userInfo.update { UserInfoModel.from(userSession) }
+    }
 
     fun fetchFeedTabs() {
         viewModelScope.launchCatchError(block = {
