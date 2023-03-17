@@ -38,12 +38,9 @@ class AutoCollapseLabel @JvmOverloads constructor(
     private val animator = ViewAnimator()
     private var canShow: Boolean = false
 
-    fun setup(recommendation: ProductMediaRecomData) {
-        canShow = recommendation.shouldShow()
-        if (canShow) {
-            binding.tvAutoCollapseLabel.text = recommendation.iconText
-            binding.ivAutoCollapseLabel.loadImage(recommendation.getIconUrl(context))
-        }
+    fun setup(recomData: ProductMediaRecomData) {
+        canShow = recomData.shouldShow()
+        if (canShow) bindData(recomData)
     }
 
     fun showView() {
@@ -52,6 +49,11 @@ class AutoCollapseLabel @JvmOverloads constructor(
 
     fun hideView() {
         if (canShow) animator.animateHide()
+    }
+
+    private fun bindData(recomData: ProductMediaRecomData) {
+        binding.tvAutoCollapseLabel.text = recomData.iconText
+        binding.ivAutoCollapseLabel.loadImage(recomData.getIconUrl(context))
     }
 
     inner class ViewAnimator {
@@ -89,24 +91,10 @@ class AutoCollapseLabel @JvmOverloads constructor(
         ).apply {
             duration = ANIMATION_DURATION
             interpolator = DecelerateInterpolator()
-            addUpdateListener { update ->
-                binding.bgAutoCollapseLabelTextWithIcon.alpha = update.animatedValue as Float
-                binding.containerAutoCollapse.alpha = update.animatedValue as Float
-            }
+            addUpdateListener { update -> applyShowAnimatorUpdate(update.animatedValue as Float) }
             showAnimatorListener = addListener(
-                onStart = {
-                    show()
-                    binding.tvAutoCollapseLabel.maxWidth = Int.MAX_VALUE
-                    binding.tvAutoCollapseLabel.ellipsize = TextUtils.TruncateAt.END
-                    binding.bgAutoCollapseLabelIconOnly.alpha = MIN_ALPHA
-                    binding.containerAutoCollapse.setPadding(
-                        PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx(),
-                        binding.containerAutoCollapse.paddingTop,
-                        PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx(),
-                        binding.containerAutoCollapse.paddingBottom
-                    )
-                },
-                onEnd = { animateCollapse() }
+                onStart = ::onStartShowAnimator,
+                onEnd = ::onEndShowAnimator
             )
         }
 
@@ -116,21 +104,8 @@ class AutoCollapseLabel @JvmOverloads constructor(
         ).apply {
             duration = ANIMATION_DURATION
             interpolator = AccelerateInterpolator()
-            addUpdateListener { update ->
-                binding.bgAutoCollapseLabelTextWithIcon.alpha = min(
-                    binding.bgAutoCollapseLabelTextWithIcon.alpha,
-                    update.animatedValue as Float
-                )
-                binding.bgAutoCollapseLabelIconOnly.alpha = min(
-                    binding.bgAutoCollapseLabelIconOnly.alpha,
-                    update.animatedValue as Float
-                )
-                binding.containerAutoCollapse.alpha = min(
-                    binding.containerAutoCollapse.alpha,
-                    update.animatedValue as Float
-                )
-            }
-            hideAnimatorListener = addListener(onEnd = { gone() })
+            addUpdateListener { update -> applyHideAnimatorUpdate(update.animatedValue as Float) }
+            hideAnimatorListener = addListener(onEnd = ::onEndHideAnimator)
         }
 
         private fun createCollapseAnimator() = ValueAnimator.ofInt(
@@ -139,36 +114,96 @@ class AutoCollapseLabel @JvmOverloads constructor(
         ).apply {
             duration = ANIMATION_DURATION
             startDelay = IDLE_DURATION
-            addUpdateListener { update ->
-                binding.tvAutoCollapseLabel.maxWidth = update.animatedValue as Int
-            }
+            addUpdateListener { update -> applyCollapseAnimatorUpdate(update.animatedValue as Int) }
             collapseAnimatorListener = addListener(
-                onStart = {
-                    binding.tvAutoCollapseLabel.ellipsize = null
-                },
-                onEnd = {
-                    binding.bgAutoCollapseLabelTextWithIcon.alpha = MIN_ALPHA
-                    binding.bgAutoCollapseLabelIconOnly.alpha = MAX_ALPHA
-                    binding.containerAutoCollapse.setPadding(
-                        PADDING_HORIZONTAL_ICON_ONLY.toPx(),
-                        binding.containerAutoCollapse.paddingTop,
-                        PADDING_HORIZONTAL_ICON_ONLY.toPx(),
-                        binding.containerAutoCollapse.paddingBottom
-                    )
-                }
+                onStart = ::onStartCollapseAnimator,
+                onEnd = ::onEndCollapseAnimator
             )
         }
 
         private fun cancelAnimators() {
-            showAnimator?.run {
-                removeListener(showAnimatorListener)
-                cancel()
-            }
+            cancelShowAnimator()
+            cancelHideAnimator()
+            cancelCollapseAnimator()
+        }
+
+        private fun cancelShowAnimator() {
+            showAnimator?.removeListener(showAnimatorListener)
+            showAnimator?.cancel()
+        }
+
+        private fun cancelHideAnimator() {
+            hideAnimator?.removeListener(hideAnimatorListener)
             hideAnimator?.cancel()
-            collapseAnimator?.run {
-                removeListener(collapseAnimatorListener)
-                cancel()
-            }
+        }
+
+        private fun cancelCollapseAnimator() {
+            collapseAnimator?.removeListener(collapseAnimatorListener)
+            collapseAnimator?.cancel()
+        }
+
+        @Suppress("UNUSED_PARAMETER")
+        private fun onStartShowAnimator(animator: Animator) {
+            animateCollapse()
+        }
+
+        @Suppress("UNUSED_PARAMETER")
+        private fun onEndShowAnimator(animator: Animator) {
+            show()
+            binding.tvAutoCollapseLabel.maxWidth = Int.MAX_VALUE
+            binding.tvAutoCollapseLabel.ellipsize = TextUtils.TruncateAt.END
+            binding.bgAutoCollapseLabelIconOnly.alpha = MIN_ALPHA
+            updateContainerHorizontalPadding(PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx())
+        }
+
+        @Suppress("UNUSED_PARAMETER")
+        private fun onEndHideAnimator(animator: Animator) {
+            gone()
+        }
+
+        @Suppress("UNUSED_PARAMETER")
+        private fun onStartCollapseAnimator(animator: Animator) {
+            binding.tvAutoCollapseLabel.ellipsize = null
+        }
+
+        @Suppress("UNUSED_PARAMETER")
+        private fun onEndCollapseAnimator(animator: Animator) {
+            binding.bgAutoCollapseLabelTextWithIcon.alpha = MIN_ALPHA
+            binding.bgAutoCollapseLabelIconOnly.alpha = MAX_ALPHA
+            updateContainerHorizontalPadding(PADDING_HORIZONTAL_ICON_ONLY.toPx())
+        }
+
+        private fun updateContainerHorizontalPadding(padding: Int) {
+            binding.containerAutoCollapse.setPadding(
+                padding,
+                binding.containerAutoCollapse.paddingTop,
+                padding,
+                binding.containerAutoCollapse.paddingBottom
+            )
+        }
+
+        private fun applyShowAnimatorUpdate(alpha: Float) {
+            binding.bgAutoCollapseLabelTextWithIcon.alpha = alpha
+            binding.containerAutoCollapse.alpha = alpha
+        }
+
+        private fun applyHideAnimatorUpdate(alpha: Float) {
+            binding.bgAutoCollapseLabelTextWithIcon.alpha = min(
+                binding.bgAutoCollapseLabelTextWithIcon.alpha,
+                alpha
+            )
+            binding.bgAutoCollapseLabelIconOnly.alpha = min(
+                binding.bgAutoCollapseLabelIconOnly.alpha,
+                alpha
+            )
+            binding.containerAutoCollapse.alpha = min(
+                binding.containerAutoCollapse.alpha,
+                alpha
+            )
+        }
+
+        private fun applyCollapseAnimatorUpdate(maxWidth: Int) {
+            binding.tvAutoCollapseLabel.maxWidth = maxWidth
         }
     }
 }
