@@ -3,7 +3,9 @@ package com.tokopedia.smartbills
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
@@ -75,7 +77,7 @@ class SmartBillsActivityTest {
                     ResourcePathUtil.getJsonFromResource(PATH_HIGHLIGHT_CATEGORY),
                     MockModelConfig.FIND_BY_CONTAINS)
         }
-
+        setupAbTestRemoteConfig()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         LocalCacheHandler(context, SmartBillsFragment.SMART_BILLS_PREF).also {
@@ -92,6 +94,7 @@ class SmartBillsActivityTest {
     @Test
     fun validateSmartBills() {
         Thread.sleep(3000)
+        validate_ticker_transition()
         validate_onboarding()
         validate_bill_selection()
         validate_bill_detail()
@@ -107,6 +110,7 @@ class SmartBillsActivityTest {
 
     @Test
     fun validateSmartBillsAddBills() {
+        closeTicker()
         click_add_bills()
         click_delete_cancel()
         click_delete_success()
@@ -117,6 +121,19 @@ class SmartBillsActivityTest {
             cassavaTestRule.validate(SMART_BILLS_ADD_BILLS_VALIDATOR_QUERY),
             hasAllSuccess()
         )
+    }
+
+    private fun validate_ticker_transition() {
+        Thread.sleep(2000)
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        onView(withId(R.id.ticker_smart_bills)).check(ViewAssertions.matches(isDisplayed()))
+            .perform(click())
+        closeTicker()
+    }
+
+    private fun closeTicker() {
+        Espresso.onView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_close_icon), hasSibling(AllOf.allOf(withId(R.id.ticker_content_single), withChild(withText("Sekarang Bayar Sekaligus semua tagihan dan Bayar Otomatis bisa di Kelola Tagihan!")))))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(ViewActions.click())
     }
 
     private fun validate_onboarding() {
@@ -243,6 +260,12 @@ class SmartBillsActivityTest {
     private fun close_highlight_widget() {
         Thread.sleep(3000)
         onView(withId(R.id.icon_highlighted_category_close)).perform(click())
+    }
+
+    private fun setupAbTestRemoteConfig() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+            RollenceKey.KEY_SBM_TRANSITION,
+            RollenceKey.KEY_SBM_TRANSITION)
     }
 
     @After

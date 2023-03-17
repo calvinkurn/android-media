@@ -40,21 +40,8 @@
       "eventLabel": "level : \\d{1,};variant_title : .*;variant_value: .*;variant : \\d{1,};",
       "businessUnit": ".*",
       "layout": "layout:.*;catName:.*;catId:\\d{1,};",
-      "component": "comp:.*;temp:.*;elem:.*;cpos:\\d{1,};"
-    },
-    {
-      "eventAction": ".*",
-      "eventCategory": "product detail page",
-      "event": "clickPDP",
-      "shopType": ".*",
-      "productId": "\\d{1,}",
-      "isLoggedInStatus": "true|false",
-      "sessionIris": ".{1,}",
-      "shopId": "\\d{1,}",
-      "eventLabel": ".*",
-      "user_id": ".*",
-      "layout": "layout:.*;catName:.*;catId:\\d{1,};",
-      "component": ".*"
+      "component": "comp:.*;temp:.*;elem:.*;cpos:\\d{1,};",
+      "currentSite": ".*"
     }
   ]
 }

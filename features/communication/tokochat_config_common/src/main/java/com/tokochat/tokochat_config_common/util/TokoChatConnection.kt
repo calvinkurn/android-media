@@ -123,6 +123,15 @@ object TokoChatConnection {
         }
     }
 
+    fun getComponent(context: Context): TokoChatConfigComponent {
+        return tokoChatConfigComponent
+            ?: DaggerTokoChatConfigComponent.builder()
+                .tokoChatConfigContextModule(TokoChatConfigContextModule(context.applicationContext))
+                .build().also {
+                    tokoChatConfigComponent = it
+                }
+    }
+
     fun isTokoChatActive(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
