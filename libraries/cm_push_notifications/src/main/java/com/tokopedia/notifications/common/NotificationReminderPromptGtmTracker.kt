@@ -75,8 +75,7 @@ class NotificationReminderPromptGtmTracker constructor(
         trackerId: String,
         context: Context,
         pagePath: String = "",
-        pageType: String = "",
-        page: String = ""
+        pageType: String = ""
     ) {
         val userId = if (userSession.userId.isEmpty() || userSession.userId.isBlank()) {
             NotificationSettingsGtmEvents.ZERO
@@ -87,6 +86,7 @@ class NotificationReminderPromptGtmTracker constructor(
 
         val adsId = DeviceInfo.getAdsId(context)
         val useCase = getUseCaseValue()
+        val page = getPageName(pagePath)
         val eventLabel =
             "$frequency - $userId - $adsId - ${IrisSession(context).getSessionId()} - $page - $useCase"
         val map = TrackAppUtils.gtmData(
@@ -112,13 +112,13 @@ class NotificationReminderPromptGtmTracker constructor(
     private fun getUseCaseValue(): String {
         return when (useCase) {
             NotificationGeneralPromptBottomSheet.KEJAR_DISKON -> {
-                "Kejar Diskon"
+                KEJAR_DISKON
             }
             NotificationGeneralPromptBottomSheet.TAP_TAP_KOTAK -> {
-                "Tap Tap Kotak"
+                TAP_TAP_KOTAK
             }
             NotificationGeneralPromptBottomSheet.LIVE_SHOPPING -> {
-                "Live Shopping"
+                LIVE_SHOPPING
             }
             else -> {
                 ""
@@ -126,4 +126,37 @@ class NotificationReminderPromptGtmTracker constructor(
         }
     }
 
+    private fun getPageName(pagePath: String): String {
+        return when (pagePath) {
+            PLAY_ACTIVITY -> {
+                LIVE_SHOPPING_PAGE
+            }
+            GIFT_BOX_DAILY_ACTIVITY -> {
+                GIFT_BOX_DAILY_PAGE
+            }
+            DISCOVERY_ACTIVITY -> {
+                DISCOVERY_PAGE
+            }
+            MAIN_PARENT_ACTIVITY -> {
+                HOME_PAGE
+            }
+            else -> {
+                pagePath
+            }
+        }
+    }
+
+    companion object {
+        const val KEJAR_DISKON = "kejar Diskon"
+        const val TAP_TAP_KOTAK = "Tap Tap Kotak"
+        const val LIVE_SHOPPING = "Live Shopping"
+        const val DISCOVERY_ACTIVITY = "DiscoveryActivity"
+        const val PLAY_ACTIVITY = "PlayActivity"
+        const val GIFT_BOX_DAILY_ACTIVITY = "GiftBoxDailyActivity"
+        const val MAIN_PARENT_ACTIVITY = "MainParentActivity"
+        const val DISCOVERY_PAGE = "Discovery Page"
+        const val LIVE_SHOPPING_PAGE = "Live Shopping Page"
+        const val GIFT_BOX_DAILY_PAGE = "GiftBoxDaily Page"
+        const val HOME_PAGE = "Home Page"
+    }
 }
