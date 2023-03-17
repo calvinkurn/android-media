@@ -29,7 +29,7 @@ class ProductDetailRobot {
 
     fun clickAtcNormal() {
         // select variant with normal button
-        selectVariantOnVbs(2)
+        selectVariant(2)
 
         onView(withId(R.id.btn_atc_variant))
             .check(matches(isDisplayed()))
@@ -38,7 +38,7 @@ class ProductDetailRobot {
     }
 
     fun clickBuyNormal() {
-        // select variant with normal button
+        // show and select variant with normal button
         selectVariantOnVbs(2)
         onView(withId(R.id.btn_buy_variant))
             .check(matches(isDisplayed()))
@@ -68,20 +68,27 @@ class ProductDetailRobot {
         onView(withId(R.id.btn_buy_variant))
             .check(matches(isDisplayed()))
             .check(matches(ViewMatchers.withText("Beli Langsung")))
-
-        onView(withId(R.id.btn_buy_variant)).perform(click())
+            .perform(click())
     }
 
     fun clickLihatKeranjangBottomSheetAtc(pdpInterceptor: ProductDetailInterceptor? = null) {
         pdpInterceptor?.customRecomWidgetRecomAtcResponsePath = RESPONSE_RECOM_AFTER_ATC_PATH
         clickAtcNormal()
-        Thread.sleep(5000)
+        Thread.sleep(5_000)
         onView(withId(R.id.recycler_view_add_to_cart_done)).perform(
             RecyclerViewActions.actionOnItemAtPosition<AddToCartDoneAddedProductViewHolder>(
                 0,
                 clickChildViewWithId(R.id.button_go_to_cart)
             )
         )
+    }
+
+    fun clickLihatKeranjangToaster(pdpInterceptor: ProductDetailInterceptor? = null) {
+        pdpInterceptor?.customRecomWidgetRecomAtcResponsePath = RESPONSE_RECOM_AFTER_ATC_PATH
+        clickAtcNormal()
+        Thread.sleep(1_000)
+        onView(withId(R.id.snackbar_btn))
+            .perform(click())
     }
 
     fun closeBottomSheetAtc() {
