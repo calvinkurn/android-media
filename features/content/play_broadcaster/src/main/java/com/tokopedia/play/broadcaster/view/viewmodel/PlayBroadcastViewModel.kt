@@ -1739,11 +1739,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         updatePresetAssetStatus(preset, BeautificationAssetStatus.Available)
                     }
                     else {
-                        updatePresetAssetStatus(preset, BeautificationAssetStatus.NotDownloaded)
                         throw Exception("Something went wrong")
                     }
                 }) { throwable ->
-                    _uiEvent.emit(PlayBroadcastEvent.BeautificationDownloadAssetFail(throwable))
+                    updatePresetAssetStatus(preset, BeautificationAssetStatus.NotDownloaded)
+                    _uiEvent.emit(
+                        PlayBroadcastEvent.BeautificationDownloadAssetFail(throwable, preset)
+                    )
                 }
             }
         }

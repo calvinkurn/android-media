@@ -194,8 +194,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        if(beautificationAnalyticStateHolder.isBeautificationMenuShown) {
-            beautificationAnalyticStateHolder.isBeautificationMenuShown = false
+        if(beautificationAnalyticStateHolder.isBeautificationMenuShownOnPreparationPage) {
+            beautificationAnalyticStateHolder.isBeautificationMenuShownOnPreparationPage = false
 
             analytic.openScreenBeautificationEntryPointOnPreparationPage()
         }
@@ -779,7 +779,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         binding.preparationMenu.submitMenu(state)
 
         if(state.isMenuExists(DynamicPreparationMenu.Menu.FaceFilter)) {
-            beautificationAnalyticStateHolder.isBeautificationMenuShown = true
+            beautificationAnalyticStateHolder.isBeautificationMenuShownOnPreparationPage = true
         }
 
         if(!coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter) &&

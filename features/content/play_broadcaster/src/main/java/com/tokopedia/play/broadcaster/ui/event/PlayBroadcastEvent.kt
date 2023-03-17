@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.event
 
+import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 
 sealed interface PlayBroadcastEvent {
@@ -49,5 +50,5 @@ sealed interface PlayBroadcastEvent {
     object BroadcastRecovered : PlayBroadcastEvent
 
     /** Beautification */
-    data class BeautificationDownloadAssetFail(val throwable: Throwable) : PlayBroadcastEvent
+    data class BeautificationDownloadAssetFail(val throwable: Throwable, val preset: PresetFilterUiModel) : PlayBroadcastEvent
 }

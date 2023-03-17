@@ -20,6 +20,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
 import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
@@ -32,6 +33,7 @@ import com.tokopedia.play.broadcaster.ui.manager.PlayBroadcastToasterManager
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
@@ -93,6 +95,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
     private val beautificationUiBridge: BeautificationUiBridge,
+    private val beautificationAnalyticStateHolder: PlayBroadcastBeautificationAnalyticStateHolder,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView {
 
@@ -340,6 +343,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icFaceFilter.setOnClickListener {
+            analytic.clickBeautificationEntryPointOnLivePage(parentViewModel.selectedAccount)
+
             BeautificationSetupFragment.getFragment(
                 childFragmentManager,
                 requireActivity().classLoader
@@ -798,6 +803,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     state.game,
                 )
 
+                renderBeautificationMenu(prevState?.beautificationConfig, state.beautificationConfig)
+
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
                     exitDialog.dialogSecondaryCTA.isLoading = state.isExiting
@@ -1161,6 +1168,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             quizForm.setFormState(state.quizFormState)
         }
+    }
+
+    private fun renderBeautificationMenu(
+        prev: BeautificationConfigUiModel?,
+        curr: BeautificationConfigUiModel,
+    ) {
+        if(prev == curr || prev?.isUnknown == curr.isUnknown) return
+
+        icFaceFilter.showWithCondition(!curr.isUnknown)
+        analytic.viewBeautificationEntryPointOnLivePage(parentViewModel.selectedAccount)
     }
 
     private fun showInteractiveGameResultWidget(showCoachMark: Boolean) {
