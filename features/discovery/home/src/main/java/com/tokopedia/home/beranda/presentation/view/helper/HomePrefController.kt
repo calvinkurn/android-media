@@ -9,23 +9,33 @@ class HomePrefController(private val context: Context?) {
         const val PREF_KEY_HOME_REVAMP_ATF_VARIANT = "PREF_KEY_HOME_REVAMP_ATF_VARIANT"
     }
 
+    private var rollenceValue: String? = null
+    private val sharedPrefs: SharedPreferences? by lazy {
+        context?.getSharedPreferences(
+            PREF_KEY_HOME_REVAMP,
+            Context.MODE_PRIVATE
+        )
+    }
+
     fun setHomeRevampAtfVariant() {
         context?.run {
-            val sharedPrefs: SharedPreferences = context.getSharedPreferences(
-                PREF_KEY_HOME_REVAMP,
-                Context.MODE_PRIVATE
-            )
-            sharedPrefs.edit().putString(PREF_KEY_HOME_REVAMP_ATF_VARIANT, HomeRollenceController.rollenceAtfValue).apply()
+            try {
+                HomeRollenceController.rollenceAtfValue.let {
+                    if (rollenceValue != it) {
+                        rollenceValue = it
+                        sharedPrefs?.edit()?.putString(
+                            PREF_KEY_HOME_REVAMP_ATF_VARIANT,
+                            rollenceValue
+                        )?.apply()
+                    }
+                }
+            } catch (_: Exception) { }
         }
     }
 
     fun isUsingDifferentAtfRollenceVariant(): Boolean {
         return context?.run {
-            val sharedPrefs: SharedPreferences = context.getSharedPreferences(
-                PREF_KEY_HOME_REVAMP,
-                Context.MODE_PRIVATE
-            )
-            val lastVariant = sharedPrefs.getString(PREF_KEY_HOME_REVAMP_ATF_VARIANT, null)
+            val lastVariant = sharedPrefs?.getString(PREF_KEY_HOME_REVAMP_ATF_VARIANT, null)
             return lastVariant != HomeRollenceController.rollenceAtfValue
         } ?: true
     }
