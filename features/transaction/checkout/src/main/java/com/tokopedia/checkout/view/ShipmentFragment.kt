@@ -4556,12 +4556,12 @@ class ShipmentFragment :
         }
     }
 
-    override fun updateAddOnsData(addOnsDataModel: AddOnsDataModel?, identifier: Int) {
+    override fun updateAddOnsData(addOnsDataModel: AddOnsDataModel?, identifier: Int, cartString: String) {
         // identifier : 0 = product level, 1  = order level
         if (identifier == 0) {
-            shipmentAdapter.notifyItemChanged(shipmentAdapter.addOnProductLevelPosition)
+            shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnProductLevelPosition(cartString))
         } else {
-            shipmentAdapter.notifyItemChanged(shipmentAdapter.addOnOrderLevelPosition)
+            shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnOrderLevelPosition(cartString))
         }
         shipmentAdapter.updateShipmentCostModel()
         onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
