@@ -42,7 +42,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -171,7 +171,7 @@ import kotlin.coroutines.CoroutineContext
  */
 class ShipmentPresenter @Inject constructor(
     private val compositeSubscription: CompositeSubscription,
-    private val checkoutGqlUseCase: CheckoutGqlUseCase,
+    private val checkoutGqlUseCase: CheckoutUseCase,
     private val getShipmentAddressFormV4UseCase: GetShipmentAddressFormV4UseCase,
     private val editAddressUseCase: EditAddressUseCase,
     private val changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
@@ -879,25 +879,110 @@ class ShipmentPresenter @Inject constructor(
                 checkoutRequest,
                 dynamicData
             )
-            val requestParams = RequestParams.create()
-            requestParams.putAll(params)
-            compositeSubscription.add(
-                checkoutGqlUseCase.createObservable(requestParams)
-                    .subscribe(
-                        getSubscriberCheckoutCart(
-                            checkoutRequest,
-                            isOneClickShipment,
-                            isTradeIn,
-                            deviceId,
-                            cornerId,
-                            leasingId,
+//            val requestParams = RequestParams.create()
+//            requestParams.putAll(params)
+//            compositeSubscription.add(
+//                checkoutGqlUseCase.createObservable(requestParams)
+//                    .subscribe(
+//                        getSubscriberCheckoutCart(
+//                            checkoutRequest,
+//                            isOneClickShipment,
+//                            isTradeIn,
+//                            deviceId,
+//                            cornerId,
+//                            leasingId,
+//                            deviceModel,
+//                            devicePrice,
+//                            diagnosticId,
+//                            isPlusSelected
+//                        )
+//                    )
+//            )
+            launch {
+                try {
+                    val checkoutData = checkoutGqlUseCase(params)
+                    view?.setHasRunningApiCall(false)
+                    this@ShipmentPresenter.checkoutData = checkoutData
+                    if (!checkoutData.isError) {
+                        view?.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
+                            checkoutData.transactionId,
                             deviceModel,
                             devicePrice,
-                            diagnosticId,
+                            diagnosticId
+                        )
+                        if (isPurchaseProtectionPage) {
+                            mTrackerPurchaseProtection.eventClickOnBuy(
+                                userSessionInterface.userId,
+                                checkoutRequest.protectionAnalyticsData
+                            )
+                        }
+                        var isCrossSellChecked = false
+                        for (shipmentCrossSellModel in listShipmentCrossSellModel) {
+                            if (shipmentCrossSellModel.isChecked) isCrossSellChecked = true
+                        }
+                        if (isCrossSellChecked) triggerCrossSellClickPilihPembayaran()
+                        view?.renderCheckoutCartSuccess(checkoutData)
+                    } else if (checkoutData.priceValidationData.isUpdated) {
+                        view?.hideLoading()
+                        view?.renderCheckoutPriceUpdated(checkoutData.priceValidationData)
+                    } else if (checkoutData.prompt.eligible) {
+                        view?.hideLoading()
+                        view?.renderPrompt(checkoutData.prompt)
+                    } else {
+                        analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.errorMessage)
+                        view?.hideLoading()
+                        if (checkoutData.errorMessage.isNotEmpty()) {
+                            view?.renderCheckoutCartError(checkoutData.errorMessage)
+                            view?.logOnErrorCheckout(
+                                MessageErrorException(checkoutData.errorMessage),
+                                checkoutRequest.toString()
+                            )
+                        } else {
+                            val defaultErrorMessage =
+                                view?.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                                    ?: ""
+                            view?.renderCheckoutCartError(defaultErrorMessage)
+                            view?.logOnErrorCheckout(
+                                MessageErrorException(defaultErrorMessage),
+                                checkoutRequest.toString()
+                            )
+                        }
+                        processInitialLoadCheckoutPage(
+                            true,
+                            isOneClickShipment,
+                            isTradeIn,
+                            true,
+                            false,
+                            cornerId,
+                            deviceId,
+                            leasingId,
                             isPlusSelected
                         )
+                    }
+                } catch (e: Throwable) {
+                    view?.hideLoading()
+                    Timber.d(e)
+                    var errorMessage = e.message
+                    if (!(e is CartResponseErrorException || e is AkamaiErrorException)) {
+                        errorMessage = getErrorMessage(view?.activityContext, e)
+                    }
+                    analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage)
+                    view?.setHasRunningApiCall(false)
+                    view?.showToastError(errorMessage)
+                    processInitialLoadCheckoutPage(
+                        true,
+                        isOneClickShipment,
+                        isTradeIn,
+                        true,
+                        false,
+                        cornerId,
+                        deviceId,
+                        leasingId,
+                        isPlusSelected
                     )
-            )
+                    view?.logOnErrorCheckout(e, checkoutRequest.toString())
+                }
+            }
         } else {
             view?.hideLoading()
             view?.setHasRunningApiCall(false)
@@ -912,35 +997,70 @@ class ShipmentPresenter @Inject constructor(
         deviceId: String?,
         checkoutRequest: CheckoutRequest?,
         dynamicData: String
-    ): Map<String, Any?> {
-        val params: MutableMap<String, Any?> = HashMap()
-        params[CheckoutGqlUseCase.PARAM_CARTS] = map(checkoutRequest!!)
-        params[CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT] = isOneClickShipment.toString()
-        params[CheckoutGqlUseCase.PARAM_DYNAMIC_DATA] = dynamicData
-        if (isTradeIn) {
-            params[CheckoutGqlUseCase.PARAM_IS_TRADE_IN] = true
-            params[CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF] = isTradeInDropOff
-            params[CheckoutGqlUseCase.PARAM_DEV_ID] = deviceId
-        }
-        params[CheckoutGqlUseCase.PARAM_OPTIONAL] = 0
-        params[CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE] = true
-        params[CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE_NEW] = true
-        params[CheckoutGqlUseCase.PARAM_IS_EXPRESS] = false
+    ): com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest {
+        var publicKey = ""
+        var fingerprintSupport = false
         if (getEnableFingerprintPayment(view?.activityContext)) {
-            val publicKey = getFingerprintPublicKey(
+            val fpk = getFingerprintPublicKey(
                 view?.activityContext
             )
-            if (publicKey != null) {
-                params[CheckoutGqlUseCase.PARAM_FINGERPRINT_PUBLICKEY] = getPublicKey(publicKey)
-                params[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] = true.toString()
-            } else {
-                params[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] = false.toString()
+            if (fpk != null) {
+                publicKey = getPublicKey(fpk)!!
+                fingerprintSupport = true
             }
-        } else {
-            params[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] = false.toString()
         }
-        return params
+        return com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest(
+            map(checkoutRequest!!),
+            isOneClickShipment.toString(),
+            dynamicData,
+            isTradeIn,
+            isTradeIn && isTradeInDropOff,
+            if (isTradeIn) deviceId!! else "",
+            0,
+            true,
+            true,
+            false,
+            fingerprintSupport.toString(),
+            publicKey
+        )
     }
+
+//    fun generateCheckoutParams(
+//        isOneClickShipment: Boolean,
+//        isTradeIn: Boolean,
+//        isTradeInDropOff: Boolean,
+//        deviceId: String?,
+//        checkoutRequest: CheckoutRequest?,
+//        dynamicData: String
+//    ): Map<String, Any?> {
+//        val params: MutableMap<String, Any?> = HashMap()
+//        params[CheckoutGqlUseCase.PARAM_CARTS] = map(checkoutRequest!!)
+//        params[CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT] = isOneClickShipment.toString()
+//        params[CheckoutGqlUseCase.PARAM_DYNAMIC_DATA] = dynamicData
+//        if (isTradeIn) {
+//            params[CheckoutGqlUseCase.PARAM_IS_TRADE_IN] = true
+//            params[CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF] = isTradeInDropOff
+//            params[CheckoutGqlUseCase.PARAM_DEV_ID] = deviceId
+//        }
+//        params[CheckoutGqlUseCase.PARAM_OPTIONAL] = 0
+//        params[CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE] = true
+//        params[CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE_NEW] = true
+//        params[CheckoutGqlUseCase.PARAM_IS_EXPRESS] = false
+//        if (getEnableFingerprintPayment(view?.activityContext)) {
+//            val publicKey = getFingerprintPublicKey(
+//                view?.activityContext
+//            )
+//            if (publicKey != null) {
+//                params[CheckoutGqlUseCase.PARAM_FINGERPRINT_PUBLICKEY] = getPublicKey(publicKey)
+//                params[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] = true.toString()
+//            } else {
+//                params[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] = false.toString()
+//            }
+//        } else {
+//            params[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] = false.toString()
+//        }
+//        return params
+//    }
 
     private fun removeErrorShopProduct() {
         val newShipmentCartItemModelList: MutableList<ShipmentCartItemModel> = ArrayList()
@@ -1276,106 +1396,106 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    private fun getSubscriberCheckoutCart(
-        checkoutRequest: CheckoutRequest,
-        isOneClickShipment: Boolean,
-        isTradeIn: Boolean,
-        deviceId: String?,
-        cornerId: String?,
-        leasingId: String?,
-        deviceModel: String,
-        devicePrice: Long,
-        diagnosticId: String,
-        isPlusSelected: Boolean
-    ): Subscriber<CheckoutData> {
-        return object : Subscriber<CheckoutData>() {
-            override fun onCompleted() {}
-            override fun onError(e: Throwable) {
-                view?.hideLoading()
-                Timber.d(e)
-                var errorMessage = e.message
-                if (!(e is CartResponseErrorException || e is AkamaiErrorException)) {
-                    errorMessage = getErrorMessage(view?.activityContext, e)
-                }
-                analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage)
-                view?.setHasRunningApiCall(false)
-                view?.showToastError(errorMessage)
-                processInitialLoadCheckoutPage(
-                    true,
-                    isOneClickShipment,
-                    isTradeIn,
-                    true,
-                    false,
-                    cornerId,
-                    deviceId,
-                    leasingId,
-                    isPlusSelected
-                )
-                view?.logOnErrorCheckout(e, checkoutRequest.toString())
-            }
-
-            override fun onNext(checkoutData: CheckoutData) {
-                view?.setHasRunningApiCall(false)
-                this@ShipmentPresenter.checkoutData = checkoutData
-                if (!checkoutData.isError) {
-                    view?.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
-                        checkoutData.transactionId,
-                        deviceModel,
-                        devicePrice,
-                        diagnosticId
-                    )
-                    if (isPurchaseProtectionPage) {
-                        mTrackerPurchaseProtection.eventClickOnBuy(
-                            userSessionInterface.userId,
-                            checkoutRequest.protectionAnalyticsData
-                        )
-                    }
-                    var isCrossSellChecked = false
-                    for (shipmentCrossSellModel in listShipmentCrossSellModel) {
-                        if (shipmentCrossSellModel.isChecked) isCrossSellChecked = true
-                    }
-                    if (isCrossSellChecked) triggerCrossSellClickPilihPembayaran()
-                    view?.renderCheckoutCartSuccess(checkoutData)
-                } else if (checkoutData.priceValidationData.isUpdated) {
-                    view?.hideLoading()
-                    view?.renderCheckoutPriceUpdated(checkoutData.priceValidationData)
-                } else if (checkoutData.prompt.eligible) {
-                    view?.hideLoading()
-                    view?.renderPrompt(checkoutData.prompt)
-                } else {
-                    analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.errorMessage)
-                    view?.hideLoading()
-                    if (checkoutData.errorMessage.isNotEmpty()) {
-                        view?.renderCheckoutCartError(checkoutData.errorMessage)
-                        view?.logOnErrorCheckout(
-                            MessageErrorException(checkoutData.errorMessage),
-                            checkoutRequest.toString()
-                        )
-                    } else {
-                        val defaultErrorMessage =
-                            view?.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-                                ?: ""
-                        view?.renderCheckoutCartError(defaultErrorMessage)
-                        view?.logOnErrorCheckout(
-                            MessageErrorException(defaultErrorMessage),
-                            checkoutRequest.toString()
-                        )
-                    }
-                    processInitialLoadCheckoutPage(
-                        true,
-                        isOneClickShipment,
-                        isTradeIn,
-                        true,
-                        false,
-                        cornerId,
-                        deviceId,
-                        leasingId,
-                        isPlusSelected
-                    )
-                }
-            }
-        }
-    }
+//    private fun getSubscriberCheckoutCart(
+//        checkoutRequest: CheckoutRequest,
+//        isOneClickShipment: Boolean,
+//        isTradeIn: Boolean,
+//        deviceId: String?,
+//        cornerId: String?,
+//        leasingId: String?,
+//        deviceModel: String,
+//        devicePrice: Long,
+//        diagnosticId: String,
+//        isPlusSelected: Boolean
+//    ): Subscriber<CheckoutData> {
+//        return object : Subscriber<CheckoutData>() {
+//            override fun onCompleted() {}
+//            override fun onError(e: Throwable) {
+//                view?.hideLoading()
+//                Timber.d(e)
+//                var errorMessage = e.message
+//                if (!(e is CartResponseErrorException || e is AkamaiErrorException)) {
+//                    errorMessage = getErrorMessage(view?.activityContext, e)
+//                }
+//                analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage)
+//                view?.setHasRunningApiCall(false)
+//                view?.showToastError(errorMessage)
+//                processInitialLoadCheckoutPage(
+//                    true,
+//                    isOneClickShipment,
+//                    isTradeIn,
+//                    true,
+//                    false,
+//                    cornerId,
+//                    deviceId,
+//                    leasingId,
+//                    isPlusSelected
+//                )
+//                view?.logOnErrorCheckout(e, checkoutRequest.toString())
+//            }
+//
+//            override fun onNext(checkoutData: CheckoutData) {
+//                view?.setHasRunningApiCall(false)
+//                this@ShipmentPresenter.checkoutData = checkoutData
+//                if (!checkoutData.isError) {
+//                    view?.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
+//                        checkoutData.transactionId,
+//                        deviceModel,
+//                        devicePrice,
+//                        diagnosticId
+//                    )
+//                    if (isPurchaseProtectionPage) {
+//                        mTrackerPurchaseProtection.eventClickOnBuy(
+//                            userSessionInterface.userId,
+//                            checkoutRequest.protectionAnalyticsData
+//                        )
+//                    }
+//                    var isCrossSellChecked = false
+//                    for (shipmentCrossSellModel in listShipmentCrossSellModel) {
+//                        if (shipmentCrossSellModel.isChecked) isCrossSellChecked = true
+//                    }
+//                    if (isCrossSellChecked) triggerCrossSellClickPilihPembayaran()
+//                    view?.renderCheckoutCartSuccess(checkoutData)
+//                } else if (checkoutData.priceValidationData.isUpdated) {
+//                    view?.hideLoading()
+//                    view?.renderCheckoutPriceUpdated(checkoutData.priceValidationData)
+//                } else if (checkoutData.prompt.eligible) {
+//                    view?.hideLoading()
+//                    view?.renderPrompt(checkoutData.prompt)
+//                } else {
+//                    analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.errorMessage)
+//                    view?.hideLoading()
+//                    if (checkoutData.errorMessage.isNotEmpty()) {
+//                        view?.renderCheckoutCartError(checkoutData.errorMessage)
+//                        view?.logOnErrorCheckout(
+//                            MessageErrorException(checkoutData.errorMessage),
+//                            checkoutRequest.toString()
+//                        )
+//                    } else {
+//                        val defaultErrorMessage =
+//                            view?.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+//                                ?: ""
+//                        view?.renderCheckoutCartError(defaultErrorMessage)
+//                        view?.logOnErrorCheckout(
+//                            MessageErrorException(defaultErrorMessage),
+//                            checkoutRequest.toString()
+//                        )
+//                    }
+//                    processInitialLoadCheckoutPage(
+//                        true,
+//                        isOneClickShipment,
+//                        isTradeIn,
+//                        true,
+//                        false,
+//                        cornerId,
+//                        deviceId,
+//                        leasingId,
+//                        isPlusSelected
+//                    )
+//                }
+//            }
+//        }
+//    }
 
     private fun triggerCrossSellClickPilihPembayaran() {
         val shipmentCrossSellModelList: List<ShipmentCrossSellModel> =

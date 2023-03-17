@@ -23,6 +23,33 @@ import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
 
+data class CheckoutRequest(
+    @SerializedName("carts")
+    val carts: Carts,
+    @SerializedName("is_one_click_shipment")
+    val isOneClickShipment: String,
+    @SerializedName("dynamic_data")
+    val dynamicData: String,
+    @SerializedName("is_trade_in")
+    val isTradeIn: Boolean,
+    @SerializedName("is_trade_in_drop_off")
+    val isTradeInDropOff: Boolean,
+    @SerializedName("dev_id")
+    val devId: String,
+    @SerializedName("optional")
+    val optional: Int,
+    @SerializedName("is_thankyou_native_new")
+    val isThankyouNativeNew: Boolean,
+    @SerializedName("is_thankyou_native")
+    val isThankyouNative: Boolean,
+    @SerializedName("is_express")
+    val isExpress: Boolean,
+    @SerializedName("fingerprint_support")
+    val fingerprintSupport: String,
+    @SerializedName("fingerprint_publickey")
+    val fingerprintPublickey: String
+)
+
 data class Carts(
     @SerializedName("has_promo_stacking")
     var hasPromoStacking: Boolean = false,
