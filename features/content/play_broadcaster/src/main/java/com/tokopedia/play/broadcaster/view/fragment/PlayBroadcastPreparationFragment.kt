@@ -231,7 +231,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
                     override fun creationId(): String {
                         return parentViewModel.channelId
-
                     }
 
                     override fun maxProduct(): Int {
