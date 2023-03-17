@@ -2576,4 +2576,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
     }
+
+    @Test
+    fun `check dilayani tokopedia applink`() {
+        val deepLink = ApplinkConst.DilayaniTokopedia.HOME
+        val expectedDeepLink = ApplinkConstInternalDilayaniTokopedia.HOME
+        assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+    }
 }
