@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
@@ -53,6 +54,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
     }
 
     fun setFirstIcon(productImage: String?) {
+        Log.d("Upload Post Old", "Image Url: $productImage")
         if (productImage != null) {
             postIcon?.setImageUrl(productImage)
         }
@@ -65,6 +67,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
     }
 
     fun setIcon(iconUrl: String) {
+        Log.d("Upload Post Old", "Icon Url: $iconUrl")
         postIcon?.setImageUrl(iconUrl)
     }
 
