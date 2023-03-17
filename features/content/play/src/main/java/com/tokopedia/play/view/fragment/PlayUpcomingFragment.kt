@@ -72,7 +72,7 @@ class PlayUpcomingFragment @Inject constructor(
     private val partnerInfoView by viewComponent { PartnerInfoViewComponent(it, this) }
     private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
-    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), dispatchers) }
+    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), dispatchers, ShareExperienceViewComponent.Source.Upcoming) }
     private val description by viewComponent { UpcomingDescriptionViewComponent(it, R.id.tv_upcoming_description, this) }
 
     private val toaster by viewLifecycleBound(
