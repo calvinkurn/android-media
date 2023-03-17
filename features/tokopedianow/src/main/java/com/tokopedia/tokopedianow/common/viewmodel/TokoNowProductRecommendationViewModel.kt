@@ -63,7 +63,6 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
 
     private var productModels: MutableList<Visitable<*>> = mutableListOf()
     private var productRecommendationPageNames: MutableList<String> = mutableListOf()
-    private var mMiniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var job: Job? = null
 
     val productRecommendation: LiveData<Result<TokoNowProductRecommendationViewUiModel>>
@@ -84,7 +83,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         miniCartSimplifiedData.miniCartItems.values.forEach { miniCartItem ->
             if (miniCartItem is MiniCartItem.MiniCartItemProduct) {
                 val productId = miniCartItem.productId
-                val quantity = HomeLayoutMapper.getAddToCartQuantity(productId, mMiniCartSimplifiedData)
+                val quantity = HomeLayoutMapper.getAddToCartQuantity(productId, miniCartData)
 
                 productModels.updateProductCardCarouselItemQuantity(
                     productId = productId,
@@ -137,7 +136,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
                 if (result.isNotEmpty()) {
                     val productRecommendation = mapResponseToProductRecommendation(
                         recommendationWidget = result.first(),
-                        miniCartData = mMiniCartSimplifiedData
+                        miniCartData = miniCartData
                     )
                     if (productRecommendation.productModels.isEmpty()) {
                         _productRecommendation.postValue(Fail(Throwable()))
@@ -188,10 +187,12 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     }
 
     fun updateMiniCartSimplified(miniCartSimplifiedData: MiniCartSimplifiedData?) {
-        mMiniCartSimplifiedData = miniCartSimplifiedData
+        miniCartSimplifiedData?.let {
+            setMiniCartData(miniCartSimplifiedData)
+        }
 
         launch {
-            mMiniCartSimplifiedData?.apply {
+            miniCartData?.apply {
                 if (miniCartItems.values.isEmpty()) {
                     productModels.resetAllProductCardCarouselItemQuantities()
                 } else {
