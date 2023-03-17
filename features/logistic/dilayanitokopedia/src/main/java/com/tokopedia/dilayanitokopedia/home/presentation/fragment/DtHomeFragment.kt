@@ -18,7 +18,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia.DILAYANI_TOKOPEDIA_DISCOVERY_PAGENAME
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dilayanitokopedia.R
@@ -62,6 +64,8 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -178,19 +182,37 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initUiVariable()
-        initNavToolbar()
-        initRecyclerView()
-        initAnchorTabMenu()
-        initRecyclerScrollListener()
-        initRefreshLayout()
-        initScreenSootListener()
-        initStatusBar()
+        if (disableDtHomePage()) {
+            redirectToDtDiscovery()
+        } else {
+            initUiVariable()
+            initNavToolbar()
+            initRecyclerView()
+            initAnchorTabMenu()
+            initRecyclerScrollListener()
+            initRefreshLayout()
+            initScreenSootListener()
+            initStatusBar()
 
-        updateCurrentPageLocalCacheModelData()
+            updateCurrentPageLocalCacheModelData()
 
-        observeLiveData()
-        loadLayout()
+            observeLiveData()
+            loadLayout()
+        }
+    }
+
+    // public function for possible hansel
+    fun disableDtHomePage(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE,
+            ""
+        ) == RollenceKey.KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE
+    }
+
+    // public function for possible hansel
+    fun redirectToDtDiscovery() {
+        RouteManager.route(context, "${ApplinkConstInternalGlobal.DISCOVERY}/$DILAYANI_TOKOPEDIA_DISCOVERY_PAGENAME")
+        activity?.finish()
     }
 
     override fun onPause() {
