@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.common.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokopedianow.common.domain.query.GetTargetedTickerNow
-import com.tokopedia.tokopedianow.home.domain.model.GetTargetedTickerResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.home.domain.request.GetTargetedTickerRequest
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject

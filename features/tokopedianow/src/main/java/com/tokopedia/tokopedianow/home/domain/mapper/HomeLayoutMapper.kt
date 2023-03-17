@@ -80,7 +80,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWid
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -142,7 +142,6 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel?>.mapHomeLayoutList(
         response: List<HomeLayoutResponse>,
-        hasTickerBeenRemoved: Boolean,
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
         localCacheModel: LocalCacheModel,
@@ -151,10 +150,8 @@ object HomeLayoutMapper {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
 
-        if (!hasTickerBeenRemoved) {
-            val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList())
-            add(HomeLayoutItemUiModel(ticker, HomeLayoutItemState.NOT_LOADED))
-        }
+        val ticker = TokoNowTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList())
+        add(HomeLayoutItemUiModel(ticker, HomeLayoutItemState.NOT_LOADED))
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
@@ -269,12 +266,11 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel?>.mapTickerData(
-        item: HomeTickerUiModel,
+        item: TokoNowTickerUiModel,
         tickerData: List<TickerData>
     ) {
-        updateItemById(item.visitableId) {
-            val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickerData)
-            HomeLayoutItemUiModel(ticker, HomeLayoutItemState.LOADED)
+        updateItemById(item.id) {
+            HomeLayoutItemUiModel(item.copy(tickers = tickerData), HomeLayoutItemState.LOADED)
         }
     }
 

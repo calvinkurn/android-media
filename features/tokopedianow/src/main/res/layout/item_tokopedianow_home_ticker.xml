@@ -4,14 +4,15 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker android:id="@+id/ticker_announcement"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_8"
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         custom:tickerType="announcement"
         custom:tickerShapeType="loose"
+        custom:closeButtonVisibility="gone"
         xmlns:custom="http://schemas.android.com/apk/res-auto" />
 </RelativeLayout>

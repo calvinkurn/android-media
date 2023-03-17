@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.presentation.viewholder
+package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -7,15 +7,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeTickerBinding
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.view.binding.viewBinding
 
-class HomeTickerViewHolder(
-        itemView: View,
-        private val listener: HomeTickerListener? = null
-) : AbstractViewHolder<HomeTickerUiModel>(itemView), TickerPagerCallback {
+class TokoNowTickerViewHolder(
+        itemView: View
+) : AbstractViewHolder<TokoNowTickerUiModel>(itemView), TickerPagerCallback {
 
     companion object {
         @LayoutRes
@@ -25,15 +24,10 @@ class HomeTickerViewHolder(
 
     private var binding: ItemTokopedianowHomeTickerBinding? by viewBinding()
 
-    override fun bind(data: HomeTickerUiModel) {
-        binding?.tickerAnnouncement?.post {
-            val adapter = TickerPagerAdapter(itemView.context, data.tickers)
-            adapter.setPagerDescriptionClickEvent(this)
-            adapter.onDismissListener = {
-                listener?.onTickerDismissed(data.id)
-            }
-            binding?.tickerAnnouncement?.addPagerView(adapter, data.tickers)
-        }
+    override fun bind(data: TokoNowTickerUiModel) {
+        val adapter = TickerPagerAdapter(itemView.context, data.tickers)
+        adapter.setPagerDescriptionClickEvent(this)
+        binding?.ticker?.addPagerView(adapter, data.tickers)
     }
 
     override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
@@ -44,9 +38,5 @@ class HomeTickerViewHolder(
         } else {
             RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${url}")
         }
-    }
-
-    interface HomeTickerListener {
-        fun onTickerDismissed(id: String)
     }
 }

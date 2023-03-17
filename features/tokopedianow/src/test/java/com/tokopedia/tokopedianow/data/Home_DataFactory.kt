@@ -38,14 +38,11 @@ import com.tokopedia.tokopedianow.home.domain.model.QuestListResponse
 import com.tokopedia.tokopedianow.home.domain.model.QuestUser
 import com.tokopedia.tokopedianow.home.domain.model.ResultStatus
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
-import com.tokopedia.tokopedianow.home.domain.model.Ticker
-import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
-import com.tokopedia.tokopedianow.home.domain.model.Tickers
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -442,8 +439,8 @@ fun createCategoryGridDataModel(
     return TokoNowCategoryMenuUiModel(id = id, title =  title, categoryListUiModel = categoryList, state = state)
 }
 
-fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): HomeTickerUiModel {
-    return HomeTickerUiModel(id = "1", tickers = tickers)
+fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): TokoNowTickerUiModel {
+    return TokoNowTickerUiModel(id = "1", tickers = tickers)
 }
 
 fun createTickerData(
