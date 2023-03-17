@@ -179,8 +179,9 @@ class SearchBarViewModel @Inject constructor(
         if (!query.isNullOrBlank()) {
             val currentKeywords = _searchBarKeywords.value ?: emptyList()
             val cleanedQuery = activeKeyword.keyword.trim()
+            val lowerCaseQuery = cleanedQuery.lowercase()
             val hasMaxKeywords = currentKeywords.size > 2
-            val hasSameKeyword = currentKeywords.any { cleanedQuery == it.keyword }
+            val hasSameKeyword = currentKeywords.any { lowerCaseQuery == it.keyword.lowercase() }
             if (hasSameKeyword) _searchBarKeywordErrorEvent.value = SearchBarKeywordError.Duplicate
             if (hasMaxKeywords || hasSameKeyword) return
             val addedKeyword = if (coachMarkLocalCache.shouldShowAddedKeywordCoachMark()) {
@@ -219,9 +220,10 @@ class SearchBarViewModel @Inject constructor(
                 if (it.position == keyword.position) activeKeyword else it.copy(isSelected = false)
             }
         } else {
-            val cleanedQuery = activeKeyword.keyword.trim()
+            val cleanedQuery = activeKeyword.keyword.trim().lowercase()
             val currentKeywords = _searchBarKeywords.value ?: emptyList()
-            val hasSameKeyword = currentKeywords.any { cleanedQuery == it.keyword }
+            val otherKeywords = currentKeywords - activeKeyword
+            val hasSameKeyword = otherKeywords.any { cleanedQuery == it.keyword.lowercase() }
             if (hasSameKeyword) {
                 _searchBarKeywordErrorEvent.value = SearchBarKeywordError.Duplicate
                 return
@@ -246,11 +248,13 @@ class SearchBarViewModel @Inject constructor(
     fun onKeywordRemoved(keyword: SearchBarKeyword) {
         val keywords = (_searchBarKeywords.value ?: emptyList()) - keyword
         val sortedKeywords = keywords.sortWithNewIndex()
-        val query = if (keyword.position == activeKeyword.position) {
-            activeKeyword = SearchBarKeyword(position = sortedKeywords.size)
-            _activeKeywordLiveData.value = activeKeyword
-            activeKeyword.keyword
-        } else activeKeyword.keyword
+        activeKeyword = if (keyword.position == activeKeyword.position) {
+            SearchBarKeyword(position = sortedKeywords.size)
+        } else {
+            activeKeyword.copy(position = sortedKeywords.size)
+        }
+        _activeKeywordLiveData.value = activeKeyword
+        val query = activeKeyword.keyword
         _searchBarKeywords.value = sortedKeywords
 
         val searchParameter = if (sortedKeywords.isNotEmpty()) {
