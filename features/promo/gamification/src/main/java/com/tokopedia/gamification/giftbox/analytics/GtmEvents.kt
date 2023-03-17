@@ -136,7 +136,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_LG
         map[GiftBoxTrackerConstants.EVENT_LABEL] = tokenId
-        map[GiftBoxTrackerConstants.TRACKER_ID] = "42745"
+        map[GiftBoxTrackerConstants.TRACKER_ID] = TrackerID.SERU_TRACKER_ID
         updateCommonItems(null,map)
 
         getTracker().sendGeneralEvent(map)

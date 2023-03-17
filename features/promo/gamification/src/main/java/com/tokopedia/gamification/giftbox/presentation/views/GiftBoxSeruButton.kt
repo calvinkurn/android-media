@@ -5,12 +5,13 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.Constants
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 
 
@@ -20,15 +21,15 @@ class GiftBoxSeruButton @JvmOverloads constructor(
 
     val LAYOUT_ID = R.layout.gami_giftbox_reminder_button
     val loaderReminder: LoaderUnify
-    val imageBell: AppCompatImageView
+    val imageBell: ImageUnify
 
     private val playImageSource : String
         get() {
             val isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
             return if(isTablet){
-                "https://images.tokopedia.net/img/tseottk2game4x.png"
+                Constants.PLAY_CONSOLE_IMAGE_4X
             }
-            else "https://images.tokopedia.net/img/tseottk2game3x.png"
+            else Constants.PLAY_CONSOLE_IMAGE_3X
         }
 
 
@@ -58,7 +59,7 @@ class GiftBoxSeruButton @JvmOverloads constructor(
                     resource: Drawable,
                     transition: Transition<in Drawable>?
                 ) {
-                   imageBell.setImageDrawable(resource)
+                    imageBell.setImageDrawable(resource)
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {

@@ -13,7 +13,7 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageBell"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

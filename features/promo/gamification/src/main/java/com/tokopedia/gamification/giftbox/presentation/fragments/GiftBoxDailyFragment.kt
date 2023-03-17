@@ -29,6 +29,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.di.ActivityContextModule
+import com.tokopedia.gamification.giftbox.Constants
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_TRACE_PAGE
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
@@ -591,7 +592,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     private fun setClickEventOnSeru(){
         tokoButtonContainer.btnThird.setOnClickListener {
             GtmEvents.clickSeruButton(viewModel.campaignSlug.orEmpty())
-            RouteManager.route(context,String.format(Locale.getDefault(),"%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/seru"))
+            RouteManager.route(context,String.format(Locale.getDefault(),"%s?url=%s", ApplinkConst.WEBVIEW, Constants.SERU_WEBLINK))
         }
     }
 

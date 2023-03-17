@@ -77,3 +77,7 @@ object GiftBoxLabel {
     const val NO_REWARD = "no reward"
     const val INTERNET_CONN_ERROR = "internet connection error"
 }
+
+object TrackerID{
+    const val SERU_TRACKER_ID = "42745"
+}
