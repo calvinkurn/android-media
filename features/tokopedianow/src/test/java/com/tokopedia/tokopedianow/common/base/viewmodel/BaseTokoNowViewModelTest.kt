@@ -334,8 +334,6 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
         verifyGetMiniCartUseCaseCalled()
 
-        assertEquals(viewModel.miniCartData, response)
-
         viewModel.miniCart
             .verifySuccessEquals(Success(response))
     }

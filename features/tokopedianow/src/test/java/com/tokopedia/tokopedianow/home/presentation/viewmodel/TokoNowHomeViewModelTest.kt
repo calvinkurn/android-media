@@ -1013,10 +1013,10 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given miniCartSimplifiedData is NULL when getMiniCartItem should return NULL`() {
+    fun `given miniCartSimplifiedData is NULL when getMiniCartItem should return MiniCartItemProduct`() {
         val productId = "1"
 
-        val expectedResult = null
+        val expectedResult = MiniCartItem.MiniCartItemProduct()
         val actualResult = viewModel.getMiniCartItem(productId)
 
         assertEquals(expectedResult, actualResult)
@@ -1042,7 +1042,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given productId not match when getMiniCartItem should return NULL`() {
+    fun `given productId not match when getMiniCartItem should return MiniCartItemProduct`() {
         val productId = "3"
 
         val miniCartItem = MiniCartItem.MiniCartItemProduct(productId = "1")
@@ -1053,7 +1053,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.getMiniCart(listOf("1"), "2")
 
-        val expectedResult = null
+        val expectedResult = MiniCartItem.MiniCartItemProduct()
         val actualResult = viewModel.getMiniCartItem(productId)
 
         verifyGetMiniCartUseCaseCalled()
