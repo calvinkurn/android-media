@@ -1,8 +1,5 @@
 package com.tokopedia.pdpCheckout.testing.product.detail
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
 import android.view.View
 import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
@@ -13,20 +10,13 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
 import com.google.android.material.chip.ChipGroup
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.pdpCheckout.testing.oneclickcheckout.action.scrollTo
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.unifycomponents.UnifyButton
@@ -142,34 +132,6 @@ class ProductDetailRobot {
             }
         })
     }
-
-    private fun intentForResultVbs(position: Int = 0) {
-        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val cacheManager = SaveInstanceCacheManager(targetContext, true)
-        val variant = mockProductVariantResult(position)
-        cacheManager.put(AtcVariantHelper.PDP_PARCEL_KEY_RESULT, variant)
-
-        val resultIntent = Intent().apply {
-            putExtra(AtcVariantHelper.ATC_VARIANT_CACHE_ID, cacheManager.id)
-        }
-
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent))
-    }
-
-    private fun mockProductVariantResult(position: Int = 0) = ProductVariantResult(
-        parentProductId = "1060686573",
-        mapOfSelectedVariantOption = mutableMapOf(
-            "19261110" to when (position) {
-                0 -> "61436278"
-                1 -> "61436279"
-                2 -> "61436280"
-                3 -> "61436281"
-                else -> ""
-            }
-        ),
-        selectedProductId = "1060957408"
-    )
 }
 
 class ViewAttributeMatcher(
