@@ -39,6 +39,7 @@ import com.tokopedia.deals.home.ui.dataview.*
 import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -104,8 +105,10 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun setUpRecyclerView() {
-        getRecyclerView(requireView()).setPadding(0, 0, 0, resources.getDimensionPixelSize(R.dimen.deals_dp_20))
-        getRecyclerView(requireView()).clipToPadding = false
+        context?.let { context ->
+            getRecyclerView(requireView()).setPadding(Int.ZERO, Int.ZERO, Int.ZERO, context.resources.getDimensionPixelSize(R.dimen.deals_dp_20))
+            getRecyclerView(requireView()).clipToPadding = false
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -162,23 +165,23 @@ class DealsHomeFragment : DealsBaseFragment(),
             if (isAdded) {
                 val orderListCoachMark = CoachMarkItem(
                         _activity.findViewById<AppCompatImageView>(R.id.imgDealsOrderListMenu),
-                        getString(R.string.deals_menu_coach_mark_title),
-                        getString(R.string.deals_menu_coach_mark_description)
+                        _activity.resources.getString(R.string.deals_menu_coach_mark_title),
+                        _activity.resources.getString(R.string.deals_menu_coach_mark_description)
                 )
 
                 val popularPlacesCoachMark = coachMarkPosition.popularPlacesPosition?.let {
                     CoachMarkItem(
                             recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
-                            getString(R.string.deals_popular_place_coach_mark_title),
-                            getString(R.string.deals_popular_places_coach_mark_description)
+                            _activity.resources.getString(R.string.deals_popular_place_coach_mark_title),
+                            _activity.resources.getString(R.string.deals_popular_places_coach_mark_description)
                     )
                 }
 
                 val favoriteCategoriesCoachMark = coachMarkPosition.favouriteCategoriesPosition?.let {
                     CoachMarkItem(
                             recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
-                            getString(R.string.deals_favorite_categories_coach_mark_title),
-                            getString(R.string.deals_favorite_categories_coach_mark_description)
+                            _activity.resources.getString(R.string.deals_favorite_categories_coach_mark_title),
+                            _activity.resources.getString(R.string.deals_favorite_categories_coach_mark_description)
                     )
                 }
 
