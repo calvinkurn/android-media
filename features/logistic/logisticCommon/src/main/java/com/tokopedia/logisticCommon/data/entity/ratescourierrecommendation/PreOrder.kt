@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class PreOrder (
-        @SerializedName("header")
-        val header: String = "",
-        @SerializedName("label")
-        val label: String = "",
-        @SerializedName("display")
-        val display: Boolean = false
+data class PreOrder(
+    @SerializedName("header")
+    val header: String = "",
+    @SerializedName("label")
+    val label: String = "",
+    @SerializedName("display")
+    val display: Boolean = false
 ) : Parcelable

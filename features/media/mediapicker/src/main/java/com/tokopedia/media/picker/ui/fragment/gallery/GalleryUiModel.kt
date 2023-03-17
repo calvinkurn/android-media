@@ -5,8 +5,9 @@ import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl.Companion.BUCKET
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class GalleryFragmentUiModel(
-    var bucketId: Long = BUCKET_ALL_MEDIA_ID
+data class GalleryUiModel(
+    var bucketId: Long = BUCKET_ALL_MEDIA_ID,
+    var hasChangeAlbum: Boolean = false
 ) : Parcelable {
 
     companion object {
