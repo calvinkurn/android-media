@@ -586,7 +586,9 @@ open class HomeRevampFragment :
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
-        HomeRollenceController.fetchAtfRollenceValue()
+        context?.let {
+            HomeRollenceController.fetchAtfRollenceValue(it)
+        }
 
         // show nav toolbar
         navToolbar?.visibility = View.VISIBLE
