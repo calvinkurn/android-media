@@ -83,7 +83,6 @@ ext {
             locationmanager         : ":libraries:locationmanager",
             logger                  : ":libraries:logger",
             loginHelper             : ":libraries:loginHelper",
-            loginHelperNoop         : ":libraries:loginHelperNoop",
             mpAndroidChart          : "com.github.PhilJay:MPAndroidChart:v3.1.0",
             network                 : ":libraries:network",
             oms                     : ":libraries:oms",
