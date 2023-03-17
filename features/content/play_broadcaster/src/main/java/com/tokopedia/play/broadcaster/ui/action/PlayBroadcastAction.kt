@@ -72,8 +72,6 @@ sealed interface PlayBroadcastAction {
     data class BroadcastStateChanged(val state: PlayBroadcasterState) : PlayBroadcastAction
 
     /** Beautification */
-    data class BeautificationBottomSheetShown(val bottomSheetHeight: Int) : PlayBroadcastAction
-    object BeautificationBottomSheetDismissed : PlayBroadcastAction
     object ResetBeautification : PlayBroadcastAction
     object SaveBeautificationConfig : PlayBroadcastAction
 

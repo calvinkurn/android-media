@@ -50,6 +50,7 @@ import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
@@ -120,6 +121,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
     @Inject
     lateinit var broadcasterFrameScalingManager: BroadcasterFrameScalingManager
+
+    @Inject
+    lateinit var beautificationUiBridge: BeautificationUiBridge
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -324,16 +328,6 @@ class PlayBroadcastActivity : BaseActivity(),
                         initBroadcaster(event.data)
                         createBroadcaster()
                     }
-                    is PlayBroadcastEvent.BeautificationBottomSheetShown -> {
-                        val fullPageHeight = findViewById<ViewGroup>(android.R.id.content).rootView.height
-                        val bottomSheetHeight = event.bottomSheetHeight
-
-                        broadcasterFrameScalingManager.scaleDown(aspectFrameLayout, bottomSheetHeight, fullPageHeight)
-                    }
-                    is PlayBroadcastEvent.BeautificationBottomSheetDismissed -> {
-                        broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
-                        supportFragmentManager.popBackStack()
-                    }
                     is PlayBroadcastEvent.BeautificationDownloadAssetFail -> {
                         showToaster(err = event.throwable)
                     }
@@ -383,7 +377,23 @@ class PlayBroadcastActivity : BaseActivity(),
                 ).isBottomSheetShown
 
                 if(isFaceFilterBottomSheetShown) {
-                    viewModel.submitAction(PlayBroadcastAction.BeautificationBottomSheetDismissed)
+                    beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            beautificationUiBridge.eventBus.subscribe().collect { event ->
+                when(event) {
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetShown -> {
+                        val fullPageHeight = findViewById<ViewGroup>(android.R.id.content).rootView.height
+                        val bottomSheetHeight = event.bottomSheetHeight
+
+                        broadcasterFrameScalingManager.scaleDown(aspectFrameLayout, bottomSheetHeight, fullPageHeight)
+                    }
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetDismissed -> {
+                        broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
+                    }
                 }
             }
         }

@@ -26,6 +26,7 @@ import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.manager.PlayBroadcastToasterManager
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
@@ -90,7 +91,8 @@ import javax.inject.Inject
  */
 class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
-    private val analytic: PlayBroadcastAnalytic
+    private val analytic: PlayBroadcastAnalytic,
+    private val beautificationUiBridge: BeautificationUiBridge,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView {
 
@@ -235,6 +237,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         initAnalytic()
         setupView()
         setupInsets()
+        setupListener()
         setupObserve()
     }
 
@@ -412,6 +415,21 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun setupListener() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            beautificationUiBridge.eventBus.subscribe().collect { event ->
+                when(event) {
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetShown -> {
+                        clInteraction.hide()
+                    }
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetDismissed -> {
+                        clInteraction.show()
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupObserve() {
         observeTotalViews()
         observeTotalLikes()
@@ -465,7 +483,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 true
             }
             beautificationSetupFragment.isBottomSheetShown -> {
-                parentViewModel.submitAction(PlayBroadcastAction.BeautificationBottomSheetDismissed)
+                beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
                 true
             }
             /** TODO: gonna delete this */
@@ -851,12 +869,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.ShowBroadcastError -> handleBroadcastError(event.error)
                     is PlayBroadcastEvent.BroadcastRecovered -> handleBroadcastRecovered()
-                    is PlayBroadcastEvent.BeautificationBottomSheetShown -> {
-                        clInteraction.hide()
-                    }
-                    is PlayBroadcastEvent.BeautificationBottomSheetDismissed -> {
-                        clInteraction.show()
-                    }
                     else -> {}
                 }
             }

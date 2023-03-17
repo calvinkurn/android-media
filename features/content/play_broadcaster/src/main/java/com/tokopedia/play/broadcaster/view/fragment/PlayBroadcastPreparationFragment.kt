@@ -43,6 +43,7 @@ import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
+import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
@@ -98,6 +99,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    private val beautificationUiBridge: BeautificationUiBridge,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
     TitleFormView.Listener,
@@ -210,7 +212,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 true
             }
             beautificationSetupFragment.isBottomSheetShown -> {
-                parentViewModel.submitAction(PlayBroadcastAction.BeautificationBottomSheetDismissed)
+                beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
                 true
             }
             else -> {
@@ -502,6 +504,21 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 startActivityForResult(intent, REQ_PLAY_SHORTS)
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            beautificationUiBridge.eventBus.subscribe().collect { event ->
+                when(event) {
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetShown -> {
+                        showMainComponent(false)
+                        showOverlayBackground(false)
+                    }
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetDismissed -> {
+                        showMainComponent(true)
+                        showOverlayBackground(true)
+                    }
+                }
+            }
+        }
     }
 
     private fun requireTitleAndCover(isTitleAndCoverSet: () -> Unit) {
@@ -706,14 +723,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowBroadcastError -> {
                         showLoading(false)
                         handleBroadcastError(event.error)
-                    }
-                    is PlayBroadcastEvent.BeautificationBottomSheetShown -> {
-                        showMainComponent(false)
-                        showOverlayBackground(false)
-                    }
-                    is PlayBroadcastEvent.BeautificationBottomSheetDismissed -> {
-                        showMainComponent(true)
-                        showOverlayBackground(true)
                     }
                     else -> {}
                 }

@@ -530,8 +530,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.BroadcastStateChanged -> handleBroadcastStateChanged(event.state)
 
             /** Beautification */
-            is PlayBroadcastAction.BeautificationBottomSheetShown -> handleBeautificationBottomSheetShown(event.bottomSheetHeight)
-            is PlayBroadcastAction.BeautificationBottomSheetDismissed -> handleBeautificationBottomSheetDismissed()
             is PlayBroadcastAction.ResetBeautification -> handleResetBeautification()
             is PlayBroadcastAction.SaveBeautificationConfig -> handleSaveBeautificationConfig()
 
@@ -1662,18 +1660,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     /** Beautification */
-    private fun handleBeautificationBottomSheetShown(bottomSheetHeight: Int) {
-        viewModelScope.launch {
-            _uiEvent.emit(PlayBroadcastEvent.BeautificationBottomSheetShown(bottomSheetHeight))
-        }
-    }
-
-    private fun handleBeautificationBottomSheetDismissed() {
-        viewModelScope.launch {
-            _uiEvent.emit(PlayBroadcastEvent.BeautificationBottomSheetDismissed)
-        }
-    }
-
     private fun handleResetBeautification() {
         _beautificationConfig.update {
             it.copy(

@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.databinding.FragmentBeautificationSetupBinding
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
-import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.bridge.BeautificationUiBridge
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.view.adapter.BeautificationPagerAdapter
@@ -39,6 +39,7 @@ import javax.inject.Inject
  */
 class BeautificationSetupFragment @Inject constructor(
     private val viewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
+    private val beautificationUiBridge: BeautificationUiBridge,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = TAG
@@ -55,7 +56,7 @@ class BeautificationSetupFragment @Inject constructor(
         override fun onStateChanged(bottomSheet: View, newState: Int) {
             when(newState) {
                 BottomSheetBehavior.STATE_HIDDEN -> {
-                    viewModel.submitAction(PlayBroadcastAction.BeautificationBottomSheetDismissed)
+                    beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
                 }
                 else -> {}
             }
@@ -206,9 +207,9 @@ class BeautificationSetupFragment @Inject constructor(
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect { event ->
+            beautificationUiBridge.eventBus.subscribe().collect { event ->
                 when(event) {
-                    is PlayBroadcastEvent.BeautificationBottomSheetDismissed -> {
+                    is BeautificationUiBridge.Event.BeautificationBottomSheetDismissed -> {
                         hideFaceSetupBottomSheet()
                         hideSlider()
                     }
@@ -292,12 +293,14 @@ class BeautificationSetupFragment @Inject constructor(
 
     private fun hideFaceSetupBottomSheet() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
     }
 
     fun showFaceSetupBottomSheet() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-        viewModel.submitAction(PlayBroadcastAction.BeautificationBottomSheetShown(binding.bottomSheet.height))
+        beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetShown(binding.bottomSheet.height))
         setupSlider()
     }
 
