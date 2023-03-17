@@ -2909,7 +2909,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     String keyProductLevel = cartItemModel.getCartString() + "-" + cartItemModel.getCartId();
                     if (keyProductLevel.equalsIgnoreCase(addOnResult.getAddOnKey())) {
                         AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
-                        setAddOnsData(addOnsDataModel, addOnResult, 0);
+                        setAddOnsData(addOnsDataModel, addOnResult, 0, cartItemModel.getCartString());
                     }
                 }
             }
@@ -2922,14 +2922,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if ((shipmentCartItemModel.getCartString() + "-0").equalsIgnoreCase(addOnResult.getAddOnKey()) && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
                     AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
-                    setAddOnsData(addOnsDataModel, addOnResult, 1);
+                    setAddOnsData(addOnsDataModel, addOnResult, 1, shipmentCartItemModel.getCartString());
                 }
             }
         }
     }
 
     // identifier : 0 = product level, 1  = order level
-    private void setAddOnsData(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier) {
+    private void setAddOnsData(AddOnsDataModel addOnsDataModel, AddOnResult addOnResult, int identifier, String cartString) {
         addOnsDataModel.setStatus(addOnResult.getStatus());
 
         AddOnButtonResult addOnButtonResult = addOnResult.getAddOnButton();
@@ -2980,7 +2980,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             listAddOnDataItem.add(addOnDataItemModel);
         }
         addOnsDataModel.setAddOnsDataItemModelList(listAddOnDataItem);
-        getView().updateAddOnsData(addOnsDataModel, identifier);
+        getView().updateAddOnsData(addOnsDataModel, identifier, cartString);
     }
 
     @Override

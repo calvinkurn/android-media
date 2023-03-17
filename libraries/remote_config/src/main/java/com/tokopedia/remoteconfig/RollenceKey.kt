@@ -70,9 +70,9 @@ object RollenceKey {
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
-    // Bubbles
-    const val KEY_ROLLENCE_BUBBLE_CHAT = "seller_bubble_chat_2"
-
     // Logistic
     const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
+
+    //DG SBM Transition
+    const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
 }

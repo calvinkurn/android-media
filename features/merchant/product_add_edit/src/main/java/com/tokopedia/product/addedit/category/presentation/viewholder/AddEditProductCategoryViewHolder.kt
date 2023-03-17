@@ -1,13 +1,19 @@
 package com.tokopedia.product.addedit.category.presentation.viewholder
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.category.presentation.adapter.AddEditProductCategoryAdapter
 import com.tokopedia.product.addedit.category.presentation.model.CategoryUiModel
@@ -83,25 +89,31 @@ class AddEditProductCategoryViewHolder(
 
     private fun checkCategorySelected(category: CategoryUiModel) {
         itemView.run {
+            val iconRes: Drawable?
             if (!category.isSelected) {
                 tvCategoryNameParent?.setTextColor(ContextCompat.getColor(context,
                     com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 rvLevelCategory?.hide()
                 spacingLevelCategory?.hide()
-                ivCategoryParent?.loadImageWithoutPlaceholder(R.drawable.product_add_edit_ic_chevron_down)
+                ivCategoryParent?.loadImage(com.tokopedia.iconunify.R.drawable.iconunify_chevron_down)
                 val resultSize = resultCategories.size - 1
                 for (level in resultSize downTo category.categoryLevel) {
                     resultCategories.removeAt(level)
                 }
                 categoryChildAdapter?.resetCategories()
                 categoryChildAdapter?.notifyDataSetChanged()
+                iconRes = getIconUnifyDrawable(context, IconUnify.CHEVRON_DOWN,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN900)
             } else {
-                tvCategoryNameParent?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                tvCategoryNameParent?.setTextColor(ContextCompat.getColor(context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 rvLevelCategory?.show()
                 spacingLevelCategory?.show()
-                ivCategoryParent?.loadImageWithoutPlaceholder(R.drawable.product_add_edit_ic_chevron_up)
                 resultCategories.add(category)
+                iconRes = getIconUnifyDrawable(context, IconUnify.CHEVRON_UP,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN900)
             }
+            ivCategoryParent?.loadImage(iconRes)
         }
     }
 
