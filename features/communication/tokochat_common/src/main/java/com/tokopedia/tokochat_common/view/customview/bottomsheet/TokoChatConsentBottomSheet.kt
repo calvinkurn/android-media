@@ -16,6 +16,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 
 class TokoChatConsentBottomSheet(
+    private val submitAction: (() -> Unit),
     private val dismissAction: (() -> Unit)
 ) : BottomSheetUnify() {
 
@@ -34,7 +35,9 @@ class TokoChatConsentBottomSheet(
     ): View? {
         val view = inflater.inflate(
             com.tokopedia.tokochat_common.R.layout.tokochat_consent_bottomsheet,
-            container, false)
+            container,
+            false
+        )
 
         binding = TokochatConsentBottomsheetBinding.bind(view)
         setChild(view)
@@ -63,7 +66,9 @@ class TokoChatConsentBottomSheet(
 
     private fun loadConsentWidget() {
         binding?.tokochatWidgetConsent?.load(
-            viewLifecycleOwner, this, TokoChatValueUtil.consentParam
+            viewLifecycleOwner,
+            this,
+            TokoChatValueUtil.consentParam
         )
     }
 
@@ -73,12 +78,12 @@ class TokoChatConsentBottomSheet(
         }
         binding?.tokochatWidgetConsent?.setOnNeedConsentListener { needConsent ->
             this.needConsent = needConsent
-            if (!needConsent) {
-                this.dismiss()
+            if (!this.needConsent) { // if no need for consent, load tokochat
+                dismissAndLoadTokoChatData()
             }
         }
         setOnDismissListener {
-            if (needConsent) {
+            if (needConsent) { // finish page if need consent but bottomsheet dismissed
                 dismissAction()
             }
         }
@@ -95,16 +100,22 @@ class TokoChatConsentBottomSheet(
         }
         binding?.tokochatWidgetConsent?.setSubmitResultListener(
             onSuccess = {
-                this.dismiss()
+                dismissAndLoadTokoChatData()
             },
             onError = {
+                dismissAndLoadTokoChatData()
                 Timber.d(it)
-                this.dismiss()
             }
         )
         binding?.tokochatWidgetConsent?.setOnCheckedChangeListener {
             setMainButton(it) // Change button enable based on checkbox
         }
+    }
+
+    private fun dismissAndLoadTokoChatData() {
+        needConsent = false
+        this.dismiss()
+        submitAction()
     }
 
     companion object {
@@ -113,10 +124,10 @@ class TokoChatConsentBottomSheet(
 
         fun show(
             fragmentManager: FragmentManager,
-            dismissAction: () -> Unit = {},
+            submitAction: () -> Unit = {},
+            dismissAction: () -> Unit = {}
         ) {
-            TokoChatConsentBottomSheet(dismissAction).show(fragmentManager, TAG)
+            TokoChatConsentBottomSheet(submitAction, dismissAction).show(fragmentManager, TAG)
         }
     }
 }
-

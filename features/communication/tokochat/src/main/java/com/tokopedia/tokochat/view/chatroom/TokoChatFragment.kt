@@ -160,9 +160,16 @@ open class TokoChatFragment :
             when (it) {
                 is Success -> {
                     if (it.data) {
-                        TokoChatConsentBottomSheet.show(childFragmentManager) {
-                            activity?.finish()
-                        }
+                        TokoChatConsentBottomSheet.show(
+                            fragmentManager = childFragmentManager,
+                            submitAction = {
+                                // Show chat room
+                                loadChatRoomData()
+                            },
+                            dismissAction = {
+                                activity?.finish()
+                            }
+                        )
                     } else {
                         // Show chat room
                         loadChatRoomData()
@@ -1131,7 +1138,6 @@ open class TokoChatFragment :
             initializeChatRoom(null)
         })
     }
-
 
     override fun onClickCheckGuide() {
         view?.hideKeyboard()
