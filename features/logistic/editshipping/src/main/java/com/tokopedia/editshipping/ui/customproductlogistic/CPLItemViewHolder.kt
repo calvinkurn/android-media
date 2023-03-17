@@ -35,7 +35,10 @@ class CPLItemViewHolder(
         binding.cbShipmentItem.isChecked = data.isActive
         binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
             if (data.isWhitelabel) {
-                listener.onWhitelabelServiceCheckboxClicked(data.shipperProduct.map { it.shipperProductId }, isChecked)
+                listener.onWhitelabelServiceCheckboxClicked(
+                    data.shipperProduct.map { it.shipperProductId },
+                    isChecked
+                )
             } else {
                 listener.onShipperCheckboxClicked(data.shipperId, isChecked)
             }

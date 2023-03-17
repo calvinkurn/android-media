@@ -12,7 +12,6 @@ import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play_common.util.extension.globalVisibleRect
-import com.tokopedia.unifycomponents.dpToPx
 import kotlin.math.abs
 
 /**
@@ -27,9 +26,6 @@ class PlayVideoScalingManager(
     private val flVideo: View = container.findViewById(R.id.fl_video)
     private val flYouTube: View = container.findViewById(R.id.fl_youtube)
     private val ivClose: View = container.findViewById(R.id.iv_close)
-
-    private val offset12 = container.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
-    private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
     private var mListener: Listener? = listener
 
@@ -175,12 +171,8 @@ class PlayVideoScalingManager(
 
     companion object {
         const val ANIMATION_DURATION = 300L
-        private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
         private const val FULL_SCALE_FACTOR = 1.0f
         private const val NO_TRANSLATION = 0f
-
-        private const val DEFAULT_HORIZONTAL_SCALE_FACTOR = 0.7f
-        private const val DEFAULT_VERTICAL_SCALE_FACTOR = 0.4f
     }
 
     interface Listener {

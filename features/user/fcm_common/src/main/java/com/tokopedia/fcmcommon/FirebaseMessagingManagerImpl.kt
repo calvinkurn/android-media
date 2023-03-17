@@ -19,8 +19,6 @@ class FirebaseMessagingManagerImpl @Inject constructor(
     override fun onNewToken(newToken: String?) {
         if (newToken == null) return
 
-        storeNewToken(newToken)
-
         if (isNewToken(newToken)) {
             if (userSession.isLoggedIn) {
                 updateTokenOnServer(newToken)
@@ -36,26 +34,12 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         return prefToken != null && token != prefToken
     }
 
-    override fun syncFcmToken(listener: FirebaseMessagingManager.SyncListener) {
+    override fun syncFcmToken() {
         FirebaseMessaging.getInstance().token
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val token = task.result
-                    if (token != null && token.isNotEmpty()) {
-                        if (!isNewToken(token)) {
-                            listener.onSuccess()
-                            return@addOnCompleteListener
-                        }
-                        if (!userSession.isLoggedIn) {
-                            return@addOnCompleteListener
-                        }
-                        updateTokenOnServer(token, listener)
-                    } else {
-                        val exception = IllegalStateException("Null FCM token")
-                        listener.onError(exception)
-                    }
-                } else {
-                    listener.onError(task.exception)
+                    onNewToken(token)
                 }
             }
     }
@@ -65,8 +49,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
     }
 
     private fun updateTokenOnServer(
-        newToken: String,
-        listener: FirebaseMessagingManager.SyncListener? = null
+        newToken: String
     ) {
         try {
             val params = createUpdateTokenParams(newToken)
@@ -74,17 +57,14 @@ class FirebaseMessagingManagerImpl @Inject constructor(
                 if (it.updateTokenSuccess()) {
                     saveNewTokenToPref(newToken)
                     setDeviceId(newToken)
-                    listener?.onSuccess()
                 }
             }, {
                 val error = IllegalStateException(it.localizedMessage)
-                listener?.onError(error)
                 logFailUpdateFcmToken(error, newToken, "Error")
             })
             updateTokenOnCMServer(newToken)
         } catch (exception: Exception) {
             exception.printStackTrace()
-            listener?.onError(exception)
             logFailUpdateFcmToken(exception, newToken, "Exception")
         }
     }
@@ -132,24 +112,12 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         }.apply()
     }
 
-    private fun storeNewToken(newToken: String) {
-        sharedPreferences.edit().apply {
-            putString(KEY_NEWEST_TOKEN_FCM, newToken)
-        }.apply()
-    }
-
     companion object {
         private const val FCM_TOKEN = "pref_fcm_token"
-        private const val KEY_NEWEST_TOKEN_FCM = "newest_token_fcm"
 
         @JvmStatic
         fun getFcmTokenFromPref(context: Context): String {
             return PreferenceManager.getDefaultSharedPreferences(context).getString(FCM_TOKEN, "") ?: ""
-        }
-
-        @JvmStatic
-        fun getNewestFcmTokenFromPref(context: Context): String {
-            return PreferenceManager.getDefaultSharedPreferences(context).getString(KEY_NEWEST_TOKEN_FCM, "") ?: ""
         }
     }
 }
