@@ -8,6 +8,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetViewToViewRecommendationUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -25,6 +26,12 @@ class RecommendationCoroutineModule {
         coroutineGqlRepository: GraphqlRepository
     ): GetSingleRecommendationUseCase =
         GetSingleRecommendationUseCase(context, coroutineGqlRepository)
+
+    @Provides
+    fun provideGetViewToViewRecommendationUseCase(
+        @ApplicationContext context: Context,
+        coroutineGqlRepository: GraphqlRepository,
+    ): GetViewToViewRecommendationUseCase = GetViewToViewRecommendationUseCase(context, coroutineGqlRepository)
 
     @Provides
     fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository, @ApplicationContext context: Context): GetRecommendationFilterChips {

@@ -35,6 +35,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -98,7 +99,7 @@ dependencies {
     androidTestImplementation rootProject.ext.networkDependencies.retrofit
     androidTestImplementation rootProject.ext.networkDependencies.loggingInterceptor
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     //-------------------------------------------------------------------//
 

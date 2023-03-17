@@ -56,6 +56,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     // Product Card Revamp Carousel
     ProductCardCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardCarousel.componentName),
     ProductCardCarouselItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardCarouselItem.componentName),
+    ProductCardCarouselItemList(R.layout.master_product_card_item_list_layout, ComponentNames.ProductCardCarouselItemList.componentName),
 
     // Product Card Sprint Sale
     ProductCardSprintSale(R.layout.product_card_revamp_layout, ComponentNames.ProductCardSprintSale.componentName),
@@ -100,6 +101,9 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     //Category Best Seller
     CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName),
+
+    // CLP Featured Products
+    CLPFeatureProducts(R.layout.carousel_best_seller_recycler_view, ComponentNames.CLPFeaturedProducts.componentName),
 
     //Topads Headline View
     TopadsHeadlineView(R.layout.topads_headline_layout, ComponentNames.TopadsHeadlineView.componentName),

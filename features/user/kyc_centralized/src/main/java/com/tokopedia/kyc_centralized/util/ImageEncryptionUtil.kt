@@ -1,7 +1,7 @@
 package com.tokopedia.kyc_centralized.util
 
 import android.content.Context
-import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_USING_ENCRYPT
+import com.tokopedia.kyc_centralized.ui.tokoKyc.form.KycUploadViewModel.Companion.KYC_USING_ENCRYPT
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import java.io.File
 import java.io.FileInputStream

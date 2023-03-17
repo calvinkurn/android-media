@@ -1,9 +1,9 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Callback
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartQty
@@ -36,7 +36,6 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
                 updateCartUseCase,
                 deleteCartUseCase,
                 getMiniCartListSimplifiedUseCase,
-                getRecommendationUseCase,
                 userSession,
                 this,
         )
@@ -44,13 +43,6 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
 
     override fun `Given first page API will be successful`() {
         `Given get search first page use case will be successful`(searchModel)
-    }
-
-    override fun `Given first page API can show recommendation`() {
-        val emptyProductSearchModel =
-                "search/emptyproduct/empty-product.json".jsonToObject<SearchModel>()
-
-        `Given get search first page use case will be successful`(emptyProductSearchModel)
     }
 
     @Test
@@ -99,51 +91,6 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     }
 
     @Test
-    fun `test ATC recom non login should redirect to login page`() {
-        addToCartTestHelper.`test ATC recom non login should redirect to login page`()
-    }
-
-    @Test
-    fun `test add to cart recom item success`() {
-        addToCartTestHelper.`test add to cart recom item success`()
-    }
-
-    @Test
-    fun `test add to cart recom item failed`() {
-        addToCartTestHelper.`test add to cart recom item failed`()
-    }
-
-    @Test
-    fun `add to cart recom item with current quantity should do nothing`() {
-        addToCartTestHelper.`add to cart recom item with current quantity should do nothing`()
-    }
-
-    @Test
-    fun `add to cart recom item to decrease quantity success`() {
-        addToCartTestHelper.`add to cart recom item to decrease quantity success`()
-    }
-
-    @Test
-    fun `add to cart recom item to increase quantity success`() {
-        addToCartTestHelper.`add to cart recom item to increase quantity success`()
-    }
-
-    @Test
-    fun `add to cart recom item to update quantity failed`() {
-        addToCartTestHelper.`add to cart recom item to update quantity failed`()
-    }
-
-    @Test
-    fun `delete cart recom item success`() {
-        addToCartTestHelper.`delete cart recom item success`()
-    }
-
-    @Test
-    fun `delete cart recom item failed`() {
-        addToCartTestHelper.`delete cart recom item failed`()
-    }
-
-    @Test
     fun `add to cart non login broad match item`() {
         addToCartTestHelper.run {
             val searchModel = "search/broadmatch/broadmatch-no-result.json".jsonToObject<SearchModel>()
@@ -160,18 +107,18 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
         }
     }
 
-    private fun getBroadMatchItemForATC(productId: String): Pair<BroadMatchItemDataView, Int> {
+    private fun getBroadMatchItemForATC(productId: String): Pair<TokoNowProductCardCarouselItemUiModel, Int> {
         val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
         val broadMatchDataView = visitableList.filterIsInstance<BroadMatchDataView>()
-        val broadMatchItemList = broadMatchDataView.flatMap { it.broadMatchItemDataViewList }
-        val broadMatchItem = broadMatchItemList.find { it.id == productId }!!
+        val broadMatchItemList = broadMatchDataView.flatMap { it.broadMatchItemModelList }
+        val broadMatchItem = broadMatchItemList.find { it.productCardModel.productId == productId }!!
         val broadMatchIndex = 3
 
         return Pair(broadMatchItem, broadMatchIndex)
     }
 
     private fun `When add to cart broad match item`(
-        broadMatchItem: BroadMatchItemDataView,
+        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
         quantity: Int,
         broadMatchIndex: Int,
     ) {
@@ -189,13 +136,12 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
             val (broadMatchItem, broadMatchIndex) = getBroadMatchItemForATC(PRODUCT_ID_NON_VARIANT_ATC)
             `When add to cart broad match item`(broadMatchItem, addToCartQty, broadMatchIndex)
 
-            val productId = broadMatchItem.id
-            val shopId = broadMatchItem.shop.id
+            val productId = broadMatchItem.productCardModel.productId
+            val shopId = broadMatchItem.shopId
             `Then assert add to cart request params`(productId, shopId, addToCartQty)
             `Then assert cart message event`(
                 expectedSuccessMessage = errorMessage.joinToString(separator = ", ")
             )
-            `Then assert broad match item quantity`(broadMatchItem, addToCartQty)
             `Then verify mini cart is refreshed`()
             `Then assert add to cart tracking broad match item`(addToCartQty, cartId, broadMatchItem)
             `Then assert route to login page event is null`()
@@ -203,23 +149,23 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     }
 
     private fun `Then assert broad match item quantity`(
-        broadMatchItem: BroadMatchItemDataView,
+        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
         expectedQuantity: Int
     ) {
-        assertThat(broadMatchItem.nonVariantATC?.quantity, shouldBe(expectedQuantity))
+        assertThat(broadMatchItem.productCardModel.orderQuantity, shouldBe(expectedQuantity))
     }
 
     private fun `Then assert add to cart tracking broad match item`(
         quantity: Int,
         cartId: String,
-        broadMatchItemDataView: BroadMatchItemDataView,
+        item: TokoNowProductCardCarouselItemUiModel,
     ) {
         val addToCartEvent = tokoNowSearchViewModel.addToCartBroadMatchTrackingLiveData.value!!
 
         val (actualQuantity, actualCartId, actualProductItem) = addToCartEvent
         assertThat(actualQuantity, shouldBe(quantity))
         assertThat(actualCartId, shouldBe(cartId))
-        assertThat(actualProductItem, shouldBe(broadMatchItemDataView))
+        assertThat(actualProductItem, shouldBe(item))
     }
 
     @Test
@@ -233,11 +179,10 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
             val (broadMatchItem, broadMatchIndex) = getBroadMatchItemForATC(PRODUCT_ID_NON_VARIANT_ATC)
             `When add to cart broad match item`(broadMatchItem, addToCartQty, broadMatchIndex)
 
-            val productId = broadMatchItem.id
-            val shopId = broadMatchItem.shop.id
+            val productId = broadMatchItem.productCardModel.productId
+            val shopId = broadMatchItem.shopId
             `Then assert add to cart request params`(productId, shopId, addToCartQty)
-            `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
-            `Then assert broad match item quantity`(broadMatchItem, 0)
+            `Then assert cart failed message event`(responseErrorException.message!!)
             `Then verify mini cart is refreshed`(0)
             `Then assert route to login page event is null`()
         }
@@ -253,7 +198,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
             `Given view resumed to update mini cart`()
 
             val (broadMatchItem, broadMatchIndex) = getBroadMatchItemForATC(PRODUCT_ID_NON_VARIANT_ATC)
-            val quantity = miniCartItems.getMiniCartItemProduct(broadMatchItem.id)!!.quantity
+            val quantity = miniCartItems.getMiniCartItemProduct(broadMatchItem.productCardModel.productId)!!.quantity
             `When add to cart broad match item`(broadMatchItem, quantity, broadMatchIndex)
 
             `Then assert add to cart use case is not called`()
@@ -300,13 +245,14 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     private fun AddToCartNonVariantTestHelper.`Then assert update quantity broad match item`(
         updateQuantityParam: Int,
         cartIdParam: String,
-        broadMatchItem: BroadMatchItemDataView,
-        expectedCartErrorMessage: String = "",
+        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
+        expectedErrorMessage: String = "",
         expectedProductQuantity: Int = updateQuantityParam,
         expectedRefreshMiniCartCount: Int = 2,
     ) {
         `Then assert update cart params`(updateQuantityParam, cartIdParam)
-        `Then assert cart message event`("", expectedCartErrorMessage)
+        `Then assert cart message event`("")
+        `Then assert cart failed message event`(expectedErrorMessage)
         `Then assert broad match item quantity`(broadMatchItem, expectedProductQuantity)
         `Then assert add to cart use case is not called`()
         `Then verify mini cart is refreshed`(expectedRefreshMiniCartCount)
@@ -357,7 +303,6 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
 
             `Then assert delete cart broad match item behavior`(
                 broadMatchItemInMiniCart.cartId,
-                broadMatchItem,
                 expectedSuccessDeleteCartMessage = deleteCartMessage,
             )
         }
@@ -379,15 +324,13 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
 
     private fun AddToCartNonVariantTestHelper.`Then assert delete cart broad match item behavior`(
         cartIdParam: String,
-        broadMatchItem: BroadMatchItemDataView,
-        expectedQuantity: Int = 0,
         expectedSuccessDeleteCartMessage: String = "",
         expectedFailedDeleteCartMessage: String = "",
         expectedRefreshMiniCartCount: Int = 2,
     ) {
         `Then assert delete cart params`(cartIdParam)
-        `Then assert cart message event`(expectedSuccessDeleteCartMessage, expectedFailedDeleteCartMessage)
-        `Then assert broad match item quantity`(broadMatchItem, expectedQuantity)
+        `Then assert remove from cart message event`(expectedSuccessDeleteCartMessage)
+        `Then assert cart failed message event`(expectedFailedDeleteCartMessage)
         `Then assert add to cart use case is not called`()
         `Then assert update cart use case is not called`()
         `Then verify mini cart is refreshed`(expectedRefreshMiniCartCount)
@@ -405,11 +348,8 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
             val (broadMatchItem, broadMatchIndex) = getBroadMatchItemForATC(productIdToDelete)
             `When add to cart broad match item`(broadMatchItem, 0, broadMatchIndex)
 
-            val currentQuantity = broadMatchItem.nonVariantATC!!.quantity
             `Then assert delete cart broad match item behavior`(
                 broadMatchItemInMiniCart.cartId,
-                broadMatchItem,
-                currentQuantity,
                 expectedFailedDeleteCartMessage = responseErrorException.message!!,
                 expectedRefreshMiniCartCount = 1
             )

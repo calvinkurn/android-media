@@ -120,12 +120,12 @@
     <string name="hotel_detail_based_on_review_number">Berdasarkan %1$s ulasan</string>
     <string name="hotel_detail_no_rating">Belum ada rating</string>
     <string name="hotel_detail_no_rating_review">Belum ada rating dan ulasan</string>
-    <string name="hotel_detail_share_link_title">%1$s di %2$s - Tokopedia</string>
+    <string name="hotel_detail_share_link_title">%1$s - %2$s</string>
     <string name="hotel_detail_share_link_content">"Booking %1$s di %2$s dengan harga termurah serta dapatkan promo menarik lainnya di Tokopedia!</string>
     <string name="hotel_detail_share_applink">tokopedia://hotel/detail/%1$s</string>
     <string name="hotel_detail_share_weblink">hotel/%1$s/h/%2$s</string>
     <string name="hotel_detail_share_bottomsheet_title">Bagikan Produk Ini</string>
-    <string name="hotel_detail_share_cta_link">Hai, coba cek %1$s - %2$s yang kutemukan di Tokopedia, deh! %3$s </string>
+    <string name="hotel_detail_share_cta_link">Coba cek %1$s - %2$s yang aku temuin, deh! Cari yang aman dan nyaman lewat Tokopedia aja %3$s</string>
     <string name="hotel_detail_share_loading">Loading</string>
 
     <string name="hotel_review_title">Ulasan</string>

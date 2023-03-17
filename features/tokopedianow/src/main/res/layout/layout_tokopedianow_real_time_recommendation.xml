@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
+    android:visibility="gone"
+    android:layout_marginTop="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -57,11 +59,11 @@
         app:srcCompat="@drawable/iconunify_close"
         app:tint="@color/Unify_NN950" />
 
-    <com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
-        android:id="@+id/recommendation_carousel"
+    <com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
+        android:id="@+id/product_carousel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_product" />

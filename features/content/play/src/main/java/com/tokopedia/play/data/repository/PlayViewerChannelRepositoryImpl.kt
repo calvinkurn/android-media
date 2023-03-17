@@ -45,7 +45,7 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
         return@withContext PlayChannelStatus(
             statusType = statusType,
             statusSource = PlayStatusSource.Network,
-            waitingDuration = response.playGetChannelsStatus.waitingDuration
+            waitingDuration = response.playGetChannelsStatus.waitingDuration,
         )
     }
 

@@ -42,17 +42,17 @@ object PromoRequestMapper {
                         if (it is PromoUiModel) {
                             codes = getPromoCodesFromValidateUseByUniqueId(
                                 it,
-                                cartShopHolderData,
+                                cartShopHolderData
                             ).toMutableList()
 
                             val boShipmentData = getShippingFromValidateUseByUniqueId(
-                                    it,
-                                    cartShopHolderData,
-                                    lastValidateUsePromoRequest
+                                it,
+                                cartShopHolderData,
+                                lastValidateUsePromoRequest
                             )
                             shippingId = boShipmentData.shippingId
                             spId = boShipmentData.spId
-                            boCampaignId = boShipmentData.boCampaignId
+                            boCampaignId = boShipmentData.boCampaignId.toLongOrZero()
                             shippingSubsidy = boShipmentData.shippingSubsidy
                             benefitClass = boShipmentData.benefitClass
                             shippingPrice = boShipmentData.shippingPrice
@@ -60,15 +60,15 @@ object PromoRequestMapper {
                         } else if (it is LastApplyPromo) {
                             codes = getPromoCodesFromLastApplyByUniqueId(
                                 it,
-                                cartShopHolderData,
+                                cartShopHolderData
                             ).toMutableList()
                             val boShipmentData = getShippingFromLastApplyByUniqueId(
                                 it,
-                                cartShopHolderData,
+                                cartShopHolderData
                             )
                             shippingId = boShipmentData.shippingId
                             spId = boShipmentData.spId
-                            boCampaignId = boShipmentData.boCampaignId
+                            boCampaignId = boShipmentData.boCampaignId.toLongOrZero()
                             shippingSubsidy = boShipmentData.shippingSubsidy
                             benefitClass = boShipmentData.benefitClass
                             shippingPrice = boShipmentData.shippingPrice
@@ -103,8 +103,9 @@ object PromoRequestMapper {
         val promoCodes = arrayListOf<String>()
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
             if (voucherOrder.uniqueId == cartShopHolderData.cartString) {
-                if (voucherOrder.code.isNotBlank())
+                if (voucherOrder.code.isNotBlank()) {
                     promoCodes.add(voucherOrder.code)
+                }
             }
         }
         if (promoCodes.isNotEmpty()) {
@@ -121,8 +122,9 @@ object PromoRequestMapper {
         val promoCodes = arrayListOf<String>()
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
             if (voucherOrder.uniqueId == cartShopHolderData.cartString) {
-                if (voucherOrder.code.isNotBlank())
+                if (voucherOrder.code.isNotBlank()) {
                     promoCodes.add(voucherOrder.code)
+                }
             }
         }
         if (promoCodes.isNotEmpty()) {
@@ -147,10 +149,10 @@ object PromoRequestMapper {
                     voucherOrder.shippingId,
                     voucherOrder.spId,
                     voucherOrder.boCampaignId,
-                        voucherOrder.shippingSubsidy,
+                    voucherOrder.shippingSubsidy,
                     voucherOrder.benefitClass,
                     voucherOrder.shippingPrice,
-                        voucherOrder.etaText
+                    voucherOrder.etaText
                 )
             }
         }
@@ -173,14 +175,26 @@ object PromoRequestMapper {
                     return PromoRequestBoShipmentData(
                         voucherOrder.shippingId,
                         voucherOrder.spId,
-                        validateOrderRequest.boCampaignId,
-                            validateOrderRequest.shippingSubsidy,
+                        validateOrderRequest.boCampaignId.toString(),
+                        validateOrderRequest.shippingSubsidy,
                         validateOrderRequest.benefitClass,
                         validateOrderRequest.shippingPrice,
-                            validateOrderRequest.etaText
+                        validateOrderRequest.etaText
                     )
                 }
             }
+        }
+        val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartShopHolderData.cartString }
+        if (validateOrderRequest != null && validateOrderRequest.spId > 0) {
+            return PromoRequestBoShipmentData(
+                validateOrderRequest.shippingId,
+                validateOrderRequest.spId,
+                validateOrderRequest.boCampaignId.toString(),
+                validateOrderRequest.shippingSubsidy,
+                validateOrderRequest.benefitClass,
+                validateOrderRequest.shippingPrice,
+                validateOrderRequest.etaText
+            )
         }
         return PromoRequestBoShipmentData()
     }
@@ -199,18 +213,18 @@ object PromoRequestMapper {
                 }
                 val productDetail = ProductDetail(
                     productId = cartItem.productId.toLong(),
-                        quantity = cartItem.quantity,
-                        bundleId = cartItem.bundleId.toLongOrZero()
+                    quantity = cartItem.quantity,
+                    bundleId = cartItem.bundleId.toLongOrZero()
                 )
                 listProductDetail.add(productDetail)
             }
             val order = Order(
-                    shopId = cartShopHolderData.shopId.toLongOrZero(),
-                    uniqueId = cartShopHolderData.cartString,
-                    boType = cartShopHolderData.boMetadata.boType,
-                    product_details = listProductDetail,
-                    codes = cartShopHolderData.promoCodes.toMutableList(),
-                    isChecked = hasCheckedItem
+                shopId = cartShopHolderData.shopId.toLongOrZero(),
+                uniqueId = cartShopHolderData.cartString,
+                boType = cartShopHolderData.boMetadata.boType,
+                product_details = listProductDetail,
+                codes = cartShopHolderData.promoCodes.toMutableList(),
+                isChecked = hasCheckedItem
             )
             orders.add(order)
         }
@@ -226,14 +240,15 @@ object PromoRequestMapper {
                         if (!order.codes.contains(voucherOrder.code)) {
                             order.codes.add(voucherOrder.code)
                         }
-                        if (order.shippingId <= 0)
+                        if (order.shippingId <= 0) {
                             order.shippingId = voucherOrder.shippingId
-                        if (order.spId <= 0)
+                        }
+                        if (order.spId <= 0) {
                             order.spId = voucherOrder.spId
+                        }
                     }
                 }
             }
-
         } else if (promoData is LastApplyPromo) {
             globalPromo.addAll(promoData.lastApplyPromoData.codes)
             promoData.lastApplyPromoData.listVoucherOrders.forEach { voucherOrders ->
@@ -242,20 +257,23 @@ object PromoRequestMapper {
                         if (voucherOrders.code.isNotBlank() && !order.codes.contains(voucherOrders.code)) {
                             order.codes.add(voucherOrders.code)
                         }
-                        if (order.shippingId <= 0)
+                        if (order.shippingId <= 0) {
                             order.shippingId = voucherOrders.shippingId
-                        if (order.spId <= 0)
+                        }
+                        if (order.spId <= 0) {
                             order.spId = voucherOrders.spId
+                        }
                     }
                 }
             }
         }
 
         return PromoRequest(
-                codes = globalPromo,
-                state = "cart",
-                isSuggested = 0,
-                orders = orders)
+            codes = globalPromo,
+            state = "cart",
+            isSuggested = 0,
+            orders = orders
+        )
     }
 
     fun generateClearBoParam(
@@ -270,7 +288,7 @@ object PromoRequestMapper {
                 shopId = cartShopHolderData.shopId.toLongOrZero(),
                 warehouseId = cartShopHolderData.warehouseId,
                 isPo = cartShopHolderData.isPo,
-                poDuration = cartShopHolderData.poDuration,
+                poDuration = cartShopHolderData.poDuration
             )
             orders.add(order)
         }
@@ -289,7 +307,6 @@ object PromoRequestMapper {
                     }
                 }
             }
-
         } else if (promoData is LastApplyPromo) {
             promoData.lastApplyPromoData.listVoucherOrders.forEach { voucherOrders ->
                 orders.forEach { order ->
@@ -305,18 +322,22 @@ object PromoRequestMapper {
             }
         }
 
-        return if (hasBo) ClearPromoOrderData(
+        return if (hasBo) {
+            ClearPromoOrderData(
                 orders = orders.filter { it.codes.isNotEmpty() }
-        ) else null
+            )
+        } else {
+            null
+        }
     }
 }
 
 private class PromoRequestBoShipmentData(
-        val shippingId: Int = 0,
-        val spId: Int = 0,
-        val boCampaignId: Long = 0,
-        val shippingSubsidy: Long = 0,
-        val benefitClass: String = "",
-        val shippingPrice: Double = 0.0,
-        val etaText: String = "",
+    val shippingId: Int = 0,
+    val spId: Int = 0,
+    val boCampaignId: String = "",
+    val shippingSubsidy: Long = 0,
+    val benefitClass: String = "",
+    val shippingPrice: Double = 0.0,
+    val etaText: String = ""
 )

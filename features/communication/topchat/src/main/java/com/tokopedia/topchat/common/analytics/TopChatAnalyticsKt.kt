@@ -64,7 +64,8 @@ object TopChatAnalyticsKt {
                 init {
                     add(itemBundle)
                 }
-            })
+            }
+        )
         eventDataLayer.putString(PRODUCT_ID, element.productId)
         eventDataLayer.putString(USER_ID, userId)
 
@@ -80,7 +81,9 @@ object TopChatAnalyticsKt {
     private fun <T> getValueOrEmpty(value: List<T>): String {
         return if (value.isEmpty()) {
             EE_VALUE_NONE_OTHER
-        } else value.toString()
+        } else {
+            value.toString()
+        }
     }
 
     fun eventTapAndHoldBubbleChat(replyId: String) {
@@ -340,13 +343,28 @@ object TopChatAnalyticsKt {
         blastId: String,
         statusBundle: String,
         bundleId: String,
+        bundleType: String,
+        bundleItems: List<BundleItem>,
         shopId: String,
         userId: String
     ) {
+        val listItemBundles = getItemBundle(
+            bundleItems = bundleItems,
+            bundleId = bundleId,
+            bundleType = bundleType,
+            source = "broadcast",
+            hasQuantityValue = false,
+            shopId = "",
+            shopName = "",
+            hasShopTypeValue = false,
+            hasProductCategoryId = false,
+            hasIndex = true
+        )
+
         val eventDataLayer = Bundle()
 
-        eventDataLayer.putString(TrackAppUtils.EVENT, Event.VIEW_COMMUNICATION_IRIS)
-        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_BUNDLE_CART_CHATROOM)
+        eventDataLayer.putString(TrackAppUtils.EVENT, VIEW_ITEM_LIST)
+        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_BUNDLE_CARD_CHATROOM)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
         eventDataLayer.putString(
             TrackAppUtils.EVENT_LABEL,
@@ -358,6 +376,11 @@ object TopChatAnalyticsKt {
 
         eventDataLayer.putString(USER_ID, userId)
         eventDataLayer.putString(SHOP_ID, shopId)
+
+        eventDataLayer.putParcelableArrayList(
+            AddToCartExternalAnalytics.EE_VALUE_ITEMS,
+            listItemBundles
+        )
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.VIEW_COMMUNICATION_IRIS,
@@ -422,7 +445,6 @@ object TopChatAnalyticsKt {
         shopName: String,
         userId: String
     ) {
-
         val listItemBundles = getItemBundle(
             bundleItems,
             bundleId,
@@ -605,12 +627,15 @@ object TopChatAnalyticsKt {
         replyChatRate: String,
         targetReplyChatRate: String,
         replyChatSpeed: String,
-        targetReplyChatSpeed: String,
+        targetReplyChatSpeed: String
     ) {
         val label = generateOperationalInsightLabel(
-            shopId, stateReport,
-            replyChatRate, targetReplyChatRate,
-            replyChatSpeed, targetReplyChatSpeed
+            shopId,
+            stateReport,
+            replyChatRate,
+            targetReplyChatRate,
+            replyChatSpeed,
+            targetReplyChatSpeed
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -632,12 +657,15 @@ object TopChatAnalyticsKt {
         replyChatRate: String,
         targetReplyChatRate: String,
         replyChatSpeed: String,
-        targetReplyChatSpeed: String,
+        targetReplyChatSpeed: String
     ) {
         val label = generateOperationalInsightLabel(
-            shopId, stateReport,
-            replyChatRate, targetReplyChatRate,
-            replyChatSpeed, targetReplyChatSpeed
+            shopId,
+            stateReport,
+            replyChatRate,
+            targetReplyChatRate,
+            replyChatSpeed,
+            targetReplyChatSpeed
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -662,9 +690,12 @@ object TopChatAnalyticsKt {
         targetReplyChatSpeed: String
     ) {
         val label = generateOperationalInsightLabel(
-            shopId, stateReport,
-            replyChatRate, targetReplyChatRate,
-            replyChatSpeed, targetReplyChatSpeed
+            shopId,
+            stateReport,
+            replyChatRate,
+            targetReplyChatRate,
+            replyChatSpeed,
+            targetReplyChatSpeed
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -762,7 +793,7 @@ object TopChatAnalyticsKt {
                 label = lastReplyId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37516,
+                trackerId = Bubbles.TRACKER_ID_37516
             )
         )
     }
@@ -776,7 +807,7 @@ object TopChatAnalyticsKt {
                 label = shopId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37517,
+                trackerId = Bubbles.TRACKER_ID_37517
             )
         )
     }
@@ -790,7 +821,7 @@ object TopChatAnalyticsKt {
                 label = "$shopId - $voucherId",
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37518,
+                trackerId = Bubbles.TRACKER_ID_37518
             )
         )
     }
@@ -804,7 +835,7 @@ object TopChatAnalyticsKt {
                 label = shopId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37519,
+                trackerId = Bubbles.TRACKER_ID_37519
             )
         )
     }
@@ -818,7 +849,7 @@ object TopChatAnalyticsKt {
                 label = shopId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37520,
+                trackerId = Bubbles.TRACKER_ID_37520
             )
         )
     }
@@ -832,7 +863,7 @@ object TopChatAnalyticsKt {
                 label = shopId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37521,
+                trackerId = Bubbles.TRACKER_ID_37521
             )
         )
     }
@@ -846,7 +877,7 @@ object TopChatAnalyticsKt {
                 label = shopId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37522,
+                trackerId = Bubbles.TRACKER_ID_37522
             )
         )
     }
@@ -860,7 +891,7 @@ object TopChatAnalyticsKt {
                 label = productId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37523,
+                trackerId = Bubbles.TRACKER_ID_37523
             )
         )
     }
@@ -874,7 +905,7 @@ object TopChatAnalyticsKt {
                 label = productId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37692,
+                trackerId = Bubbles.TRACKER_ID_37692
             )
         )
     }
@@ -888,7 +919,7 @@ object TopChatAnalyticsKt {
                 label = replyId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37693,
+                trackerId = Bubbles.TRACKER_ID_37693
             )
         )
     }
@@ -902,7 +933,7 @@ object TopChatAnalyticsKt {
                 label = replyId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37698,
+                trackerId = Bubbles.TRACKER_ID_37698
             )
         )
     }
@@ -916,7 +947,7 @@ object TopChatAnalyticsKt {
                 label = replyId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37699,
+                trackerId = Bubbles.TRACKER_ID_37699
             )
         )
     }
@@ -930,7 +961,7 @@ object TopChatAnalyticsKt {
                 label = replyId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37700,
+                trackerId = Bubbles.TRACKER_ID_37700
             )
         )
     }
@@ -944,7 +975,7 @@ object TopChatAnalyticsKt {
                 label = replyId,
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = Bubbles.TRACKER_ID_37701,
+                trackerId = Bubbles.TRACKER_ID_37701
             )
         )
     }
@@ -1012,6 +1043,58 @@ object TopChatAnalyticsKt {
             COMMUNICATION,
             CURRENT_SITE_TOKOPEDIA,
             Bubbles.TRACKER_ID_38044
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventImpressionBubbleChatRecommendationTicker(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.VIEW_COMMUNICATION_IRIS,
+            Category.INBOX_CHAT,
+            Bubbles.IMPRESSION_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40953
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickBubbleChatRecommendationTicker(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Category.INBOX_CHAT,
+            Bubbles.CLICK_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40954
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventImpressionBubbleChatIntroduction(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.VIEW_COMMUNICATION_IRIS,
+            Category.CHAT_SETTINGS,
+            Bubbles.IMPRESSION_OF_SELLER_BUBBLE_INTRODUCTION_PAGE,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40956
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
+    }
+
+    fun eventClickBubbleHelpPage(shopId: String) {
+        val bubbleEvent = createBubbleEvent(
+            Event.CLICK_COMMUNICATION,
+            Category.CHAT_SETTINGS,
+            Bubbles.CLICK_ON_DIRECTION_TO_HELP_PAGE,
+            shopId,
+            COMMUNICATION,
+            CURRENT_SITE_TOKOPEDIA,
+            Bubbles.TRACKER_ID_40957
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(bubbleEvent)
     }
@@ -1087,6 +1170,7 @@ object TopChatAnalyticsKt {
         const val CHAT_DETAIL = "chat detail"
         const val INBOX_CHAT = "inbox-chat"
         const val PUSH_NOTIF_CHAT = "push notification chat"
+        const val CHAT_SETTINGS = "chat settings"
     }
 
     object Bubbles {
@@ -1111,8 +1195,12 @@ object TopChatAnalyticsKt {
         const val CLICK_NEW_NOTIFICATION_BUBBLE_CHAT = "click on new notification bubble chat"
         const val CLICK_DISMISS_NEW_NOTIFICATION_BUBBLE_CHAT = "click dismiss new notification bubble chat"
         const val CLICK_ADD_STICKER = "click add sticker"
+        const val IMPRESSION_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER = "impression on bubble chat recommendation ticker"
+        const val CLICK_ON_BUBBLE_CHAT_RECOMMENDATION_TICKER = "click on bubble chat recommendation ticker"
+        const val IMPRESSION_OF_SELLER_BUBBLE_INTRODUCTION_PAGE = "impression of seller bubble introduction page"
+        const val CLICK_ON_DIRECTION_TO_HELP_PAGE = "click on direction to help page"
 
-        //tracker ID
+        // tracker ID
         const val TRACKER_ID_37516 = "37516"
         const val TRACKER_ID_37517 = "37517"
         const val TRACKER_ID_37518 = "37518"
@@ -1132,6 +1220,10 @@ object TopChatAnalyticsKt {
         const val TRACKER_ID_37707 = "37707"
         const val TRACKER_ID_37708 = "37708"
         const val TRACKER_ID_38044 = "38044"
+        const val TRACKER_ID_40953 = "40953"
+        const val TRACKER_ID_40954 = "40954"
+        const val TRACKER_ID_40956 = "40956"
+        const val TRACKER_ID_40957 = "40957"
     }
 
     object Action {
@@ -1149,7 +1241,7 @@ object TopChatAnalyticsKt {
         const val CLICK_BUNDLING_PRODUCT_CTA = "click on bundling product card"
         const val SELLER_IMPRESS_REPORT_TICKER = "seller impress on report ticker"
         const val CLICK_SEND_MSG_ON_NOTIF = "click sent msg on notifpush"
-        const val VIEW_BUNDLE_CART_CHATROOM = "view on bundle card in chatroom"
+        const val VIEW_BUNDLE_CARD_CHATROOM = "view on bundle card in chatroom"
         const val CLICK_PRODUCT_BUNDLE = "click on product attachment on bundle card"
         const val CLICK_ADD_TO_CART_BUNDLE = "click on add to cart from bundle card"
         const val SELLER_CLICK_REPORT_TICKER = "seller click on report ticker"
@@ -1170,31 +1262,31 @@ object TopChatAnalyticsKt {
     // default value
     private const val EE_VALUE_NONE_OTHER = "none / other"
 
-    //Event Name
+    // Event Name
     private const val ATC = "add_to_cart"
     private const val VIEW_ITEM_LIST = "view_item_list"
     private const val SELECT_CONTENT = "select_content"
 
-    //Event Category
+    // Event Category
     private const val EVENT_CATEGORY_CHAT = "chat"
 
-    //Event Action
+    // Event Action
     private const val CLICK_OCC = "click - Beli Langsung on chat"
 
-    //Event Label
+    // Event Label
     private const val OCC_LABEL = "fitur : OCC"
 
-    //Other
+    // Other
     private const val CURRENT_SITE = "topchat"
     private const val COMMUNICATION_MEDIA = "Communication & Media"
     private const val CURRENT_SITE_TOKOPEDIA = "tokopediamarketplace"
     private const val COMMUNICATION = "communication"
 
-    //General Keys
+    // General Keys
     private const val KEY_BUSINESS_UNIT = "businessUnit"
     private const val KEY_CURRENT_SITE = "currentSite"
 
-    //OCC Product Keys
+    // OCC Product Keys
     private const val CATEGORY_ID = "category_id"
     private const val DIMENSION_10 = "dimension10"
     private const val DIMENSION_12 = "dimension12"

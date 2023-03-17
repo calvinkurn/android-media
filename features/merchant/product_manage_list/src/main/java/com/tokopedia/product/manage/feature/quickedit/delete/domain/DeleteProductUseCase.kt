@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.quickedit.delete.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
@@ -7,12 +8,13 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("DeleteProductGqlQuery", DeleteProductUseCase.QUERY)
 class DeleteProductUseCase @Inject constructor(repository: GraphqlRepository)
     : GraphqlUseCase<ProductUpdateV3Response>(repository) {
 
     companion object {
         const val PARAM_INPUT = "input"
-        private val query = """
+        const val QUERY = """
             mutation productUpdateV3(${'$'}input: ProductInputV3!){
                 ProductUpdateV3(input:${'$'}input) {
                     header {
@@ -23,11 +25,11 @@ class DeleteProductUseCase @Inject constructor(repository: GraphqlRepository)
                     isSuccess
                 }
             }
-        """.trimIndent()
+        """
     }
 
     init {
-        setGraphqlQuery(query)
+        setGraphqlQuery(DeleteProductGqlQuery())
         setTypeClass(ProductUpdateV3Response::class.java)
     }
 

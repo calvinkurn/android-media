@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.view.activity
 
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -26,17 +27,22 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        val list = intent?.data?.let {
+        var list = emptyList<String>()
+        var pageSource = ""
+        intent?.data?.let {
             bundle.putString(DEEP_LINK_URI, it.toString())
-            UriUtil.destructureUri(
+            list = UriUtil.destructureUri(
                 ApplinkConstInternalGlobal.CHAT_BOT + "/{id}",
                 it,
                 true
             )
+            pageSource = it.getQueryParameter("page_source").orEmpty()
+            bundle.putString(PAGE_SOURCE, pageSource)
         }
         if (!list.isNullOrEmpty()) {
             bundle.putString(MESSAGE_ID, list[0])
         }
+
         val fragment = ChatbotFragment()
         fragment.arguments = bundle
         return fragment
@@ -45,6 +51,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
     companion object {
 
         const val MESSAGE_ID = "message_id"
+        const val PAGE_SOURCE = "page_source"
         const val DEEP_LINK_URI = "deep_link_uri"
     }
 
@@ -63,6 +70,9 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun setupToolbar() {
         super.setupToolbar()
+        supportActionBar?.run {
+            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+        }
         val userAvatar = findViewById<ImageView>(R.id.user_avatar)
         userAvatar.apply {
             if (userAvatar.isInDarkMode()) {

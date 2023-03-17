@@ -41,6 +41,7 @@ android {
 
 dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.retrofit
 
@@ -110,7 +111,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.leakCanaryInstrument
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 

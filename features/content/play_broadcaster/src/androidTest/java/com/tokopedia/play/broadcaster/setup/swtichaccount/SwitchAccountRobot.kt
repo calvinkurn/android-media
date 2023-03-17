@@ -9,11 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -44,7 +42,6 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewMod
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.content.test.espresso.delay
-import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
@@ -77,7 +74,7 @@ class SwitchAccountRobot(
             getAddedChannelTagsUseCase = addedChannelTagsUseCase,
             sharedPref = sharedPreferences,
         ).apply {
-            submitAction(PlayBroadcastAction.GetAccountList())
+            submitAction(PlayBroadcastAction.GetConfiguration())
         }
     }
 
@@ -115,26 +112,23 @@ class SwitchAccountRobot(
         scheduleAnalytic = mockk(relaxed = true),
         pinProductAnalytic = mockk(relaxed = true),
         accountAnalytic = PlayBroadcastAccountAnalyticImpl(analyticUserSession, hydraConfigStore),
+        shortsEntryPointAnalytic = mockk(relaxed = true),
     )
 
     private val ugcViewModelFactory = object : UGCOnboardingViewModelFactory.Creator {
         override fun create(
             owner: SavedStateRegistryOwner,
-            onboardingType: Int,
             onboardingStrategy: UGCOnboardingStrategy
         ): UGCOnboardingViewModelFactory {
             return UGCOnboardingViewModelFactory(
                 owner,
-                onboardingType,
                 onboardingStrategy,
                 UGCOnboardingViewModelFactory = object :
                     UGCOnboardingViewModel.Factory {
                     override fun create(
-                        onboardingType: Int,
                         onboardingStrategy: UGCOnboardingStrategy
                     ): UGCOnboardingViewModel {
                         return UGCOnboardingViewModel(
-                            onboardingType,
                             onboardingStrategy
                         )
                     }
@@ -168,7 +162,10 @@ class SwitchAccountRobot(
                     parentViewModelFactoryCreator = parentViewModelFactoryCreator,
                     viewModelFactory = viewModelFactory,
                     analytic = playAnalytic,
-                    analyticManager = mockk(relaxed = true)
+                    analyticManager = mockk(relaxed = true),
+                    userSession = mockk(relaxed = true),
+                    coachMarkSharedPref = mockk(relaxed = true),
+                    playShortsEntryPointRemoteConfig = mockk(relaxed = true),
                 )
             },
             UserCompleteOnboardingBottomSheet::class.java to {

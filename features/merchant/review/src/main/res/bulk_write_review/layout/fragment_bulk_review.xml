@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header_bulk_review"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_bulk_review_items"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:clipToPadding="false"
+        android:paddingTop="6dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/widget_bulk_review_sticky_button"
+        app:layout_constraintTop_toBottomOf="@id/header_bulk_review"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_bulk_review_form" />
+
+    <com.tokopedia.review.feature.bulk_write_review.presentation.widget.WidgetBulkReviewStickyButton
+        android:id="@+id/widget_bulk_review_sticky_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:background="@color/Unify_Background"
+        android:elevation="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_bulk_review"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:alpha="0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error_bulk_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.review.feature.bulk_write_review.presentation.widget.WidgetBulkReviewSubmitLoader
+        android:id="@+id/widget_bulk_review_submit_loader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

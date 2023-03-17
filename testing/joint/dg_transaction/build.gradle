@@ -21,6 +21,12 @@ android {
     buildFeatures {
         buildConfig = false
     }
+
+    configurations {
+        androidTestImplementation {
+            exclude group: 'com.google.firebase', module: 'firebase-perf'
+        }
+    }
 }
 
 dependencies {
@@ -32,10 +38,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.rechargePdpEmoney)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.thankYouNative)
+    implementation projectOrAar(rootProject.ext.features.sessioncommon)
 
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -58,7 +65,7 @@ dependencies {
     implementation rootProject.ext.testDependencies.espressoCore
     implementation rootProject.ext.testDependencies.espressoContrib
 
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

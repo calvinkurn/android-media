@@ -45,7 +45,7 @@ open class BaseTokoNowViewModel(
         get() = _addItemToCart
     val removeCartItem: LiveData<Result<Pair<String, String>>>
         get() = _removeCartItem
-    val updateCartItem: LiveData<Result<UpdateCartV2Data>>
+    val updateCartItem: LiveData<Result<Triple<String, UpdateCartV2Data, Int>>>
         get() = _updateCartItem
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
@@ -55,7 +55,7 @@ open class BaseTokoNowViewModel(
 
     private val _addItemToCart = MutableLiveData<Result<AddToCartDataModel>>()
     private val _removeCartItem = MutableLiveData<Result<Pair<String, String>>>()
-    private val _updateCartItem = MutableLiveData<Result<UpdateCartV2Data>>()
+    private val _updateCartItem = MutableLiveData<Result<Triple<String, UpdateCartV2Data, Int>>>()
 
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
@@ -76,7 +76,7 @@ open class BaseTokoNowViewModel(
             when {
                 miniCartItem == null -> addItemToCart(productId, shopId, quantity)
                 quantity.isZero() -> deleteCartItem(productId, cartId)
-                else -> updateCartItem(cartId, notes, quantity)
+                else -> updateCartItem(productId, cartId, notes, quantity)
             }
         }, delay = CHANGE_QUANTITY_DELAY).let {
             changeQuantityJob = it
@@ -139,7 +139,7 @@ open class BaseTokoNowViewModel(
 
     fun getShopId(): Long = addressData.getShopId()
 
-    private fun updateCartItem(cartId: String, notes: String, quantity: Int) {
+    private fun updateCartItem(productId: String, cartId: String, notes: String, quantity: Int) {
         val updateCartRequest = UpdateCartRequest(
             cartId = cartId,
             quantity = quantity,
@@ -150,7 +150,7 @@ open class BaseTokoNowViewModel(
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
-            _updateCartItem.postValue(Success(it))
+            _updateCartItem.postValue(Success(Triple(productId, it, quantity)))
         }, {
             _updateCartItem.postValue(Fail(it))
         })

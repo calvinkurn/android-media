@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
+import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.activity.PlayVideoLiveListActivity
 import com.tokopedia.feedplus.view.adapter.viewholder.playseemore.PlaySeeMoreAdapter
@@ -135,8 +136,17 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment(), PlayWidgetListener {
                 Observer {
                     when (it) {
                         is Success -> onSuccessReminderSet(it.data)
-                        else -> {
-                            showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
+                        is Fail -> {
+                            val errorMsg = if (it.throwable is CustomUiMessageThrowable) {
+                                getString(
+                                    (it.throwable as? CustomUiMessageThrowable)?.errorMessageId
+                                        ?: com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder
+                                )
+                            } else {
+                                it.throwable.message
+                                    ?: getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder)
+                            }
+                            showToast(errorMsg, Toaster.TYPE_ERROR)
                         }
                     }
                 }

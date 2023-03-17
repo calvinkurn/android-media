@@ -30,13 +30,13 @@ internal fun createAceSearchProductRequest(params: Map<String?, Any>) = GraphqlR
 )
 
 internal fun createCategoryFilterRequest(params: Map<String?, Any>) = GraphqlRequest(
-        CATEGORY_FILTER_QUERY,
+        FILTER_SORT_PRODUCT_QUERY,
         CategoryFilterModel::class.java,
         mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
 
 internal fun createQuickFilterRequest(params: Map<String?, Any>) = GraphqlRequest(
-        QUICK_FILTER_QUERY,
+        FILTER_SORT_PRODUCT_QUERY,
         QuickFilterModel::class.java,
         mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
@@ -122,6 +122,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     ratingAverage
                     stock
                     minOrder
+                    maxOrder
                     labelGroups {
                         title
                         position
@@ -166,55 +167,15 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
               type_variant
               hex_color
             }
+            wishlist
           }
         }
       }
     }
 """
 
-private const val CATEGORY_FILTER_QUERY = """
-    query CategoryFilter(${'$'}params: String!) {
-      filter_sort_product(params:${'$'}params){
-        data {
-          filter {
-            title
-            subTitle
-            options {
-              name
-              key
-              icon
-              value
-              isNew
-              inputType
-              totalData
-              valMax
-              valMin
-              hexColor
-              child {
-                  key
-                  value
-                  name
-                  icon
-                  inputType
-                  totalData
-                  child {
-                      key
-                      value
-                      name
-                      icon
-                      inputType
-                      totalData
-                  }
-              }
-            }
-          }
-        }
-      }
-    }
-"""
-
-private const val QUICK_FILTER_QUERY = """
-    query QuickFilter(${'$'}params: String!) {
+private const val FILTER_SORT_PRODUCT_QUERY = """
+    query FilterSortProduct(${'$'}params: String!) {
       filter_sort_product(params:${'$'}params){
         data {
           filter {

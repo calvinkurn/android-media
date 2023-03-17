@@ -24,18 +24,15 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
-import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
-import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
-import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
+import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
@@ -55,12 +52,12 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
-import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
-import com.tokopedia.topchat.common.websocket.WebsocketPayloadGenerator
 import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withIndex
@@ -70,17 +67,17 @@ import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
+import com.tokopedia.topchat.stub.chattemplate.usecase.GetTemplateUseCaseStub
 import com.tokopedia.topchat.stub.common.DefaultWebsocketPayloadFakeGenerator
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -92,7 +89,9 @@ abstract class TopchatRoomTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        TopChatRoomActivityStub::class.java, false, false
+        TopChatRoomActivityStub::class.java,
+        false,
+        false
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -122,7 +121,7 @@ abstract class TopchatRoomTest {
     protected lateinit var chatListStickerUseCase: ChatListStickerUseCaseStub
 
     @Inject
-    protected lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCaseStub
+    protected lateinit var getTemplateChatRoomUseCase: GetTemplateUseCaseStub
 
     @Inject
     protected lateinit var getShopFollowingUseCaseStub: GetShopFollowingUseCaseStub
@@ -194,7 +193,7 @@ abstract class TopchatRoomTest {
     lateinit var remoteConfig: RemoteConfig
 
     @Inject
-    lateinit var webSocketPayloadGenerator : DefaultWebsocketPayloadFakeGenerator
+    lateinit var webSocketPayloadGenerator: DefaultWebsocketPayloadFakeGenerator
 
     protected open lateinit var activity: TopChatRoomActivityStub
 
@@ -206,15 +205,15 @@ abstract class TopchatRoomTest {
     protected var firstPageChatBroadcastAsBuyer = GetExistingChatPojo()
     protected var getShopFollowingStatus = ShopFollowingPojo()
     protected var chatSrwResponse = ChatSmartReplyQuestionResponse()
-    protected var uploadImageReplyResponse = ChatReplyPojo()
     protected var orderProgressResponse = OrderProgressResponse()
     protected var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
+    protected var successGetTemplateResponse = GetChatTemplateResponse()
 
     object ProductPreviewAttribute {
         const val productName = "Testing Attach Product 1"
         const val productThumbnail = "https://images.tokopedia.net/img/cache/350/attachment/" +
-                "2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
+            "2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
         const val productPrice = "Rp 23.000.000"
     }
 
@@ -237,25 +236,29 @@ abstract class TopchatRoomTest {
 
     protected open fun enableUploadImageByService() {
         remoteConfig.setString(
-            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, "true"
+            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE,
+            "true"
         )
     }
 
     protected open fun disableUploadImageByService() {
         remoteConfig.setString(
-            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, "false"
+            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE,
+            "false"
         )
     }
 
-    protected open fun enableCompressImage() {
-        remoteConfig.setString(
-            RemoteConfigKey.TOPCHAT_COMPRESS, "true"
+    protected open fun enableUploadSecure() {
+        abTestPlatform.setString(
+            TopChatRoomFragment.ROLLENCE_UPLOAD_SECURE,
+            TopChatRoomFragment.ROLLENCE_UPLOAD_SECURE
         )
     }
 
-    protected open fun disableCompressImage() {
-        remoteConfig.setString(
-            RemoteConfigKey.TOPCHAT_COMPRESS, "false"
+    protected open fun disableUploadSecure() {
+        abTestPlatform.setString(
+            TopChatRoomFragment.ROLLENCE_UPLOAD_SECURE,
+            ""
         )
     }
 
@@ -289,13 +292,13 @@ abstract class TopchatRoomTest {
             "success_get_shop_following_status.json",
             ShopFollowingPojo::class.java
         )
-        uploadImageReplyResponse = AndroidFileUtil.parse(
-            "success_upload_image_reply.json",
-            ChatReplyPojo::class.java
-        )
         chatRoomSettingResponse = AndroidFileUtil.parse(
             "success_get_chat_setting_fraud_alert.json",
             RoomSettingResponse::class.java
+        )
+        successGetTemplateResponse = AndroidFileUtil.parse(
+            "template/success_get_template.json",
+            GetChatTemplateResponse::class.java
         )
     }
 
@@ -320,7 +323,7 @@ abstract class TopchatRoomTest {
         chatListStickerUseCase.response = stickerListAsBuyer
         chatSrwUseCase.response = chatSrwResponse
         getShopFollowingUseCaseStub.response = getShopFollowingStatus
-        getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
+        getTemplateChatRoomUseCase.response = successGetTemplateResponse
         toggleFavouriteShopUseCaseStub.response = true
     }
 
@@ -377,7 +380,8 @@ abstract class TopchatRoomTest {
     protected fun clickAttachProductMenu() {
         val viewAction = RecyclerViewActions
             .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                0, click()
+                0,
+                click()
             )
         onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
             .perform(viewAction)
@@ -386,7 +390,8 @@ abstract class TopchatRoomTest {
     protected fun clickAttachImageMenu() {
         val viewAction = RecyclerViewActions
             .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                1, click()
+                1,
+                click()
             )
         onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
             .perform(viewAction)
@@ -395,7 +400,8 @@ abstract class TopchatRoomTest {
     protected fun clickAttachInvoiceMenu() {
         val viewAction = RecyclerViewActions
             .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                2, click()
+                2,
+                click()
             )
         onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
             .perform(viewAction)
@@ -404,7 +410,8 @@ abstract class TopchatRoomTest {
     protected fun clickAttachVoucherMenu() {
         val viewAction = RecyclerViewActions
             .actionOnItemAtPosition<AttachmentItemViewHolder>(
-                3, click()
+                3,
+                click()
             )
         onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
             .perform(viewAction)
@@ -437,7 +444,8 @@ abstract class TopchatRoomTest {
 
     protected fun clickTemplateChatAt(position: Int) {
         val viewAction = RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            position, click()
+            position,
+            click()
         )
         onView(withId(R.id.list_template)).perform(viewAction)
     }
@@ -454,7 +462,8 @@ abstract class TopchatRoomTest {
     protected fun clickSrwBubbleExpandCollapse(position: Int) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.tp_srw_container_partial
+                position,
+                R.id.tp_srw_container_partial
             )
         ).perform(click())
     }
@@ -466,14 +475,15 @@ abstract class TopchatRoomTest {
     ) {
         onView(
             withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition, R.id.lb_product_label
+                atPosition,
+                R.id.lb_product_label
             )
         ).check(matches(viewMatcher))
     }
 
     protected fun assertEmptyStockLabelOnProductCard(
         recyclerViewId: Int,
-        atPosition: Int,
+        atPosition: Int
     ) {
         assertLabelTextOnProductCard(recyclerViewId, atPosition, "Stok habis")
     }
@@ -485,7 +495,8 @@ abstract class TopchatRoomTest {
     ) {
         onView(
             withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition, R.id.lb_product_label
+                atPosition,
+                R.id.lb_product_label
             )
         ).check(matches(withText(text)))
     }
@@ -497,7 +508,8 @@ abstract class TopchatRoomTest {
     ) {
         onView(
             withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition, R.id.tp_seller_stock_category
+                atPosition,
+                R.id.tp_seller_stock_category
             )
         ).check(matches(viewMatcher))
     }
@@ -509,7 +521,8 @@ abstract class TopchatRoomTest {
     ) {
         onView(
             withRecyclerView(recyclerViewId).atPositionOnView(
-                atPosition, R.id.tp_seller_stock_category
+                atPosition,
+                R.id.tp_seller_stock_category
             )
         ).check(matches(withText(text)))
     }
@@ -539,7 +552,8 @@ abstract class TopchatRoomTest {
     ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.rv_srw_content_container
+                position,
+                R.id.rv_srw_content_container
             )
         ).check(matches(visibilityMatcher))
     }
@@ -605,11 +619,13 @@ abstract class TopchatRoomTest {
     }
 
     protected fun assertHeaderRightMsgBubbleVisibility(
-        position: Int, visibilityMatcher: Matcher<in View>
+        position: Int,
+        visibilityMatcher: Matcher<in View>
     ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.tvRole
+                position,
+                R.id.tvRole
             )
         ).check(matches(visibilityMatcher))
     }
@@ -617,17 +633,20 @@ abstract class TopchatRoomTest {
     protected fun assertHeaderRightMsgBubbleText(position: Int, msg: String) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.tvRole
+                position,
+                R.id.tvRole
             )
         ).check(matches(withText(msg)))
     }
 
     protected fun assertHeaderRightMsgBubbleBlueDotVisibility(
-        position: Int, visibilityMatcher: Matcher<in View>
+        position: Int,
+        visibilityMatcher: Matcher<in View>
     ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.img_sr_blue_dot
+                position,
+                R.id.img_sr_blue_dot
             )
         ).check(matches(visibilityMatcher))
     }
@@ -670,7 +689,7 @@ abstract class TopchatRoomTest {
 
     protected fun assertComposedTextValue(msg: String) {
         onView(withIndex(withId(R.id.new_comment), 0)).check(
-            matches(withText(msg))
+            matches(withSubstring(msg))
         )
     }
 
@@ -683,31 +702,37 @@ abstract class TopchatRoomTest {
     }
 
     protected fun assertMsgHeaderContainer(
-        position: Int, matcher: Matcher<in View>
+        position: Int,
+        matcher: Matcher<in View>
     ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.ll_msg_header
+                position,
+                R.id.ll_msg_header
             )
         ).check(matches(matcher))
     }
 
     protected fun assertDividerHeaderContainer(
-        position: Int, matcher: Matcher<in View>
+        position: Int,
+        matcher: Matcher<in View>
     ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.v_header_divider
+                position,
+                R.id.v_header_divider
             )
         ).check(matches(matcher))
     }
 
     protected fun assertHeaderTitleMsgAtBubblePosition(
-        position: Int, matcher: Matcher<in View>
+        position: Int,
+        matcher: Matcher<in View>
     ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.tp_header_title
+                position,
+                R.id.tp_header_title
             )
         ).check(matches(matcher))
     }
@@ -715,7 +740,8 @@ abstract class TopchatRoomTest {
     protected fun assertCtaHeaderMsgAtBubblePosition(position: Int, matcher: Matcher<in View>) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.tp_header_cta
+                position,
+                R.id.tp_header_cta
             )
         ).check(matches(matcher))
     }
@@ -723,7 +749,8 @@ abstract class TopchatRoomTest {
     protected fun clickCtaHeaderMsgAtBubblePosition(position: Int) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.tp_header_cta
+                position,
+                R.id.tp_header_cta
             )
         ).perform(click())
     }
@@ -731,7 +758,8 @@ abstract class TopchatRoomTest {
     protected fun assertMsgBubbleAt(position: Int, matcher: Matcher<in View>) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.tvMessage
+                position,
+                R.id.tvMessage
             )
         ).check(matches(matcher))
     }
@@ -749,7 +777,8 @@ abstract class TopchatRoomTest {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(
-                    position, R.id.broadcast_campaign_label
+                    position,
+                    R.id.broadcast_campaign_label
                 )
         ).check(matches(matcher))
     }
@@ -761,7 +790,8 @@ abstract class TopchatRoomTest {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(
-                    position, R.id.tp_broadcast_campaign_status
+                    position,
+                    R.id.tp_broadcast_campaign_status
                 )
         ).check(matches(matcher))
     }
@@ -773,7 +803,8 @@ abstract class TopchatRoomTest {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(
-                    position, R.id.tu_bc_countdown
+                    position,
+                    R.id.tu_bc_countdown
                 )
         ).check(matches(matcher))
     }
@@ -785,7 +816,8 @@ abstract class TopchatRoomTest {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(
-                    position, R.id.iu_broadcast_start_date
+                    position,
+                    R.id.iu_broadcast_start_date
                 )
         ).check(matches(matcher))
     }
@@ -797,14 +829,15 @@ abstract class TopchatRoomTest {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
                 .atPositionOnView(
-                    position, R.id.iu_broadcast_start_date
+                    position,
+                    R.id.iu_broadcast_start_date
                 )
         ).check(matches(matcher))
     }
 
     protected fun assertToolbarTitle(expectedTitle: String) {
         onView(
-            Matchers.allOf(
+            allOf(
                 withId(com.tokopedia.chat_common.R.id.title),
                 isDescendantOfA(withId(R.id.toolbar))
             )
@@ -820,18 +853,6 @@ abstract class TopchatRoomTest {
     protected fun isKeyboardOpened(): Boolean {
         val rootView = activity.findViewById<View>(R.id.main)
         return isKeyboardOpened(rootView)
-    }
-
-    protected fun generateTemplateResponse(
-        enable: Boolean = true,
-        success: Boolean = true,
-        templates: List<String> = listOf("Template Chat 1", "Template Chat 2")
-    ): TemplateData {
-        return TemplateData().apply {
-            this.isIsEnable = enable
-            this.isSuccess = success
-            this.templates = templates
-        }
     }
 
     protected fun clickCloseAttachmentPreview(position: Int) {
@@ -856,9 +877,10 @@ abstract class TopchatRoomTest {
 
     protected fun clickSrwPreviewItemAt(position: Int) {
         onView(
-            Matchers.allOf(
+            allOf(
                 withRecyclerView(R.id.rv_srw_partial).atPositionOnView(
-                    position, R.id.tp_srw_title
+                    position,
+                    R.id.tp_srw_title
                 ),
                 isDescendantOfA(withId(R.id.cl_attachment_preview))
             )
@@ -890,7 +912,8 @@ abstract class TopchatRoomTest {
         )
             .respondWith(
                 Instrumentation.ActivityResult(
-                    Activity.RESULT_OK, getAttachProductData(totalProductAttached)
+                    Activity.RESULT_OK,
+                    getAttachProductData(totalProductAttached)
                 )
             )
     }
@@ -910,24 +933,19 @@ abstract class TopchatRoomTest {
         }
         return Intent().apply {
             putParcelableArrayListExtra(
-                ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products
+                ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY,
+                products
             )
         }
     }
 
     protected fun getImageData(): Intent {
         return Intent().apply {
-            putStringArrayListExtra(
-                PICKER_RESULT_PATHS,
-                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
-            )
-            putStringArrayListExtra(
-                RESULT_PREVIOUS_IMAGE,
-                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
-            )
-            putStringArrayListExtra(
-                RESULT_IMAGES_FED_INTO_IMAGE_PICKER,
-                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
+            putExtra(
+                EXTRA_RESULT_PICKER,
+                PickerResult(
+                    originalPaths = listOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
+                )
             )
         }
     }
@@ -979,9 +997,29 @@ fun GetExistingChatPojo.hideBanner(hide: Boolean): GetExistingChatPojo {
     val newAttribute = ImageAnnouncementPojo().apply {
         isHideBanner = hide
         imageUrl = "https://images.tokopedia.net/img/cache/1190/wmEwCC/2021/3/" +
-                "8/d0389667-b822-43fa-bf3f-485b4518b286.jpg.webp?ect=4g"
+            "8/d0389667-b822-43fa-bf3f-485b4518b286.jpg.webp?ect=4g"
     }
     banner?.attachment?.attributes = CommonUtil.toJson(newAttribute)
+    return this
+}
+
+fun GetExistingChatPojo.changeCtaBroadcast(
+    url: String?,
+    text: String?,
+    label: String?
+): GetExistingChatPojo {
+    val banner: Reply? = chatReplies.list[0].chats[0].replies.find { reply ->
+        reply.attachment.type.toString() == TYPE_IMAGE_ANNOUNCEMENT
+    }
+    val attribute = CommonUtil.fromJson<ImageAnnouncementPojo>(
+        banner?.attachment?.attributes,
+        ImageAnnouncementPojo::class.java
+    ).apply {
+        this.broadcastCtaUrl = url
+        this.broadcastCtaText = text
+        this.broadcastCtaLabel = label
+    }
+    banner?.attachment?.attributes = CommonUtil.toJson(attribute)
     return this
 }
 

@@ -7,42 +7,41 @@ import com.google.gson.annotations.SerializedName
  * Created by fwidjaja on 09/03/20.
  */
 data class VoucherOrders(
-        @SerializedName("code")
-        var code: String = "",
+    @SerializedName("code")
+    var code: String = "",
 
-        @SerializedName("unique_id")
-        var uniqueId: String = "",
+    @SerializedName("unique_id")
+    var uniqueId: String = "",
 
-        @SerializedName("message")
-        var message: MessageVoucherOrders = MessageVoucherOrders(),
+    @SerializedName("message")
+    var message: MessageVoucherOrders = MessageVoucherOrders(),
 
-        @SerializedName("cart_id")
-        val cartId: String = "",
+    @SerializedName("cart_id")
+    val cartId: String = "",
 
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("shipping_id")
-        val shippingId: Int = 0,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("shipping_id")
+    val shippingId: Int = 0,
 
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("sp_id")
-        val spId: Int = 0,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("sp_id")
+    val spId: Int = 0,
 
-        @SerializedName("type")
-        val type: String = "",
+    @SerializedName("type")
+    val type: String = "",
 
-        @SerializedName("shipping_price")
-        val shippingPrice: Double = 0.0,
+    @SerializedName("shipping_price")
+    val shippingPrice: Double = 0.0,
 
-        @SerializedName("shipping_subsidy")
-        val shippingSubsidy: Long = 0,
+    @SerializedName("shipping_subsidy")
+    val shippingSubsidy: Long = 0,
 
-        @SerializedName("benefit_class")
-        val benefitClass: String = "",
+    @SerializedName("benefit_class")
+    val benefitClass: String = "",
 
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("bo_campaign_id")
-        val boCampaignId: Long = 0,
+    @SerializedName("bo_campaign_id")
+    val boCampaignId: String = "",
 
-        @SerializedName("eta_txt")
-        val etaText: String = "",
+    @SerializedName("eta_txt")
+    val etaText: String = ""
 )

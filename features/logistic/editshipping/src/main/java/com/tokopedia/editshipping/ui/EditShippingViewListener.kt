@@ -1,7 +1,6 @@
 package com.tokopedia.editshipping.ui
 
 import android.content.Context
-import android.view.View
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.Courier
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
@@ -77,7 +76,7 @@ interface EditShippingViewListener {
 
     fun refreshLocationViewListener(address: DistrictRecommendationAddress?)
 
-    fun showCoachmarkGocarInstan(view: View)
+    fun showOnBoarding(whitelabelIndex: Int, normalServiceIndex: Int)
 
     companion object {
         const val ADDITIONAL_OPTION_REQUEST_CODE = 2

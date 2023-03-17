@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
     app:card_background_color="@color/Unify_N0"
     app:card_type="shadow"
     app:layout_constraintTop_toTopOf="parent">
@@ -20,8 +20,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/product_image"
-            android:layout_width="@dimen/dp_64"
-            android:layout_height="@dimen/dp_64"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,6 +40,18 @@
             app:typographyWeight="reguler"
             tools:text="VAIA Sepatu Heels Callya Pink 7CM - Merah Muda, 36" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/ssa_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:labelType="highlight_light_green"
+            android:visibility="gone"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toBottomOf="@id/product_name"
+            app:layout_constraintLeft_toRightOf="@id/product_image"
+            tools:text="Komisi Extra"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/status_bullet"
@@ -61,7 +73,7 @@
             android:layout_margin="4dp"
             android:textColor="@color/Unify_GN500"
             app:layout_constraintLeft_toRightOf="@id/status_bullet"
-            app:layout_constraintTop_toBottomOf="@id/product_name"
+            app:layout_constraintTop_toBottomOf="@id/ssa_label"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Aktif" />

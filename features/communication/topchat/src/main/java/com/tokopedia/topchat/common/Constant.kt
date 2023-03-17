@@ -14,6 +14,4 @@ object Constant {
     const val ROLE_SHOP = "shop"
     const val GOOD_PERFORMANCE = "baik"
     const val NEED_IMPROVEMENT = "perlu ditingkatkan"
-    const val EXTRA_IS_FROM_BUBBLE = "is_from_bubble"
-    const val EXTRA_BUBBLE_SOURCE = "bubble_chat"
 }

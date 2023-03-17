@@ -135,17 +135,6 @@ class ShopPlayWidgetAnalyticListener(
         )
     }
 
-    private fun getChannelStatusValue(channelType: PlayWidgetChannelType): String {
-        return when (channelType) {
-            PlayWidgetChannelType.Live -> "live"
-            PlayWidgetChannelType.Vod -> "active"
-            PlayWidgetChannelType.Upcoming -> "upcoming"
-            PlayWidgetChannelType.Transcoding -> "transcoding"
-            PlayWidgetChannelType.FailedTranscoding -> "error"
-            else -> ""
-        }
-    }
-
     companion object {
         const val EVENT = "event"
         const val EVENT_CATEGORY = "eventCategory"
@@ -155,16 +144,10 @@ class ShopPlayWidgetAnalyticListener(
         const val CURRENT_SITE = "currentSite"
         const val BUSINESS_UNIT = "businessUnit"
 
-        const val PROMO_VIEW = "promoView"
-        const val PROMO_CLICK = "promoClick"
-
         const val CLICK_SHOP_PAGE = "clickShopPage"
         const val VIEW_SHOP_PAGE_IRIS = "viewShopPageIris"
 
-        const val CLICK = "click"
-
         const val SHOP_PAGE_SELLER = "shop page - seller"
-        const val SHOP_PAGE_BUYER = "shop page - buyer"
 
         const val SHOP_ID = "shopId"
         const val USER_ID = "userId"

@@ -33,7 +33,8 @@ constructor(
     messageId: String, fromUid: String, from: String, fromRole: String,
     attachmentId: String, attachmentType: String, replyTime: String, val imageUrl: String,
     val redirectUrl: String, message: String, val broadcastBlastId: String, source: String,
-    val isHideBanner: Boolean, val broadcastCtaUrl: String?, val broadcastCtaText: String?
+    val isHideBanner: Boolean, val broadcastCtaUrl: String?, val broadcastCtaText: String?,
+    val broadcastCtaLabel: String?
 ) : BaseChatUiModel(
         messageId, fromUid, from, fromRole, attachmentId,
         attachmentType, replyTime, message, source
@@ -79,7 +80,8 @@ constructor(
         broadcastBlastId = item.blastId,
         source = item.source,
         broadcastCtaUrl = attributes.broadcastCtaUrl,
-        broadcastCtaText = attributes.broadcastCtaText
+        broadcastCtaText = attributes.broadcastCtaText,
+        broadcastCtaLabel = attributes.broadcastCtaLabel
     ) {
         assignCampaignData(attributes)
     }

@@ -22,6 +22,7 @@ import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
+import com.tokopedia.globalerror.R as globalErrorRes
 
 /**
  * Created by kenny.hadisaputra on 15/07/22
@@ -30,6 +31,7 @@ class PlayActivityRobot(
     channelId: String,
     initialDelay: Long = 1000,
     isYouTube: Boolean = false,
+    isErrorPage: Boolean = false,
 ) {
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -46,6 +48,7 @@ class PlayActivityRobot(
         waitUntilViewIsDisplayed(
             withId(
                 if (!isYouTube) R.id.view_video
+                else if (isErrorPage) R.id.fl_global_error
                 else R.id.fl_youtube_player
             )
         )
@@ -55,6 +58,12 @@ class PlayActivityRobot(
     fun openProductBottomSheet() = chainable {
         Espresso.onView(
             withId(R.id.view_product_see_more)
+        ).perform(ViewActions.click())
+    }
+
+    fun closeAnyBottomSheet() = chainable {
+        Espresso.onView(
+            withId(R.id.iv_sheet_close)
         ).perform(ViewActions.click())
     }
 
@@ -204,6 +213,61 @@ class PlayActivityRobot(
                 position, ViewActions.click()
             )
         )
+    }
+
+    fun isErrorViewAvailable() {
+        Espresso.onView(withId(R.id.container_global_error)).check(matches(isDisplayed()))
+    }
+
+    fun clickGlobalErrorCta() {
+        Espresso.onView(withId(globalErrorRes.id.globalerrors_action)).perform(ViewActions.click())
+    }
+
+    fun clickExitError() {
+        Espresso.onView(withId(R.id.img_back)).perform(ViewActions.click())
+    }
+
+    fun swipeChannel() {
+        Espresso.onView(isRoot()).perform(ViewActions.swipeLeft())
+    }
+
+    fun endViewIsAvailable(title: String) {
+        val viewMatcher = hasDescendant(withText(containsString(title)))
+        Espresso.onView(
+            withId(R.id.cl_play_live_ended)
+        ).check(
+            matches(viewMatcher)
+        )
+    }
+
+    fun isPopupShown(isShown: Boolean = true) = chainable {
+        Espresso.onView(
+            withId(R.id.cl_parent_follow_sheet)
+        ).check(matches(if(isShown) isDisplayed() else not(isDisplayed())))
+    }
+
+    fun clickPartnerNamePopup() = chainable {
+        Espresso.onView(
+            withId(R.id.cl_follow_container)
+        ).perform(ViewActions.click())
+    }
+
+    fun clickFollow() = chainable {
+        Espresso.onView(
+            withId(R.id.btn_follow)
+        ).perform(ViewActions.click())
+    }
+
+    fun openSharingBottomSheet() = chainable {
+        Espresso.onView(
+            withId(R.id.view_share_experience)
+        ).perform(ViewActions.click())
+    }
+
+    fun openKebabBottomSheet() = chainable {
+        Espresso.onView(
+            withId(R.id.view_kebab_menu)
+        ).perform(ViewActions.click())
     }
 
     private fun chainable(fn: () -> Unit): PlayActivityRobot {

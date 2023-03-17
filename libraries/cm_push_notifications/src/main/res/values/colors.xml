@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--CM will have own colors because we are working to convert it in standalone lib-->
-    <color name="cm_pink_255">#ffccd9</color>
-    <color name="cm_grey_255">#666666</color>
-    <color name="cm_title_black_255">#272727</color>
-    <color name="cm_light_grey_255">#404040</color>
-    <color name="cm_sisa_ongkir">#EF144A</color>
-    <color name="cm_star_review">#FDC402</color>
-    <color name="cm_review">#73767A</color>
-    <color name="cm_count_review">#A5A6A9</color>
-    <color name="cm_outline_btn_atc">#E5E7E9</color>
-    <color name="cm_dms_med_green">#b242b549</color>
+    <color name="dms_cm_grey_255">#666666</color>
+    <color name="dms_cm_title_black_255">#272727</color>
+    <color name="dms_cm_light_grey_255">#404040</color>
+    <color name="dms_cm_star_review">#FDC402</color>
+    <color name="dms_cm_review">#73767A</color>
+    <color name="dms_cm_count_review">#A5A6A9</color>
+    <color name="dms_black_38">#60000000</color>
+    <color name="dms_medium_green">#42b549</color>
+    <color name="dms_gray_background">#fff2f3f4</color>
+    <color name="dms_medium_green_70">#b242b549</color>
+    <color name="dms_cm_black_39">#b3000000</color>
+    <color name="dms_cm_red_500">#e51c23</color>
+    <color name="dms_black_40">#8a000000</color>
+    <color name="dms_secondary_text_default_material_light">#8a000000</color>
+    <color name="dms_cm_collapsed_title">#de000000</color>
+    <color name="dms_cm_inapp_main_bg">#88000000</color>
 </resources>

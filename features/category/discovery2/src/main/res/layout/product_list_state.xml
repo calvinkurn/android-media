@@ -11,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/vertical_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_16">
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/vertical_image_empty_state"
@@ -32,8 +33,9 @@
             android:contentDescription="@string/content_desc_title_tv"
             android:text="@string/empty_state_title"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintEnd_toEndOf="@id/vertical_image_empty_state"
-            app:layout_constraintStart_toStartOf="@+id/vertical_image_empty_state"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/vertical_image_empty_state"
             app:typographyType="heading_2"
             app:typographyWeight="bold" />
@@ -48,8 +50,8 @@
         app:typographyType="body_2"
         android:gravity="center"
         android:text="@string/empty_state_description"
-        app:layout_constraintEnd_toEndOf="@id/vertical_image_empty_state"
-        app:layout_constraintStart_toStartOf="@id/vertical_image_empty_state"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/vertical_title_tv" />
 
         <com.tokopedia.unifycomponents.UnifyButton

@@ -7,5 +7,8 @@ data class TokoChatMessageData(
     val message: TokoChatMessageLanguage? = TokoChatMessageLanguage(),
 
     @SerializedName("level")
-    val level: String? = ""
+    val level: String? = "",
+
+    @SerializedName("visibility")
+    val visibilityList: List<String>? = listOf()
 )

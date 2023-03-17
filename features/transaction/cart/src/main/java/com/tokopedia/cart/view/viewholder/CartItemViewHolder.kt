@@ -569,21 +569,22 @@ class CartItemViewHolder constructor(
                 ?: ""
         } else {
             binding.textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                data.productPrice, false
+                data.productPrice,
+                false
             ).removeDecimalSuffix()
         }
     }
 
     private fun renderSlashPrice(data: CartItemHolderData) {
-        val hasPriceOriginal = data.productOriginalPrice != 0L
-        val hasWholesalePrice = data.wholesalePrice != 0L
+        val hasPriceOriginal = data.productOriginalPrice > 0
+        val hasWholesalePrice = data.wholesalePrice > 0
         val hasPriceDrop = data.productInitialPriceBeforeDrop > 0 &&
-            data.productInitialPriceBeforeDrop > data.productPrice.toLong()
+            data.productInitialPriceBeforeDrop > data.productPrice
         if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
             if (data.productSlashPriceLabel.isNotBlank()) {
                 // Slash price
                 renderSlashPriceFromCampaign(data)
-            } else if (data.productInitialPriceBeforeDrop != 0L) {
+            } else if (data.productInitialPriceBeforeDrop > 0) {
                 val wholesalePrice = data.wholesalePrice
                 if (wholesalePrice > 0 && wholesalePrice.toDouble() < data.productPrice) {
                     // Wholesale
@@ -592,7 +593,7 @@ class CartItemViewHolder constructor(
                     // Price drop
                     renderSlashPriceFromPriceDrop(data)
                 }
-            } else if (data.wholesalePrice != 0L) {
+            } else if (data.wholesalePrice > 0) {
                 // Wholesale
                 renderSlashPriceFromWholesale(data)
             }
@@ -695,7 +696,9 @@ class CartItemViewHolder constructor(
                             renderProductNotesEmpty(element)
                         }
                         true
-                    } else false
+                    } else {
+                        false
+                    }
                 }
             }
 
@@ -714,7 +717,6 @@ class CartItemViewHolder constructor(
                     count: Int,
                     after: Int
                 ) {
-
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -723,7 +725,6 @@ class CartItemViewHolder constructor(
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-
                 }
             })
             textFieldNotes.editText.setOnFocusChangeListener { v, hasFocus ->
@@ -804,7 +805,6 @@ class CartItemViewHolder constructor(
         }
         qtyTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -831,7 +831,6 @@ class CartItemViewHolder constructor(
             }
 
             override fun afterTextChanged(s: Editable?) {
-
             }
         }
         qtyEditorProduct.editText.addTextChangedListener(qtyTextWatcher)
@@ -857,7 +856,9 @@ class CartItemViewHolder constructor(
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
                 true
-            } else false
+            } else {
+                false
+            }
         }
         qtyEditorProduct.editText.imeOptions = EditorInfo.IME_ACTION_DONE
         qtyEditorProduct.editText.isEnabled = data.isError == false
@@ -1039,7 +1040,6 @@ class CartItemViewHolder constructor(
         }
     }
 
-
     interface ViewHolderListener {
 
         fun onNeedToRefreshSingleProduct(childPosition: Int)
@@ -1051,7 +1051,6 @@ class CartItemViewHolder constructor(
         fun onNeedToRefreshBoAffordability(cartItemHolderData: CartItemHolderData)
 
         fun onNeedToRefreshAllShop()
-
     }
 
     companion object {

@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.AdultManager
-import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -18,7 +17,6 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
@@ -36,19 +34,16 @@ import com.tokopedia.tokopedianow.category.di.CategoryComponent
 import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.category.domain.model.CategoryTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
+import com.tokopedia.tokopedianow.category.presentation.listener.CategoryMenuCallback
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
-import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
-import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_REF
+import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
-import com.tokopedia.tokopedianow.common.model.ShareTokonow
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
-import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.THUMBNAIL_AND_OG_IMAGE_SHARE_URL
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
@@ -67,7 +62,6 @@ class TokoNowCategoryFragment:
         BaseSearchCategoryFragment(),
         CategoryAisleListener,
         ScreenShotListener,
-        TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
         ShareBottomsheetListener,
         PermissionListener {
 
@@ -185,13 +179,19 @@ class TokoNowCategoryFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            tokoNowSimilarProductTrackerListener = createSimilarProductCallback(true),
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
-            recommendationCarouselListener = this,
-            tokoNowCategoryGridListener = this,
+            tokoNowCategoryMenuListener = createCategoryMenuCallback(),
             tokoNowProductCardListener = this,
-            recomWidgetBindPageNameListener = this,
+            productRecommendationOocBindListener = createProductRecommendationOocCallback(),
+            productRecommendationOocListener = createProductRecommendationOocCallback(),
+            productRecommendationListener = createProductRecommendationCallback().copy(
+                categoryL1 = getViewModel().categoryL1,
+                cdListName = getCDListName(),
+                categoryIdTracking = getViewModel().categoryIdTracking
+            ),
             feedbackWidgetListener = this
     )
 
@@ -226,6 +226,35 @@ class TokoNowCategoryFragment:
                 getUserId(),
                 getViewModel().categoryIdTracking,
         )
+    }
+
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+        if(isWishlistSelected) {
+            CategoryTracking.trackClickAddToWishlist(
+                getViewModel().warehouseId,
+                productId
+            )
+        }
+        else{
+            CategoryTracking.trackClickRemoveFromWishlist(
+                getViewModel().warehouseId,
+                productId
+            )
+        }
+        getViewModel().updateWishlistStatus(
+            productId,
+            isWishlistSelected
+        )
+        showToaster(descriptionToaster, type, ctaToaster) {
+            ctaClickListener?.invoke()
+        }
     }
 
     override fun screenShotTaken() {
@@ -292,8 +321,8 @@ class TokoNowCategoryFragment:
 
     private fun createShareHomeTokonow(): ShareTokonow {
         return ShareTokonow(
-            thumbNailImage = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
-            ogImageUrl = TokoNowHomeFragment.THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            thumbNailImage = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
+            ogImageUrl = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
             linkerType = NOW_TYPE
         )
     }
@@ -489,7 +518,7 @@ class TokoNowCategoryFragment:
         }
     }
 
-    override fun getAtcEventAction(isOOC: Boolean): String {
+    override fun getAtcEventAction(): String {
         return CLICK_ATC_CLP_PRODUCT_TOKONOW
     }
 
@@ -510,19 +539,9 @@ class TokoNowCategoryFragment:
         }
     }
 
-    override fun getEventLabel(isOOC: Boolean): String {
+    override fun getEventLabel(): String {
         return getViewModel().categoryIdTracking
     }
-
-    override fun onCategoryRetried() {
-        getViewModel().onCategoryGridRetry()
-    }
-
-    override fun onAllCategoryClicked() { }
-
-    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) { }
-
-    override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
 
     override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
         super.onProductCardImpressed(position, data)
@@ -560,33 +579,6 @@ class TokoNowCategoryFragment:
         )
     }
 
-    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
-        CategoryTracking.sendRecommendationSeeAllClickEvent(getViewModel().categoryIdTracking)
-
-        RouteManager.route(context, modifySeeMoreRecomApplink(applink))
-    }
-
-    private fun modifySeeMoreRecomApplink(originalApplink: String): String {
-        val uri = Uri.parse(originalApplink)
-        val queryParamsMap = UrlParamUtils.getParamMap(uri.query ?: "")
-        val recomRef = queryParamsMap[RECOM_QUERY_PARAM_REF] ?: ""
-
-        return if (recomRef == TOKONOW_CLP) {
-            val recomCategoryId = queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] ?: ""
-
-            if (recomCategoryId.isEmpty()) {
-                queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] = getViewModel().categoryL1
-            }
-
-            "${uri.scheme}://" +
-                    "${uri.host}/" +
-                    "${uri.path}?" +
-                    UrlParamUtils.generateUrlParamString(queryParamsMap)
-        } else {
-            originalApplink
-        }
-    }
-
     private fun sendOpenScreenTracking(model: CategoryTrackerModel) {
         val uri = Uri.parse(model.url)
         val categorySlug = uri.lastPathSegment ?: return
@@ -611,5 +603,23 @@ class TokoNowCategoryFragment:
         if (!querySafeModel.isQuerySafe) {
             AdultManager.showAdultPopUp(this, AR_ORIGIN_TOKONOW_CATEGORY, "${querySafeModel.warehouseId} - ${tokoNowCategoryViewModel.categoryL1.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl3.getOrDefaultZeroString()}")
         }
+    }
+
+    override fun refreshLayout() {
+        super.refreshLayout()
+        refreshProductRecommendation(TOKONOW_CLP)
+    }
+
+    override fun updateProductRecommendation(needToUpdate: Boolean) {
+        if (needToUpdate) {
+            refreshProductRecommendation(TOKONOW_CLP)
+        }
+    }
+
+    private fun createCategoryMenuCallback(): CategoryMenuCallback {
+        return CategoryMenuCallback(
+            viewModel = tokoNowCategoryViewModel,
+            userId = userSession.userId
+        )
     }
 }

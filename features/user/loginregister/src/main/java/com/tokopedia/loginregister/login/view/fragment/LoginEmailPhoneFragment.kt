@@ -30,6 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -47,7 +48,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
@@ -138,7 +138,7 @@ import javax.inject.Inject
 /**
  * @author by nisie on 18/01/19.
  */
-open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View{
+open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
@@ -218,7 +218,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         activity?.let {
             analytics.trackScreen(it, screenName)
         }
-        if (passOnStop){
+        if (passOnStop) {
             isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
             setUpRollenceNeedHelpView()
         }
@@ -250,9 +250,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (GlobalConfig.isAllowDebuggingTools()) {
             val devOpsText = SpannableString(getString(R.string.developer_options))
             context?.let {
-                devOpsText.setSpan(ForegroundColorSpan(
-                        MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)),
-                        0, devOpsText.length, 0)
+                devOpsText.setSpan(
+                    ForegroundColorSpan(
+                        MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                    ),
+                    0,
+                    devOpsText.length,
+                    0
+                )
             }
             menu.add(Menu.NONE, LoginConstants.MenuItemId.ID_ACTION_DEVOPS, 1, devOpsText)
             menu.findItem(LoginConstants.MenuItemId.ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
@@ -302,10 +307,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         setupBackgroundColor()
         activity?.let {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getGoogleClientId(it))
-                    .requestEmail()
-                    .requestProfile()
-                    .build()
+                .requestIdToken(getGoogleClientId(it))
+                .requestEmail()
+                .requestProfile()
+                .build()
             mGoogleSignInClient = GoogleSignIn.getClient(it, gso)
         }
 
@@ -314,7 +319,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
         isReturnHomeWhenBackPressed = getParamBoolean(
-            ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, arguments, savedInstanceState, false
+            ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME,
+            arguments,
+            savedInstanceState,
+            false
         )
         isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
         isEnableSeamlessLogin = isEnableSeamlessGoto()
@@ -329,7 +337,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun setupBackgroundColor() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(
-                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+                MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             )
         }
     }
@@ -353,7 +361,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fetchRemoteConfig()
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             clearData()
         }
 
@@ -390,7 +398,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun checkSeamless() {
-        if(isEnableSeamlessLogin) {
+        if (isEnableSeamlessLogin) {
             showLoadingSeamless()
             viewModel.checkSeamlessEligiblity()
         } else {
@@ -443,7 +451,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun initObserver() {
         viewModel.navigateToGojekSeamless.observe(viewLifecycleOwner) {
-            if(it) {
+            if (it) {
                 routeToGojekSeamlessPage()
             } else {
                 hideLoadingSeamless()
@@ -571,7 +579,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
 
         viewModel.getTemporaryKeyResponse.observe(viewLifecycleOwner) {
-            if(it) {
+            if (it) {
                 context?.run {
                     TemporaryTokenWorker.scheduleWorker(applicationContext)
                 }
@@ -579,7 +587,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             onSuccessLogin()
         }
     }
-
 
     private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
         activity?.let {
@@ -597,7 +604,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun onErrorLoginBiometric(throwable: Throwable) {
-        analytics.trackOnLoginFingerprintFailed(throwable.message ?:"")
+        analytics.trackOnLoginFingerprintFailed(throwable.message ?: "")
         onErrorLogin(throwable, LoginErrorCode.ERROR_BIOMETRIC)
     }
 
@@ -612,8 +619,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun goToChooseAccountPageFingerprint(validateToken: String) {
         activity?.let {
-            val intent = RouteManager.getIntent(it,
-                    ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_FINGERPRINT).apply {
+            val intent = RouteManager.getIntent(
+                it,
+                ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_FINGERPRINT
+            ).apply {
                 putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
             }
             startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT)
@@ -668,13 +677,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun prepareView() {
         viewBinding?.loginInputView?.showForgotPassword()
-        socmedBottomSheet = SocmedBottomSheet(object : SocmedBottomSheetListener {
-            override fun onItemClick(provider: ProviderData) {
-                if (provider.id.contains(LoginConstants.DiscoverLoginId.GPLUS)) {
-                    onLoginGoogleClick()
+        socmedBottomSheet = SocmedBottomSheet().apply {
+            listener = object : SocmedBottomSheetListener {
+                override fun onItemClick(provider: ProviderData) {
+                    if (provider.id.contains(LoginConstants.DiscoverLoginId.GPLUS)) {
+                        onLoginGoogleClick()
+                    }
                 }
             }
-        })
+        }
 
         socmedBottomSheet?.setCloseClickListener {
             analytics.eventClickCloseSocmedButton()
@@ -732,7 +743,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun setUpRollenceNeedHelpView(){
+    private fun setUpRollenceNeedHelpView() {
         val forgotPassword = viewBinding?.loginInputView?.findViewById<Typography>(R.id.forgot_pass)
         forgotPassword?.text = setUpForgotPasswordTitle()
         forgotPassword?.setOnClickListener {
@@ -755,16 +766,22 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun initKeyboardListener(view: View?) {
         view?.run {
-            com.tokopedia.loginregister.common.utils.KeyboardHandler(view, object : com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener {
-                override fun onKeyboardShow() {
-                    viewBinding?.toTokopediaCare?.hide()
-                }
+            com.tokopedia.loginregister.common.utils.KeyboardHandler(
+                view,
+                object : com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener {
+                    override fun onKeyboardShow() {
+                        viewBinding?.toTokopediaCare?.hide()
+                    }
 
-                override fun onKeyboardHide() {
-                    if (!isUsingRollenceNeedHelp) viewBinding?.toTokopediaCare?.show()
-                    else viewBinding?.toTokopediaCare?.hide()
+                    override fun onKeyboardHide() {
+                        if (!isUsingRollenceNeedHelp) {
+                            viewBinding?.toTokopediaCare?.show()
+                        } else {
+                            viewBinding?.toTokopediaCare?.hide()
+                        }
+                    }
                 }
-            })
+            )
         }
     }
 
@@ -792,8 +809,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun setLeftDrawableForFingerprint() {
         if (activity != null) {
             val icon = ContextCompat.getDrawable(
-                    requireActivity(),
-                    R.drawable.ic_fingerprint_thumb
+                requireActivity(),
+                R.drawable.ic_fingerprint_thumb
             )
             viewBinding?.fingerprintBtn?.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
         }
@@ -805,19 +822,27 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
             val spannable = SpannableString(sourceString)
 
-            spannable.setSpan(object : ClickableSpan() {
-                override fun onClick(view: View) {
+            spannable.setSpan(
+                object : ClickableSpan() {
+                    override fun onClick(view: View) {
+                    }
 
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(
-                            activity, com.tokopedia.unifyprinciples.R.color.Unify_G400
-                    )
-                    ds.typeface = Typeface.create("sans-serif", Typeface
-                            .NORMAL)
-                }
-            }, sourceString.indexOf("Daftar"), sourceString.length, 0)
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.color = MethodChecker.getColor(
+                            activity,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G400
+                        )
+                        ds.typeface = Typeface.create(
+                            "sans-serif",
+                            Typeface
+                                .NORMAL
+                        )
+                    }
+                },
+                sourceString.indexOf("Daftar"),
+                sourceString.length,
+                0
+            )
 
             viewBinding?.registerButton?.setText(spannable, TextView.BufferType.SPANNABLE)
 
@@ -829,19 +854,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         val message = getString(R.string.need_help_call_tokopedia_care)
         val spannable = SpannableString(message)
         spannable.setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        goToTokopediaCareWebview()
-                    }
+            object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    goToTokopediaCareWebview()
+                }
 
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                    }
-                },
-                message.indexOf(getString(R.string.call_tokopedia_care)),
-                message.indexOf(getString(R.string.call_tokopedia_care)) + getString(R.string.call_tokopedia_care).length,
-                0
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                }
+            },
+            message.indexOf(getString(R.string.call_tokopedia_care)),
+            message.indexOf(getString(R.string.call_tokopedia_care)) + getString(R.string.call_tokopedia_care).length,
+            0
         )
         viewBinding?.toTokopediaCare?.movementMethod = LinkMovementMethod.getInstance()
         viewBinding?.toTokopediaCare?.setText(spannable, TextView.BufferType.SPANNABLE)
@@ -876,12 +901,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         activity?.applicationContext?.let { analytics.eventClickForgotPasswordFromLogin(it) }
     }
 
-    private fun setUpForgotPasswordTitle(): String?{
+    private fun setUpForgotPasswordTitle(): String? {
         return context?.getString(
-            if (isUsingRollenceNeedHelp)
+            if (isUsingRollenceNeedHelp) {
                 R.string.loginregister_need_help
-            else
+            } else {
                 R.string.title_forgot_password
+            }
         )
     }
 
@@ -901,16 +927,23 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return rollence.isNotEmpty()
     }
 
-    private fun showNeedHelpBottomSheet(){
-        if (needHelpBottomSheetUnify == null)
+    private fun showNeedHelpBottomSheet() {
+        if (needHelpBottomSheetUnify == null) {
             needHelpBottomSheetUnify = NeedHelpBottomSheet()
+        }
 
         needHelpBottomSheetUnify?.show(childFragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
     }
 
     override fun goToTokopediaCareWebview() {
-        RouteManager.route(activity, String.format(TOKOPEDIA_CARE_STRING_FORMAT, ApplinkConst.WEBVIEW,
-                getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
+        RouteManager.route(
+            activity,
+            String.format(
+                TOKOPEDIA_CARE_STRING_FORMAT,
+                ApplinkConst.WEBVIEW,
+                getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+            )
+        )
     }
 
     override fun onSuccessDiscoverLogin(discoverData: DiscoverData) {
@@ -920,10 +953,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             discoverData.providers.onEach { provider ->
                 if (userSession.name.isNotEmpty()) {
                     var name = userSession.name
-                    if (name.split("\\s".toRegex()).size > 1)
+                    if (name.split("\\s".toRegex()).size > 1) {
                         name = name.substring(0, name.indexOf(" "))
+                    }
                     if (provider.id.equals(
-                            LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true
+                            LoginConstants.DiscoverLoginId.GPLUS,
+                            ignoreCase = true
                         ) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE
                     ) {
                         provider.name = "${provider.name} ${getString(R.string.socmed_account_as)} $name"
@@ -933,9 +968,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 socmedBottomSheet?.setProviders(it)
             }
         } else {
-            onErrorDiscoverLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(
-                    ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
-                    context)))
+            onErrorDiscoverLogin(
+                MessageErrorException(
+                    ErrorHandlerSession.getDefaultErrorCodeMessage(
+                        ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
+                        context
+                    )
+                )
+            )
         }
     }
 
@@ -961,7 +1001,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun isValid(email: String, password: String): Boolean {
-
         var isValid = true
 
         if (TextUtils.isEmpty(password)) {
@@ -996,24 +1035,24 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         shortAnimTime?.toLong()?.let {
             viewBinding?.progressBarLoginWithPhone?.animate()?.setDuration(it)
-                    ?.alpha((if (isLoading) 1 else 0).toFloat())
-                    ?.setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            if (viewBinding?.progressBarLoginWithPhone != null) {
-                                viewBinding?.progressBarLoginWithPhone?.visibility = if (isLoading) View.VISIBLE else View.GONE
-                            }
+                ?.alpha((if (isLoading) 1 else 0).toFloat())
+                ?.setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        if (viewBinding?.progressBarLoginWithPhone != null) {
+                            viewBinding?.progressBarLoginWithPhone?.visibility = if (isLoading) View.VISIBLE else View.GONE
                         }
-                    })
+                    }
+                })
 
             viewBinding?.container?.animate()?.setDuration(it)
-                    ?.alpha((if (isLoading) 0 else 1).toFloat())
-                    ?.setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            if (viewBinding?.container != null) {
-                                viewBinding?.container?.visibility = if (isLoading) View.GONE else View.VISIBLE
-                            }
+                ?.alpha((if (isLoading) 0 else 1).toFloat())
+                ?.setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        if (viewBinding?.container != null) {
+                            viewBinding?.container?.visibility = if (isLoading) View.GONE else View.VISIBLE
                         }
-                    })
+                    }
+                })
         }
         viewBinding?.emailExtension?.hide()
         viewBinding?.toTokopediaCare?.showWithCondition(!isUsingRollenceNeedHelp && !isLoading)
@@ -1036,7 +1075,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onErrorDiscoverLogin(throwable: Throwable) {
         stopTrace()
         val forbiddenMessage = context?.getString(
-                com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+            com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth
+        )
         val errorMessage = throwable.getMessage(requireActivity())
         if (errorMessage.removeErrorCode() == forbiddenMessage) {
             onGoToForbiddenPage()
@@ -1065,8 +1105,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         dismissLoadingLogin()
         activityShouldEnd = true
 
-        if (viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text?.isNotBlank() == true)
+        if (viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text?.isNotBlank() == true) {
             userSession.autofillUserData = viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString()
+        }
 
         registerPushNotif()
         submitIntegrityApi()
@@ -1075,7 +1116,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (GlobalConfig.isSellerApp()) {
                 setLoginSuccessSellerApp()
             } else {
-
                 val bundle = Bundle()
 
                 if (isFromRegister) {
@@ -1105,12 +1145,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             setFCM()
             SubmitDeviceWorker.scheduleWorker(it, true)
             DataVisorWorker.scheduleWorker(it, true)
-            AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
+            initTokoChatConnection()
         }
 
         refreshRolloutVariant()
         saveFirstInstallTime()
+    }
+
+    private fun initTokoChatConnection() {
+        activity?.let {
+            if (it.application is AbstractionRouter) {
+                (it.application as AbstractionRouter).connectTokoChat(true)
+            }
+        }
     }
 
     override fun setLoginSuccessSellerApp() {
@@ -1132,7 +1180,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun setFCM() {
         CMPushNotificationManager.instance
-                .refreshFCMTokenFromForeground(userSession.deviceId, true)
+            .refreshFCMTokenFromForeground(userSession.deviceId, true)
     }
 
     private fun setTrackingUserId(userId: String) {
@@ -1141,8 +1189,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             TkpdAppsFlyerMapper.getInstance(ctx).mapAnalytics()
             TrackApp.getInstance().gtm.pushUserId(userId)
             val crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
-            if (!GlobalConfig.DEBUG)
+            if (!GlobalConfig.DEBUG) {
                 crashlytics.setUserId(userId)
+            }
             ctx?.let {
                 TkpdFirebaseAnalytics.getInstance(ctx).setUserId(userId)
             }
@@ -1152,41 +1201,42 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 userData.userId = userSession.userId
                 userData.medium = userSession.loginMethod
 
-                //Identity Event
+                // Identity Event
                 LinkerManager.getInstance().sendEvent(
-                        LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData))
+                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData)
+                )
 
-                //Login Event
+                // Login Event
                 LinkerManager.getInstance().sendEvent(
-                        LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
+                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData)
+                )
                 loginEventAppsFlyer(userSession.userId, "")
             }
 
             if (isFromRegister) {
                 TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(
-                        "",
-                        userSession.userId,
-                        "",
-                        analytics.getLoginMethodMoengage(userSession.loginMethod),
-                        "",
-                        userSession.isGoldMerchant,
-                        userSession.shopId,
-                        userSession.shopName
+                    "",
+                    userSession.userId,
+                    "",
+                    analytics.getLoginMethodMoengage(userSession.loginMethod),
+                    "",
+                    userSession.isGoldMerchant,
+                    userSession.shopId,
+                    userSession.shopName
                 )
             } else {
                 TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-                        userSession.userId,
-                        "",
-                        "",
-                        "",
-                        userSession.isGoldMerchant,
-                        userSession.shopName,
-                        userSession.shopId,
-                        userSession.hasShop(),
-                        analytics.getLoginMethodMoengage(userSession.loginMethod)
+                    userSession.userId,
+                    "",
+                    "",
+                    "",
+                    userSession.isGoldMerchant,
+                    userSession.shopName,
+                    userSession.shopId,
+                    userSession.hasShop(),
+                    analytics.getLoginMethodMoengage(userSession.loginMethod)
                 )
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -1353,7 +1403,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (profilePojo.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
             onGoToChangeName()
         } else {
-            if(isEnableSeamlessLogin) {
+            if (isEnableSeamlessLogin) {
                 viewModel.getTemporaryKeyForSDK(profilePojo)
             } else {
                 onSuccessLogin()
@@ -1405,7 +1455,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    //Flow should not be possible
+    // Flow should not be possible
     override fun onGoToActivationPageAfterRelogin(): (MessageErrorException) -> Unit {
         return {
             dismissLoadingLogin()
@@ -1413,7 +1463,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    //Flow should not be possible
+    // Flow should not be possible
     override fun onGoToSecurityQuestionAfterRelogin(): () -> Unit {
         return {
             dismissLoadingLogin()
@@ -1463,11 +1513,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     protected fun isEmailNotActive(e: Throwable, email: String): Boolean {
         val NOT_ACTIVATED = "belum diaktivasi"
-        return (e is TokenErrorException
-                && e.errorDescription.isNotEmpty()
-                && e.errorDescription
-                .toLowerCase(Locale.getDefault()).contains(NOT_ACTIVATED)
-                && !TextUtils.isEmpty(email))
+        return (
+            e is TokenErrorException &&
+                e.errorDescription.isNotEmpty() &&
+                e.errorDescription
+                    .toLowerCase(Locale.getDefault()).contains(NOT_ACTIVATED) &&
+                !TextUtils.isEmpty(email)
+            )
     }
 
     override fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
@@ -1492,9 +1544,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (activity != null) {
-            if (requestCode == LoginConstants.Request.REQUEST_LOGIN_GOOGLE && data != null) run {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                handleGoogleSignInResult(task)
+            if (requestCode == LoginConstants.Request.REQUEST_LOGIN_GOOGLE && data != null) {
+                run {
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                    handleGoogleSignInResult(task)
+                }
             } else if (requestCode == LoginConstants.Request.REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.let {
                     isLoginAfterSq = true
@@ -1508,7 +1562,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             } else if (requestCode == LoginConstants.Request.REQUEST_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 val uuid = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
                 val msisdn = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
-                        ?: ""
+                    ?: ""
                 validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
                 goToAddNameFromRegisterPhone(uuid, msisdn)
             } else if (requestCode == LoginConstants.Request.REQUEST_ADD_NAME) {
@@ -1520,9 +1574,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 activityShouldEnd = false
                 processAfterAddNameRegisterPhone(data?.extras)
             } else if (requestCode == LoginConstants.Request.REQUEST_LOGIN_PHONE &&
-                    resultCode == Activity.RESULT_OK &&
-                    data != null &&
-                    data.extras != null) {
+                resultCode == Activity.RESULT_OK &&
+                data != null &&
+                data.extras != null
+            ) {
                 data?.extras?.run {
                     val accessToken = getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                     val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
@@ -1544,7 +1599,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     viewModel.getUserInfo()
                 }
             } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT) {
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     data?.extras?.let {
                         val email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL) ?: ""
                         val token = it.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
@@ -1571,7 +1626,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             } else if (requestCode == LoginConstants.Request.REQUEST_VERIFY_BIOMETRIC) {
                 if (resultCode == Activity.RESULT_OK && data?.hasExtra(ApplinkConstInternalGlobal.PARAM_TOKEN) == true) {
                     val validateToken = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN)
-                            ?: ""
+                        ?: ""
                     if (validateToken.isNotEmpty()) {
                         onSuccessVerifyFingerprint(validateToken)
                     } else {
@@ -1580,7 +1635,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 } else {
                     onErrorVerifyFingerprint()
                 }
-            } else if(requestCode == REQUEST_GOTO_SEAMLESS) {
+            } else if (requestCode == REQUEST_GOTO_SEAMLESS) {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         viewModel.getUserInfo()
@@ -1595,8 +1650,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         activity?.finish()
                     }
                 }
-            }
-            else {
+            } else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }
@@ -1608,7 +1662,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun showToaster(message: String?) {
-        if(context != null) {
+        if (context != null) {
             view?.let {
                 Toaster.build(
                     it,
@@ -1638,11 +1692,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun goToAddPin2FA(enableSkip2FA: Boolean) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN)
-        intent.putExtras(Bundle().apply {
-            putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
-            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
-        })
+        intent.putExtras(
+            Bundle().apply {
+                putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
+                putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+            }
+        )
         startActivityForResult(intent, LoginConstants.Request.REQUEST_ADD_PIN_AFTER_REGISTER_PHONE)
     }
 
@@ -1678,18 +1734,24 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 onErrorLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context)), LoginErrorCode.ERROR_ON_GMAIL_CATCH)
             }
         } catch (e: ApiException) {
-            onErrorLogin(e, String.format(getString(R.string.loginregister_failed_login_google),
-                e.statusCode.toString()))
+            onErrorLogin(
+                e,
+                String.format(
+                    getString(R.string.loginregister_failed_login_google),
+                    e.statusCode.toString()
+                )
+            )
         }
-
     }
 
     override fun onGoToChangeName() {
         if (activity != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.ADD_NAME_PROFILE)
-            intent.putExtras(Bundle().apply {
-                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
-            })
+            intent.putExtras(
+                Bundle().apply {
+                    putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+                }
+            )
             startActivityForResult(intent, LoginConstants.Request.REQUEST_ADD_NAME)
         }
     }
@@ -1726,7 +1788,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         override fun onDismiss() {
                             analytics.eventClickCloseTicker()
                         }
-
                     })
                     viewBinding?.tickerAnnouncement?.addPagerView(adapter, mockData)
                 }
@@ -1745,13 +1806,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     override fun onDismiss() {
                         analytics.eventClickCloseTicker()
                     }
-
                 })
             }
             viewBinding?.tickerAnnouncement?.setOnClickListener { v ->
                 analytics.eventClickTicker()
             }
-
         }
     }
 
@@ -1768,8 +1827,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun registerCheck(id: String) {
-        if (id.isEmpty()) onErrorEmptyEmailPhone()
-        else viewModel.registerCheck(id)
+        if (id.isEmpty()) {
+            onErrorEmptyEmailPhone()
+        } else {
+            viewModel.registerCheck(id)
+        }
     }
 
     private fun onErrorRegisterCheck(): (Throwable) -> Unit {
@@ -1814,9 +1876,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun saveFirstInstallTime() {
         context?.let {
             sharedPrefs = it.getSharedPreferences(
-                    LoginConstants.PrefKey.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+                LoginConstants.PrefKey.KEY_FIRST_INSTALL_SEARCH,
+                Context.MODE_PRIVATE
+            )
             sharedPrefs?.edit()?.putLong(
-                LoginConstants.PrefKey.KEY_FIRST_INSTALL_TIME_SEARCH, 0)?.apply()
+                LoginConstants.PrefKey.KEY_FIRST_INSTALL_TIME_SEARCH,
+                0
+            )?.apply()
         }
     }
 
@@ -1836,17 +1902,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             context?.run {
                 viewBinding?.bannerLogin?.let { banner ->
                     ImageUtils.loadImage(
-                            imageView = banner,
-                            url = dynamicBannerDataModel.banner.imgUrl,
-                            imageLoaded = {
-                                if (it) {
-                                    viewBinding?.bannerLogin?.show()
-                                    analytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
-                                } else {
-                                    viewBinding?.bannerLogin?.hide()
-                                    showTicker()
-                                }
-                            })
+                        imageView = banner,
+                        url = dynamicBannerDataModel.banner.imgUrl,
+                        imageLoaded = {
+                            if (it) {
+                                viewBinding?.bannerLogin?.show()
+                                analytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
+                            } else {
+                                viewBinding?.bannerLogin?.hide()
+                                showTicker()
+                            }
+                        }
+                    )
                 }
             }
         } else {
@@ -1891,7 +1958,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun submitIntegrityApi() {
-        if(firebaseRemoteConfig.getBoolean(IntegrityApiConstant.LOGIN_CONFIG)) {
+        if (firebaseRemoteConfig.getBoolean(IntegrityApiConstant.LOGIN_CONFIG)) {
             context?.let {
                 IntegrityApiWorker.scheduleWorker(it.applicationContext, IntegrityApiConstant.EVENT_LOGIN)
             }
@@ -1908,9 +1975,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return {
             dismissLoadingLogin()
             showPopupError(
-                    it.header,
-                    it.body,
-                    it.action
+                it.header,
+                it.body,
+                it.action
             )
         }
     }
@@ -1923,20 +1990,23 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun showPopupErrorAkamai() {
         showPopupError(
-                getString(R.string.popup_error_title),
-                getString(R.string.popup_error_desc),
-                getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+            getString(R.string.popup_error_title),
+            getString(R.string.popup_error_desc),
+            getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
         )
         getErrorMsgWithLogging(MessageErrorException("Akamai Error"), "Login")
     }
 
     private fun getErrorMsgWithLogging(throwable: Throwable, flow: String, withErrorCode: Boolean = true): String {
-        val mClassName = if(flow.isEmpty()) LoginEmailPhoneFragment::class.java.name else "${LoginEmailPhoneFragment::class.java.name} - $flow"
-        val message = ErrorHandler.getErrorMessage(context, throwable,
+        val mClassName = if (flow.isEmpty()) LoginEmailPhoneFragment::class.java.name else "${LoginEmailPhoneFragment::class.java.name} - $flow"
+        val message = ErrorHandler.getErrorMessage(
+            context,
+            throwable,
             ErrorHandler.Builder().apply {
                 withErrorCode(withErrorCode)
                 className = mClassName
-            }.build())
+            }.build()
+        )
         return message
     }
 

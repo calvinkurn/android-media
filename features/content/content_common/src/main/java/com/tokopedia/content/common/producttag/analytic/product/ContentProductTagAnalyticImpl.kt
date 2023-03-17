@@ -10,6 +10,7 @@ import com.tokopedia.content.common.producttag.analytic.KEY_EVENT_LABEL
 import com.tokopedia.content.common.producttag.analytic.KEY_SESSION_IRIS
 import com.tokopedia.content.common.producttag.analytic.VAL_CURRENT_SITE
 import com.tokopedia.content.common.producttag.view.uimodel.*
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -45,7 +46,11 @@ class ContentProductTagAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickProductTagSource(source: ProductTagSource) {
+    override fun clickProductTagSource(
+        source: ProductTagSource,
+        authorId: String,
+        authorType: String
+    ) {
         sendClickEvent("click - product tagging source", source.labelAnalytic)
     }
 
@@ -252,6 +257,14 @@ class ContentProductTagAnalyticImpl @Inject constructor(
 
     override fun clickProductFilterChips() {
 
+    }
+
+    override fun viewProductTagSourceBottomSheet(authorId: String, authorType: String) {
+        /** not applicable for Feed Create Post */
+    }
+
+    override fun clickCloseOnProductTagSourceBottomSheet(authorId: String, authorType: String) {
+        /** not applicable for Feed Create Post */
     }
 
     override fun sendAll() {

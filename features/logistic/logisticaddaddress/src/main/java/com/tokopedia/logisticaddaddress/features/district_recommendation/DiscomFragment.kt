@@ -18,9 +18,12 @@ import com.google.android.gms.location.LocationResult
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.FragmentDistrictRecommendationBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
@@ -39,8 +42,10 @@ import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
-class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), DiscomContract.View,
-PopularCityAdapter.ActionListener {
+class DiscomFragment :
+    BaseSearchListFragment<Address, DistrictTypeFactory>(),
+    DiscomContract.View,
+    PopularCityAdapter.ActionListener {
 
     private var mToken: Token? = null
     private var analytics: ActionListener? = null
@@ -54,16 +59,18 @@ PopularCityAdapter.ActionListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var addressMapper: AddressMapper
+
     @Inject
     lateinit var presenter: DiscomContract.Presenter
 
     override fun initInjector() {
         val appComponent = getComponent(BaseAppComponent::class.java)
         val districtRecommendationComponent = DaggerDistrictRecommendationComponent.builder()
-                .baseAppComponent(appComponent)
-                .build()
+            .baseAppComponent(appComponent)
+            .build()
         districtRecommendationComponent.inject(this)
         presenter.attach(this)
     }
@@ -81,8 +88,21 @@ PopularCityAdapter.ActionListener {
             mToken = it.getParcelable(ARGUMENT_DATA_TOKEN)
             isLocalization = it.getBoolean(IS_LOCALIZATION, false)
         }
+        checkLocationAvailability()
+        setPermissionHelper()
+    }
 
-        if (isLocalization == true) permissionCheckerHelper = PermissionCheckerHelper()
+    private fun setPermissionHelper() {
+        if (isLocalization == true && presenter.getLocationAvailability()) {
+            permissionCheckerHelper =
+                PermissionCheckerHelper()
+        }
+    }
+
+    private fun checkLocationAvailability() {
+        context?.let {
+            presenter.setLocationAvailability(MapsAvailabilityHelper.isMapsAvailable(it))
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -95,23 +115,15 @@ PopularCityAdapter.ActionListener {
         showInitialLoadMessage()
         searchInputView.setSearchHint(getString(R.string.hint_district_recommendation_search))
         searchInputView.setDelayTextChanged(DEBOUNCE_DELAY_IN_MILIS)
-        searchInputView.closeImageButton.setOnClickListener { v ->
+        searchInputView.closeImageButton.setOnClickListener {
             searchInputView.searchText = ""
             analytics?.gtmOnClearTextDistrictRecommendationInput()
         }
         binding.swipeRefreshLayout.isEnabled = false
 
         if (isLocalization == true) {
-            binding.rlDiscomCurrentLocation.apply {
-                visibility = View.VISIBLE
-                setOnClickListener {
-                    ChooseAddressTracking.onClickGunakanLokasiIni(userSession.userId)
-                    requestPermissionLocation()
-                }
-            }
-            binding.discomCurrentLocationDivider.visibility = View.VISIBLE
+            setCurrentLocationView()
             binding.llDiscomPopularCity.visibility = View.VISIBLE
-            fusedLocationClient = FusedLocationProviderClient(requireActivity())
             searchInputView.searchTextView.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId)
@@ -119,11 +131,11 @@ PopularCityAdapter.ActionListener {
                 setOnClickListener { ChooseAddressTracking.onClickFieldSearchKotaKecamatan(userSession.userId) }
             }
 
-            val cityList = resources.getStringArray(R.array.cityList)
+            val cityList = view.context.resources.getStringArray(R.array.cityList)
             val chipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
-                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                    .build()
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
             binding.rvDiscomChipsPopularCity.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
             popularCityAdapter = PopularCityAdapter(context, this)
             popularCityAdapter?.cityList = cityList.toMutableList()
@@ -138,6 +150,23 @@ PopularCityAdapter.ActionListener {
             binding.rlDiscomCurrentLocation.visibility = View.GONE
             binding.discomCurrentLocationDivider.visibility = View.GONE
             binding.llDiscomPopularCity.visibility = View.GONE
+        }
+    }
+
+    private fun setCurrentLocationView() {
+        if (presenter.getLocationAvailability()) {
+            binding.rlDiscomCurrentLocation.apply {
+                visible()
+                setOnClickListener {
+                    ChooseAddressTracking.onClickGunakanLokasiIni(userSession.userId)
+                    requestPermissionLocation()
+                }
+            }
+            activity?.let { fusedLocationClient = FusedLocationProviderClient(it) }
+            binding.discomCurrentLocationDivider.visible()
+        } else {
+            binding.rlDiscomCurrentLocation.gone()
+            binding.discomCurrentLocationDivider.gone()
         }
     }
 
@@ -229,10 +258,11 @@ PopularCityAdapter.ActionListener {
     }
 
     override fun setLoadingState(active: Boolean) {
-        if (active)
+        if (active) {
             super.showLoading()
-        else
+        } else {
             super.hideLoading()
+        }
     }
 
     override fun showEmpty() {
@@ -258,25 +288,28 @@ PopularCityAdapter.ActionListener {
     }
 
     fun requestPermissionLocation() {
-            permissionCheckerHelper?.checkPermissions(this, getPermissions(),
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissionText: String) {
-                            ChooseAddressTracking.onClickDontAllowLocationKotaKecamatan(userSession.userId)
-                            hasRequestedLocation = false
-                            showDialogAskGps()
-                        }
+        permissionCheckerHelper?.checkPermissions(
+            this,
+            getPermissions(),
+            object : PermissionCheckerHelper.PermissionCheckListener {
+                override fun onPermissionDenied(permissionText: String) {
+                    ChooseAddressTracking.onClickDontAllowLocationKotaKecamatan(userSession.userId)
+                    hasRequestedLocation = false
+                    showDialogAskGps()
+                }
 
-                        override fun onNeverAskAgain(permissionText: String) {
-                            // no op
-                        }
+                override fun onNeverAskAgain(permissionText: String) {
+                    // no op
+                }
 
-                        @SuppressLint("MissingPermission")
-                        override fun onPermissionGranted() {
-                            ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
-                            getLocation()
-                        }
-
-                    }, getString(R.string.rationale_need_location))
+                @SuppressLint("MissingPermission")
+                override fun onPermissionGranted() {
+                    ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
+                    getLocation()
+                }
+            },
+            getString(R.string.rationale_need_location)
+        )
     }
 
     @SuppressLint("MissingPermission")
@@ -287,8 +320,11 @@ PopularCityAdapter.ActionListener {
                     ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
                     presenter.autoFill(data.latitude, data.longitude)
                 } else {
-                    fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
-                            createLocationCallback(), null)
+                    fusedLocationClient?.requestLocationUpdates(
+                        AddNewAddressUtils.getLocationRequest(),
+                        createLocationCallback(),
+                        null
+                    )
                 }
             }
         } else {
@@ -301,7 +337,6 @@ PopularCityAdapter.ActionListener {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }
-
 
     private fun showDialogAskGps() {
         context?.let {
@@ -335,8 +370,9 @@ PopularCityAdapter.ActionListener {
 
     private fun getPermissions(): Array<String> {
         return arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
+            PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+            PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
+        )
     }
 
     interface ActionListener {
@@ -375,7 +411,6 @@ PopularCityAdapter.ActionListener {
                 putBoolean(IS_LOCALIZATION, isLocalization)
             }
         }
-
     }
 
     override fun onCityChipClicked(city: String) {
@@ -408,8 +443,13 @@ PopularCityAdapter.ActionListener {
     override fun showToasterError(message: String) {
         val toaster = Toaster
         view?.let { v ->
-            toaster.build(v, getString(R.string.toaster_failed_get_district), Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR, "").show()
+            toaster.build(
+                v,
+                getString(R.string.toaster_failed_get_district),
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR,
+                ""
+            ).show()
         }
     }
 }

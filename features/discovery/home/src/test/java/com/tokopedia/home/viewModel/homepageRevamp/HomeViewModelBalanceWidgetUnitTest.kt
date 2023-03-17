@@ -16,6 +16,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -24,7 +25,8 @@ import org.junit.Test
  * Created by Devara Fikry on 08/05/21.
  */
 
-class HomeViewModelBalanceWidgetUnitTest{
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+class HomeViewModelBalanceWidgetUnitTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -54,18 +56,18 @@ class HomeViewModelBalanceWidgetUnitTest{
         every { userSessionInterface.isLoggedIn } returns true
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDynamicChannelModel(list = listOf(mockSuccessHomeHeaderDataModel))
+            HomeDynamicChannelModel(list = listOf(mockSuccessHomeHeaderDataModel))
         )
         getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
-                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+            homeHeaderDataModel = mockSuccessHomeHeaderDataModel
         )
         homeViewModel = createHomeViewModel(
-                userSessionInterface = userSessionInterface,
-                getHomeUseCase = getHomeUseCase,
-                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
         homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
-        //On refresh
+        // On refresh
         homeViewModel.refreshWithThreeMinsRules(true)
 
         val list = homeViewModel.homeLiveDynamicChannel.value?.list
@@ -80,18 +82,18 @@ class HomeViewModelBalanceWidgetUnitTest{
         every { userSessionInterface.isLoggedIn } returns true
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
+            HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
         )
         getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
-                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+            homeHeaderDataModel = mockSuccessHomeHeaderDataModel
         )
         homeViewModel = createHomeViewModel(
-                userSessionInterface = userSessionInterface,
-                getHomeUseCase = getHomeUseCase,
-                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
         homeViewModel.getBalanceWidgetData()
-        //On refresh
+        // On refresh
         homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         homeViewModel.refreshWithThreeMinsRules(false)
         val homeBalanceModel = getHomeBalanceModel()
@@ -104,20 +106,20 @@ class HomeViewModelBalanceWidgetUnitTest{
         every { userSessionInterface.isLoggedIn } returns true
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
+            HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
         )
         getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
-                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+            homeHeaderDataModel = mockSuccessHomeHeaderDataModel
         )
         getHomeSearchUseCase.givenSearchPlaceHolderReturn(mockForceRefresh)
         homeViewModel = createHomeViewModel(
-                userSessionInterface = userSessionInterface,
-                getHomeUseCase = getHomeUseCase,
-                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase,
-                homeSearchUseCase = getHomeSearchUseCase
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase,
+            homeSearchUseCase = getHomeSearchUseCase
         )
         homeViewModel.getBalanceWidgetData()
-        //On refresh
+        // On refresh
         homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         homeViewModel.refreshWithThreeMinsRules(mockForceRefresh)
         val homeBalanceModel = getHomeBalanceModel()
@@ -131,18 +133,18 @@ class HomeViewModelBalanceWidgetUnitTest{
         every { userSessionInterface.isLoggedIn } returns false
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
+            HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
         )
 
         getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
-                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+            homeHeaderDataModel = mockSuccessHomeHeaderDataModel
         )
         homeViewModel = createHomeViewModel(
-                userSessionInterface = userSessionInterface,
-                getHomeUseCase = getHomeUseCase,
-                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
-        //On refresh
+        // On refresh
         homeViewModel.refreshWithThreeMinsRules(false)
 
         val homeBalanceModel = getHomeBalanceModel()
@@ -155,18 +157,18 @@ class HomeViewModelBalanceWidgetUnitTest{
         every { userSessionInterface.isLoggedIn } returns false
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
+            HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
         )
 
         getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
-                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+            homeHeaderDataModel = mockSuccessHomeHeaderDataModel
         )
         homeViewModel = createHomeViewModel(
-                userSessionInterface = userSessionInterface,
-                getHomeUseCase = getHomeUseCase,
-                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
-        //On refresh
+        // On refresh
         homeViewModel.onRefreshMembership(1, "Rewards")
 
         val homeBalanceModel = getHomeBalanceModel()
@@ -179,17 +181,17 @@ class HomeViewModelBalanceWidgetUnitTest{
         every { userSessionInterface.isLoggedIn } returns true
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
+            HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
         )
         getHomeBalanceWidgetUseCase.givenGetTokopointDataReturn(
-                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+            homeHeaderDataModel = mockSuccessHomeHeaderDataModel
         )
         homeViewModel = createHomeViewModel(
-                userSessionInterface = userSessionInterface,
-                getHomeUseCase = getHomeUseCase,
-                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
-        //On refresh
+        // On refresh
         homeViewModel.onRefreshMembership(1, "Rewards")
 
         val homeBalanceModel = getHomeBalanceModel()
@@ -213,7 +215,7 @@ class HomeViewModelBalanceWidgetUnitTest{
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
-        //On refresh
+        // On refresh
         homeViewModel.onRefreshWalletApp(0, "Gopay")
 
         val homeBalanceModel = getHomeBalanceModel()
@@ -236,7 +238,7 @@ class HomeViewModelBalanceWidgetUnitTest{
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
-        //On refresh
+        // On refresh
         homeViewModel.onRefreshWalletApp(0, "Gopay")
 
         val homeBalanceModel = getHomeBalanceModel()
@@ -269,5 +271,31 @@ class HomeViewModelBalanceWidgetUnitTest{
         val homeHeaderDataModel = list?.find { it is HomeHeaderDataModel } as HomeHeaderDataModel
         val homeBalanceModel = homeHeaderDataModel.headerDataModel?.homeBalanceModel
         return homeBalanceModel
+    }
+
+    @Test
+    fun `given previous header when open home again then success load from previous data`() {
+        every { userSessionInterface.isLoggedIn } returns true
+
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
+        )
+        getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
+            homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+        )
+        getHomeSearchUseCase.givenSearchPlaceHolderReturn(mockForceRefresh)
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase,
+            homeSearchUseCase = getHomeSearchUseCase
+        )
+        homeViewModel.getBalanceWidgetData()
+        // On refresh
+        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
+        homeViewModel.refreshWithThreeMinsRules(mockForceRefresh)
+        val homeBalanceModel = getHomeBalanceModel()
+        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
+        Assert.assertTrue(homeViewModel.searchHint.value?.data?.placeholders?.isNotEmpty() == false)
     }
 }

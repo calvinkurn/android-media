@@ -4,15 +4,26 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
-import com.tokopedia.chatbot.view.fragment.ChatBotCsatFragment
-import com.tokopedia.csat_rating.activity.BaseProvideRatingActivity
+import com.tokopedia.csat_rating.activity.BottomSheetProvideRatingActivity
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
-import java.util.*
+import com.tokopedia.kotlin.extensions.view.orZero
 
-class ChatBotCsatActivity : BaseProvideRatingActivity() {
+class ChatBotCsatActivity : BottomSheetProvideRatingActivity() {
 
-    override fun getNewFragment(): Fragment {
-        return ChatBotCsatFragment.newInstance(intent.extras)
+    override fun getNewFragment(): Fragment? {
+        return null
+    }
+
+    override fun onSuccessSubmit(intent: Intent) {
+        intent.putExtra(
+            CASE_CHAT_ID,
+            intent.getStringExtra(CASE_CHAT_ID)
+        )
+        intent.putExtra(
+            CASE_ID,
+            intent.getStringExtra(CASE_ID)
+        )
+        super.onSuccessSubmit(intent)
     }
 
     companion object {
@@ -22,6 +33,8 @@ class ChatBotCsatActivity : BaseProvideRatingActivity() {
         val QUESTION_LIST = "questionList"
         val CASE_CHAT_ID = "caseChatID"
         val CASE_ID = "caseID"
+        const val CLICKED_EMOJI = "clicked_emoji"
+        const val PARAM_OPTIONS_CSAT = "options_csat"
 
         fun getInstance(context: Context, clickEmoji: Int, model: CsatOptionsUiModel?): Intent {
             val intent = Intent(context, ChatBotCsatActivity::class.java)
@@ -32,7 +45,7 @@ class ChatBotCsatActivity : BaseProvideRatingActivity() {
             model?.csat?.reasons?.let {
                 for (reason in it) {
                     val badCsatReasonListItem = BadCsatReasonListItem()
-                    badCsatReasonListItem.id = reason.code ?: 0
+                    badCsatReasonListItem.id = reason.code.orZero().toLong()
                     badCsatReasonListItem.message = reason.text
                     list.add(badCsatReasonListItem)
                 }

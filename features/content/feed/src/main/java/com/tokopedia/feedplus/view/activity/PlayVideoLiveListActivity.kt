@@ -45,6 +45,4 @@ class PlayVideoLiveListActivity : BaseSimpleActivity() {
     fun getShopInfoLayout(): View? {
         return findViewById(R.id.shop_info_card)
     }
-
-
 }

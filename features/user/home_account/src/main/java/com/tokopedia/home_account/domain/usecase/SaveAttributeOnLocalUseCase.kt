@@ -24,7 +24,6 @@ class SaveAttributeOnLocalUseCase @Inject constructor(
                 walletPref.saveDebitInstantUrl(it.debitInstant.data.redirectUrl)
             }
             userSession.setIsMSISDNVerified(it.profile.isPhoneVerified)
-            userSession.setIsAffiliateStatus(it.isAffiliate)
         }
     }
 

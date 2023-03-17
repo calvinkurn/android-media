@@ -11,10 +11,12 @@ import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionData
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.message_data.TokoChatMessageWrapper
+import com.tokopedia.tokochat.util.TokoChatValueUtil.CENSOR_TEXT
 import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.VOICE_NOTES
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderDateUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleCensorUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 import java.util.*
@@ -59,7 +61,14 @@ class TokoChatConversationUiMapper @Inject constructor(
 
             when (it.customType) {
                 ConversationsConstants.ADMIN_MESSAGE -> {
-                    resultList.add(it.mapToTickerUiModel())
+                    /**
+                     * Convert message data and check the visibility
+                     * to determine whether should be displayed or not
+                     */
+                    val messageWrapper = convertToMessageWrapper(it.messageData)
+                    if (messageWrapper?.data?.visibilityList?.contains(userId) == true) {
+                        resultList.add(it.mapToTickerUiModel(messageWrapper))
+                    }
                 }
                 ConversationsConstants.EXTENSION_MESSAGE -> {
                     val extensionData = convertToExtensionData(it.messageData)
@@ -88,20 +97,36 @@ class TokoChatConversationUiMapper @Inject constructor(
                     }
                 }
                 ConversationsConstants.TEXT_MESSAGE -> {
-                    resultList.add(it.mapToMessageBubbleUiModel(userId))
+                    resultList.add(it.mapToMessageBubble(userId))
                 }
             }
         }
 
         // Add last header date
         lastHeaderDate?.let {
-            resultList.add(it)
+            // No need to add header if there's no chat or ticker shown
+            if (resultList.isNotEmpty()) {
+                resultList.add(it)
+            }
         }
 
         firstTicker?.let {
             resultList.add(resultList.size, it)
         }
         return resultList
+    }
+
+    private fun ConversationsMessage.mapToMessageBubble(
+        userId: String,
+        isNotSupported: Boolean = false,
+        unsupportedMessageText: String = ""
+    ): Any {
+        // If message text is censored text & from sender, change the UI
+        return if (messageText == CENSOR_TEXT && this.messageSender?.userId == userId) {
+            this.mapTopMessageBubbleCensorUiModel(userId)
+        } else {
+            this.mapToMessageBubbleUiModel(userId, isNotSupported, unsupportedMessageText)
+        }
     }
 
     private fun ConversationsMessage.mapToMessageBubbleUiModel(
@@ -122,6 +147,18 @@ class TokoChatConversationUiMapper @Inject constructor(
             .withIsSender(this.messageSender?.userId == userId)
             .withMessageText(messageText)
             .withIsNotSupported(isNotSupported)
+            .build()
+    }
+
+    private fun ConversationsMessage.mapTopMessageBubbleCensorUiModel(
+        userId: String
+    ): TokoChatMessageBubbleCensorUiModel {
+        return TokoChatMessageBubbleCensorUiModel.Builder()
+            .withMessageId(this.messageId)
+            .withFromUserId(this.messageSender?.userId ?: "")
+            .withMessageTime(this.createdTimestamp)
+            .withMessageStatus(this.readReceipt)
+            .withIsSender(this.messageSender?.userId == userId)
             .build()
     }
 
@@ -149,10 +186,11 @@ class TokoChatConversationUiMapper @Inject constructor(
         )
     }
 
-    private fun ConversationsMessage.mapToTickerUiModel(): TokoChatReminderTickerUiModel {
-        val messageWrapper = convertToMessageWrapper(this.messageData)
+    private fun ConversationsMessage.mapToTickerUiModel(
+        messageWrapper: TokoChatMessageWrapper?
+    ): TokoChatReminderTickerUiModel {
         return TokoChatReminderTickerUiModel(
-            message = messageWrapper?.language?.message?.idID ?: this.messageText,
+            message = messageWrapper?.data?.message?.idID ?: this.messageText,
             tickerType = Int.ZERO
         )
     }

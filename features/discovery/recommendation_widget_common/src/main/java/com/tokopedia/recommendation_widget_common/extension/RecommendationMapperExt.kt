@@ -11,6 +11,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -57,7 +58,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         header = title,
                         pageName = pageName,
                         minOrder = recommendation.minOrder,
-                        maxOrder = recommendation.minOrder,
+                        maxOrder = recommendation.maxOrder,
                         location = if (isRecomCardShouldShowVariantOrCart()) "" else recommendation.shop.city,
                         badgesUrl = if (isRecomCardShouldShowVariantOrCart()) listOf<String>() else recommendation.badges.map { it.imageUrl },
                         type = layoutType,
@@ -145,6 +146,23 @@ fun RecommendationItem.toProductCardModel(
             variant = if (isProductHasParentID()) variant else null,
             nonVariant = if (isProductHasParentID()) null else nonVariant,
             cardInteraction = cardInteraction,
+    )
+}
+
+fun List<RecommendationItem>.toViewToViewItemModels(): List<ViewToViewItemData>{
+    return map {
+        it.toViewToViewItem()
+    }
+}
+
+fun RecommendationItem.toViewToViewItem() : ViewToViewItemData {
+    return ViewToViewItemData(
+        name = name,
+        price = price,
+        imageUrl = imageUrl,
+        departmentId = departmentId.toString(),
+        url = url,
+        recommendationData = this,
     )
 }
 

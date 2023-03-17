@@ -113,6 +113,7 @@ class ToolbarHeaderView(
             headerTitle = ""
             isShowShadow = false
             transparentMode = true
+            setBackButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             setRightIconsColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         }
     }
@@ -122,6 +123,7 @@ class ToolbarHeaderView(
             headerTitle = this@ToolbarHeaderView.title
             isShowShadow = false
             transparentMode = false
+            setBackButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             setRightIconsColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         }
     }

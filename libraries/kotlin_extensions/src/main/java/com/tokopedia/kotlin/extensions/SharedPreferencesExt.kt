@@ -1,6 +1,12 @@
 package com.tokopedia.kotlin.extensions
 
 import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -61,4 +67,19 @@ fun SharedPreferences.remove(
 fun SharedPreferences.clear(
 ) {
     edit().clear().apply()
+}
+
+fun Editor.backgroundCommit() {
+    try {
+        CoroutineScope(Dispatchers.IO).launch {
+            commit()
+        }
+    } catch (e: Exception) {
+        apply()
+        ServerLogger.log(
+            Priority.P1,
+            "DEV_CRASH",
+            mapOf("method" to "launch_commit", "exception" to e.toString())
+        )
+    }
 }

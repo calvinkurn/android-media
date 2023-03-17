@@ -47,14 +47,16 @@
     <com.tokopedia.unifyprinciples.Typography
         app:lineHeight="18dp"
         android:id="@+id/account_user_item_common_body"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_68"
         android:layout_marginTop="@dimen/home_account_dp_2"
         android:textSize="@dimen/fontSize_lvl2"
         app:typographyType="body_3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_common_title"
+        app:layout_constraintEnd_toStartOf="@+id/account_user_item_common_switch"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_common_title"
         tools:text="Body Text" />
 

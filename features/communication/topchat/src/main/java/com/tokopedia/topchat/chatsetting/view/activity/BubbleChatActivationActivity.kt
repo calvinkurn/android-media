@@ -5,13 +5,16 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
 import com.tokopedia.topchat.chatsetting.di.ChatSettingModule
 import com.tokopedia.topchat.chatsetting.di.DaggerChatSettingComponent
 import com.tokopedia.topchat.chatsetting.view.fragment.BubbleChatActivationGuideFragment
 import com.tokopedia.topchat.chatsetting.view.fragment.BubbleChatActivationIntroFragment
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.util.BubbleChat
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class BubbleChatActivationActivity : BaseSimpleActivity(),
@@ -19,6 +22,9 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
 
     @Inject
     lateinit var topChatCacheManager: TopchatCacheManager
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var introFragment: Fragment? = null
     private var guideFragment: Fragment? = null
@@ -48,6 +54,7 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
             title = toolbarTitle
         }
         super.onCreate(savedInstanceState)
+        setupBackground()
     }
 
     override fun onDestroy() {
@@ -59,6 +66,11 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
     override fun onIntroButtonClicked() {
         navigateToGuideFragment()
         setIntroButtonFinishClicked()
+        trackIntroButtonFinishClicked()
+    }
+
+    override fun onPageLoaded() {
+        TopChatAnalyticsKt.eventImpressionBubbleChatIntroduction(userSession.shopId)
     }
 
     private fun getToolbarTitle(): String? {
@@ -67,6 +79,15 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
         } catch (ex: Exception) {
             null
         }
+    }
+
+    private fun setupBackground() {
+        window?.decorView?.setBackgroundColor(
+            MethodChecker.getColor(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
     }
 
     private fun getIsBubbleIntroFinished(): Boolean {
@@ -86,6 +107,10 @@ class BubbleChatActivationActivity : BaseSimpleActivity(),
 
     private fun setIntroButtonFinishClicked() {
         topChatCacheManager.saveCache(BubbleChat.Key.FINISH_INTRO, true.toString())
+    }
+
+    private fun trackIntroButtonFinishClicked() {
+        TopChatAnalyticsKt.eventClickBubbleHelpPage(userSession.shopId)
     }
 
     companion object {

@@ -42,6 +42,7 @@ android {
 
 dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -104,7 +105,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     implementation rootProject.ext.testDependencies.espressoIdlingResource

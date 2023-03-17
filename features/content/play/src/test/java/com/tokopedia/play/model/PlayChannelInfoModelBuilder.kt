@@ -2,9 +2,7 @@ package com.tokopedia.play.model
 
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 
 /**
@@ -15,11 +13,15 @@ class PlayChannelInfoModelBuilder {
     fun buildChannelDetail(
         shareInfo: PlayShareInfoUiModel = buildShareInfo(),
         channelInfo: PlayChannelInfoUiModel = buildChannelInfo(),
-        rtnConfigInfo: PlayRealTimeNotificationConfig = buildRtnConfigInfo()
+        rtnConfigInfo: PlayRealTimeNotificationConfig = buildRtnConfigInfo(),
+        popUpConfig: PlayPopUpConfigUiModel = buildPopUpConfig(),
+        widgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
     ) = PlayChannelDetailUiModel(
             shareInfo = shareInfo,
             channelInfo = channelInfo,
             rtnConfigInfo = rtnConfigInfo,
+            popupConfig = popUpConfig,
+            exploreWidgetConfig = widgetConfig,
     )
 
     fun buildShareInfo(
@@ -48,5 +50,13 @@ class PlayChannelInfoModelBuilder {
     ) = PlayRealTimeNotificationConfig(
             welcomeNotification = welcomeNotification,
             lifespan = lifespan,
+    )
+
+    fun buildPopUpConfig(
+        isEnabled: Boolean = true,
+        duration: Long = 6000L,
+        text: String = "Follow yukz",
+    ) = PlayPopUpConfigUiModel(
+        isEnabled, duration, text
     )
 }

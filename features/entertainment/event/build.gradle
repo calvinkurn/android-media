@@ -56,6 +56,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.oms)
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
+    implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.commonTravel)
@@ -126,7 +127,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestUtil rootProject.ext.testDependencies.orchestrator
 
     //jetpack navigation

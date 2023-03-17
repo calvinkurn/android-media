@@ -1,7 +1,7 @@
 package com.tokopedia.search
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.robot.prepare
 import org.junit.Rule

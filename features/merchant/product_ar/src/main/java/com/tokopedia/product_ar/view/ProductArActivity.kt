@@ -1,12 +1,14 @@
 package com.tokopedia.product_ar.view
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.modiface.mfemakeupkit.MFEMakeupEngine
 import com.modiface.mfemakeupkit.data.MFEMakeupRenderingParameters
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -116,5 +118,10 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
         mMakeupEngine?.close()
         mMakeupEngine = null
         super.onDestroy()
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 }

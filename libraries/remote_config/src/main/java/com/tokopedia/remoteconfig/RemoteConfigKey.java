@@ -36,6 +36,7 @@ public class RemoteConfigKey {
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
     public static final String APP_SHOW_AFFILIATES_BUTTON = "old_home_account_show_affiliates";
     public static final String ENABLE_EPHARMACY_UPLOAD_PAGE = "android_main_app_enable_epharmacy_page";
+    public static final String ENABLE_MINI_CONSULTATION_PAGE = "android_main_app_enable_mini_consultation";
 
     public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
     public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
@@ -149,8 +150,6 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
 
-    public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
-
     public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
     public static final String ENABLE_CART_ICON_IN_SHOP = "android_customer_enable_cart_icon_in_shop";
 
@@ -179,8 +178,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
     public static final String MAINAPP_RECHARGE_ATC_CHECKOUT_GQL = "android_enable_digital_gql";
     public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
-    public static final String MAINAPP_DEALS_ENABLE_PDP = "android_enable_deals_pdp";
-    public static final String MAINAPP_DEALS_ENABLE_CHECKOUT = "android_enable_deals_checkout";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
@@ -294,7 +291,9 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
 
-    public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
+    public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
+
+    public static final String ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC = "android_enable_old_seller_mvc_routing_to_new_seller_mvc";
 
     public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
     public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
@@ -312,4 +311,16 @@ public class RemoteConfigKey {
     public static final String RECOM_USE_GQL_FED_QUERY = "android_recom_use_gql_fed_query";
 
     public static final String HOME_USE_NEW_PULL_REFRESH = "android_home_use_new_pull_refresh";
+
+    public static final String PAYMENT_OVERLONG_THRESHOLD = "android_payment_overlong_threshold";
+
+    public static final String ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
+
+    public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
+
+    public static final String IS_CONTACT_US_MVVM = "android_contactus_is_mvvm";
+
+    public static final String ENABLE_CHATBOT_CSAT_NEW_FLOW = "android_chatbot_csat_experiment";
+
+    public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
 }

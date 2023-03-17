@@ -1,5 +1,6 @@
 package com.tokopedia.product_bundle.common.data.model.response
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -82,18 +83,20 @@ data class BundleItem(
         @Expose val productStatus: String = ""
 ): Parcelable {
 
+    fun getBuyableChildren() = children.filter { it.isBuyable }
+
     fun getPreviewOriginalPrice() = if (originalPrice > 0) originalPrice else
-        children.minByOrNull { it.bundlePrice }?.originalPrice.orZero()
+        getBuyableChildren().minByOrNull { it.bundlePrice }?.originalPrice.orZero()
 
     fun getPreviewBundlePrice() = if (bundlePrice > 0) bundlePrice else
-        children.minByOrNull { it.bundlePrice }?.bundlePrice.orZero()
+        getBuyableChildren().minByOrNull { it.bundlePrice }?.bundlePrice.orZero()
 
     fun getMultipliedOriginalPrice() = getPreviewOriginalPrice() * getPreviewMinOrder()
 
     fun getMultipliedBundlePrice() = getPreviewBundlePrice() * getPreviewMinOrder()
 
     fun getPreviewMinOrder() = if (minOrder > 0) minOrder else
-        children.minByOrNull { it.minOrder }?.minOrder.orZero()
+        getBuyableChildren().minByOrNull { it.minOrder }?.minOrder.orZero()
 }
 
 @Parcelize
@@ -150,7 +153,7 @@ data class Child(
         @Expose val stock: Int = 0,
         @SerializedName("isBuyable")
         @Expose val isBuyable: Boolean = false,
-        @SerializedName("optionID")
+        @SerializedName("optionID") @SuppressLint("Invalid Data Type") // data in list type
         @Expose val optionIds: List<Long> = listOf()
 ): Parcelable
 

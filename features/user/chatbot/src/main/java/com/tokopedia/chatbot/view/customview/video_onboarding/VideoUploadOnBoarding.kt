@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
-import com.tokopedia.chatbot.view.util.OnboardingDismissListener
+import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import javax.inject.Inject
@@ -16,7 +16,7 @@ class VideoUploadOnBoarding @Inject constructor(
     private var context: Context? = null
     private var anchor: View? = null
     private var coachMark: CoachMark2? = null
-    var onboardingDismissListener: OnboardingDismissListener? = null
+    var onboardingDismissListener: OnboardingVideoDismissListener? = null
 
     fun showVideoBubbleOnBoarding(
         anchor: View?,
@@ -48,8 +48,8 @@ class VideoUploadOnBoarding @Inject constructor(
                 )
             )
             coachMark?.showCoachMark(coachMarkItem)
+            markAsShowed()
             coachMark?.setOnDismissListener {
-                markAsShowed()
                 onboardingDismissListener?.dismissVideoUploadOnBoarding()
             }
         }

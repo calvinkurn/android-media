@@ -18,7 +18,7 @@ import java.lang.Exception
 /**
  * Created By : Jonathan Darwin on November 17, 2021
  */
-class SSELogger(context: Context): RealtimeNetworkLoggerInterface {
+class SSELogger(context: Context) : WebSocketLogger {
 
     private val insertSSELogUseCase: InsertSSELogUseCase
     private val dispatchers: CoroutineDispatchers
@@ -32,8 +32,8 @@ class SSELogger(context: Context): RealtimeNetworkLoggerInterface {
 
     private var generalInfo: SSELogGeneralInfoUiModel? = null
 
-    override fun init(generalInfo: String) {
-        this.generalInfo = parseGeneralInfo(generalInfo)
+    override fun init(data: String) {
+        generalInfo = parseGeneralInfo(data)
     }
 
     override fun send(event: String, message: String) {
@@ -64,30 +64,26 @@ class SSELogger(context: Context): RealtimeNetworkLoggerInterface {
     }
 
     companion object {
-        private var instance: RealtimeNetworkLoggerInterface? = null
+        private var instance: WebSocketLogger? = null
 
         @JvmStatic
-        fun getInstance(context: Context): RealtimeNetworkLoggerInterface {
-            if(instance == null) {
-                instance = if(GlobalConfig.isAllowDebuggingTools()) SSELogger(context.applicationContext)
-                            else emptyInstance()
+        fun getInstance(context: Context): WebSocketLogger {
+            if (instance == null) {
+                instance = if (GlobalConfig.isAllowDebuggingTools()) {
+                    SSELogger(context.applicationContext)
+                } else {
+                    emptyInstance()
+                }
             }
-            return instance as RealtimeNetworkLoggerInterface
+
+            return instance as WebSocketLogger
         }
 
-        private fun emptyInstance(): RealtimeNetworkLoggerInterface {
-            return object: RealtimeNetworkLoggerInterface {
-                override fun init(generalInfo: String) {
-
-                }
-
-                override fun send(event: String, message: String) {
-
-                }
-
-                override fun send(event: String) {
-
-                }
+        private fun emptyInstance(): WebSocketLogger {
+            return object: WebSocketLogger {
+                override fun init(data: String) {}
+                override fun send(event: String, message: String) {}
+                override fun send(event: String) {}
             }
         }
     }

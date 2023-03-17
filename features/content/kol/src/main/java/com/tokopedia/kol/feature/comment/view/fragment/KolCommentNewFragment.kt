@@ -38,7 +38,7 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent
 import com.tokopedia.kol.feature.comment.di.KolCommentModule
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
+import com.tokopedia.kol.feature.comment.view.activity.ContentCommentActivity
 import com.tokopedia.kol.feature.comment.view.adapter.KolCommentAdapter
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory
 import com.tokopedia.kol.feature.comment.view.listener.KolComment
@@ -201,7 +201,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                             authorId,
                             isVideoPost,
                             isFollowed,
-                            postType
+                            postType,
+                            authorId
                         )
                     adapter?.clearList()
                     presenter.getCommentFirstTime(arguments?.getLong(ARGS_ID) ?: 0)
@@ -258,7 +259,13 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         if (isFromContentDetailPage)
             analyticsTracker.sendClickReportOnComment(getContentDetailAnalyticsData())
         else
-            feedAnalytics.clickReportCommentPage(id, authorId, isVideoPost, isFollowed, postType)
+            feedAnalytics.clickReportCommentPage(
+                id,
+                authorId,
+                isVideoPost,
+                isFollowed,
+                postType
+            )
     }
 
     @SuppressLint("Method Call Prohibited")
@@ -375,7 +382,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 isVideoPost,
                 isFollowed,
                 postType,
-                userId
+                userId,
+                ""
             )
         routeUrl(url)
     }
@@ -404,7 +412,14 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         if (isFromContentDetailPage)
             analyticsTracker.sendClickShopOnConmmentPage(getContentDetailAnalyticsData())
         else
-            feedAnalytics.clickShopCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
+            feedAnalytics.clickShopCommentPage(
+                postId,
+                authorId,
+                isVideoPost,
+                isFollowed,
+                postType,
+                ""
+            )
         routeUrl(url)
     }
 
@@ -479,7 +494,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 authorId,
                 isVideoPost,
                 isFollowed,
-                postType
+                postType,
+                ""
             )
         adapter?.deleteItem(adapterPosition)
     }
@@ -556,7 +572,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         header?.isLoading = true
         adapter?.notifyItemChanged(0)
 
-        arguments?.getLong(KolCommentNewActivity.ARGS_ID)?.let { presenter.loadMoreComments(it) }
+        arguments?.getLong(ContentCommentActivity.ARGS_ID)?.let { presenter.loadMoreComments(it) }
 
     }
 
@@ -633,7 +649,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                     authorId,
                     isVideoPost,
                     isFollowed,
-                    postType
+                    postType,
+                    ""
                 )
             if (userSession != null && userSession?.isLoggedIn != false) {
                 presenter.sendComment(

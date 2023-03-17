@@ -1,7 +1,11 @@
 package com.tokopedia.profilecompletion.profileinfo
 
+import android.content.Context
 import android.content.Intent
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.view.activity.AddBodActivity
@@ -16,9 +20,8 @@ import com.tokopedia.profilecompletion.common.helper.goToAnotherActivity
 import com.tokopedia.profilecompletion.common.helper.isViewsExists
 import com.tokopedia.profilecompletion.common.helper.isViewsNotExists
 import com.tokopedia.profilecompletion.common.helper.swipeUp
-import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFactory
+import com.tokopedia.profilecompletion.common.stub.di.createProfileCompletionComponent
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
-import com.tokopedia.profilecompletion.di.ActivityComponentFactory
 import com.tokopedia.profilecompletion.profileinfo.view.activity.ProfileInfoActivity
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
@@ -27,20 +30,26 @@ import org.junit.Rule
 import org.junit.Test
 
 @UiTest
-class ProfileInfoInstrumentTest {
-
-    val testComponentFactory = TestComponentActivityFactory()
+open class ProfileInfoInstrumentTest {
 
     lateinit var activity: ProfileInfoActivity
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-            ProfileInfoActivity::class.java, false, false
+        ProfileInfoActivity::class.java, false, false
     )
+
+    private val applicationContext: Context
+        get() = InstrumentationRegistry
+            .getInstrumentation().context.applicationContext
 
     @Before
     fun before() {
-        ActivityComponentFactory.instance = testComponentFactory
+        val fakeBaseComponent =
+            createProfileCompletionComponent(applicationContext.applicationContext)
+
+        ApplicationProvider.getApplicationContext<BaseMainApplication>()
+            .setComponent(fakeBaseComponent)
     }
 
     @After
@@ -84,7 +93,10 @@ class ProfileInfoInstrumentTest {
     @Test
     fun click_user_id_copied() {
         runTest {
-            clickViewHolder(SECTION_USERID, clickChildWithViewId<IconUnify>(R.id.fragmentProfileItemIcon))
+            clickViewHolder(
+                SECTION_USERID,
+                clickChildWithViewId<IconUnify>(R.id.fragmentProfileItemIcon)
+            )
             checkToasterShowing(SUBSTRING_COPY_USER_ID)
         }
     }
@@ -151,7 +163,7 @@ class ProfileInfoInstrumentTest {
         }
     }
 
-    private fun runTest(test: () -> Unit) {
+    open fun runTest(test: () -> Unit) {
         activity = activityTestRule.launchActivity(Intent())
         test.invoke()
     }

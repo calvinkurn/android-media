@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.R
@@ -67,14 +68,13 @@ class MultiLineMetricsAdapter(
                 }
 
                 root.setOnClickListener {
-                    listener.onItemClickListener(item, adapterPosition)
+                    listener.onItemClickListener(item, absoluteAdapterPosition)
                 }
 
-                val isMetricError = item.errorMsg.isNotEmpty() || item.isError ||
-                        item.linePeriod.currentPeriod.isEmpty()
+                val isMetricError = item.isError
                 if (isMetricError) {
                     tvShcMetricsValue.text = root.context.getString(R.string.shc_failed_to_load)
-                    tvShcMetricsSubValue.text = ""
+                    tvShcMetricsSubValue.text = String.EMPTY
                 }
             }
         }

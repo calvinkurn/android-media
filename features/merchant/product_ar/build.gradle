@@ -41,6 +41,7 @@ android {
 
 dependencies {
     implementation rootProject.ext.miscDependencies.modifaceMakeUpKit
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -61,6 +62,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

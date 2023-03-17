@@ -550,7 +550,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun showImagePicker(position: Int){
-        if(Rollence.getImagePickerRollence()) {
+        if(RemoteConfig.getImagePickerRemoteConfig(context)) {
             doTrackingVariant(position)
             showImagePickerForVariant(position)
         } else {
@@ -1049,7 +1049,6 @@ class AddEditProductVariantFragment :
         ImagePickerGlobalSettings.onImageEditorContinue = ImagePickerCallback(ctx) { it, _ ->
             val shopId = UserSession(it).shopId ?: ""
             if (isEditMode) ProductEditVariantTracking.pickProductVariantPhotos(shopId)
-            else ProductAddVariantTracking.pickProductVariantPhotos(shopId)
         }
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
@@ -1370,7 +1369,7 @@ class AddEditProductVariantFragment :
     }
 
     fun showImagePickerVariantSizeGuide(){
-        if(Rollence.getImagePickerRollence()) {
+        if(RemoteConfig.getImagePickerRemoteConfig(context)) {
             doTrackingForVariantSize()
             showImagePickerSizeGuide()
         } else {
@@ -1379,7 +1378,7 @@ class AddEditProductVariantFragment :
     }
 
     fun showImageEditorVariantSizeGuide(){
-        if(Rollence.getImagePickerRollence()) {
+        if(RemoteConfig.getImagePickerRemoteConfig(context)) {
             doTrackingForVariantSize()
             showEditorImagePickerSizeGuide()
         } else {

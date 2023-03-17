@@ -41,6 +41,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.homeComponent)
@@ -59,6 +60,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+    implementation projectOrAar(rootProject.ext.features.tokochat_config_common)
+    implementation projectOrAar(rootProject.ext.features.tokochat_common)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)

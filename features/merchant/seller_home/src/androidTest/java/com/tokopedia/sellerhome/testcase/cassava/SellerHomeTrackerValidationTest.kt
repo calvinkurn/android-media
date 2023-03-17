@@ -4,7 +4,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.stub.features.home.presentation.SellerHomeActivityStub
 import com.tokopedia.sellerhome.stub.gql.GraphqlRepositoryStub
@@ -72,7 +72,7 @@ class SellerHomeTrackerValidationTest {
             8, "tracker/seller_home/seller_home_card_widget_impression.json"
         )
         val descriptionWidget = Pair(
-            2, "tracker/seller_home/seller_home_description_widget_impression.json"
+            1, "tracker/seller_home/seller_home_description_widget_impression.json"
         )
         val lineGraphWidget = Pair(
             1, "tracker/seller_home/seller_home_line_graph_widget_impression.json"

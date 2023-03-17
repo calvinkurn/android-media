@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.setup.product.analytic
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
@@ -24,11 +25,17 @@ class EtalaseListAnalyticManager @Inject constructor(
         scope.launch(dispatchers.computation) {
             event.subscribe().collect {
                 when (it) {
+                    is EtalaseListBottomSheet.Event.ClickClose -> {
+                        analytic.clickCloseOnProductFilterBottomSheet()
+                    }
+                    is EtalaseListBottomSheet.Event.ViewBottomSheet -> {
+                        analytic.viewProductFilterBottomSheet()
+                    }
                     is EtalaseListViewComponent.Event.OnEtalaseSelected -> {
-                        analytic.clickEtalaseCard()
+                        analytic.clickEtalaseCard(it.etalase.title)
                     }
                     is EtalaseListViewComponent.Event.OnCampaignSelected -> {
-                        analytic.clickCampaignCard()
+                        analytic.clickCampaignCard(it.campaign.title)
                     }
                 }
             }

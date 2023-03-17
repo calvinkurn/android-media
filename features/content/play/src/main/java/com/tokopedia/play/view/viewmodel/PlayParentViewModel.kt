@@ -17,6 +17,7 @@ import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.domain.repository.PlayViewerRepository
+import com.tokopedia.play_common.model.ui.ArchivedUiModel
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -48,9 +49,9 @@ class PlayParentViewModel @AssistedInject constructor(
     /**
      * LiveData
      */
-    val observableChannelIdsResult: LiveData<PageResult<List<String>>>
+    val observableChannelIdsResult: LiveData<PageResult<List<PlayChannelData>>>
         get() = _observableChannelIdsResult
-    private val _observableChannelIdsResult = MutableLiveData<PageResult<List<String>>>()
+    private val _observableChannelIdsResult = MutableLiveData<PageResult<List<PlayChannelData>>>()
 
     val observableFirstChannelEvent: LiveData<Event<Unit>>
         get() = _observableFirstChannelEvent
@@ -101,8 +102,8 @@ class PlayParentViewModel @AssistedInject constructor(
     fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel with ID $channelId not found")
 
     fun getNextChannel(currentChannelId: String) : String {
-        val index = playChannelStateStorage.getChannelList().indexOf(currentChannelId)
-        return playChannelStateStorage.getChannelList()[index + 1]
+        val index = playChannelStateStorage.getChannelList().indexOfFirst { it.id == currentChannelId }
+        return playChannelStateStorage.getChannelList()[index + 1].id
     }
 
     fun setLatestChannelStorageData(
@@ -120,7 +121,8 @@ class PlayParentViewModel @AssistedInject constructor(
     }
 
     private fun getChannelDetailsWithRecom(nextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey) {
-        if (nextKey is GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId) {
+        val isFirstPage = nextKey is GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId
+        if (isFirstPage) {
             _observableFirstChannelEvent.value = Event(Unit)
             playChannelStateStorage.clearData()
         }
@@ -146,14 +148,16 @@ class PlayParentViewModel @AssistedInject constructor(
             startingChannelId?.let { channelId ->
                 _observableChannelIdsResult.value = PageResult(
                     currentValue = playChannelStateStorage.getChannelList(),
-                    state = if(playChannelStateStorage.getData(channelId)?.upcomingInfo?.isUpcoming == true)
-                                PageResultState.Upcoming(channelId = channelId)
-                            else PageResultState.Success(pageInfo = PageInfo.Unknown)
+                    state = when {
+                        playChannelStateStorage.getData(channelId)?.upcomingInfo?.isUpcoming == true -> PageResultState.Upcoming(channelId = channelId)
+                        playChannelStateStorage.getData(channelId)?.status?.channelStatus?.statusType?.isArchive == true -> PageResultState.Archived(playChannelStateStorage.getData(channelId)?.status?.config?.archivedModel ?: ArchivedUiModel.Empty)
+                        else -> PageResultState.Success(pageInfo = PageInfo.Unknown, isFirstPage)
+                    }
                 )
             } ?: run {
                 _observableChannelIdsResult.value = PageResult(
                     currentValue = playChannelStateStorage.getChannelList(),
-                    state = PageResultState.Success(pageInfo = PageInfo.Unknown)
+                    state = PageResultState.Success(pageInfo = PageInfo.Unknown, isFirstPage)
                 )
             }
 

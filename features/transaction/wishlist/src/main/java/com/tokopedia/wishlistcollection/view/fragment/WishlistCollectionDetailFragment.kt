@@ -146,7 +146,6 @@ import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
@@ -211,13 +210,13 @@ class WishlistCollectionDetailFragment :
     private var collectionType = 0
     private var countDelete = 1
     private var toolbarTitle = ""
-    private var bottomSheetCollection = BottomSheetAddCollectionWishlist()
+    private var bottomSheetCollection: BottomSheetAddCollectionWishlist? = BottomSheetAddCollectionWishlist()
     private var _isDeleteOnly = false
     private var collectionIdDestination = ""
     private var collectionNameDestination = ""
     private var isAturMode = false
     private var isCTAResetOfferFilterClicked = false
-    private var bottomSheetCollectionSettings = BottomSheetWishlistCollectionSettings()
+    private var bottomSheetCollectionSettings: BottomSheetWishlistCollectionSettings? = BottomSheetWishlistCollectionSettings()
     private var isToolbarHasDesc = false
     private var toolbarDesc = ""
     private val coachMarkItemSharingIcon = ArrayList<CoachMark2Item>()
@@ -225,6 +224,8 @@ class WishlistCollectionDetailFragment :
     private var _currCheckCollectionType = 0
     private var _maxBulk = 0L
     private var _toasterMaxBulk = ""
+    private var _isNeedRefreshAndTurnOffBulkModeFromOthers = false
+    private var _bulkModeIsAlreadyTurnedOff = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -283,8 +284,6 @@ class WishlistCollectionDetailFragment :
             }
         }
 
-        const val REQUEST_CODE_LOGIN_ATC = 1880
-        const val REQUEST_CODE_LOGIN_GO_TO_CART = 1881
         const val REQUEST_CODE_LOGIN = 288
         const val REQUEST_CODE_GO_TO_PDP = 788
         const val REQUEST_CODE_GO_TO_COLLECTION_DETAIL = 388
@@ -351,6 +350,12 @@ class WishlistCollectionDetailFragment :
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingData()
+    }
+
+    override fun onDestroyView() {
+        bottomSheetCollection = null
+        bottomSheetCollectionSettings = null
+        super.onDestroyView()
     }
 
     private fun isAutoRefreshEnabled(): Boolean {
@@ -625,21 +630,23 @@ class WishlistCollectionDetailFragment :
                             }
                         }
 
-                        toolbarTitle = collectionDetail.headerTitle
-                        if (isBulkAddShow) {
-                            updateCustomToolbarSubTitle(collectionNameDestination)
-                        } else {
-                            if (collectionDetail.description.isNotEmpty()) {
-                                isToolbarHasDesc = true
-                                toolbarDesc = collectionDetail.description
-                                if (!isBulkAddFromOtherCollectionShow) updateCustomToolbarTitleAndSubTitle(collectionDetail.headerTitle, collectionDetail.description)
-                            } else {
-                                updateToolbarTitle(toolbarTitle)
-                            }
-                        }
-
                         if (currPage == 1 && collectionDetail.sortFilters.isNotEmpty()) {
                             renderChipsFilter(mapToSortFilterItem(collectionDetail.sortFilters))
+                            setupGearIcon()
+                            setupLayoutTypeIcon()
+
+                            toolbarTitle = collectionDetail.headerTitle
+                            if (isBulkAddShow) {
+                                updateCustomToolbarSubTitle(collectionNameDestination)
+                            } else {
+                                if (collectionDetail.description.isNotEmpty()) {
+                                    isToolbarHasDesc = true
+                                    toolbarDesc = collectionDetail.description
+                                    if (!isBulkAddFromOtherCollectionShow) updateCustomToolbarTitleAndSubTitle(collectionDetail.headerTitle, collectionDetail.description)
+                                } else {
+                                    updateToolbarTitle(toolbarTitle)
+                                }
+                            }
                         }
                         if (collectionDetail.hasNextPage) {
                             currPage += 1
@@ -663,6 +670,16 @@ class WishlistCollectionDetailFragment :
 
                         if (isShowingCleanerBottomSheet && collectionDetail.storageCleanerBottomsheet.title.isNotEmpty()) {
                             showBottomSheetCleaner(WishlistV2Utils.mapToStorageCleanerBottomSheet(collectionDetail.storageCleanerBottomsheet))
+                        }
+
+                        if (_isNeedRefreshAndTurnOffBulkModeFromOthers) {
+                            _isNeedRefreshAndTurnOffBulkModeFromOthers = false
+                            _bulkModeIsAlreadyTurnedOff = true
+                            showBottomSheetCollection(
+                                childFragmentManager,
+                                listSelectedProductIdsFromOtherCollection.joinToString(),
+                                SRC_WISHLIST_COLLECTION_SHARING
+                            )
                         }
                     }
                 }
@@ -863,7 +880,11 @@ class WishlistCollectionDetailFragment :
                                 if (!isBulkAddFromOtherCollectionShow) showSelectItemsOption()
                             }
                             CHECK_COLLECTION_TYPE_FOR_TURN_ON_SELECT_ITEMS_MODE -> {
-                                turnOnBulkAddFromOtherCollectionsMode()
+                                if (userSession.isLoggedIn) {
+                                    turnOnBulkAddFromOtherCollectionsMode()
+                                } else {
+                                    goToLoginPage()
+                                }
                             }
                             CHECK_COLLECTION_TYPE_FOR_DIALOG_CONFIRMATION -> {
                                 showBulkAddFromOtherCollectionConfirmationDialog()
@@ -888,11 +909,10 @@ class WishlistCollectionDetailFragment :
             when (result) {
                 is Success -> {
                     if (result.data.success) {
-                        showBottomSheetCollection(
-                            childFragmentManager,
-                            listSelectedProductIdsFromOtherCollection.joinToString(),
-                            SRC_WISHLIST_COLLECTION_SHARING
-                        )
+                        if (_isNeedRefreshAndTurnOffBulkModeFromOthers) {
+                            turnOffBulkAddFromOtherCollection()
+                            setRefreshing()
+                        }
                     } else {
                         when (result.data.errorType) {
                             ERROR_GENERAL_SYSTEM_FAILURE_ADD_BULK -> {
@@ -908,7 +928,10 @@ class WishlistCollectionDetailFragment :
                                     message = result.data.message,
                                     actionText = result.data.button.text,
                                     type = Toaster.TYPE_ERROR
-                                ) { goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST) }
+                                ) {
+                                    _isNeedRefreshAndTurnOffBulkModeFromOthers = false
+                                    goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST)
+                                }
                             }
 
                             ERROR_PARTIAL_MAX_QTY_VALIDATION_FAILURE_ADD_BULK -> {
@@ -916,7 +939,10 @@ class WishlistCollectionDetailFragment :
                                     message = result.data.message,
                                     actionText = result.data.button.text,
                                     type = Toaster.TYPE_ERROR
-                                ) { goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST) }
+                                ) {
+                                    _isNeedRefreshAndTurnOffBulkModeFromOthers = false
+                                    goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST)
+                                }
                             }
 
                             ERROR_COLLECTION_IS_PRIVATE_ADD_BULK -> {
@@ -1143,13 +1169,52 @@ class WishlistCollectionDetailFragment :
             } else {
                 if (collectionId == "0") {
                     wishlistCollectionDetailStickyCountManageLabel.apply {
-                        iconGearCollectionDetail.gone()
                         wishlistCollectionDetailManageLabel.show()
                         wishlistCollectionDetailManageLabel.setOnClickListener { onStickyManageClicked() }
                     }
                     WishlistCollectionAnalytics.sendAllWishListPageOpenedEvent(userSession.isLoggedIn, userSession.userId)
                 } else {
                     wishlistCollectionDetailStickyCountManageLabel.apply {
+                        wishlistCollectionDetailManageLabel.gone()
+                    }
+                    WishlistCollectionAnalytics.sendWishListCollectionDetailPageOpenedEvent(userSession.isLoggedIn, userSession.userId)
+                }
+                wishlistCollectionDetailFb.circleMainMenu.setOnClickListener {
+                    rvWishlistCollectionDetail.smoothScrollToPosition(0)
+                }
+                wishlistCollectionDetailFb.gone()
+            }
+        }
+
+        if (toasterMessageInitial.isNotEmpty()) {
+            showToasterInitial(toasterMessageInitial)
+        }
+    }
+
+    private fun setupLayoutTypeIcon() {
+        setTypeLayoutIcon()
+        binding?.run {
+            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.setOnClickListener {
+                changeTypeLayout()
+                setTypeLayoutIcon()
+            }
+        }
+    }
+
+    private fun setupGearIcon() {
+        binding?.run {
+            if (collectionId == "0") {
+                wishlistCollectionDetailStickyCountManageLabel.apply {
+                    iconGearCollectionDetail.gone()
+                }
+            } else {
+                wishlistCollectionDetailStickyCountManageLabel.apply {
+                    if (collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                        wishlistCollectionDetailManageLabel.gone()
+                        iconGearCollectionDetail.gone()
+                        wishlistCollectionSelectItemOption.show()
+                    } else {
+                        wishlistCollectionSelectItemOption.gone()
                         wishlistCollectionDetailManageLabel.gone()
                         iconGearCollectionDetail.show()
                         iconGearCollectionDetail.setOnClickListener {
@@ -1160,22 +1225,8 @@ class WishlistCollectionDetailFragment :
                             WishlistCollectionAnalytics.sendClickGearIconEvent()
                         }
                     }
-                    WishlistCollectionAnalytics.sendWishListCollectionDetailPageOpenedEvent(userSession.isLoggedIn, userSession.userId)
-                }
-                wishlistCollectionDetailFb.circleMainMenu.setOnClickListener {
-                    rvWishlistCollectionDetail.smoothScrollToPosition(0)
-                }
-                wishlistCollectionDetailFb.gone()
-                setTypeLayoutIcon()
-                wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.setOnClickListener {
-                    changeTypeLayout()
-                    setTypeLayoutIcon()
                 }
             }
-        }
-
-        if (toasterMessageInitial.isNotEmpty()) {
-            showToasterInitial(toasterMessageInitial)
         }
     }
 
@@ -1213,13 +1264,11 @@ class WishlistCollectionDetailFragment :
             if (activityWishlistV2 != PARAM_HOME) {
                 wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 icons = IconBuilder().apply {
-                    if (WishlistV2RemoteConfigRollenceUtil.isEnableRollenceWishlistSharing()) {
-                        if (collectionType == TYPE_COLLECTION_PRIVATE_SELF ||
-                            collectionType == TYPE_COLLECTION_PUBLIC_SELF ||
-                            collectionType == TYPE_COLLECTION_PUBLIC_OTHERS
-                        ) {
-                            addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
-                        }
+                    if (collectionType == TYPE_COLLECTION_PRIVATE_SELF ||
+                        collectionType == TYPE_COLLECTION_PUBLIC_SELF ||
+                        collectionType == TYPE_COLLECTION_PUBLIC_OTHERS
+                    ) {
+                        addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
                     }
                     addIcon(iconId = IconList.ID_CART, disableRouteManager = true, onClick = { handleGoToCartPage() })
                     addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
@@ -1266,12 +1315,9 @@ class WishlistCollectionDetailFragment :
 
     private fun handleGoToCartPage() {
         if (userSession.isLoggedIn) {
-            RouteManager.route(context, ApplinkConst.CART)
+            goToCartPage()
         } else {
-            startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN_ATC
-            )
+            goToLoginPage()
         }
     }
 
@@ -1417,8 +1463,17 @@ class WishlistCollectionDetailFragment :
                 }
             } else {
                 wishlistCollectionDetailStickyCountManageLabel.apply {
-                    wishlistCollectionDetailManageLabel.gone()
-                    iconGearCollectionDetail.show()
+                    if (collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                        wishlistCollectionDetailManageLabel.gone()
+                        iconGearCollectionDetail.gone()
+                        wishlistCollectionSelectItemOption.show()
+                        wishlistDivider.show()
+                        wishlistCollectionDetailTypeLayoutIcon.show()
+                    } else {
+                        wishlistCollectionSelectItemOption.gone()
+                        wishlistCollectionDetailManageLabel.gone()
+                        iconGearCollectionDetail.show()
+                    }
                 }
             }
         }
@@ -1962,7 +2017,11 @@ class WishlistCollectionDetailFragment :
                                 showWishlistCollectionHostBottomSheetActivity(wishlistItem, false)
                             }
                             MENU_ADD_WISHLIST -> {
-                                addToWishlist(wishlistItem, userSession.userId, collectionId)
+                                if (userSession.isLoggedIn) {
+                                    addToWishlist(wishlistItem, userSession.userId, collectionId)
+                                } else {
+                                    goToLoginPage()
+                                }
                             }
                         }
                     }
@@ -2059,6 +2118,7 @@ class WishlistCollectionDetailFragment :
         dialog?.setPrimaryCTAText(getString(Rv2.string.wishlist_save_label))
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()
+            _isNeedRefreshAndTurnOffBulkModeFromOthers = true
             doAddWishlistBulk()
         }
         dialog?.setSecondaryCTAText(getString(Rv2.string.wishlist_cancel_manage_label))
@@ -2324,7 +2384,7 @@ class WishlistCollectionDetailFragment :
     private fun showIndefiniteToasterWithCTA(message: String, actionText: String, type: Int, listener: View.OnClickListener) {
         val toasterSuccess = Toaster
         view?.let { v ->
-            toasterSuccess.build(v, message, Toaster.LENGTH_INDEFINITE, type, actionText, listener).show()
+            toasterSuccess.build(v, message, Toaster.LENGTH_LONG, type, actionText, listener).show()
         }
     }
 
@@ -2368,7 +2428,7 @@ class WishlistCollectionDetailFragment :
         view?.let { v ->
             toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, CTA_ATC) {
                 WishlistCollectionAnalytics.sendClickLihatButtonOnAtcSuccessToasterEvent()
-                RouteManager.route(context, ApplinkConst.CART)
+                goToCartPage()
             }.show()
         }
     }
@@ -2887,21 +2947,25 @@ class WishlistCollectionDetailFragment :
         if (userSession.isLoggedIn) {
             doAtc()
         } else {
-            startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN_ATC
-            )
+            goToLoginPage()
         }
+    }
+
+    private fun goToLoginPage() {
+        startActivityForResult(
+            RouteManager.getIntent(context, ApplinkConst.LOGIN),
+            REQUEST_CODE_LOGIN
+        )
     }
 
     private fun doAtc() {
         showLoadingDialog()
         val atcParam = AddToCartRequestParams(
-            productId = wishlistItemOnAtc.id.toLong(),
+            productId = wishlistItemOnAtc.id,
             productName = wishlistItemOnAtc.name,
             price = wishlistItemOnAtc.originalPriceFmt,
             quantity = wishlistItemOnAtc.minOrder.toIntOrZero(),
-            shopId = wishlistItemOnAtc.shop.id.toIntOrZero(),
+            shopId = wishlistItemOnAtc.shop.id,
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
         )
         wishlistCollectionDetailViewModel.doAtc(atcParam)
@@ -2961,9 +3025,10 @@ class WishlistCollectionDetailFragment :
     private fun onCollectionSettingsClicked(collectionId: String, collectionName: String) {
         bottomSheetCollectionSettings =
             BottomSheetWishlistCollectionSettings.newInstance(collectionName, collectionId, collectionType, listSettingButtons)
-        bottomSheetCollectionSettings.setListener(this@WishlistCollectionDetailFragment)
-        if (bottomSheetCollectionSettings.isAdded || childFragmentManager.isStateSaved) return
-        bottomSheetCollectionSettings.show(childFragmentManager)
+        bottomSheetCollectionSettings?.setOnDismissListener { bottomSheetCollectionSettings = null }
+        bottomSheetCollectionSettings?.setListener(this@WishlistCollectionDetailFragment)
+        if (bottomSheetCollectionSettings?.isAdded == true || childFragmentManager.isStateSaved) return
+        bottomSheetCollectionSettings?.show(childFragmentManager)
     }
 
     private fun turnOnBulkDeleteMode(isDeleteOnly: Boolean) {
@@ -3004,6 +3069,7 @@ class WishlistCollectionDetailFragment :
     }
 
     private fun turnOnBulkAddFromOtherCollectionsMode() {
+        listSelectedProductIdsFromOtherCollection.clear()
         binding?.run {
             wishlistCollectionDetailStickyCountManageLabel.apply {
                 llAturDanLayout.visible().also {
@@ -3429,9 +3495,10 @@ class WishlistCollectionDetailFragment :
             source,
             false
         )
-        if (bottomSheetCollection.isAdded || fragmentManager.isStateSaved) return
-        bottomSheetCollection.setActionListener(this@WishlistCollectionDetailFragment)
-        bottomSheetCollection.show(fragmentManager)
+        bottomSheetCollection?.setOnDismissListener { bottomSheetCollection = null }
+        if (bottomSheetCollection?.isAdded == true || fragmentManager.isStateSaved) return
+        bottomSheetCollection?.setActionListener(this@WishlistCollectionDetailFragment)
+        bottomSheetCollection?.show(fragmentManager)
     }
 
     private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {
@@ -3442,14 +3509,6 @@ class WishlistCollectionDetailFragment :
         bottomSheetCreateCollection.setListener(this@WishlistCollectionDetailFragment)
         if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(fragmentManager)
-    }
-
-    // new condition : when shared collection is opened from other user POV
-    private fun hideGearIcon() {
-        binding?.run {
-            wishlistCollectionDetailStickyCountManageLabel.iconGearCollectionDetail.gone()
-            wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.gone()
-        }
     }
 
     private fun showSelectItemsOption() {
@@ -3470,8 +3529,10 @@ class WishlistCollectionDetailFragment :
     }
 
     private fun turnOffBulkAddFromOtherCollection() {
-        listSelectedProductIdsFromOtherCollection.clear()
-        isBulkAddFromOtherCollectionShow = false
+        if (!_isNeedRefreshAndTurnOffBulkModeFromOthers) {
+            listSelectedProductIdsFromOtherCollection.clear()
+            isBulkAddFromOtherCollectionShow = false
+        }
         if (isToolbarHasDesc) {
             updateCustomToolbarTitleAndSubTitle(toolbarTitle, toolbarDesc)
         } else {
@@ -3493,7 +3554,11 @@ class WishlistCollectionDetailFragment :
                 wishlistCollectionDetailTypeLayoutIcon.visible()
                 wishlistCollectionSelectItemOption.visible()
                 wishlistCollectionSelectItemOption.setOnClickListener {
-                    checkCollectionType(CHECK_COLLECTION_TYPE_FOR_TURN_ON_SELECT_ITEMS_MODE)
+                    if (userSession.isLoggedIn) {
+                        checkCollectionType(CHECK_COLLECTION_TYPE_FOR_TURN_ON_SELECT_ITEMS_MODE)
+                    } else {
+                        goToLoginPage()
+                    }
                 }
             }
         }
@@ -3507,13 +3572,13 @@ class WishlistCollectionDetailFragment :
             collectionName = name,
             productIds = listProductId
         )
-        bottomSheetCollection.saveToCollection(addWishlistParam)
+        bottomSheetCollection?.saveToCollection(addWishlistParam)
         WishlistCollectionAnalytics.sendClickCollectionFolderEvent(id, listProductId.toString(), SRC_WISHLIST)
     }
 
     override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {
         if (dataObject.totalCollection < dataObject.maxLimitCollection) {
-            bottomSheetCollection.dismiss()
+            bottomSheetCollection?.dismiss()
             showBottomSheetCreateNewCollection(childFragmentManager)
         } else {
             val intent = Intent()
@@ -3540,7 +3605,17 @@ class WishlistCollectionDetailFragment :
             }
             showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
         }
-        turnOffBulkDeleteMode()
+        if (!_bulkModeIsAlreadyTurnedOff) {
+            if (!isBulkAddFromOtherCollectionShow) {
+                turnOffBulkDeleteMode()
+            } else {
+                turnOffBulkAddFromOtherCollection()
+            }
+        } else {
+            _bulkModeIsAlreadyTurnedOff = false
+            listSelectedProductIdsFromOtherCollection.clear()
+            isBulkAddFromOtherCollectionShow = false
+        }
     }
 
     override fun onFailedSaveItemToCollection(errorMessage: String) {
@@ -3563,7 +3638,7 @@ class WishlistCollectionDetailFragment :
     }
 
     override fun onEditCollection(collectionId: String, collectionName: String, actionText: String) {
-        bottomSheetCollectionSettings.dismiss()
+        bottomSheetCollectionSettings?.dismiss()
         goToEditCollectionPage()
     }
 
@@ -3575,7 +3650,7 @@ class WishlistCollectionDetailFragment :
     }
 
     override fun onDeleteCollection(collectionId: String, collectionName: String, actionText: String) {
-        bottomSheetCollectionSettings.dismiss()
+        bottomSheetCollectionSettings?.dismiss()
         showDialogDeleteCollection(collectionId, collectionName)
         WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(actionText)
     }
@@ -3590,7 +3665,7 @@ class WishlistCollectionDetailFragment :
     }
 
     override fun onManageItemsInCollection(actionText: String) {
-        bottomSheetCollectionSettings.dismiss()
+        bottomSheetCollectionSettings?.dismiss()
         turnOnBulkDeleteMode(false)
         WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(actionText)
     }

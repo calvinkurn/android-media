@@ -39,6 +39,7 @@ android {
 dependencies {
 
     implementation rootProject.ext.firebase.crashlytics
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.supportV4
@@ -123,7 +124,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.playServicesDependencies.auth
-    implementation projectOrAar(rootProject.ext.features.mediaCommon)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -131,7 +131,7 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analytics)
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
 
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

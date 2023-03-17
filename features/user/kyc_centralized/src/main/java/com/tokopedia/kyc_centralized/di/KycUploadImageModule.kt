@@ -2,16 +2,14 @@ package com.tokopedia.kyc_centralized.di
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.imageuploader.data.StringResponseConverter
 import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError
-import com.tokopedia.kyc_centralized.KycUrl
+import com.tokopedia.kyc_centralized.common.KycServerLogger
+import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.data.network.KycUploadApi
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.network.NetworkRouter
@@ -23,7 +21,6 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 @Module
@@ -98,8 +95,8 @@ open class KycUploadImageModule {
 
     @ActivityScope
     @Provides
-    fun provideServerLogger(): ServerLogger {
-        return ServerLogger
+    fun provideServerLogger(): KycServerLogger {
+        return KycServerLogger
     }
 
 }

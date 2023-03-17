@@ -1,13 +1,10 @@
 package com.tokopedia.media.picker.common.di
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.media.picker.common.data.repository.TestAlbumRepository
-import com.tokopedia.media.picker.common.data.repository.TestDeviceInfoRepository
-import com.tokopedia.media.picker.common.data.repository.TestMediaRepository
+import com.tokopedia.media.picker.common.data.repository.*
 import com.tokopedia.media.picker.data.entity.Album
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.data.loader.LoaderDataSource
-import com.tokopedia.media.picker.data.repository.MediaRepository
 import javax.inject.Inject
 
 class TestPickerInterceptor {
@@ -15,6 +12,8 @@ class TestPickerInterceptor {
     @Inject lateinit var albumRepository: TestAlbumRepository
     @Inject lateinit var mediaRepository: TestMediaRepository
     @Inject lateinit var deviceInfoRepository: TestDeviceInfoRepository
+    @Inject lateinit var bitmapConverterRepository: TestBitmapConverterRepository
+    @Inject lateinit var createMediaRepository: TestCreateMediaRepository
 
     @Inject lateinit var localDataSource: LoaderDataSource
     @Inject lateinit var dispatchers: CoroutineDispatchers

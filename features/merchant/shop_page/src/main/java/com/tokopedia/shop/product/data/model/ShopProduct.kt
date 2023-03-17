@@ -78,7 +78,11 @@ data class ShopProduct(
 
     @SerializedName("app_link")
     @Expose
-    val appLink: String = ""
+    val appLink: String = "",
+
+    @SerializedName("show_stockbar")
+    @Expose
+    val showStockBar: Boolean = false,
 ) {
     data class Response(
         @SerializedName("GetShopProduct")

@@ -10,21 +10,19 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_ADD_OPTION
-import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
-import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_TYPE
-import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.model.*
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationData
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
@@ -40,12 +38,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
-import kotlin.collections.set
 
 /**
  * Created by Pika on 20/7/20.
@@ -183,11 +178,25 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     }
 
     private fun enableButton(enable: Boolean) {
-        if (adapter.getSelectedIds().size == 0)
-            (activity as TopAdsDashboardActivity).enableRecommButton(false)
-        else
-            (activity as TopAdsDashboardActivity).enableRecommButton(enable)
+        var insightFragmentIsDisplayed = checkCurrentFragmentIndex()
+        if (adapter.getSelectedIds().size == 0) {
+            (activity as TopAdsDashboardActivity).insightMultiActionButtonEnabled = false
+            if(insightFragmentIsDisplayed) {
+                (activity as TopAdsDashboardActivity).setMultiActionButtonEnabled(false)
+            }
+        }
+        else {
+            (activity as TopAdsDashboardActivity).insightMultiActionButtonEnabled = enable
+            if(insightFragmentIsDisplayed) {
+                (activity as TopAdsDashboardActivity).setMultiActionButtonEnabled(enable)
+            }
+        }
     }
+
+    private fun checkCurrentFragmentIndex(): Boolean {
+        return activity?.findViewById<ViewPager>(R.id.view_pager)?.currentItem == CONST_3
+    }
+
 
     private fun setEmptyState() {
         (parentFragment as TopAdsRecommendationFragment).setCount(adapter.items.size, 0)
