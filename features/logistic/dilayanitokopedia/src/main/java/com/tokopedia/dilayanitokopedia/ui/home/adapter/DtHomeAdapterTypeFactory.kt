@@ -4,14 +4,14 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.dilayanitokopedia.common.adapter.typefactory.HomeTypeFactory
+import com.tokopedia.dilayanitokopedia.common.view.adapter.typefactory.HomeTypeFactory
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.datamodel.HomeLoadingMoreModel
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.datamodel.HomeRecommendationFeedDataModel
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.listener.DtHomeCategoryListener
-import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.viewholder.HomeLoadingMoreViewHolder
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.viewholder.HomeLoadingStateViewHolder
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.viewholder.HomeRecommendationFeedViewHolder
+import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener

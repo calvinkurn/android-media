@@ -1,4 +1,4 @@
-package com.tokopedia.dilayanitokopedia.common.adapter.typefactory
+package com.tokopedia.dilayanitokopedia.common.view.adapter.typefactory
 
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.datamodel.HomeLoadingMoreModel
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.datamodel.HomeRecommendationFeedDataModel

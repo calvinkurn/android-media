@@ -3,7 +3,7 @@ package com.tokopedia.dilayanitokopedia.ui.home.adapter.datamodel;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.dilayanitokopedia.common.adapter.typefactory.HomeTypeFactory;
+import com.tokopedia.dilayanitokopedia.common.view.adapter.typefactory.HomeTypeFactory;
 
 import java.util.List;
 import java.util.Map;

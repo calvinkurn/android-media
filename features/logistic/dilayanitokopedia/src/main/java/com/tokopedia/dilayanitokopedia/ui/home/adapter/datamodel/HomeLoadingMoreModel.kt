@@ -1,7 +1,7 @@
 package com.tokopedia.dilayanitokopedia.ui.home.adapter.datamodel
 
 import android.os.Bundle
-import com.tokopedia.dilayanitokopedia.common.adapter.typefactory.HomeTypeFactory
+import com.tokopedia.dilayanitokopedia.common.view.adapter.typefactory.HomeTypeFactory
 
 /**
  * Loading for recommendation feed
