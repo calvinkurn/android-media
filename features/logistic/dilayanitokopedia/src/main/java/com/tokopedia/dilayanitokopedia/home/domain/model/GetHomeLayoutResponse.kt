@@ -9,7 +9,6 @@ import com.tokopedia.dilayanitokopedia.home.domain.model.common.Shop
  * Created by irpan on 12/10/22.
  */
 data class GetHomeLayoutResponse(
-
     @SerializedName("getHomeChannelV2")
     val response: DynamicHomeChannelResponse = DynamicHomeChannelResponse()
 )
@@ -170,7 +169,6 @@ data class Benefit(
 )
 
 data class Header(
-
     @SerializedName("id")
     val id: String = "",
     @SerializedName("name")

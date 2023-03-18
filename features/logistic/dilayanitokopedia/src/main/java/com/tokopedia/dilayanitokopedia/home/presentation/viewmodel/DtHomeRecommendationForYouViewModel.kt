@@ -33,10 +33,10 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
     fun loadInitialPage(locationParamString: String) {
         val defaultPage = 1
         launchCatchError(coroutineContext, block = {
-            val data = getRecommendationForYouUseCase.execute(locationParamString, defaultPage)
+            val data = getRecommendationForYouUseCase(GetRecommendationForYouUseCase.getParam(location = locationParamString, productPage = defaultPage))
             val visitableData =
-                HomeRecommendationMapper.mapToHomeRecommendationDataModel(data, TAB_DILAYANI_TOKOPEDIA, defaultPage)
-            if (data.products.isEmpty()) {
+                HomeRecommendationMapper.mapToHomeRecommendationDataModel(data.response, TAB_DILAYANI_TOKOPEDIA, defaultPage)
+            if (data.response.products.isEmpty()) {
                 _homeRecommendationLiveData.postValue(
                     HomeRecommendationDataModel(homeRecommendations = listOf(HomeRecommendationEmpty()))
                 )
@@ -58,8 +58,8 @@ class DtHomeRecommendationForYouViewModel @Inject constructor(
         _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list))
 
         launchCatchError(coroutineContext, block = {
-            val data = getRecommendationForYouUseCase.execute(locationParamString, page)
-            val visitableData = HomeRecommendationMapper.mapToHomeRecommendationDataModel(data, TAB_DILAYANI_TOKOPEDIA, page)
+            val data = getRecommendationForYouUseCase(GetRecommendationForYouUseCase.getParam(location = locationParamString, productPage = page))
+            val visitableData = HomeRecommendationMapper.mapToHomeRecommendationDataModel(data.response, TAB_DILAYANI_TOKOPEDIA, page)
             list.remove(loadMoreModel)
             list.addAll(visitableData.homeRecommendations)
             _homeRecommendationLiveData.postValue(visitableData.copy(homeRecommendations = list))
