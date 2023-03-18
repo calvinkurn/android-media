@@ -2,15 +2,16 @@ package com.tokopedia.dilayanitokopedia.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.recommendationforyou.HomeRecommendationMapper.TYPE_PRODUCT
-import com.tokopedia.dilayanitokopedia.home.domain.model.GetDtHomeRecommendationResponse
-import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeRecommendationProductV2
-import com.tokopedia.dilayanitokopedia.home.domain.model.Position
-import com.tokopedia.dilayanitokopedia.home.domain.model.Product
-import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetRecommendationForYouUseCase
-import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationDataModel
-import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationError
-import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationLoading
+import com.tokopedia.dilayanitokopedia.domain.mapper.recommendationforyou.HomeRecommendationMapper.TYPE_PRODUCT
+import com.tokopedia.dilayanitokopedia.domain.model.GetDtHomeRecommendationResponse
+import com.tokopedia.dilayanitokopedia.domain.model.GetHomeRecommendationProductV2
+import com.tokopedia.dilayanitokopedia.domain.model.Position
+import com.tokopedia.dilayanitokopedia.domain.model.Product
+import com.tokopedia.dilayanitokopedia.domain.usecase.GetRecommendationForYouUseCase
+import com.tokopedia.dilayanitokopedia.ui.recommendation.DtHomeRecommendationViewModel
+import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationDataModel
+import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationError
+import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationLoading
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -33,13 +34,13 @@ class DtHomeRecommendationForYouViewModelTest {
     private val homeRecommendationDataModelObserver =
         mockk<Observer<HomeRecommendationDataModel>>(relaxed = true)
 
-    lateinit var viewModel: DtHomeRecommendationForYouViewModel
+    lateinit var viewModel: DtHomeRecommendationViewModel
 
     private val mockThrowable = mockk<Throwable>(relaxed = true)
 
     @Before
     fun setup() {
-        viewModel = DtHomeRecommendationForYouViewModel(
+        viewModel = DtHomeRecommendationViewModel(
             dtGetRecommendationForYouUseCase,
             CoroutineTestDispatchersProvider
         )
