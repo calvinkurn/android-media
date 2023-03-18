@@ -1,10 +1,10 @@
-package com.tokopedia.dilayanitokopedia.home.domain.usecase
+package com.tokopedia.dilayanitokopedia.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.LocationParamMapper
-import com.tokopedia.dilayanitokopedia.home.domain.model.GetAnchorTabParam
-import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeAnchorTabResponse
+import com.tokopedia.dilayanitokopedia.domain.mapper.LocationParamMapper
+import com.tokopedia.dilayanitokopedia.domain.model.GetAnchorTabParam
+import com.tokopedia.dilayanitokopedia.domain.model.GetHomeAnchorTabResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

@@ -1,9 +1,9 @@
-package com.tokopedia.dilayanitokopedia.home.domain.usecase
+package com.tokopedia.dilayanitokopedia.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.dilayanitokopedia.home.domain.model.GetDtHomeRecommendationResponse
-import com.tokopedia.dilayanitokopedia.home.domain.model.GetRecomForYouDTParam
+import com.tokopedia.dilayanitokopedia.domain.model.GetDtHomeRecommendationResponse
+import com.tokopedia.dilayanitokopedia.domain.model.GetRecomForYouDTParam
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

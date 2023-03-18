@@ -2,9 +2,9 @@ package com.tokopedia.dilayanitokopedia.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.LocationParamMapper.mapLocation
-import com.tokopedia.dilayanitokopedia.home.domain.model.GetDtHomeLayoutParam
-import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeLayoutResponse
+import com.tokopedia.dilayanitokopedia.domain.mapper.LocationParamMapper.mapLocation
+import com.tokopedia.dilayanitokopedia.domain.model.GetDtHomeLayoutParam
+import com.tokopedia.dilayanitokopedia.domain.model.GetHomeLayoutResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

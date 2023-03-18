@@ -2,12 +2,12 @@ package com.tokopedia.dilayanitokopedia.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.dilayanitokopedia.domain.usecase.GetRecommendationForYouUseCase
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.recommendationforyou.HomeRecommendationMapper.TYPE_PRODUCT
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetDtHomeRecommendationResponse
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeRecommendationProductV2
 import com.tokopedia.dilayanitokopedia.home.domain.model.Position
 import com.tokopedia.dilayanitokopedia.home.domain.model.Product
-import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetRecommendationForYouUseCase
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationError
 import com.tokopedia.dilayanitokopedia.home.presentation.datamodel.recommendationforyou.HomeRecommendationLoading
