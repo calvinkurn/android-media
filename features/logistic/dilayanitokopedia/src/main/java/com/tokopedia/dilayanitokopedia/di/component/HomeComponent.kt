@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.dilayanitokopedia.di.module.HomeModule
 import com.tokopedia.dilayanitokopedia.di.module.HomeViewModelModule
 import com.tokopedia.dilayanitokopedia.di.scope.HomeScope
-import com.tokopedia.dilayanitokopedia.ui.home.presentation.fragment.DtHomeFragment
-import com.tokopedia.dilayanitokopedia.ui.home.presentation.fragment.DtHomeRecommendationForYouFragment
+import com.tokopedia.dilayanitokopedia.ui.home.DtHomeFragment
+import com.tokopedia.dilayanitokopedia.ui.recommendation.DtHomeRecommendationForYouFragment
 import dagger.Component
 
 /**

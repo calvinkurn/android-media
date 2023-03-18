@@ -2,7 +2,7 @@ package com.tokopedia.dilayanitokopedia.domain.mapper.widgets
 
 import androidx.annotation.VisibleForTesting
 import com.tokopedia.dilayanitokopedia.domain.model.GetHomeAnchorTabResponse
-import com.tokopedia.dilayanitokopedia.ui.home.presentation.uimodel.AnchorTabUiModel
+import com.tokopedia.dilayanitokopedia.ui.home.uimodel.AnchorTabUiModel
 import java.net.URLDecoder
 
 /**

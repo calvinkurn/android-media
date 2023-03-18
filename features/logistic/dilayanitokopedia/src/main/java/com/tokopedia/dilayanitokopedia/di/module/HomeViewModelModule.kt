@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.dilayanitokopedia.di.scope.HomeScope
-import com.tokopedia.dilayanitokopedia.ui.home.presentation.viewmodel.DtHomeRecommendationViewModel
-import com.tokopedia.dilayanitokopedia.ui.home.presentation.viewmodel.DtHomeViewModel
+import com.tokopedia.dilayanitokopedia.ui.recommendation.DtHomeRecommendationViewModel
+import com.tokopedia.dilayanitokopedia.ui.home.DtHomeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

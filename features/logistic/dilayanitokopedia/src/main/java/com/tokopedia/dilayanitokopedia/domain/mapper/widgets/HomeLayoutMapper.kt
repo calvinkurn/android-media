@@ -14,7 +14,7 @@ import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.LegoBannerMapper.ma
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.SliderBannerMapper.mapSliderBannerModel
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.TopCarouselMapper.mapTopCarouselModel
 import com.tokopedia.dilayanitokopedia.domain.model.HomeLayoutResponse
-import com.tokopedia.dilayanitokopedia.ui.home.presentation.uimodel.HomeLoadingStateUiModel
+import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLayoutItemUiModel
 
 object HomeLayoutMapper {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.dilayanitokopedia.ui.home.widget.ToggleableSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.dilayanitokopedia.common.view.widget.ToggleableSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_swipe_refresh_layout"
@@ -78,7 +78,7 @@
             app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
             tools:layout_height="200dp" />
 
-        <com.tokopedia.dilayanitokopedia.ui.home.presentation.view.NestedRecyclerView
+        <com.tokopedia.dilayanitokopedia.common.view.NestedRecyclerView
             android:id="@+id/rv_home"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -110,4 +110,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.tokopedia.dilayanitokopedia.ui.home.widget.ToggleableSwipeRefreshLayout>
+</com.tokopedia.dilayanitokopedia.common.view.widget.ToggleableSwipeRefreshLayout>

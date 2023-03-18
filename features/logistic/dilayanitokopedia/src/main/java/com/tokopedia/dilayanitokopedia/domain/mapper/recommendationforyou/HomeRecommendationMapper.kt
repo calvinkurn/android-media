@@ -3,9 +3,9 @@ package com.tokopedia.dilayanitokopedia.domain.mapper.recommendationforyou
 import androidx.annotation.VisibleForTesting
 import com.tokopedia.dilayanitokopedia.domain.model.GetHomeRecommendationProductV2
 import com.tokopedia.dilayanitokopedia.domain.model.Product
-import com.tokopedia.dilayanitokopedia.ui.home.presentation.datamodel.recommendationforyou.HomeRecommendationDataModel
-import com.tokopedia.dilayanitokopedia.ui.home.presentation.datamodel.recommendationforyou.HomeRecommendationItemDataModel
-import com.tokopedia.dilayanitokopedia.ui.home.presentation.uimodel.HomeRecommendationVisitable
+import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationDataModel
+import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationItemDataModel
+import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationVisitable
 import java.util.*
 
 object HomeRecommendationMapper {
