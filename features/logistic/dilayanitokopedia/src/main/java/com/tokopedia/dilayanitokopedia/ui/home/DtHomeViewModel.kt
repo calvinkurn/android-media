@@ -69,9 +69,9 @@ class DtHomeViewModel @Inject constructor(
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
-            val homeLayoutResponse = getLayoutDataUseCase.execute(localCacheModel = localCacheModel)
+            val homeLayoutResponse = getLayoutDataUseCase(GetLayoutDataUseCase.getParam(location = localCacheModel))
 
-            homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse)
+            homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse.response.data)
 
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
@@ -91,8 +91,8 @@ class DtHomeViewModel @Inject constructor(
     fun getAnchorTabMenu(localCacheModel: LocalCacheModel) {
         launchCatchError(
             block = {
-                val anchorTabResponse = getHomeAnchorTabUseCase.execute(localCacheModel)
-                anchorTabResponse.mapMenuList().apply {
+                val anchorTabResponse = getHomeAnchorTabUseCase(GetAnchorTabUseCase.getParam(localCacheModel))
+                anchorTabResponse.response.mapMenuList().apply {
                     menuList = this
                     _anchorTabState.postValue(Success(this))
                 }

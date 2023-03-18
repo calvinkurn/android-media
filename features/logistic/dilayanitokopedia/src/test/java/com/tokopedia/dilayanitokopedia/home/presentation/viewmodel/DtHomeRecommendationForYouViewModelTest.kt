@@ -3,6 +3,7 @@ package com.tokopedia.dilayanitokopedia.home.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.recommendationforyou.HomeRecommendationMapper.TYPE_PRODUCT
+import com.tokopedia.dilayanitokopedia.home.domain.model.GetDtHomeRecommendationResponse
 import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeRecommendationProductV2
 import com.tokopedia.dilayanitokopedia.home.domain.model.Position
 import com.tokopedia.dilayanitokopedia.home.domain.model.Product
@@ -49,14 +50,16 @@ class DtHomeRecommendationForYouViewModelTest {
     fun `verify when load initial page is empty`() {
         // Inject
         val mockResponse = spyk(
-            GetHomeRecommendationProductV2(
-                products = arrayListOf()
+            GetDtHomeRecommendationResponse(
+                GetHomeRecommendationProductV2(
+                    products = arrayListOf()
+                )
             )
         )
 
         // Given
         coEvery {
-            dtGetRecommendationForYouUseCase.execute(any() as String, any() as Int)
+            dtGetRecommendationForYouUseCase(any())
         } returns mockResponse
 
         // When
@@ -72,15 +75,17 @@ class DtHomeRecommendationForYouViewModelTest {
     fun `verify when load initial page have product`() {
         // Inject
         val mockResponse = spyk(
-            GetHomeRecommendationProductV2(
-                products = arrayListOf(
-                    spyk(
-                        Product()
-                    )
-                ),
-                positions = arrayListOf(
-                    Position(
-                        type = TYPE_PRODUCT
+            GetDtHomeRecommendationResponse(
+                GetHomeRecommendationProductV2(
+                    products = arrayListOf(
+                        spyk(
+                            Product()
+                        )
+                    ),
+                    positions = arrayListOf(
+                        Position(
+                            type = TYPE_PRODUCT
+                        )
                     )
                 )
             )
@@ -88,7 +93,7 @@ class DtHomeRecommendationForYouViewModelTest {
 
         // Given
         coEvery {
-            dtGetRecommendationForYouUseCase.execute(any() as String, any() as Int)
+            dtGetRecommendationForYouUseCase(any())
         } returns mockResponse
 
         // When
@@ -104,7 +109,7 @@ class DtHomeRecommendationForYouViewModelTest {
     fun `verify when load initial page is error`() {
         // Given
         coEvery {
-            dtGetRecommendationForYouUseCase.execute(any() as String, any() as Int)
+            dtGetRecommendationForYouUseCase(any())
         } throws mockThrowable
 
         // When
@@ -137,15 +142,17 @@ class DtHomeRecommendationForYouViewModelTest {
     fun `verify when load next data is correct`() {
         // Inject
         val mockResponse = spyk(
-            GetHomeRecommendationProductV2(
-                products = arrayListOf(
-                    spyk(
-                        Product()
-                    )
-                ),
-                positions = arrayListOf(
-                    Position(
-                        type = TYPE_PRODUCT
+            GetDtHomeRecommendationResponse(
+                GetHomeRecommendationProductV2(
+                    products = arrayListOf(
+                        spyk(
+                            Product()
+                        )
+                    ),
+                    positions = arrayListOf(
+                        Position(
+                            type = TYPE_PRODUCT
+                        )
                     )
                 )
             )
@@ -153,7 +160,7 @@ class DtHomeRecommendationForYouViewModelTest {
 
         // Given
         coEvery {
-            dtGetRecommendationForYouUseCase.execute(any() as String, any() as Int)
+            dtGetRecommendationForYouUseCase(any())
         } returns mockResponse
 
         // When
@@ -169,7 +176,7 @@ class DtHomeRecommendationForYouViewModelTest {
     fun `verify when load next data is error`() {
         // Given
         coEvery {
-            dtGetRecommendationForYouUseCase.execute(any() as String, any() as Int)
+            dtGetRecommendationForYouUseCase(any())
         } throws mockThrowable
 
         // When
@@ -185,15 +192,17 @@ class DtHomeRecommendationForYouViewModelTest {
     fun `verify when load next data after initial page is correct`() {
         // Inject
         val mockResponse = spyk(
-            GetHomeRecommendationProductV2(
-                products = arrayListOf(
-                    spyk(
-                        Product()
-                    )
-                ),
-                positions = arrayListOf(
-                    Position(
-                        type = TYPE_PRODUCT
+            GetDtHomeRecommendationResponse(
+                GetHomeRecommendationProductV2(
+                    products = arrayListOf(
+                        spyk(
+                            Product()
+                        )
+                    ),
+                    positions = arrayListOf(
+                        Position(
+                            type = TYPE_PRODUCT
+                        )
                     )
                 )
             )
@@ -201,7 +210,7 @@ class DtHomeRecommendationForYouViewModelTest {
 
         // Given
         coEvery {
-            dtGetRecommendationForYouUseCase.execute(any() as String, any() as Int)
+            dtGetRecommendationForYouUseCase(any())
         } returns mockResponse
 
         // When
@@ -218,7 +227,7 @@ class DtHomeRecommendationForYouViewModelTest {
     fun `verify when load next data after initial page is error`() {
         // Given
         coEvery {
-            dtGetRecommendationForYouUseCase.execute(any() as String, any() as Int)
+            dtGetRecommendationForYouUseCase(any())
         } throws mockThrowable
         viewModel.homeRecommendationLiveData.value = spyk(
             HomeRecommendationDataModel(

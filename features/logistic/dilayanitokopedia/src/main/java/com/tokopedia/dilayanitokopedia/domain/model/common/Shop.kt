@@ -1,6 +1,5 @@
 package com.tokopedia.dilayanitokopedia.domain.model.common
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -8,34 +7,26 @@ import com.google.gson.annotations.SerializedName
  */
 data class Shop(
     @SerializedName("applink")
-    @Expose
     val applink: String = "",
 
     @SerializedName("city")
-    @Expose
     val city: String = "",
 
     @SerializedName("domain")
-    @Expose
     val domain: String = "",
 
     @SerializedName("id")
-    @Expose
     val id: String = "",
 
     @SerializedName("imageUrl")
-    @Expose
     val imageUrl: String = "",
 
     @SerializedName("name")
-    @Expose
     val name: String = "",
 
     @SerializedName("reputation")
-    @Expose
     val reputation: String = "",
 
     @SerializedName("url")
-    @Expose
     val url: String = ""
 )

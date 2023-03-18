@@ -1,16 +1,13 @@
 package com.tokopedia.dilayanitokopedia.domain.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GetHomeAnchorTabResponse(
     @SerializedName("getHomeIconV2")
-    @Expose
     val response: GetHomeIconV2 = GetHomeIconV2()
 ) {
     data class GetHomeIconV2(
         @SerializedName("icons")
-        @Expose
         val icons: List<Icon> = listOf()
     ) {
         data class Icon(
