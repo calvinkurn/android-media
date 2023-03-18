@@ -1,4 +1,4 @@
-package com.tokopedia.dilayanitokopedia.ui.home.adapter.datamodel;
+package com.tokopedia.dilayanitokopedia.ui.home.adapter.uimodel;
 
 import android.os.Bundle;
 

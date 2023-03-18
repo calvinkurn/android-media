@@ -1,10 +1,10 @@
-package com.tokopedia.dilayanitokopedia.common.util
+package com.tokopedia.dilayanitokopedia.util
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import com.tokopedia.dilayanitokopedia.common.model.DtShareUniversalModel
+import com.tokopedia.dilayanitokopedia.ui.home.uimodel.DtShareUniversalUiModel
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -21,7 +21,7 @@ object DtUniversalShareUtil {
 
     private const val SHARE_LINK_DESCRIPTION = "Cek Dilayani Tokopedia! Belanja bebas ongkir dengan harga terbaik hanya di Tokopedia"
 
-    private fun linkerDataMapper(shareData: DtShareUniversalModel?): LinkerShareData {
+    private fun linkerDataMapper(shareData: DtShareUniversalUiModel?): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.id = shareData?.id.orEmpty()
         linkerData.name = shareData?.specificPageName.orEmpty()
@@ -42,7 +42,7 @@ object DtUniversalShareUtil {
         context?.startActivity(Intent.createChooser(share, shareTxt))
     }
 
-    fun shareRequest(context: Context?, shareData: DtShareUniversalModel?): LinkerShareRequest<*>? {
+    fun shareRequest(context: Context?, shareData: DtShareUniversalUiModel?): LinkerShareRequest<*>? {
         return LinkerUtils.createShareRequest(
             0,
             linkerDataMapper(shareData),
@@ -75,7 +75,7 @@ object DtUniversalShareUtil {
 
     fun shareOptionRequest(
         shareModel: ShareModel,
-        shareData: DtShareUniversalModel?,
+        shareData: DtShareUniversalUiModel?,
         activity: Activity?,
         view: View?,
         onSuccess: () -> Unit = {},

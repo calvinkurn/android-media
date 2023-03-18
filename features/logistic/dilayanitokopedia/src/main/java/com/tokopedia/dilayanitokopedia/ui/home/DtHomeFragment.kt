@@ -6,7 +6,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.dilayanitokopedia.di.component.DaggerHomeComponent
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -25,28 +24,29 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dilayanitokopedia.R
+import com.tokopedia.dilayanitokopedia.common.constant.AnchorTabStatus
 import com.tokopedia.dilayanitokopedia.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
-import com.tokopedia.dilayanitokopedia.common.model.DtShareUniversalModel
-import com.tokopedia.dilayanitokopedia.common.util.CustomLinearLayoutManager
-import com.tokopedia.dilayanitokopedia.common.util.DtUniversalShareUtil
+import com.tokopedia.dilayanitokopedia.common.view.CustomLinearLayoutManager
+import com.tokopedia.dilayanitokopedia.common.view.NestedRecyclerView
+import com.tokopedia.dilayanitokopedia.common.view.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.dilayanitokopedia.databinding.FragmentDtHomeBinding
-import com.tokopedia.dilayanitokopedia.ui.home.constant.AnchorTabStatus
+import com.tokopedia.dilayanitokopedia.di.component.DaggerHomeComponent
 import com.tokopedia.dilayanitokopedia.domain.model.Data
 import com.tokopedia.dilayanitokopedia.domain.model.SearchPlaceholder
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.DtAnchorTabAdapter
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.DtHomeAdapter
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.DtHomeAdapterTypeFactory
-import com.tokopedia.dilayanitokopedia.ui.home.adapter.differ.HomeListDiffer
+import com.tokopedia.dilayanitokopedia.ui.home.adapter.HomeListDiffer
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.listener.DtDynamicLegoBannerCallback
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.listener.DtHomeCategoryListener
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.listener.DtLeftCarouselCallback
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.listener.DtSlideBannerCallback
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.listener.DtTopCarouselCallback
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.AnchorTabUiModel
-import com.tokopedia.dilayanitokopedia.common.view.NestedRecyclerView
+import com.tokopedia.dilayanitokopedia.ui.home.uimodel.DtShareUniversalUiModel
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLayoutListUiModel
-import com.tokopedia.dilayanitokopedia.common.view.widget.ToggleableSwipeRefreshLayout
+import com.tokopedia.dilayanitokopedia.util.DtUniversalShareUtil
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
@@ -132,7 +132,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private var statusBarState = AnchorTabStatus.MAXIMIZE
 
-    private var shareHome = DtShareUniversalModel()
+    private var shareHome = DtShareUniversalUiModel()
     private var screenshotDetector: ScreenshotDetector? = null
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
@@ -156,7 +156,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 homeTopCarouselListener = createTopCarouselCallback(),
                 homeLeftCarouselListener = createLeftCarouselCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback()
-            ), differ = HomeListDiffer()
+            ),
+            differ = HomeListDiffer()
         )
     }
 
@@ -200,7 +201,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     // public function for possible hansel
     fun disableDtHomePage(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE, ""
+            RollenceKey.KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE,
+            ""
         ) == RollenceKey.KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE
     }
 
@@ -224,7 +226,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun initScreenSootListener() {
         context?.let {
             screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
-                context = it, screenShotListener = this, fragment = this, permissionListener = this
+                context = it,
+                screenShotListener = this,
+                fragment = this,
+                permissionListener = this
             )
         }
     }
@@ -255,7 +260,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 /**
                  * minimize when clicked anchor tab, exclude first position
                  */
-                if (statusBarState == com.tokopedia.dilayanitokopedia.ui.home.constant.AnchorTabStatus.MAXIMIZE) {
+                if (statusBarState == AnchorTabStatus.MAXIMIZE) {
                     setAnchorTabMinimize()
                 }
 
@@ -307,8 +312,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun setIconNewTopNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)).addIcon(
-                IconList.ID_SHARE, onClick = ::onClickShareButton, disableDefaultGtmTracker = true
-            ).addIcon(IconList.ID_CART) {}.addIcon(IconList.ID_NAV_GLOBAL) {}
+            IconList.ID_SHARE,
+            onClick = ::onClickShareButton,
+            disableDefaultGtmTracker = true
+        ).addIcon(IconList.ID_CART) {}.addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.setIcon(icons)
     }
 
@@ -318,7 +325,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             initHint(
                 SearchPlaceholder(
                     Data(
-                        null, context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty(), ""
+                        null,
+                        context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty(),
+                        ""
                     )
                 )
             )
@@ -332,28 +341,38 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun initHint(searchPlaceholder: SearchPlaceholder) {
         searchPlaceholder.data?.let { data ->
-            navToolbar?.setupSearchbar(hints = listOf(
-                HintData(
-                    data.placeholder ?: "", data.keyword ?: ""
-                )
-            ), applink = if (data.keyword?.isEmpty() != false) {
-                ApplinkConstInternalDiscovery.AUTOCOMPLETE
-            } else {
-                PARAM_APPLINK_AUTOCOMPLETE
-            }, searchbarClickCallback = { onSearchBarClick() }, searchbarImpressionCallback = {})
+            navToolbar?.setupSearchbar(
+                hints = listOf(
+                    HintData(
+                        data.placeholder ?: "",
+                        data.keyword ?: ""
+                    )
+                ),
+                applink = if (data.keyword?.isEmpty() != false) {
+                    ApplinkConstInternalDiscovery.AUTOCOMPLETE
+                } else {
+                    PARAM_APPLINK_AUTOCOMPLETE
+                },
+                searchbarClickCallback = { onSearchBarClick() }, searchbarImpressionCallback = {}
+            )
         }
     }
 
     private fun onClickShareButton() {
         updateShareHomeData(
-            pageIdConstituents = listOf(SHARE_LINK_PAGE_ID), isScreenShot = false, linkerType = SHARE_LINK_LINKER_TYPE
+            pageIdConstituents = listOf(SHARE_LINK_PAGE_ID),
+            isScreenShot = false,
+            linkerType = SHARE_LINK_LINKER_TYPE
         )
 
         shareClicked(shareHome)
     }
 
     private fun updateShareHomeData(
-        pageIdConstituents: List<String>, isScreenShot: Boolean, linkerType: String, id: String = ""
+        pageIdConstituents: List<String>,
+        isScreenShot: Boolean,
+        linkerType: String,
+        id: String = ""
     ) {
         shareHome.pageIdConstituents = pageIdConstituents
         shareHome.isScreenShot = isScreenShot
@@ -364,7 +383,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         shareHome.thumbNailImage = SHARE_LINK_THUMBNAIL_IMAGE
     }
 
-    private fun shareClicked(shareHomeTokonow: DtShareUniversalModel?) {
+    private fun shareClicked(shareHomeTokonow: DtShareUniversalUiModel?) {
         if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
             showUniversalShareBottomSheet(shareHomeTokonow)
         } else {
@@ -374,7 +393,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         }
     }
 
-    private fun showUniversalShareBottomSheet(shareHomeDt: DtShareUniversalModel?) {
+    private fun showUniversalShareBottomSheet(shareHomeDt: DtShareUniversalUiModel?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@DtHomeFragment)
             setUtmCampaignData(
@@ -385,7 +404,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
             )
 
             setMetaData(
-                tnTitle = shareHomeDt?.thumbNailTitle.orEmpty(), tnImage = shareHomeDt?.thumbNailImage.orEmpty()
+                tnTitle = shareHomeDt?.thumbNailTitle.orEmpty(),
+                tnImage = shareHomeDt?.thumbNailImage.orEmpty()
             )
             // set the Image Url of the Image that represents page
             setOgImageUrl(SHARE_LINK_OG_IMAGE)
@@ -395,13 +415,15 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        DtUniversalShareUtil.shareOptionRequest(shareModel = shareModel,
+        DtUniversalShareUtil.shareOptionRequest(
+            shareModel = shareModel,
             shareData = shareHome,
             activity = activity,
             view = view,
             onSuccess = {
                 universalShareBottomSheet?.dismiss()
-            })
+            }
+        )
     }
 
     override fun onCloseOptionClicked() {
@@ -544,7 +566,10 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun onSearchBarClick() {
         RouteManager.route(
-            context, getAutoCompleteApplinkPattern(), SOURCE, context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty()
+            context,
+            getAutoCompleteApplinkPattern(),
+            SOURCE,
+            context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty()
         )
     }
 
@@ -567,7 +592,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         localCacheModel?.let { lca ->
             context?.let { context ->
                 return ChooseAddressUtils.isLocalizingAddressHasUpdated(
-                    context, lca
+                    context,
+                    lca
                 )
             }
         }
@@ -577,7 +603,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     private fun createTopComponentCallback(): HomeComponentListener? {
         return object : HomeComponentListener {
             override fun onChannelExpired(
-                channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>
+                channelModel: ChannelModel,
+                channelPosition: Int,
+                visitable: Visitable<*>
             ) {
                 // no-op
             }
@@ -673,10 +701,12 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
             chooseAddressWidget?.let { chooseAddressWidget ->
                 context?.getString(R.string.dt_home_choose_address_widget_coachmark_title)?.let { title ->
-                        CoachMark2Item(
-                            chooseAddressWidget, title, getString(R.string.dt_home_choose_address_widget_coachmark_description)
-                        )
-                    }
+                    CoachMark2Item(
+                        chooseAddressWidget,
+                        title,
+                        getString(R.string.dt_home_choose_address_widget_coachmark_description)
+                    )
+                }
             }
         } else {
             return null
@@ -693,7 +723,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                  *  minimize when scroll down
                  */
                 if (dy >= 0) {
-                    if (statusBarState == com.tokopedia.dilayanitokopedia.ui.home.constant.AnchorTabStatus.MAXIMIZE && recyclerView.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    if (statusBarState == AnchorTabStatus.MAXIMIZE && recyclerView.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
                         setAnchorTabMinimize()
                     }
                 }
@@ -711,7 +741,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 /**
                  *  maximize anchor when reach top
                  */
-                if (!recyclerView.canScrollVertically(-1) && statusBarState == com.tokopedia.dilayanitokopedia.ui.home.constant.AnchorTabStatus.MINIMIZE && newState == 0) {
+                if (!recyclerView.canScrollVertically(-1) && statusBarState == AnchorTabStatus.MINIMIZE && newState == 0) {
                     setAnchorTabMaximize()
                 }
             }
@@ -804,7 +834,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         binding?.chooseAddressWidget?.setBackgroundColor(transparentColor)
         binding?.dtViewBackgroundImage?.visible()
 
-        statusBarState = com.tokopedia.dilayanitokopedia.ui.home.constant.AnchorTabStatus.MAXIMIZE
+        statusBarState = AnchorTabStatus.MAXIMIZE
     }
 
     private fun setAnchorTabMinimize() {
@@ -816,13 +846,15 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
         binding?.headerCompHolder?.setBackgroundColor(whiteColor)
         binding?.chooseAddressWidget?.setBackgroundColor(whiteColor)
         binding?.dtViewBackgroundImage?.gone()
-        statusBarState = com.tokopedia.dilayanitokopedia.ui.home.constant.AnchorTabStatus.MINIMIZE
+        statusBarState = AnchorTabStatus.MINIMIZE
     }
 
     private fun showHeaderBackground() {
         context?.resources?.apply {
             val background = VectorDrawableCompat.create(
-                this, R.drawable.dt_ic_header_background, context?.theme
+                this,
+                R.drawable.dt_ic_header_background,
+                context?.theme
             )
             ivHeaderBackground?.setImageDrawable(background)
             ivHeaderBackground?.show()
@@ -831,7 +863,9 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     override fun screenShotTaken() {
         updateShareHomeData(
-            pageIdConstituents = listOf(SHARE_LINK_PAGE_ID), isScreenShot = false, linkerType = SHARE_LINK_LINKER_TYPE
+            pageIdConstituents = listOf(SHARE_LINK_PAGE_ID),
+            isScreenShot = false,
+            linkerType = SHARE_LINK_LINKER_TYPE
         )
 
         showUniversalShareBottomSheet(shareHome)

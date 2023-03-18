@@ -10,9 +10,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.dilayanitokopedia.databinding.DtHomeRecommendationViewholderBinding
 import com.tokopedia.dilayanitokopedia.ui.home.DtHomeActivity
-import com.tokopedia.dilayanitokopedia.ui.home.adapter.datamodel.HomeRecommendationFeedDataModel
-import com.tokopedia.dilayanitokopedia.ui.recommendation.DtHomeRecommendationForYouFragment
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.listener.DtHomeCategoryListener
+import com.tokopedia.dilayanitokopedia.ui.home.adapter.uimodel.HomeRecommendationFeedDataModel
+import com.tokopedia.dilayanitokopedia.ui.recommendation.DtHomeRecommendationForYouFragment
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.utils.view.binding.viewBinding
 

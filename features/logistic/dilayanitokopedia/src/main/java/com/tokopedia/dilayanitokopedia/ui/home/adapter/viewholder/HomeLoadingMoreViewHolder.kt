@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.dilayanitokopedia.R
-import com.tokopedia.dilayanitokopedia.ui.home.adapter.datamodel.HomeLoadingMoreModel
+import com.tokopedia.dilayanitokopedia.ui.home.adapter.uimodel.HomeLoadingMoreModel
 
 class HomeLoadingMoreViewHolder(itemView: View) : AbstractViewHolder<HomeLoadingMoreModel>(itemView) {
 

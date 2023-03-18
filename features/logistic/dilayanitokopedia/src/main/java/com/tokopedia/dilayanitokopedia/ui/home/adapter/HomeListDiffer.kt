@@ -1,4 +1,4 @@
-package com.tokopedia.dilayanitokopedia.ui.home.adapter.differ
+package com.tokopedia.dilayanitokopedia.ui.home.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.dilayanitokopedia.common.view.adapter.base.BaseDtDiffer

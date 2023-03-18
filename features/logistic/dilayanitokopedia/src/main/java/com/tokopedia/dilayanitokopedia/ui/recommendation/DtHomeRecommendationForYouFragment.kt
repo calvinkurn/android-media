@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.dilayanitokopedia.di.component.DaggerHomeComponent
+import com.tokopedia.dilayanitokopedia.ui.home.adapter.viewholder.HomeRecommendationFeedViewHolder
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.HomeFeedEndlessScrollListener
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.HomeFeedItemDecoration
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.HomeRecommendationForYouAdapter
@@ -25,7 +26,6 @@ import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeR
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationDataModel
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationItemDataModel
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.factory.HomeRecommendationTypeFactoryImpl
-import com.tokopedia.dilayanitokopedia.ui.home.adapter.viewholder.HomeRecommendationFeedViewHolder
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -236,7 +236,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
     }
 
     private fun getLocationParamString(): String {
-        return ChooseAddressUtils.getLocalizingAddressData(requireContext()).convertToLocationParams() ?: ""
+        return ChooseAddressUtils.getLocalizingAddressData(requireContext()).convertToLocationParams()
     }
 
     private fun updateScrollEndlessListener(hasNextPage: Boolean) {

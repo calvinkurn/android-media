@@ -1,6 +1,6 @@
 package com.tokopedia.dilayanitokopedia.domain.mapper.widgets
 
-import com.tokopedia.dilayanitokopedia.ui.home.constant.HomeLayoutItemState
+import com.tokopedia.dilayanitokopedia.common.constant.HomeLayoutItemState
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.ChannelMapper.mapToChannelModel
 import com.tokopedia.dilayanitokopedia.domain.model.HomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLayoutItemUiModel
@@ -16,5 +16,4 @@ object LeftCarouselMapper {
         val mixLeftDataModel = MixLeftDataModel(channelModel)
         return HomeLayoutItemUiModel(mixLeftDataModel, state, response.groupId)
     }
-
 }

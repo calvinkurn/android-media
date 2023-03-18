@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType
+import com.tokopedia.dilayanitokopedia.common.constant.HomeLayoutItemState
+import com.tokopedia.dilayanitokopedia.common.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.AnchorTabMapper.KEYWOARD_CHANNEL_GROUP_ID
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.AnchorTabMapper.KEY_ANCHOR_IDENTIFIER
 import com.tokopedia.dilayanitokopedia.domain.model.DynamicHomeChannelResponse
@@ -13,8 +15,6 @@ import com.tokopedia.dilayanitokopedia.domain.model.HomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.domain.usecase.GetAnchorTabUseCase
 import com.tokopedia.dilayanitokopedia.domain.usecase.GetLayoutDataUseCase
 import com.tokopedia.dilayanitokopedia.ui.home.DtHomeViewModel
-import com.tokopedia.dilayanitokopedia.ui.home.constant.HomeLayoutItemState
-import com.tokopedia.dilayanitokopedia.ui.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLayoutListUiModel
@@ -281,11 +281,11 @@ class DtHomeViewModelTest {
     @Test
     fun `verify function loadLayout is correctly`() {
         // Inject
-        val loadingLayout = HomeLoadingStateUiModel(id = com.tokopedia.dilayanitokopedia.ui.home.constant.HomeStaticLayoutId.LOADING_STATE)
+        val loadingLayout = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
         val data = HomeLayoutListUiModel(
             items = HomeLayoutItemUiModel(
                 loadingLayout,
-                com.tokopedia.dilayanitokopedia.ui.home.constant.HomeLayoutItemState.LOADED,
+                HomeLayoutItemState.LOADED,
                 null
             ).layout?.let {
                 listOf(it)

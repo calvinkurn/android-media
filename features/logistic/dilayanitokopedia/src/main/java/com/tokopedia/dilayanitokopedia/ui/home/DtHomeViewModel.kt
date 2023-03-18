@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
-import com.tokopedia.dilayanitokopedia.ui.home.constant.HomeLayoutItemState
+import com.tokopedia.dilayanitokopedia.common.constant.HomeLayoutItemState
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.AnchorTabMapper.mapMenuList
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.dilayanitokopedia.domain.usecase.GetAnchorTabUseCase
 import com.tokopedia.dilayanitokopedia.domain.usecase.GetLayoutDataUseCase
-import com.tokopedia.dilayanitokopedia.ui.home.adapter.datamodel.HomeRecommendationFeedDataModel
+import com.tokopedia.dilayanitokopedia.ui.home.adapter.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLayoutListUiModel

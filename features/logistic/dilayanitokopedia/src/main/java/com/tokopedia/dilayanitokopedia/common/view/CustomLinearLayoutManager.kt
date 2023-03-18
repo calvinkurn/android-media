@@ -1,4 +1,4 @@
-package com.tokopedia.dilayanitokopedia.common.util
+package com.tokopedia.dilayanitokopedia.common.view
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager

@@ -6,16 +6,16 @@ import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.LE
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.LOADING_RECOMMENDATION_FEED
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.MIX_TOP_CAROUSEL
-import com.tokopedia.dilayanitokopedia.ui.home.constant.HomeLayoutItemState
-import com.tokopedia.dilayanitokopedia.ui.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
+import com.tokopedia.dilayanitokopedia.common.constant.HomeLayoutItemState
+import com.tokopedia.dilayanitokopedia.common.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.FeaturedShopMapper.mapToFeaturedShop
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.LeftCarouselMapper.mapToLeftCarousel
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.LegoBannerMapper.mapLegoBannerDataModel
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.SliderBannerMapper.mapSliderBannerModel
 import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.TopCarouselMapper.mapTopCarouselModel
 import com.tokopedia.dilayanitokopedia.domain.model.HomeLayoutResponse
-import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLayoutItemUiModel
+import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLoadingStateUiModel
 
 object HomeLayoutMapper {
 
@@ -54,8 +54,8 @@ object HomeLayoutMapper {
     private fun mapToHomeUiModel(
         response: HomeLayoutResponse
     ): HomeLayoutItemUiModel? {
-        val loadedState = com.tokopedia.dilayanitokopedia.ui.home.constant.HomeLayoutItemState.LOADED
-        val notLoadedState = com.tokopedia.dilayanitokopedia.ui.home.constant.HomeLayoutItemState.NOT_LOADED
+        val loadedState = HomeLayoutItemState.LOADED
+        val notLoadedState = HomeLayoutItemState.NOT_LOADED
 
         return when (response.layout) {
             // Layout content data already returned from dynamic channel query, set state to loaded.
@@ -77,7 +77,7 @@ object HomeLayoutMapper {
         add(
             HomeLayoutItemUiModel(
                 loadingLayout,
-                com.tokopedia.dilayanitokopedia.ui.home.constant.HomeLayoutItemState.LOADED,
+                HomeLayoutItemState.LOADED,
                 null
             )
         )

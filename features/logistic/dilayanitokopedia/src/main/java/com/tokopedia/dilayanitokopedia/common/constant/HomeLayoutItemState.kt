@@ -1,4 +1,4 @@
-package com.tokopedia.dilayanitokopedia.ui.home.constant
+package com.tokopedia.dilayanitokopedia.common.constant
 
 /**
  * Created by irpan on 12/09/22.

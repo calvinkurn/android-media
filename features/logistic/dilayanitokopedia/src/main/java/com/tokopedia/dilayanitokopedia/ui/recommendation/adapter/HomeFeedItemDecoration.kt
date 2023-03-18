@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.dilayanitokopedia.ui.recommendation.viewholder.HomeRecommendationItemViewHolder
+import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.viewholder.HomeRecommendationItemViewHolder
 
 class HomeFeedItemDecoration(private val spacing: Int) : RecyclerView.ItemDecoration() {
 

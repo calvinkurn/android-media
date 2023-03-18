@@ -1,4 +1,4 @@
-package com.tokopedia.dilayanitokopedia.ui.recommendation.viewholder
+package com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.viewholder
 
 import android.content.Context
 import android.view.View

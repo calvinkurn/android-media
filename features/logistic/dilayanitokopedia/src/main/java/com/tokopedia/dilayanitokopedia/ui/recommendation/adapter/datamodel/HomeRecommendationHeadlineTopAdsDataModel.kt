@@ -15,7 +15,7 @@ data class HomeRecommendationHeadlineTopAdsDataModel(
     }
 
     override fun getUniqueIdentity(): Any {
-        return headlineAds.data?.firstOrNull()?.id ?: ""
+        return headlineAds.data.firstOrNull()?.id ?: ""
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

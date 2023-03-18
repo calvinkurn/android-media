@@ -1,4 +1,4 @@
-package com.tokopedia.dilayanitokopedia.ui.recommendation.viewholder
+package com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.viewholder
 
 import android.graphics.drawable.Drawable
 import android.view.View

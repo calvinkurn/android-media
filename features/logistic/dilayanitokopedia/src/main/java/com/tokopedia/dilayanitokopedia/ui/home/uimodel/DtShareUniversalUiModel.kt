@@ -1,6 +1,6 @@
-package com.tokopedia.dilayanitokopedia.common.model
+package com.tokopedia.dilayanitokopedia.ui.home.uimodel
 
-data class DtShareUniversalModel(
+data class DtShareUniversalUiModel(
     var id: String = "",
     var sharingText: String = "",
     var sharingUrl: String = "",
