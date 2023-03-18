@@ -1,7 +1,7 @@
 package com.tokopedia.dilayanitokopedia.ui.home.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.dilayanitokopedia.common.base.adapter.BaseDtListAdapter
+import com.tokopedia.dilayanitokopedia.common.view.adapter.base.BaseDtListAdapter
 import com.tokopedia.dilayanitokopedia.ui.home.adapter.differ.HomeListDiffer
 
 class DtHomeAdapter(

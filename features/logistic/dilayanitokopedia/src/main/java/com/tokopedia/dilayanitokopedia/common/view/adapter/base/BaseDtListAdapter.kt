@@ -1,4 +1,4 @@
-package com.tokopedia.dilayanitokopedia.common.base.adapter
+package com.tokopedia.dilayanitokopedia.common.view.adapter.base
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable

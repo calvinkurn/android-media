@@ -1,7 +1,7 @@
 package com.tokopedia.dilayanitokopedia.ui.home.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.dilayanitokopedia.common.base.adapter.BaseDtDiffer
+import com.tokopedia.dilayanitokopedia.common.view.adapter.base.BaseDtDiffer
 
 class HomeListDiffer : BaseDtDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
