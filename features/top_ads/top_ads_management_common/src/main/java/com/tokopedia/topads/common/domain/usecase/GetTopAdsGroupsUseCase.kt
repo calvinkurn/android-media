@@ -84,6 +84,8 @@ const val TOP_ADS_GROUPS_GQL = """
           total_keyword
           group_price_daily
           group_price_daily_spent_fmt
+          stat_total_impression
+          stat_total_top_slot_impression
         }
         errors{
           code

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -17,9 +16,12 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tampil"
-            style="@style/CardView.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/topads_common_tampil"
+            app:typographyType="small"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toStartOf="@id/klik"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -37,110 +39,142 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tampil_count"
-            style="@style/CardView.CountView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             app:layout_constraintEnd_toStartOf="@id/klik_count"
             app:layout_constraintStart_toStartOf="@id/tampil"
             app:layout_constraintTop_toBottomOf="@id/tampil"
-            android:text="---"
-            tools:text="0"/>
+            tools:text="0"
+            app:typographyType="paragraph_3" 
+            android:textColor="@color/Unify_NN950"
+            app:typographyWeight="bold"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/pendapatan"
-            style="@style/CardView.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/topads_common_pendapatan"
-            app:layout_constraintEnd_toStartOf="@id/efektivitas_iklan"
-            app:layout_constraintStart_toEndOf="@id/pengeluaran"
-            app:layout_constraintTop_toBottomOf="@id/klik_count" />
+            app:typographyType="small"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintEnd_toStartOf="@id/pengeluaran"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tampil_count" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/pendapatan_count"
-            style="@style/CardView.CountView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             app:layout_constraintEnd_toStartOf="@id/efektivitas_iklan_count"
             app:layout_constraintStart_toEndOf="@id/pengeluaran_count"
             app:layout_constraintTop_toBottomOf="@id/pendapatan"
             tools:text="Rp 0"
-            android:text="-----"/>
+            app:typographyType="paragraph_3" 
+            android:textColor="@color/Unify_NN950"
+            app:typographyWeight="bold"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/klik"
-            style="@style/CardView.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/topads_common_klik"
+            app:typographyType="small"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toStartOf="@id/total_terjual"
             app:layout_constraintStart_toEndOf="@id/tampil"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/klik_count"
-            style="@style/CardView.CountView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toStartOf="@id/total_terjual_count"
             app:layout_constraintStart_toEndOf="@id/tampil_count"
             app:layout_constraintTop_toBottomOf="@id/klik"
-            android:text="---"
-            tools:text="0"/>
+            tools:text="0"
+            app:typographyType="paragraph_3" 
+            android:textColor="@color/Unify_NN950"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/pengeluaran"
-            style="@style/CardView.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="start"
             android:text="@string/topads_common_pengeluaran"
-            app:layout_constraintEnd_toStartOf="@id/pendapatan"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tampil_count" />
+            app:typographyType="small"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintEnd_toStartOf="@id/efektivitas_iklan"
+            app:layout_constraintStart_toEndOf="@id/pendapatan"
+            app:layout_constraintTop_toBottomOf="@id/klik_count" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/pengeluaran_count"
-            style="@style/CardView.CountView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             app:layout_constraintEnd_toStartOf="@id/pendapatan_count"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pengeluaran"
             tools:text="Rp 0"
-            android:text="-----"/>
+            app:typographyType="paragraph_3" 
+            android:textColor="@color/Unify_NN950"
+            app:typographyWeight="bold"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/total_terjual"
-            style="@style/CardView.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="@string/topads_common_total_sold"
+            app:typographyType="small"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/klik"
             app:layout_constraintTop_toBottomOf="@id/klik_count"
             app:layout_constraintTop_toTopOf="@id/tampil"
-            tools:text="Persentase Klik" />
+            tools:text="Total Terjual" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/total_terjual_count"
-            style="@style/CardView.CountView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/klik_count"
             app:layout_constraintTop_toBottomOf="@id/pendapatan"
             app:layout_constraintTop_toTopOf="@id/tampil_count"
             tools:text="0.00 %"
-            android:text="----"/>
+            app:typographyType="paragraph_3" 
+            android:textColor="@color/Unify_NN950"
+            app:typographyWeight="bold"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/efektivitas_iklan"
-            style="@style/CardView.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/topads_common_efektivitas_iklan"
+            app:typographyType="small"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/pendapatan"
-            app:layout_constraintTop_toBottomOf="@id/klik_count"
-            app:layout_constraintTop_toTopOf="@id/pengeluaran" />
+            app:layout_constraintStart_toEndOf="@id/pengeluaran"
+            app:layout_constraintTop_toBottomOf="@id/total_terjual_count" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/efektivitas_iklan_count"
-            style="@style/CardView.CountView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/pendapatan_count"
             app:layout_constraintTop_toTopOf="@id/pengeluaran_count"
             tools:text="0"
-            android:text="------"/>
+            app:typographyType="paragraph_3" 
+            android:textColor="@color/Unify_NN950"
+            app:typographyWeight="bold"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

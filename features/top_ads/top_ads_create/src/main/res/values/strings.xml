@@ -212,7 +212,23 @@
     <string name="ad_groups_character_limit_error_msg">Grup iklan maksimal 70 karakter</string>
     <string name="see_ads_performance_tips_heading">Tips optimalkan iklan</string>
     <string name="keywords">Kata Kunci</string>
-    <string name="see_ads_performance_tips_description"><![CDATA[
+    <string name="topads_ads_performance_performa_tampil">Performa tampil</string>
+    <string name="topads_ads_performance_top_frequently">Sering Teratas</string>
+    <string name="topads_ads_performance_top_rarity">Jarang Teratas</string>
+    <string name="topads_ads_performance_lose_competition">Kalah Saing</string>
+    <string name="topads_ads_performance_not_rated">Belum Dinilai</string>
+    <string name="topads_ads_performance_count">%sx teratas dari %s total tampil</string>
+    <string name="topads_ads_performance_status_info_title">Kenapa iklanmu tidak tampil?</string>
+    <string name="topads_ads_performance_status_info_description"><![CDATA[
+        <ul>
+            <li>&nbsp;&nbsp;Kredit TopAds tidak mencukupi</li>
+            <li>&nbsp;&nbsp;Anggaran Harian mencapai batas maksimal</li>
+            <li>&nbsp;&nbsp;Stok produk kosong</li>
+            <li>&nbsp;&nbsp;Toko sedang tutup</li>
+            <li>&nbsp;Biaya iklan di bawah batas minimum</li>
+        </ul>
+]]></string>
+    <string name="topads_ads_performance_tips_description"><![CDATA[
     Buat produk lebih dikenal pembeli:
     <p>
         <ul>

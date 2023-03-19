@@ -110,6 +110,7 @@
     <string name="label_credit_history">Riwayat Kredit</string>
     <string name="label_topads_automatic_topup">Tambah Kredit Otomatis</string>
     <string name="topads_active">Aktif</string>
+    <string name="topads_non_active">Nonaktif</string>
     <string name="label_credit_addition">Total Penambahan</string>
     <string name="label_credit_used">Total Terpakai</string>
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
@@ -189,6 +190,7 @@
     <string name="topads_dash_filter_sheet_title">Filter dan Urutkan</string>
     <string name="topads_dash_tidak_tampil">Tidak Tampil</string>
     <string name="topads_dash_tidak_active">Tidak Aktif</string>
+    <string name="topads_dalam_proses">Dalam Proses</string>
     <string name="topads_dash_tampil_terbanyak">Tampil terbanyak</string>
     <string name="topads_dash_klik_terbanyak">Klik terbanyak</string>
     <string name="topads_dash_follow_terbanyak">Follow terbanyak</string>

@@ -10,12 +10,18 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.model.AdGroupsParams
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.Deposit
+import com.tokopedia.topads.common.data.response.SingleAdInFo
 import com.tokopedia.topads.common.data.response.TopAdsGroupsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.ProductStatisticsResponse
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.model.TopAdsGetProductManage
 import com.tokopedia.topads.common.domain.model.TopAdsGetShopInfo
-import com.tokopedia.topads.common.domain.usecase.*
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetProductManageUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetShopInfoV1UseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetAutoAdsUseCase
+import com.tokopedia.topads.common.domain.usecase.GetTopadsDashboardGroups
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -50,11 +56,12 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         MutableLiveData()
     val topAdsGetAutoAds: LiveData<AutoAdsResponse.TopAdsGetAutoAds> = _topAdsGetAutoAds
 
+    private val _topAdsPromoInfo: MutableLiveData<SingleAdInFo> =
+        MutableLiveData()
+    val topAdsPromoInfo: LiveData<SingleAdInFo> = _topAdsPromoInfo
+
     private val _adId: MutableLiveData<String> = MutableLiveData()
     val adId: LiveData<String> = _adId
-
-    private val _groupId: MutableLiveData<String> = MutableLiveData()
-    val groupId: LiveData<String> = _groupId
 
     private val _isSingleAds: MutableLiveData<Boolean> = MutableLiveData()
     val isSingleAds: LiveData<Boolean> = _isSingleAds
@@ -98,13 +105,12 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         }
     }
 
-    fun getGroupId() {
+    fun getPromoInfo() {
         topAdsGetGroupIdUseCase.setParams(adId.value ?: "", userSession.shopId)
         topAdsGetGroupIdUseCase.execute({
-            _groupId.value = it.topAdsGetPromo.data[0].groupID
+            _topAdsPromoInfo.value = it
             checkIsSingleAds()
         }, {
-            _groupId.value = null
             it.printStackTrace()
         })
     }
@@ -140,7 +146,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
             mapOf(
                 PARAM_KEY to AdGroupsParams(
                     shopId = userSession.shopId,
-                    groupId = _groupId.value ?: ""
+                    groupId = _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID ?: ""
                 )
             )
         )
@@ -156,7 +162,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     }
 
     fun checkIsSingleAds() {
-        _isSingleAds.value = _adId.value != "0" && (_groupId.value == null || _groupId.value == "0")
+        _isSingleAds.value = _adId.value != "0" && (_topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == null || _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == "0")
     }
 
     fun getAutoAdsInfo(
