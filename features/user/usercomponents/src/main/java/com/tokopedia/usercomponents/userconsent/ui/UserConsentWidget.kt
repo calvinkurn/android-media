@@ -5,6 +5,7 @@ import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
@@ -28,6 +29,7 @@ import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.NO_CHECK
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.OPTIONAL
 import com.tokopedia.usercomponents.userconsent.common.UserConsentType.*
 import com.tokopedia.usercomponents.userconsent.di.DaggerUserConsentComponent
+import com.tokopedia.usercomponents.userconsent.di.UserConsentComponent
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionParam
 import com.tokopedia.usercomponents.userconsent.domain.submission.ConsentSubmissionResponse
@@ -36,10 +38,10 @@ import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeAda
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeViewHolder
 import javax.inject.Inject
 
-class UserConsentWidget : FrameLayout,
+class UserConsentWidget :
+    FrameLayout,
     UserConsentPurposeViewHolder.UserConsentPurposeListener,
-    UserConsentDescriptionDelegate
-{
+    UserConsentDescriptionDelegate {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -82,11 +84,11 @@ class UserConsentWidget : FrameLayout,
         setupView()
     }
 
-    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet) {
+    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
         setupView(attributeSet)
     }
 
-    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int): super(context, attributeSet, defStyleAttr) {
+    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr) {
         setupView(attributeSet)
     }
 
@@ -129,7 +131,7 @@ class UserConsentWidget : FrameLayout,
                     Purpose(
                         purposeID = it.id,
                         transactionType = CONSENT_OPT_IN,
-                        version = it.version,
+                        version = it.version
                     )
                 )
             }
@@ -139,10 +141,15 @@ class UserConsentWidget : FrameLayout,
 
     private fun initInjector() {
         context?.let {
-            DaggerUserConsentComponent.builder()
-                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            if (userConsentComponent == null) {
+                DaggerUserConsentComponent.builder()
+                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                    .build()
+                    .inject(this)
+            } else {
+                // Only for instrument test
+                userConsentComponent?.inject(this)
+            }
         }
     }
 
@@ -155,7 +162,7 @@ class UserConsentWidget : FrameLayout,
         )
 
         val consentType = typedArray.getInt(R.styleable.UserConsentWidget_defaultTemplate, -1)
-        defaultTemplate = when(consentType.toString()) {
+        defaultTemplate = when (consentType.toString()) {
             TNC_MANDATORY.value -> TNC_MANDATORY
             TNC_PRIVACY_MANDATORY.value -> TNC_PRIVACY_MANDATORY
             TNC_OPTIONAL.value -> TNC_OPTIONAL
@@ -175,7 +182,7 @@ class UserConsentWidget : FrameLayout,
     private fun initObserver() {
         lifecycleOwner?.let {
             viewModel?.consentCollection?.observe(it) { result ->
-                when(result) {
+                when (result) {
                     is UserComponentsStateResult.Loading -> {
                         setLoader(true)
                     }
@@ -236,11 +243,13 @@ class UserConsentWidget : FrameLayout,
         } else {
             val purposes: MutableList<UserConsentPayload.PurposeDataModel> = mutableListOf()
             collection?.purposes?.forEach {
-                purposes.add(UserConsentPayload.PurposeDataModel(
-                    it.id,
-                    it.version,
-                    collection?.consentType.orEmpty()
-                ))
+                purposes.add(
+                    UserConsentPayload.PurposeDataModel(
+                        it.id,
+                        it.version,
+                        collection?.consentType.orEmpty()
+                    )
+                )
             }
             UserConsentPayload(
                 identifier = consentCollectionParam?.identifier.orEmpty(),
@@ -259,7 +268,7 @@ class UserConsentWidget : FrameLayout,
             }
 
             collection?.attributes?.collectionPointPurposeRequirement == OPTIONAL &&
-            collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST -> {
+                collection?.attributes?.collectionPointStatementOnlyFlag == CHECKLIST -> {
                 renderMultiplePurpose()
             }
         }
@@ -271,7 +280,7 @@ class UserConsentWidget : FrameLayout,
             purposeText = collection?.purposes?.first()?.attribute?.uiName.orEmpty()
         } else {
             collection?.purposes?.forEachIndexed { index, purposeDataModel ->
-                purposeText += when(index) {
+                purposeText += when (index) {
                     (collection?.purposes?.size.orZero() - NUMBER_ONE) -> {
                         " & ${purposeDataModel.attribute.uiName}"
                     }
@@ -330,7 +339,7 @@ class UserConsentWidget : FrameLayout,
             consentError.hide()
 
             singleConsent.apply {
-                when(consentType) {
+                when (consentType) {
                     TNC_MANDATORY -> {
                         iconMandatoryInfo.hide()
                         checkboxPurposes.show()
@@ -396,7 +405,7 @@ class UserConsentWidget : FrameLayout,
 
     override fun onCheckedChange(
         isChecked: Boolean,
-        purposeDataModel: PurposeDataModel,
+        purposeDataModel: PurposeDataModel
     ) {
         onCheckedChangeListener.invoke(isChecked)
         userConsentAnalytics.trackOnPurposeCheckOnOptional(isChecked, purposeDataModel)
@@ -502,5 +511,12 @@ class UserConsentWidget : FrameLayout,
     companion object {
         private const val NUMBER_ONE = 1
         private const val NUMBER_TWO = 2
+
+        private var userConsentComponent: UserConsentComponent? = null
+
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        fun setUserConsentComponent(component: UserConsentComponent) {
+            userConsentComponent = component
+        }
     }
 }

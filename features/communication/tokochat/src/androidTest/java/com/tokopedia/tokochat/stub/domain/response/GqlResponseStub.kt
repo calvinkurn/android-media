@@ -3,6 +3,7 @@ package com.tokopedia.tokochat.stub.domain.response
 import com.tokopedia.tokochat.domain.response.background.TokoChatBackgroundResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
+import com.tokopedia.usercomponents.userconsent.common.ConsentCollectionResponse
 
 object GqlResponseStub {
 
@@ -11,6 +12,8 @@ object GqlResponseStub {
     lateinit var chatFirstTickerResponse: ResponseStub<TokochatRoomTickerResponse>
 
     lateinit var chatOrderHistoryResponse: ResponseStub<TokoChatOrderProgressResponse>
+
+    lateinit var getNeedConsentResponse: ResponseStub<ConsentCollectionResponse>
 
     init {
         reset()
@@ -35,6 +38,13 @@ object GqlResponseStub {
             filePath = "order_history/success_get_order_history.json",
             type = TokoChatOrderProgressResponse::class.java,
             query = "query getTokochatOrderProgress",
+            isError = false
+        )
+
+        getNeedConsentResponse = ResponseStub(
+            filePath = "consent/success_get_need_consent.json",
+            type = ConsentCollectionResponse::class.java,
+            query = "query GetCollectionPointWithConsent",
             isError = false
         )
     }
