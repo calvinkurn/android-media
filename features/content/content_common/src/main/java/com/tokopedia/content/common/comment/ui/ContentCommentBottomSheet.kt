@@ -4,14 +4,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.core.text.toSpanned
 import androidx.fragment.app.FragmentManager
@@ -43,6 +41,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.UnknownHostException
@@ -67,6 +66,10 @@ class ContentCommentBottomSheet @Inject constructor(
 
     private val newHeight by lazyThreadSafetyNone {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
+    }
+
+    private val keyboardHeight by lazyThreadSafetyNone {
+        (getScreenHeight() * KEYBOARD_HEIGHT_PERCENT).roundToInt().plus(16.toPx())
     }
 
     private var mSource: EntrySource? = null
@@ -154,7 +157,11 @@ class ContentCommentBottomSheet @Inject constructor(
         savedInstanceState: Bundle?
     ): View? {
         _binding =
-            FragmentContentCommentBottomSheetBinding.inflate(LayoutInflater.from(requireContext()), container, false)
+            FragmentContentCommentBottomSheetBinding.inflate(
+                LayoutInflater.from(requireContext()),
+                container,
+                false
+            )
         setChild(binding.root)
         setupBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -190,6 +197,21 @@ class ContentCommentBottomSheet @Inject constructor(
         }
         Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.unify_space_48)
         binding.newComment.addTextChangedListener(textWatcher)
+        binding.root.setOnApplyWindowInsetsListener { _, windowInsets ->
+            val height = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                windowInsets.getInsets(WindowInsets.Type.ime()).bottom
+            } else windowInsets.systemWindowInsetBottom
+            val isKeyboardOnScreen = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                windowInsets.isVisible(WindowInsets.Type.ime())
+            } else height > keyboardHeight
+            if (isKeyboardOnScreen) {
+                binding.root.setPadding(0, 0, 0, binding.root.paddingBottom + keyboardHeight)
+            } else {
+                val paddingBottom = binding.root.paddingBottom
+                binding.root.setPadding(0, 0, 0, if (paddingBottom >= 16.toPx()) paddingBottom - keyboardHeight else paddingBottom)
+            }
+            windowInsets
+        }
     }
 
     private fun observeData() {
@@ -198,7 +220,11 @@ class ContentCommentBottomSheet @Inject constructor(
                 when (it.state) {
                     ResultState.Success -> {
                         showError(false)
-                        commentAdapter.setItemsAndAnimateChanges(it.list.ifEmpty { listOf(CommentUiModel.Empty) })
+                        commentAdapter.setItemsAndAnimateChanges(it.list.ifEmpty {
+                            listOf(
+                                CommentUiModel.Empty
+                            )
+                        })
                     }
                     ResultState.Loading -> {
                         showError(false)
@@ -253,6 +279,7 @@ class ContentCommentBottomSheet @Inject constructor(
                         showKeyboard(true)
                     }
                     CommentEvent.HideKeyboard -> {
+                        binding.rvComment.clearFocus()
                         binding.newComment.setText("")
                         showKeyboard(false)
                     }
@@ -470,6 +497,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val TAG = "ContentCommentBottomSheet"
 
         private const val HEIGHT_PERCENT = 0.8
+        private const val KEYBOARD_HEIGHT_PERCENT = 0.3
         private const val SHIMMER_VALUE = 10
 
         private const val MAX_CHAR = 139

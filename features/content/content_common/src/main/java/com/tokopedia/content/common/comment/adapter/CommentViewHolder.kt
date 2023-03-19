@@ -89,6 +89,18 @@ class CommentViewHolder {
                     listener.onLongClicked(item)
                     true
                 }
+                tvCommentReply.setOnLongClickListener {
+                    listener.onLongClicked(item)
+                    true
+                }
+                ivCommentPhoto.setOnLongClickListener {
+                    listener.onLongClicked(item)
+                    true
+                }
+                tvCommentContent.setOnLongClickListener {
+                    listener.onLongClicked(item)
+                    true
+                }
             }
         }
 

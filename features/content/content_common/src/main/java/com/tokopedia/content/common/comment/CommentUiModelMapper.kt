@@ -19,7 +19,6 @@ class CommentUiModelMapper @Inject constructor() {
     private val String.convertToCommentType: CommentType
         get() = if (this == "0") CommentType.Parent else CommentType.Child(this)
 
-    @OptIn(ExperimentalStdlibApi::class)
     fun mapComments(comments: Comments) = CommentWidgetUiModel(
         cursor = comments.parent.lastCursor,
         nextRepliesCount = comments.parent.nextRepliesCountFmt,
@@ -46,7 +45,7 @@ class CommentUiModelMapper @Inject constructor() {
             if (comment.isShop) comment.fullName else comment.username.ifBlank { comment.firstName }
         return CommentUiModel.Item(
             id = comment.id,
-            username = username,
+            username = username.parseAsHtml().toString(),
             photo = comment.photo,
             appLink = comment.linkDetail.appLink,
             content = comment.comment.replace("\n", "<br />").parseAsHtml().toString(),
@@ -61,10 +60,11 @@ class CommentUiModelMapper @Inject constructor() {
     }
 
     fun mapNewComment(comment: PostComment.Parent.NewComment, userType: UserType): CommentUiModel {
-        val username = comment.userInfo.username.ifBlank { comment.userInfo.firstName }
+        val username =
+            if (!comment.userInfo.isKOL) comment.userInfo.name else comment.userInfo.username.ifBlank { comment.userInfo.firstName } //need to adjust with ^
         return CommentUiModel.Item(
             id = comment.id,
-            username = username,
+            username = username.parseAsHtml().toString(),
             photo = comment.userInfo.photo,
             appLink = comment.userInfo.linkDetail.appLink,
             content = comment.comment.replace("\n", "<br />").parseAsHtml().toString(),
