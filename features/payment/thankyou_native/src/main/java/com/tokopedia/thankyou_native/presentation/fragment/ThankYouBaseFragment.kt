@@ -65,7 +65,6 @@ import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
-import com.tokopedia.thankyou_native.presentation.views.listener.RecommendationItemListener
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -198,24 +197,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     fun addRecommendation(containerView: LinearLayout?) {
-        if (ENABLE_WIDGET_ORDER) {
-            thanksPageDataViewModel.addBottomContentWidget(
-                DigitalRecommendationWidgetModel(
-                    thanksPageData,
-                    this,
-                )
-            )
-
-            thanksPageDataViewModel.addBottomContentWidget(
-                MarketplaceRecommendationWidgetModel(
-                    thanksPageData,
-                    this,
-                )
-            )
-
-            return
-        }
-
         val pgCategoryIds = mutableListOf<Int>()
         when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
             is MarketPlaceThankPage -> {
@@ -248,6 +229,17 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private fun addMarketPlaceRecommendation(containerView: LinearLayout?) {
         if (::thanksPageData.isInitialized) {
 
+            if (ENABLE_WIDGET_ORDER) {
+                thanksPageDataViewModel.addBottomContentWidget(
+                    MarketplaceRecommendationWidgetModel(
+                        thanksPageData,
+                        this,
+                    )
+                )
+
+                return
+            }
+
             if (thanksPageData.configFlagData?.shouldHideProductRecom == true) return
 
             iRecommendationView = containerView?.let { container ->
@@ -273,6 +265,19 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         pageType: DigitalRecommendationPage
     ) {
         if (::thanksPageData.isInitialized) {
+
+            if (ENABLE_WIDGET_ORDER) {
+                thanksPageDataViewModel.addBottomContentWidget(
+                    DigitalRecommendationWidgetModel(
+                        thanksPageData,
+                        pgCategoryIds,
+                        pageType,
+                        this,
+                    )
+                )
+
+                return
+            }
 
             if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
 
@@ -693,12 +698,12 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun showTopAdsHeadlineView(cpmModel: CpmModel) {
+        topadsHeadlineView.hideShimmerView()
         if (ENABLE_WIDGET_ORDER) {
             thanksPageDataViewModel.addBottomContentWidget(HeadlineAdsWidgetModel(cpmModel))
             return
         }
         topadsHeadlineView.show()
-        topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.displayAds(cpmModel)
 
         getRecommendationContainer()?.attachTopAdsHeadlinesView(

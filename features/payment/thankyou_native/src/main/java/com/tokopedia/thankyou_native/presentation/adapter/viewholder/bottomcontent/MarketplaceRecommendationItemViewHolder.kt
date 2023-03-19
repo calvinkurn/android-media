@@ -2,6 +2,7 @@ package com.tokopedia.thankyou_native.presentation.adapter.viewholder.bottomcont
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.databinding.ThankLayoutMarketPlaceRecomBinding
 import com.tokopedia.thankyou_native.presentation.adapter.model.MarketplaceRecommendationWidgetModel
@@ -10,7 +11,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class MarketplaceRecommendationItemViewHolder(
     view: View?,
-    listener: MarketplaceRecommendationListener,
+    private val listener: MarketplaceRecommendationListener,
 ): AbstractViewHolder<MarketplaceRecommendationWidgetModel>(view) {
 
     private var binding: ThankLayoutMarketPlaceRecomBinding? by viewBinding()
@@ -20,6 +21,10 @@ class MarketplaceRecommendationItemViewHolder(
     }
 
     override fun bind(data: MarketplaceRecommendationWidgetModel) {
+        if (data.thanksPageData.configFlagData?.shouldHideProductRecom == true) return
+
+        listener.iRecommendationView = binding?.marketPlaceRecommendationView
+
         binding?.marketPlaceRecommendationView?.loadRecommendation(data.thanksPageData, data.fragment)
     }
 }

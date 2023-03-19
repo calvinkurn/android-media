@@ -21,6 +21,7 @@ class BottomContentFactory(
             MarketplaceRecommendationItemViewHolder.LAYOUT_ID -> return MarketplaceRecommendationItemViewHolder(parent, marketplaceRecommendationListener)
             DigitalRecommendationItemViewHolder.LAYOUT_ID -> return DigitalRecommendationItemViewHolder(parent)
             HeadlineAdsItemViewHolder.LAYOUT_ID -> return HeadlineAdsItemViewHolder(parent)
+            BannerItemViewHolder.LAYOUT_ID -> return BannerItemViewHolder(parent)
         }
         return super.createViewHolder(parent, type)
     }
@@ -43,5 +44,9 @@ class BottomContentFactory(
 
     fun type(headlineAdsWidgetModel: HeadlineAdsWidgetModel): Int {
         return HeadlineAdsItemViewHolder.LAYOUT_ID
+    }
+
+    fun type(bannerWidgetModel: BannerWidgetModel): Int {
+        return BannerItemViewHolder.LAYOUT_ID
     }
 }

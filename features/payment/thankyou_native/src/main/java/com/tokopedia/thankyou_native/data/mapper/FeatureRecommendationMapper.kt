@@ -9,6 +9,7 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.tokomember.model.MembershipOrderData
 import com.tokopedia.tokomember.trackers.TokomemberSource
+import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -136,6 +137,39 @@ object FeatureRecommendationMapper {
         return ""
     }
 
+    fun getBanner(engineData: FeatureEngineData?): BannerWidgetModel? {
+        if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
+            try {
+                val bannerItem = engineData.featureEngineItem.find {
+                    JSONObject(it.detail)[KEY_TYPE].toString().equals(TYPE_BANNER, true)
+                } ?: return null
+
+                val bannerDetail = JSONObject(bannerItem.detail)
+                val bannerItems = mutableListOf<BannerItem>()
+                val bannerData = JSONArray(bannerDetail[KEY_BANNER_DATA].toString())
+
+                for (i in 0 until bannerData.length()) {
+                    bannerItems.add(
+                        BannerItem(
+                            bannerData.getJSONObject(i)[KEY_ASSET_URL].toString(),
+                            bannerData.getJSONObject(i)[KEY_APPLINK].toString(),
+                        )
+                    )
+                }
+
+                return BannerWidgetModel(
+                    title = bannerDetail[KEY_TITLE].toString(),
+                    items = bannerItems
+                )
+
+            } catch (e: Exception) {
+                return null
+            }
+        }
+
+        return null
+    }
+
     private fun getGyroRecommendationItemList(featureEngineItems: ArrayList<FeatureEngineItem>): ArrayList<Visitable<*>> {
         return arrayListOf<Visitable<*>>().apply {
             featureEngineItems.forEach { featureEngineItem ->
@@ -168,7 +202,11 @@ object FeatureRecommendationMapper {
     private const val TYPE_LIST = "list"
     private const val TYPE_TDN_USER = "tdn_user"
     private const val TYPE_CONFIG = "config"
+    private const val TYPE_BANNER = "banner"
     private const val KEY_WIDGET_ORDER = "widget_order"
+    private const val KEY_BANNER_DATA = "banner_data"
+    private const val KEY_ASSET_URL = "asset_url"
+    private const val KEY_APPLINK = "applink"
     const val TYPE_TOKOMEMBER = "tokomember"
     const val TYPE_TDN_PRODUCT = "tdn_product"
 

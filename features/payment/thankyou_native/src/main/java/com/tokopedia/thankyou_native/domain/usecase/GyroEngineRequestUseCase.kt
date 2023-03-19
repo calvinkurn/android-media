@@ -23,51 +23,49 @@ class GyroEngineRequestUseCase @Inject constructor(
         thanksPageData: ThanksPageData, walletBalance: WalletBalance?,
         onSuccess: (ValidateEngineResponse) -> Unit
     ) {
-        onSuccess(
-            Teleporter.gson.fromJson(
-                "{\"validateEngineRequest\": {\n" +
-                    "      \"success\": true,\n" +
-                    "      \"error_code\": \"\",\n" +
-                    "      \"message\": \"\",\n" +
-                    "      \"data\": {\n" +
-                    "        \"title\": \"Fitur spesial buat kamu\",\n" +
-                    "        \"description\": \"Cobain fitur ini yuk\",\n" +
-                    "        \"items\": [\n" +
-                    "          {\n" +
-                    "            \"id\" : 136,\n" +
-                    "            \"detail\" : \"{\\\"type\\\":\\\"config\\\",\\\"widget_order\\\":\\\"dg, pg, feature, shopads, feature\\\"}\"\n" +
-                    "          },{\n" +
-                    "            \"id\": 15,\n" +
-                    "            \"detail\": \"{\\\"type\\\":\\\"tdn_user\\\",\\\"ep\\\":\\\"banner\\\",\\\"inventory_id\\\":\\\"15\\\",\\\"item\\\":\\\"3\\\",\\\"dimen_id_desktop\\\":\\\"8\\\",\\\"dimen_id_mobile\\\":\\\"3\\\",\\\"title\\\":\\\"Sesuai seleramu\\\",\\\"desc\\\":\\\"Cobain yuk\\\",\\\"section_title\\\":\\\"Promo Brand Pilihan\\\"}\"\n" +
-                    "          },\n" +
-                    "          {\n" +
-                    "            \"id\": 20,\n" +
-                    "            \"detail\": \"{\\\"type\\\":\\\"tokomember\\\",\\\"section_title\\\":\\\"Fitur spesial buat kamu\\\",\\\"section_desc\\\":\\\"Cobain fitur ini yuk\\\",\\\"url\\\":\\\"https://www.tokopedia.com/membership/\\\",\\\"url_android\\\":\\\"tokopedia://webview?url=https://www.tokopedia.com/membership/\\\",\\\"url_ios\\\":\\\"tokopedia://webview?url=https://www.tokopedia.com/membership/\\\",\\\"title\\\":\\\"Tokomember hadir untukmu\\\",\\\"desc\\\":\\\"Selalu ada selalu bisa\\\",\\\"image\\\":\\\"https://images.tokopedia.net/img/blog/promo/2019/09/tokomember.png\\\"}\"\n" +
-                    "          },\n" +
-                    "          {\n" +
-                    "            \"id\": 64,\n" +
-                    "            \"detail\": \"{\\\"type\\\":\\\"list\\\",\\\"title\\\":\\\"Ambil Hadiahmu Sekarang!\\\",\\\"desc\\\":\\\"Buka Tap Tap Kotak untuk dapatkan kupon Diskon, Cashback hingga GoPay Coins!\\\",\\\"image\\\":\\\"https://ecs7.tokopedia.net/img/blog/promo/2023/02/FLOATING-ICON-NEW-YEAR.png\\\",\\\"url\\\":\\\"https://www.tokopedia.com/kotak-kejutan/pre-tap-tap\\\",\\\"url_android\\\":\\\"tokopedia://gamification_gift_daily\\\",\\\"url_ios\\\":\\\"tokopedia://gamification_gift_daily\\\"}\"\n" +
-                    "          }\n" +
-                    "        ]\n" +
-                    "      }\n" +
-                    "    }}",
-                FeatureEngineResponse::class.java
-            ).validateEngineResponse
-        )
-//        try {
-//            this.setTypeClass(FeatureEngineResponse::class.java)
-//            this.setRequestParams(getRequestParams(thanksPageData, walletBalance))
-//            this.setGraphqlQuery(GyroRecommendationQuery.GQL_QUERY)
-//            this.execute(
-//                { result ->
-//                    onSuccess(result.validateEngineResponse)
-//                }, {
-//                    it.printStackTrace()
-//                }
-//            )
-//        } catch (throwable: Throwable) {
-//            throwable.printStackTrace()
-//        }
+//        onSuccess(
+//            Teleporter.gson.fromJson("{\n" +
+//                "    \"validateEngineRequest\": {\n" +
+//                "      \"success\": true,\n" +
+//                "      \"error_code\": \"\",\n" +
+//                "      \"message\": \"\",\n" +
+//                "      \"data\": {\n" +
+//                "        \"title\": \"Fitur spesial buat kamu\",\n" +
+//                "        \"description\": \"Cobain fitur ini yuk\",\n" +
+//                "        \"items\": [\n" +
+//                "          {\n" +
+//                "            \"id\": 136,\n" +
+//                "            \"detail\": \"{\\\"type\\\":\\\"config\\\",\\\"widget_order\\\":\\\"banner, feature, tdn, pg, shopads, dg\\\"}\"\n" +
+//                "          },\n" +
+//                "          {\n" +
+//                "            \"id\": 134,\n" +
+//                "            \"detail\": \"{\\\"type\\\":\\\"list\\\",\\\"title\\\":\\\"Cek keuntungan PLUS lainnya\\\",\\\"desc\\\":\\\"Masih ada keuntungan selain pengiriman cepat & Bebas Ongkir tanpa batas, lho~\\\",\\\"image\\\":\\\"https://images.tokopedia.net/img/plus/logo/default_logo.png\\\",\\\"url\\\":\\\"https://staging.tokopedia.com/gotoplus\\\",\\\"url_android\\\":\\\"tokopedia://webview?url=https://staging.tokopedia.com/gotoplus\\\",\\\"url_ios\\\":\\\"tokopedia://webview?url=https://staging.tokopedia.com/gotoplus\\\"}\"\n" +
+//                "          },\n" +
+//                "          {\n" +
+//                "            \"id\": 168,\n" +
+//                "            \"detail\": \"{\\\"type\\\":\\\"banner\\\",\\\"section_title\\\":\\\"Biar belanjamu makin #PraktisAbis\\\",\\\"banner_data\\\":\\\"[{\\\\\\\"asset_url\\\\\\\":\\\\\\\"https://images.tokopedia.net/img/cache/900/QBrNqa/2023/3/3/4f9ffabb-e2cc-4aea-b374-76d534f0f519.png.webp?ect=4g&height=300&width=900\\\\\\\",\\\\\\\"url\\\\\\\":\\\\\\\"https://www.tokopedia.com/tokopedia-cobrand\\\\\\\",\\\\\\\"applink\\\\\\\":\\\\\\\"tokopedia://webview?url=https://www.tokopedia.com/tokopedia-cobrand\\\\\\\"},{\\\\\\\"asset_url\\\\\\\":\\\\\\\"https://images.tokopedia.net/img/cache/1208/NsjrJu/2023/3/14/dbe4cfd0-0c4f-4f47-94ec-6436928dc814.jpg.webp?ect=4g\\\\\\\",\\\\\\\"url\\\\\\\":\\\\\\\"https://www.tokopedia.com/discovery/serbu-official-store?source=homepage.slider_banner.0.42009\\\\\\\",\\\\\\\"applink\\\\\\\":\\\\\\\"tokopedia://buyer/payment\\\\\\\"}]\\\"}\"\n" +
+//                "          }\n" +
+//                "        ]\n" +
+//                "      }\n" +
+//                "    }\n" +
+//                "  }",
+//                FeatureEngineResponse::class.java
+//            ).validateEngineResponse
+//        )
+        try {
+            this.setTypeClass(FeatureEngineResponse::class.java)
+            this.setRequestParams(getRequestParams(thanksPageData, walletBalance))
+            this.setGraphqlQuery(GyroRecommendationQuery.GQL_QUERY)
+            this.execute(
+                { result ->
+                    onSuccess(result.validateEngineResponse)
+                }, {
+                    it.printStackTrace()
+                }
+            )
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
     }
 
     private fun getRequestParams(
