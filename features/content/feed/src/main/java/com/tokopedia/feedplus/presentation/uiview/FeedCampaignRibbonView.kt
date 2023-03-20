@@ -1,8 +1,16 @@
 package com.tokopedia.feedplus.presentation.uiview
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.tokopedia.feedcomponent.presentation.utils.FeedXCardSubtitlesAnimationHandler
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_NEW_PRODUCTS
@@ -19,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import java.util.*
 
 /**
@@ -41,6 +50,7 @@ class FeedCampaignRibbonView(
 
     var campaign: FeedCardCampaignModel? = null
     var type: FeedCampaignRibbonType = FeedCampaignRibbonType.TITLE_ONLY
+    var animation: FeedXCardSubtitlesAnimationHandler? = null
 
     fun bindData(
         modelType: String,
@@ -60,6 +70,8 @@ class FeedCampaignRibbonView(
             type = getRibbonType(modelType)
             buildRibbonBasedOnType(campaign, ctaModel)
 
+            Toast.makeText(root.context, modelType, Toast.LENGTH_SHORT).show()
+
 //            tyFeedCampaignRibbonTitle.text = campaign.shortName
 //            renderRibbonByType(campaign.isReminderActive)
 //            setupTimer(campaign.endTime) {
@@ -72,6 +84,12 @@ class FeedCampaignRibbonView(
         }
     }
 
+    fun dispose() {
+        animation?.let {
+            it.stopAnimation()
+        }
+    }
+
     private fun getRibbonType(type: String) = when (type) {
         TYPE_FEED_ASGC_RESTOCK, TYPE_FEED_ASGC_NEW_PRODUCTS -> FeedCampaignRibbonType.ASGC_GENERAL
         else -> FeedCampaignRibbonType.TITLE_ONLY
@@ -81,9 +99,9 @@ class FeedCampaignRibbonView(
         with(binding) {
             when {
                 type == FeedCampaignRibbonType.ASGC_GENERAL && cta.colorGradient.isEmpty() ->
-                    root.setBackgroundColor(Color.parseColor(cta.color))
+                    containerFeedCampaignRibbon.setBackgroundColor(Color.parseColor(cta.color))
                 type == FeedCampaignRibbonType.ASGC_GENERAL && cta.colorGradient.isNotEmpty() -> {
-                    root.background = GradientDrawable(
+                    containerFeedCampaignRibbon.background = GradientDrawable(
                         GradientDrawable.Orientation.LEFT_RIGHT,
                         cta.colorGradient.map {
                             it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
@@ -110,6 +128,22 @@ class FeedCampaignRibbonView(
                         setBackgroundGradient(ctaModel)
                     }
                 }
+                FeedCampaignRibbonType.ASGC_DISCOUNT -> {
+                    tyFeedCampaignRibbonTitle.text = ctaModel.text
+                    renderRibbonByType(campaign.isReminderActive)
+                    startDelayProcess(TWO_SECOND) {
+                        setBackgroundGradient(ctaModel)
+                    }
+
+                    animation = FeedXCardSubtitlesAnimationHandler(
+                        WeakReference(tyFeedCampaignRibbonTitle),
+                        WeakReference(tyFeedCampaignRibbonTitleSecond)
+                    )
+                    animation?.subtitles = listOf(ctaModel.text) + ctaModel.subtitle
+                    animation?.checkToCancelTimer()
+                    animation?.startTimer()
+                }
+                else -> {}
             }
         }
     }
@@ -200,19 +234,83 @@ class FeedCampaignRibbonView(
 
     private fun showStartInGradientCampaignRibbon() {
         type = FeedCampaignRibbonType.START_IN
-        binding.root.background = ContextCompat.getDrawable(
+        binding.containerFeedCampaignRibbon.background = ContextCompat.getDrawable(
             binding.root.context,
             R.drawable.bg_feed_campaign_ribbon_flashsale_gradient
         )
         renderRibbonByType(campaign?.isReminderActive ?: false)
     }
 
+    private fun animateSwipeUp(
+        viewOne: WeakReference<View>,
+        viewTwo: WeakReference<View>,
+        onAnimationEnd: () -> Unit
+    ) {
+        viewOne.get()?.let { v1 ->
+            viewTwo.get()?.let { v2 ->
+                val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, ONE, ZERO)
+                val alphaAnimObjOne = ObjectAnimator.ofPropertyValuesHolder(v1, alphaAnimPropOne)
+
+                val translateAnimPropOne = PropertyValuesHolder.ofFloat(
+                    View.TRANSLATION_Y,
+                    ZERO,
+                    v1.measuredHeight * MINUS_ONE
+                )
+                val translateAnimObjOne =
+                    ObjectAnimator.ofPropertyValuesHolder(v1, translateAnimPropOne)
+
+                val alphaAnimPropTwo = PropertyValuesHolder.ofFloat(View.ALPHA, ONE, ZERO)
+                val alphaAnimObjTwo = ObjectAnimator.ofPropertyValuesHolder(v2, alphaAnimPropTwo)
+
+                val translateAnimPropTwo =
+                    PropertyValuesHolder.ofFloat(
+                        View.TRANSLATION_Y,
+                        v2.measuredHeight.toFloat(),
+                        ZERO
+                    )
+                val translateAnimObjTwo =
+                    ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
+
+                translateAnimObjTwo.addListener(object : AnimatorListener {
+                    override fun onAnimationStart(p0: Animator) {
+
+                    }
+
+                    override fun onAnimationEnd(p0: Animator) {
+                        onAnimationEnd()
+                    }
+
+                    override fun onAnimationCancel(p0: Animator) {
+                    }
+
+                    override fun onAnimationRepeat(p0: Animator) {
+                    }
+                })
+
+                val animatorSet = AnimatorSet()
+                animatorSet.playTogether(
+                    alphaAnimObjOne,
+                    translateAnimObjOne,
+                    alphaAnimObjTwo,
+                    translateAnimObjTwo
+                )
+                animatorSet.duration = SIX_MILISECOND
+                animatorSet.start()
+            }
+        }
+    }
+
     companion object {
+        private const val SIX_MILISECOND = 600L
         private const val TWO_SECOND = 2000L
         private const val THREE_SECOND = 3000L
 
         private const val HASH = "#"
         private const val INT_COLOR_PREFIX = "0xFF"
         private const val CORNER_RADIUS = 4f
+
+        private const val ONE = 1f
+        private const val ZERO = 0f
+        private const val MINUS_ONE = -1f
     }
 }
