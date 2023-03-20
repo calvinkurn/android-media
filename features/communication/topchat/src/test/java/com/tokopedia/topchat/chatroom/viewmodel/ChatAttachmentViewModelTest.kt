@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
 import androidx.collection.ArrayMap
+import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -8,6 +9,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -15,7 +18,7 @@ import io.mockk.every
 import org.junit.Assert
 import org.junit.Test
 
-class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
+class ChatAttachmentViewModelTest : BaseTopChatViewModelTest() {
 
     private val testAttachmentId = "123"
     private val testReplyId = "456"
@@ -28,7 +31,7 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
 
     @Test
     fun success_get_attachment() {
-        //Given
+        // Given
         val testProductAttachment = ProductAttachmentAttributes(
             productId = testProductId
         )
@@ -45,24 +48,26 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
             chatAttachmentMapper.map(any<ChatAttachmentResponse>())
         } returns expectedMap
 
-        //When
+        // When
         viewModel.initUserLocation(null)
         viewModel.loadAttachmentData(
             testMessageId.toLongOrZero(),
             ChatroomViewModel(replyIDs = testReplyId)
         )
 
-        //Then
+        // Then
         Assert.assertEquals(
             testProductId,
-            (viewModel.chatAttachments.value?.get(testAttachmentId)?.parsedAttributes
-                    as ProductAttachmentAttributes).productId
+            (
+                viewModel.chatAttachments.value?.get(testAttachmentId)?.parsedAttributes
+                    as ProductAttachmentAttributes
+                ).productId
         )
     }
 
     @Test
     fun success_get_attachment_with_user_location() {
-        //Given
+        // Given
         val testProductAttachment = ProductAttachmentAttributes(
             productId = testProductId
         )
@@ -84,24 +89,26 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
             chatAttachmentMapper.map(any<ChatAttachmentResponse>())
         } returns expectedMap
 
-        //When
+        // When
         viewModel.initUserLocation(testUserLocation)
         viewModel.loadAttachmentData(
             testMessageId.toLongOrZero(),
             ChatroomViewModel(replyIDs = testReplyId)
         )
 
-        //Then
+        // Then
         Assert.assertEquals(
             testProductId,
-            (viewModel.chatAttachments.value?.get(testAttachmentId)?.parsedAttributes
-                    as ProductAttachmentAttributes).productId
+            (
+                viewModel.chatAttachments.value?.get(testAttachmentId)?.parsedAttributes
+                    as ProductAttachmentAttributes
+                ).productId
         )
     }
 
     @Test
     fun success_get_attachment_with_user_location_without_long() {
-        //Given
+        // Given
         val testProductAttachment = ProductAttachmentAttributes(
             productId = testProductId
         )
@@ -123,24 +130,26 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
             chatAttachmentMapper.map(any<ChatAttachmentResponse>())
         } returns expectedMap
 
-        //When
+        // When
         viewModel.initUserLocation(testUserLocation)
         viewModel.loadAttachmentData(
             testMessageId.toLongOrZero(),
             ChatroomViewModel(replyIDs = testReplyId)
         )
 
-        //Then
+        // Then
         Assert.assertEquals(
             testProductId,
-            (viewModel.chatAttachments.value?.get(testAttachmentId)?.parsedAttributes
-                    as ProductAttachmentAttributes).productId
+            (
+                viewModel.chatAttachments.value?.get(testAttachmentId)?.parsedAttributes
+                    as ProductAttachmentAttributes
+                ).productId
         )
     }
 
     @Test
     fun success_get_attachment_with_user_location_without_lat() {
-        //Given
+        // Given
         val testProductAttachment = ProductAttachmentAttributes(
             productId = testProductId
         )
@@ -162,33 +171,35 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
             chatAttachmentMapper.map(any<ChatAttachmentResponse>())
         } returns expectedMap
 
-        //When
+        // When
         viewModel.initUserLocation(testUserLocation)
         viewModel.loadAttachmentData(
             testMessageId.toLongOrZero(),
             ChatroomViewModel(replyIDs = testReplyId)
         )
 
-        //Then
+        // Then
         Assert.assertEquals(
             testProductId,
-            (viewModel.chatAttachments.value?.get(testAttachmentId)?.parsedAttributes
-                    as ProductAttachmentAttributes).productId
+            (
+                viewModel.chatAttachments.value?.get(testAttachmentId)?.parsedAttributes
+                    as ProductAttachmentAttributes
+                ).productId
         )
     }
 
     @Test
     fun failed_get_attachment_empty_message_id() {
-        //Given
+        // Given
         val emptyMessageId = 0L
 
-        //When
+        // When
         viewModel.loadAttachmentData(
             emptyMessageId,
             ChatroomViewModel(replyIDs = testReplyId)
         )
 
-        //Then
+        // Then
         coVerify(exactly = 0) {
             chatAttachmentUseCase(any())
         }
@@ -196,13 +207,13 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
 
     @Test
     fun failed_get_attachment_does_not_have_attachment() {
-        //When
+        // When
         viewModel.loadAttachmentData(
             testMessageId.toLongOrZero(),
             ChatroomViewModel()
         )
 
-        //Then
+        // Then
         coVerify(exactly = 0) {
             chatAttachmentUseCase(any())
         }
@@ -210,16 +221,16 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
 
     @Test
     fun failed_get_attachment_empty_msg_id_and_does_not_have_attachment() {
-        //Given
+        // Given
         val emptyMessageId = 0L
 
-        //When
+        // When
         viewModel.loadAttachmentData(
             emptyMessageId,
             ChatroomViewModel()
         )
 
-        //Then
+        // Then
         coVerify(exactly = 0) {
             chatAttachmentUseCase(any())
         }
@@ -227,7 +238,7 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
 
     @Test
     fun error_get_product_attachment() {
-        //Given
+        // Given
         val expectedMap = ArrayMap<String, Attachment>().also {
             it[testAttachmentId] = ErrorAttachment()
         }
@@ -238,16 +249,42 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
             chatAttachmentMapper.mapError(any())
         } returns expectedMap
 
-        //When
+        // When
         viewModel.loadAttachmentData(
             testMessageId.toLongOrZero(),
             ChatroomViewModel(replyIDs = testReplyId)
         )
 
-        //Then
+        // Then
         Assert.assertEquals(
             true,
             viewModel.chatAttachments.value?.get(testAttachmentId) is ErrorAttachment
         )
+    }
+
+    @Test
+    fun should_give_correct_user_location_info_after_set() {
+        // Given
+        val dummyLocalCacheModel = LocalCacheModel(lat = "100", long = "100")
+
+        // When
+        webSocketViewModel.userLocationInfo = dummyLocalCacheModel
+
+        // Then
+        Assert.assertEquals(webSocketViewModel.userLocationInfo, dummyLocalCacheModel)
+    }
+
+    @Test
+    fun should_give_correct_attachment_preview_after_set() {
+        // Given
+        val dummyAttachmentPreview: ArrayList<SendablePreview> = arrayListOf(
+            SendableVoucherPreviewUiModel(VoucherPreview())
+        )
+
+        // When
+        webSocketViewModel.attachmentsPreview = dummyAttachmentPreview
+
+        // Then
+        Assert.assertEquals(dummyAttachmentPreview, webSocketViewModel.attachmentsPreview)
     }
 }

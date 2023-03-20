@@ -6,6 +6,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AddressData(
-        var defaultAddress: UserAddress? = null,
-        var tradeInAddress: UserAddress? = null
+    var defaultAddress: UserAddress? = null,
+    var tradeInAddress: UserAddress? = null
 ) : Parcelable

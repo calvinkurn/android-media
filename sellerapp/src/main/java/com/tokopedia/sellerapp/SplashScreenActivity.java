@@ -1,5 +1,7 @@
 package com.tokopedia.sellerapp;
 
+import static com.tokopedia.applink.RouteManager.SELLER_APP_APPLINK;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -62,7 +64,7 @@ public class SplashScreenActivity extends SplashScreen {
      * handle/forward app link redirection from customer app to seller app
      */
     private boolean handleAppLink(UserSessionInterface userSession) {
-        Uri uri = getIntent().getData();
+        Uri uri = getIntent().getParcelableExtra(SELLER_APP_APPLINK);
         if (null != uri) {
             boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
             boolean isAutoLogin = uri.getBooleanQueryParameter(KEY_AUTO_LOGIN, false);

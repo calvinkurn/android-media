@@ -378,6 +378,7 @@ class MainAddressFragment :
                     }
 
                 is ManageAddressState.Fail -> {
+                    bottomSheetLainnya?.dismiss()
                     showToaster(
                         message = it.throwable?.message ?: DEFAULT_ERROR_MESSAGE,
                         toastType = Toaster.TYPE_ERROR

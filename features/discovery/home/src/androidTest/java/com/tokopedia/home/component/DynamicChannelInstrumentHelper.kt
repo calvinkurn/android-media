@@ -289,7 +289,7 @@ fun actionOnCueWidgetCategory(viewHolder: RecyclerView.ViewHolder, itemPosition:
 }
 
 fun actionOnVpsWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_vps_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
 }
 
 fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
@@ -298,7 +298,7 @@ fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
 
 fun actionOnLego4Product(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition, -200)
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_lego_4_product_rv, 0)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
 }
 
 fun actionOnTodoWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {

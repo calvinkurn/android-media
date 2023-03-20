@@ -21,9 +21,6 @@ import okhttp3.Response;
  */
 
 public class FingerprintInterceptor implements Interceptor {
-
-    public static final String ADVERTISINGID = "ADVERTISINGID";
-    public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
     private static final String KEY_SESSION_ID = "Tkpd-SessionId";
     private static final String KEY_USER_ID = "Tkpd-UserId";
     private static final String KEY_ACC_AUTH = "Accounts-Authorization";

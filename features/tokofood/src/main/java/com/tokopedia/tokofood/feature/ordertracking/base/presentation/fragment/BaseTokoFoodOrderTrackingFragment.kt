@@ -99,14 +99,14 @@ class BaseTokoFoodOrderTrackingFragment :
 
     private var loaderDialog: LoaderDialog? = null
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = TokoFoodAnalyticsConstants.TOKOFOOD_ORDER_DETAIL_PAGE
 
     override fun initInjector() {
         activity?.let {
             DaggerTokoFoodOrderTrackingComponent
                 .builder()
                 .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                .tokoChatConfigComponent(TokoChatConnection.tokoChatConfigComponent)
+                .tokoChatConfigComponent(TokoChatConnection.getComponent(it))
                 .build()
                 .inject(this)
         }
@@ -197,8 +197,7 @@ class BaseTokoFoodOrderTrackingFragment :
     override fun onClickDriverChat(goFoodOrderNumber: String, unReadChatCounter: String) {
         tracking.clickChatIcon(
             orderStatus = viewModel.getOrderStatus(),
-            orderId = viewModel.getOrderId(),
-            channelId = viewModel.channelId,
+            orderId = orderId,
             source = TokoFoodAnalyticsConstants.TOKOFOOD_SOURCE,
             role = TokoFoodAnalyticsConstants.BUYER,
             unReadChatCounter = unReadChatCounter

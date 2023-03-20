@@ -1,9 +1,6 @@
 package com.tokopedia.picker.common.utils.wrapper
 
-import android.content.Context
 import android.graphics.BitmapFactory
-import com.tokopedia.picker.common.mapper.humanize
-import com.tokopedia.picker.common.utils.VideoDurationRetriever
 import com.tokopedia.picker.common.utils.fileExtension
 import com.tokopedia.picker.common.utils.isImageFormat
 import com.tokopedia.picker.common.utils.isVideoFormat
@@ -50,13 +47,6 @@ class PickerFile constructor(
         return width < value || height < value
     }
 
-    fun readableVideoDuration(context: Context?): String {
-        return VideoDurationRetriever.get(context, this).humanize()
-    }
-
-    /*
-    * Get the bitmap detail from image.
-    * */
     private fun getBitmapOptions(): BitmapFactory.Options {
         val bitmapOptions = BitmapFactory.Options()
         bitmapOptions.inJustDecodeBounds = true

@@ -6,10 +6,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PromoRequest(
-        @SerializedName("type")
-        var type: String = "",
-        @SerializedName("code")
-        var code: String = ""
+    @SerializedName("type")
+    var type: String = "",
+    @SerializedName("code")
+    var code: String = ""
 ) : Parcelable {
     companion object {
         const val TYPE_GLOBAL = "global"

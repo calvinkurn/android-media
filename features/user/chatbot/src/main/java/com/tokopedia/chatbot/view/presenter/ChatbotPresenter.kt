@@ -30,6 +30,8 @@ import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CSAT_OPTIONS
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_HELPFULL_QUESTION
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
@@ -79,6 +81,8 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
+import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
@@ -113,11 +117,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOU
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.view.util.Attachment34RenderType
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
-import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
-import com.tokopedia.chatbot.websocket.ChatbotWebSocket
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
+import com.tokopedia.chatbot.websocket.*
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -127,7 +127,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -160,7 +160,7 @@ class ChatbotPresenter @Inject constructor(
     var getExistingChatUseCase: GetExistingChatUseCase,
     override var userSession: UserSessionInterface,
     private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
-    private val tkpdAuthInterceptor: TkpdAuthInterceptor,
+    private val tkpdAuthInterceptor: TkpdOldAuthInterceptor,
     private val fingerprintInterceptor: FingerprintInterceptor,
     private val sendChatRatingUseCase: SendChatRatingUseCase,
     private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
@@ -207,7 +207,8 @@ class ChatbotPresenter @Inject constructor(
     private var mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
     var mediaUploadResults = MutableStateFlow<MediaUploadResultMap>(mapOf())
     private val shouldResetFailedUploadStatus = MutableStateFlow(false)
-    val mediaUris = MutableStateFlow<List<VideoUploadData>>(emptyList())
+    private val mediaUris = MutableStateFlow<List<VideoUploadData>>(emptyList())
+    var pageSourceAccess = ""
 
     init {
         observeMediaUrisForUpload()
@@ -236,7 +237,8 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -311,7 +313,8 @@ class ChatbotPresenter @Inject constructor(
                     Timber.d("Socket Reconnecting")
                 }
                 ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -332,6 +335,9 @@ class ChatbotPresenter @Inject constructor(
                     attachmentType == DYNAMIC_ATTACHMENT
                 ) {
                     return
+                }
+                if (attachmentType == TYPE_HELPFULL_QUESTION || attachmentType == TYPE_CSAT_OPTIONS) {
+                    sendNewRelicLogRelatedToCsat(pojo, messageId)
                 }
                 view.onReceiveMessageEvent(mapToVisitable(pojo))
                 sendReadEventWebSocket(messageId)
@@ -361,7 +367,8 @@ class ChatbotPresenter @Inject constructor(
             }
         } catch (e: JsonSyntaxException) {
             ChatbotNewRelicLogger.logNewRelicForSocket(
-                e
+                e,
+                pageSource = pageSourceAccess
             )
         }
     }
@@ -534,7 +541,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SEND_RATING,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -567,6 +575,10 @@ class ChatbotPresenter @Inject constructor(
 
     override fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {
         return chatBotWebSocketMessageMapper.map(pojo)
+    }
+
+    override fun setPageSource(pageSource: String) {
+        pageSourceAccess = pageSource
     }
 
     override fun sendInvoiceAttachment(
@@ -692,7 +704,8 @@ class ChatbotPresenter @Inject constructor(
                         false,
                         messageId,
                         KEY_SECURE_UPLOAD,
-                        e
+                        e,
+                        pageSource = pageSourceAccess
                     )
                     onErrorImageUpload(e, imageUploadViewModel)
                 }
@@ -845,7 +858,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_CSAT_RATING,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -869,7 +883,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -905,7 +920,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_CHAT_CSAT,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -937,7 +953,8 @@ class ChatbotPresenter @Inject constructor(
                     false,
                     messageId,
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_LINK_FOR_REDIRECTION,
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -973,7 +990,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_TICKER,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -1006,7 +1024,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_NEW_SESSION,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -1037,7 +1056,8 @@ class ChatbotPresenter @Inject constructor(
                     false,
                     messageId,
                     KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY,
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
                 view.loadChatHistory()
                 view.enableTyping()
@@ -1108,7 +1128,7 @@ class ChatbotPresenter @Inject constructor(
             val params = uploaderUseCase.createParams(
                 sourceId = ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD,
                 filePath = filePath,
-                withTranscode = false
+                withTranscode = true
             )
             val uploadMediaResult = uploaderUseCase(params).let {
                 when (it) {
@@ -1218,7 +1238,8 @@ class ChatbotPresenter @Inject constructor(
                         false,
                         messageId,
                         ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME,
-                        it
+                        it,
+                        pageSource = pageSourceAccess
                     )
                 }
             )
@@ -1231,14 +1252,14 @@ class ChatbotPresenter @Inject constructor(
             if (message is HelpFullQuestionsUiModel) {
                 input.list.add(
                     ChipGetChatRatingListInput.ChatRating(
-                        ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST.toIntOrZero(),
+                        TYPE_HELPFULL_QUESTION.toIntOrZero(),
                         message.helpfulQuestion?.caseChatId ?: ""
                     )
                 )
             } else if (message is CsatOptionsUiModel) {
                 input.list.add(
                     ChipGetChatRatingListInput.ChatRating(
-                        ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_OPTIONS.toIntOrZero(),
+                        TYPE_CSAT_OPTIONS.toIntOrZero(),
                         message.csat?.caseChatId ?: ""
                     )
                 )
@@ -1266,7 +1287,8 @@ class ChatbotPresenter @Inject constructor(
                     true,
                     messageId,
                     KEY_CHATBOT_GET_CHATLIST_RATING,
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -1296,9 +1318,9 @@ class ChatbotPresenter @Inject constructor(
             for (rate in ratings.ratingListData.list ?: listOf()) {
                 val rateListMsgs = mappedPojo.listChat.filter { msg ->
                     when {
-                        msg is HelpFullQuestionsUiModel && rate.attachmentType == ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST.toIntOrZero()
+                        msg is HelpFullQuestionsUiModel && rate.attachmentType == TYPE_HELPFULL_QUESTION.toIntOrZero()
                         -> (msg.helpfulQuestion?.caseChatId == rate.caseChatID)
-                        msg is CsatOptionsUiModel && rate.attachmentType == ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_OPTIONS.toIntOrZero()
+                        msg is CsatOptionsUiModel && rate.attachmentType == TYPE_CSAT_OPTIONS.toIntOrZero()
                         -> (msg.csat?.caseChatId == rate.caseChatID)
                         else -> false
                     }
@@ -1346,7 +1368,8 @@ class ChatbotPresenter @Inject constructor(
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
                     it,
                     getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime
+                    getExistingChatUseCase.maxReplyTime,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -1382,9 +1405,39 @@ class ChatbotPresenter @Inject constructor(
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM,
                     it,
                     getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime
+                    getExistingChatUseCase.maxReplyTime,
+                    pageSource = pageSourceAccess
                 )
             }
         )
+    }
+
+    private fun sendNewRelicLogRelatedToCsat(pojo: ChatSocketPojo, messageId: String) {
+        val attachmentType = chatResponse?.attachment?.type
+        if (attachmentType == TYPE_HELPFULL_QUESTION) {
+            val helpFullQuestionPojo = GsonBuilder().create()
+                .fromJson<HelpFullQuestionPojo>(
+                    pojo.attachment?.attributes,
+                    HelpFullQuestionPojo::class.java
+                )
+            ChatbotNewRelicLogger.logNewRelicForCSAT(
+                messageId,
+                TYPE_HELPFULL_QUESTION,
+                helpFullQuestionPojo.helpfulQuestion?.caseId.toBlankOrString(),
+                helpFullQuestionPojo.helpfulQuestion?.caseChatId.toBlankOrString()
+            )
+        } else if (attachmentType == TYPE_CSAT_OPTIONS) {
+            val csatAttributesPojo = GsonBuilder().create()
+                .fromJson<CsatAttributesPojo>(
+                    pojo.attachment?.attributes,
+                    CsatAttributesPojo::class.java
+                )
+            ChatbotNewRelicLogger.logNewRelicForCSAT(
+                messageId,
+                TYPE_CSAT_OPTIONS,
+                csatAttributesPojo.csat?.caseId.toBlankOrString(),
+                csatAttributesPojo.csat?.caseChatId.toBlankOrString()
+            )
+        }
     }
 }

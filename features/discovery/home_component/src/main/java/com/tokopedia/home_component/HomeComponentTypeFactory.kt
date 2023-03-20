@@ -30,4 +30,5 @@ interface HomeComponentTypeFactory {
     fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int = 0
     fun type(lego4ProductDataModel: Lego4ProductDataModel): Int = 0
     fun type(todoWidgetListDataModel: TodoWidgetListDataModel): Int = 0
+    fun type(bannerRevampDataModel: BannerRevampDataModel): Int = 0
 }
