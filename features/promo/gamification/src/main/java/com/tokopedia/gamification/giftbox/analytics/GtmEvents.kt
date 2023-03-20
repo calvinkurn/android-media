@@ -130,6 +130,18 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
+    fun clickSeruButton(tokenId:String){
+        val map = mutableMapOf<String, Any>()
+        map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_LG
+        map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
+        map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_LG
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = tokenId
+        map[GiftBoxTrackerConstants.TRACKER_ID] = TrackerID.SERU_TRACKER_ID
+        updateCommonItems(null,map)
+
+        getTracker().sendGeneralEvent(map)
+    }
+
     //11
     fun clickReminderButton(userId: String?, label: String?) {
         val map = mutableMapOf<String, Any>()

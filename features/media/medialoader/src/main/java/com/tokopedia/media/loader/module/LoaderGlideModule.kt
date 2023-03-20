@@ -1,6 +1,7 @@
 package com.tokopedia.media.loader.module
 
 import android.content.Context
+import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.Registry
@@ -14,7 +15,6 @@ import com.tokopedia.config.GlobalConfig
 import okhttp3.OkHttpClient
 import java.io.InputStream
 
-
 @GlideModule
 class LoaderGlideModule: AppGlideModule() {
 
@@ -23,6 +23,7 @@ class LoaderGlideModule: AppGlideModule() {
             Glide.getPhotoCacheDir(context)?.absolutePath,
             (LIMIT_CACHE_SIZE_IN_MB * SIZE_IN_MB * SIZE_IN_MB).toLong()
         ))
+        builder.setLogLevel(Log.VERBOSE)
         super.applyOptions(context, builder)
     }
 
@@ -34,7 +35,8 @@ class LoaderGlideModule: AppGlideModule() {
             okHttpClient.addInterceptor(ChuckerInterceptor(context))
         }
         val okHttpLoaderFactory = OkHttpUrlLoader.Factory(okHttpClient.build())
-        registry.replace(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
+        registry.replace(String::class.java, InputStream::class.java, AdaptiveImageSizeLoader.Factory(context))
+        registry.append(GlideUrl::class.java, InputStream::class.java, okHttpLoaderFactory)
     }
 
     override fun isManifestParsingEnabled(): Boolean {
