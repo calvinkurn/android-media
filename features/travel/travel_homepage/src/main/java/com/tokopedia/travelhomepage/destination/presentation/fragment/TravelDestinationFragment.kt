@@ -173,9 +173,9 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
             val height = size.y
             val titleBarHeight = getStatusBarHeight(it)
 
-            val heightTitle = peekSize + resources.getDimensionPixelSize(R.dimen.destination_padding_info)
-            val heightIndicator = indicator_banner_container.height + resources.getDimensionPixelSize(R.dimen.destination_margin_top_indicator)
-            val diffHeight = heightIndicator + heightTitle - Math.abs(resources.getDimensionPixelSize(R.dimen.destination_margin_top_info))
+            val heightTitle = peekSize + it.resources.getDimensionPixelSize(R.dimen.destination_padding_info)
+            val heightIndicator = indicator_banner_container.height + it.resources.getDimensionPixelSize(R.dimen.destination_margin_top_indicator)
+            val diffHeight = heightIndicator + heightTitle - Math.abs(it.resources.getDimensionPixelSize(R.dimen.destination_margin_top_info))
 
             val tmpHeight = height - diffHeight - Math.abs(titleBarHeight) - getSoftButtonsBarHeight()
 
@@ -215,47 +215,49 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     }
 
     private fun renderLayout() {
-        (activity as TravelDestinationActivity).setSupportActionBar(travel_homepage_destination_toolbar)
-        (activity as TravelDestinationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        activity?.let {
+            (activity as TravelDestinationActivity).setSupportActionBar(travel_homepage_destination_toolbar)
+            (activity as TravelDestinationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val navIcon = travel_homepage_destination_toolbar.navigationIcon
-        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
-        (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
+            val navIcon = travel_homepage_destination_toolbar.navigationIcon
+            navIcon?.setColorFilter(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
+            (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
-        collapsing_toolbar.title = ""
-        shimmering_back_icon.setOnClickListener { activity?.onBackPressed() }
-        app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            var isShow = false
-            var isShowMoveUpLayout = true
-            var scrollRange = -1
+            collapsing_toolbar.title = ""
+            shimmering_back_icon.setOnClickListener { activity?.onBackPressed() }
+            app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+                var isShow = false
+                var isShowMoveUpLayout = true
+                var scrollRange = -1
 
-            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsing_toolbar.title = cityName
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700), PorterDuff.Mode.SRC_ATOP)
-                    isShow = true
-                } else if (isShow) {
-                    collapsing_toolbar.title = " "
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
-                    isShow = false
-                }
+                override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+                    if (scrollRange == -1) {
+                        scrollRange = appBarLayout.totalScrollRange
+                    }
+                    if (scrollRange + verticalOffset == 0) {
+                        collapsing_toolbar.title = cityName
+                        navIcon?.setColorFilter(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700), PorterDuff.Mode.SRC_ATOP)
+                        isShow = true
+                    } else if (isShow) {
+                        collapsing_toolbar.title = " "
+                        navIcon?.setColorFilter(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
+                        isShow = false
+                    }
 
-                if (verticalOffset < -50) {
-                    arrow_up?.hide()
-                    tv_move_up?.hide()
-                    isShowMoveUpLayout = false
-                } else if (!isShowMoveUpLayout) {
-                    arrow_up?.show()
-                    tv_move_up?.show()
-                    isShowMoveUpLayout = true
-                }
+                    if (verticalOffset < -50) {
+                        arrow_up?.hide()
+                        tv_move_up?.hide()
+                        isShowMoveUpLayout = false
+                    } else if (!isShowMoveUpLayout) {
+                        arrow_up?.show()
+                        tv_move_up?.show()
+                        isShowMoveUpLayout = true
+                    }
 
-                (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
+                    (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
             }
         })
+        }
     }
 
     override fun getAdapterTypeFactory(): TravelDestinationTypeFactory = TravelDestinationAdapterTypeFactory(this, this)
