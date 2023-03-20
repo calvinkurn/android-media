@@ -9,9 +9,9 @@ import androidx.compose.ui.platform.LocalContext
  * This is a sealed class that contains all of the different ways text can be presented to the UI.
  */
 sealed class UiText {
-    data class StringText(val value: String?) : UiText()
+    data class String(val value: kotlin.String?) : UiText()
 
-    data class ResourceText(@StringRes val value: Int?) : UiText()
+    data class Resource(@StringRes val value: Int?) : UiText()
 }
 
 /**
@@ -21,8 +21,8 @@ sealed class UiText {
  */
 fun UiText.getString(context: Context): String? {
     return when (this) {
-        is UiText.StringText -> this.value
-        is UiText.ResourceText -> this.value?.let { context.getString(it) }
+        is UiText.String -> this.value
+        is UiText.Resource -> this.value?.let { context.getString(it) }
     }
 }
 

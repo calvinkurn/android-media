@@ -29,6 +29,7 @@ fun ProductReportScreen(
     onFooterClicked: () -> Unit,
     onScrollTop: (ProductReportReason) -> Unit,
     onGoToForm: (ProductReportReason) -> Unit,
+    onToasterError: (Throwable) -> Unit,
     onFinish: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState()
@@ -58,9 +59,8 @@ fun ProductReportScreen(
                 is ProductReportUiEvent.OnFooterClicked -> onFooterClicked()
                 is ProductReportUiEvent.OnScrollTop -> onScrollTop(it.reason)
                 is ProductReportUiEvent.OnGoToForm -> onGoToForm(it.reason)
-                is ProductReportUiEvent.OnBackPressed -> {
-                    onFinish()
-                }
+                is ProductReportUiEvent.OnBackPressed -> onFinish()
+                is ProductReportUiEvent.OnToasterError -> onToasterError(it.error)
                 else -> {
                 }
             }

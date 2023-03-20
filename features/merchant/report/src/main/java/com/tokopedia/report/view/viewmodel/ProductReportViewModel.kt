@@ -3,7 +3,7 @@ package com.tokopedia.report.view.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common_compose.principles.UiText
+import com.tokopedia.common_compose.utils.UiText
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 class ProductReportViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
-    private val dispatcher: CoroutineDispatchers
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
     companion object {
@@ -79,11 +79,7 @@ class ProductReportViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<ProductReportUiEvent>()
     val uiEvent get() = _uiEvent.asSharedFlow()
 
-    init {
-        getReportReason()
-    }
-
-    private fun getReportReason() = viewModelScope.launch {
+    fun getReportReason() = viewModelScope.launch {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(query, ProductReportReason.Response::class.java)
             val data = graphqlRepository.response(listOf(graphqlRequest))
@@ -94,7 +90,7 @@ class ProductReportViewModel @Inject constructor(
                 state.copy(data = list, allData = list)
             )
         }) { throwable ->
-            _uiState.update { it.copy(error = throwable.message) }
+            _uiEvent.emit(ProductReportUiEvent.OnToasterError(throwable))
         }
     }
 
@@ -170,7 +166,7 @@ class ProductReportViewModel @Inject constructor(
         val id = filterId.lastOrNull() ?: -1
 
         if (id <= 0) {
-            val title = UiText.ResourceText(com.tokopedia.report.R.string.product_report_header)
+            val title = UiText.Resource(com.tokopedia.report.R.string.product_report_header)
             _uiState.update {
                 state.copy(title = title, data = allData)
             }
@@ -178,7 +174,7 @@ class ProductReportViewModel @Inject constructor(
             val reason = allData.firstOrNull {
                 it.categoryId.toIntOrZero() == id
             }
-            val title = UiText.StringText(reason?.value.orEmpty())
+            val title = UiText.String(reason?.value.orEmpty())
             val data = reason?.children.orEmpty()
             _uiState.update {
                 state.copy(title = title, data = data)

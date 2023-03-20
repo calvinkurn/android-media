@@ -6,7 +6,9 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_compose.ui.NestTheme
@@ -18,6 +20,7 @@ import com.tokopedia.report.view.fragment.ProductReportScreen
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.util.extensions.argsExtraString
 import com.tokopedia.report.view.viewmodel.ProductReportViewModel
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 class ProductReportActivity : AppCompatActivity() {
@@ -51,11 +54,12 @@ class ProductReportActivity : AppCompatActivity() {
                     onFooterClicked = ::onFooterClicked,
                     onScrollTop = ::onScrollTop,
                     onGoToForm = ::gotoForm,
-                    onFinish = {
-                        finish()
-                    }
+                    onFinish = ::finish,
+                    onToasterError = ::showToasterError
                 )
             }
+
+            viewModel.getReportReason()
         }
     }
 
@@ -73,6 +77,16 @@ class ProductReportActivity : AppCompatActivity() {
         tracking.eventReportReason(reason.strLabel)
         val intent = ProductReportFormActivity.createIntent(this, reason, productId)
         startActivityForResult(intent, REQ_CODE_GO_FORM)
+    }
+
+    private fun showToasterError(throwable: Throwable) {
+        Toaster.build(
+            view = findViewById(android.R.id.content),
+            text = ErrorHandler.getErrorMessage(this, throwable),
+            duration = Snackbar.LENGTH_INDEFINITE,
+            type = Toaster.TYPE_ERROR,
+            actionText = getString(com.tokopedia.abstraction.R.string.close)
+        ).show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

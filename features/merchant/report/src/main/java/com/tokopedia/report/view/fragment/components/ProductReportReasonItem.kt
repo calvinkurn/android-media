@@ -40,8 +40,8 @@ fun ProductReportReasonItem(
             }
             .fillMaxWidth()
     ) {
-        val contentGuideLineTop = createGuidelineFromTop(12.dp)
-        val contentGuideLineBottom = createGuidelineFromBottom(12.dp)
+        val contentGuideLineTop = createGuidelineFromTop(16.dp)
+        val contentGuideLineBottom = createGuidelineFromBottom(16.dp)
         val contentGuideLineStart = createGuidelineFromStart(16.dp)
         val contentGuideLineEnd = createGuidelineFromEnd(16.dp)
         val (title, subtitle, iconRight, divider) = createRefs()
@@ -55,7 +55,7 @@ fun ProductReportReasonItem(
                     linkTo(
                         start = contentGuideLineStart,
                         top = contentGuideLineTop,
-                        bottom = subtitle.top,
+                        bottom = if (!subtitleVisible) contentGuideLineBottom else subtitle.top,
                         end = iconRight.start,
                         endMargin = 4.dp,
                         horizontalBias = 0f
@@ -67,25 +67,27 @@ fun ProductReportReasonItem(
             )
         )
 
-        NestTypography(
-            modifier = Modifier
-                .constrainAs(subtitle) {
-                    width = Dimension.fillToConstraints
-                    linkTo(
-                        start = contentGuideLineStart,
-                        top = title.bottom,
-                        topMargin = 2.dp,
-                        end = iconRight.start,
-                        endMargin = 4.dp,
-                        bottom = contentGuideLineBottom,
-                        horizontalBias = 0f
-                    )
-                },
-            text = if (subtitleVisible) reason.detail else "",
-            textStyle = NestTheme.typography.body3,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
+        if (subtitleVisible) {
+            NestTypography(
+                modifier = Modifier
+                    .constrainAs(subtitle) {
+                        width = Dimension.fillToConstraints
+                        linkTo(
+                            start = contentGuideLineStart,
+                            top = title.bottom,
+                            topMargin = 2.dp,
+                            end = iconRight.start,
+                            endMargin = 4.dp,
+                            bottom = contentGuideLineBottom,
+                            horizontalBias = 0f
+                        )
+                    },
+                text = reason.detail,
+                textStyle = NestTheme.typography.body3,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
 
         Icon(
             modifier = Modifier

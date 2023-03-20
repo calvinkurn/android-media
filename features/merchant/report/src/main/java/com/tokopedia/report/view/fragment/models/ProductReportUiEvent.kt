@@ -13,5 +13,6 @@ sealed class ProductReportUiEvent {
 
     data class OnScrollTop(val reason: ProductReportReason) : ProductReportUiEvent()
     data class OnGoToForm(val reason: ProductReportReason) : ProductReportUiEvent()
-    object OnBackPressed: ProductReportUiEvent()
+    data class OnToasterError(val error: Throwable) : ProductReportUiEvent()
+    object OnBackPressed : ProductReportUiEvent()
 }
