@@ -3,7 +3,6 @@ package com.tokopedia.tokochat.test.robot.message_bubble
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -14,7 +13,7 @@ object MessageBubbleResult {
 
     fun assertImageAttachmentVisibility(position: Int, isVisible: Boolean) {
         val matcher = if (isVisible) {
-            matches(ViewMatchers.isDisplayed())
+            matches(isDisplayed())
         } else {
             ViewAssertions.doesNotExist()
         }
@@ -26,7 +25,7 @@ object MessageBubbleResult {
 
     fun assertMessageBubbleVisibility(position: Int, isVisible: Boolean) {
         val matcher = if (isVisible) {
-            matches(ViewMatchers.isDisplayed())
+            matches(isDisplayed())
         } else {
             ViewAssertions.doesNotExist()
         }
@@ -60,6 +59,31 @@ object MessageBubbleResult {
     fun assertMessageBubbleBottomSheet() {
         Espresso.onView(
             withId(R.id.tokochat_tv_long_message)
+        ).check(matches(isDisplayed()))
+    }
+
+    fun assertMessageBubbleCensoredVisibility(position: Int, isVisible: Boolean) {
+        val matcher = if (isVisible) {
+            matches(isDisplayed())
+        } else {
+            ViewAssertions.doesNotExist()
+        }
+        Espresso.onView(
+            withRecyclerView(R.id.tokochat_chatroom_rv)
+                .atPositionOnView(position, R.id.tokochat_layout_item_msg_censor)
+        ).check(matcher)
+    }
+
+    fun assertMessageBubbleCensoredText(position: Int, text: String) {
+        Espresso.onView(
+            withRecyclerView(R.id.tokochat_chatroom_rv)
+                .atPositionOnView(position, R.id.tokochat_tv_msg_censor)
+        ).check(matches(withText(text)))
+    }
+
+    fun assertGuideChatBottomSheet() {
+        Espresso.onView(
+            withId(R.id.tokochat_tv_subtitle_guide_chat)
         ).check(matches(isDisplayed()))
     }
 }

@@ -161,7 +161,8 @@ class InboxContactUsFragment :
             val applinkPrefix =
                 context?.resources?.getString(R.string.contactus_chat_bot_applink).orEmpty()
             val appLink = String.format(applinkPrefix, uiState.idMessage)
-            showChatBotWidget(uiState.welcomeMessage, uiState.unReadNotification, appLink)
+            val welcomeMessage = MethodChecker.fromHtmlWithoutExtraSpace(uiState.welcomeMessage)
+            showChatBotWidget(welcomeMessage.toString(), uiState.unReadNotification, appLink)
         } else {
             hideChatBotWidget()
         }
@@ -390,7 +391,8 @@ class InboxContactUsFragment :
         applink: String
     ) {
         chatWidget?.show()
-        chatWidget?.setToolTipDescription(welcomeMessage)
+        val tolTipMessage = getWelcomeMessage(welcomeMessage)
+        chatWidget?.setToolTipDescription(tolTipMessage)
         chatWidget?.setToolTipButtonLister(object : ChatWidgetToolTip.ChatWidgetToolTipListener {
             override fun onClickToolTipButton() {
                 sendGTMClickChatButton()
@@ -398,6 +400,12 @@ class InboxContactUsFragment :
             }
         })
         showChatBotWidgetNotification(isHasUnReadNotification)
+    }
+
+    private fun getWelcomeMessage(message : String) : String {
+        return message.ifEmpty {
+            getString(R.string.tool_tip_tanya_default_value)
+        }
     }
 
     private fun showChatBotWidgetNotification(isShowNotification: Boolean) {

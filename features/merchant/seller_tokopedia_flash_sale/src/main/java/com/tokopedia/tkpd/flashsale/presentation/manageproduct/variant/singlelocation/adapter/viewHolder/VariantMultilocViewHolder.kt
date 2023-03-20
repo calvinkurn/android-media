@@ -2,7 +2,11 @@ package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelo
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailVariantMultilocItemBinding
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener

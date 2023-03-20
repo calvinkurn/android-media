@@ -15,7 +15,6 @@
 /features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
 /features/discovery/home_nav/                           @tokopedia/android-miniondave-dev
 /features/discovery/home_recom/                     	@tokopedia/android-miniondave-dev
-/features/discovery/recentview/                     	@tokopedia/android-miniondave-dev
 /features/discovery/productcard/                    	@tokopedia/android-miniondave-dev
 /features/discovery/shopwidget/                    	    @tokopedia/android-miniondave-dev
 /features/discovery/search/                         	@tokopedia/android-miniondave-dev
@@ -52,6 +51,7 @@
 /features/common/resources_common                   	@tokopedia/android-core-dev
 /features/common/qr_scanner                   	        @tokopedia/android-core-dev
 /features/common/feedback_form                          @tokopedia/android-core-dev
+/features/common/internal_review/                       @tokopedia/android-core-dev
 
 /features/discovery/category_common/                	@tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
@@ -107,6 +107,7 @@
 /features/merchant/seller_tokopedia_flash_sale          @tokopedia/android-minionken-dev
 /features/merchant/product_manage_common/               @tokopedia/android-minionken-dev
 /features/merchant/product_manage_list/                 @tokopedia/android-minionken-dev
+/features/merchant/seller_mvc_creation                  @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev
@@ -128,6 +129,7 @@
 /features/merchant/seller_onboarding/                   @tokopedia/android-minionstuart-dev
 /features/merchant/seller_home_drawer/                  @tokopedia/android-minionstuart-dev
 /features/merchant/seller_feedback/                     @tokopedia/android-minionstuart-dev
+/features/merchant/seller_persona/                      @tokopedia/android-minionstuart-dev
 /libraries/kotlin_extensions/                           @tokopedia/android-minionstuart-dev
 
 /features/content/affiliate_common/     				@tokopedia/android-minionlance-dev
@@ -145,7 +147,6 @@
 /features/recharge/digital_homepage                     @tokopedia/android-minionmark-dev
 /features/recharge/digital_recommendation               @tokopedia/android-minionmark-dev
 /features/recharge/digital_topup_bills                  @tokopedia/android-minionmark-dev
-/features/recharge/digitalproduct                       @tokopedia/android-minionmark-dev
 /features/recharge/recharge_component                   @tokopedia/android-minionmark-dev
 /features/recharge/recharge_credit_card                 @tokopedia/android-minionmark-dev
 /features/recharge/recharge_general                     @tokopedia/android-minionmark-dev
@@ -156,13 +157,11 @@
 /features/recharge/digital_product_detail               @tokopedia/android-minionmark-dev
 
 /features/entertainment/deals               	        @tokopedia/android-minionmark-dev
-/features/entertainment/digital_deals         			@tokopedia/android-minionmark-dev
 /features/entertainment/event                 			@tokopedia/android-minionmark-dev
 /features/entertainment/common_entertainment            @tokopedia/android-minionmark-dev
 
 /features/travel/common_travel                          @tokopedia/android-minionmark-dev
 /features/travel/flight/                                @tokopedia/android-minionmark-dev
-/features/travel/flight_orderlist                       @tokopedia/android-minionmark-dev
 /features/travel/hotel/                                 @tokopedia/android-minionmark-dev
 /features/travel/travel_country_code                    @tokopedia/android-minionmark-dev
 /features/travel/travel_homepage                        @tokopedia/android-minionmark-dev
@@ -201,7 +200,6 @@
 /features/logistic/logisticseller/                      @tokopedia/android-minionbob-dev
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
-/features/media/media-common/			                @tokopedia/android-minionkevin-dev
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 /features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev @tokopedia/android-minionlance-dev
 /features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
@@ -259,7 +257,6 @@
 
 /features/fintech/common_wallet         				@tokopedia/android-minionmark-dev
 /features/fintech/fintech_home_widget         			@tokopedia/android-minionmark-dev
-/features/fintech/instant_loan          				@tokopedia/android-minionmark-dev
 /features/fintech/layanan_finansial                     @tokopedia/android-minionmark-dev
 /features/fintech/paylater                              @tokopedia/android-minionmark-dev
 /features/fintech/pdp_fintech_widget                    @tokopedia/android-minionmark-dev
@@ -328,6 +325,7 @@
 /libraries/fingerprint/									@tokopedia/android-core-dev
 /libraries/floating_window                              @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
 /libraries/graphql/									    @tokopedia/android-core-dev
+/libraries/image_assets/                                @tokopedia/android-minionken-dev @tokopedia/android-minionstuart-dev
 /libraries/image_picker/								@tokopedia/android-core-dev
 /libraries/image_picker_insta/							@tokopedia/android-minionlance-dev
 /libraries/image_picker_insta_common/					@tokopedia/android-minionlance-dev
@@ -386,6 +384,7 @@
 /libraries/common_compose                               @tokopedia/android-core-dev
 /libraries/universal_sharing/							@tokopedia/android-minionkevin-dev
 /libraries/sse/                                         @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
+/libraries/data_explorer/                               @tokopedia/android-core-dev
 
 /config/detekt/                                         @tokopedia/android-gatekeeper-linter
 /buildconfig/                                           @tokopedia/android-core-dev

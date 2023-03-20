@@ -29,12 +29,12 @@ class CartShopViewHolderRobot(private val view: View) {
         assertEquals(View.GONE, view.findViewById<View>(R.id.separator_free_shipping).visibility)
     }
 
-    // BO Affordability
-    fun assertShowBoAffordabilityTicker() {
-        assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_bo_affordability).visibility)
+    // Cart Shop Group Ticker
+    fun assertShowCartShopGroupTicker() {
+        assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_cart_shop_ticker).visibility)
     }
 
-    fun assertNotShowBoAffordabilityTicker() {
-        assertEquals(View.GONE, view.findViewById<View>(R.id.layout_bo_affordability).visibility)
+    fun assertNotShowCartShopGroupTicker() {
+        assertEquals(View.GONE, view.findViewById<View>(R.id.layout_cart_shop_ticker).visibility)
     }
 }

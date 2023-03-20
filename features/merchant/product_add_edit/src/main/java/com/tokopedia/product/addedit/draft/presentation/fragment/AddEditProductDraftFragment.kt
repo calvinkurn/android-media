@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -86,6 +88,8 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         mMenu = menu
+        mMenu?.findItem(R.id.item_add_product)?.icon = getIconUnifyDrawable(context ?: return,
+            IconUnify.ADD, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         inflater.inflate(R.menu.menu_product_draft, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }

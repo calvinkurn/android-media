@@ -136,7 +136,8 @@
                     "is_preorder": false,
                     "duration": ""
                   },
-                  "enable_bo_affordability": true
+                  "enable_bo_affordability": true,
+                  "enable_shop_group_ticker_cart_aggregator": true
                 },
                 "pinned": {
                   "is_pinned": false,
@@ -774,7 +775,8 @@
                     "is_preorder": false,
                     "duration": ""
                   },
-                  "enable_bo_affordability": true
+                  "enable_bo_affordability": true,
+                  "enable_shop_group_ticker_cart_aggregator": true
                 },
                 "pinned": {
                   "is_pinned": false,
@@ -1333,7 +1335,8 @@
                     "is_preorder": false,
                     "duration": ""
                   },
-                  "enable_bo_affordability": false
+                  "enable_bo_affordability": false,
+                  "enable_shop_group_ticker_cart_aggregator": false
                 },
                 "pinned": {
                   "is_pinned": false,
@@ -1920,7 +1923,8 @@
                     "is_preorder": false,
                     "duration": ""
                   },
-                  "enable_bo_affordability": false
+                  "enable_bo_affordability": false,
+                  "enable_shop_group_ticker_cart_aggregator": false
                 },
                 "pinned": {
                   "is_pinned": false,
@@ -2215,7 +2219,8 @@
                     "is_preorder": false,
                     "duration": ""
                   },
-                  "enable_bo_affordability": false
+                  "enable_bo_affordability": false,
+                  "enable_shop_group_ticker_cart_aggregator": true
                 },
                 "pinned": {
                   "is_pinned": false,

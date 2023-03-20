@@ -25,12 +25,12 @@ object LastApplyUiMapper {
 
     fun mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel: PromoUiModel): LastApplyUiModel {
         return LastApplyUiModel(
-                codes = promoUiModel.codes,
-                voucherOrders = mapVoucherOrders(promoUiModel.voucherOrderUiModels),
-                additionalInfo = mapAdditionalInfo(promoUiModel.additionalInfoUiModel),
-                message = mapMessageUiModel(promoUiModel.messageUiModel),
-                defaultEmptyPromoMessage = if (promoUiModel.titleDescription.isNotBlank()) promoUiModel.titleDescription else "",
-                benefitSummaryInfo = promoUiModel.benefitSummaryInfoUiModel
+            codes = promoUiModel.codes,
+            voucherOrders = mapVoucherOrders(promoUiModel.voucherOrderUiModels),
+            additionalInfo = mapAdditionalInfo(promoUiModel.additionalInfoUiModel),
+            message = mapMessageUiModel(promoUiModel.messageUiModel),
+            defaultEmptyPromoMessage = if (promoUiModel.titleDescription.isNotBlank()) promoUiModel.titleDescription else "",
+            benefitSummaryInfo = promoUiModel.benefitSummaryInfoUiModel
         )
     }
 
@@ -46,26 +46,26 @@ object LastApplyUiMapper {
 
     private fun mapVoucherOrdersItem(promoCheckoutVoucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel): LastApplyVoucherOrdersItemUiModel {
         return LastApplyVoucherOrdersItemUiModel(
-                code = promoCheckoutVoucherOrdersItemUiModel.code,
-                uniqueId = promoCheckoutVoucherOrdersItemUiModel.uniqueId,
-                message = mapMessageUiModel(promoCheckoutVoucherOrdersItemUiModel.messageUiModel)
+            code = promoCheckoutVoucherOrdersItemUiModel.code,
+            uniqueId = promoCheckoutVoucherOrdersItemUiModel.uniqueId,
+            message = mapMessageUiModel(promoCheckoutVoucherOrdersItemUiModel.messageUiModel)
         )
     }
 
     private fun mapMessageUiModel(messageUiModel: MessageUiModel): LastApplyMessageUiModel {
         return LastApplyMessageUiModel(
-                color = messageUiModel.color,
-                state = messageUiModel.state,
-                text = messageUiModel.text
+            color = messageUiModel.color,
+            state = messageUiModel.state,
+            text = messageUiModel.text
         )
     }
 
     private fun mapAdditionalInfo(additionalInfoUiModel: AdditionalInfoUiModel): LastApplyAdditionalInfoUiModel {
         return LastApplyAdditionalInfoUiModel(
-                messageInfo = mapMessageInfo(additionalInfoUiModel.messageInfoUiModel),
-                errorDetail = mapErrorInfo(additionalInfoUiModel.errorDetailUiModel),
-                emptyCartInfo = mapEmptyCartInfo(additionalInfoUiModel.emptyCartInfoUiModel),
-                usageSummaries = mapUsageSummaries(additionalInfoUiModel.usageSummariesUiModel)
+            messageInfo = mapMessageInfo(additionalInfoUiModel.messageInfoUiModel),
+            errorDetail = mapErrorInfo(additionalInfoUiModel.errorDetailUiModel),
+            emptyCartInfo = mapEmptyCartInfo(additionalInfoUiModel.emptyCartInfoUiModel),
+            usageSummaries = mapUsageSummaries(additionalInfoUiModel.usageSummariesUiModel)
         )
     }
 
@@ -75,29 +75,32 @@ object LastApplyUiMapper {
 
     private fun mapMessageInfo(messageInfoUiModel: MessageInfoUiModel): LastApplyMessageInfoUiModel {
         return LastApplyMessageInfoUiModel(
-                detail = messageInfoUiModel.detail,
-                message = messageInfoUiModel.message)
+            detail = messageInfoUiModel.detail,
+            message = messageInfoUiModel.message
+        )
     }
 
     private fun mapErrorInfo(errorDetailUiModel: ErrorDetailUiModel): LastApplyErrorDetailUiModel {
         return LastApplyErrorDetailUiModel(
-                message = errorDetailUiModel.message)
+            message = errorDetailUiModel.message
+        )
     }
 
     private fun mapEmptyCartInfo(emptyCartInfo: EmptyCartInfoUiModel): LastApplyEmptyCartInfoUiModel {
         return LastApplyEmptyCartInfoUiModel(
-                imgUrl = emptyCartInfo.imgUrl,
-                message = emptyCartInfo.message,
-                detail = emptyCartInfo.detail
+            imgUrl = emptyCartInfo.imgUrl,
+            message = emptyCartInfo.message,
+            detail = emptyCartInfo.detail
         )
     }
 
     private fun mapUsageSummariesUiModel(usageSummariesUiModel: UsageSummariesUiModel): LastApplyUsageSummariesUiModel {
         return LastApplyUsageSummariesUiModel(
-                description = usageSummariesUiModel.desc,
-                type = usageSummariesUiModel.type,
-                amountStr = usageSummariesUiModel.amountStr,
-                amount = usageSummariesUiModel.amount,
-                currencyDetailsStr = usageSummariesUiModel.currencyDetailStr)
+            description = usageSummariesUiModel.desc,
+            type = usageSummariesUiModel.type,
+            amountStr = usageSummariesUiModel.amountStr,
+            amount = usageSummariesUiModel.amount,
+            currencyDetailsStr = usageSummariesUiModel.currencyDetailStr
+        )
     }
 }
