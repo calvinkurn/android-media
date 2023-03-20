@@ -166,7 +166,8 @@
             app:layout_constraintEnd_toEndOf="@+id/tv_product_title"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/iv_product_image"
-            app:layout_constraintTop_toBottomOf="@+id/iv_now"
+            app:layout_constraintTop_toBottomOf="@+id/iv_play_product_stars"
+            app:layout_goneMarginTop="@dimen/unify_space_24"
             tools:visibility="visible"
             >
 
@@ -241,6 +242,35 @@
             app:typographyWeight="reguler"
             tools:visibility="visible"
             />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_play_product_stars"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            app:icon_color_light_disabled="@color/Unify_Y300"
+            app:icon_color_light_enable="@color/Unify_Y300"
+            app:icon_color_night_disabled="@color/Unify_Y300"
+            app:icon_color_night_enable="@color/Unify_Y300"
+            app:icon_name="STAR_FILLED"
+            app:layout_constraintEnd_toStartOf="@id/tv_play_product_social_proof"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/iv_now"
+            app:layout_constraintTop_toBottomOf="@+id/iv_now"
+            android:layout_marginEnd="@dimen/unify_space_2"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_play_product_social_proof"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_play_product_stars"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_play_product_stars"
+            app:layout_constraintTop_toBottomOf="@+id/iv_now"
+            app:layout_constraintVertical_bias="0.0"
+            app:typographyType="body_3"
+            tools:text="4.8 | Terjual 1.8k" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

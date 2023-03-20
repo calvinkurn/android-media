@@ -122,6 +122,14 @@ class ProductBottomSheetCardView(
 
         binding.btnProductFirst.generateButton(firstButton.color)
         binding.btnProductSecond.generateButton(lastButton.color)
+
+        //Social Proof
+        val isSocialProofAvailable = item.rating.isNotBlank() || item.soldQuantity.isNotBlank()
+        binding.ivPlayProductStars.showWithCondition(item.rating.isNotBlank())
+        binding.tvPlayProductSocialProof.showWithCondition(isSocialProofAvailable)
+        binding.tvPlayProductSocialProof.text = buildString {
+            item.rating + if (item.soldQuantity.isNotBlank()) "|" else "" +item.soldQuantity
+        }
     }
 
     private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
