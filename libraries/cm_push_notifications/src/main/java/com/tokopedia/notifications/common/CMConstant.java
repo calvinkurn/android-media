@@ -13,6 +13,7 @@ public interface CMConstant {
         String KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED = "sellerapp_cm_add_token_enabled";
         String NOTIFICATION_DELETION_INTERVAL_KEY = "cm_notification_deletion_interval";
         String KEY_GENERAL_PROMPT_TIME_INTERVAL = "android_cm_general_prompt_gap_time_interval";
+        String KEY_CM_REMINDER_PROMPT_PAGE_FREQ = "android_cm_reminder_prompt_page_freq";
     }
 
 
@@ -37,9 +38,11 @@ public interface CMConstant {
     String EXTRA_PRE_DEF_ACTION = "extra_pre_def_action";
     String HTTP = "http";
     String WWW = "www";
+    String SUFFIX_REMINDER_PROMPT_PAGE_DATA = "_reminder_prompt_data";
 
     interface CMPrefKeys{
         String KEY_WIFI_MAC_ADDRESS = "key_wifi_mac_address";
+        String KEY_REMINDER_PROMPT_APP_DATA = "reminder_prompt_app_data";
     }
 
 
