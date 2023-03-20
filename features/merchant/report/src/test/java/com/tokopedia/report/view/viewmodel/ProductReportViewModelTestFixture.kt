@@ -39,6 +39,7 @@ abstract class ProductReportViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+        viewModel = ProductReportViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
     }
 
     @After
@@ -79,7 +80,7 @@ abstract class ProductReportViewModelTestFixture {
     protected fun `get response success`(response: GraphqlResponse): List<ProductReportReason> {
         val expected = response.getSuccessData<ProductReportReason.Response>().data
         onGetReportReasonSuccess_thenReturn(response)
-        viewModel = ProductReportViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
+        viewModel.onEvent(ProductReportUiEvent.LoadData)
         verifyUseCaseCalled()
         return expected
     }

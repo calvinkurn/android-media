@@ -79,27 +79,9 @@ class ProductReportViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<ProductReportUiEvent>(replay = 1)
     val uiEvent get() = _uiEvent.asSharedFlow()
 
-    init {
-        getReportReason()
-    }
-
-    private fun getReportReason() = viewModelScope.launch {
-        launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(query, ProductReportReason.Response::class.java)
-            val data = graphqlRepository.response(listOf(graphqlRequest))
-            val list = data.getSuccessData<ProductReportReason.Response>().data
-            val state = _uiState.value
-
-            updateState(
-                state.copy(data = list, allData = list)
-            )
-        }) { throwable ->
-            _uiEvent.emit(ProductReportUiEvent.OnToasterError(throwable))
-        }
-    }
-
     fun onEvent(event: ProductReportUiEvent) = viewModelScope.launch {
         when (event) {
+            is ProductReportUiEvent.LoadData -> getReportReason()
             is ProductReportUiEvent.OnItemClicked -> {
                 onItemClicked(reason = event.reason)
             }
@@ -110,21 +92,34 @@ class ProductReportViewModel @Inject constructor(
         }
     }
 
+    private fun getReportReason() = launchCatchError(block = {
+        val graphqlRequest = GraphqlRequest(query, ProductReportReason.Response::class.java)
+        val data = graphqlRepository.response(listOf(graphqlRequest))
+        val list = data.getSuccessData<ProductReportReason.Response>().data
+        val state = _uiState.value
+
+        updateState(
+            state.copy(data = list, allData = list)
+        )
+    }) { throwable ->
+        _uiEvent.emit(ProductReportUiEvent.OnToasterError(throwable))
+    }
+
     private fun onItemClicked(reason: ProductReportReason) = viewModelScope.launch {
         if (reason.children.isNotEmpty()) {
             setChildrenIsNotEmpty(reason = reason)
         } else {
             val filterId = _uiState.value.filterId.toMutableList()
-            val baseParent = _uiState.value.baseParent
-            val fieldReason = if (baseParent != null && filterId.isNotEmpty()) {
+            val parent = _uiState.value.baseParent ?: reason
+            val fieldReason = if (filterId.isNotEmpty()) {
                 reason.copy(
-                    additionalInfo = baseParent.additionalInfo,
-                    additionalFields = baseParent.additionalFields
+                    additionalInfo = parent.additionalInfo,
+                    additionalFields = parent.additionalFields
                 ).also {
-                    it.parentLabel = baseParent.strLabel
+                    it.parentLabel = parent.strLabel
                 }
             } else {
-                reason
+                parent
             }
 
             _uiEvent.emit(ProductReportUiEvent.OnGoToForm(fieldReason))

@@ -47,6 +47,8 @@ class ProductReportActivity : AppCompatActivity() {
         injectComponent()
         super.onCreate(savedInstanceState)
 
+        viewModel.onEvent(ProductReportUiEvent.LoadData)
+
         setContent {
             NestTheme {
                 ProductReportScreen(

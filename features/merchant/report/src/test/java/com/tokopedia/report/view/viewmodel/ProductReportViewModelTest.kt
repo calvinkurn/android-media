@@ -4,16 +4,15 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
     private val categoryIdLvl1 = "1"
-    private val categoryIdLvl2 = "1"
-    private val categoryIdLvl3 = "1"
-    private val dataReasonEmpty = listOf(ProductReportReason())
+    private val categoryIdLvl2 = "2"
+    private val categoryIdLvl3 = "3"
+    private val dataReasonChildrenEmpty = listOf(ProductReportReason())
     private val dataReasonHaveChildren = listOf(
         ProductReportReason(
             categoryId = categoryIdLvl1,
@@ -34,7 +33,7 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
 
     @Test
     fun `when getReportReason success should return expected result`() {
-        val expectedResponse = `get gql response success`(dataReasonEmpty)
+        val expectedResponse = `get gql response success`(dataReasonChildrenEmpty)
         val expected = `get response success`(expectedResponse)
 
         runCollectingUiState {
@@ -50,12 +49,13 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
         onGetReportReasonError_thenReturn(errorGql)
 
         // when get init reason
-        viewModel = ProductReportViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
-        verifyUseCaseCalled()
+        viewModel.onEvent(ProductReportUiEvent.LoadData)
 
         runCollectingUiEvent {
             assertTrue(it.last() is ProductReportUiEvent.OnToasterError)
         }
+
+        verifyUseCaseCalled()
     }
 
     // region event state
@@ -146,13 +146,13 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
     @Test
     fun `event on item clicked with children is empty`() {
         // given
-        val response = `get gql response success`(dataReasonEmpty)
+        val response = `get gql response success`(dataReasonChildrenEmpty)
         `get response success`(response)
 
         // when
         viewModel.onEvent(
             ProductReportUiEvent.OnItemClicked(
-                reason = dataReasonEmpty.first()
+                reason = dataReasonChildrenEmpty.first()
             )
         )
 
@@ -165,7 +165,7 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
     @Test
     fun `event on back pressed`() {
         // given
-        viewModel = ProductReportViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
+        viewModel.onEvent(ProductReportUiEvent.LoadData)
 
         // when
         viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
@@ -174,6 +174,8 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
         runCollectingUiEvent {
             assertTrue(it.last() is ProductReportUiEvent.OnBackPressed)
         }
+
+        verifyUseCaseCalled()
     }
 
     @Test
@@ -193,7 +195,7 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
     @Test
     fun `event on footer click`() {
         // given
-        viewModel = ProductReportViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
+        viewModel.onEvent(ProductReportUiEvent.LoadData)
 
         // when
         viewModel.onEvent(ProductReportUiEvent.OnFooterClicked(""))
@@ -202,6 +204,8 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
         runCollectingUiEvent {
             assertTrue(it.last() is ProductReportUiEvent.OnFooterClicked)
         }
+
+        verifyUseCaseCalled()
     }
     // endregion event state
 }

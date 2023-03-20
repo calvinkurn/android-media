@@ -8,6 +8,7 @@ import com.tokopedia.report.data.model.ProductReportReason
  **/
 
 sealed class ProductReportUiEvent {
+    object LoadData : ProductReportUiEvent()
     data class OnItemClicked(val reason: ProductReportReason) : ProductReportUiEvent()
     data class OnFooterClicked(val url: String) : ProductReportUiEvent()
 
