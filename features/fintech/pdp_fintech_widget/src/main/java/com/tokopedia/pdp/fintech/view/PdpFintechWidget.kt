@@ -176,7 +176,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                     fintechRedirectionWidgetDataClass.userStatus, NOT_BRANDER_CHIPS,
                     fintechRedirectionWidgetDataClass.installmentAmout,
                     "${fintechRedirectionWidgetDataClass.tenure}",
-                    fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink,
+                    fintechRedirectionWidgetDataClass.gatewayCode,
+                    rediretionLink,
                     fintechRedirectionWidgetDataClass.promoName,
                 )
             )
@@ -188,7 +189,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                     fintechRedirectionWidgetDataClass.userStatus, BRANDER_CHIPS,
                     fintechRedirectionWidgetDataClass.installmentAmout,
                     "${fintechRedirectionWidgetDataClass.tenure}",
-                    fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink,
+                    fintechRedirectionWidgetDataClass.gatewayCode,
+                    rediretionLink,
                     fintechRedirectionWidgetDataClass.promoName,
                 )
             )

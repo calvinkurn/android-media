@@ -47,6 +47,11 @@ const val GQL_PAYLATER_SIMULATION_V3 = """
               status
               header
             }
+            ticker {
+              is_shown
+              type
+              content
+            }
             cta {
               name
               android_url
@@ -116,6 +121,7 @@ const val GQL_PAYLATER_ACTIVATION = """
       data {
       gateway_id
       payment_gateway_code
+      gateway_code
       gateway_name
       subtitle
       subtitle2

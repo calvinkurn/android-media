@@ -22,6 +22,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
+        freeCompilerArgs += [
+                "-opt-in=androidx.benchmark.macro.ExperimentalMetricApi"
+        ]
     }
 
     signingConfigs {

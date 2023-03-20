@@ -3,7 +3,7 @@ package com.tokopedia.fcmcommon
 interface FirebaseMessagingManager {
     fun onNewToken(newToken: String?)
     fun isNewToken(token: String): Boolean
-    fun syncFcmToken(listener: SyncListener)
+    fun syncFcmToken()
     fun currentToken(): String
 
     interface SyncListener {

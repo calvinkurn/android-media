@@ -10,6 +10,7 @@ abstract class BaseShopHomeWidgetUiModel : Visitable<ShopHomeAdapterTypeFactory>
     abstract val name: String
     abstract val type: String
     abstract val header: Header
+    abstract val isFestivity: Boolean
     var widgetState: WidgetState = WidgetState.INIT
     var isNewData: Boolean = false
     var widgetMasterId = ""

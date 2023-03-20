@@ -8,9 +8,11 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promocheckout.common.R as promoR
 
-class OrderPromoCard(private val binding: CardOrderPromoBinding,
-                     private val listener: OrderPromoCardListener,
-                     private val analytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
+class OrderPromoCard(
+    private val binding: CardOrderPromoBinding,
+    private val listener: OrderPromoCardListener,
+    private val analytics: OrderSummaryAnalytics
+) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         const val VIEW_TYPE = 6

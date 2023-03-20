@@ -6,8 +6,12 @@ import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.R
 
-fun ProductData.getTextDescription(context: Context, shortUrl: String): String {
-    return context.getString(R.string.product_share_text_description, productName, priceText, shopName) + "\n$shortUrl"
+fun ProductData.getTextDescriptionNonDisc(context: Context, shortUrl: String): String {
+    return context.getString(R.string.product_share_text_description_no_discount, priceText) + "\n$shortUrl"
+}
+
+fun ProductData.getTextDescriptionDisc(context: Context, shortUrl: String, disc: Float): String {
+    return context.getString(R.string.product_share_text_description_discount, "$disc%", priceText) + "\n$shortUrl"
 }
 
 fun ProductData.getShareContent(shortUrl: String): String {
