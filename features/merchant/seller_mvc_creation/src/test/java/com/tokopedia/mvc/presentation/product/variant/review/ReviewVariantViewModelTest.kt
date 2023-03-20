@@ -5,8 +5,10 @@ import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.Variant
 import com.tokopedia.mvc.domain.entity.VariantResult
 import com.tokopedia.mvc.domain.usecase.ProductV3UseCase
+import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEffect
 import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEvent
 import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantUiState
+import com.tokopedia.mvc.presentation.product.variant.select.uimodel.SelectVariantEffect
 import com.tokopedia.mvc.presentation.product.variant.select.uimodel.SelectVariantEvent
 import com.tokopedia.mvc.presentation.product.variant.select.uimodel.SelectVariantUiState
 import com.tokopedia.network.exception.MessageErrorException
@@ -14,6 +16,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -920,6 +923,250 @@ class ReviewVariantViewModelTest {
     //endregion
 
     //region shouldSelectVariant
+    //endregion
+
+    //region TapSelectButton
+    @Test
+    fun `when tap select button, should emit ConfirmUpdateVariant along with variant ids`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                )
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0), isEligible = true)
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0), isEligible = true)
+            val selectedProduct =
+                SelectedProduct(parentProductId = product.id, variantProductIds = listOf(111, 112))
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    )
+                )
+            )
+
+            val emittedEffects = arrayListOf<ReviewVariantEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            viewModel.processEvent(
+                ReviewVariantEvent.FetchProductVariants(
+                    isParentProductSelected = false,
+                    selectedProduct = selectedProduct,
+                    originalVariantIds = listOf(firstVariant.variantId, secondVariant.variantId),
+                    isVariantCheckable = true,
+                    isVariantDeletable = true
+                )
+            )
+
+            //When
+            viewModel.processEvent(ReviewVariantEvent.TapSelectButton)
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+
+            assertEquals(
+                ReviewVariantEffect.ConfirmUpdateVariant(
+                    setOf(firstVariant.variantId, secondVariant.variantId)
+                ),
+                emittedEffect
+            )
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+
+    //region TapBulkDeleteVariant
+    @Test
+    fun `when tap bulk delete variant button, should emit ShowBulkDeleteVariantConfirmationDialog along with selected variant count`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                )
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0), isEligible = true)
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0), isEligible = true)
+            val selectedProduct =
+                SelectedProduct(parentProductId = product.id, variantProductIds = listOf(111, 112))
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    )
+                )
+            )
+
+            val emittedEffects = arrayListOf<ReviewVariantEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            viewModel.processEvent(
+                ReviewVariantEvent.FetchProductVariants(
+                    isParentProductSelected = false,
+                    selectedProduct = selectedProduct,
+                    originalVariantIds = listOf(firstVariant.variantId, secondVariant.variantId),
+                    isVariantCheckable = true,
+                    isVariantDeletable = true
+                )
+            )
+
+            viewModel.processEvent(ReviewVariantEvent.AddVariantToSelection(firstVariant.variantId))
+
+            //When
+            viewModel.processEvent(ReviewVariantEvent.TapBulkDeleteVariant)
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+
+            assertEquals(
+                ReviewVariantEffect.ShowBulkDeleteVariantConfirmationDialog(toDeleteProductCount = 1),
+                emittedEffect
+            )
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+    //region TapRemoveVariant
+    @Test
+    fun `when tap remove variant, should emit ShowDeleteVariantConfirmationDialog`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                )
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0), isEligible = true)
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0), isEligible = true)
+            val selectedProduct =
+                SelectedProduct(parentProductId = product.id, variantProductIds = listOf(111, 112))
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    )
+                )
+            )
+
+            val emittedEffects = arrayListOf<ReviewVariantEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            viewModel.processEvent(
+                ReviewVariantEvent.FetchProductVariants(
+                    isParentProductSelected = false,
+                    selectedProduct = selectedProduct,
+                    originalVariantIds = listOf(firstVariant.variantId, secondVariant.variantId),
+                    isVariantCheckable = true,
+                    isVariantDeletable = true
+                )
+            )
+
+            //When
+            viewModel.processEvent(ReviewVariantEvent.TapRemoveVariant(firstVariant.variantId))
+
+            //Then
+            val emittedEffect = emittedEffects.last()
+
+
+            assertEquals(
+                ReviewVariantEffect.ShowDeleteVariantConfirmationDialog(productId = firstVariant.variantId),
+                emittedEffect
+            )
+
+            job.cancel()
+        }
+    }
+    //endregion
+
+    //region processEvent
+    @Test
+    fun `When unlisted event is triggered, should not emit any effect`() {
+        runBlockingTest {
+            //When
+            viewModel.processEvent(mockk())
+
+            val emittedEffects = arrayListOf<ReviewVariantEffect>()
+
+            val job = launch {
+                viewModel.uiEffect.toList(emittedEffects)
+            }
+
+            //Then
+            val actualEffect = emittedEffects.lastOrNull()
+
+            assertEquals(null, actualEffect)
+
+            job.cancel()
+        }
+    }
     //endregion
 
     private fun mockResponse(

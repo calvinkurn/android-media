@@ -53,7 +53,7 @@ class ReviewVariantViewModel @Inject constructor(
                 _uiEffect.tryEmit(ReviewVariantEffect.ConfirmUpdateVariant(updatedVariantIds))
             }
             is ReviewVariantEvent.TapBulkDeleteVariant -> {
-                val variantToDeleteCount = currentState.variants.count { it.isSelected }
+                val variantToDeleteCount = currentState.variants.filter { it.isSelected }.size
                 _uiEffect.tryEmit(ReviewVariantEffect.ShowBulkDeleteVariantConfirmationDialog(variantToDeleteCount))
             }
             ReviewVariantEvent.ApplyBulkDeleteVariant -> handleBulkDeleteVariant()
