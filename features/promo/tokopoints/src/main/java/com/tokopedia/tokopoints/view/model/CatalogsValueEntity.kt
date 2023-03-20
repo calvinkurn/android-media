@@ -128,4 +128,58 @@ data class CatalogsValueEntity(
         @SerializedName("activePeriodDate")
         var activePeriodDate: String? = null,
 
-)
+        @SerializedName("globalPromoCodes")
+        var globalPromoCodes: ArrayList<GlobalPromoCode>? = null,
+
+        @SerializedName("actionCTA")
+        var actionCTA: ActionCta? = null,
+
+){
+    data class GlobalPromoCode(
+        @SerializedName("title")
+        var title: String? = null,
+
+        @SerializedName("code")
+        var code: String? = null,
+
+        @SerializedName("dynamicInfos")
+        var dynamicInfos: ArrayList<String>? = null,
+
+        @SerializedName("toasters")
+        var toasters: ArrayList<Toaster>? = null,
+    ){
+        data class Toaster(
+
+            @SerializedName("type")
+            var type: String? = null,
+
+            @SerializedName("message")
+            var message: String? = null,
+        )
+
+    }
+    data class ActionCta(
+
+        @SerializedName("icon")
+        var icon: String? = null,
+
+        @SerializedName("text")
+        var text: String? = null,
+
+        @SerializedName("url")
+        var url: String? = null,
+
+        @SerializedName("applink")
+        var applink: String? = null,
+
+        @SerializedName("type")
+        var type: String? = null,
+
+        @SerializedName("isShown")
+        var isShown: Boolean? = null,
+
+        @SerializedName("isDisabled")
+        var isDisabled: Boolean? = null,
+
+    )
+}

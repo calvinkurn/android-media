@@ -1,6 +1,8 @@
 package com.tokopedia.tokopoints.view.catalogdetail
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
@@ -27,6 +29,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
@@ -42,11 +45,15 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.CATALOG_CLAIM_MESSAGE
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import kotlinx.android.synthetic.main.tp_content_coupon_catalog.*
 import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
+import kotlinx.android.synthetic.main.tp_fragment_catalog_listing.view.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import rx.Observable
 import rx.Subscriber
@@ -88,6 +95,10 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private var imgBanner: ImageView? = null
     private var labelPoint: Typography? = null
     private var textDiscount: Typography? = null
+    private var tv_coupon_title: Typography? = null
+    private var tv_code: Typography? = null
+    private var tv_dynamic_infos: Typography? = null
+    private var btn_action_claim: UnifyButton? = null
 
     override val activityContext: Context
         get() = requireActivity()
@@ -234,6 +245,22 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         textDiscount = view.findViewById(R.id.text_point_discount)
         pointValueText = view.findViewById(R.id.text_point_value_label)
 
+        tv_coupon_title = view.findViewById(R.id.tv_coupon_title)
+        tv_code = view.findViewById(R.id.tv_code)
+        tv_dynamic_infos = view.findViewById(R.id.tv_dynamic_infos)
+        btn_action_claim = view.findViewById(R.id.btn_action_claim)
+
+//        val img = context?.let { ContextCompat.getDrawable(it, com.tokopedia.iconunify.R.drawable.iconunify_copy) }
+//
+//        val pixelDrawableSize = tv_code?.getLineHeight()?.times(1.0)?.let { Math.round(it) }; // Or the percentage you like (0.8, 0.9, etc.)
+//        pixelDrawableSize?.toInt()?.let { img?.setBounds(0, 0, it, it) }
+//        tv_code?.setCompoundDrawables(
+//            null, //left
+//            null, //top
+//            img, //right
+//            null //bottom
+//        );
+
     }
 
     private fun initListener() {
@@ -363,13 +390,104 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             showCouponError()
             return
         }
+
+        renderOldUi(data)
+        if (data.catalogType != 12 && data.catalogType != 13) {
+            btnAction2?.show()
+            btnAction2?.isEnabled = !data.isDisabledButton
+            description?.text = data.title
+            btnAction2?.text = data.buttonStr
+            btnAction2?.setBackgroundResource(R.drawable.bg_button_buy_green_tokopoints)
+
+        }
+        else {
+            how_to_use.hide()
+            how_to_use_content.hide()
+            gift_section_main_layout.hide()
+            tp_bottom_separator.hide()
+            if(data.globalPromoCodes?.isNotEmpty() == true){
+                layout_coupon_code.show()
+            }
+            else{
+                layout_coupon_code.hide()
+            }
+            data.globalPromoCodes?.first().let { promoCode ->
+                run {
+                    val code = promoCode?.code
+                    tv_code?.setOnClickListener {
+                        val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("Coupon Code", code)
+                        clipboard.setPrimaryClip(clip)
+                        promoCode?.toasters?.get(0)?.message?.let { it1 ->
+                            view?.let {
+                                Toaster.build(it, it1).show()
+                            }
+                        }
+                    }
+                    tv_code?.text = promoCode?.code
+                    tv_coupon_title?.text = promoCode?.title
+                    val sb = java.lang.StringBuilder()
+                    promoCode?.dynamicInfos?.forEach {
+                        sb.append("\u25CF $promoCode")
+                    }
+                    tv_dynamic_infos?.text = sb
+                }
+            }
+            when (data.actionCTA?.type) {
+                "redirect" -> {
+                    if(data.actionCTA?.isShown == true){
+                        btn_action_claim?.show()
+                        catalog_bottom_section.hide()
+                        btn_action_claim?.text = data.actionCTA?.text
+                        btn_action_claim?.isEnabled = data.actionCTA?.isDisabled == false
+                        btn_action_claim?.setOnClickListener{
+                            if (mUserSession?.isLoggedIn == true) {
+                                RouteManager.route(context, data.actionCTA?.applink)
+                            } else {
+                                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+                            }
+                            AnalyticsTrackerUtil.sendEvent(context,
+                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                                mCouponName)
+                        }
+                    }
+                }
+                "redeem" -> {
+                    btn_action_claim?.hide()
+                    catalog_bottom_section.show()
+                    btnAction2?.text = "Klaim"
+                    btnAction2?.isEnabled = data.actionCTA?.isDisabled == false
+                }
+            }
+        }
+        //start catalog status timer
+        mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(),
+            CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(), TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Long?>() {
+                    override fun onCompleted() {}
+                    override fun onError(e: Throwable) {}
+                    override fun onNext(aLong: Long?) {
+                        mViewModel.fetchLatestStatus(Arrays.asList(data.id))
+                    }
+                })
+        //Coupon impression ga
+        AnalyticsTrackerUtil.sendEvent(context,
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_COUPON,
+                mCouponName)
+
+    }
+
+    private fun renderOldUi(data: CatalogsValueEntity) {
+
         mCouponName = data.title
         giftImage?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.ic_catalog_gift_btn), null, null, null)
-        btnAction2?.show()
-        btnAction2?.isEnabled = !data.isDisabledButton
-        description?.text = data.title
-        btnAction2?.text = data.buttonStr
-        btnAction2?.setBackgroundResource(R.drawable.bg_button_buy_orange_tokopoints)
+
         ImageHandler.loadImageFitCenter(imgBanner?.context, imgBanner, data.imageUrlMobile)
         val tvHowToUse: Typography = requireView().findViewById(R.id.how_to_use_content)
         val tvTnc: Typography = requireView().findViewById(R.id.tnc_content)
@@ -461,32 +579,15 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
             }
             AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                    mCouponName)
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                mCouponName)
         }
         if (!mUserSession!!.isLoggedIn) {
             pointValueText?.text = context?.resources?.getString(R.string.tp_masuk_tukar_point)
         }
-        //start catalog status timer
-        mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(),
-            CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(), TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<Long?>() {
-                    override fun onCompleted() {}
-                    override fun onError(e: Throwable) {}
-                    override fun onNext(aLong: Long?) {
-                        mViewModel.fetchLatestStatus(Arrays.asList(data.id))
-                    }
-                })
-        //Coupon impression ga
-        AnalyticsTrackerUtil.sendEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
-                AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
-                AnalyticsTrackerUtil.ActionKeys.VIEW_COUPON,
-                mCouponName)
+
     }
 
     private fun showTimer(item: CatalogsValueEntity) {
