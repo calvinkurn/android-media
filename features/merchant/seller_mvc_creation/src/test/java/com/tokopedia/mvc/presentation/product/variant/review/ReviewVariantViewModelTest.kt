@@ -845,6 +845,78 @@ class ReviewVariantViewModelTest {
     //endregion
 
     //region handleBulkDeleteVariant
+    @Test
+    fun `when bulk delete variants, should delete selected variants from list`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                )
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0), isEligible = true)
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0), isEligible = true)
+            val selectedProduct =
+                SelectedProduct(parentProductId = product.id, variantProductIds = listOf(111, 112))
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    )
+                )
+            )
+
+            val emittedValues = arrayListOf<ReviewVariantUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            viewModel.processEvent(
+                ReviewVariantEvent.FetchProductVariants(
+                    isParentProductSelected = false,
+                    selectedProduct = selectedProduct,
+                    originalVariantIds = listOf(firstVariant.variantId, secondVariant.variantId),
+                    isVariantCheckable = true,
+                    isVariantDeletable = true
+                )
+            )
+
+
+            viewModel.processEvent(ReviewVariantEvent.EnableSelectAllCheckbox)
+
+            //When
+            viewModel.processEvent(ReviewVariantEvent.ApplyBulkDeleteVariant)
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                emptyList<Variant>(),
+                actual.variants
+            )
+            assertEquals(emptySet<Long>(), actual.selectedVariantIds)
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region shouldSelectVariant

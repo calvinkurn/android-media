@@ -222,7 +222,7 @@ class ReviewVariantViewModel @Inject constructor(
 
     private fun handleBulkDeleteVariant() {
         launch(dispatchers.computation) {
-            val toBeRemovedVariantIds = currentState.variants.filter { it.isSelected }.map { it.variantId }
+            val toBeRemovedVariantIds = currentState.variants.selectedVariantsOnly()
 
             val modifiedVariants = currentState.variants.toMutableList()
             modifiedVariants.removeAll { it.variantId in toBeRemovedVariantIds }
