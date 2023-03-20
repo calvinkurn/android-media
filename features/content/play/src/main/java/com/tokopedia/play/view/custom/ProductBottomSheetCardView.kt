@@ -124,8 +124,8 @@ class ProductBottomSheetCardView(
         binding.btnProductSecond.generateButton(lastButton.color)
 
         //Social Proof
-        val isSocialProofAvailable = item.rating.isNotBlank() || item.soldQuantity.isNotBlank()
-        binding.ivPlayProductStars.showWithCondition(item.rating.isNotBlank())
+        val isSocialProofAvailable = (item.rating.isNotBlank() || item.soldQuantity.isNotBlank()) && section.config.type != ProductSectionType.Upcoming
+        binding.ivPlayProductStars.showWithCondition(item.rating.isNotBlank() && section.config.type != ProductSectionType.Upcoming)
         binding.tvPlayProductSocialProof.showWithCondition(isSocialProofAvailable)
         binding.tvPlayProductSocialProof.text = buildString {
             item.rating + if (item.soldQuantity.isNotBlank()) "|" else "" +item.soldQuantity
