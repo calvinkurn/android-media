@@ -20,6 +20,7 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapte
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -113,7 +114,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
                     removeTextChangedListener(this)
                     s?.let {
                         it.replace(
-                            0,
+                            Int.ZERO,
                             it.length,
                             formatClientNumberInput(it.toString())
                         )
