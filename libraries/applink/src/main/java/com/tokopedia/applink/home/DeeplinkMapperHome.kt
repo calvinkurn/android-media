@@ -66,13 +66,14 @@ object DeeplinkMapperHome {
         // tokopedia://official-store
         if (uri.host == Uri.parse(ApplinkConst.OFFICIAL_STORE).host && uri.pathSegments.isEmpty()) {
             return if (isOsExperiment()) {
-                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
+                ApplinkConstInternalDiscovery.SOS
+//                UriUtil.buildUriAppendParams(ApplinkConstInternalDiscovery.INTERNAL_DISCOVERY, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
             } else {
                 UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
             }
         } else if (deeplink.startsWith(ApplinkConst.OFFICIAL_STORES) && uri.pathSegments.isEmpty()) {
             return if (isOsExperiment()) {
-                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
+                ApplinkConstInternalDiscovery.SOS
             } else {
                 UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
             }
@@ -80,7 +81,7 @@ object DeeplinkMapperHome {
             return getBrandlistInternal(deeplink)
         } else if (deeplink.startsWithPattern(ApplinkConst.OFFICIAL_STORE_CATEGORY) && uri.pathSegments.size == 1) {
             return if (isOsExperiment()) {
-                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
+                ApplinkConstInternalDiscovery.SOS
             } else {
                 val params = UriUtil.destructureUriToMap(ApplinkConst.OFFICIAL_STORE_CATEGORY, Uri.parse(deeplink), true)
                 params[EXTRA_TAB_POSITION] = TAB_POSITION_OS
