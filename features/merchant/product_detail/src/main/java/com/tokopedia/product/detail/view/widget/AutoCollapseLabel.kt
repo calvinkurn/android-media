@@ -1,13 +1,17 @@
 package com.tokopedia.product.detail.view.widget
 
 import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.TextView
 import androidx.core.animation.addListener
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -32,6 +36,8 @@ class AutoCollapseLabel @JvmOverloads constructor(
         private const val IDLE_DURATION = 3000L
         private const val PADDING_HORIZONTAL_TEXT_WITH_ICON = 8
         private const val PADDING_HORIZONTAL_ICON_ONLY = 5
+        private const val PROPERTY_NAME_ALPHA = "alpha"
+        private const val PROPERTY_NAME_MAX_WIDTH = "maxWidth"
     }
 
     private val binding = AutoCollapseLabelBinding.inflate(LayoutInflater.from(context), this, true)
@@ -57,11 +63,11 @@ class AutoCollapseLabel @JvmOverloads constructor(
     }
 
     inner class ViewAnimator {
-        private var showAnimator: Animator? = null
+        private var showAnimator: AnimatorSet? = null
         private var showAnimatorListener: Animator.AnimatorListener? = null
         private var hideAnimator: Animator? = null
         private var hideAnimatorListener: Animator.AnimatorListener? = null
-        private var collapseAnimator: Animator? = null
+        private var collapseAnimator: AnimatorSet? = null
         private var collapseAnimatorListener: Animator.AnimatorListener? = null
 
         fun animateShow() {
@@ -85,13 +91,13 @@ class AutoCollapseLabel @JvmOverloads constructor(
             collapseAnimator?.start()
         }
 
-        private fun createShowAnimator() = ValueAnimator.ofFloat(
-            MIN_ALPHA,
-            MAX_ALPHA
-        ).apply {
+        private fun createShowAnimator() = AnimatorSet().apply {
             duration = ANIMATION_DURATION
             interpolator = DecelerateInterpolator()
-            addUpdateListener { update -> applyShowAnimatorUpdate(update.animatedValue as Float) }
+            playTogether(
+                binding.bgAutoCollapseLabelTextWithIcon.createAlphaAnimator(MIN_ALPHA, MAX_ALPHA),
+                binding.containerAutoCollapse.createAlphaAnimator(MIN_ALPHA, MAX_ALPHA)
+            )
             showAnimatorListener = addListener(
                 onStart = ::onStartShowAnimator,
                 onEnd = ::onEndShowAnimator
@@ -108,17 +114,22 @@ class AutoCollapseLabel @JvmOverloads constructor(
             hideAnimatorListener = addListener(onEnd = ::onEndHideAnimator)
         }
 
-        private fun createCollapseAnimator() = ValueAnimator.ofInt(
-            binding.tvAutoCollapseLabel.width,
-            Int.ZERO
-        ).apply {
+        private fun createCollapseAnimator() = AnimatorSet().apply {
             duration = ANIMATION_DURATION
             startDelay = IDLE_DURATION
-            addUpdateListener { update -> applyCollapseAnimatorUpdate(update.animatedValue as Int) }
-            collapseAnimatorListener = addListener(
-                onStart = ::onStartCollapseAnimator,
-                onEnd = ::onEndCollapseAnimator
+            playTogether(
+                binding.tvAutoCollapseLabel.createMaxWidthAnimator(
+                    binding.tvAutoCollapseLabel.width,
+                    Int.ZERO
+                ),
+                binding.bgAutoCollapseLabelTextWithIcon.createAlphaAnimator(MAX_ALPHA, MIN_ALPHA),
+                binding.bgAutoCollapseLabelIconOnly.createAlphaAnimator(MIN_ALPHA, MAX_ALPHA),
+                binding.containerAutoCollapse.createHorizontalPaddingAnimator(
+                    PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx(),
+                    PADDING_HORIZONTAL_ICON_ONLY.toPx()
+                )
             )
+            collapseAnimatorListener = addListener(onStart = ::onStartCollapseAnimator)
         }
 
         private fun cancelAnimators() {
@@ -148,7 +159,9 @@ class AutoCollapseLabel @JvmOverloads constructor(
             binding.tvAutoCollapseLabel.maxWidth = Int.MAX_VALUE
             binding.tvAutoCollapseLabel.ellipsize = TextUtils.TruncateAt.END
             binding.bgAutoCollapseLabelIconOnly.alpha = MIN_ALPHA
-            updateContainerHorizontalPadding(PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx())
+            binding.containerAutoCollapse.updateContainerHorizontalPadding(
+                PADDING_HORIZONTAL_TEXT_WITH_ICON.toPx()
+            )
         }
 
         @Suppress("UNUSED_PARAMETER")
@@ -166,25 +179,13 @@ class AutoCollapseLabel @JvmOverloads constructor(
             binding.tvAutoCollapseLabel.ellipsize = null
         }
 
-        @Suppress("UNUSED_PARAMETER")
-        private fun onEndCollapseAnimator(animator: Animator) {
-            binding.bgAutoCollapseLabelTextWithIcon.alpha = MIN_ALPHA
-            binding.bgAutoCollapseLabelIconOnly.alpha = MAX_ALPHA
-            updateContainerHorizontalPadding(PADDING_HORIZONTAL_ICON_ONLY.toPx())
-        }
-
-        private fun updateContainerHorizontalPadding(padding: Int) {
-            binding.containerAutoCollapse.setPadding(
+        private fun View.updateContainerHorizontalPadding(padding: Int) {
+            setPadding(
                 padding,
                 binding.containerAutoCollapse.paddingTop,
                 padding,
                 binding.containerAutoCollapse.paddingBottom
             )
-        }
-
-        private fun applyShowAnimatorUpdate(alpha: Float) {
-            binding.bgAutoCollapseLabelTextWithIcon.alpha = alpha
-            binding.containerAutoCollapse.alpha = alpha
         }
 
         private fun applyHideAnimatorUpdate(alpha: Float) {
@@ -202,8 +203,18 @@ class AutoCollapseLabel @JvmOverloads constructor(
             )
         }
 
-        private fun applyCollapseAnimatorUpdate(maxWidth: Int) {
-            binding.tvAutoCollapseLabel.maxWidth = maxWidth
+        private fun View.createAlphaAnimator(start: Float, end: Float): Animator {
+            return ObjectAnimator.ofFloat(this, PROPERTY_NAME_ALPHA, start, end)
+        }
+
+        private fun TextView.createMaxWidthAnimator(start: Int, end: Int): Animator {
+            return ObjectAnimator.ofInt(this, PROPERTY_NAME_MAX_WIDTH, start, end)
+        }
+
+        private fun View.createHorizontalPaddingAnimator(start: Int, end: Int): Animator {
+            return ValueAnimator.ofInt(start, end).apply {
+                addUpdateListener { updateContainerHorizontalPadding(it.animatedValue as Int) }
+            }
         }
     }
 }
