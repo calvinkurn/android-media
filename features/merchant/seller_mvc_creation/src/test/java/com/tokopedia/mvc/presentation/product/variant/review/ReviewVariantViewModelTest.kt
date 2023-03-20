@@ -539,6 +539,7 @@ class ReviewVariantViewModelTest {
         }
     }
     //endregion
+    //endregion
 
     //region handleUncheckAllVariant
     @Test
@@ -923,6 +924,80 @@ class ReviewVariantViewModelTest {
     //endregion
 
     //region shouldSelectVariant
+    @Test
+    fun `when variant is changed, isSelected should be true if true if variant is selected `() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                ),
+                selectedVariantsIds = setOf(111, 112)
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0), isEligible = true)
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0), isEligible = true)
+            val selectedProduct =
+                SelectedProduct(parentProductId = product.id, variantProductIds = listOf(111, 112))
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    )
+                )
+            )
+
+            val emittedValues = arrayListOf<ReviewVariantUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            val previouslySelectedProducts = listOf(firstVariant.variantId, secondVariant.variantId)
+
+            //When
+            viewModel.processEvent(
+                ReviewVariantEvent.FetchProductVariants(
+                    isParentProductSelected = true,
+                    selectedProduct = selectedProduct,
+                    originalVariantIds = previouslySelectedProducts,
+                    isVariantCheckable = true,
+                    isVariantDeletable = true
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+
+            assertEquals(
+                listOf(
+                    firstVariant.copy(variantName = "Biru", isSelected = true),
+                    secondVariant.copy(variantName = "Biru", isSelected = true)
+                ),
+                actual.variants
+            )
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region TapSelectButton

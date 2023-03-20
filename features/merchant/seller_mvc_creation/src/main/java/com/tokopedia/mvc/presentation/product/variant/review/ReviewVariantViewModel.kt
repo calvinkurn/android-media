@@ -242,14 +242,16 @@ class ReviewVariantViewModel @Inject constructor(
         selectedVariantIds: List<Long>,
         originalVariantIds: List<Long>
     ): Boolean {
-        val isVariantUnchanged = selectedVariantIds.count() == originalVariantIds.count()
+        if (!isParentProductSelected) {
+            return false
+        }
+
         val isVariantChanged = selectedVariantIds.count() != originalVariantIds.count()
 
-        return when {
-            !isParentProductSelected -> false //Disable all variant if parent product is unselected
-            isParentProductSelected && isVariantUnchanged -> true //Select all variant if parent product is selected
-            isParentProductSelected && isVariantChanged -> variant.variantId in selectedVariantIds
-            else -> false
+        return if (isVariantChanged) {
+            variant.variantId in selectedVariantIds
+        } else {
+            true
         }
     }
 
