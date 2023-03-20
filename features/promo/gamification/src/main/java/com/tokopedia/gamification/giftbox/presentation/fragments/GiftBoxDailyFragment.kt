@@ -599,6 +599,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
+    private fun showNotificationReminderPrompt() {
+        val pageName = "tapTapKotak"
+        activity?.let {
+            val view = NotificationGeneralPromptLifecycleCallbacks()
+                .notificationGeneralPromptView(it, pageName)
+            NotificationReminderPrompt(view).showReminderPrompt(it)
+        }
+    }
+
     override fun playLoopSound() {
         // Don't want to play sound
     }
