@@ -144,6 +144,7 @@ class TelcoPostpaidLoginInstrumentTest {
         clientNumberWidget_clickFilterChip_withText("Tokopedia")
         clientNumberWidget_validateText("081232323239")
         clientNumberWidget_clickClearBtn()
+
         clientNumberWidget_scrollToChip_withText("081208120812")
         clientNumberWidget_clickFilterChip_withText("081208120812")
         clientNumberWidget_validateText("081208120812")
