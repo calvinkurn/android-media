@@ -783,7 +783,7 @@ public class MainParentActivity extends BaseActivity implements
 
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
 
-        if (getSupportFragmentManager().findFragmentByTag(FEED_PAGE) == null) {
+        if (getSupportFragmentManager().findFragmentByTag(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT) == null) {
             fragmentList.add(
                     RouteManager.instantiateFragment(
                             this,
@@ -792,7 +792,11 @@ public class MainParentActivity extends BaseActivity implements
                     )
             );
         } else {
-            fragmentList.add(getSupportFragmentManager().findFragmentByTag(FEED_PAGE));
+            fragmentList.add(
+                    getSupportFragmentManager().findFragmentByTag(
+                            FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT
+                    )
+            );
         }
 
         if (!isOsExperiment) {
