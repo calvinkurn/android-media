@@ -7,8 +7,8 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemShipmentGroupHeaderBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemHeaderModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import java.util.*
@@ -30,12 +30,11 @@ class ShipmentOrderTopViewHolder(
     private val binding: ItemShipmentGroupHeaderBinding =
         ItemShipmentGroupHeaderBinding.bind(itemView)
 
-    fun bind(shipmentCartItemHeaderModel: ShipmentCartItemHeaderModel) {
-        val shipmentCartItemModel = shipmentCartItemHeaderModel.shipmentCartItemModel
-        renderShop(shipmentCartItemModel)
-        renderFulfillment(shipmentCartItemModel)
-        renderErrorAndWarning(shipmentCartItemModel)
-        renderCustomError(shipmentCartItemModel)
+    fun bind(shipmentCartItemTopModel: ShipmentCartItemTopModel) {
+        renderShop(shipmentCartItemTopModel.shipmentCartItemModel)
+        renderFulfillment(shipmentCartItemTopModel.shipmentCartItemModel)
+        renderErrorAndWarning(shipmentCartItemTopModel.shipmentCartItemModel)
+        renderCustomError(shipmentCartItemTopModel.shipmentCartItemModel)
     }
 
     private fun renderShop(shipmentCartItemModel: ShipmentCartItemModel) {

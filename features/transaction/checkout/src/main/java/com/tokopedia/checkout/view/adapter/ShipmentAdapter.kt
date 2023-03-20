@@ -47,8 +47,8 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemExpandModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemHeaderModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel.CREATOR.TYPE_CASHBACK
@@ -79,7 +79,7 @@ import javax.inject.Inject
  * @author Irfan Khoirul on 23/04/18.
  */
 class ShipmentAdapter @Inject constructor(
-    private val actionListener: ShipmentAdapterActionListener,
+    private val shipmentAdapterActionListener: ShipmentAdapterActionListener,
     private val shipmentDataRequestConverter: ShipmentDataRequestConverter,
     private val ratesDataConverter: RatesDataConverter,
     private val sellerCashbackListener: SellerCashbackListener,
@@ -138,7 +138,7 @@ class ShipmentAdapter @Inject constructor(
     }
 
     override fun getItemViewType(position: Int): Int {
-        when (val data = shipmentDataList[position]) {
+        when (shipmentDataList[position]) {
             is RecipientAddressModel -> {
                 return ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS
             }
@@ -199,7 +199,7 @@ class ShipmentAdapter @Inject constructor(
                 return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL
             }
 
-            is ShipmentCartItemHeaderModel -> {
+            is ShipmentCartItemTopModel -> {
                 return ShipmentOrderTopViewHolder.LAYOUT
             }
 
@@ -224,7 +224,7 @@ class ShipmentAdapter @Inject constructor(
         val view = layoutInflater.inflate(viewType, parent, false)
         when (viewType) {
             ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS -> {
-                return ShipmentRecipientAddressViewHolder(view, actionListener)
+                return ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener)
             }
 
             ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST -> {
@@ -232,11 +232,11 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ITEM_VIEW_PROMO_CHECKOUT -> {
-                return PromoCheckoutViewHolder(view, actionListener)
+                return PromoCheckoutViewHolder(view, shipmentAdapterActionListener)
             }
 
             ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC -> {
-                return ShipmentInsuranceTncViewHolder(view, actionListener)
+                return ShipmentInsuranceTncViewHolder(view, shipmentAdapterActionListener)
             }
 
             ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
@@ -244,21 +244,21 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentDonationViewHolder.ITEM_VIEW_DONATION -> {
-                return ShipmentDonationViewHolder(view, actionListener)
+                return ShipmentDonationViewHolder(view, shipmentAdapterActionListener)
             }
 
             ShipmentCrossSellViewHolder.ITEM_VIEW_CROSS_SELL -> {
-                return ShipmentCrossSellViewHolder(view, actionListener)
+                return ShipmentCrossSellViewHolder(view, shipmentAdapterActionListener)
             }
 
             ShipmentEmasViewHolder.ITEM_VIEW_EMAS -> {
-                return ShipmentEmasViewHolder(view, actionListener)
+                return ShipmentEmasViewHolder(view, shipmentAdapterActionListener)
             }
 
             ITEM_VIEW_PAYMENT_BUTTON -> {
                 return ShipmentButtonPaymentViewHolder(
                     view,
-                    actionListener,
+                    shipmentAdapterActionListener,
                     compositeSubscription!!
                 )
             }
@@ -268,11 +268,11 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ITEM_VIEW_TICKER_SHIPPING_COMPLETION -> {
-                return ShippingCompletionTickerViewHolder(view, actionListener)
+                return ShippingCompletionTickerViewHolder(view, shipmentAdapterActionListener)
             }
 
             ITEM_VIEW_SHIPMENT_TICKER_ERROR -> {
-                return ShipmentTickerErrorViewHolder(view, actionListener)
+                return ShipmentTickerErrorViewHolder(view, shipmentAdapterActionListener)
             }
 
             ITEM_VIEW_UPLOAD -> {
@@ -280,11 +280,11 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL -> {
-                return ShipmentUpsellViewHolder(view, actionListener)
+                return ShipmentUpsellViewHolder(view, shipmentAdapterActionListener)
             }
 
             ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL -> {
-                return ShipmentNewUpsellViewHolder(view, actionListener)
+                return ShipmentNewUpsellViewHolder(view, shipmentAdapterActionListener)
             }
 
             ShipmentOrderTopViewHolder.LAYOUT -> {
@@ -304,7 +304,7 @@ class ShipmentAdapter @Inject constructor(
                     view,
                     ratesDataConverter,
                     this@ShipmentAdapter,
-                    actionListener,
+                    shipmentAdapterActionListener,
                     scheduleDeliverySubscription
                 )
             }
@@ -386,7 +386,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentOrderTopViewHolder.LAYOUT -> {
-                (holder as ShipmentOrderTopViewHolder).bind((data as ShipmentCartItemHeaderModel))
+                (holder as ShipmentOrderTopViewHolder).bind((data as ShipmentCartItemTopModel))
             }
 
             ShipmentCartItemViewHolder.LAYOUT -> {
@@ -472,7 +472,7 @@ class ShipmentAdapter @Inject constructor(
     fun addCartItemDataList(shipmentCartItems: List<ShipmentCartItemModel>) {
         this.shipmentCartItemModelList = shipmentCartItems
         shipmentCartItems.forEach { shipmentCartItem ->
-            shipmentDataList.add(ShipmentCartItemHeaderModel(shipmentCartItem))
+            shipmentDataList.add(ShipmentCartItemTopModel(shipmentCartItem))
             if (shipmentCartItem.isStateAllItemViewExpanded) {
                 shipmentCartItem.cartItemModels.forEach {
                     shipmentDataList.add(it)
@@ -542,7 +542,7 @@ class ShipmentAdapter @Inject constructor(
             var cartItemErrorCounter = 0
             for (shipmentCartItemModel in shipmentCartItemModelList!!) {
                 if (shipmentCartItemModel.selectedShipmentDetailData != null) {
-                    if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !actionListener.isTradeInByDropOff || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && actionListener.isTradeInByDropOff) {
+                    if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !shipmentAdapterActionListener.isTradeInByDropOff || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff) {
                         cartItemCounter++
                     }
                 }
@@ -555,15 +555,15 @@ class ShipmentAdapter @Inject constructor(
                     if (shipmentCostModel!!.totalPrice <= 0) 0.0 else shipmentCostModel!!.totalPrice
                 val priceTotalFormatted =
                     removeDecimalSuffix(convertPriceValueToIdrFormat(priceTotal.toLong(), false))
-                actionListener.onTotalPaymentChange(priceTotalFormatted, true)
+                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, true)
             } else {
-                actionListener.onTotalPaymentChange(
+                shipmentAdapterActionListener.onTotalPaymentChange(
                     "-",
                     cartItemErrorCounter < shipmentCartItemModelList!!.size
                 )
             }
         } else if (defaultTotal != null) {
-            actionListener.onTotalPaymentChange(defaultTotal, false)
+            shipmentAdapterActionListener.onTotalPaymentChange(defaultTotal, false)
         }
     }
 
@@ -802,9 +802,9 @@ class ShipmentAdapter @Inject constructor(
             }
         }
         if (availableCheckout) {
-            actionListener.onDataEnableToCheckout()
+            shipmentAdapterActionListener.onDataEnableToCheckout()
         } else {
-            actionListener.onDataDisableToCheckout(null)
+            shipmentAdapterActionListener.onDataDisableToCheckout(null)
         }
     }
 
@@ -851,7 +851,7 @@ class ShipmentAdapter @Inject constructor(
                     }
                 }
             }
-            actionListener.onCheckoutValidationResult(
+            shipmentAdapterActionListener.onCheckoutValidationResult(
                 availableCheckout,
                 errorSelectedShipmentData,
                 errorPosition,
@@ -867,7 +867,7 @@ class ShipmentAdapter @Inject constructor(
                     }
                 }
             }
-            actionListener.onCheckoutValidationResult(
+            shipmentAdapterActionListener.onCheckoutValidationResult(
                 false,
                 null,
                 errorPosition,
@@ -1003,7 +1003,7 @@ class ShipmentAdapter @Inject constructor(
                 }
                 // If courier promo not exist anymore, cancel promo
                 if (!courierPromoStillExist) {
-                    actionListener.onCourierPromoCanceled(
+                    shipmentAdapterActionListener.onCourierPromoCanceled(
                         oldCourierItemData!!.name,
                         oldCourierItemData.promoCode
                     )
@@ -1070,7 +1070,7 @@ class ShipmentAdapter @Inject constructor(
         if (shipmentCartItemModelList != null) {
             for (shipmentCartItemModel in shipmentCartItemModelList!!) {
                 if (shipmentCartItemModel.selectedShipmentDetailData != null) {
-                    if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !actionListener.isTradeInByDropOff || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && actionListener.isTradeInByDropOff) {
+                    if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !shipmentAdapterActionListener.isTradeInByDropOff || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff) {
                         cartItemCounter++
                     }
                 } else if (shipmentCartItemModel.isError) {
@@ -1080,14 +1080,14 @@ class ShipmentAdapter @Inject constructor(
             if (cartItemCounter == shipmentCartItemModelList!!.size) {
                 val requestData = getRequestData(null, null, false)
                 if (!passCheckShipmentFromPaymentClick) {
-                    actionListener.onFinishChoosingShipment(
+                    shipmentAdapterActionListener.onFinishChoosingShipment(
                         lastSelectedCourierOrderIndex,
                         lastSelectedCourierOrdercartString,
                         forceHitValidateUse,
                         skipValidateUse
                     )
                 }
-                actionListener.updateCheckoutRequest(requestData.checkoutRequestData)
+                shipmentAdapterActionListener.updateCheckoutRequest(requestData.checkoutRequestData)
                 return true
             }
         }
@@ -1145,7 +1145,7 @@ class ShipmentAdapter @Inject constructor(
                 if (shipmentData.selectedShipmentDetailData != null && !shipmentData.isError) {
                     val useInsurance = shipmentData.selectedShipmentDetailData!!.useInsurance
                     val isOrderPriority = shipmentData.selectedShipmentDetailData!!.isOrderPriority
-                    val isTradeInPickup = actionListener.isTradeInByDropOff
+                    val isTradeInPickup = shipmentAdapterActionListener.isTradeInByDropOff
                     if (isTradeInPickup) {
                         if (shipmentData.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null) {
                             shippingFee += shipmentSingleAddressItem.selectedShipmentDetailData!!.selectedCourierTradeInDropOff!!.shipperPrice.toDouble()
@@ -1427,7 +1427,7 @@ class ShipmentAdapter @Inject constructor(
             this.shipmentCartItemModelList,
             addressModel,
             isAnalyticsPurpose,
-            actionListener.isTradeInByDropOff
+            shipmentAdapterActionListener.isTradeInByDropOff
         )
     }
 
@@ -1459,7 +1459,7 @@ class ShipmentAdapter @Inject constructor(
 
     private fun getGroupHeaderByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentCartItemHeaderModel && data.shipmentCartItemModel.cartString == cartString
+            data is ShipmentCartItemTopModel && data.shipmentCartItemModel.cartString == cartString
         }
         return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
     }
@@ -1493,11 +1493,11 @@ class ShipmentAdapter @Inject constructor(
     }
 
     override fun onViewFreeShippingPlusBadge() {
-        actionListener.onViewFreeShippingPlusBadge()
+        shipmentAdapterActionListener.onViewFreeShippingPlusBadge()
     }
 
     override fun onClickLihatOnTickerOrderError(shopId: String?, errorMessage: String?) {
-        actionListener.onClickLihatOnTickerOrderError(shopId, errorMessage)
+        shipmentAdapterActionListener.onClickLihatOnTickerOrderError(shopId, errorMessage)
     }
 
     override fun onErrorShouldExpandProduct(shipmentCartItemModel: ShipmentCartItemModel) {
@@ -1507,7 +1507,7 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onErrorShouldScrollToProduct(shipmentCartItemModel: ShipmentCartItemModel) {
         val (position, _) = getFirstErrorCartItemByCartString(shipmentCartItemModel.cartString)
-        actionListener.scrollToPositionWithOffset(position)
+        shipmentAdapterActionListener.scrollToPositionWithOffset(position)
     }
 
     override fun onCheckPurchaseProtection(position: Int, cartItem: CartItemModel) {
@@ -1520,25 +1520,25 @@ class ShipmentAdapter @Inject constructor(
             notifyItemChanged(shipmentCartItemPosition)
             shipmentDataList[position] = cartItem
             notifyItemChanged(position)
-            actionListener.onPurchaseProtectionLogicError()
+            shipmentAdapterActionListener.onPurchaseProtectionLogicError()
         }
-        actionListener.onNeedUpdateRequestData()
-        actionListener.onPurchaseProtectionChangeListener(position)
+        shipmentAdapterActionListener.onNeedUpdateRequestData()
+        shipmentAdapterActionListener.onPurchaseProtectionChangeListener(position)
     }
 
     override fun onClickPurchaseProtectionTooltip(cartItem: CartItemModel) {
-        actionListener.navigateToProtectionMore(cartItem)
+        shipmentAdapterActionListener.navigateToProtectionMore(cartItem)
     }
 
     override fun onClickAddOnProductLevel(
         cartItem: CartItemModel,
         addOnWording: AddOnWordingModel
     ) {
-        actionListener.openAddOnProductLevelBottomSheet(cartItem, addOnWording)
+        shipmentAdapterActionListener.openAddOnProductLevelBottomSheet(cartItem, addOnWording)
     }
 
     override fun onImpressionAddOnProductLevel(productId: String) {
-        actionListener.addOnProductLevelImpression(productId)
+        shipmentAdapterActionListener.addOnProductLevelImpression(productId)
     }
 
     override fun onClickCollapseGroupProduct(

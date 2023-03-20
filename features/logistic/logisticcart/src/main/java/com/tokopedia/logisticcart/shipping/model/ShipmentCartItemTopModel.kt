@@ -1,5 +1,5 @@
 package com.tokopedia.logisticcart.shipping.model
 
-data class ShipmentCartItemHeaderModel(
+data class ShipmentCartItemTopModel(
     val shipmentCartItemModel: ShipmentCartItemModel = ShipmentCartItemModel()
 )
