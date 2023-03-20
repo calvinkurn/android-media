@@ -53,9 +53,12 @@ class PersoFavoriteNumberModifyBottomSheet(
             binding.commonTopupbillsFavoriteNumberPhoneField.textFieldWrapper.hint = favNumberItem.title
         }
 
-        binding.commonTopupbillsFavoriteNumberPhoneField.textFiedlLabelText.setTextColor(
-            resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N75)
-        )
+        context?.let{ context ->
+            binding.commonTopupbillsFavoriteNumberPhoneField.textFiedlLabelText.setTextColor(
+                context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N75)
+            )
+        }
+
     }
 
     private fun initListener() {
