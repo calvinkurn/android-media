@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.databinding.FragmentGalleryBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
@@ -35,6 +34,7 @@ import com.tokopedia.media.picker.ui.publisher.observe
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.media.picker.utils.parcelable
 import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -72,7 +72,7 @@ open class GalleryFragment @Inject constructor(
         MediaGalleryAdapter(this)
     }
 
-    private var uiModel = GalleryFragmentUiModel()
+    private var uiModel = GalleryUiModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,14 +88,14 @@ open class GalleryFragment @Inject constructor(
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(GalleryFragmentUiModel.KEY, uiModel)
+        outState.putParcelable(GalleryUiModel.KEY, uiModel)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         savedInstanceState
-            ?.parcelable<GalleryFragmentUiModel>(GalleryFragmentUiModel.KEY)
+            ?.parcelable<GalleryUiModel>(GalleryUiModel.KEY)
             ?.let {
                 uiModel = it
             }
@@ -118,14 +118,13 @@ open class GalleryFragment @Inject constructor(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if (requestCode == RC_ALBUM_SELECTOR && resultCode == Activity.RESULT_OK) {
             val (id, name) = AlbumActivity.getIntentResult(data)
-
             albumSelector.setAlbumName(name)
+            uiModel.hasChangeAlbum = true
             uiModel.bucketId = id
 
-            // fetch a new media by bucketId
-            featureAdapter.clearAllItems()
             viewModel.loadMedia(uiModel.bucketId)
         }
     }
@@ -133,12 +132,6 @@ open class GalleryFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         mediaDrawer.setListener()
-
-        /**
-         * if (!param.get().isMultipleSelectionType()) {
-        adapter.removeAllSelectedSingleClick()
-        }
-         */
     }
 
     override fun onPause() {
@@ -184,11 +177,24 @@ open class GalleryFragment @Inject constructor(
 
     private fun initObservable() {
         viewModel.medias.observe(viewLifecycleOwner) {
-            featureAdapter.addItemsAndAnimateChanges(it)
+            if (binding?.lstMedia?.isComputingLayout == false) {
+                if (uiModel.hasChangeAlbum) {
+                    featureAdapter.setItemsAndAnimateChanges(it)
+
+                    // force move to top every single bucketId has changed
+                    binding?.lstMedia?.smoothScrollToPosition(0)
+                } else {
+                    featureAdapter.addItemsAndAnimateChanges(it)
+                }
+            }
         }
 
         viewModel.isFetchMediaLoading.observe(viewLifecycleOwner) {
-            binding?.shimmering?.container?.showWithCondition(it)
+            // the simmering only works if the user change the album
+            if (uiModel.hasChangeAlbum) {
+                binding?.shimmering?.container?.showWithCondition(it)
+                binding?.lstMedia?.showWithCondition(!it)
+            }
         }
 
         viewModel.isMediaEmpty.observe(viewLifecycleOwner) { isEmpty ->
@@ -231,18 +237,13 @@ open class GalleryFragment @Inject constructor(
     }
 
     private fun setupRecyclerView() {
-        val layoutManager = GridLayoutManager(
-            requireContext(),
-            SPAN_COUNT_SIZE
-        )
+        val layoutManager = GridLayoutManager(requireContext(), SPAN_COUNT_SIZE)
 
         binding?.lstMedia?.let {
             // item decoration
-            it.addItemDecoration(
-                GridItemDecoration(requireContext(), SPAN_COUNT_SIZE)
-            )
+            it.addItemDecoration(GridItemDecoration(requireContext(), SPAN_COUNT_SIZE))
 
-            // common setter
+            // common config
             it.setHasFixedSize(true)
             it.isNestedScrollingEnabled = false
             it.layoutManager = layoutManager
@@ -260,14 +261,16 @@ open class GalleryFragment @Inject constructor(
             val lastVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
 
             if (viewModel.isFetchMediaLoading.value == false && lastVisibleItemPosition == totalItemCount - 1) {
-                val pageIndex = layoutManager.findLastCompletelyVisibleItemPosition() + 1
+                // indicates the pagination isn't album changed
+                uiModel.hasChangeAlbum = false
 
+                val pageIndex = layoutManager.findLastCompletelyVisibleItemPosition() + 1
                 viewModel.loadMedia(uiModel.bucketId, pageIndex)
             }
         }
     }
 
-    private fun isVideoFileAbleToAdd(media: MediaUiModel): Boolean {
+    private fun isValidVideo(media: MediaUiModel): Boolean {
         if (contract?.hasVideoLimitReached() == true) {
             contract?.onShowVideoLimitReachedGalleryToast()
             return false
@@ -291,7 +294,7 @@ open class GalleryFragment @Inject constructor(
         return true
     }
 
-    private fun isImageFileAbleToAdd(media: MediaUiModel): Boolean {
+    private fun isValidImage(media: MediaUiModel): Boolean {
         if (contract?.isMaxImageResolution(media) == true) {
             contract?.onShowImageMaxResToast()
             return false
@@ -311,9 +314,9 @@ open class GalleryFragment @Inject constructor(
     }
 
     private fun shouldAbleToSelected(media: MediaUiModel, isSelected: Boolean): Boolean {
-        if (!isSelected && media.file?.isVideo() == true && !isVideoFileAbleToAdd(media)) {
+        if (!isSelected && media.file?.isVideo() == true && !isValidVideo(media)) {
             return false
-        } else if (!isSelected && media.file?.isImage() == true && !isImageFileAbleToAdd(media)) {
+        } else if (!isSelected && media.file?.isImage() == true && !isValidImage(media)) {
             return false
         }
 

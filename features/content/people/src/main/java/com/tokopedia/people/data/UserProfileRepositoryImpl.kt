@@ -10,13 +10,15 @@ import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.*
-import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
+import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -36,6 +38,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val getUserProfileTabUseCase: GetUserProfileTabUseCase,
     private val getUserProfileFeedPostsUseCase: GetUserProfileFeedPostsUseCase,
     private val postBlockUserUseCase: PostBlockUserUseCase,
+    private val updateChannelUseCase: UpdateChannelUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -82,14 +85,16 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPlayVideo(username: String, cursor: String): UserPostModel {
+    override suspend fun getPlayVideo(username: String, cursor: String, isSelfProfile: Boolean): UserPlayVideoUiModel {
         return withContext(dispatcher.io) {
-            return@withContext playVodUseCase.executeOnBackground(
-                group = VAL_FEEDS_PROFILE,
+            val response = playVodUseCase.executeOnBackground(
+                group = if(isSelfProfile) VAL_FEEDS_ADMIN else  VAL_FEEDS_PROFILE,
                 cursor = cursor,
-                sourceType = VAL_SOURCE_BUYER,
+                sourceType = if(isSelfProfile) VAL_SOURCE_BUYER_ADMIN else VAL_SOURCE_BUYER,
                 sourceId = username,
             )
+
+            mapper.mapPlayVideo(response)
         }
     }
 
@@ -122,8 +127,20 @@ class UserProfileRepositoryImpl @Inject constructor(
         if (!response.data.success) error("Failed to unblock user $userId")
     }
 
+    override suspend fun deletePlayChannel(
+        channelId: String,
+        userId: String
+    ) = withContext(dispatcher.io) {
+        updateChannelUseCase.setQueryParams(
+            UpdateChannelUseCase.createUpdateStatusRequest(channelId, userId, PlayChannelStatusType.Deleted)
+        )
+        updateChannelUseCase.executeOnBackground().id
+    }
+
     companion object {
         private const val VAL_FEEDS_PROFILE = "feeds-profile"
+        private const val VAL_FEEDS_ADMIN = "feeds-admin"
         private const val VAL_SOURCE_BUYER = "buyer"
+        private const val VAL_SOURCE_BUYER_ADMIN = "buyer-admin"
     }
 }

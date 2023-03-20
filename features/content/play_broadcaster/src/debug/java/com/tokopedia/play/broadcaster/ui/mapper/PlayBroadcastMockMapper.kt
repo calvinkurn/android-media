@@ -55,27 +55,19 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         )
     }
 
-    override fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel> {
-        return if (authorType == TYPE_SHOP) {
-            listOf(
-                TrafficMetricUiModel(TrafficMetricType.GameParticipants, "2000"),
-                TrafficMetricUiModel(TrafficMetricType.TotalViews, "2328"),
-                TrafficMetricUiModel(TrafficMetricType.VideoLikes, "1800"),
-                TrafficMetricUiModel(TrafficMetricType.ShopVisit, "1200"),
-                TrafficMetricUiModel(TrafficMetricType.ProductVisit, "1042"),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, "320"),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, "200")
-            )
-        } else {
-            listOf(
-                TrafficMetricUiModel(TrafficMetricType.GameParticipants, "2000"),
-                TrafficMetricUiModel(TrafficMetricType.TotalViews, "2328"),
-                TrafficMetricUiModel(TrafficMetricType.VideoLikes, "1800"),
-                TrafficMetricUiModel(TrafficMetricType.ProductVisit, "1042"),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, "320"),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, "200")
-            )
-        }
+    override fun mapToLiveTrafficUiMetrics(
+        authorType: String,
+        metrics: GetLiveStatisticsResponse.ReportChannelSummary
+    ): List<TrafficMetricUiModel> {
+        return listOf(
+            TrafficMetricUiModel(TrafficMetricType.GameParticipants, "2000"),
+            TrafficMetricUiModel(TrafficMetricType.TotalViews, "2328"),
+            TrafficMetricUiModel(TrafficMetricType.VideoLikes, "1800"),
+            TrafficMetricUiModel(TrafficMetricType.ShopVisit, "1200"),
+            TrafficMetricUiModel(TrafficMetricType.ProductVisit, "1042"),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, "320"),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, "200")
+        )
     }
 
     override fun mapTotalView(totalView: TotalView): TotalViewUiModel {

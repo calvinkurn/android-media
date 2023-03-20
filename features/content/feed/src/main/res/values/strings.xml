@@ -82,10 +82,8 @@ dari Feed.</string>
     <string name="cp_common_progress_bar_failed_text">Gagal Diproses</string>
     <string name="feed_upload_shorts_success">Yay, video kamu berhasil di-upload!</string>
     <string name="feed_upload_shorts_see_video">Lihat</string>
-
-    <string name="feed_for_you_label">Untuk Kamu</string>
-    <string name="feed_following_label">Following</string>
-    <string name="feed_live_label">LIVE</string>
+    <string name="feed_uploading_title">Diproses</string>
+    <string name="feed_upload_failed_title">Gagal Upload</string>
 
     <!-- New Immersive Feed -->
     <string name="feed_report">Laporkan</string>
@@ -100,9 +98,11 @@ dari Feed.</string>
     <string name="feed_onboarding_create_content_subtitle">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
     <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>
     <string name="feed_onboarding_profile_entry_point_subtitle">Kamu juga bisa buat profil yang menarik dan bikin banyak orang penasaran dengan kontenmu.</string>
+    <string name="feed_for_you_label">Untuk Kamu</string>
+    <string name="feed_following_label">Following</string>
+    <string name="feed_live_label">LIVE</string>
 
-    <!--Uploading-->
-    <string name="feed_uploading_title">Diproses</string>
-    <string name="feed_upload_failed_title">Gagal Upload</string>
-
+    <!-- Transcoding Livestream to VOD -->
+    <string name="feed_transcoding_livestream_to_vod_message">Sedang menyimpan video. Kami akan infokan jika berhasil disimpan.</string>
+    <string name="feed_transcoding_livestream_to_vod_action">Lihat</string>
 </resources>
