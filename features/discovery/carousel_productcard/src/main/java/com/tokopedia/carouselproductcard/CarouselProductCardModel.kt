@@ -13,6 +13,7 @@ internal data class CarouselProductCardModel(
     fun getOnItemThreeDotsClickListener() = carouselProductCardListenerInfo.onItemThreeDotsClickListener
     fun getOnATCNonVariantClickListener() = carouselProductCardListenerInfo.onATCNonVariantClickListener
     fun getAddVariantClickListener() = carouselProductCardListenerInfo.onAddVariantClickListener
+    fun getSeeOtherClickListener() = carouselProductCardListenerInfo.onSeeOtherProductClickListener
 
     override fun type(typeFactory: CarouselProductCardTypeFactory): Int {
         return typeFactory.type(this)

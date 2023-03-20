@@ -10,23 +10,34 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.Error
+import com.tokopedia.discovery.common.State.Success
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchMpsFragmentLayoutBinding
+import com.tokopedia.search.result.mps.addtocart.AddToCartView
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterView
+import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetListenerDelegate
 import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.mvvm.SearchView
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import kotlin.LazyThreadSafetyMode.NONE
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener as EndlessScrollListener
 
 class MPSFragment:
@@ -48,9 +59,11 @@ class MPSFragment:
         recycledViewPool = recycledViewPool,
         fragmentProvider = this,
         chooseAddressListener = this,
+        shopWidgetListener = MPSShopWidgetListenerDelegate({ context }, ::viewModel)
     )
     private val mpsListAdapter = MPSListAdapter(mpsTypeFactory, this)
-    private val quickFilterView by lazy(NONE) { QuickFilterView(viewModel) }
+    private val quickFilterView = QuickFilterView(::viewModel)
+    private val addToCartView = AddToCartView({ context }, ::viewModel)
     private var endlessScrollListener: EndlessScrollListener? = null
 
     override fun getScreenName(): String = ""
@@ -92,12 +105,16 @@ class MPSFragment:
 
     override fun refresh() = withState(viewModel) {
         binding?.mpsLoadingView?.showWithCondition(it.result is State.Loading)
-        binding?.mpsSwipeRefreshLayout?.showWithCondition(it.result is State.Success)
+        binding?.mpsSwipeRefreshLayout?.showWithCondition(it.result is Success)
         if (it.result is Error) showNetworkError(it.result)
+
         if (it.loadMoreThrowable != null) showNetworkErrorLoadMore(it.loadMoreThrowable)
 
         mpsListAdapter.submitList(it.result.data)
+
         quickFilterView.refreshQuickFilter(binding?.mpsSortFilter, it)
+
+        addToCartView.refreshAddToCartToaster(view, it.addToCartState)
     }
 
     private fun showNetworkError(result: Error<List<Visitable<*>>>) {

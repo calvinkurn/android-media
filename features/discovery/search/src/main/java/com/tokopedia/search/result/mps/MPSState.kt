@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.mps
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.State
 import com.tokopedia.filter.common.FilterState
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressDataView
@@ -21,6 +22,7 @@ data class MPSState(
     val filterState: FilterState = FilterState(),
     val loadMoreThrowable: Throwable? = null,
     val paginationState: PaginationState = PaginationState(),
+    val addToCartState: State<AddToCartDataModel>? = null
 ): SearchUiState {
 
     val visitableList = result.data ?: listOf()
@@ -98,5 +100,20 @@ data class MPSState(
 
     fun errorLoadMore(throwable: Throwable) = copy(
         loadMoreThrowable = throwable
+    )
+
+    fun successAddToCart(addToCartDataModel: AddToCartDataModel) = copy(
+        addToCartState = State.Success(addToCartDataModel)
+    )
+
+    fun errorAddToCart(addToCartException: Throwable) = copy(
+        addToCartState = State.Error(
+            message = addToCartException.message ?: "",
+            throwable = addToCartException,
+        )
+    )
+
+    fun addToCartMessageDismissed() = copy(
+        addToCartState = null,
     )
 }

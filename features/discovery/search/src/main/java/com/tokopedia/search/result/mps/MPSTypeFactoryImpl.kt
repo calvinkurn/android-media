@@ -12,6 +12,7 @@ import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateFilterViewHolder
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateKeywordDataView
 import com.tokopedia.search.result.mps.emptystate.MPSEmptyStateKeywordViewHolder
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
+import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetListener
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetViewHolder
 import com.tokopedia.search.utils.FragmentProvider
 
@@ -19,6 +20,7 @@ class MPSTypeFactoryImpl(
     private val recycledViewPool: RecycledViewPool,
     private val fragmentProvider: FragmentProvider,
     private val chooseAddressListener: ChooseAddressListener,
+    private val shopWidgetListener: MPSShopWidgetListener,
 ): BaseAdapterTypeFactory(), MPSTypeFactory {
 
     override fun type(mpsShopWidgetDataView: MPSShopWidgetDataView): Int =
@@ -35,7 +37,11 @@ class MPSTypeFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            MPSShopWidgetViewHolder.LAYOUT -> MPSShopWidgetViewHolder(view, recycledViewPool)
+            MPSShopWidgetViewHolder.LAYOUT -> MPSShopWidgetViewHolder(
+                view,
+                recycledViewPool,
+                shopWidgetListener,
+            )
             ChooseAddressViewHolder.LAYOUT -> ChooseAddressViewHolder(
                 view,
                 fragmentProvider,

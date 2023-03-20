@@ -16,6 +16,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemClick
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemImpressedListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemThreeDotsClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnSeeMoreClickListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnSeeOtherProductClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnViewAllCardClickListener
 import com.tokopedia.carouselproductcard.R.dimen
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
@@ -101,6 +102,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
         carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
         carouselProductCardOnItemATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
         carouselProductCardOnItemAddVariantClickListener: OnAddVariantClickListener? = null,
+        carouselProductCardOnItemSeeOtherProductClickListener: OnSeeOtherProductClickListener? = null,
         carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
         finishCalculate: (() -> Unit)? = null,
         carouselViewAllCardClickListener: OnViewAllCardClickListener? = null,
@@ -117,6 +119,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
             carouselProductCardOnItemThreeDotsClickListener,
             carouselProductCardOnItemATCNonVariantClickListener,
             carouselProductCardOnItemAddVariantClickListener,
+            carouselProductCardOnItemSeeOtherProductClickListener,
             carouselSeeMoreClickListener,
             carouselViewAllCardClickListener,
         )
@@ -153,10 +156,10 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
             carouselProductCardATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
             carouselProductCardAddVariantClickListener: OnAddVariantClickListener? = null,
+            carouselProductCardOnItemSeeOtherProductClickListener: OnSeeOtherProductClickListener? = null,
             carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
             carouselViewAllCardClickListener: OnViewAllCardClickListener? = null,
-    )
-    : CarouselProductCardListenerInfo {
+    ): CarouselProductCardListenerInfo {
 
         val carouselProductCardListenerInfo = CarouselProductCardListenerInfo()
 
@@ -167,6 +170,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
         carouselProductCardListenerInfo.onSeeMoreClickListener = carouselSeeMoreClickListener
         carouselProductCardListenerInfo.onATCNonVariantClickListener = carouselProductCardATCNonVariantClickListener
         carouselProductCardListenerInfo.onAddVariantClickListener = carouselProductCardAddVariantClickListener
+        carouselProductCardListenerInfo.onSeeOtherProductClickListener = carouselProductCardOnItemSeeOtherProductClickListener
         carouselProductCardListenerInfo.onViewAllCardClickListener = carouselViewAllCardClickListener
 
         return carouselProductCardListenerInfo
@@ -305,6 +309,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
             carouselProductCardOnItemATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
             carouselProductCardOnItemAddVariantClickListener: OnAddVariantClickListener? = null,
+            carouselProductCardOnItemSeeOtherProductClickListener: OnSeeOtherProductClickListener? = null,
             carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
             showSeeMoreCard: Boolean = false,
@@ -321,6 +326,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
                 carouselProductCardOnItemThreeDotsClickListener,
                 carouselProductCardOnItemATCNonVariantClickListener,
                 carouselProductCardOnItemAddVariantClickListener,
+                carouselProductCardOnItemSeeOtherProductClickListener,
                 carouselSeeMoreClickListener,
         )
 

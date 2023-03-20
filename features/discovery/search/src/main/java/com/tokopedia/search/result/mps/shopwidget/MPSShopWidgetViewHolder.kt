@@ -4,8 +4,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.carouselproductcard.CarouselViewAllCardData
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.productcard.ProductCardModel
@@ -15,6 +18,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class MPSShopWidgetViewHolder(
     itemView: View,
     private val recycledViewPool: RecycledViewPool,
+    private val listener: MPSShopWidgetListener,
 ): AbstractViewHolder<MPSShopWidgetDataView>(itemView) {
 
     private var binding: SearchMpsShopWidgetBinding? by viewBinding()
@@ -67,6 +71,9 @@ class MPSShopWidgetViewHolder(
 
         searchMPSSeeShopButton.shouldShowWithAction(shopButton != null) {
             searchMPSSeeShopButton.text = shopButton?.text
+            searchMPSSeeShopButton.setOnClickListener {
+                listener.onSeeShopClicked(dataView)
+            }
         }
     }
 
@@ -80,9 +87,44 @@ class MPSShopWidgetViewHolder(
     }
 
     private fun bindProductCarousel(dataView: MPSShopWidgetDataView) {
+        val productList = dataView.productList
+
         binding?.searchMPSProductCarousel?.bindCarouselProductCardViewGrid(
             recyclerViewPool = recycledViewPool,
-            productCardModelList = dataView.productList.map(::productCardModel)
+            productCardModelList = productList.map(::productCardModel),
+            carouselProductCardOnItemImpressedListener =
+                onItemImpressedListener(dataView, productList),
+            carouselProductCardOnItemClickListener =
+                object: CarouselProductCardListener.OnItemClickListener {
+                    override fun onItemClick(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int
+                    ) {
+                        listener.onProductItemClicked(dataView, productList.getOrNull(carouselProductCardPosition))
+                    }
+
+                },
+            carouselProductCardOnItemAddToCartListener =
+                object: CarouselProductCardListener.OnItemAddToCartListener {
+                    override fun onItemAddToCart(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int,
+                    ) {
+                        listener.onProductItemAddToCart(dataView, productList.getOrNull(carouselProductCardPosition))
+                    }
+                },
+            carouselProductCardOnItemSeeOtherProductClickListener =
+                object: CarouselProductCardListener.OnSeeOtherProductClickListener {
+                    override fun onSeeOtherProductClick(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int,
+                    ) {
+                        listener.onProductItemSeeOtherProductClick(
+                            dataView,
+                            productList.getOrNull(carouselProductCardPosition)
+                        )
+                    }
+                },
         )
     }
 
@@ -94,9 +136,9 @@ class MPSShopWidgetViewHolder(
             productImageUrl = product.imageUrl,
             productName = product.name,
             discountPercentage =
-            if (product.discountPercentage > 0) "${product.discountPercentage}%" else "",
+                if (product.discountPercentage > 0) "${product.discountPercentage}%" else "",
             slashedPrice =
-            if (product.discountPercentage > 0) product.originalPrice else "",
+                if (product.discountPercentage > 0) product.originalPrice else "",
             formattedPrice = product.priceFormat,
             ratingString = product.ratingAverage,
             labelGroupList = product.labelGroupList.map(::toLabelGroup),
@@ -113,6 +155,25 @@ class MPSShopWidgetViewHolder(
             type = labelGroupDataView.type,
             imageUrl = labelGroupDataView.url,
         )
+
+    private fun onItemImpressedListener(
+        dataView: MPSShopWidgetDataView,
+        productList: List<MPSShopWidgetProductDataView>
+    ) = object : CarouselProductCardListener.OnItemImpressedListener {
+
+        override fun onItemImpressed(
+            productCardModel: ProductCardModel,
+            carouselProductCardPosition: Int,
+        ) {
+            listener.onProductItemImpressed(
+                dataView,
+                productList.getOrNull(carouselProductCardPosition),
+            )
+        }
+
+        override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? =
+            productList.getOrNull(carouselProductCardPosition)?.impressHolder
+    }
 
     companion object {
         @LayoutRes

@@ -10,7 +10,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 
 class QuickFilterView(
-    private val mpsViewModel: MPSViewModel?,
+    private val mpsViewModel: () -> MPSViewModel?,
 ) {
 
     private var quickFilterDataViewList: List<QuickFilterDataView>? = null
@@ -71,7 +71,7 @@ class QuickFilterView(
     }
 
     private fun onQuickFilterClicked(quickFilterDataView: QuickFilterDataView) {
-        mpsViewModel?.onQuickFilterSelected(quickFilterDataView)
+        mpsViewModel()?.onQuickFilterSelected(quickFilterDataView)
     }
 
     private fun openBottomSheetFilter() {

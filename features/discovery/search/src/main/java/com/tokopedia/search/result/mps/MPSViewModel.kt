@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.mps
 
 import androidx.lifecycle.ViewModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_ROWS
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ROWS
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.START
@@ -8,6 +9,8 @@ import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_FIRST_PAG
 import com.tokopedia.discovery.common.constants.SearchConstant.MPS.MPS_LOAD_MORE_USE_CASE
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
+import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
+import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetProductDataView
 import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.search.utils.mvvm.SearchViewModel
 import com.tokopedia.search.utils.toSearchParams
@@ -26,6 +29,7 @@ class MPSViewModel @Inject constructor(
     private val mpsFirstPageUseCase: UseCase<MPSModel>,
     @param:Named(MPS_LOAD_MORE_USE_CASE)
     private val mpsLoadMoreUseCase: UseCase<MPSModel>,
+    private val addToCartUseCase: AddToCartUseCase,
     private val chooseAddressWrapper: ChooseAddressWrapper,
 ): ViewModel(), SearchViewModel<MPSState> {
 
@@ -113,5 +117,27 @@ class MPSViewModel @Inject constructor(
             onError = { throwable -> updateState { it.errorLoadMore(throwable) } },
             useCaseRequestParams = mpsUseCaseRequestParams()
         )
+    }
+
+    fun onAddToCart(
+        mpsShopWidget: MPSShopWidgetDataView,
+        mpsShopWidgetProduct: MPSShopWidgetProductDataView,
+    ) {
+        addToCartUseCase.run {
+            setParams(AddToCartUseCase.getMinimumParams(
+                mpsShopWidgetProduct.id,
+                mpsShopWidget.id,
+                mpsShopWidgetProduct.minOrder,
+            ))
+
+            execute(
+                { addToCartDataModel -> updateState { it.successAddToCart(addToCartDataModel) } },
+                { throwable -> updateState { it.errorAddToCart(throwable) } }
+            )
+        }
+    }
+
+    fun onAddToCartMessageDismissed() {
+        updateState { it.addToCartMessageDismissed() }
     }
 }

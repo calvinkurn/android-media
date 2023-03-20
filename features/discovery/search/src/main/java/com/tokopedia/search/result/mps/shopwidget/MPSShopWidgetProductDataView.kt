@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.mps.shopwidget
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop.Product
 
 data class MPSShopWidgetProductDataView(
@@ -19,6 +20,7 @@ data class MPSShopWidgetProductDataView(
     val trackingOption: Int = 0,
     val buttonList: List<MPSButtonDataView> = listOf(),
     val labelGroupList: List<MPSProductLabelGroupDataView> = listOf(),
+    val impressHolder: ImpressHolder = ImpressHolder(),
 ) {
 
     fun primaryButton(): MPSButtonDataView? = buttonList.find(MPSButtonDataView::isPrimary)
@@ -42,7 +44,7 @@ data class MPSShopWidgetProductDataView(
             componentId = product.componentId,
             trackingOption = product.trackingOption,
             buttonList = product.buttonList.map(MPSButtonDataView::create),
-            labelGroupList = product.labelGroupList.map(MPSProductLabelGroupDataView::create)
+            labelGroupList = product.labelGroupList.map(MPSProductLabelGroupDataView::create),
         )
     }
 }
