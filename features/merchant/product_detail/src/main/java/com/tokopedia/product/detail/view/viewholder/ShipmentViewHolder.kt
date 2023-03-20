@@ -157,11 +157,12 @@ class ShipmentViewHolder(
         val boBadge = rates.boBadge
         val freeOngkirImageUrl = boBadge.imageUrl
         pdpShipmentIcon.showIfWithBlock(freeOngkirImageUrl.isNotEmpty()) {
-
             updateLayoutParams<MarginLayoutParams> {
-                marginEnd = if (boBadge.isUsingPadding)
+                marginEnd = if (boBadge.isUsingPadding) {
                     SHIPMENT_ICON_PADDING.toPx()
-                else 0
+                } else {
+                    0
+                }
             }
 
             setImageUrl(freeOngkirImageUrl)
@@ -298,11 +299,15 @@ class ShipmentViewHolder(
 
             val htmlString = HtmlLinkHelper(context, generateHtml(tips.message, tips.link))
             description = htmlString.spannedString ?: ""
-            setOnClickListener {
-                if (tips.action == TICKER_ACTION_APPLINK) {
-                    listener.goToApplink(tips.link)
-                } else {
-                    listener.goToWebView(tips.link)
+
+            val link = tips.link
+            if (link.isNotEmpty()) {
+                setOnClickListener {
+                    if (tips.action == TICKER_ACTION_APPLINK) {
+                        listener.goToApplink(link)
+                    } else {
+                        listener.goToWebView(link)
+                    }
                 }
             }
         }

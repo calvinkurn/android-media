@@ -3,6 +3,8 @@ package com.tokopedia.product.estimasiongkir.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -21,4 +23,10 @@ class RatesEstimationModule {
     @RatesEstimationScope
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
+
+    @RatesEstimationScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
+    }
 }

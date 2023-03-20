@@ -16,6 +16,8 @@ import com.tokopedia.product.estimasiongkir.usecase.GetRatesEstimateUseCase
 import com.tokopedia.product.estimasiongkir.usecase.GetScheduledDeliveryRatesUseCase
 import com.tokopedia.product.estimasiongkir.util.ProductDetailShippingLogger
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MULTI_BO_BOTTOM_SHEET
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -27,6 +29,7 @@ class RatesEstimationBoeViewModel @Inject constructor(
     private val ratesUseCase: GetRatesEstimateUseCase,
     private val scheduledDeliveryRatesUseCase: GetScheduledDeliveryRatesUseCase,
     private val userSession: UserSessionInterface,
+    private val remoteConfig: RemoteConfig,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -43,7 +46,9 @@ class RatesEstimationBoeViewModel @Inject constructor(
             val ratesData = getRatesEstimate(it)
             val scheduledDeliveryData = getScheduledDeliveryRates(it)
 
-            val ratesDataModel = RatesMapper.mapToVisitable(ratesData, it)
+            val remoteHideOldBO = remoteConfig.getBoolean(ENABLE_MULTI_BO_BOTTOM_SHEET)
+
+            val ratesDataModel = RatesMapper.mapToVisitable(ratesData, it, remoteHideOldBO)
             val scheduledDeliveryDataModel = RatesMapper.mapToVisitable(scheduledDeliveryData)
             result.postValue((ratesDataModel + scheduledDeliveryDataModel).asSuccess())
         }) {
@@ -64,7 +69,9 @@ class RatesEstimationBoeViewModel @Inject constructor(
                 generateUniqueId(request),
                 true
             )
-        } else null
+        } else {
+            null
+        }
     }
 
     private suspend fun getRatesEstimate(request: RatesEstimateRequest): RatesEstimationModel {
