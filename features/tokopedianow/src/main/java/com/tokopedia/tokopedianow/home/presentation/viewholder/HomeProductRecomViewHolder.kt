@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
@@ -92,6 +93,12 @@ class HomeProductRecomViewHolder(
         )
     }
 
+    override fun onProductCardAddToCartBlocked() {
+        listener?.onProductCardAddToCartBlocked()
+    }
+
+    override fun hasBlockedAddToCart(): Boolean = listener?.hasBlockedAddToCart().orFalse()
+
     override fun onProductCardClicked(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel
@@ -172,5 +179,7 @@ class HomeProductRecomViewHolder(
             product: TokoNowProductCardCarouselItemUiModel,
             position: Int
         )
+        fun onProductCardAddToCartBlocked()
+        fun hasBlockedAddToCart(): Boolean
     }
 }

@@ -21,6 +21,7 @@ class HomeLeftCarouselAtcCallback(
     private val userSession: UserSessionInterface,
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
+    private val onAddToCartBlocked: () -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit
 ) : HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener,
     TokoNowSeeMoreCardCarouselViewHolder.TokoNowCarouselProductCardSeeMoreListener,
@@ -79,6 +80,10 @@ class HomeLeftCarouselAtcCallback(
             product = product
         )
     }
+
+    override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
+
+    override fun hasBlockedAddToCart(): Boolean = viewModel.needToBlockAtc
 
     override fun onSeeMoreClicked(
         appLink: String,

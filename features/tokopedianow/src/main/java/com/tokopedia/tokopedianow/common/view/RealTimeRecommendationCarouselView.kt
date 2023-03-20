@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -256,5 +257,11 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     ) {
         listener?.onAddToCartProductVariantClick(position, product)
     }
+
+    override fun onProductCardAddToCartBlocked() {
+        listener?.onAddToCartProductBlocked()
+    }
+
+    override fun hasBlockedAddToCart(): Boolean =  listener?.hasBlockedAddToCart().orFalse()
 }
 

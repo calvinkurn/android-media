@@ -16,7 +16,8 @@ import com.tokopedia.user.session.UserSessionInterface
 class HomeRealTimeRecommendationListener(
     private val tokoNowView: TokoNowView,
     private val viewModel: TokoNowHomeViewModel,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val onAddToCartBlocked: () -> Unit,
 ) : RealTimeRecommendationListener {
 
     private val context by lazy { tokoNowView.getFragmentPage().context }
@@ -74,4 +75,8 @@ class HomeRealTimeRecommendationListener(
     override fun removeRealTimeRecommendation(data: HomeRealTimeRecomUiModel) {
         viewModel.removeRealTimeRecommendation(data.channelId, data.type)
     }
+
+    override fun onAddToCartProductBlocked() = onAddToCartBlocked()
+
+    override fun hasBlockedAddToCart(): Boolean = viewModel.needToBlockAtc
 }

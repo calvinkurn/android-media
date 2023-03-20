@@ -517,4 +517,12 @@ class TokoNowProductCardView @JvmOverloads constructor(
     ) {
         binding.wishlistButton.setListener(wishlistButtonListener)
     }
+
+    fun setOnBlockAddToCartListener(
+        hasBlockedAddToCart: Boolean,
+        onBlockAddToCartListener: () -> Unit
+    ) {
+        binding.quantityEditor.hasBlockedAddToCart = hasBlockedAddToCart
+        binding.quantityEditor.onBlockAddToCartListener = onBlockAddToCartListener
+    }
 }

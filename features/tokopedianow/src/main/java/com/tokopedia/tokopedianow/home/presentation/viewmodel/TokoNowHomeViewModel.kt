@@ -138,6 +138,8 @@ class TokoNowHomeViewModel @Inject constructor(
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
     }
 
+    var needToBlockAtc: Boolean = false
+
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
         get() = _homeLayoutList
     val keywordSearch: LiveData<SearchPlaceholder>
@@ -172,6 +174,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _updateToolbarNotification
     val referralEvaluate: LiveData<Result<HomeReceiverReferralDialogUiModel>>
         get() = _referralEvaluate
+    val blockAddToCart: LiveData<Unit>
+        get() = _blockAddToCart
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -190,6 +194,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _invalidatePlayImpression = MutableLiveData<Boolean>()
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
     private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
+    private val _blockAddToCart = MutableLiveData<Unit>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel?>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -377,6 +382,8 @@ class TokoNowHomeViewModel @Inject constructor(
     ) {
         val miniCartItem = getMiniCartItem(productId)
         when {
+            // this only blocks add to cart when using repurchase widget
+            needToBlockAtc -> _blockAddToCart.value = Unit
             miniCartItem == null && quantity.isZero() -> { /* do nothing */ }
             miniCartItem == null -> addItemToCart(channelId, productId, shopId, quantity, type)
             quantity.isZero() -> removeItemCart(miniCartItem, type)
@@ -667,7 +674,9 @@ class TokoNowHomeViewModel @Inject constructor(
             val tickerList = getTargetedTickerUseCase.execute(
                 page = HOME_PAGE
             )
-            val tickerData = TickerMapper.mapTickerData(tickerList)
+            tickerList.getTargetedTicker
+            val (blockAddToCart, tickerData) = TickerMapper.mapTickerData(tickerList)
+            needToBlockAtc = blockAddToCart
             homeLayoutItemList.mapTickerData(item, tickerData)
         }) {
             homeLayoutItemList.removeItem(item.id)

@@ -259,5 +259,6 @@
     <string name="tokopedianow_toaster_see">Lihat</string>
 
     <string name="tokopedianow_product_card_similar_product_error_description">Tidak Ada Produk Serupa yang Tersedia</string>
+    <string name="tokopedianow_home_toaster_description_you_are_not_be_able_to_shop">Yaah, kamu belum bisa belanja karena toko sedang tutup. Tunggu toko beroperasi lagi.</string>
 
 </resources>

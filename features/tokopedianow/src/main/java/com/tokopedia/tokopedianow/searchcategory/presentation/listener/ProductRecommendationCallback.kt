@@ -10,7 +10,6 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
-import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
@@ -20,7 +19,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiM
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
@@ -126,6 +124,10 @@ data class ProductRecommendationCallback(
     ) {
         directToSeeMorePage(appLink)
     }
+
+    override fun productCardAddToCartBlocked() {}
+
+    override fun hasBlockedAddToCart(): Boolean = false
 
     private fun directToSeeMorePage(
         appLink: String

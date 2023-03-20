@@ -194,5 +194,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         fun seeAllClicked(
             appLink: String
         )
+        fun productCardAddToCartBlocked()
+        fun hasBlockedAddToCart(): Boolean
     }
 }

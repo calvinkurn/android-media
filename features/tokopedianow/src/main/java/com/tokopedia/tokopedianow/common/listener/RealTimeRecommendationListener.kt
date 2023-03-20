@@ -21,6 +21,10 @@ interface RealTimeRecommendationListener {
         item: TokoNowProductCardCarouselItemUiModel
     )
 
+    fun onAddToCartProductBlocked()
+
+    fun hasBlockedAddToCart(): Boolean
+
     fun refreshRealTimeRecommendation(data: HomeRealTimeRecomUiModel)
 
     fun removeRealTimeRecommendation(data: HomeRealTimeRecomUiModel)

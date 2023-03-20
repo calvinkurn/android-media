@@ -1127,6 +1127,11 @@ class TokoNowHomeFragment : Fragment(),
                 }
             }
         }
+
+        observe(viewModelTokoNow.blockAddToCart) {
+            // this only blocks add to cart when using repurchase widget
+            showToasterWhenAddToCartBlocked()
+        }
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
@@ -1838,6 +1843,7 @@ class TokoNowHomeFragment : Fragment(),
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,
+            onAddToCartBlocked = this::showToasterWhenAddToCartBlocked,
             startActivityForResult = this::startActivityForResult
         )
     }
@@ -1848,6 +1854,7 @@ class TokoNowHomeFragment : Fragment(),
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,
+            onAddToCartBlocked = this::showToasterWhenAddToCartBlocked,
             startActivityForResult = this::startActivityForResult
         )
     }
@@ -1867,7 +1874,12 @@ class TokoNowHomeFragment : Fragment(),
     }
 
     private fun createRealTimeRecommendationListener(): RealTimeRecommendationListener {
-        return HomeRealTimeRecommendationListener(this, viewModelTokoNow, userSession)
+        return HomeRealTimeRecommendationListener(
+            tokoNowView = this,
+            viewModel = viewModelTokoNow,
+            userSession = userSession,
+            onAddToCartBlocked = this::showToasterWhenAddToCartBlocked
+        )
     }
 
     private fun createRealTimeRecomAnalytics(): RealTimeRecommendationAnalytics {
@@ -1940,5 +1952,12 @@ class TokoNowHomeFragment : Fragment(),
 
     private fun openWebView(linkUrl: String) {
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?titlebar=false&url=${linkUrl}")
+    }
+
+    private fun showToasterWhenAddToCartBlocked() {
+        showToaster(
+            message = getString(R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop),
+            type = TYPE_ERROR
+        )
     }
 }

@@ -68,8 +68,10 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
 
     var isVariant: Boolean = false
+    var hasBlockedAddToCart: Boolean = false
     var onClickListener: ((counter: Int) -> Unit)? = null
     var onClickVariantListener: ((counter: Int) -> Unit)? = null
+    var onBlockAddToCartListener: (() -> Unit)? = null
 
     init {
         binding = LayoutTokopedianowQuantityEditorViewBinding.inflate(LayoutInflater.from(context), this, true).apply {
@@ -207,6 +209,11 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.setupAddButton() {
         addButton.setOnClickListener {
+            if (hasBlockedAddToCart) {
+                onBlockAddToCartListener?.invoke()
+                return@setOnClickListener
+            }
+
             if (isVariant) {
                 onClickVariantListener?.invoke(if (counter > minQuantity) counter else minQuantity)
             } else {
@@ -285,8 +292,12 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         )
 
         editText.onEnterClickedListener = {
-            onClickListener?.invoke(counter)
-            collapseAnimation()
+            if (hasBlockedAddToCart) {
+                onBlockAddToCartListener?.invoke()
+            } else {
+                onClickListener?.invoke(counter)
+                collapseAnimation()
+            }
         }
 
         editText.onAnyKeysClickedListener = {

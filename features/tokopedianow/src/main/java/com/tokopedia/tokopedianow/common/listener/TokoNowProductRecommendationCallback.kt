@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.common.listener
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
@@ -66,6 +67,12 @@ class TokoNowProductRecommendationCallback(
     override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
         listener?.seeMoreClicked(seeMoreUiModel)
     }
+
+    override fun onProductCardAddToCartBlocked() {
+        listener?.productCardAddToCartBlocked()
+    }
+
+    override fun hasBlockedAddToCart(): Boolean = listener?.hasBlockedAddToCart().orFalse()
 
     override fun onSeeAllClicked(headerName: String, appLink: String) {
         listener?.seeAllClicked(appLink)
