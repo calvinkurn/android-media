@@ -304,6 +304,77 @@ class ReviewVariantViewModelTest {
         }
     }
 
+    @Test
+    fun `when variants configured as non-deletable, all variant isDeletable should be false`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                )
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0))
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0))
+            val selectedProduct =
+                SelectedProduct(parentProductId = product.id, variantProductIds = listOf(111, 112))
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    )
+                )
+            )
+
+            val emittedValues = arrayListOf<ReviewVariantUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ReviewVariantEvent.FetchProductVariants(
+                    isParentProductSelected = false,
+                    selectedProduct = selectedProduct,
+                    originalVariantIds = listOf(111,112),
+                    isVariantCheckable = true,
+                    isVariantDeletable = false
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstVariant.copy(variantName = "Biru", isDeletable = false),
+                    secondVariant.copy(variantName = "Biru", isDeletable = false)
+                ),
+                actual.variants
+            )
+
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region handleFetchProductVariants
