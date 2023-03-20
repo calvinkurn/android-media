@@ -33,7 +33,6 @@ import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
-import com.tokopedia.feedplus.presentation.receiver.UploadInfo
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
@@ -74,14 +73,25 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     private var mOnboarding: ImmersiveFeedOnboarding? = null
 
+    private var isJustLoggedIn: Boolean
+        get() = arguments?.getBoolean(
+            ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
+            false,
+        ) ?: false
+        set(value) {
+            val arguments = getOrCreateArguments()
+            arguments.putBoolean(
+                ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
+                false,
+            )
+        }
+
     private var appLinkTabPosition: Int
         get() = arguments?.getString(
             ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION
         )?.toInt() ?: TAB_FIRST_INDEX
         set(value) {
-            val arguments = this.arguments ?: Bundle().apply {
-                this@FeedBaseFragment.arguments = this
-            }
+            val arguments = getOrCreateArguments()
             arguments.putString(
                 ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
                 value.toString(),
@@ -117,6 +127,8 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupView()
 
         observeFeedTabData()
         observeCreateContentBottomSheetData()
@@ -174,6 +186,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
+    private fun setupView() {
+        if (isJustLoggedIn) showJustLoggedInToaster()
+        isJustLoggedIn = false
+    }
+
     private fun observeFeedTabData() {
         feedMainViewModel.feedTabs.observe(viewLifecycleOwner) {
             when (it) {
@@ -209,12 +226,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
                     when (event) {
                         is FeedMainEvent.HasJustLoggedIn -> {
-                            showNormalToaster(
-                                getString(
-                                    R.string.feed_report_login_success_toaster_text,
-                                    event.userName,
-                                )
-                            )
+                            showJustLoggedInToaster()
                         }
                     }
 
@@ -257,6 +269,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                                                 status.contentId,
                                             )
                                         }
+                                    )
+                                } else {
+                                    showNormalToaster(
+                                        getString(R.string.feed_upload_shorts_success),
+                                        duration = Toaster.LENGTH_LONG,
                                     )
                                 }
                             }
@@ -479,6 +496,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
+    private fun showJustLoggedInToaster() {
+        showNormalToaster(
+            getString(
+                R.string.feed_report_login_success_toaster_text,
+                feedMainViewModel.userName,
+            )
+        )
+    }
+
     private fun showNormalToaster(
         text: String,
         duration: Int = Toaster.LENGTH_SHORT,
@@ -493,6 +519,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             actionText,
             actionListener,
         ).show()
+    }
+
+    private fun getOrCreateArguments(): Bundle {
+        return this.arguments ?: Bundle().apply {
+            this@FeedBaseFragment.arguments = this
+        }
     }
 
     companion object {

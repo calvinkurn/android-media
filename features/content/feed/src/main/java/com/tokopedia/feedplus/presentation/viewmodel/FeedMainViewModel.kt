@@ -61,6 +61,9 @@ class FeedMainViewModel @Inject constructor(
     val uiEvent: Flow<FeedMainEvent?>
         get() = uiEventManager.event
 
+    val userName: String
+        get() = userSession.name
+
     private val _isLoggedIn = AtomicBoolean(userSession.isLoggedIn)
     val isLoggedIn: Boolean
         get() = _isLoggedIn.get()
@@ -74,7 +77,7 @@ class FeedMainViewModel @Inject constructor(
     fun updateUserInfo() {
         val isPrevLoggedIn = _isLoggedIn.getAndSet(userSession.isLoggedIn)
         if (!isPrevLoggedIn && isLoggedIn) {
-            emitEvent(FeedMainEvent.HasJustLoggedIn(userSession.name))
+            emitEvent(FeedMainEvent.HasJustLoggedIn)
         }
     }
 

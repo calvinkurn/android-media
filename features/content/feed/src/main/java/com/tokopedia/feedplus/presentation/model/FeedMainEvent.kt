@@ -10,5 +10,5 @@ sealed class FeedMainEvent : UiEvent {
 
     override val id: Long = UUID.randomUUID().mostSignificantBits
 
-    data class HasJustLoggedIn(val userName: String) : FeedMainEvent()
+    object HasJustLoggedIn : FeedMainEvent()
 }

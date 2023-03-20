@@ -58,6 +58,7 @@ import com.tokopedia.applink.DeeplinkDFMapper;
 import com.tokopedia.applink.FragmentConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -393,7 +394,7 @@ public class MainParentActivity extends BaseActivity implements
         try {
             super.onRestoreInstanceState(savedInstanceState);
         } catch (Exception e) {
-            reloadPage(HOME_MENU);
+            reloadPage(HOME_MENU, false);
         }
     }
 
@@ -717,7 +718,7 @@ public class MainParentActivity extends BaseActivity implements
                     }
                 }
             }
-            reloadPage(position);
+            reloadPage(position, true);
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
@@ -771,8 +772,10 @@ public class MainParentActivity extends BaseActivity implements
             presenter.get().onDestroy();
     }
 
-    private void reloadPage(int position) {
-        getIntent().putExtra(ARGS_TAB_POSITION, position);
+    private void reloadPage(int position, boolean isJustLoggedIn) {
+        getIntent()
+                .putExtra(ARGS_TAB_POSITION, position)
+                .putExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN, isJustLoggedIn);
 //        finish();
 //        startActivity(getIntent());
         recreate();
