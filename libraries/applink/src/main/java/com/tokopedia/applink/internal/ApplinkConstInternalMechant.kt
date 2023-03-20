@@ -23,32 +23,30 @@ object ApplinkConstInternalMechant {
 
     const val HOST_MERCHANT = "merchant"
 
-    const val INTERNAL_MERCHANT = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MERCHANT}"
+    const val INTERNAL_MERCHANT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_MERCHANT"
 
-    const val MERCHANT_REDIRECT_CREATE_SHOP = "${INTERNAL_MERCHANT}/redirect-create-shop"
+    const val MERCHANT_REDIRECT_CREATE_SHOP = "$INTERNAL_MERCHANT/redirect-create-shop"
 
-    const val MERCHANT_OPEN_PRODUCT_PREVIEW = "${INTERNAL_MERCHANT}/open-product-preview"
+    const val MERCHANT_OPEN_PRODUCT_PREVIEW = "$INTERNAL_MERCHANT/open-product-preview"
 
-    const val MERCHANT_PRODUCT_DRAFT = "${INTERNAL_MERCHANT}/product-draft"
+    const val MERCHANT_PRODUCT_DRAFT = "$INTERNAL_MERCHANT/product-draft"
 
     // Product Service Widget
-    const val MERCHANT_PRODUCT_BUNDLE = "${INTERNAL_MERCHANT}/product-bundle/{product_id}/"
-    const val MERCHANT_GIFTING = "${INTERNAL_MERCHANT}/gifting/{addon_id}/"
+    const val MERCHANT_PRODUCT_BUNDLE = "$INTERNAL_MERCHANT/product-bundle/{product_id}/"
+    const val MERCHANT_GIFTING = "$INTERNAL_MERCHANT/gifting/{addon_id}/"
 
     // Official Store Brandlist
-    const val BRANDLIST = "${INTERNAL_MERCHANT}/official-store/brand/{category_id}/"
-  
+    const val BRANDLIST = "$INTERNAL_MERCHANT/official-store/brand/{category_id}/"
+
     // Official Store Brandlist - Search Page
-    const val BRANDLIST_SEARCH = "${INTERNAL_MERCHANT}/official-store/brand-search"
+    const val BRANDLIST_SEARCH = "$INTERNAL_MERCHANT/official-store/brand-search"
 
-    const val MERCHANT_SHOP_SHOWCASE_LIST = "${INTERNAL_MERCHANT}/shop-showcase-list"
+    const val MERCHANT_SHOP_SHOWCASE_LIST = "$INTERNAL_MERCHANT/shop-showcase-list"
 
-    const val MERCHANT_SHOP_SHOWCASE_ADD = "${INTERNAL_MERCHANT}/shop-showcase-add"
+    const val MERCHANT_SHOP_SHOWCASE_ADD = "$INTERNAL_MERCHANT/shop-showcase-add"
 
-    const val MERCHANT_SHOP_SCORE = "${INTERNAL_MERCHANT}/shop-score-detail"
+    const val MERCHANT_SHOP_SCORE = "$INTERNAL_MERCHANT/shop-score-detail"
 
-    //com.tokopedia.statistic.presentation.view.activity.StatisticActivity
+    // com.tokopedia.statistic.presentation.view.activity.StatisticActivity
     const val MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MERCHANT/statistic_dashboard"
-
-    const val MERCHANT_OFFICIAL_STORE = "$INTERNAL_MERCHANT/official-store"
 }

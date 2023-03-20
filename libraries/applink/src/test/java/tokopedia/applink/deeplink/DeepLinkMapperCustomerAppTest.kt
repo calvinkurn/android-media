@@ -871,7 +871,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             DeeplinkMapperHome.isOsExperiment()
         } returns true
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/official-store"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/sos"
         assertEqualsDeepLinkMapper(ApplinkConst.OFFICIAL_STORE, expectedDeepLink)
     }
 
@@ -881,7 +881,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             DeeplinkMapperHome.isOsExperiment()
         } returns true
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/official-store"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/sos"
         val appLink = UriUtil.buildUri(ApplinkConst.OFFICIAL_STORE_CATEGORY, "21")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }

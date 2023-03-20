@@ -67,7 +67,6 @@ object DeeplinkMapperHome {
         if (uri.host == Uri.parse(ApplinkConst.OFFICIAL_STORE).host && uri.pathSegments.isEmpty()) {
             return if (isOsExperiment()) {
                 ApplinkConstInternalDiscovery.SOS
-//                UriUtil.buildUriAppendParams(ApplinkConstInternalDiscovery.INTERNAL_DISCOVERY, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
             } else {
                 UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
             }
