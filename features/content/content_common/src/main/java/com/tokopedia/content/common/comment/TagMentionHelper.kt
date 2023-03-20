@@ -81,10 +81,11 @@ object TagMentionBuilder {
     fun isChildOrParent(text: Spanned?, commentId: String): CommentType {
         if (text == null) return CommentType.Parent
         val find = text.getSpans<BaseSpan>(0, text.length)
-        return if (find.isNotEmpty()) {
-            CommentType.Child(commentId)
-        } else {
+        val isAvailable = find.joinToString { item -> if (text.contains(item.shortName)) text.toString() else "" }
+        return if (isAvailable.isBlank()) {
             CommentType.Parent
+        } else {
+            CommentType.Child(commentId)
         }
     }
 
@@ -116,7 +117,8 @@ object TagMentionBuilder {
         val convert = text.getSpans<BaseSpan>(0, text.length)
         return try {
             convert.joinToString { txt ->
-                txt.sentText + text.toString().substring(txt.shortName.length, text.length)
+                if (!text.contains(txt.shortName)) text.toString()
+                else txt.sentText + text.toString().substring(txt.shortName.length, text.length)
             }.ifBlank {
                 text.toString()
             }
