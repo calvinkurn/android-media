@@ -375,6 +375,79 @@ class ReviewVariantViewModelTest {
             job.cancel()
         }
     }
+
+    @Test
+    fun `when displaying list of variants, should display list of variants that were previously selected`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                )
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0))
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0))
+            val selectedProduct =
+                SelectedProduct(parentProductId = product.id, variantProductIds = listOf(111, 112))
+
+            val previouslySelectedVariants = listOf(firstVariant.variantId)
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    )
+                )
+            )
+
+            val emittedValues = arrayListOf<ReviewVariantUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            //When
+            viewModel.processEvent(
+                ReviewVariantEvent.FetchProductVariants(
+                    isParentProductSelected = true,
+                    selectedProduct = selectedProduct,
+                    originalVariantIds = previouslySelectedVariants,
+                    isVariantCheckable = true,
+                    isVariantDeletable = true
+                )
+            )
+
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstVariant.copy(variantName = "Biru", isSelected = true)
+                ),
+                actual.variants
+            )
+
+
+            job.cancel()
+        }
+    }
     //endregion
 
     //region handleFetchProductVariants
