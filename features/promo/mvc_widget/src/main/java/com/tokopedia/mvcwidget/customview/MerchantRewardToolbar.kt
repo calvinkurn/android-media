@@ -11,8 +11,8 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.mvcwidget.R

@@ -888,7 +888,7 @@ class ShipmentPresenterCheckoutTest {
 
         // Then
         verify {
-            view.updateAddOnsData(AddOnsDataModel(), 0)
+            view.updateAddOnsData(AddOnsDataModel(), 0, shipmentCartItemModelList[0].cartItemModels[0].cartString)
         }
     }
 
@@ -940,7 +940,7 @@ class ShipmentPresenterCheckoutTest {
 
         // Then
         verify {
-            view.updateAddOnsData(addOnsDataModel, 1)
+            view.updateAddOnsData(addOnsDataModel, 1, shipmentCartItemModelList[0].cartString)
         }
     }
 
@@ -998,7 +998,7 @@ class ShipmentPresenterCheckoutTest {
 
         // Then
         verify {
-            view.updateAddOnsData(addOnsDataModel, 1)
+            view.updateAddOnsData(addOnsDataModel, 1, shipmentCartItemModelList[0].cartString)
         }
     }
 

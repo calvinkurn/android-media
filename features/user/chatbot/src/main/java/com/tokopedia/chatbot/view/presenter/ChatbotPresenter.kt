@@ -117,11 +117,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOU
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.view.util.Attachment34RenderType
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
-import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
-import com.tokopedia.chatbot.websocket.ChatbotWebSocket
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
+import com.tokopedia.chatbot.websocket.*
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -211,7 +207,8 @@ class ChatbotPresenter @Inject constructor(
     private var mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
     var mediaUploadResults = MutableStateFlow<MediaUploadResultMap>(mapOf())
     private val shouldResetFailedUploadStatus = MutableStateFlow(false)
-    val mediaUris = MutableStateFlow<List<VideoUploadData>>(emptyList())
+    private val mediaUris = MutableStateFlow<List<VideoUploadData>>(emptyList())
+    var pageSourceAccess = ""
 
     init {
         observeMediaUrisForUpload()
@@ -240,7 +237,8 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -315,7 +313,8 @@ class ChatbotPresenter @Inject constructor(
                     Timber.d("Socket Reconnecting")
                 }
                 ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -368,7 +367,8 @@ class ChatbotPresenter @Inject constructor(
             }
         } catch (e: JsonSyntaxException) {
             ChatbotNewRelicLogger.logNewRelicForSocket(
-                e
+                e,
+                pageSource = pageSourceAccess
             )
         }
     }
@@ -541,7 +541,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SEND_RATING,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -574,6 +575,10 @@ class ChatbotPresenter @Inject constructor(
 
     override fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {
         return chatBotWebSocketMessageMapper.map(pojo)
+    }
+
+    override fun setPageSource(pageSource: String) {
+        pageSourceAccess = pageSource
     }
 
     override fun sendInvoiceAttachment(
@@ -699,7 +704,8 @@ class ChatbotPresenter @Inject constructor(
                         false,
                         messageId,
                         KEY_SECURE_UPLOAD,
-                        e
+                        e,
+                        pageSource = pageSourceAccess
                     )
                     onErrorImageUpload(e, imageUploadViewModel)
                 }
@@ -852,7 +858,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_CSAT_RATING,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -876,7 +883,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -912,7 +920,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_CHAT_CSAT,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -944,7 +953,8 @@ class ChatbotPresenter @Inject constructor(
                     false,
                     messageId,
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_LINK_FOR_REDIRECTION,
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -980,7 +990,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_TICKER,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -1013,7 +1024,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_NEW_SESSION,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -1044,7 +1056,8 @@ class ChatbotPresenter @Inject constructor(
                     false,
                     messageId,
                     KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY,
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
                 view.loadChatHistory()
                 view.enableTyping()
@@ -1225,7 +1238,8 @@ class ChatbotPresenter @Inject constructor(
                         false,
                         messageId,
                         ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME,
-                        it
+                        it,
+                        pageSource = pageSourceAccess
                     )
                 }
             )
@@ -1273,7 +1287,8 @@ class ChatbotPresenter @Inject constructor(
                     true,
                     messageId,
                     KEY_CHATBOT_GET_CHATLIST_RATING,
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -1353,7 +1368,8 @@ class ChatbotPresenter @Inject constructor(
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
                     it,
                     getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime
+                    getExistingChatUseCase.maxReplyTime,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -1389,7 +1405,8 @@ class ChatbotPresenter @Inject constructor(
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM,
                     it,
                     getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime
+                    getExistingChatUseCase.maxReplyTime,
+                    pageSource = pageSourceAccess
                 )
             }
         )

@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -42,4 +43,8 @@ class UserProfileModule(
     @Provides
     @UserProfileScope
     fun provideRemoteConfig(@ApplicationContext appContext: Context): RemoteConfig = FirebaseRemoteConfigImpl(appContext)
+
+    @Provides
+    @UserProfileScope
+    fun provideUpdateChannelUseCase(graphqlRepository: GraphqlRepository) = UpdateChannelUseCase(graphqlRepository)
 }
