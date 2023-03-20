@@ -9,12 +9,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.tokopedia.common_compose.R
 
-
 internal val OpenSauce = FontFamily(
     Font(R.font.open_sauce_one_regular, FontWeight.Normal),
     Font(R.font.open_sauce_one_extra_bold, FontWeight.Bold)
 )
-
 val OpenSauceTypography = Typography(defaultFontFamily = OpenSauce)
 
 data class NestTextStyle(

@@ -60,9 +60,10 @@ fun ProductReportComposeContent(
 @Preview
 @Composable
 fun ProductReportComposeContentPreview() {
+    val iterateItem = 10
     ProductReportComposeContent(
         uiState = ProductReportUiState(
-            data = (0..10).map {
+            data = (0..iterateItem).map {
                 ProductReportReason(
                     categoryId = it.toString(),
                     children = emptyList(),

@@ -34,24 +34,26 @@ class ProductReportSubmitViewModel @Inject constructor(
     fun getCurrentParams() = currentParams
 
     fun submitReport(productId: Long, categoryId: Int, input: Map<String, Any>) {
+        launchCatchError(
+            block = {
+                val params = SubmitReportParams(productId, categoryId, processImages(input))
+                submitReportUseCase.setParams(params)
+                currentParams = params
 
-        launchCatchError(block = {
-            val params = SubmitReportParams(productId, categoryId, processImages(input))
-            submitReportUseCase.setParams(params)
-            currentParams = params
-
-            val result = submitReportUseCase.executeOnBackground()
-            submitResult.postValue(Success(result.submitReport.isSuccess))
-        }, onError = {
-            submitResult.postValue(Fail(it))
-        })
+                val result = submitReportUseCase.executeOnBackground()
+                submitResult.postValue(Success(result.submitReport.isSuccess))
+            },
+            onError = {
+                submitResult.postValue(Fail(it))
+            }
+        )
     }
 
-    private suspend fun processImages(input:Map<String, Any>): Map<String, Any>{
+    private suspend fun processImages(input: Map<String, Any>): Map<String, Any> {
         val mutableInput = input.toMutableMap()
         val uploadIdList = (mutableInput[KEY_PHOTO] as? List<*>)?.map { photo ->
-            uploadImageAndGetId(photo as String).let {
-                when(it){
+            uploadImageAndGetId(photo.toString()).let {
+                when (it) {
                     is UploadResult.Success -> it.uploadId
                     is UploadResult.Error -> throw Throwable(it.message)
                 }
