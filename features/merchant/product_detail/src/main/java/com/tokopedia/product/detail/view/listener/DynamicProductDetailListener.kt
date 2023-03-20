@@ -499,4 +499,9 @@ interface DynamicProductDetailListener {
     fun onThumbnailVariantSelected(variantId: String, categoryKey: String)
 
     fun onThumbnailVariantImpress(data: VariantOptionWithAttribute, position: Int)
+
+    /**
+     * Product Media Recom BottomSheet
+     */
+    fun onProductMediaRecomBottomSheetDismissed()
 }

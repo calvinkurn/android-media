@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 sealed interface ProductMediaRecomBottomSheetState {
-    object Initial : ProductMediaRecomBottomSheetState
+    object Dismissed : ProductMediaRecomBottomSheetState
     data class Loading(
         val title: String
     ) : ProductMediaRecomBottomSheetState

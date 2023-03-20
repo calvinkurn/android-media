@@ -35,11 +35,11 @@ class ProductMediaRecomBottomSheetManager(
         const val TAG = "ProductMediaRecomBottomSheet"
     }
 
-    private val bottomSheet by lazyThreadSafetyNone { BottomSheet().apply { setListener(listener) } }
+    private val bottomSheet by lazyThreadSafetyNone { BottomSheet() }
 
     fun updateState(state: ProductMediaRecomBottomSheetState) {
         when (state) {
-            is ProductMediaRecomBottomSheetState.Initial -> {
+            is ProductMediaRecomBottomSheetState.Dismissed -> {
                 getProductMediaRecomBottomSheet()?.dismiss()
             }
             is ProductMediaRecomBottomSheetState.Loading -> {
@@ -70,9 +70,11 @@ class ProductMediaRecomBottomSheetManager(
     private fun updateProductMediaRecomBottomSheet(action: BottomSheet.() -> Unit) {
         if (bottomSheet.isAdded) {
             action(bottomSheet)
+            bottomSheet.setListener(listener)
         } else {
             bottomSheet.setShowListener {
                 action(bottomSheet)
+                bottomSheet.setListener(listener)
                 bottomSheet.setShowListener { }
             }
             bottomSheet.show(fragmentManager, TAG)
@@ -85,7 +87,6 @@ class ProductMediaRecomBottomSheetManager(
         RecommendationCarouselTokonowListener {
 
         private var binding by viewBinding(BsProductMediaRecomBinding::bind)
-        private var listener: DynamicProductDetailListener? = null
 
         init {
             clearContentPadding = true
@@ -100,10 +101,7 @@ class ProductMediaRecomBottomSheetManager(
                 inflater,
                 container,
                 false
-            ).apply {
-                binding = this
-                setupListeners()
-            }.root
+            ).apply { binding = this }.root
             setChild(view)
             return super.onCreateView(inflater, container, savedInstanceState)
         }
@@ -170,7 +168,10 @@ class ProductMediaRecomBottomSheetManager(
         ) {}
 
         fun setListener(listener: DynamicProductDetailListener) {
-            this.listener = listener
+            setOnDismissListener { listener.onProductMediaRecomBottomSheetDismissed() }
+            binding?.globalErrorProductMedia?.setActionClickListener {
+                listener.onShowProductMediaRecommendationClicked()
+            }
         }
 
         fun showLoading() {
@@ -195,12 +196,6 @@ class ProductMediaRecomBottomSheetManager(
             setupErrorState(error)
             binding?.recomProductMedia?.gone()
             binding?.globalErrorProductMedia?.show()
-        }
-
-        private fun setupListeners() {
-            binding?.globalErrorProductMedia?.setActionClickListener {
-                listener?.onShowProductMediaRecommendationClicked()
-            }
         }
 
         private fun setupRecom(carouselData: RecommendationCarouselData) {

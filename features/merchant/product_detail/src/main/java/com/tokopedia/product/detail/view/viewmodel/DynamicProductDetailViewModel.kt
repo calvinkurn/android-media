@@ -1432,7 +1432,10 @@ open class DynamicProductDetailViewModel @Inject constructor(
     ) {
         launchCatchError(dispatcher.main, block = {
             val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
-                if (productMediaRecomBottomSheetData?.pageName == pageName) {
+                if (
+                    productMediaRecomBottomSheetData?.pageName == pageName &&
+                    productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
+                ) {
                     productMediaRecomBottomSheetData
                 } else {
                     setProductMediaRecomBottomSheetLoading(title)
@@ -1443,6 +1446,10 @@ open class DynamicProductDetailViewModel @Inject constructor(
         }) {
             setProductMediaRecomBottomSheetError(title = title, error = it)
         }
+    }
+
+    fun dismissProductMediaRecomBottomSheet() {
+        _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.Dismissed
     }
 
     private suspend fun loadProductMediaRecomBottomSheetData(
@@ -1477,10 +1484,16 @@ open class DynamicProductDetailViewModel @Inject constructor(
         title: String,
         data: ProductMediaRecomBottomSheetData
     ) {
-        _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.ShowingData(
-            title = title,
-            recomWidgetData = data.recommendationWidget
-        )
+        _productMediaRecomBottomSheetState.value = if (
+            data.recommendationWidget.recommendationItemList.isEmpty()
+        ) {
+            ProductMediaRecomBottomSheetState.Dismissed
+        } else {
+            ProductMediaRecomBottomSheetState.ShowingData(
+                title = title,
+                recomWidgetData = data.recommendationWidget
+            )
+        }
     }
 
     private fun setProductMediaRecomBottomSheetError(
