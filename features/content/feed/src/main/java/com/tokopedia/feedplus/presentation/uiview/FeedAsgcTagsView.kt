@@ -4,11 +4,11 @@ import androidx.annotation.StringRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_NEW_PRODUCTS
-import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_RESTOCK
-import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_SHOP_DISCOUNT
-import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_SHOP_FLASH_SALE
-import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_SPECIAL_RELEASE
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_NEW_PRODUCTS
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_RESTOCK
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SHOP_DISCOUNT
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SHOP_FLASH_SALE
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SPECIAL_RELEASE
 import com.tokopedia.feedplus.presentation.adapter.FeedAsgcTagAdapter
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -45,11 +45,11 @@ class FeedAsgcTagsView(val recyclerView: RecyclerView) {
     }
 
     private fun mapTypeToTag(type: String) = when (type) {
-        TYPE_FEED_NEW_PRODUCTS -> getString(com.tokopedia.feedcomponent.R.string.feeds_asgc_new_product_text)
-        TYPE_FEED_RESTOCK -> getString(com.tokopedia.feedcomponent.R.string.feeds_asgc_restock_text)
-        TYPE_FEED_SHOP_DISCOUNT -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_diskon_toko)
-        TYPE_FEED_SHOP_FLASH_SALE -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_flash_sale_toko)
-        TYPE_FEED_SPECIAL_RELEASE -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_rilisan_special)
+        TYPE_FEED_ASGC_NEW_PRODUCTS -> getString(com.tokopedia.feedcomponent.R.string.feeds_asgc_new_product_text)
+        TYPE_FEED_ASGC_RESTOCK -> getString(com.tokopedia.feedcomponent.R.string.feeds_asgc_restock_text)
+        TYPE_FEED_ASGC_SHOP_DISCOUNT -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_diskon_toko)
+        TYPE_FEED_ASGC_SHOP_FLASH_SALE -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_flash_sale_toko)
+        TYPE_FEED_ASGC_SPECIAL_RELEASE -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_rilisan_special)
         else -> ""
     }
 

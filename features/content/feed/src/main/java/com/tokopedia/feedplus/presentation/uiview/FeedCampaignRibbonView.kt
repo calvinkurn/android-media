@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.presentation.uiview
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedplus.R
@@ -27,6 +26,7 @@ import java.util.*
  */
 enum class FeedCampaignRibbonType {
     ASGC_GENERAL,
+    ASGC_DISCOUNT,
     TITLE_ONLY,
     TITLE_WITH_TIMER,
     START_IN,
@@ -96,11 +96,15 @@ class FeedCampaignRibbonView(
         }
     }
 
-    private fun buildRibbonBasedOnType(campaign: FeedCardCampaignModel, ctaModel: FeedCardCtaModel) {
+    private fun buildRibbonBasedOnType(
+        campaign: FeedCardCampaignModel,
+        ctaModel: FeedCardCtaModel
+    ) {
         with(binding) {
             when (type) {
                 FeedCampaignRibbonType.ASGC_GENERAL -> {
-                    tyFeedCampaignRibbonTitle.text = "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}"
+                    tyFeedCampaignRibbonTitle.text =
+                        "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}"
                     renderRibbonByType(campaign.isReminderActive)
                     startDelayProcess(TWO_SECOND) {
                         setBackgroundGradient(ctaModel)
@@ -120,15 +124,6 @@ class FeedCampaignRibbonView(
                     timerFeedCampaignRibbon.hide()
 
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
-
-                    val constraintSet = ConstraintSet()
-                    constraintSet.connect(
-                        guidelineFeedCampaignRibbon.id,
-                        ConstraintSet.START,
-                        tyFeedCampaignRibbonTitle.id,
-                        ConstraintSet.END
-                    )
-                    constraintSet.applyTo(root)
                 }
                 FeedCampaignRibbonType.TITLE_ONLY -> {
                     tyFeedCampaignRibbonTitle.show()
@@ -141,15 +136,6 @@ class FeedCampaignRibbonView(
                     } else {
                         icFeedCampaignRibbonIcon.setImage(IconUnify.BELL)
                     }
-
-                    val constraintSet = ConstraintSet()
-                    constraintSet.connect(
-                        guidelineFeedCampaignRibbon.id,
-                        ConstraintSet.START,
-                        tyFeedCampaignRibbonTitle.id,
-                        ConstraintSet.END
-                    )
-                    constraintSet.applyTo(root)
                 }
                 FeedCampaignRibbonType.TITLE_WITH_TIMER -> {
                     tyFeedCampaignRibbonTitle.show()
@@ -158,15 +144,6 @@ class FeedCampaignRibbonView(
                     timerFeedCampaignRibbon.show()
 
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
-
-                    val constraintSet = ConstraintSet()
-                    constraintSet.connect(
-                        guidelineFeedCampaignRibbon.id,
-                        ConstraintSet.START,
-                        tyFeedCampaignRibbonTitle.id,
-                        ConstraintSet.END
-                    )
-                    constraintSet.applyTo(root)
                 }
                 FeedCampaignRibbonType.START_IN -> {
                     tyFeedCampaignRibbonTitle.hide()
@@ -179,15 +156,6 @@ class FeedCampaignRibbonView(
                     } else {
                         icFeedCampaignRibbonIcon.setImage(IconUnify.BELL)
                     }
-
-                    val constraintSet = ConstraintSet()
-                    constraintSet.connect(
-                        guidelineFeedCampaignRibbon.id,
-                        ConstraintSet.START,
-                        tyFeedCampaignRibbonSmall.id,
-                        ConstraintSet.END
-                    )
-                    constraintSet.applyTo(root)
                 }
                 FeedCampaignRibbonType.ON_GOING -> {
                     tyFeedCampaignRibbonTitle.hide()
@@ -196,15 +164,6 @@ class FeedCampaignRibbonView(
                     timerFeedCampaignRibbon.show()
 
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
-
-                    val constraintSet = ConstraintSet()
-                    constraintSet.connect(
-                        guidelineFeedCampaignRibbon.id,
-                        ConstraintSet.START,
-                        pbFeedCampaignRibbon.id,
-                        ConstraintSet.END
-                    )
-                    constraintSet.applyTo(root)
                 }
             }
         }
