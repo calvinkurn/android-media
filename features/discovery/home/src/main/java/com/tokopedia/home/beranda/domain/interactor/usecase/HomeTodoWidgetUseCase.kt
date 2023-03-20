@@ -38,7 +38,7 @@ class HomeTodoWidgetUseCase @Inject constructor(
                 todoWidgetList = resultList,
                 status = TodoWidgetListDataModel.STATUS_SUCCESS
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             currentTodoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_ERROR)
         }
     }
