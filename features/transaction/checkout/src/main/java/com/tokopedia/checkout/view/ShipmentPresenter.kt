@@ -120,9 +120,8 @@ import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.mo
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
@@ -187,7 +186,7 @@ class ShipmentPresenter @Inject constructor(
     private val mTrackerShipment: CheckoutAnalyticsCourierSelection,
     private val shipmentDataConverter: ShipmentDataConverter,
     private val releaseBookingUseCase: ReleaseBookingUseCase,
-    private val prescriptionIdsUseCase: GetPrescriptionIdsUseCase,
+    private val prescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine,
     private val epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase,
     private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
     private val gson: Gson,
@@ -3072,30 +3071,26 @@ class ShipmentPresenter @Inject constructor(
 
     fun fetchPrescriptionIds(epharmacyData: EpharmacyData) {
         if (epharmacyData.checkoutId.isNotEmpty() && epharmacyData.showImageUpload && !epharmacyData.consultationFlow) {
-            compositeSubscription.add(
-                prescriptionIdsUseCase
-                    .execute(epharmacyData.checkoutId)
-                    .subscribe(object : Subscriber<GetPrescriptionIdsResponse>() {
-                        override fun onCompleted() {}
-                        override fun onError(e: Throwable) {
-                            Timber.d(e)
+            launch {
+                try {
+                    val getPrescriptionIdsResponse = prescriptionIdsUseCase
+                        .setParams(epharmacyData.checkoutId)
+                        .executeOnBackground()
+                    if (getPrescriptionIdsResponse.detailData != null && getPrescriptionIdsResponse.detailData!!.prescriptionData != null && getPrescriptionIdsResponse.detailData!!.prescriptionData!!.prescriptions != null) {
+                        val prescriptions =
+                            getPrescriptionIdsResponse.detailData!!.prescriptionData!!.prescriptions
+                        val prescriptionIds = ArrayList<String>()
+                        for (prescription in prescriptions!!) {
+                            prescriptionIds.add(prescription!!.prescriptionId!!)
                         }
-
-                        override fun onNext(getPrescriptionIdsResponse: GetPrescriptionIdsResponse) {
-                            if (getPrescriptionIdsResponse.detailData != null && getPrescriptionIdsResponse.detailData!!.prescriptionData != null && getPrescriptionIdsResponse.detailData!!.prescriptionData!!.prescriptions != null) {
-                                val prescriptions =
-                                    getPrescriptionIdsResponse.detailData!!.prescriptionData!!.prescriptions
-                                val prescriptionIds = ArrayList<String>()
-                                for (prescription in prescriptions!!) {
-                                    prescriptionIds.add(prescription!!.prescriptionId!!)
-                                }
-                                setPrescriptionIds(prescriptionIds)
-                                uploadPrescriptionUiModel!!.isError = false
-                                view?.updateUploadPrescription(uploadPrescriptionUiModel)
-                            }
-                        }
-                    })
-            )
+                        setPrescriptionIds(prescriptionIds)
+                        uploadPrescriptionUiModel!!.isError = false
+                        view?.updateUploadPrescription(uploadPrescriptionUiModel)
+                    }
+                } catch (e: Throwable) {
+                    Timber.d(e)
+                }
+            }
         }
     }
 
