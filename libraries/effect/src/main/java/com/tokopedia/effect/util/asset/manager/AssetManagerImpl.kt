@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util.asset.manager
+package com.tokopedia.effect.util.asset.manager
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.effect.util.FileUtil
@@ -27,7 +27,12 @@ class AssetManagerImpl @Inject constructor(
 
                 val file = File(filePath)
                 if (!file.exists()) {
-                    if(FileUtil.writeResponseBodyToDisk(filePath, fileNameWithExtension, responseBody)) {
+                    if(FileUtil.writeResponseBodyToDisk(
+                            filePath,
+                            fileNameWithExtension,
+                            responseBody
+                        )
+                    ) {
                         val isUnzipSuccess = FileUtil.unzipFile(completePath, folderPath)
                         if (isUnzipSuccess) {
                             FileUtil.deleteFile(completePath)

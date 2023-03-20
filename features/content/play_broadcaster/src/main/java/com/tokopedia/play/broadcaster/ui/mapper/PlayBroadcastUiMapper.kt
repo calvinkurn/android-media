@@ -33,7 +33,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiM
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
+import com.tokopedia.effect.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat

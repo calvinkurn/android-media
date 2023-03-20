@@ -51,6 +51,8 @@ dependencies {
     implementation files('libs/effectAAR-release-4.4.2.aar')
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
 }
 
 project.ext {

@@ -3,8 +3,8 @@ package com.tokopedia.play.broadcaster.di.setup
 import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPickerAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPickerAnalyticImpl
 import com.tokopedia.play.broadcaster.data.datastore.*
-import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
-import com.tokopedia.play.broadcaster.util.asset.manager.AssetManagerImpl
+import com.tokopedia.effect.util.asset.manager.AssetManager
+import com.tokopedia.effect.util.asset.manager.AssetManagerImpl
 import dagger.Binds
 import dagger.Module
 

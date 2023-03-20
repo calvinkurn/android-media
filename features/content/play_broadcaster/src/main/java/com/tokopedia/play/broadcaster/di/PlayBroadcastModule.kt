@@ -23,7 +23,7 @@ import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnaly
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
+import com.tokopedia.effect.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl

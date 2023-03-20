@@ -1,6 +1,6 @@
-package com.tokopedia.play.broadcaster.util.asset.checker
+package com.tokopedia.effect.util.asset.checker
 
-import com.tokopedia.play.broadcaster.util.asset.AssetPathHelper
+import com.tokopedia.effect.util.asset.AssetPathHelper
 import java.io.File
 import javax.inject.Inject
 

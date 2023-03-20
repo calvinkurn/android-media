@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util.asset.manager
+package com.tokopedia.effect.util.asset.manager
 
 import okhttp3.ResponseBody
 

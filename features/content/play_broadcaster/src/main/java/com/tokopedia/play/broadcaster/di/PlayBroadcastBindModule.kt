@@ -28,13 +28,12 @@ import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnaly
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
-import com.tokopedia.play.broadcaster.di.setup.PlayBroadcastSetupScope
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerImpl
-import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
-import com.tokopedia.play.broadcaster.util.asset.checker.AssetCheckerImpl
-import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
-import com.tokopedia.play.broadcaster.util.asset.manager.AssetManagerImpl
+import com.tokopedia.effect.util.asset.checker.AssetChecker
+import com.tokopedia.effect.util.asset.checker.AssetCheckerImpl
+import com.tokopedia.effect.util.asset.manager.AssetManager
+import com.tokopedia.effect.util.asset.manager.AssetManagerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUp

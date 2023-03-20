@@ -32,7 +32,7 @@ import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.data.api.BeautificationAssetApi
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
+import com.tokopedia.effect.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
 import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play_common.domain.UpdateChannelUseCase

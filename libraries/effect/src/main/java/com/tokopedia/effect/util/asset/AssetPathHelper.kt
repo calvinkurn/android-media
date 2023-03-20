@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util.asset
+package com.tokopedia.effect.util.asset
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
