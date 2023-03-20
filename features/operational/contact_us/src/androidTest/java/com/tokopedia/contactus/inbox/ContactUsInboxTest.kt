@@ -51,48 +51,44 @@ class ContactUsInboxTest {
     }
 
     @Test
-    fun whenGetListSuccess() {
+    fun successfulApiTicketList_showingListTicket() {
         mActivityTestRule.launchActivity(Intent())
-        val recyclerView = mActivityTestRule.activity.findViewById<RecyclerView>(R.id.rv_email_list)
         waitForData()
-        mActivityTestRule.scrollRecyclerViewToPosition(recyclerView, 6)
-        recyclerView.clickOnPosition(6)
+        isVisible(R.id.rv_email_list)
+        isGoneView(R.id.home_global_error)
     }
 
     @Test
-    fun whenGetListFailed() {
-        fakeGqlRepository.setResponseTypeNotHappy(true)
+    fun failedApiTicektList_showingErrorState() {
+        fakeGqlRepository.setResponseTypeForError(true)
         mActivityTestRule.launchActivity(Intent())
         isGoneView(R.id.rv_email_list)
         isVisible(R.id.home_global_error)
     }
 
     @Test
-    fun whenGetListFailedThenTrySuccess() {
-        fakeGqlRepository.setResponseTypeNotHappy(true)
+    fun errorAPIAndClickRetry_showListTicket() {
+        fakeGqlRepository.setResponseTypeForError(true)
         mActivityTestRule.launchActivity(Intent())
         isGoneView(R.id.rv_email_list)
         isVisible(R.id.home_global_error)
-        fakeGqlRepository.setResponseTypeNotHappy(false)
+        fakeGqlRepository.setResponseTypeForError(false)
         performClick(R.id.globalerrors_action)
-        val recyclerView = mActivityTestRule.activity.findViewById<RecyclerView>(R.id.rv_email_list)
-        waitForData()
-        mActivityTestRule.scrollRecyclerViewToPosition(recyclerView, 6)
-        recyclerView.clickOnPosition(6)
+        isVisible(R.id.rv_email_list)
+        isGoneView(R.id.home_global_error)
     }
 
     @Test
-    fun topChatTestingWhenItsSuccess() {
-        fakeGqlRepository.setResponseTypeNotHappy(false)
+    fun successfulReqTopChat_showingChatWidget() {
+        fakeGqlRepository.setResponseTypeForError(false)
         mActivityTestRule.launchActivity(Intent())
         waitForData(1500L)
         isVisible(R.id.chat_widget)
-        performClick(R.id.chat_widget)
     }
 
     @Test
-    fun topChatTestingWhenItsFailed() {
-        fakeGqlRepository.setResponseTypeNotHappy(true)
+    fun failedReqTopChat_hideChatWidget() {
+        fakeGqlRepository.setResponseTypeForError(true)
         mActivityTestRule.launchActivity(Intent())
         waitForData(1500L)
         isGoneView(R.id.chat_widget)

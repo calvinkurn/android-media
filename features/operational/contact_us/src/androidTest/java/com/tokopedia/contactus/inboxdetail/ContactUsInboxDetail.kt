@@ -17,15 +17,17 @@ import com.tokopedia.contactus.inboxdetail.di.FakeGraphqlRepositoryInboxDetail.T
 import com.tokopedia.contactus.inboxtickets.view.activity.ContactUsProvideRatingActivity
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity
 import com.tokopedia.contactus.inboxtickets.view.inboxdetail.InboxDetailActivity.Companion.BUNDLE_ID_TICKET
+import com.tokopedia.contactus.utils.InstrumentedTestUtil.clickOnPosition
 import com.tokopedia.contactus.utils.InstrumentedTestUtil.scrollRecyclerViewToPosition
 import com.tokopedia.contactus.utils.InstrumentedTestUtil.isGoneView
 import com.tokopedia.contactus.utils.InstrumentedTestUtil.isTextDisplayed
+import com.tokopedia.contactus.utils.InstrumentedTestUtil.isTextShowedInItemPosition
 import com.tokopedia.contactus.utils.InstrumentedTestUtil.isViewGoneInItemPosition
 import com.tokopedia.contactus.utils.InstrumentedTestUtil.isViewVisibleInItemPosition
 import com.tokopedia.contactus.utils.InstrumentedTestUtil.isVisible
 import com.tokopedia.contactus.utils.InstrumentedTestUtil.performClick
 import com.tokopedia.contactus.utils.InstrumentedTestUtil.viewChildPerformClick
-import com.tokopedia.contactus.utils.InstrumentedTestUtil.viewToaster
+import com.tokopedia.contactus.utils.InstrumentedTestUtil.isShowToaster
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.Before
@@ -56,7 +58,8 @@ class ContactUsInboxDetail {
     fun setUp() {
         val ctx = InstrumentationRegistry.getInstrumentation().targetContext
         val component = DaggerTestAppComponentInboxDetail.builder().fakeAppInboxDetailModule(
-            FakeAppInboxDetailModule(ctx)).build()
+            FakeAppInboxDetailModule(ctx)
+        ).build()
         fakeGqlRepository = component.fakeGraphqlRepository() as FakeGraphqlRepositoryInboxDetail
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(component)
         login()
@@ -67,23 +70,29 @@ class ContactUsInboxDetail {
     }
 
     @Test
-    fun whenGetDetailSuccessWhenTicketIsOnProgress() {
+    fun ticketIsOnProgress_layoutReplayIsVisible() {
         mActivityTestRule.launchActivity(intent)
         isVisible(R.id.rv_message_list)
         isVisible(R.id.layout_replay_message)
     }
 
     @Test
-    fun whenGetDetailSuccessWhenTicketIsOnProgressAfterAgentReplay() {
+    fun agentReplayChat_ButtonReplayVisible() {
         fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
         mActivityTestRule.launchActivity(intent)
+        val recyclerView =
+            mActivityTestRule.activity.findViewById<RecyclerView>(R.id.rv_message_list)
         isVisible(R.id.rv_message_list)
         isVisible(R.id.layout_replay_message)
+        val lastIndex = recyclerView.size - 1
+        recyclerView.clickOnPosition(lastIndex)
+        recyclerView.isViewVisibleInItemPosition(lastIndex, R.id.iv_csast_status_bad)
+        recyclerView.isTextShowedInItemPosition(lastIndex, R.id.tv_name, "Tim Tokopedia Care")
         isVisible(R.id.view_rply_botton_before_csat_rating)
     }
 
     @Test
-    fun whenGetDetailSuccessWhenTicketIsOnClosed() {
+    fun ticketIsOnClosed_cannotClickReplayOrRating() {
         fakeGqlRepository.setTypeOfTicket(CLOSE)
         mActivityTestRule.launchActivity(intent)
         isVisible(R.id.rv_message_list)
@@ -93,7 +102,7 @@ class ContactUsInboxDetail {
     }
 
     @Test
-    fun whenGetDetailSuccessWhenTicketIsNeedRating() {
+    fun ticketIsNeedRating_viewReplayIsGoneAndViewHelpRateVisible() {
         fakeGqlRepository.setTypeOfTicket(NEED_RATING)
         mActivityTestRule.launchActivity(intent)
         isVisible(R.id.rv_message_list)
@@ -102,18 +111,19 @@ class ContactUsInboxDetail {
     }
 
     @Test
-    fun whenGetDetailFailed() {
+    fun failedGetDetailTicket_showToasterError() {
         fakeGqlRepository.setResponseTypeNotHappy(true)
         mActivityTestRule.launchActivity(Intent())
         isGoneView(R.id.rv_message_list)
-        viewToaster("Something went wrong")
+        isShowToaster("Something went wrong")
     }
 
     @Test
-    fun sendCSATPerReplayNegativeFeedBack() {
+    fun sendNegativeCSATPerReplaySuccess_showOnlyThumbDownOnLastReplay() {
         fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
         mActivityTestRule.launchActivity(intent)
-        val recyclerView = mActivityTestRule.activity.findViewById<RecyclerView>(R.id.rv_message_list)
+        val recyclerView =
+            mActivityTestRule.activity.findViewById<RecyclerView>(R.id.rv_message_list)
         isVisible(R.id.rv_message_list)
         isVisible(R.id.layout_replay_message)
         isVisible(R.id.view_rply_botton_before_csat_rating)
@@ -121,17 +131,16 @@ class ContactUsInboxDetail {
         isVisible(R.id.tv_no_button)
         isVisible(R.id.tv_yes_button)
         performClick(R.id.tv_no_button)
-        val itemSize = recyclerView.size-1
-        mActivityTestRule.scrollRecyclerViewToPosition(recyclerView, itemSize)
-        recyclerView.isViewVisibleInItemPosition(itemSize, R.id.iv_csast_status_bad)
-        recyclerView.isViewGoneInItemPosition(itemSize, R.id.iv_csast_status_good)
+        val lastIndex = recyclerView.size - 1
+        mActivityTestRule.scrollRecyclerViewToPosition(recyclerView, lastIndex)
+        recyclerView.isViewVisibleInItemPosition(lastIndex, R.id.iv_csast_status_bad)
+        recyclerView.isViewGoneInItemPosition(lastIndex, R.id.iv_csast_status_good)
     }
 
     @Test
-    fun sendCSATPerReplayPositiveFeedBack() {
+    fun sendPositiveCSATPerReplaySuccess_showCloseTicketDialog() {
         fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
         mActivityTestRule.launchActivity(intent)
-        val recyclerView = mActivityTestRule.activity.findViewById<RecyclerView>(R.id.rv_message_list)
         isVisible(R.id.rv_message_list)
         isVisible(R.id.layout_replay_message)
         isVisible(R.id.view_rply_botton_before_csat_rating)
@@ -139,15 +148,13 @@ class ContactUsInboxDetail {
         isVisible(R.id.tv_no_button)
         isVisible(R.id.tv_yes_button)
         performClick(R.id.tv_yes_button)
+        isTextDisplayed("Tutup komplain ini?")
         isVisible(R.id.tv_no_button)
         isVisible(R.id.tv_yes_button)
-        performClick(R.id.tv_no_button)
-        val itemSize = recyclerView.size-1
-        mActivityTestRule.scrollRecyclerViewToPosition(recyclerView, itemSize)
     }
 
     @Test
-    fun sendCSATPerReplayAndFailed() {
+    fun failedSendCSATPerReplay_showToasErrorMessage() {
         fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
         mActivityTestRule.launchActivity(intent)
         isVisible(R.id.rv_message_list)
@@ -158,11 +165,11 @@ class ContactUsInboxDetail {
         isVisible(R.id.tv_yes_button)
         fakeGqlRepository.setResponseTypeNotHappy(true)
         performClick(R.id.tv_no_button)
-        viewToaster("Failed to send Rating")
+        isShowToaster("Failed to send Rating")
     }
 
     @Test
-    fun closeTicketFailed() {
+    fun failedToCloseTicket_shownErrorMessage() {
         fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
         mActivityTestRule.launchActivity(intent)
         isVisible(R.id.rv_message_list)
@@ -176,11 +183,11 @@ class ContactUsInboxDetail {
         isVisible(R.id.tv_yes_button)
         fakeGqlRepository.setResponseTypeNotHappy(true)
         performClick(R.id.tv_yes_button)
-        viewToaster("Failed close user")
+        isShowToaster("Failed close user")
     }
 
     @Test
-    fun closeTicketSuccessAndSendCSATTicket() {
+    fun successfulCloseAndCSATTicket_helpRateAndReplayViewAreGone() {
         fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
         mActivityTestRule.launchActivity(intent)
         isVisible(R.id.rv_message_list)
@@ -205,7 +212,7 @@ class ContactUsInboxDetail {
     }
 
     @Test
-    fun closeTicketSuccessAndSendCSATTicketFailed() {
+    fun closeTicketAreSuccessButCSATSendFailed_shownErrorMessage() {
         fakeGqlRepository.setTypeOfTicket(ON_PROGRESS_NEED_TO_REPLAY)
         mActivityTestRule.launchActivity(intent)
         isVisible(R.id.rv_message_list)
@@ -225,6 +232,6 @@ class ContactUsInboxDetail {
         viewChildPerformClick(R.id.rv_filter, 0)
         fakeGqlRepository.setResponseTypeNotHappy(true)
         performClick(R.id.txt_finished)
-        viewToaster("Failed to send Rating")
+        isShowToaster("Failed to send Rating")
     }
 }

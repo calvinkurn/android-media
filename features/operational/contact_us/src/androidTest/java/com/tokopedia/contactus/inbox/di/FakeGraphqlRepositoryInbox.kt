@@ -17,9 +17,9 @@ import java.net.UnknownHostException
 class FakeGraphqlRepositoryInbox(private val context: Context, private val gson: Gson) :
     GraphqlRepository {
 
-    private var isSetNotHappy = false
-    fun setResponseTypeNotHappy(type: Boolean) {
-        isSetNotHappy = type
+    private var isError = false
+    fun setResponseTypeForError(type: Boolean) {
+        isError = type
     }
 
     private val listTicketResponse: InboxTicketListResponse by lazy {
@@ -49,12 +49,12 @@ class FakeGraphqlRepositoryInbox(private val context: Context, private val gson:
     ): GraphqlResponse {
         val query = requests.firstOrNull()?.query.orEmpty()
         return when {
-            query.isQueryContains(TICKET_REQ_LIST) && !isSetNotHappy -> GqlMockUtil.createSuccessResponse(listTicketResponse)
-            query.isQueryContains(TICKET_REQ_LIST) && isSetNotHappy -> throw UnknownHostException("bad Request")
-            query.isQueryContains(TOP_CHAT) && !isSetNotHappy -> GqlMockUtil.createSuccessResponse(topChatStatus)
-            query.isQueryContains(TOP_CHAT) && isSetNotHappy-> throw UnknownHostException("bad Request")
-            query.isQueryContains(DETAIL_INBOX) && !isSetNotHappy -> GqlMockUtil.createSuccessResponse(inboxDetail)
-            query.isQueryContains(DETAIL_INBOX) && isSetNotHappy-> throw UnknownHostException("bad Request")
+            query.isQueryContains(TICKET_REQ_LIST) && !isError -> GqlMockUtil.createSuccessResponse(listTicketResponse)
+            query.isQueryContains(TICKET_REQ_LIST) && isError -> throw UnknownHostException("bad Request")
+            query.isQueryContains(TOP_CHAT) && !isError -> GqlMockUtil.createSuccessResponse(topChatStatus)
+            query.isQueryContains(TOP_CHAT) && isError-> throw UnknownHostException("bad Request")
+            query.isQueryContains(DETAIL_INBOX) && !isError -> GqlMockUtil.createSuccessResponse(inboxDetail)
+            query.isQueryContains(DETAIL_INBOX) && isError-> throw UnknownHostException("bad Request")
             else -> throw UnknownHostException("bad request")
         }
     }

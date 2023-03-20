@@ -11,6 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.contactus.utils.ToasterUtils.waitOnView
 import com.tokopedia.test.application.espresso_component.CommonMatcher
@@ -30,20 +31,6 @@ object InstrumentedTestUtil {
             .perform(ViewActions.click())
     }
 
-    fun performScrollAndClick(id: Int) {
-        onView(
-            CommonMatcher
-                .firstView(withId(id))
-        )
-            .perform(ModifiedScrollToAction())
-
-        onView(
-            CommonMatcher
-                .firstView(withId(id))
-        )
-            .perform(ViewActions.click())
-    }
-
     fun <T : Activity> ActivityTestRule<T>.scrollRecyclerViewToPosition(
         recyclerView: RecyclerView,
         position: Int
@@ -52,29 +39,36 @@ object InstrumentedTestUtil {
         this.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
-    fun RecyclerView.clickOnPosition(position : Int){
+    fun RecyclerView.clickOnPosition(position: Int) {
         onView(withId(this.id))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    position, ViewActions.click()))
+                    position, ViewActions.click()
+                )
+            )
     }
 
     fun isTextDisplayed(vararg texts: String) {
         texts.forEach {
-            onView(ViewMatchers.withText(it))
+            onView(withText(it))
                 .check(matches(ViewMatchers.isDisplayed()))
         }
     }
 
-    fun viewToaster(text: String) {
-        waitOnView(ViewMatchers.withText(text)).check(matches(ViewMatchers.isDisplayed()))
+    fun isShowToaster(text: String) {
+        waitOnView(withText(text)).check(matches(ViewMatchers.isDisplayed()))
     }
 
-    fun isViewChildIsShow(idMainView:  Int, childPosition: Int) {
-        onView(nthChildOf(withId(idMainView), childPosition)).check(matches(ViewMatchers.isDisplayed()))
+    fun isViewChildIsShow(idMainView: Int, childPosition: Int) {
+        onView(
+            nthChildOf(
+                withId(idMainView),
+                childPosition
+            )
+        ).check(matches(ViewMatchers.isDisplayed()))
     }
 
-    fun viewChildPerformClick(idMainView:  Int, childPosition: Int) {
+    fun viewChildPerformClick(idMainView: Int, childPosition: Int) {
         onView(nthChildOf(withId(idMainView), childPosition)).perform(ViewActions.click())
     }
 
@@ -83,7 +77,7 @@ object InstrumentedTestUtil {
             .check(matches(ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
 
-    fun isVisible(resId: Int){
+    fun isVisible(resId: Int) {
         onView(withId(resId)).check(matches(ViewMatchers.isDisplayed()))
     }
 
@@ -92,6 +86,12 @@ object InstrumentedTestUtil {
             RecyclerViewMatcher(this.id)
                 .atPositionOnView(position, viewToCheck)
         ).check(matches(ViewMatchers.isDisplayed()))
+    }
+
+    fun RecyclerView.isTextShowedInItemPosition(position: Int, viewToCheck: Int, text: String) {
+        onView(RecyclerViewMatcher(this.id).atPositionOnView(position, viewToCheck)).check(matches(
+            withText(text)
+        ))
     }
 
     fun RecyclerView.isViewGoneInItemPosition(position: Int, viewToCheck: Int) {

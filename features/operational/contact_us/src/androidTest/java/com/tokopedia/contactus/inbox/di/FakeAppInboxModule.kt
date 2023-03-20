@@ -51,7 +51,7 @@ class FakeAppInboxModule(private val context: Context) {
     @ApplicationScope
     @Provides
     fun provideGraphqlUsecase(): GraphqlUseCaseInterface {
-        return FakeGraphqlUseCaseInbox(context)
+        return FakeGraphqlUseCaseInbox()
     }
 
     @ApplicationScope

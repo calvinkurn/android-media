@@ -9,11 +9,6 @@
         android:label="Contact Us Instrumentation"
         tools:replace="android:label">
 
-        <provider
-            android:authorities="${applicationId}.firebaseperfprovider"
-            android:name="com.google.firebase.perf.provider.FirebasePerfProvider"
-            tools:node="remove" />
-
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package com.tokopedia.contactus.inbox.di
 
-import android.content.Context
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
@@ -8,7 +7,7 @@ import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import timber.log.Timber
 
-class FakeGraphqlUseCaseInbox(private val context: Context) : GraphqlUseCaseInterface {
+class FakeGraphqlUseCaseInbox : GraphqlUseCaseInterface {
 
     private var gqlRequest: GraphqlRequest? = null
     private var e: Exception? = null
