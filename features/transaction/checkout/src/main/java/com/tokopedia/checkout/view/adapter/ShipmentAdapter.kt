@@ -26,7 +26,9 @@ import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder.Companion.ITEM_VIEW_PROMO_CHECKOUT
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder.Companion.ITEM_VIEW_PAYMENT_BUTTON
+import com.tokopedia.checkout.view.viewholder.ShipmentCartItemBottomViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentCartItemExpandViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentCartItemTopViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentCartItemViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentCostViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentCrossSellViewHolder
@@ -34,8 +36,6 @@ import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentOrderBottomViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentOrderTopViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder
@@ -85,10 +85,10 @@ class ShipmentAdapter @Inject constructor(
     private val sellerCashbackListener: SellerCashbackListener,
     private val uploadPrescriptionListener: UploadPrescriptionListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
-    ShipmentOrderTopViewHolder.Listener,
+    ShipmentCartItemTopViewHolder.Listener,
     ShipmentCartItemViewHolder.Listener,
     ShipmentCartItemExpandViewHolder.Listener,
-    ShipmentOrderBottomViewHolder.Listener {
+    ShipmentCartItemBottomViewHolder.Listener {
 
     companion object {
         const val DEFAULT_ERROR_POSITION = -1
@@ -200,11 +200,11 @@ class ShipmentAdapter @Inject constructor(
             }
 
             is ShipmentCartItemTopModel -> {
-                return ShipmentOrderTopViewHolder.LAYOUT
+                return ShipmentCartItemTopViewHolder.LAYOUT
             }
 
             is ShipmentCartItemModel -> {
-                return ShipmentOrderBottomViewHolder.LAYOUT
+                return ShipmentCartItemBottomViewHolder.LAYOUT
             }
 
             is CartItemModel -> {
@@ -287,8 +287,8 @@ class ShipmentAdapter @Inject constructor(
                 return ShipmentNewUpsellViewHolder(view, shipmentAdapterActionListener)
             }
 
-            ShipmentOrderTopViewHolder.LAYOUT -> {
-                return ShipmentOrderTopViewHolder(view)
+            ShipmentCartItemTopViewHolder.LAYOUT -> {
+                return ShipmentCartItemTopViewHolder(view)
             }
 
             ShipmentCartItemViewHolder.LAYOUT -> {
@@ -299,8 +299,8 @@ class ShipmentAdapter @Inject constructor(
                 return ShipmentCartItemExpandViewHolder(view, this@ShipmentAdapter)
             }
 
-            ShipmentOrderBottomViewHolder.LAYOUT -> {
-                return ShipmentOrderBottomViewHolder(
+            ShipmentCartItemBottomViewHolder.LAYOUT -> {
+                return ShipmentCartItemBottomViewHolder(
                     view,
                     ratesDataConverter,
                     this@ShipmentAdapter,
@@ -385,8 +385,8 @@ class ShipmentAdapter @Inject constructor(
                 (holder as ShipmentNewUpsellViewHolder).bind((data as ShipmentNewUpsellModel?)!!)
             }
 
-            ShipmentOrderTopViewHolder.LAYOUT -> {
-                (holder as ShipmentOrderTopViewHolder).bind((data as ShipmentCartItemTopModel))
+            ShipmentCartItemTopViewHolder.LAYOUT -> {
+                (holder as ShipmentCartItemTopViewHolder).bind((data as ShipmentCartItemTopModel))
             }
 
             ShipmentCartItemViewHolder.LAYOUT -> {
@@ -397,8 +397,8 @@ class ShipmentAdapter @Inject constructor(
                 (holder as ShipmentCartItemExpandViewHolder).bind(data as CartItemExpandModel)
             }
 
-            ShipmentOrderBottomViewHolder.LAYOUT -> {
-                (holder as ShipmentOrderBottomViewHolder).bind(
+            ShipmentCartItemBottomViewHolder.LAYOUT -> {
+                (holder as ShipmentCartItemBottomViewHolder).bind(
                     (data as ShipmentCartItemModel),
                     addressShipmentData
                 )
@@ -416,7 +416,7 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         super.onViewRecycled(holder)
-        (holder as? ShipmentOrderBottomViewHolder)?.unsubscribeDebouncer()
+        (holder as? ShipmentCartItemBottomViewHolder)?.unsubscribeDebouncer()
     }
 
     fun clearCompositeSubscription() {

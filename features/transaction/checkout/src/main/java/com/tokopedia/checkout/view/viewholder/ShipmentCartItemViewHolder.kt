@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -44,23 +43,6 @@ class ShipmentCartItemViewHolder(
     }
 
     private val binding: ItemShipmentProductBinding = ItemShipmentProductBinding.bind(itemView)
-
-    fun bind(
-        shipmentCartItemModel: ShipmentCartItemModel
-    ) {
-//        val cartItem = shipmentCartItemModel.cartItemModels[shipmentCartItemModel.groupProductPosition]
-//        val isFirstItem = shipmentCartItemModel.groupProductPosition == 0
-//
-//        renderError(shipmentCartItemModel.isError)
-//        renderItem(cartItem)
-//        renderProductPrice(cartItem)
-//        renderNotesToSeller(cartItem)
-//        renderPurchaseProtection(cartItem)
-//        renderProductTicker(cartItem)
-//        renderProductProperties(cartItem)
-//        renderBundlingInfo(cartItem, isFirstItem)
-//        renderAddOnProductLevel(cartItem, shipmentCartItemModel.addOnWordingModel!!)
-    }
 
     fun bind(
         cartItem: CartItemModel

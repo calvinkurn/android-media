@@ -13,7 +13,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import java.util.*
 
-class ShipmentOrderTopViewHolder(
+class ShipmentCartItemTopViewHolder(
     itemView: View,
     private val listener: Listener? = null
 ) : RecyclerView.ViewHolder(itemView) {

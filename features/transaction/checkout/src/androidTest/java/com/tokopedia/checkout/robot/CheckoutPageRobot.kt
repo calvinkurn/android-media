@@ -17,7 +17,7 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.ShipmentActivity
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentOrderTopViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentCartItemTopViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.unifyprinciples.Typography
@@ -43,7 +43,7 @@ class CheckoutPageRobot {
         for (i in 0 until itemCount) {
             scrollRecyclerViewToPosition(activityRule, recyclerView, i)
             when (recyclerView.findViewHolderForAdapterPosition(i)) {
-                is ShipmentOrderTopViewHolder -> {
+                is ShipmentCartItemTopViewHolder -> {
                     position = i
                     break
                 }

@@ -354,11 +354,11 @@ class ShipmentDataConverter @Inject constructor() {
         groupShop: GroupShop,
         username: String,
         receiverName: String,
-        addOnWordingModel: AddOnWordingModel
+        addOnOrderLevelModel: AddOnWordingModel
     ): ArrayList<CartItemModel> {
         return ArrayList(
             products.mapIndexed { index, product ->
-                convertFromProduct(index, product, groupShop, username, receiverName, addOnWordingModel)
+                convertFromProduct(index, product, groupShop, username, receiverName, addOnOrderLevelModel)
             }
         )
     }
