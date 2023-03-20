@@ -116,9 +116,9 @@ class TelcoPostpaidLoginInstrumentTest {
 
     fun validate_pdp_client_number_widget_interaction() {
         clientNumberWidget_clickClearBtn()
-        clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
+        clientNumberWidget_typeNumber(VALID_PHONE_NUMBER_2)
         Thread.sleep(2000)
-        clientNumberWidget_validateText(VALID_PHONE_NUMBER)
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER_2)
 
         // validate autocomplete
         clientNumberWidget_clickClearBtn()
@@ -142,11 +142,11 @@ class TelcoPostpaidLoginInstrumentTest {
 
     fun validate_filter_chip() {
         clientNumberWidget_clickFilterChip_withText("Tokopedia")
-        clientNumberWidget_validateText("081232323239")
+        clientNumberWidget_validateText(VALID_CHIP_NUMBER)
         clientNumberWidget_clickClearBtn()
-        clientNumberWidget_scrollToChip_withText("081208120812")
-        clientNumberWidget_clickFilterChip_withText("081208120812")
-        clientNumberWidget_validateText("081208120812")
+        clientNumberWidget_scrollToChip_withText(VALID_CHIP_NUMBER_2)
+        clientNumberWidget_clickFilterChip_withText(VALID_CHIP_NUMBER_2)
+        clientNumberWidget_validateText(VALID_CHIP_NUMBER)
     }
 
     fun click_on_tab_menu_login() {
@@ -263,6 +263,8 @@ class TelcoPostpaidLoginInstrumentTest {
         private const val VALID_PHONE_NUMBER = "08123232323"
         private const val VALID_PHONE_NUMBER_2 = "085252525252"
         private const val VALID_PHONE_NUMBER_3 = "081234567890"
+        private const val VALID_CHIP_NUMBER = "081232323239"
+        private const val VALID_CHIP_NUMBER_2 = "081208120812"
         private const val PREFIX_PHONE_NUMBER = "0812"
         private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_postpaid_login.json"
     }
