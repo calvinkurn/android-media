@@ -44,7 +44,7 @@ interface PlayBroadcastBeautificationAnalytic {
     fun clickSliderBeautyFilter(account: ContentAccountUiModel, page: Page, tab: Tab, customFace: String) /** TODO: if user choose makeup, what is the value for shaping/buffing/toning? */
 
     /** Row 11 */
-    fun viewResetFilterPopup(account: ContentAccountUiModel, page: Page, tab: Tab) /** TODO: is tab (face filter / makeup) value important here? because afaik reset filter will reset both face filter & makeup */
+    fun viewResetFilterPopup(account: ContentAccountUiModel, page: Page, tab: Tab)
 
     /** Row 12 */
     fun clickYesResetFilter(account: ContentAccountUiModel, page: Page)
