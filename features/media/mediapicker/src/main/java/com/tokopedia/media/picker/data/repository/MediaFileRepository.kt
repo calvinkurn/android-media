@@ -26,7 +26,7 @@ class MediaFileRepositoryImpl @Inject constructor(
                 if (media.file.exists().not()) continue
 
                 if (media.file.isVideo()) {
-                    media.videoLength = getVideoDuration(media.file)
+                    media.duration = getVideoDuration(media.file)
                 }
 
                 result.add(media)
