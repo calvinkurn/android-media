@@ -1,33 +1,49 @@
 package com.tokopedia.report.view.viewmodel
 
 import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import junit.framework.Assert
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
+    private val categoryIdLvl1 = "1"
+    private val categoryIdLvl2 = "1"
+    private val categoryIdLvl3 = "1"
     private val dataReasonEmpty = listOf(ProductReportReason())
     private val dataReasonHaveChildren = listOf(
         ProductReportReason(
-            children = listOf(ProductReportReason())
+            categoryId = categoryIdLvl1,
+            children = listOf(ProductReportReason(categoryId = categoryIdLvl2))
+        )
+    )
+    private val dataReasonHaveDeepChildren = listOf(
+        ProductReportReason(
+            categoryId = categoryIdLvl1,
+            children = listOf(
+                ProductReportReason(
+                    categoryId = categoryIdLvl2,
+                    children = listOf(ProductReportReason(categoryId = categoryIdLvl3))
+                )
+            )
         )
     )
 
     @Test
-    fun `when getReportReason success should return expected result`() = runBlockingTest {
+    fun `when getReportReason success should return expected result`() {
         val expectedResponse = `get gql response success`(dataReasonEmpty)
         val expected = `get response success`(expectedResponse)
-        val test = viewModel.uiState.first()
-        Assert.assertEquals(expected, test.data)
+
+        runCollectingUiState {
+            assertEquals(expected, it.first().data)
+        }
     }
 
     @Test
-    fun `when getReportReason error should return expected throwable`() = runBlockingTest {
+    fun `when getReportReason error should return expected throwable`() {
         // given
         val errorGql = GraphqlError()
         errorGql.message = "Error getReportReason"
@@ -42,8 +58,74 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
         }
     }
 
+    // region event state
     @Test
-    fun `event on item clicked with children is not empty`() = runBlockingTest {
+    fun `click sub-item from parent item`() {
+        // given
+        val response = `get gql response success`(dataReasonHaveChildren)
+        `get response success`(response)
+        val parent = dataReasonHaveChildren.first()
+
+        // when
+        viewModel.onEvent(
+            ProductReportUiEvent.OnItemClicked(reason = parent)
+        )
+        // then
+        runCollectingUiEvent {
+            assertTrue(it.last() is ProductReportUiEvent.OnScrollTop)
+        }
+
+        // when
+        viewModel.onEvent(
+            ProductReportUiEvent.OnItemClicked(reason = parent.children.first())
+        )
+
+        // then
+        runCollectingUiEvent {
+            assertTrue(it.last() is ProductReportUiEvent.OnGoToForm)
+        }
+    }
+
+    @Test
+    fun `click sub-sub-item from parent item`() {
+        // given
+        val response = `get gql response success`(dataReasonHaveDeepChildren)
+        `get response success`(response)
+        val parent = dataReasonHaveDeepChildren.first()
+
+        // when click base-parent
+        viewModel.onEvent(
+            ProductReportUiEvent.OnItemClicked(reason = parent)
+        )
+        // then
+        runCollectingUiEvent {
+            assertTrue(it.last() is ProductReportUiEvent.OnScrollTop)
+        }
+
+        // when click child level 1
+        val childLvl1 = parent.children.first()
+        viewModel.onEvent(
+            ProductReportUiEvent.OnItemClicked(reason = childLvl1)
+        )
+        // then
+        runCollectingUiEvent {
+            assertTrue(it.last() is ProductReportUiEvent.OnScrollTop)
+        }
+
+        // when click child level 2
+        val childLvl2 = childLvl1.children.first()
+        viewModel.onEvent(
+            ProductReportUiEvent.OnItemClicked(reason = childLvl2)
+        )
+
+        // then
+        runCollectingUiEvent {
+            assertTrue(it.last() is ProductReportUiEvent.OnGoToForm)
+        }
+    }
+
+    @Test
+    fun `event on item clicked with children is not empty`() {
         // given
         val response = `get gql response success`(dataReasonHaveChildren)
         `get response success`(response)
@@ -57,12 +139,12 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
 
         // then
         runCollectingUiEvent {
-            Assert.assertTrue(it.last() is ProductReportUiEvent.OnScrollTop)
+            assertTrue(it.last() is ProductReportUiEvent.OnScrollTop)
         }
     }
 
     @Test
-    fun `event on item clicked with children is empty`() = runBlockingTest {
+    fun `event on item clicked with children is empty`() {
         // given
         val response = `get gql response success`(dataReasonEmpty)
         `get response success`(response)
@@ -76,37 +158,50 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
 
         // then
         runCollectingUiEvent {
-            Assert.assertTrue(it.last() is ProductReportUiEvent.OnGoToForm)
+            assertTrue(it.last() is ProductReportUiEvent.OnGoToForm)
         }
     }
 
     @Test
     fun `event on back pressed`() {
         // given
-        val response = `get gql response success`(dataReasonEmpty)
-        `get response success`(response)
+        viewModel = ProductReportViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
 
         // when
         viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
 
         // then
         runCollectingUiEvent {
-            Assert.assertTrue(it.last() is ProductReportUiEvent.OnBackPressed)
+            assertTrue(it.last() is ProductReportUiEvent.OnBackPressed)
+        }
+    }
+
+    @Test
+    fun `on back to parent when at sub-sub-item`() {
+        // given
+        `click sub-sub-item from parent item`()
+
+        // when
+        viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
+
+        // then
+        runCollectingUiState {
+            assertTrue(it.last().filterId.lastOrNull() == categoryIdLvl1.toIntOrZero())
         }
     }
 
     @Test
     fun `event on footer click`() {
         // given
-        val response = `get gql response success`(dataReasonEmpty)
-        `get response success`(response)
+        viewModel = ProductReportViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
 
         // when
         viewModel.onEvent(ProductReportUiEvent.OnFooterClicked(""))
 
         // then
         runCollectingUiEvent {
-            Assert.assertTrue(it.last() is ProductReportUiEvent.OnFooterClicked)
+            assertTrue(it.last() is ProductReportUiEvent.OnFooterClicked)
         }
     }
+    // endregion event state
 }
