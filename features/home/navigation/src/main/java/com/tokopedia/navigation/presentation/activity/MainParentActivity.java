@@ -773,11 +773,13 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void reloadPage(int position, boolean isJustLoggedIn) {
-        getIntent()
-                .putExtra(ARGS_TAB_POSITION, position)
-                .putExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN, isJustLoggedIn);
-//        finish();
-//        startActivity(getIntent());
+        getIntent().putExtra(ARGS_TAB_POSITION, position);
+
+        boolean isPositionFeed = position == FEED_MENU;
+        getIntent().putExtra(
+                ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
+                isPositionFeed && isJustLoggedIn
+        );
         recreate();
     }
 

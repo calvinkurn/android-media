@@ -82,7 +82,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             val arguments = getOrCreateArguments()
             arguments.putBoolean(
                 ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
-                false,
+                value,
             )
         }
 
