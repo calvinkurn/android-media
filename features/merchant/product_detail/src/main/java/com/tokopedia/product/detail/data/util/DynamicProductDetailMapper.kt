@@ -63,7 +63,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
@@ -144,7 +143,7 @@ object DynamicProductDetailMapper {
                     }
                 }
                 ProductDetailConstant.VIEW_TO_VIEW -> {
-                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name = component.componentName, position = index))
+                    listOfComponent.add(ViewToViewWidgetDataModel(type = component.type, name= component.componentName, position = index))
                 }
                 ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
                     listOfComponent.add(
@@ -156,18 +155,13 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(LoadingDataModel())
                 }
                 ProductDetailConstant.VARIANT -> {
-                    if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-                        listOfComponent.add(
-                            ProductSingleVariantDataModel(
-                                type = component.type,
-                                name = component.componentName,
-                                thumbnailType = component.componentData.firstOrNull()
-                                    ?.componentType.orEmpty()
-                            )
+                    listOfComponent.add(
+                        ProductSingleVariantDataModel(
+                            type = component.type,
+                            name = ProductDetailConstant.MINI_VARIANT_OPTIONS,
+                            thumbnailType = component.componentData.firstOrNull()?.componentType.orEmpty()
                         )
-                    } else {
-                        listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
-                    }
+                    )
                 }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
                     listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
@@ -727,7 +721,6 @@ object DynamicProductDetailMapper {
                 (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) ||
                 (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) ||
                 (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore) ||
-                (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
                 (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
                 (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp()) ||
                 (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) ||

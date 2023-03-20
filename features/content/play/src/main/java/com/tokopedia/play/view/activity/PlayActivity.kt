@@ -113,6 +113,8 @@ class PlayActivity :
         FragmentUpcomingViewComponent(it, R.id.fcv_upcoming, supportFragmentManager)
     }
 
+    private var mIsExpectingOrientationChange = false
+
     /**
      * Applink
      */
@@ -164,6 +166,11 @@ class PlayActivity :
         PlayCastNotificationAction.showRedirectButton(applicationContext, true)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mIsExpectingOrientationChange = false
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         val newBundle = intent.extras ?: Bundle()
@@ -183,13 +190,18 @@ class PlayActivity :
         super.onConfigurationChanged(newConfig)
         swipeContainerView.setEnableSwiping(!orientation.isLandscape || !orientation.isCompact)
         swipeContainerView.refocusFragment()
+
+        if (orientation.isLandscape && orientation.isCompact && !mIsExpectingOrientationChange) {
+            activeFragment?.sendTrackerWhenRotateFullScreen()
+        }
+
+        if (mIsExpectingOrientationChange) mIsExpectingOrientationChange = false
     }
 
-    override fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean) {
+    override fun changeOrientation(screenOrientation: ScreenOrientation, isTilting: Boolean) {
         if (requestedOrientation != screenOrientation.requestedOrientation && !onInterceptOrientationChangedEvent(screenOrientation)) {
+            mIsExpectingOrientationChange = true
             requestedOrientation = screenOrientation.requestedOrientation
-
-            if (screenOrientation.isLandscape && isTilting) activeFragment?.sendTrackerWhenRotateFullScreen()
         }
     }
 
@@ -300,7 +312,7 @@ class PlayActivity :
                     orientation.isLandscape &&
                     orientation.isCompact
                 ) {
-                    onOrientationChanged(ScreenOrientation.Portrait, false)
+                    changeOrientation(ScreenOrientation.Portrait, false)
                 } else {
                     if (isTaskRoot) {
                         gotoHome()
