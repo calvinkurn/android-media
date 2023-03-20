@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view
 
 import android.app.Activity
 import android.util.Pair
+import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
@@ -367,7 +368,10 @@ interface ShipmentContract {
 
         fun setListShipmentCrossSellModel(listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>?)
         fun setShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel?)
-        fun getShipmentButtonPaymentModel(): ShipmentButtonPaymentModel
+        val shipmentButtonPayment: CheckoutMutableLiveData<ShipmentButtonPaymentModel>
+        fun updateShipmentButtonPaymentModel(enable: Boolean?,
+                                             totalPrice: String?,
+                                             loading: Boolean?)
         fun setShippingCourierViewModelsState(
             shippingCourierUiModelsState: List<ShippingCourierUiModel>,
             orderNumber: Int
@@ -462,5 +466,15 @@ interface ShipmentContract {
             dynamicDataPassingParamRequest: DynamicDataPassingParamRequest,
             isFireAndForget: Boolean
         )
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+class CheckoutMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
+
+    override fun getValue(): T = super.getValue() as T
+
+    public override fun setValue(value: T) {
+        super.setValue(value)
     }
 }

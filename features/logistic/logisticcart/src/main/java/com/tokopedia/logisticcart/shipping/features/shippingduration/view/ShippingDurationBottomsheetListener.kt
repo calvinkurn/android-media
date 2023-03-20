@@ -23,11 +23,11 @@ interface ShippingDurationBottomsheetListener {
     )
 
     fun onLogisticPromoChosen(
-        shippingCourierUiModels: List<ShippingCourierUiModel>?,
-        courierData: ShippingCourierUiModel?,
+        shippingCourierUiModels: List<ShippingCourierUiModel>,
+        courierData: ShippingCourierUiModel,
         recipientAddressModel: RecipientAddressModel?,
         cartPosition: Int,
-        serviceData: ServiceData?,
+        serviceData: ServiceData,
         flagNeedToSetPinpoint: Boolean,
         promoCode: String,
         selectedServiceId: Int,

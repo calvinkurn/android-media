@@ -1826,8 +1826,8 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
     @Override
     public void onTotalPaymentChange(String totalPayment, boolean enable) {
         ShipmentButtonPaymentModel shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel();
-        shipmentButtonPaymentModel.setTotalPrice(totalPayment);
-        shipmentButtonPaymentModel.setEnable(enable);
+//        shipmentButtonPaymentModel.setTotalPrice(totalPayment);
+//        shipmentButtonPaymentModel.setEnable(enable);
         onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
     }
 

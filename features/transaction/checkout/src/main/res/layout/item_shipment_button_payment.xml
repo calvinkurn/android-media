@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,35 +8,64 @@
     android:orientation="horizontal"
     tools:ignore="Overdraw">
 
-    <LinearLayout
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_total_payment_header"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/label_payment_total"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toStartOf="@+id/barrier_btn_payment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_total_payment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:gravity="start"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toStartOf="@+id/barrier_btn_payment"
+        app:layout_constraintStart_toStartOf="@id/tv_total_payment_header"
+        app:layout_constraintTop_toBottomOf="@id/tv_total_payment_header"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_payment_total"
-            android:textColor="@color/Unify_N700_96"
-            app:typographyType="body_3"
-            app:typographyWeight="bold" />
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:layout_marginLeft="16dp"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:layout_marginRight="16dp"-->
+    <!--        android:layout_marginBottom="8dp"-->
+    <!--        android:layout_weight="1"-->
+    <!--        android:gravity="center_vertical"-->
+    <!--        android:orientation="vertical">-->
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_total_payment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:textColor="@color/Unify_NN950"
-            app:typographyType="heading_4"
-            app:typographyWeight="bold" />
+    <!--        <com.tokopedia.unifyprinciples.Typography-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="@string/label_payment_total"-->
+    <!--            android:textColor="@color/Unify_N700_96"-->
+    <!--            app:typographyType="body_3"-->
+    <!--            app:typographyWeight="bold" />-->
 
-    </LinearLayout>
+    <!--        <com.tokopedia.unifyprinciples.Typography-->
+    <!--            android:id="@+id/tv_total_payment"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:gravity="end"-->
+    <!--            android:textColor="@color/Unify_NN950"-->
+    <!--            app:typographyType="heading_4"-->
+    <!--            app:typographyWeight="bold" />-->
+
+    <!--    </LinearLayout>-->
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_select_payment_method"
@@ -52,8 +81,30 @@
         android:paddingEnd="20dp"
         android:paddingRight="20dp"
         android:text="@string/label_choose_payment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
 
-</LinearLayout>
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_btn_payment"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_btn_payment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="loader_btn_payment,btn_select_payment_method" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

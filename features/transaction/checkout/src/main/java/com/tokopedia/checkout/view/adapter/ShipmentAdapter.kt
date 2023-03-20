@@ -94,7 +94,6 @@ class ShipmentAdapter @Inject constructor(
     private var shipmentCrossSellModelList: List<ShipmentCrossSellModel>? = null
     private var egoldAttributeModel: EgoldAttributeModel? = null
     private var shippingCompletionTickerModel: ShippingCompletionTickerModel? = null
-    private var shipmentButtonPaymentModel: ShipmentButtonPaymentModel? = null
     private var shipmentUpsellModel: ShipmentUpsellModel? = null
     private var shipmentNewUpsellModel: ShipmentNewUpsellModel? = null
     private var compositeSubscription: CompositeSubscription? = null
@@ -326,7 +325,6 @@ class ShipmentAdapter @Inject constructor(
         shipmentSellerCashbackModel = null
         shipmentDonationModel = null
         egoldAttributeModel = null
-        shipmentButtonPaymentModel = null
         lastApplyUiModel = null
         shippingCompletionTickerModel = null
         shipmentUpsellModel = null
@@ -408,7 +406,14 @@ class ShipmentAdapter @Inject constructor(
 
     fun addShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel?) {
         if (shipmentButtonPaymentModel != null) {
-            this.shipmentButtonPaymentModel = shipmentButtonPaymentModel
+            shipmentDataList.add(shipmentButtonPaymentModel)
+        }
+    }
+
+    fun updateShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel) {
+        val lastOrNull = shipmentDataList.lastOrNull()
+        if (lastOrNull is ShipmentButtonPaymentModel) {
+            shipmentDataList.removeLast()
             shipmentDataList.add(shipmentButtonPaymentModel)
         }
     }

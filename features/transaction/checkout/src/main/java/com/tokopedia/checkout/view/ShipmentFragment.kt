@@ -488,6 +488,14 @@ class ShipmentFragment :
             renderCheckoutPage(true, false, isOneClickShipment)
             swipeToRefresh?.isEnabled = false
         }
+        observeData()
+    }
+
+    private fun observeData() {
+        shipmentPresenter.shipmentButtonPayment.observe(viewLifecycleOwner) {
+            shipmentAdapter.updateShipmentButtonPaymentModel(it)
+            onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
+        }
     }
 
     private fun setBackground() {
@@ -537,7 +545,7 @@ class ShipmentFragment :
             )
             saveInstanceCacheManager?.put(
                 ShipmentButtonPaymentModel::class.java.simpleName,
-                shipmentPresenter.getShipmentButtonPaymentModel()
+                shipmentPresenter.shipmentButtonPayment.value
             )
             outState.putInt(
                 DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION,
@@ -1035,7 +1043,7 @@ class ShipmentFragment :
             shipmentPresenter.lastApplyData,
             shipmentPresenter.getShipmentCostModel(),
             shipmentPresenter.egoldAttributeModel,
-            shipmentPresenter.getShipmentButtonPaymentModel(),
+            shipmentPresenter.shipmentButtonPayment.value,
             shipmentPresenter.uploadPrescriptionUiModel,
             isInitialRender,
             isReloadAfterPriceChangeHigher,
@@ -1068,7 +1076,7 @@ class ShipmentFragment :
             shipmentPresenter.lastApplyData,
             shipmentPresenter.getShipmentCostModel(),
             shipmentPresenter.egoldAttributeModel,
-            shipmentPresenter.getShipmentButtonPaymentModel(),
+            shipmentPresenter.shipmentButtonPayment.value,
             shipmentPresenter.uploadPrescriptionUiModel,
             false,
             false,
@@ -1311,6 +1319,7 @@ class ShipmentFragment :
                     shouldValidatePromo
                 )
                 if (!shouldValidatePromo && shipmentPresenter.logisticDonePublisher != null) {
+                    shipmentPresenter.updateShipmentButtonPaymentModel(null, null, false)
                     shipmentPresenter.logisticDonePublisher?.onCompleted()
                 }
             }
@@ -1350,6 +1359,7 @@ class ShipmentFragment :
                     showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message))
                 }
                 onNeedUpdateViewItem(itemPosition)
+                shipmentPresenter.updateShipmentButtonPaymentModel(null, null, false)
             }
         }
     }
@@ -1930,9 +1940,7 @@ class ShipmentFragment :
     }
 
     override fun onTotalPaymentChange(totalPayment: String, enable: Boolean) {
-        val shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel()
-        shipmentButtonPaymentModel.totalPrice = totalPayment
-        shipmentButtonPaymentModel.enable = enable
+        shipmentPresenter.updateShipmentButtonPaymentModel(enable, totalPayment, null)
         onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
@@ -2412,11 +2420,11 @@ class ShipmentFragment :
     }
 
     override fun onLogisticPromoChosen(
-        shippingCourierUiModels: List<ShippingCourierUiModel>?,
-        courierData: ShippingCourierUiModel?,
+        shippingCourierUiModels: List<ShippingCourierUiModel>,
+        courierData: ShippingCourierUiModel,
         recipientAddressModel: RecipientAddressModel?,
         cartPosition: Int,
-        serviceData: ServiceData?,
+        serviceData: ServiceData,
         flagNeedToSetPinpoint: Boolean,
         promoCode: String,
         selectedServiceId: Int,
@@ -2425,7 +2433,7 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventClickPromoLogisticTicker(promoCode)
         setStateLoadingCourierStateAtIndex(cartPosition, true)
         val courierItemData = shippingCourierConverter.convertToCourierItemDataWithPromo(
-            courierData!!,
+            courierData,
             logisticPromo
         )
         onShippingDurationChoosen(
@@ -2757,7 +2765,7 @@ class ShipmentFragment :
         recipientAddressModel: RecipientAddressModel?,
         cartPosition: Int
     ) {
-        if (shipmentLoadingIndex == -1) {
+        if (shipmentLoadingIndex == -1 && !shipmentPresenter.shipmentButtonPayment.value.loading) {
             sendAnalyticsOnClickChangeDurationShipmentRecommendation()
             if (isTradeIn) {
                 checkoutTradeInAnalytics.eventTradeInClickCourierOption(isTradeInByDropOff)
@@ -2840,7 +2848,7 @@ class ShipmentFragment :
         cartPosition: Int,
         selectedShippingCourierUiModels: List<ShippingCourierUiModel>?
     ) {
-        if (shipmentLoadingIndex == -1) {
+        if (shipmentLoadingIndex == -1 && !shipmentPresenter.shipmentButtonPayment.value.loading) {
             var shippingCourierUiModels: List<ShippingCourierUiModel>?
             shippingCourierUiModels = selectedShippingCourierUiModels
                 ?: shipmentCartItemModel!!.selectedShipmentDetailData!!.shippingCourierViewModels

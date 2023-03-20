@@ -1,7 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -39,6 +37,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -1763,11 +1762,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
 
             override fun onLogisticPromoChosen(
-                shippingCourierUiModels: List<ShippingCourierUiModel>?,
-                courierData: ShippingCourierUiModel?,
+                shippingCourierUiModels: List<ShippingCourierUiModel>,
+                courierData: ShippingCourierUiModel,
                 recipientAddressModel: RecipientAddressModel?,
                 cartPosition: Int,
-                serviceData: ServiceData?,
+                serviceData: ServiceData,
                 flagNeedToSetPinpoint: Boolean,
                 promoCode: String,
                 selectedServiceId: Int,

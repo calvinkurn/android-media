@@ -165,9 +165,6 @@ import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-/**
- * @author Irfan Khoirul on 24/04/18.
- */
 class ShipmentPresenter @Inject constructor(
     private val compositeSubscription: CompositeSubscription,
     private val checkoutGqlUseCase: CheckoutUseCase,
@@ -226,7 +223,7 @@ class ShipmentPresenter @Inject constructor(
 
     private var listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel> = ArrayList()
 
-    private var shipmentButtonPaymentModel: ShipmentButtonPaymentModel = ShipmentButtonPaymentModel()
+    override val shipmentButtonPayment: CheckoutMutableLiveData<ShipmentButtonPaymentModel> = CheckoutMutableLiveData(ShipmentButtonPaymentModel())
 
     override var codData: CodModel? = null
         private set
@@ -287,7 +284,6 @@ class ShipmentPresenter @Inject constructor(
     override fun detachView() {
         coroutineContext.cancelChildren()
         compositeSubscription.unsubscribe()
-//        getShipmentAddressFormV3UseCase.cancelJobs()
         eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
         updateDynamicDataPassingUseCase.cancelJobs()
@@ -303,9 +299,6 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun getShipmentCostModel(): ShipmentCostModel {
-//        if (shipmentCostModel == null) {
-//            shipmentCostModel = ShipmentCostModel()
-//        }
         return shipmentCostModel
     }
 
@@ -378,12 +371,21 @@ class ShipmentPresenter @Inject constructor(
         this.listShipmentCrossSellModel = listShipmentCrossSellModel ?: ArrayList()
     }
 
-    override fun getShipmentButtonPaymentModel(): ShipmentButtonPaymentModel {
-        return this.shipmentButtonPaymentModel
+    override fun setShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel?) {
+        this.shipmentButtonPayment.value = shipmentButtonPaymentModel ?: ShipmentButtonPaymentModel()
     }
 
-    override fun setShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel?) {
-        this.shipmentButtonPaymentModel = shipmentButtonPaymentModel ?: ShipmentButtonPaymentModel()
+    override fun updateShipmentButtonPaymentModel(
+        enable: Boolean?,
+        totalPrice: String?,
+        loading: Boolean?
+    ) {
+        val buttonPaymentModel = shipmentButtonPayment.value
+        shipmentButtonPayment.value = buttonPaymentModel.copy(
+            enable = enable ?: buttonPaymentModel.enable,
+            totalPrice = totalPrice ?: buttonPaymentModel.totalPrice,
+            loading = loading ?: buttonPaymentModel.loading
+        )
     }
 
     private fun getPromoFlag(step: String): Boolean {
@@ -526,68 +528,8 @@ class ShipmentPresenter @Inject constructor(
         } else {
             view?.showInitialLoading()
         }
-//        getShipmentAddressFormV3UseCase.setParams(
-//            isOneClickShipment,
-//            isTradeIn,
-//            isSkipUpdateOnboardingState,
-//            cornerId,
-//            deviceId,
-//            leasingId,
-//            isPlusSelected
-//        )
-//        getShipmentAddressFormV3UseCase.execute(
-//            { cartShipmentAddressFormData: CartShipmentAddressFormData? ->
-//                if (view != null) {
-//                    view?.stopEmbraceTrace()
-//                    if (isReloadData) {
-//                        view?.setHasRunningApiCall(false)
-//                        view?.resetPromoBenefit()
-//                        view?.clearTotalBenefitPromoStacking()
-//                        view?.hideLoading()
-//                    } else {
-//                        view?.hideInitialLoading()
-//                    }
-//                    validateShipmentAddressFormData(
-//                        cartShipmentAddressFormData,
-//                        isReloadData,
-//                        isReloadAfterPriceChangeHinger,
-//                        isOneClickShipment
-//                    )
-//                    view?.stopTrace()
-//                }
-//                Unit
-//            }
-//        ) { throwable: Throwable ->
-//            Timber.d(throwable)
-//            if (view != null) {
-//                view?.stopEmbraceTrace()
-//                if (isReloadData) {
-//                    view?.setHasRunningApiCall(false)
-//                    view?.hideLoading()
-//                } else {
-//                    view?.hideInitialLoading()
-//                }
-//                var errorMessage = throwable.message
-//                if (throwable !is CartResponseErrorException && throwable !is AkamaiErrorException) {
-//                    errorMessage = getErrorMessage(view?.activityContext, throwable)
-//                }
-//                view?.showToastError(errorMessage)
-//                view?.stopTrace()
-//                view?.logOnErrorLoadCheckoutPage(throwable)
-//            }
-//            Unit
-//        }
         launch {
             try {
-//                getShipmentAddressFormV4UseCase.setParams(
-//                    isOneClickShipment,
-//                    isTradeIn,
-//                    isSkipUpdateOnboardingState,
-//                    cornerId,
-//                    deviceId,
-//                    leasingId,
-//                    isPlusSelected
-//                )
                 val cartShipmentAddressFormData = getShipmentAddressFormV4UseCase(
                     ShipmentAddressFormRequest(
                         isOneClickShipment,
@@ -878,25 +820,6 @@ class ShipmentPresenter @Inject constructor(
                 checkoutRequest,
                 dynamicData
             )
-//            val requestParams = RequestParams.create()
-//            requestParams.putAll(params)
-//            compositeSubscription.add(
-//                checkoutGqlUseCase.createObservable(requestParams)
-//                    .subscribe(
-//                        getSubscriberCheckoutCart(
-//                            checkoutRequest,
-//                            isOneClickShipment,
-//                            isTradeIn,
-//                            deviceId,
-//                            cornerId,
-//                            leasingId,
-//                            deviceModel,
-//                            devicePrice,
-//                            diagnosticId,
-//                            isPlusSelected
-//                        )
-//                    )
-//            )
             launch {
                 try {
                     val checkoutData = checkoutGqlUseCase(params)
@@ -1023,43 +946,6 @@ class ShipmentPresenter @Inject constructor(
             publicKey
         )
     }
-
-//    fun generateCheckoutParams(
-//        isOneClickShipment: Boolean,
-//        isTradeIn: Boolean,
-//        isTradeInDropOff: Boolean,
-//        deviceId: String?,
-//        checkoutRequest: CheckoutRequest?,
-//        dynamicData: String
-//    ): Map<String, Any?> {
-//        val params: MutableMap<String, Any?> = HashMap()
-//        params[CheckoutGqlUseCase.PARAM_CARTS] = map(checkoutRequest!!)
-//        params[CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT] = isOneClickShipment.toString()
-//        params[CheckoutGqlUseCase.PARAM_DYNAMIC_DATA] = dynamicData
-//        if (isTradeIn) {
-//            params[CheckoutGqlUseCase.PARAM_IS_TRADE_IN] = true
-//            params[CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF] = isTradeInDropOff
-//            params[CheckoutGqlUseCase.PARAM_DEV_ID] = deviceId
-//        }
-//        params[CheckoutGqlUseCase.PARAM_OPTIONAL] = 0
-//        params[CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE] = true
-//        params[CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE_NEW] = true
-//        params[CheckoutGqlUseCase.PARAM_IS_EXPRESS] = false
-//        if (getEnableFingerprintPayment(view?.activityContext)) {
-//            val publicKey = getFingerprintPublicKey(
-//                view?.activityContext
-//            )
-//            if (publicKey != null) {
-//                params[CheckoutGqlUseCase.PARAM_FINGERPRINT_PUBLICKEY] = getPublicKey(publicKey)
-//                params[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] = true.toString()
-//            } else {
-//                params[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] = false.toString()
-//            }
-//        } else {
-//            params[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] = false.toString()
-//        }
-//        return params
-//    }
 
     private fun removeErrorShopProduct() {
         val newShipmentCartItemModelList: MutableList<ShipmentCartItemModel> = ArrayList()
@@ -1264,105 +1150,6 @@ class ShipmentPresenter @Inject constructor(
                 }
             }
         }
-//        val requestParams = RequestParams.create()
-//        requestParams.putObject(
-//            OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE,
-//            validateUsePromoRequest
-//        )
-//        compositeSubscription.add(
-//            validateUsePromoRevampUseCase.createObservable(requestParams)
-//                .subscribeOn(executorSchedulers.io)
-//                .observeOn(executorSchedulers.main)
-//                .subscribe(
-//                    object : Subscriber<ValidateUsePromoRevampUiModel>() {
-//                        override fun onCompleted() {
-//                            checkUnCompletedPublisher()
-//                        }
-//
-//                        override fun onError(e: Throwable) {
-//                            Timber.d(e)
-//                            if (view != null) {
-//                                if (e is AkamaiErrorException) {
-//                                    clearAllPromo()
-//                                    view?.showToastError(e.message)
-//                                    view?.resetAllCourier()
-//                                    view?.cancelAllCourierPromo()
-//                                    view?.doResetButtonPromoCheckout()
-//                                } else {
-//                                    view?.renderErrorCheckPromoShipmentData(
-//                                        getErrorMessage(
-//                                            view?.activityContext,
-//                                            e
-//                                        )
-//                                    )
-//                                }
-//                                checkUnCompletedPublisher()
-//                            }
-//                        }
-//
-//                        override fun onNext(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
-//                            if (view != null) {
-//                                this@ShipmentPresenter.validateUsePromoRevampUiModel =
-//                                    validateUsePromoRevampUiModel
-//                                couponStateChanged = true
-//                                showErrorValidateUseIfAny(validateUsePromoRevampUiModel)
-//                                validateBBO(validateUsePromoRevampUiModel)
-//                                updateTickerAnnouncementData(validateUsePromoRevampUiModel)
-//                                if (!validateUsePromoRevampUiModel.status.equals(
-//                                        statusOK,
-//                                        ignoreCase = true
-//                                    ) || validateUsePromoRevampUiModel.errorCode != statusCode200
-//                                ) {
-//                                    var message: String? = ""
-//                                    if (validateUsePromoRevampUiModel.message.isNotEmpty()) {
-//                                        message = validateUsePromoRevampUiModel.message[0]
-//                                    } else {
-//                                        message = DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
-//                                    }
-//                                    view?.renderErrorCheckPromoShipmentData(message)
-//                                    view?.resetPromoBenefit()
-//                                    view?.cancelAllCourierPromo()
-//                                } else {
-//                                    view?.updateButtonPromoCheckout(
-//                                        validateUsePromoRevampUiModel.promoUiModel,
-//                                        false
-//                                    )
-//                                    if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
-//                                        analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
-//                                            validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
-//                                        )
-//                                    } else {
-//                                        for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
-//                                            if (voucherOrder.messageUiModel.state == "red") {
-//                                                analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(
-//                                                    voucherOrder.messageUiModel.text
-//                                                )
-//                                                break
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                                val clashingInfoDetailUiModel =
-//                                    validateUsePromoRevampUiModel.promoUiModel.clashingInfoDetailUiModel
-//                                if (clashingInfoDetailUiModel.clashMessage.isNotEmpty() || clashingInfoDetailUiModel.clashReason.isNotEmpty() || clashingInfoDetailUiModel.options.isNotEmpty()) {
-//                                    val clashPromoCodes = ArrayList<String>()
-//                                    for (promoClashOptionUiModel in clashingInfoDetailUiModel.options) {
-//                                        for (voucherOrder in promoClashOptionUiModel.voucherOrders) {
-//                                            clashPromoCodes.add(voucherOrder.code)
-//                                        }
-//                                    }
-//                                    cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel)
-//                                }
-//                                reloadCourierForMvc(
-//                                    validateUsePromoRevampUiModel,
-//                                    lastSelectedCourierOrderIndex,
-//                                    cartString
-//                                )
-//                            }
-//                        }
-//                    }
-//                )
-//        )
     }
 
     // Re-fetch rates to get promo mvc icon
@@ -1395,107 +1182,6 @@ class ShipmentPresenter @Inject constructor(
             )
         }
     }
-
-//    private fun getSubscriberCheckoutCart(
-//        checkoutRequest: CheckoutRequest,
-//        isOneClickShipment: Boolean,
-//        isTradeIn: Boolean,
-//        deviceId: String?,
-//        cornerId: String?,
-//        leasingId: String?,
-//        deviceModel: String,
-//        devicePrice: Long,
-//        diagnosticId: String,
-//        isPlusSelected: Boolean
-//    ): Subscriber<CheckoutData> {
-//        return object : Subscriber<CheckoutData>() {
-//            override fun onCompleted() {}
-//            override fun onError(e: Throwable) {
-//                view?.hideLoading()
-//                Timber.d(e)
-//                var errorMessage = e.message
-//                if (!(e is CartResponseErrorException || e is AkamaiErrorException)) {
-//                    errorMessage = getErrorMessage(view?.activityContext, e)
-//                }
-//                analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage)
-//                view?.setHasRunningApiCall(false)
-//                view?.showToastError(errorMessage)
-//                processInitialLoadCheckoutPage(
-//                    true,
-//                    isOneClickShipment,
-//                    isTradeIn,
-//                    true,
-//                    false,
-//                    cornerId,
-//                    deviceId,
-//                    leasingId,
-//                    isPlusSelected
-//                )
-//                view?.logOnErrorCheckout(e, checkoutRequest.toString())
-//            }
-//
-//            override fun onNext(checkoutData: CheckoutData) {
-//                view?.setHasRunningApiCall(false)
-//                this@ShipmentPresenter.checkoutData = checkoutData
-//                if (!checkoutData.isError) {
-//                    view?.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
-//                        checkoutData.transactionId,
-//                        deviceModel,
-//                        devicePrice,
-//                        diagnosticId
-//                    )
-//                    if (isPurchaseProtectionPage) {
-//                        mTrackerPurchaseProtection.eventClickOnBuy(
-//                            userSessionInterface.userId,
-//                            checkoutRequest.protectionAnalyticsData
-//                        )
-//                    }
-//                    var isCrossSellChecked = false
-//                    for (shipmentCrossSellModel in listShipmentCrossSellModel) {
-//                        if (shipmentCrossSellModel.isChecked) isCrossSellChecked = true
-//                    }
-//                    if (isCrossSellChecked) triggerCrossSellClickPilihPembayaran()
-//                    view?.renderCheckoutCartSuccess(checkoutData)
-//                } else if (checkoutData.priceValidationData.isUpdated) {
-//                    view?.hideLoading()
-//                    view?.renderCheckoutPriceUpdated(checkoutData.priceValidationData)
-//                } else if (checkoutData.prompt.eligible) {
-//                    view?.hideLoading()
-//                    view?.renderPrompt(checkoutData.prompt)
-//                } else {
-//                    analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.errorMessage)
-//                    view?.hideLoading()
-//                    if (checkoutData.errorMessage.isNotEmpty()) {
-//                        view?.renderCheckoutCartError(checkoutData.errorMessage)
-//                        view?.logOnErrorCheckout(
-//                            MessageErrorException(checkoutData.errorMessage),
-//                            checkoutRequest.toString()
-//                        )
-//                    } else {
-//                        val defaultErrorMessage =
-//                            view?.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-//                                ?: ""
-//                        view?.renderCheckoutCartError(defaultErrorMessage)
-//                        view?.logOnErrorCheckout(
-//                            MessageErrorException(defaultErrorMessage),
-//                            checkoutRequest.toString()
-//                        )
-//                    }
-//                    processInitialLoadCheckoutPage(
-//                        true,
-//                        isOneClickShipment,
-//                        isTradeIn,
-//                        true,
-//                        false,
-//                        cornerId,
-//                        deviceId,
-//                        leasingId,
-//                        isPlusSelected
-//                    )
-//                }
-//            }
-//        }
-//    }
 
     private fun triggerCrossSellClickPilihPembayaran() {
         val shipmentCrossSellModelList: List<ShipmentCrossSellModel> =
@@ -1659,14 +1345,10 @@ class ShipmentPresenter @Inject constructor(
     ) {
         if (view != null) {
             couponStateChanged = true
-//            val requestParams = RequestParams.create()
-//            requestParams.putObject(
-//                OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE,
-//                validateUsePromoRequest
-//            )
             if (showLoading) {
                 view?.setStateLoadingCourierStateAtIndex(cartPosition, true)
             }
+            shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = true)
             launch {
                 try {
                     val validateUsePromoRevampUiModel =
@@ -1713,6 +1395,7 @@ class ShipmentPresenter @Inject constructor(
                                 view?.resetCourier(cartPosition)
                             }
                         }
+                        shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = false)
                     }
                     logisticDonePublisher?.onCompleted()
                     logisticPromoDonePublisher?.onCompleted()
@@ -1740,6 +1423,7 @@ class ShipmentPresenter @Inject constructor(
                             view?.resetCourier(cartPosition)
                         }
                         view?.logOnErrorApplyBo(e, cartPosition, promoCode)
+                        shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = false)
                         logisticDonePublisher?.onCompleted()
                         logisticPromoDonePublisher?.onCompleted()
                         val shipmentScheduleDeliveryMapData =
@@ -2396,54 +2080,6 @@ class ShipmentPresenter @Inject constructor(
                 shipmentCartItemModel.fulfillmentId
             )
         )
-//        clearCacheAutoApplyStackUseCase.setParams(
-//            ClearPromoRequest(
-//                OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-//                false,
-//                ClearPromoOrderData(
-//                    ArrayList(),
-//                    clearOrders
-//                )
-//            )
-//        )
-//        compositeSubscription.add(
-//            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-//                .subscribe(object : Subscriber<ClearPromoUiModel>() {
-//                    override fun onCompleted() {
-//                        val shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(
-//                            shipmentCartItemModel.cartString
-//                        )
-//                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInClearCache) {
-//                            shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
-//                        }
-//                    }
-//
-//                    override fun onError(e: Throwable) {
-//                        val shipmentScheduleDeliveryMapData = getScheduleDeliveryMapData(
-//                            shipmentCartItemModel.cartString
-//                        )
-//                        if (shipmentScheduleDeliveryMapData != null && shipmentScheduleDeliveryMapData.shouldStopInClearCache) {
-//                            shipmentScheduleDeliveryMapData.donePublisher.onCompleted()
-//                        }
-//                    }
-//
-//                    override fun onNext(responseData: ClearPromoUiModel) {
-//                        if (view != null) {
-//                            if (!isNullOrEmpty(responseData.successDataModel.tickerMessage)) {
-//                                tickerAnnouncementHolderData.title = ""
-//                                tickerAnnouncementHolderData.message =
-//                                    responseData.successDataModel.tickerMessage
-//                                view?.updateTickerAnnouncementMessage()
-//                            }
-//                            val isLastAppliedPromo = isLastAppliedPromo(promoCode)
-//                            if (isLastAppliedPromo) {
-//                                validateUsePromoRevampUiModel = null
-//                            }
-//                            view?.onSuccessClearPromoLogistic(itemPosition, isLastAppliedPromo)
-//                        }
-//                    }
-//                })
-//        )
         launch {
             try {
                 val responseData = clearCacheAutoApplyStackUseCase.setParams(
@@ -2678,19 +2314,6 @@ class ShipmentPresenter @Inject constructor(
             }
         }
         if (hasBo) {
-//            clearCacheAutoApplyStackUseCase.setParams(
-//                ClearPromoRequest(
-//                    OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-//                    false,
-//                    ClearPromoOrderData(
-//                        ArrayList(),
-//                        clearOrders
-//                    )
-//                )
-//            )
-//            compositeSubscription.add(
-//                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
-//            )
             launch {
                 try {
                     clearCacheAutoApplyStackUseCase.setParams(
@@ -2936,6 +2559,7 @@ class ShipmentPresenter @Inject constructor(
                         ?.subscribe()
                 )
             }
+            shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = true)
             ratesPublisher!!.onNext(
                 ShipmentGetCourierHolderData(
                     shipperId,
@@ -3029,20 +2653,13 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun getShippingCourierViewModelsState(orderNumber: Int): List<ShippingCourierUiModel>? {
-//        return if (shippingCourierViewModelsState != null) {
         return shippingCourierViewModelsState[orderNumber]
-//        } else {
-//            null
-//        }
     }
 
     override fun setShippingCourierViewModelsState(
         shippingCourierUiModelsState: List<ShippingCourierUiModel>,
         orderNumber: Int
     ) {
-//        if (shippingCourierViewModelsState == null) {
-//            shippingCourierViewModelsState = HashMap()
-//        }
         shippingCourierViewModelsState[orderNumber] = shippingCourierUiModelsState
     }
 
