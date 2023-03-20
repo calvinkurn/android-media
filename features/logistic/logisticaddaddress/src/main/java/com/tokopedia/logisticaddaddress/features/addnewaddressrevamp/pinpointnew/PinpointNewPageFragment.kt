@@ -16,6 +16,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.common.api.ApiException
@@ -64,7 +66,6 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_NEGATIVE_FULL_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_RESET_TO_SEARCH_PAGE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
-import com.tokopedia.logisticaddaddress.common.AddressConstants.GPS_REQUEST
 import com.tokopedia.logisticaddaddress.common.AddressConstants.KEY_ADDRESS_DATA
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
@@ -134,6 +135,18 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private var binding by autoClearedNullable<FragmentPinpointNewBinding> {
         it.mapViews.onDestroy()
+    }
+
+    private val gpsResultResolutionContract = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            bottomSheetLocUndefined?.dismiss()
+            if (allPermissionsGranted()) {
+                showLoading()
+                Handler().postDelayed({ getLocation() }, GPS_DELAY)
+            }
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -228,9 +241,6 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
                 REQUEST_SEARCH_PAGE -> {
                     onResultFromSearchPage(data)
-                }
-                GPS_REQUEST -> {
-                    onResultFromGpsRequest()
                 }
                 REQUEST_CODE_PINPOINT_LITE -> {
                     data?.let { it -> handlePinpointLite(it) }
@@ -884,14 +894,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                                     // Show the dialog by calling startResolutionForResult(), and check the
                                     // result in onActivityResult().
                                     val rae = e as ResolvableApiException
-                                    startIntentSenderForResult(
-                                        rae.resolution.intentSender,
-                                        GPS_REQUEST,
-                                        null,
-                                        0,
-                                        0,
-                                        0,
-                                        null
+                                    val intentSenderRequest = IntentSenderRequest.Builder(
+                                        rae.resolution.intentSender).build()
+                                    gpsResultResolutionContract.launch(intentSenderRequest
                                     )
                                 } catch (sie: IntentSender.SendIntentException) {
                                     sie.printStackTrace()
