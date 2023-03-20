@@ -433,7 +433,7 @@ object DeeplinkMapper {
             ApplinkConst.FEED_VIDEO,
             targetDeeplink = { _, _, deeplink, _ -> getRegisteredNavigationHomeFeedVideo(deeplink) }
         ),
-        DLP.exact(
+        DLP.startWith(
             ApplinkConst.FEED_FOLLOWING,
             targetDeeplink = { _, _, deeplink, _ -> getRegisteredNavigationHomeFeedFollowing(deeplink) }
         ),

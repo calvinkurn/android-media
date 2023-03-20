@@ -154,11 +154,17 @@ object DeeplinkMapperContent {
      */
     @OptIn(ExperimentalStdlibApi::class)
     fun getRegisteredNavigationHomeFeedFollowing(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
         return UriUtil.buildUriAppendParams(
             ApplinkConsInternalHome.HOME_NAVIGATION,
             buildMap {
                 put(DeeplinkMapperHome.EXTRA_TAB_POSITION, DeeplinkMapperHome.TAB_POSITION_FEED)
                 put(EXTRA_FEED_TAB_POSITION, UF_TAB_POSITION_FOLLOWING)
+
+                uri.queryParameterNames.forEach {
+                    val queryValue = uri.getQueryParameter(it) ?: return@forEach
+                    put(it, queryValue)
+                }
             }
         )
     }
