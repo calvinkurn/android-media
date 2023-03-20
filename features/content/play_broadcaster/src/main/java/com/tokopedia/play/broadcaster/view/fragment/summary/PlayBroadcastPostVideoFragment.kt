@@ -123,9 +123,9 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
             is PlayBroadcastSetupCoverBottomSheet -> {
                 childFragment.setupData(this, PAGE_NAME)
 
-                val isShowCoachMark = prepareViewModel.isShowSetupCoverCoachMark
+                val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
-                if (isShowCoachMark) prepareViewModel.setShowSetupCoverCoachMark()
+                if (isShowCoachMark) parentViewModel.setShowSetupCoverCoachMark()
             }
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
