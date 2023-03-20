@@ -195,6 +195,7 @@ class InboxContactUsFragment :
                     }
                     uiEffect.isFirstPage -> {
                         loadDataIntoRecyclerView(uiEffect)
+                        notifyLoadResult(uiEffect.isHasNext)
                     }
                     else -> {
                         notifyLoadResult(uiEffect.isHasNext)
