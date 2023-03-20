@@ -12,11 +12,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -253,7 +253,11 @@ class ShipmentFragment :
     lateinit var shipmentAdapter: ShipmentAdapter
 
     @Inject
-    lateinit var shipmentPresenter: ShipmentContract.Presenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val shipmentPresenter: ShipmentPresenter by lazy {
+        ViewModelProvider(this, viewModelFactory)[ShipmentPresenter::class.java]
+    }
 
     @Inject
     lateinit var ratesDataConverter: RatesDataConverter
@@ -323,59 +327,59 @@ class ShipmentFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (context != null) {
-            saveInstanceCacheManager = SaveInstanceCacheManager(context!!, savedInstanceState)
-        }
-        if (savedInstanceState != null) {
-            savedShipmentCartItemModelList =
-                saveInstanceCacheManager?.get<List<ShipmentCartItemModel>>(
-                    ShipmentCartItemModel::class.java.simpleName,
-                    object : TypeToken<ArrayList<ShipmentCartItemModel>>() {}.type
-                )
-            if (savedShipmentCartItemModelList != null) {
-                savedTickerAnnouncementModel =
-                    saveInstanceCacheManager?.get<TickerAnnouncementHolderData>(
-                        TickerAnnouncementHolderData::class.java.simpleName,
-                        TickerAnnouncementHolderData::class.java
-                    )
-                savedRecipientAddressModel = saveInstanceCacheManager?.get<RecipientAddressModel>(
-                    RecipientAddressModel::class.java.simpleName,
-                    RecipientAddressModel::class.java
-                )
-                savedShipmentCostModel = saveInstanceCacheManager?.get<ShipmentCostModel>(
-                    ShipmentCostModel::class.java.simpleName,
-                    ShipmentCostModel::class.java
-                )
-                savedEgoldAttributeModel = saveInstanceCacheManager?.get<EgoldAttributeModel>(
-                    EgoldAttributeModel::class.java.simpleName,
-                    EgoldAttributeModel::class.java
-                )
-                savedShipmentDonationModel = saveInstanceCacheManager?.get<ShipmentDonationModel>(
-                    ShipmentDonationModel::class.java.simpleName,
-                    ShipmentDonationModel::class.java
-                )
-                savedListShipmentCrossSellModel =
-                    saveInstanceCacheManager?.get<ArrayList<ShipmentCrossSellModel>>(
-                        ShipmentCrossSellModel::class.java.simpleName,
-                        object : TypeToken<ArrayList<ShipmentCrossSellModel>>() {}.type
-                    )
-                savedShipmentButtonPaymentModel =
-                    saveInstanceCacheManager?.get<ShipmentButtonPaymentModel>(
-                        ShipmentButtonPaymentModel::class.java.simpleName,
-                        ShipmentButtonPaymentModel::class.java
-                    )
-                savedLastApplyData = saveInstanceCacheManager?.get<LastApplyUiModel>(
-                    LastApplyUiModel::class.java.simpleName,
-                    LastApplyUiModel::class.java
-                )
-                savedUploadPrescriptionUiModel =
-                    saveInstanceCacheManager?.get<UploadPrescriptionUiModel>(
-                        UploadPrescriptionUiModel::class.java.simpleName,
-                        UploadPrescriptionUiModel::class.java
-                    )
-            }
-        }
-        shipmentPresenter.attachView(this)
+//        if (context != null) {
+//            saveInstanceCacheManager = SaveInstanceCacheManager(context!!, savedInstanceState)
+//        }
+//        if (savedInstanceState != null) {
+//            savedShipmentCartItemModelList =
+//                saveInstanceCacheManager?.get<List<ShipmentCartItemModel>>(
+//                    ShipmentCartItemModel::class.java.simpleName,
+//                    object : TypeToken<ArrayList<ShipmentCartItemModel>>() {}.type
+//                )
+//            if (savedShipmentCartItemModelList != null) {
+//                savedTickerAnnouncementModel =
+//                    saveInstanceCacheManager?.get<TickerAnnouncementHolderData>(
+//                        TickerAnnouncementHolderData::class.java.simpleName,
+//                        TickerAnnouncementHolderData::class.java
+//                    )
+//                savedRecipientAddressModel = saveInstanceCacheManager?.get<RecipientAddressModel>(
+//                    RecipientAddressModel::class.java.simpleName,
+//                    RecipientAddressModel::class.java
+//                )
+//                savedShipmentCostModel = saveInstanceCacheManager?.get<ShipmentCostModel>(
+//                    ShipmentCostModel::class.java.simpleName,
+//                    ShipmentCostModel::class.java
+//                )
+//                savedEgoldAttributeModel = saveInstanceCacheManager?.get<EgoldAttributeModel>(
+//                    EgoldAttributeModel::class.java.simpleName,
+//                    EgoldAttributeModel::class.java
+//                )
+//                savedShipmentDonationModel = saveInstanceCacheManager?.get<ShipmentDonationModel>(
+//                    ShipmentDonationModel::class.java.simpleName,
+//                    ShipmentDonationModel::class.java
+//                )
+//                savedListShipmentCrossSellModel =
+//                    saveInstanceCacheManager?.get<ArrayList<ShipmentCrossSellModel>>(
+//                        ShipmentCrossSellModel::class.java.simpleName,
+//                        object : TypeToken<ArrayList<ShipmentCrossSellModel>>() {}.type
+//                    )
+//                savedShipmentButtonPaymentModel =
+//                    saveInstanceCacheManager?.get<ShipmentButtonPaymentModel>(
+//                        ShipmentButtonPaymentModel::class.java.simpleName,
+//                        ShipmentButtonPaymentModel::class.java
+//                    )
+//                savedLastApplyData = saveInstanceCacheManager?.get<LastApplyUiModel>(
+//                    LastApplyUiModel::class.java.simpleName,
+//                    LastApplyUiModel::class.java
+//                )
+//                savedUploadPrescriptionUiModel =
+//                    saveInstanceCacheManager?.get<UploadPrescriptionUiModel>(
+//                        UploadPrescriptionUiModel::class.java.simpleName,
+//                        UploadPrescriptionUiModel::class.java
+//                    )
+//            }
+//        }
+//        shipmentPresenter.attachView(this)
         shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE)
     }
 
@@ -464,30 +468,31 @@ class ShipmentFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBackground()
-        if (savedInstanceState == null || savedShipmentCartItemModelList == null) {
-            shipmentPresenter.processInitialLoadCheckoutPage(
-                false, isOneClickShipment, isTradeIn, true,
-                false, null, deviceId, checkoutLeasingId,
-                isPlusSelected()
-            )
-        } else {
-            shipmentPresenter.tickerAnnouncementHolderData = savedTickerAnnouncementModel!!
-            shipmentPresenter.shipmentCartItemModelList = savedShipmentCartItemModelList
-            shipmentPresenter.recipientAddressModel = savedRecipientAddressModel
-            shipmentPresenter.setShipmentCostModel(savedShipmentCostModel)
-            shipmentPresenter.shipmentDonationModel = savedShipmentDonationModel
-            shipmentPresenter.setListShipmentCrossSellModel(savedListShipmentCrossSellModel)
-            shipmentPresenter.setShipmentButtonPaymentModel(savedShipmentButtonPaymentModel)
-            shipmentPresenter.egoldAttributeModel = savedEgoldAttributeModel
-            shipmentAdapter.lastChooseCourierItemPosition =
-                savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION)
-            shipmentAdapter.lastServiceId =
-                savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID)
-            shipmentPresenter.lastApplyData = savedLastApplyData
-            shipmentPresenter.setUploadPrescriptionData(savedUploadPrescriptionUiModel)
-            renderCheckoutPage(true, false, isOneClickShipment)
-            swipeToRefresh?.isEnabled = false
-        }
+        shipmentPresenter.attachView(this)
+//        if (savedInstanceState == null || savedShipmentCartItemModelList == null) {
+        shipmentPresenter.processInitialLoadCheckoutPage(
+            false, isOneClickShipment, isTradeIn, true,
+            false, null, deviceId, checkoutLeasingId,
+            isPlusSelected()
+        )
+//        } else {
+//            shipmentPresenter.tickerAnnouncementHolderData = savedTickerAnnouncementModel!!
+//            shipmentPresenter.shipmentCartItemModelList = savedShipmentCartItemModelList
+//            shipmentPresenter.recipientAddressModel = savedRecipientAddressModel
+//            shipmentPresenter.setShipmentCostModel(savedShipmentCostModel)
+//            shipmentPresenter.shipmentDonationModel = savedShipmentDonationModel
+//            shipmentPresenter.setListShipmentCrossSellModel(savedListShipmentCrossSellModel)
+//            shipmentPresenter.setShipmentButtonPaymentModel(savedShipmentButtonPaymentModel)
+//            shipmentPresenter.egoldAttributeModel = savedEgoldAttributeModel
+//            shipmentAdapter.lastChooseCourierItemPosition =
+//                savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION)
+//            shipmentAdapter.lastServiceId =
+//                savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID)
+//            shipmentPresenter.lastApplyData = savedLastApplyData
+//            shipmentPresenter.setUploadPrescriptionData(savedUploadPrescriptionUiModel)
+//            renderCheckoutPage(true, false, isOneClickShipment)
+//            swipeToRefresh?.isEnabled = false
+//        }
         observeData()
     }
 
@@ -515,51 +520,51 @@ class ShipmentFragment :
             ""
         }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        saveInstanceCacheManager?.onSave(outState)
-        if (shipmentPresenter.shipmentCartItemModelList != null) {
-            saveInstanceCacheManager?.put(
-                TickerAnnouncementHolderData::class.java.simpleName,
-                shipmentPresenter.tickerAnnouncementHolderData
-            )
-            saveInstanceCacheManager?.put(
-                ShipmentCartItemModel::class.java.simpleName,
-                shipmentPresenter.shipmentCartItemModelList?.let {
-                    ArrayList(
-                        it
-                    )
-                }
-            )
-            saveInstanceCacheManager?.put(
-                RecipientAddressModel::class.java.simpleName,
-                shipmentPresenter.recipientAddressModel
-            )
-            saveInstanceCacheManager?.put(
-                ShipmentCostModel::class.java.simpleName,
-                shipmentPresenter.getShipmentCostModel()
-            )
-            saveInstanceCacheManager?.put(
-                ShipmentDonationModel::class.java.simpleName,
-                shipmentPresenter.shipmentDonationModel
-            )
-            saveInstanceCacheManager?.put(
-                ShipmentButtonPaymentModel::class.java.simpleName,
-                shipmentPresenter.shipmentButtonPayment.value
-            )
-            outState.putInt(
-                DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION,
-                shipmentAdapter.lastChooseCourierItemPosition
-            )
-            outState.putInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID, shipmentAdapter.lastServiceId)
-            saveInstanceCacheManager?.put(
-                UploadPrescriptionUiModel::class.java.simpleName,
-                shipmentPresenter.uploadPrescriptionUiModel
-            )
-        } else {
-            saveInstanceCacheManager?.put(ShipmentCartItemModel::class.java.simpleName, null)
-        }
-    }
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        saveInstanceCacheManager?.onSave(outState)
+//        if (shipmentPresenter.shipmentCartItemModelList != null) {
+//            saveInstanceCacheManager?.put(
+//                TickerAnnouncementHolderData::class.java.simpleName,
+//                shipmentPresenter.tickerAnnouncementHolderData
+//            )
+//            saveInstanceCacheManager?.put(
+//                ShipmentCartItemModel::class.java.simpleName,
+//                shipmentPresenter.shipmentCartItemModelList?.let {
+//                    ArrayList(
+//                        it
+//                    )
+//                }
+//            )
+//            saveInstanceCacheManager?.put(
+//                RecipientAddressModel::class.java.simpleName,
+//                shipmentPresenter.recipientAddressModel
+//            )
+//            saveInstanceCacheManager?.put(
+//                ShipmentCostModel::class.java.simpleName,
+//                shipmentPresenter.getShipmentCostModel()
+//            )
+//            saveInstanceCacheManager?.put(
+//                ShipmentDonationModel::class.java.simpleName,
+//                shipmentPresenter.shipmentDonationModel
+//            )
+//            saveInstanceCacheManager?.put(
+//                ShipmentButtonPaymentModel::class.java.simpleName,
+//                shipmentPresenter.shipmentButtonPayment.value
+//            )
+//            outState.putInt(
+//                DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION,
+//                shipmentAdapter.lastChooseCourierItemPosition
+//            )
+//            outState.putInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID, shipmentAdapter.lastServiceId)
+//            saveInstanceCacheManager?.put(
+//                UploadPrescriptionUiModel::class.java.simpleName,
+//                shipmentPresenter.uploadPrescriptionUiModel
+//            )
+//        } else {
+//            saveInstanceCacheManager?.put(ShipmentCartItemModel::class.java.simpleName, null)
+//        }
+//    }
 
     private val isOneClickShipment: Boolean
         get() = arguments != null && arguments!!.getBoolean(ARG_IS_ONE_CLICK_SHIPMENT)
@@ -1028,13 +1033,12 @@ class ShipmentFragment :
         isReloadAfterPriceChangeHigher: Boolean,
         isOneClickShipment: Boolean
     ) {
-        val recipientAddressModel = shipmentPresenter.recipientAddressModel
         shipmentAdapter.setShowOnboarding(shipmentPresenter.isShowOnboarding)
         setCampaignTimer()
         initRecyclerViewData(
             shipmentPresenter.shipmentTickerErrorModel,
             shipmentPresenter.tickerAnnouncementHolderData,
-            recipientAddressModel,
+            shipmentPresenter.recipientAddressModel,
             shipmentPresenter.shipmentUpsellModel,
             shipmentPresenter.shipmentNewUpsellModel,
             shipmentPresenter.shipmentCartItemModelList!!,

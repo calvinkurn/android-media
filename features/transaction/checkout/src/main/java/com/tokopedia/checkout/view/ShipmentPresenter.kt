@@ -1,6 +1,8 @@
 package com.tokopedia.checkout.view
 
 import android.util.Pair
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -153,8 +155,6 @@ import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import rx.Observable
@@ -163,7 +163,6 @@ import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 class ShipmentPresenter @Inject constructor(
     private val compositeSubscription: CompositeSubscription,
@@ -192,10 +191,7 @@ class ShipmentPresenter @Inject constructor(
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val ratesWithScheduleUseCase: GetRatesWithScheduleUseCase,
     private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
-) : ShipmentContract.Presenter, CoroutineScope {
-
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + dispatchers.immediate
+) : ShipmentContract.Presenter, ViewModel() {
 
     private var view: ShipmentContract.View? = null
 
@@ -282,7 +278,7 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun detachView() {
-        coroutineContext.cancelChildren()
+        viewModelScope.coroutineContext.cancelChildren()
         compositeSubscription.unsubscribe()
         eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
@@ -528,7 +524,7 @@ class ShipmentPresenter @Inject constructor(
         } else {
             view?.showInitialLoading()
         }
-        launch {
+        viewModelScope.launch {
             try {
                 val cartShipmentAddressFormData = getShipmentAddressFormV4UseCase(
                     ShipmentAddressFormRequest(
@@ -655,10 +651,8 @@ class ShipmentPresenter @Inject constructor(
                     view?.showToastNormal(cartShipmentAddressFormData.popUpMessage)
                 }
                 val popUpData = cartShipmentAddressFormData.popup
-                if (popUpData != null) {
-                    if (popUpData.title.isNotEmpty() && popUpData.description.isNotEmpty()) {
-                        view?.showPopUp(popUpData)
-                    }
+                if (popUpData.title.isNotEmpty() && popUpData.description.isNotEmpty()) {
+                    view?.showPopUp(popUpData)
                 }
             }
         }
@@ -820,7 +814,7 @@ class ShipmentPresenter @Inject constructor(
                 checkoutRequest,
                 dynamicData
             )
-            launch {
+            viewModelScope.launch {
                 try {
                     val checkoutData = checkoutGqlUseCase(params)
                     view?.setHasRunningApiCall(false)
@@ -1047,7 +1041,7 @@ class ShipmentPresenter @Inject constructor(
             ClearPromoOrderData(globalCodes, clearOrders)
         )
         if (hasPromo) {
-            launch {
+            viewModelScope.launch {
                 try {
                     clearCacheAutoApplyStackUseCase.setParams(params).executeOnBackground()
                 } catch (t: Throwable) {
@@ -1065,7 +1059,7 @@ class ShipmentPresenter @Inject constructor(
         cartString: String?
     ) {
         couponStateChanged = true
-        launch {
+        viewModelScope.launch {
             try {
                 val validateUsePromoRevampUiModel =
                     validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
@@ -1349,7 +1343,7 @@ class ShipmentPresenter @Inject constructor(
                 view?.setStateLoadingCourierStateAtIndex(cartPosition, true)
             }
             shipmentButtonPayment.value = shipmentButtonPayment.value.copy(loading = true)
-            launch {
+            viewModelScope.launch {
                 try {
                     val validateUsePromoRevampUiModel =
                         validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
@@ -1564,7 +1558,7 @@ class ShipmentPresenter @Inject constructor(
     ) {
         couponStateChanged = true
         val validateUsePromoRequest = view?.generateValidateUsePromoRequest() ?: return
-        launch {
+        viewModelScope.launch {
             try {
                 val validateUsePromoRevampUiModel =
                     validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
@@ -2080,7 +2074,7 @@ class ShipmentPresenter @Inject constructor(
                 shipmentCartItemModel.fulfillmentId
             )
         )
-        launch {
+        viewModelScope.launch {
             try {
                 val responseData = clearCacheAutoApplyStackUseCase.setParams(
                     ClearPromoRequest(
@@ -2191,7 +2185,7 @@ class ShipmentPresenter @Inject constructor(
 //                        )
 //                    )
 //            )
-            launch {
+            viewModelScope.launch {
                 try {
                     val response = clearCacheAutoApplyStackUseCase.setParams(
                         ClearPromoRequest(
@@ -2273,7 +2267,7 @@ class ShipmentPresenter @Inject constructor(
 //                ClearShipmentCacheAutoApplyAfterClashSubscriber(view, this)
 //            )
 //        )
-        launch {
+        viewModelScope.launch {
             try {
                 clearCacheAutoApplyStackUseCase.setParams(
                     ClearPromoRequest(
@@ -2314,7 +2308,7 @@ class ShipmentPresenter @Inject constructor(
             }
         }
         if (hasBo) {
-            launch {
+            viewModelScope.launch {
                 try {
                     clearCacheAutoApplyStackUseCase.setParams(
                         ClearPromoRequest(
@@ -2688,7 +2682,7 @@ class ShipmentPresenter @Inject constructor(
 
     fun fetchPrescriptionIds(epharmacyData: EpharmacyData) {
         if (epharmacyData.checkoutId.isNotEmpty() && epharmacyData.showImageUpload && !epharmacyData.consultationFlow) {
-            launch {
+            viewModelScope.launch {
                 try {
                     val getPrescriptionIdsResponse = prescriptionIdsUseCase
                         .setParams(epharmacyData.checkoutId)
@@ -3271,7 +3265,7 @@ class ShipmentPresenter @Inject constructor(
                 shipmentCartItemModel.fulfillmentId
             )
         )
-        launch {
+        viewModelScope.launch {
             try {
                 val params = ClearPromoRequest(
                     ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
@@ -3516,7 +3510,7 @@ class ShipmentPresenter @Inject constructor(
                 }
             }
             if (hasBo) {
-                launch {
+                viewModelScope.launch {
                     try {
                         clearCacheAutoApplyStackUseCase.setParams(
                             ClearPromoRequest(
