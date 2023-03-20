@@ -96,12 +96,14 @@ object BuyerOrderDetailTrackerConstant {
     const val BUTTON_NAME_SEE_POD = "lihat bukti pengiriman"
     const val BUTTON_NAME_RE_UPLOAD_PRESCRIPTION = "upload foto resep"
     const val BUTTON_NAME_CHECK_PRESCRIPTION = "cek resep"
+    const val BUTTON_NAME_CONFIRMATION_POF = "konfirmasi"
 
     // tracker ID
     const val TRACKER_ID_RE_UPLOAD_PRESCRIPTION = "32743"
     const val TRACKER_ID_CHECK_PRESCRIPTION = "32744"
     const val TRACKER_ID_IMPRESSION_INSURANCE_WIDGET = "40081"
     const val TRACKER_ID_CLICK_INSURANCE_WIDGET = "37322"
+    const val TRACKER_ID_CLICK_CONFIRMATION_POF = "41139"
     const val TRACKER_ID_41140 = "41140"
     const val TRACKER_ID_41141 = "41141"
     const val TRACKER_ID_41142 = "41142"

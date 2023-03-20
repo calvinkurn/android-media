@@ -24,4 +24,19 @@
     <string name="tokochat_localload_transaction_widget_title">Oops, status pesanan gagal ditampilkan</string>
     <string name="tokochat_localload_transaction_widget_desc">Klik ikon di samping untuk refresh.</string>
 
+    <string name="tokochat_message_censored">Pesan ini mengandung kata yang tidak diizinkan.</string>
+    <string name="tokochat_message_censored_guide">Cek Panduan</string>
+    <string name="tokochat_message_censored_bottomsheet_title">Panduan Chat</string>
+    <string name="tokochat_message_censored_bottomsheet_subtitle">Supaya ngobrolnya makin lancar, ikuti tips di bawah ini:</string>
+    <string name="tokochat_message_censored_desc_number_one">1.</string>
+    <string name="tokochat_message_censored_desc_one">Gunakan bahasa yang baik, sopan, ramah dan mudah dimengerti saat membuat isi pesan.</string>
+    <string name="tokochat_message_censored_desc_number_two">2.</string>
+    <string name="tokochat_message_censored_desc_two">Kasih kesan yang baik buat lawan bicara kamu. Jangan sampai pesan mengandung unsur SARA, diskriminasi, merendahkan orang lain, vulgar, atau bersifat ancaman.</string>
+    <string name="tokochat_message_censored_desc_number_three">3.</string>
+    <string name="tokochat_message_censored_desc_three">Supaya transaksinya lancar dan aman:</string>
+    <string name="tokochat_message_censored_desc_three_sub_one">&#8226; Hindari memberikan data pribadi seperti nomor HP, email dan identitas diri.</string>
+    <string name="tokochat_message_censored_desc_three_sub_two">&#8226; Hindari promosi situs lain atau berkomunikasi lewat saluran selain Tokopedia.</string>
+    <string name="tokochat_message_censored_terms_condition">Buat tahu lebih lanjut, cek Syarat &amp; Ketentuan</string>
+    <string name="tokochat_message_censored_terms_condition_span">Syarat &amp; Ketentuan</string>
+
 </resources>
