@@ -36,8 +36,8 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Success
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Calendar
+import java.util.Date
 import javax.inject.Inject
 
 private const val ROTATION_0 = 0f
@@ -61,8 +61,11 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     var factory: ViewModelProvider.Factory? = null
 
     private val seePerformanceTopAdsViewModel by lazy {
-        if (factory == null) null
-        else ViewModelProvider(this, factory!!).get(SeePerformanceTopAdsViewModel::class.java)
+        if (factory == null) {
+            null
+        } else {
+            ViewModelProvider(this, factory!!).get(SeePerformanceTopAdsViewModel::class.java)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +75,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         productId = intent.data?.getQueryParameter(MpTopadsConst.PRODUCT_ID_PARAM).orEmpty()
         openMainBottomSheet()
         firstFetch()
-        showAdsPlacingFilterBottomSheet()
+//        showAdsPlacingFilterBottomSheet()
 //        showChooseDateBottomSheet()
 //        openCalendar()
     }
@@ -220,13 +223,17 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 mainBottomSheetBinding.includeAdGroupManual.adCostRecommend.text =
                     it.response?.data?.get(0)?.groupBidSetting?.productBrowse.toString()
                 mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text =
-                    if (it.response?.data?.get(0)?.groupPriceDaily == 0f) getString(R.string.tidak_dibatasi) else "Rp ${
+                    if (it.response?.data?.get(0)?.groupPriceDaily == 0f) {
+                        getString(R.string.tidak_dibatasi)
+                    } else {
+                        "Rp ${
                         it.response?.data?.get(
                             0
                         )?.groupPriceDaily
-                    }"
+                        }"
+                    }
                 if (it.response?.data?.get(0)?.groupPriceDaily != 0f) {
-                    mainBottomSheetBinding.includeAdGroupManual.dailyBudgetDesc.text = String.format("Rp %d dari %d",it.response?.data?.get(0)?.groupPriceDailySpentFmt,it.response?.data?.get(0)?.groupPriceDaily)
+                    mainBottomSheetBinding.includeAdGroupManual.dailyBudgetDesc.text = String.format("Rp %d dari %d", it.response?.data?.get(0)?.groupPriceDailySpentFmt, it.response?.data?.get(0)?.groupPriceDaily)
                 }
             } else {
                 mainBottomSheetBinding.includePerformaTampil.adPerformance.text =
@@ -246,8 +253,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         600 -> getString(R.string.topads_dash_tidak_tampil)
                         else -> ""
                     }
-                mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudget2.text = String.format("Rp %d",it.data.dailyBudget)
-                mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetDesc2.text = String.format("Rp %d dari ",it.data.dailyUsage,it.data.dailyBudget)
+                mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudget2.text = String.format("Rp %d", it.data.dailyBudget)
+                mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetDesc2.text = String.format("Rp %d dari ", it.data.dailyUsage, it.data.dailyBudget)
             }
         }
     }
@@ -261,7 +268,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         mainBottomSheetBinding.productName.setOnClickListener {
             if (mainBottomSheetBinding.productName.layout.getEllipsisCount(1) > 0) {
                 showDescriptionBottomSheet(
-                    getString(R.string.topads_create_group_name), "", "",
+                    getString(R.string.topads_create_group_name),
+                    "",
+                    "",
                     seePerformanceTopAdsViewModel?.topAdsGetProductManage?.value?.data?.itemName
                         ?: ""
                 )
@@ -281,9 +290,11 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includePerformaTampil.adPerformanceInfo.setOnClickListener {
-            val adPerformanceCount = (100 *
-                seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.statTotalTopSlotImpression.toDoubleOrZero() /
-                seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.statTotalImpression.toDoubleOrZero()).toInt()
+            val adPerformanceCount = (
+                100 *
+                    seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.statTotalTopSlotImpression.toDoubleOrZero() /
+                    seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.statTotalImpression.toDoubleOrZero()
+                ).toInt()
             showDescriptionBottomSheet(
                 getString(R.string.topads_ads_performance_performa_tampil),
                 "$adPerformanceCount%",
@@ -316,7 +327,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         mainBottomSheetBinding.includeAdGroupManual.groupName.setOnClickListener {
             if (mainBottomSheetBinding.includeAdGroupManual.groupName.layout.getEllipsisCount(0) > 0) {
                 showDescriptionBottomSheet(
-                    getString(R.string.topads_create_group_name), "", "",
+                    getString(R.string.topads_create_group_name),
+                    "",
+                    "",
                     seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.groupName
                         ?: ""
                 )
@@ -463,7 +476,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         )
     }
 
-
     private fun setYellowCondition() {
         ImageViewCompat.setImageTintList(
             mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block1,
@@ -479,7 +491,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         )
     }
 
-
     private fun setRedCondition() {
         ImageViewCompat.setImageTintList(
             mainBottomSheetBinding.includePerformaTampil.adsPerformanceIndicator.block1,
@@ -494,7 +505,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             ColorStateList.valueOf(ContextCompat.getColor(this, R.color.Unify_NN300))
         )
     }
-
 
     private fun setGreyCondition() {
         ImageViewCompat.setImageTintList(
@@ -554,7 +564,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             ItemListUiModel("7 hari terakhir", "$daysAgo7 - $today"),
             ItemListUiModel("30 hari terakhir", "$daysAgo30 - $today"),
             ItemListUiModel("Bulan ini", "$firstDateOfMonth - $today"),
-            ItemListUiModel("Custom", getRangeCustomDate()),
+            ItemListUiModel("Custom", getRangeCustomDate())
         )
         ListBottomSheet.show(supportFragmentManager, "Pilih rentang waktu", temporaryData)
     }
@@ -579,7 +589,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         val cal = Calendar.getInstance()
         val dateFormat: DateFormat = SimpleDateFormat("dd MMM yyyy")
         val days = cal.getActualMinimum(Calendar.DAY_OF_MONTH)
-        cal.set(Calendar.DAY_OF_MONTH, days);
+        cal.set(Calendar.DAY_OF_MONTH, days)
         return dateFormat.format(cal.time)
     }
 
@@ -590,9 +600,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 "Iklan produk yang tampil di halaman pencarian dan rekomendasi."
             ),
             ItemListUiModel("Di Pencarian", "Iklan produk yang tampil di halaman pencarian"),
-            ItemListUiModel("Di Rekomendasi", "Iklan produk yang tampil di bagian rekomendasi"),
+            ItemListUiModel("Di Rekomendasi", "Iklan produk yang tampil di bagian rekomendasi")
 
-            )
+        )
         ListBottomSheet.show(supportFragmentManager, "Penempatan Iklan", temporaryData)
     }
 
