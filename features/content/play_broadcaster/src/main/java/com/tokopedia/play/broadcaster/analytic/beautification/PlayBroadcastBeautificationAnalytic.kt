@@ -29,7 +29,7 @@ interface PlayBroadcastBeautificationAnalytic {
     fun openScreenBeautificationBottomSheet()
 
     /** Row 6 */
-    fun clickCustomFace(account: ContentAccountUiModel, page: Page, customFace: String) /** TODO: how to determine shaping/buffing/toning? */
+    fun clickCustomFace(account: ContentAccountUiModel, page: Page, customFace: String) /** TODO: which one is shaping/buffing/toning? */
 
     /** Row 7 */
     fun clickNoneCustomFace(account: ContentAccountUiModel, page: Page)
@@ -41,10 +41,10 @@ interface PlayBroadcastBeautificationAnalytic {
     fun clickBeautyFilterReset(account: ContentAccountUiModel, page: Page)
 
     /** Row 10 */
-    fun clickSliderBeautyFilter(account: ContentAccountUiModel, page: Page, tab: Tab, customFace: String) /** TODO: not only customFace but also make up */
+    fun clickSliderBeautyFilter(account: ContentAccountUiModel, page: Page, tab: Tab, customFace: String) /** TODO: if user choose makeup, what is the value for shaping/buffing/toning? */
 
     /** Row 11 */
-    fun viewResetFilterPopup(account: ContentAccountUiModel, page: Page, tab: Tab) /** TODO: tab is not important */
+    fun viewResetFilterPopup(account: ContentAccountUiModel, page: Page, tab: Tab) /** TODO: is tab (face filter / makeup) value important here? because afaik reset filter will reset both face filter & makeup */
 
     /** Row 12 */
     fun clickYesResetFilter(account: ContentAccountUiModel, page: Page)
@@ -80,11 +80,11 @@ interface PlayBroadcastBeautificationAnalytic {
 
     /** Row 22 */
     /** TODO: skip for now */
-    fun clickRetryReapplyBeautyFilter(account: ContentAccountUiModel) /** TOOD: ini apa ya? */
+    fun clickRetryReapplyBeautyFilter(account: ContentAccountUiModel)
 
     /** Row 23 */
     /** TODO: skip for now */
-    fun viewFailReapplyBeautyFilter(account: ContentAccountUiModel) /** TOOD: ini apa ya? */
+    fun viewFailReapplyBeautyFilter(account: ContentAccountUiModel)
 
     enum class Page(val value: String) {
         Unknown(""),
