@@ -238,7 +238,13 @@ class FeedPostImageViewHolder(
 
     private fun bindCampaignRibbon(model: FeedCardImageContentModel) {
         val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
-        campaignView.bindData(model.campaign, model.isTypeProductHighlight)
+        campaignView.bindData(
+            model.type,
+            model.campaign,
+            model.cta,
+            model.hasVoucher,
+            model.isTypeProductHighlight
+        )
     }
 
     private fun showClearView() {

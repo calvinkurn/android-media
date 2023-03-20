@@ -125,11 +125,11 @@ class FeedXCard(
         const val TYPE_FEED_PLAY_SHORT_VIDEO = "sgc_play_short_video"
         const val TYPE_FEED_PLAY_LIVE = "sgc_play_livestream"
 
-        const val TYPE_FEED_NEW_PRODUCTS = "asgc_new_products"
-        const val TYPE_FEED_RESTOCK = "asgc_restock_products"
-        const val TYPE_FEED_SHOP_DISCOUNT = "asgc_discount_toko"
-        const val TYPE_FEED_SHOP_FLASH_SALE = "asgc_flash_sale_toko"
-        const val TYPE_FEED_SPECIAL_RELEASE = "asgc_rilisan_spesial"
+        const val TYPE_FEED_ASGC_NEW_PRODUCTS = "asgc_new_products"
+        const val TYPE_FEED_ASGC_RESTOCK = "asgc_restock_products"
+        const val TYPE_FEED_ASGC_SHOP_DISCOUNT = "asgc_discount_toko"
+        const val TYPE_FEED_ASGC_SHOP_FLASH_SALE = "asgc_flash_sale_toko"
+        const val TYPE_FEED_ASGC_SPECIAL_RELEASE = "asgc_rilisan_spesial"
 
         const val TYPE_MEDIA_IMAGE = "image"
         const val TYPE_MEDIA_VIDEO = "video"
