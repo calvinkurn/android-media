@@ -13,6 +13,7 @@ object ProductItemMapper {
     private fun mapAceSearchProductToProductCard(
         product: AceSearchProductModel.Product,
         cartService: CartService,
+        hasBlockedAddToCart: Boolean
     ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
         productId = product.id,
         imageUrl = product.imageUrl300,
@@ -37,13 +38,15 @@ object ProductItemMapper {
                 title = it.title,
                 imageUrl = it.url
             )
-        }
+        },
+        hasBlockedAddToCart = hasBlockedAddToCart
     )
 
     fun mapResponseToProductItem(
         index: Int,
         product: AceSearchProductModel.Product,
-        cartService: CartService
+        cartService: CartService,
+        hasBlockedAddToCart: Boolean
     ): ProductItemDataView = ProductItemDataView(
         parentId = product.parentId,
         boosterList = product.boosterList,
@@ -55,7 +58,8 @@ object ProductItemMapper {
         position = index + ADDITIONAL_POSITION,
         productCardModel = mapAceSearchProductToProductCard(
             product = product,
-            cartService = cartService
+            cartService = cartService,
+            hasBlockedAddToCart = hasBlockedAddToCart
         )
     )
 }

@@ -25,6 +25,7 @@ import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapp
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.NO_ORDER_QUANTITY
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.resetAllProductCardCarouselItemQuantities
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.updateProductCardCarouselItemQuantity
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
@@ -41,6 +42,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
@@ -189,7 +191,8 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
                 if (result.isNotEmpty()) {
                     val productRecommendation = mapResponseToProductRecommendation(
                         recommendationWidget = result.first(),
-                        miniCartData = mMiniCartSimplifiedData
+                        miniCartData = mMiniCartSimplifiedData,
+                        hasBlockedAddToCart = false
                     )
                     if (productRecommendation.productModels.isEmpty()) {
                         _productRecommendation.postValue(Fail(Throwable()))

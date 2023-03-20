@@ -134,24 +134,26 @@ abstract class BaseSearchCategoryViewModel(
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
     }
 
-    protected var chooseAddressDataView = ChooseAddressDataView()
     protected val loadingMoreModel = LoadingMoreModel()
     protected val visitableList = mutableListOf<Visitable<*>>()
     protected val queryParamMutable = queryParamMap.toMutableMap()
+    protected var chooseAddressDataView = ChooseAddressDataView()
     protected var totalData = 0
     protected var chooseAddressData: LocalCacheModel? = null
+    protected var feedbackFieldToggle = false
 
-    private var headerYCoordinate = 0f
     private val filterController = FilterController()
+    private var headerYCoordinate = 0f
     private var totalFetchedData = 0
     private var nextPage = 1
     private var currentProductPosition: Int = 1
-    protected var feedbackFieldToggle = false
     private var isFeedbackFieldVisible = false
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
 
+    var miniCartSource: MiniCartSource = MiniCartSource.TokonowSRP
+        private set
     var warehouseId = ""
         private set
     var autoCompleteApplink = ""
@@ -206,12 +208,8 @@ abstract class BaseSearchCategoryViewModel(
     private val shopIdMutableLiveData = MutableLiveData("")
     val shopIdLiveData: LiveData<String> = shopIdMutableLiveData
 
-    var miniCartSource: MiniCartSource = MiniCartSource.TokonowSRP
-
-    private val addToCartTrackingMutableLiveData =
-            SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
-    val addToCartTrackingLiveData: LiveData<Triple<Int, String, ProductItemDataView>> =
-            addToCartTrackingMutableLiveData
+    private val addToCartTrackingMutableLiveData = SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
+    val addToCartTrackingLiveData: LiveData<Triple<Int, String, ProductItemDataView>> = addToCartTrackingMutableLiveData
 
     private val decreaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
     val decreaseQtyTrackingLiveData: LiveData<String> = decreaseQtyTrackingMutableLiveData
@@ -234,12 +232,8 @@ abstract class BaseSearchCategoryViewModel(
     private val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
     val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
 
-    private val addToCartRepurchaseWidgetTrackingMutableLiveData =
-        SingleLiveEvent<Triple<Int, String, TokoNowProductCardUiModel>>()
-
-    val addToCartRepurchaseWidgetTrackingLiveData:
-        LiveData<Triple<Int, String, TokoNowProductCardUiModel>> =
-        addToCartRepurchaseWidgetTrackingMutableLiveData
+    private val addToCartRepurchaseWidgetTrackingMutableLiveData = SingleLiveEvent<Triple<Int, String, TokoNowProductCardUiModel>>()
+    val addToCartRepurchaseWidgetTrackingLiveData: LiveData<Triple<Int, String, TokoNowProductCardUiModel>> = addToCartRepurchaseWidgetTrackingMutableLiveData
 
     private val oocOpenScreenTrackingMutableEvent = SingleLiveEvent<Boolean>()
     val oocOpenScreenTrackingEvent: LiveData<Boolean> = oocOpenScreenTrackingMutableEvent
@@ -258,6 +252,9 @@ abstract class BaseSearchCategoryViewModel(
 
     private val needToUpdateProductRecommendationMutableLiveData = MutableLiveData<Boolean>()
     val needToUpdateProductRecommendationLiveData: LiveData<Boolean> = needToUpdateProductRecommendationMutableLiveData
+
+    private val blockAddToCartMutableLiveData = MutableLiveData<Unit>()
+    val blockAddToCartLiveData: LiveData<Unit> = blockAddToCartMutableLiveData
 
     var isEmptyResult:Boolean = false
 
@@ -707,13 +704,14 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun addProductList(
         contentVisitableList: MutableList<Visitable<*>>,
-        productList: List<Product>,
+        productList: List<Product>
     ) {
         val productListDataView = productList.mapIndexed { index, product ->
             mapResponseToProductItem(
                 index = index,
                 product = product,
-                cartService = cartService
+                cartService = cartService,
+                hasBlockedAddToCart = needToBlockAtc
             )
         }
         contentVisitableList.addAll(productListDataView)
@@ -1150,31 +1148,36 @@ abstract class BaseSearchCategoryViewModel(
         val shopId = productItem.shop.id
         val currentQuantity = productItem.productCardModel.orderQuantity
 
-        cartService.handleCart(
-            cartProductItem = CartProductItem(productId, shopId, currentQuantity),
-            quantity = quantity,
-            onSuccessAddToCart = {
-                addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                sendAddToCartTracking(quantity, it.data.cartId, productItem)
-                onAddToCartSuccess(productItem, it.data.quantity)
-                updateToolbarNotification()
-            },
-            onSuccessUpdateCart = {
-                sendTrackingUpdateQuantity(quantity, productItem)
-                onAddToCartSuccess(productItem, quantity)
-                updateToolbarNotification()
-            },
-            onSuccessDeleteCart = {
-                removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                sendDeleteCartTracking(productItem)
-                onAddToCartSuccess(productItem, 0)
-                updateToolbarNotification()
-            },
-            onError = ::onAddToCartFailed,
-            handleCartEventNonLogin = {
-                handleAddToCartEventNonLogin(visitableList.indexOf(productItem))
-            },
-        )
+        if (needToBlockAtc) {
+            // this only blocks add to cart when using repurchase widget
+            blockAddToCartMutableLiveData.value = Unit
+        } else {
+            cartService.handleCart(
+                cartProductItem = CartProductItem(productId, shopId, currentQuantity),
+                quantity = quantity,
+                onSuccessAddToCart = {
+                    addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                    sendAddToCartTracking(quantity, it.data.cartId, productItem)
+                    onAddToCartSuccess(productItem, it.data.quantity)
+                    updateToolbarNotification()
+                },
+                onSuccessUpdateCart = {
+                    sendTrackingUpdateQuantity(quantity, productItem)
+                    onAddToCartSuccess(productItem, quantity)
+                    updateToolbarNotification()
+                },
+                onSuccessDeleteCart = {
+                    removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                    sendDeleteCartTracking(productItem)
+                    onAddToCartSuccess(productItem, 0)
+                    updateToolbarNotification()
+                },
+                onError = ::onAddToCartFailed,
+                handleCartEventNonLogin = {
+                    handleAddToCartEventNonLogin(visitableList.indexOf(productItem))
+                },
+            )
+        }
     }
 
     private fun sendAddToCartTracking(quantity: Int, cartId: String, productItem: ProductItemDataView) {

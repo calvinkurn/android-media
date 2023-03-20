@@ -14,4 +14,6 @@ interface ProductItemListener {
     fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView)
 
     fun onWishlistButtonClicked(productId: String, isWishlistSelected: Boolean, descriptionToaster: String, ctaToaster: String, type: Int = Toaster.TYPE_NORMAL, ctaClickListener: (() -> Unit)? = null)
+
+    fun onProductCardAddToCartBlocked()
 }

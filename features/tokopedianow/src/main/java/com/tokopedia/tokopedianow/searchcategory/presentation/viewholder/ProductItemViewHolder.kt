@@ -49,6 +49,9 @@ class ProductItemViewHolder(
             setWishlistButtonListener(
                 wishlistButtonListener = this@ProductItemViewHolder
             )
+            setOnBlockAddToCartListener {
+                listener.onProductCardAddToCartBlocked()
+            }
             addOnImpressionListener(element) {
                 listener.onProductImpressed(
                     productItemDataView = element

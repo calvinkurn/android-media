@@ -27,6 +27,7 @@ data class ProductRecommendationCallback(
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
     private val baseSearchCategoryViewModel: BaseSearchCategoryViewModel,
     private val activity: FragmentActivity?,
+    private val onAddToCartBlocked: () -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit,
 
     /**
@@ -125,7 +126,7 @@ data class ProductRecommendationCallback(
         directToSeeMorePage(appLink)
     }
 
-    override fun productCardAddToCartBlocked() {}
+    override fun productCardAddToCartBlocked() = onAddToCartBlocked()
 
     private fun directToSeeMorePage(
         appLink: String

@@ -29,19 +29,16 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ): BaseCustomView(context, attrs) {
 
-    private var binding: LayoutTokopedianowProductRecommendationViewBinding
-
-    private var viewModel: TokoNowProductRecommendationViewModel? = null
-    private var listener: TokoNowProductRecommendationListener? = null
-    private var requestParam: GetRecommendationRequestParam? = null
-
-    init {
-        binding = LayoutTokopedianowProductRecommendationViewBinding.inflate(
+    private var binding: LayoutTokopedianowProductRecommendationViewBinding =
+        LayoutTokopedianowProductRecommendationViewBinding.inflate(
             LayoutInflater.from(context),
             this,
             true
         )
-    }
+
+    private var viewModel: TokoNowProductRecommendationViewModel? = null
+    private var listener: TokoNowProductRecommendationListener? = null
+    private var requestParam: GetRecommendationRequestParam? = null
 
     private fun TokoNowProductRecommendationViewModel.observeRecommendationWidget() {
         productRecommendation.observe(context as AppCompatActivity) {

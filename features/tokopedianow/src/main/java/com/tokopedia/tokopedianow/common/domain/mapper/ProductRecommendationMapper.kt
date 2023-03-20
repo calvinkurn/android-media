@@ -19,7 +19,8 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 object ProductRecommendationMapper {
     private fun mapRecommendationItemToProductCard(
         item: RecommendationItem,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
     ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
         productId = item.productId.toString(),
         imageUrl = item.imageUrl,
@@ -42,18 +43,21 @@ object ProductRecommendationMapper {
                 imageUrl = it.imageUrl
             )
         },
+        hasBlockedAddToCart = hasBlockedAddToCart,
         usePreDraw = true
     )
 
     fun mapResponseToProductRecommendation(
         recommendationWidget: RecommendationWidget,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
     ): TokoNowProductRecommendationViewUiModel {
         val productModels = recommendationWidget.recommendationItemList.map { item ->
             TokoNowProductCardCarouselItemUiModel(
                 productCardModel = mapRecommendationItemToProductCard(
                     item = item,
-                    miniCartData = miniCartData
+                    miniCartData = miniCartData,
+                    hasBlockedAddToCart = hasBlockedAddToCart
                 ),
                 recommendationType = item.recommendationType,
                 shopId = item.shopId.toString(),
@@ -61,7 +65,7 @@ object ProductRecommendationMapper {
                 shopName = item.shopName,
                 appLink = item.appUrl,
                 headerName = recommendationWidget.title,
-                pageName = recommendationWidget.pageName
+                pageName = recommendationWidget.pageName,
             )
         }
         val seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
