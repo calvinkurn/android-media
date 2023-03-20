@@ -431,7 +431,6 @@ class ContentCommentBottomSheet @Inject constructor(
         sheetMenu.dismiss()
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private fun getMenuItems(item: CommentUiModel.Item): List<FeedMenuItem> = buildList {
         if (item.isOwner || viewModel.isCreator) {
             add(

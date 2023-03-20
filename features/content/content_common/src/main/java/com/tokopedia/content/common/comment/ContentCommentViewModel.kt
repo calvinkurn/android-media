@@ -70,7 +70,7 @@ class ContentCommentViewModel @AssistedInject constructor(
                     cursor = param.lastParentCursor,
                 )
                 _comments.update {
-                    val contentSame = it.state == result.state //temp
+                    val contentSame = it.list.zip(result.list).any { item -> item.first == item.second }
                     it.copy(
                         cursor = result.cursor,
                         state = result.state,

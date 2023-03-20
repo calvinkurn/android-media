@@ -60,8 +60,7 @@ class CommentUiModelMapper @Inject constructor() {
     }
 
     fun mapNewComment(comment: PostComment.Parent.NewComment, userType: UserType): CommentUiModel {
-        val username =
-            if (!comment.userInfo.isKOL) comment.userInfo.name else comment.userInfo.username.ifBlank { comment.userInfo.firstName } //need to adjust with ^
+        val username = comment.userInfo.username.ifBlank { comment.userInfo.username }.ifBlank { comment.userInfo.name }
         return CommentUiModel.Item(
             id = comment.id,
             username = username.parseAsHtml().toString(),
