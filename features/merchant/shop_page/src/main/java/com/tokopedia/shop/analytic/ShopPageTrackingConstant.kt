@@ -394,8 +394,8 @@ object ShopPageTrackingConstant {
         const val CAMPAIGN_WIDGET_CLICK_CTA_SEE_ALL = "click Lihat Semua widget campaign"
         const val CAMPAIGN_WIDGET_CLICK_REMINDER = "click Ingatkan widget campaign"
         const val CAMPAIGN_WIDGET_CLICK_BANNER = "click banner widget campaign"
-        const val ALL_PRODUCT_CLICKED = "click product - etalase chip"
-        const val ALL_PRODUCT_IMPRESSION = "product list impression - etalase chip"
+        const val ALL_PRODUCT_CLICKED = "click product"
+        const val ALL_PRODUCT_IMPRESSION = "product list impression"
 
     }
 

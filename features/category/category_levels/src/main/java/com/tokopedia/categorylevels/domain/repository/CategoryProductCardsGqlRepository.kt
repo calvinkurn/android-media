@@ -2,6 +2,7 @@ package com.tokopedia.categorylevels.domain.repository
 
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.LihatSemua
@@ -26,7 +27,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
     }
 
-    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>,String?> {
+    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>, ComponentAdditionalInfo?> {
         val page = queryParamterMap[RPC_PAGE_NUMBER] as String
         val list = when (productComponentName) {
             ComponentNames.CategoryBestSeller.componentName -> {

@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
@@ -17,6 +18,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION
+import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
+import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_VISIBILITY
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.ON_REVIEWED
@@ -36,12 +40,15 @@ import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -66,8 +73,9 @@ class AffiliatePromoFragment :
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
 
     private val tabFragments = arrayListOf<Fragment>()
+    private var remoteConfig: RemoteConfig? = null
 
-    companion object {
+        companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
 
         fun getFragmentInstance(): Fragment {
@@ -77,8 +85,13 @@ class AffiliatePromoFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         setObservers()
     }
+
+    private fun isAffiliateGamificationEnabled() = remoteConfig?.getBoolean(AFFILIATE_GAMIFICATION_VISIBILITY, false) ?: false
+
+    private fun affiliateRedirection() = remoteConfig?.getString(AFFILIATE_GAMIFICATION_REDIRECTION, AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -125,8 +138,17 @@ class AffiliatePromoFragment :
                 )
             }
         }
-        view?.findViewById<CardUnify2>(R.id.card_ssa_entry)?.isVisible =
-            affiliatePromoViewModel.isAffiliateSSAShopEnabled()
+        view?.findViewById<LinearLayout>(R.id.ssa_container)?.isVisible = affiliatePromoViewModel.isAffiliateSSAShopEnabled()
+
+        view?.findViewById<LinearLayout>(R.id.gamification_container)?.isVisible =
+            isAffiliateGamificationEnabled()
+
+        view?.findViewById<CardUnify2>(R.id.gamification_entry_card_banner)?.setOnClickListener {
+            val urlRedirectionAppLink = affiliateRedirection()
+            if (urlRedirectionAppLink?.isNotEmpty() == true) {
+                RouteManager.route(context, urlRedirectionAppLink)
+            }
+        }
         setupViewPager()
         showDefaultState()
         affiliatePromoViewModel.getAffiliateValidateUser()

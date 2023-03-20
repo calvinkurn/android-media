@@ -183,6 +183,10 @@ const val PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY = 3
 
 const val AFFILIATE_SSA_SHOP = "aff_ssa_portal"
 
+const val  AFFILIATE_GAMIFICATION_VISIBILITY = "affil_banner_gami"
+const val  AFFILIATE_GAMIFICATION_REDIRECTION = "affil_gami_disco"
+const val AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK = "tokopedia://discovery/tantangan-hadiah-ramadan"
+
 const val PAGE_TYPE_PDP = "pdp"
 
 const val PAGE_TYPE_SHOP = "shop"

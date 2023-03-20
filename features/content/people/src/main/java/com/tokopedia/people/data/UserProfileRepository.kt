@@ -4,10 +4,12 @@ import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
+import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
@@ -34,7 +36,8 @@ interface UserProfileRepository {
     suspend fun getPlayVideo(
         username: String,
         cursor: String,
-    ): UserPostModel
+        isSelfProfile: Boolean,
+    ): UserPlayVideoUiModel
 
     suspend fun getShopRecom(cursor: String): ShopRecomUiModel
 
@@ -43,4 +46,9 @@ interface UserProfileRepository {
     suspend fun blockUser(userId: String)
 
     suspend fun unblockUser(userId: String)
+
+    suspend fun deletePlayChannel(
+        channelId: String,
+        userId: String,
+    ): String
 }
