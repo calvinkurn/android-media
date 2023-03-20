@@ -18,6 +18,8 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks
+import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardListView
@@ -74,6 +76,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardGridView?.setNotifyMeOnClickListener {
                 sentNotifyButtonEvent()
                 masterProductCardItemViewModel.subscribeUser()
+                showNotificationReminderPrompt()
             }
 
             masterProductCardGridView?.setAddVariantClickListener {
@@ -89,6 +92,19 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         }
         productCardView.setOnClickListener {
             handleUIClick(it)
+        }
+    }
+
+    private fun showNotificationReminderPrompt() {
+        val pageName = "kejarDiskon"
+        masterProductCardItemViewModel.getProductDataItem()?.notifyMe?.let { notifyMeStatus ->
+            if (!notifyMeStatus) {
+                (fragment as DiscoveryFragment).activity?.let {
+                    val view = NotificationGeneralPromptLifecycleCallbacks()
+                        .notificationGeneralPromptView(it, pageName)
+                    NotificationReminderPrompt(view).showReminderPrompt(it)
+                }
+            }
         }
     }
 
