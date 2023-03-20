@@ -3,7 +3,6 @@ package com.tokopedia.remoteconfig
 object RollenceKey {
 
     //    Shop Page
-    const val NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT = "Exp_OSbotnav_Android"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
@@ -25,7 +24,6 @@ object RollenceKey {
     const val HOME_COMPONENT_DYNAMIC_ICON_VARIANT = "exp_icon"
     // end of home component rollence section
 
-    const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
 
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"

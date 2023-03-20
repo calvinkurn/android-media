@@ -85,8 +85,6 @@
     <string name="input_rollence_variant">input rollence variant</string>
     <string name="apply">APPLY</string>
     <string name="home_nav_revamp_switcher">Home and Navigation Revamp Switcher:</string>
-    <string name="always_os_experiment">Always OS Experiment</string>
-    <string name="always_new_nav">New Navigation</string>
     <string name="always_old_home">Old Home</string>
     <string name="always_new_home">New Home</string>
     <string name="always_old_balance_widget">Old Balance Widget</string>

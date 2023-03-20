@@ -8,8 +8,6 @@ import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.HomeAndNavigationRevampSwitcherUiModel
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
 import com.tokopedia.unifycomponents.UnifyButton
 
 class HomeAndNavigationRevampSwitcherViewHolder(
@@ -23,23 +21,11 @@ class HomeAndNavigationRevampSwitcherViewHolder(
     }
 
     override fun bind(element: HomeAndNavigationRevampSwitcherUiModel) {
-        val btnNewNavigation = itemView.findViewById<UnifyButton>(R.id.new_navigation_btn)
-        val btnExpOsBottomNavigation = itemView.findViewById<UnifyButton>(R.id.os_exp_btn)
         val btnOldBalanceWidget = itemView.findViewById<UnifyButton>(R.id.old_balance_widget_btn)
         val btnNewBalanceWidget = itemView.findViewById<UnifyButton>(R.id.new_balance_widget_btn)
         val btnSkipOnBoardingUserSession = itemView.findViewById<UnifyButton>(R.id.skip_onboarding_user_session_btn)
 
         itemView.context.apply {
-            btnNewNavigation.setOnClickListener {
-                RemoteConfigInstance.getInstance().abTestPlatform.deleteKeyLocally(NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT)
-                Toast.makeText(this, "Navigation: Revamped", Toast.LENGTH_SHORT).show()
-            }
-
-            btnExpOsBottomNavigation.setOnClickListener {
-                RemoteConfigInstance.getInstance().abTestPlatform.setString(NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT, NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT)
-                Toast.makeText(this, "Navigation: OS Removed", Toast.LENGTH_SHORT).show()
-            }
-
             btnOldBalanceWidget.setOnClickListener {
                 RemoteConfigInstance.getInstance().abTestPlatform.setString(RollenceKey.BALANCE_EXP, RollenceKey.BALANCE_VARIANT_OLD)
                 Toast.makeText(this, "balance widget: Old", Toast.LENGTH_SHORT).show()
