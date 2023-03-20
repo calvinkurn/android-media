@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.common.util
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -7,9 +8,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
-import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodCategoryFragment
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodCategoryFragmentOld
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
@@ -34,21 +33,21 @@ object TokofoodRouteManager {
     private const val PATH_OLD_CATEGORY = "/old-category"
     private const val PATH_OLD_SEARCH = "/old-search"
 
-    fun mapUriToFragment(context: Context, uri: Uri): Fragment? {
+    fun mapUriToFragment(activity: Activity, uri: Uri): Fragment? {
         // tokopedia://food
         if (uri.host == HOST_TOKOFOOD) {
             val f: Fragment? =
                 uri.path?.let { uriPath ->
-                    val isGtpMigration = getIsGtpMigration(context)
+                    val isNewFragment = getIsCurrentActivityNew(activity)
                     when {
                         uriPath.startsWith(PATH_HOME) || uriPath.startsWith(PATH_OLD_HOME) ->
-                            if (isGtpMigration) TokoFoodHomeFragment.createInstance() else TokoFoodHomeFragmentOld.createInstance() // tokopedia://food/home
+                            if (isNewFragment) TokoFoodHomeFragment.createInstance() else TokoFoodHomeFragmentOld.createInstance() // tokopedia://food/home
                         uriPath.startsWith(PATH_MERCHANT) || uriPath.startsWith(PATH_OLD_MERCHANT) ->
-                            if (isGtpMigration) MerchantPageFragment.createInstance() else MerchantPageFragmentOld.createInstance()// tokopedia://food/merchant
+                            if (isNewFragment) MerchantPageFragment.createInstance() else MerchantPageFragmentOld.createInstance()// tokopedia://food/merchant
                         uriPath.startsWith(PATH_PURCHASE) || uriPath.startsWith(PATH_OLD_PURCHASE) ->
-                            if (isGtpMigration) TokoFoodPurchaseFragment.createInstance() else TokoFoodPurchaseFragmentOld.createInstance() // tokopedia://food/purchase
+                            if (isNewFragment) TokoFoodPurchaseFragment.createInstance() else TokoFoodPurchaseFragmentOld.createInstance() // tokopedia://food/purchase
                         uriPath.startsWith(PATH_CATEGORY) || uriPath.startsWith(PATH_OLD_CATEGORY) ->
-                            if (isGtpMigration) TokoFoodCategoryFragment.createInstance() else TokoFoodCategoryFragmentOld.createInstance() // tokopedia://food/category
+                            if (isNewFragment) TokoFoodCategoryFragment.createInstance() else TokoFoodCategoryFragmentOld.createInstance() // tokopedia://food/category
                         uriPath.startsWith(PATH_SEARCH) || uriPath.startsWith(PATH_OLD_SEARCH) -> SearchContainerFragment.createInstance() // tokopedia://food/search
                         else -> null
                     }
@@ -89,7 +88,7 @@ object TokofoodRouteManager {
         }
     }
 
-    private fun getIsGtpMigration(context: Context): Boolean {
-        return FirebaseRemoteConfigImpl(context).getBoolean(RemoteConfigKey.IS_TOKOFOOD_NEW_GTP_FLOW).orFalse()
+    private fun getIsCurrentActivityNew(activity: Activity): Boolean {
+        return activity is BaseTokofoodActivity
     }
 }
