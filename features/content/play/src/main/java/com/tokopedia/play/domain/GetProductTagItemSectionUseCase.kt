@@ -70,6 +70,8 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                         color
                         button_type: buttonType
                     }
+                    rating: Rating
+                    sold_quantity: SoldQuantity 
                   }
                 }
                 vouchers{

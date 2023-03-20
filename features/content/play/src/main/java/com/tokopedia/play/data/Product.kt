@@ -46,6 +46,10 @@ data class Product(
         val isPinned: Boolean = false,
         @SerializedName("available_buttons")
         val buttons: List<ProductButton> = emptyList(),
+        @SerializedName("rating")
+        val rating: String = "",
+        @SerializedName("sold_quantity")
+        val soldQuantity: String = "",
 ){
     data class ProductButton(
         @SerializedName("text")

@@ -12,9 +12,6 @@ import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
-import com.tokopedia.play.view.uimodel.recom.BannedUiModel
-import com.tokopedia.play.view.uimodel.recom.FreezeUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayStatusConfig
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
@@ -55,7 +52,6 @@ class PlayUiModelMapper @Inject constructor(
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     fun mapMerchantVouchers(input: List<Voucher>, partnerName: String): VoucherUiModel {
         val vouchers = input.map(merchantVoucherMapper::mapMerchantVoucher)
         val eligibleForShown = vouchers.find { !it.isPrivate }
@@ -152,6 +148,8 @@ class PlayUiModelMapper @Inject constructor(
             isPinned = prevDetail.isPinned,
             isRilisanSpesial = prevDetail.isRilisanSpesial,
             buttons = prevDetail.buttons,
+            rating = prevDetail.rating,
+            soldQuantity = prevDetail.soldQuantity,
         )
     }
 }
