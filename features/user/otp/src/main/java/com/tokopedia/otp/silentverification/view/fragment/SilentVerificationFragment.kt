@@ -1,5 +1,7 @@
 package com.tokopedia.otp.silentverification.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.animation.Animator
 import android.annotation.TargetApi
 import android.app.Activity
@@ -492,8 +494,8 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         private const val KEY_OTP_DATA = "otp-data-silent-verif"
         private const val KEY_MODE_LIST_DATA = "mode-list-data-silent-verif"
 
-        private const val LOTTIE_SUCCESS_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_success.json"
-        private const val LOTTIE_BG_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_animation_bg_small.json"
+        private const val LOTTIE_SUCCESS_ANIMATION = TokopediaImageUrl.LOTTIE_SUCCESS_ANIMATION
+        private const val LOTTIE_BG_ANIMATION = TokopediaImageUrl.LOTTIE_BG_ANIMATION
 
         const val SILENT_VERIFICATION_SCREEN = "silentVerification"
 

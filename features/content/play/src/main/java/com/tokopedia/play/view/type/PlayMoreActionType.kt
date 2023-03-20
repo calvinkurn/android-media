@@ -11,4 +11,5 @@ enum class PlayMoreActionType {
     Report,
     PiP,
     Chromecast,
+    SeePerformance,
 }

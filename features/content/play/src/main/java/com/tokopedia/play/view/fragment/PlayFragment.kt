@@ -336,7 +336,6 @@ class PlayFragment @Inject constructor(
             analytic.sendScreen(channelId, playViewModel.channelType, sourceType = playParentViewModel.source.type, channelName = channelData.channelDetail.channelInfo.title)
             newAnalytic.sendDataNow(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
             newAnalytic.setData(channelData.channelDetail.channelInfo)
-            sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }
 
@@ -594,18 +593,6 @@ class PlayFragment @Inject constructor(
                 view?.background = resource
             }
         })
-    }
-
-    private fun doAutoSwipe() {
-        if (playNavigation.canNavigateNextPage()) playNavigation.navigateToNextPage()
-    }
-
-    @Throws(IndexOutOfBoundsException::class)
-    private fun sendSwipeRoomAnalytic() {
-        try {
-            val nextId = playParentViewModel.getNextChannel(channelId)
-            if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom(nextId)
-        } catch (e: Exception) {}
     }
 
     //region onStateChanged
