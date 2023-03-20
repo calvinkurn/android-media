@@ -4019,6 +4019,10 @@ class ShipmentFragment :
     override val currentFragmentManager: FragmentManager
         get() = parentFragmentManager
 
+    override fun scrollToPositionWithOffset(position: Int, dy: Float) {
+        scrollToPositionWithOffset(position)
+    }
+
     override fun scrollToPositionWithOffset(position: Int) {
         rvShipment?.post {
             val childView = rvShipment?.getChildAt(position)

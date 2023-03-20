@@ -3674,7 +3674,7 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
 
     @Override
     public void scrollToPositionWithOffset(int position) {
-
+        // no-op
     }
 
     private void onViewTickerProductError(String shopId, String errorMessage) {
