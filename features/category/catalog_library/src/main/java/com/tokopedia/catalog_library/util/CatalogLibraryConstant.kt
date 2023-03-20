@@ -11,6 +11,7 @@ object CatalogLibraryConstant {
     const val CATALOG_LIHAT_SEMUA_ITEM = "catalog_lihat_semua_item"
     const val CATALOG_TOP_FIVE = "catalog_top_five"
     const val CATALOG_MOST_VIRAL = "catalog_most_viral"
+    const val CATALOG_LIHAT_SEMUA_HORIZONTAL = "catalog_lihat_semua_horizontal"
 
     const val CATALOG_CONTAINER = "catalog_container"
     const val CATALOG_CONTAINER_TYPE_TOP_FIVE = "catalog_container_top_five"
@@ -25,6 +26,7 @@ object CatalogLibraryConstant {
     const val CATALOG_SHIMMER_VIRAL = 2
     const val CATALOG_SHIMMER_PRODUCTS = 3
     const val CATALOG_SHIMMER_LIHAT_SEMUA = 4
+    const val CATALOG_SHIMMER_LIHAT_SEMUA_HORIZONTAL = 5
 
     const val GRID_VIEW_STR = "grid view"
     const val LIST_VIEW_STR = "list view"
@@ -41,6 +43,7 @@ object CatalogLibraryConstant {
 
     const val APP_LINK_HOME = "tokopedia://catalog-library"
     const val APP_LINK_KATEGORI = "tokopedia://catalog-library/kategori"
+    const val APP_LINK_POPULAR_BRANDS = "tokopedia://catalog-library/popular-brand"
     const val CATALOG_HOME_PRODUCT_TITLE = "Katalog lainnya buat inspirasimu"
     const val CATALOG_HOME_HEADING_KATEGORI_SPECIAL = "Kategori spesial buatmu"
     const val CATALOG_HOME_HEADING_RELEVANT = "Cek katalognya produk incaranmu"

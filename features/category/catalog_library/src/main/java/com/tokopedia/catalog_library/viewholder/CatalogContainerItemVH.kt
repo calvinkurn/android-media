@@ -18,6 +18,7 @@ import com.tokopedia.catalog_library.model.datamodel.CatalogContainerDM
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class CatalogContainerItemVH(
@@ -74,10 +75,10 @@ class CatalogContainerItemVH(
 
         val params = LinearLayout.LayoutParams(title.layoutParams)
         params.setMargins(
-            dpToPx(title.context, element.marginForTitle.start).toInt(),
-            dpToPx(title.context, element.marginForTitle.top).toInt(),
-            dpToPx(title.context, element.marginForTitle.end).toInt(),
-            dpToPx(title.context, element.marginForTitle.bottom).toInt()
+            element.marginForTitle.start.toPx(),
+            element.marginForTitle.top.toPx(),
+            element.marginForTitle.end.toPx(),
+            element.marginForTitle.bottom.toPx()
         )
         title.layoutParams = params
         title.requestLayout()
@@ -98,10 +99,10 @@ class CatalogContainerItemVH(
             val params: LinearLayout.LayoutParams =
                 LinearLayout.LayoutParams(containerRV.layoutParams)
             params.setMargins(
-                element.marginForTitle.start,
-                element.marginForTitle.top,
-                element.marginForTitle.end,
-                element.marginForTitle.bottom
+                element.marginForRV.start.toPx(),
+                element.marginForRV.top.toPx(),
+                element.marginForRV.end.toPx(),
+                element.marginForRV.bottom.toPx()
             )
             containerRV.layoutParams = params
             containerRV.requestLayout()

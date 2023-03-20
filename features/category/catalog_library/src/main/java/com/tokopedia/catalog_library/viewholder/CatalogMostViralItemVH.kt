@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogMostViralDM
-import com.tokopedia.catalog_library.util.AnalyticsCategoryLandingPage
+import com.tokopedia.catalog_library.util.CatalogAnalyticsCategoryLandingPage
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
@@ -66,7 +66,7 @@ class CatalogMostViralItemVH(
             )
         }
         mostViralLayout.setOnClickListener {
-            AnalyticsCategoryLandingPage.sendClickOnMostViralCatalogInCategoryEvent(
+            CatalogAnalyticsCategoryLandingPage.sendClickOnMostViralCatalogInCategoryEvent(
                 element?.categoryName ?: "",
                 mostViralProduct?.categoryID ?: "",
                 mostViralProduct?.name ?: "",
@@ -81,7 +81,7 @@ class CatalogMostViralItemVH(
             element?.categoryName ?: ""
         )
 
-        AnalyticsCategoryLandingPage.sendImpressionOnMostViralCatalogInCategoryEvent(
+        CatalogAnalyticsCategoryLandingPage.sendImpressionOnMostViralCatalogInCategoryEvent(
             element?.categoryName ?: "",
             mostViralProduct?.categoryID ?: "",
             mostViralProduct?.name ?: "",

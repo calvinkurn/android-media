@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogTopFiveDM
-import com.tokopedia.catalog_library.util.AnalyticsCategoryLandingPage
+import com.tokopedia.catalog_library.util.CatalogAnalyticsCategoryLandingPage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
@@ -52,7 +52,7 @@ class CatalogTopFiveItemVH(
             catalogTopFiveList?.rank ?: ""
         )
         topFiveLayout.setOnClickListener {
-            AnalyticsCategoryLandingPage.sendClickCatalogOnTopCatalogsInCategoryEvent(
+            CatalogAnalyticsCategoryLandingPage.sendClickCatalogOnTopCatalogsInCategoryEvent(
                 dataModel?.categoryName ?: "",
                 catalogTopFiveList?.categoryID ?: "",
                 catalogTopFiveList?.name ?: "",

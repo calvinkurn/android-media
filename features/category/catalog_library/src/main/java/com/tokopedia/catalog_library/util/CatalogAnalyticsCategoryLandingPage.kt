@@ -10,7 +10,7 @@ import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 
-object AnalyticsCategoryLandingPage {
+object CatalogAnalyticsCategoryLandingPage {
 
     private fun getIrisSessionId(): String {
         return TrackApp.getInstance().gtm.irisSessionId

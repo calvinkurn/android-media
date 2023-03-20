@@ -20,7 +20,7 @@ import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDM
 import com.tokopedia.catalog_library.util.ActionKeys
-import com.tokopedia.catalog_library.util.AnalyticsLihatSemuaPage
+import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
@@ -127,7 +127,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             sortDesc?.chipType = ChipsUnify.TYPE_NORMAL
             lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
 
-            AnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
+            CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.DESCENDING_ORDER_STR}" +
                     " - click sort: ${CatalogLibraryConstant.ASCENDING_ORDER_STR}",
                 UserSession(context).userId
@@ -138,7 +138,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             sortDesc?.chipType = ChipsUnify.TYPE_SELECTED
             lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER)
 
-            AnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
+            CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.ASCENDING_ORDER_STR}" +
                     " - click sort: ${CatalogLibraryConstant.DESCENDING_ORDER_STR}",
                 UserSession(context).userId
@@ -238,7 +238,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         val uniqueTrackingKey =
             "${ActionKeys.IMPRESSION_ON_CATEGORY_LIST}-$parentCategoryId-$position"
         if (!categoryTrackingSet.contains(uniqueTrackingKey)) {
-            AnalyticsLihatSemuaPage.sendImpressionOnCategoryListEvent(
+            CatalogAnalyticsLihatSemuaPage.sendImpressionOnCategoryListEvent(
                 trackingQueue,
                 parentCategoryName,
                 parentCategoryId,

@@ -12,6 +12,7 @@ import com.tokopedia.catalog_library.usecase.CatalogBrandsPopularUseCase
 import com.tokopedia.catalog_library.usecase.CatalogRelevantUseCase
 import com.tokopedia.catalog_library.usecase.CatalogSpecialUseCase
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.APP_LINK_POPULAR_BRANDS
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -99,7 +100,7 @@ class CatalogHomepageVM @Inject constructor(
                 getRelevantVisitableList(data.catalogGetRelevant.catalogsList),
                 RecyclerView.HORIZONTAL,
                 marginForTitle = Margin(48, 16, 0, 16),
-                marginForRV = Margin(12, 0, 0, 0)
+                marginForRV = Margin(12, 0, 0, 16)
             )
         listOfComponents.add(relevantDataModel)
 
@@ -141,9 +142,10 @@ class CatalogHomepageVM @Inject constructor(
             CatalogLibraryConstant.CATALOG_HOME_HEADING_POPULAR_BRANDS,
             getPopularBrandsVisitableList(data.catalogGetBrandPopular.brands),
             RecyclerView.HORIZONTAL,
-            marginForTitle = Margin(36, 16, 0, 0),
-            marginForRV = Margin(20, 0, 0, 0),
-            hasMoreButtonEnabled = true
+            marginForTitle = Margin(36, 16, 0, 16),
+            marginForRV = Margin(20, 0, 0, 16),
+            hasMoreButtonEnabled = true,
+            hasMoreButtonAppLink = APP_LINK_POPULAR_BRANDS
         )
 
         listOfComponents.add(popularBrandsDataModel)

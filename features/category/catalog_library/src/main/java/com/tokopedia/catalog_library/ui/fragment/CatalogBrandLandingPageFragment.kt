@@ -27,6 +27,7 @@ import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_VIRAL
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
+import com.tokopedia.catalog_library.viewmodels.CatalogBrandLandingPageVM
 import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
@@ -40,21 +41,20 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibraryListener {
+class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibraryListener {
 
     private var globalError: GlobalError? = null
-    private var categoryIdStr = ""
-    private var categoryName = ""
+    private var brandIdStr = ""
     private var catalogLandingRecyclerView: RecyclerView? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    private val landingPageViewModel: CatalogLandingPageVM by lazy(
+    private val brandLandingPageViewModel: CatalogBrandLandingPageVM by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(requireActivity(), viewModelFactory.get())
-        viewModelProvider.get(CatalogLandingPageVM::class.java)
+        viewModelProvider.get(CatalogBrandLandingPageVM::class.java)
     }
 
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
@@ -70,7 +70,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
 
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
         CatalogLibraryUiUpdater(mutableMapOf()).also {
-            it.setUpForLandingPage()
+            it.setUpForBrandLanding()
         }
 
     @Inject
@@ -79,11 +79,11 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     private val topCatalogsTrackingSet = HashSet<String>()
 
     companion object {
-        const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
-        fun newInstance(categoryId: String?): CatalogLandingPageFragment {
-            return CatalogLandingPageFragment().apply {
+        const val ARG_BRAND_ID = "ARG_BRAND_ID"
+        fun newInstance(brandId: String?): CatalogBrandLandingPageFragment {
+            return CatalogBrandLandingPageFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_CATEGORY_ID, categoryId)
+                    putString(ARG_BRAND_ID, brandId)
                 }
             }
         }
@@ -94,7 +94,6 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         set(value) {}
 
     override fun getScreenName(): String {
-        // TODO send Screen Name if any GTM
         return ""
     }
 
@@ -116,13 +115,14 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
         super.onViewCreated(view, savedInstanceState)
         extractArguments()
         initViews(view)
-        setCategory(categoryIdStr)
+        initHeaderTitle(view)
+        setBrandId(brandIdStr)
         setUpBase()
         initData()
     }
 
     private fun extractArguments() {
-        categoryIdStr = arguments?.getString(ARG_CATEGORY_ID, "") ?: ""
+        brandIdStr = arguments?.getString(ARG_BRAND_ID, "") ?: ""
     }
 
     private fun initViews(view: View) {
@@ -146,10 +146,10 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     }
 
     private fun setObservers() {
-        landingPageViewModel.catalogLandingPageLiveDataResponse.observe(viewLifecycleOwner) {
+        brandLandingPageViewModel.catalogLihatLiveDataResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    // TODO if data not received for an API . Remove its shimmer component
+                    catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_LIHAT_SEMUA_HORIZONTAL)
                     it.data.listOfComponents.forEach { component ->
                         catalogLibraryUiUpdater.updateModel(component)
                     }
@@ -157,19 +157,15 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
                 }
 
                 is Fail -> {
-                    onError(it.throwable)
+                    //onError(it.throwable)
                 }
-            }
-            landingPageViewModel.categoryName.observe(viewLifecycleOwner) { categoryName ->
-                this.categoryName = categoryName
-                view?.let { v -> initHeaderTitle(v) }
             }
         }
     }
 
     private fun initHeaderTitle(view: View) {
         view.findViewById<HeaderUnify>(R.id.clp_header).apply {
-            headerTitle = categoryName
+            headerTitle = ""
             setNavigationOnClickListener {
                 activity?.finish()
             }
@@ -207,42 +203,11 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     }
 
     private fun getDataFromViewModel() {
-        landingPageViewModel.getCatalogTopFiveData(
-            categoryIdStr,
-            SORT_TYPE_TOP_FIVE,
-            TOTAL_ROWS_TOP_FIVE
-        )
-        landingPageViewModel.getCatalogMostViralData(
-            categoryIdStr,
-            SORT_TYPE_VIRAL,
-            TOTAL_ROWS_VIRAL
-        )
+        brandLandingPageViewModel.getLihatSemuaPageData("0")
     }
 
     private fun addShimmer() {
-        catalogLibraryUiUpdater.apply {
-            updateModel(
-                CatalogShimmerDM(
-                    CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
-                    CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
-                    CatalogLibraryConstant.CATALOG_SHIMMER_TOP_FIVE
-                )
-            )
-            updateModel(
-                CatalogShimmerDM(
-                    CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
-                    CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_MOST_VIRAL,
-                    CatalogLibraryConstant.CATALOG_SHIMMER_VIRAL
-                )
-            )
-            updateModel(
-                CatalogShimmerDM(
-                    CatalogLibraryConstant.CATALOG_PRODUCT,
-                    CatalogLibraryConstant.CATALOG_PRODUCT,
-                    CatalogLibraryConstant.CATALOG_SHIMMER_PRODUCTS
-                )
-            )
-        }
+        catalogLibraryUiUpdater.setUpForBrandLanding()
     }
 
     override fun onProductCardClicked(applink: String?) {
@@ -266,6 +231,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     }
 
     override fun onShimmerAdded() {
+
     }
 
     override fun onErrorFetchingProducts(throwable: Throwable) {

@@ -8,7 +8,7 @@
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/clp_header"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_height="wrap_content"
         app:unify_header_is_show_back_button="true"
         app:unify_header_is_show_shadow="false"
         app:layout_constraintStart_toStartOf="parent"

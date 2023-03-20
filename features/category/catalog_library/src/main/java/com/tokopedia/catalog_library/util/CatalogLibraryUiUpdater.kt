@@ -63,6 +63,54 @@ class CatalogLibraryUiUpdater(var mapOfData: MutableMap<String, BaseCatalogLibra
         )
     }
 
+    fun setUpForPopularBrand() {
+        updateModel(
+            CatalogShimmerDM(
+                CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
+                CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL,
+                CATALOG_SHIMMER_TOP_FIVE
+            )
+        )
+        updateModel(
+            CatalogShimmerDM(
+                CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
+                CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT,
+                CATALOG_SHIMMER_TOP_FIVE
+            )
+        )
+        updateModel(
+            CatalogShimmerDM(
+                CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS,
+                CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS,
+                CATALOG_SHIMMER_TOP_FIVE
+            )
+        )
+    }
+
+    fun setUpForBrandLanding() {
+        updateModel(
+            CatalogShimmerDM(
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
+                CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE,
+                CATALOG_SHIMMER_TOP_FIVE
+            )
+        )
+        updateModel(
+            CatalogShimmerDM(
+                CatalogLibraryConstant.CATALOG_PRODUCT,
+                CatalogLibraryConstant.CATALOG_PRODUCT,
+                CATALOG_SHIMMER_PRODUCTS
+            )
+        )
+    }
+
+    fun removeShimmer(){
+        removeModel(CatalogLibraryConstant.CATALOG_CONTAINER_SPECIAL)
+        removeModel(CatalogLibraryConstant.CATALOG_CONTAINER_RELEVANT)
+        removeModel(CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS)
+        removeModel(CatalogLibraryConstant.CATALOG_PRODUCT)
+    }
+
     fun updateModel(model: BaseCatalogLibraryDM) {
         updateData(model.type(), model)
     }

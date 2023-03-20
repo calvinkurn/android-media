@@ -6,7 +6,7 @@ import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogSpecialDM
 import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
-import com.tokopedia.catalog_library.util.AnalyticsHomePage
+import com.tokopedia.catalog_library.util.CatalogAnalyticsHomePage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -54,7 +54,7 @@ class CatalogSpecialItemVH(
     private fun specialLayoutClicked(specialDataListItem: CatalogSpecialResponse.CatalogCategorySpecial.CatalogSpecialData?) {
         catalogLibraryListener.onCategoryItemClicked((specialDataListItem?.id.toString()))
 
-        AnalyticsHomePage.sendClickCategoryOnSpecialCategoriesEvent(
+        CatalogAnalyticsHomePage.sendClickCategoryOnSpecialCategoriesEvent(
             specialDataListItem?.name ?: "",
             specialDataListItem?.id.toString(),
             UserSession(itemView.context).userId

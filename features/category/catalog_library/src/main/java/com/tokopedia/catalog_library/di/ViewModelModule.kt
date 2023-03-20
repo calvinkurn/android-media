@@ -37,12 +37,18 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @CatalogLibraryScope
-    @ViewModelKey(ProductsBaseVM::class)
-    internal abstract fun productsBaseViewModel(viewModel: ProductsBaseVM): ViewModel
+    @ViewModelKey(CatalogProductsBaseVM::class)
+    internal abstract fun productsBaseViewModel(viewModel: CatalogProductsBaseVM): ViewModel
 
     @Binds
     @IntoMap
     @CatalogLibraryScope
-    @ViewModelKey(PopularBrandsVM::class)
-    internal abstract fun popularBrandsViewModel(viewModel: PopularBrandsVM): ViewModel
+    @ViewModelKey(CatalogPopularBrandsVM::class)
+    internal abstract fun popularBrandsViewModel(viewModel: CatalogPopularBrandsVM): ViewModel
+
+    @Binds
+    @IntoMap
+    @CatalogLibraryScope
+    @ViewModelKey(CatalogBrandLandingPageVM::class)
+    internal abstract fun catalogBrandLandingPageVM(viewModel: CatalogBrandLandingPageVM): ViewModel
 }

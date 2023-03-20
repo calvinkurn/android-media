@@ -12,7 +12,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class PopularBrandsVM @Inject constructor(
+class CatalogPopularBrandsVM @Inject constructor(
     private val catalogBrandsPopularWithCatalogsUseCase: CatalogBrandsPopularWithCatalogsUseCase
 ) : ViewModel() {
 

@@ -3,6 +3,7 @@ package com.tokopedia.catalog_library.viewholder
 import android.view.View
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -72,7 +73,8 @@ class CatalogLihatVH(
         expandableLayout.findViewById<RecyclerView>(R.id.lihat_grid_view).apply {
             setRecycledViewPool(sharedRecycledViewPool)
             adapter = listAdapter
-            layoutManager = GridLayoutManager(view.context, COLUMN_COUNT)
+            //layoutManager = GridLayoutManager(view.context, COLUMN_COUNT)
+            layoutManager = LinearLayoutManager(view.context)
         }
 
         listAdapter.submitList(

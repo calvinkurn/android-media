@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogRelevantDM
-import com.tokopedia.catalog_library.util.AnalyticsHomePage
+import com.tokopedia.catalog_library.util.CatalogAnalyticsHomePage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -40,7 +40,7 @@ class CatalogRelevantItemVH(val view: View, private val catalogLibraryListener: 
         }
         relevantTitle.text = relevantProduct?.name ?: ""
         relevantLayout.setOnClickListener {
-            AnalyticsHomePage.sendClickCatalogOnRelevantCatalogsEvent(
+            CatalogAnalyticsHomePage.sendClickCatalogOnRelevantCatalogsEvent(
                 relevantProduct?.name ?: "",
                 layoutPosition + 1,
                 relevantProduct?.id ?: "",

@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDM
-import com.tokopedia.catalog_library.util.AnalyticsLihatSemuaPage
+import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -32,7 +32,7 @@ class CatalogLihatItemVH(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_lihat_grid
+        val LAYOUT = R.layout.item_catalog_library_lihat_grid
     }
 
     override fun bind(element: CatalogLihatItemDM?) {
@@ -51,7 +51,7 @@ class CatalogLihatItemVH(
         }
         lihatExpandedItemLayout?.background = view.context.getDrawable(R.drawable.squircle)
         lihatExpandedItemLayout?.setOnClickListener {
-            AnalyticsLihatSemuaPage.sendClickCategoryOnCategoryListEvent(
+            CatalogAnalyticsLihatSemuaPage.sendClickCategoryOnCategoryListEvent(
                 element?.rootCategoryName ?: "",
                 element?.rootCategoryId ?: "",
                 element?.catalogLibraryChildDataListItem?.categoryName ?: "",

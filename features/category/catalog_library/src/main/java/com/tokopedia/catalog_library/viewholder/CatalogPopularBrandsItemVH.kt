@@ -17,7 +17,7 @@ class CatalogPopularBrandsItemVH(val view: View, private val catalogLibraryListe
     }
 
     companion object {
-        val LAYOUT = R.layout.item_home_page_popular_brands
+        val LAYOUT = R.layout.item_catalog_home_page_popular_brands
     }
 
     override fun bind(element: CatalogPopularBrandsDM?) {
@@ -30,6 +30,7 @@ class CatalogPopularBrandsItemVH(val view: View, private val catalogLibraryListe
 
     override fun onViewAttachedToWindow() {
         dataModel?.brandsList?.let {
+
         }
     }
 }

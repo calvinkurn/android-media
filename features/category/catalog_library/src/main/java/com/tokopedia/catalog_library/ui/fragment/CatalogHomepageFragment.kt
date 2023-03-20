@@ -19,7 +19,7 @@ import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDM
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.util.ActionKeys
-import com.tokopedia.catalog_library.util.AnalyticsHomePage
+import com.tokopedia.catalog_library.util.CatalogAnalyticsHomePage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogHomepageVM
@@ -35,7 +35,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
+class CatalogHomepageFragment : CatalogProductsBaseFragment(), CatalogLibraryListener {
 
     private var catalogHomeRecyclerView: RecyclerView? = null
     private var globalError: GlobalError? = null
@@ -182,7 +182,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
 
     override fun onLihatSemuaTextClick(applink: String) {
         super.onLihatSemuaTextClick(applink)
-        AnalyticsHomePage.sendClickLihatSemuaOnSpecialCategoriesEvent(
+        CatalogAnalyticsHomePage.sendClickLihatSemuaOnSpecialCategoriesEvent(
             UserSession(context).userId
         )
         RouteManager.route(context, applink)
@@ -237,7 +237,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     ) {
         val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_SPECIAL_CATEGORIES}-$creativeSlot"
         if (!specialTrackingSet.contains(uniqueTrackingKey)) {
-            AnalyticsHomePage.sendImpressionOnSpecialCategoriesEvent(
+            CatalogAnalyticsHomePage.sendImpressionOnSpecialCategoriesEvent(
                 trackingQueue,
                 creativeSlot,
                 itemId,
@@ -256,7 +256,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     ) {
         val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_RELEVANT_CATALOGS}-$creativeSlot"
         if (!relevantTrackingSet.contains(uniqueTrackingKey)) {
-            AnalyticsHomePage.sendImpressionOnRelevantCatalogsEvent(
+            CatalogAnalyticsHomePage.sendImpressionOnRelevantCatalogsEvent(
                 trackingQueue,
                 creativeSlot,
                 itemId,
@@ -275,7 +275,7 @@ class CatalogHomepageFragment : ProductsBaseFragment(), CatalogLibraryListener {
     ) {
         val uniqueTrackingKey = "${ActionKeys.IMPRESSION_ON_CATALOG_LIST}-$position"
         if (!catalogsTrackingSet.contains(uniqueTrackingKey)) {
-            AnalyticsHomePage.sendImpressionOnCatalogListEvent(
+            CatalogAnalyticsHomePage.sendImpressionOnCatalogListEvent(
                 trackingQueue,
                 catgoryName,
                 product,

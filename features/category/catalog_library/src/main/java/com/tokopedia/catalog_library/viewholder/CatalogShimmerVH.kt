@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 class CatalogShimmerVH(val view: View) :
     AbstractViewHolder<CatalogShimmerDM>(view) {
     companion object {
-        val LAYOUT = R.layout.item_shimmer_product
+        val LAYOUT = R.layout.item_catalog_library_shimmer_product
     }
 
     override fun bind(element: CatalogShimmerDM?) {

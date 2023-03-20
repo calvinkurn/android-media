@@ -1,10 +1,7 @@
 package com.tokopedia.catalog_library.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.catalog_library.ui.fragment.CatalogHomepageFragment
-import com.tokopedia.catalog_library.ui.fragment.CatalogLandingPageFragment
-import com.tokopedia.catalog_library.ui.fragment.CatalogLihatSemuaPageFragment
-import com.tokopedia.catalog_library.ui.fragment.PopularBrandsFragment
+import com.tokopedia.catalog_library.ui.fragment.*
 import dagger.Component
 
 @CatalogLibraryScope
@@ -15,5 +12,6 @@ interface CatalogLibraryComponent {
     fun inject(catalogHomepageFragment: CatalogHomepageFragment)
     fun inject(catalogLihatSemuaPageFragment: CatalogLihatSemuaPageFragment)
     fun inject(catalogLandingPageFragment: CatalogLandingPageFragment)
-    fun inject(catalogPopularBrandsFragment: PopularBrandsFragment)
+    fun inject(catalogPopularBrandsFragment: CatalogPopularBrandsFragment)
+    fun inject(catalogBrandLandingPageFragment: CatalogBrandLandingPageFragment)
 }

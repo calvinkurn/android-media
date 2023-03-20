@@ -12,7 +12,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ProductsBaseVM @Inject constructor(
+class CatalogProductsBaseVM @Inject constructor(
     private val catalogProductsUseCase: CatalogProductsUseCase
 ) : ViewModel() {
 
@@ -28,7 +28,8 @@ class ProductsBaseVM @Inject constructor(
         categoryId: String,
         sortType: Int,
         rows: Int,
-        page: Int = 1
+        page: Int = 1,
+        brandId : String = ""
     ) {
         addProductShimmer()
         catalogProductsUseCase.cancelJobs()
@@ -38,7 +39,8 @@ class ProductsBaseVM @Inject constructor(
             categoryId,
             sortType,
             rows,
-            page
+            page,
+            brandId
         )
     }
 

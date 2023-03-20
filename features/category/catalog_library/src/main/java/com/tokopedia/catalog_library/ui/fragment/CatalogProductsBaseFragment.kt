@@ -10,16 +10,17 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_CATALOG
-import com.tokopedia.catalog_library.viewmodels.ProductsBaseVM
+import com.tokopedia.catalog_library.viewmodels.CatalogProductsBaseVM
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-abstract class ProductsBaseFragment : BaseDaggerFragment() {
+abstract class CatalogProductsBaseFragment : BaseDaggerFragment() {
 
     private var linearLayoutManager: LinearLayoutManager? = null
     abstract var baseRecyclerView: RecyclerView?
     private var categoryId = ""
+    private var brandId = ""
 
     private var sortType = SORT_TYPE_CATALOG
     private val rows = TOTAL_ROWS_CATALOG
@@ -31,7 +32,7 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
     var modelFactory: ViewModelProvider.Factory? = null
     private val productsBaseVM by lazy {
         modelFactory?.let {
-            ViewModelProvider(this, it).get(ProductsBaseVM::class.java)
+            ViewModelProvider(this, it).get(CatalogProductsBaseVM::class.java)
         }
     }
 
@@ -46,6 +47,10 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
 
     fun setCategory(categoryIdStr: String) {
         categoryId = categoryIdStr
+    }
+
+    fun setBrandId (brandId : String){
+        this.brandId = brandId
     }
 
     fun setUpBase() {
@@ -74,13 +79,13 @@ abstract class ProductsBaseFragment : BaseDaggerFragment() {
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                productsBaseVM?.getCatalogListData(categoryId, sortType, rows, page)
+                productsBaseVM?.getCatalogListData(categoryId, sortType, rows, page,brandId)
             }
         }
     }
 
     private fun getProducts() {
-        productsBaseVM?.getCatalogListData(categoryId, sortType, rows)
+        productsBaseVM?.getCatalogListData(categoryId, sortType, rows, page = 1, brandId = brandId)
     }
 
     private fun setObservers() {

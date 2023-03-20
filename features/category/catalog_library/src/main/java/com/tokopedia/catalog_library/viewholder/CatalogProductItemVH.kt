@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductDM
-import com.tokopedia.catalog_library.util.AnalyticsCategoryLandingPage
-import com.tokopedia.catalog_library.util.AnalyticsHomePage
+import com.tokopedia.catalog_library.util.CatalogAnalyticsCategoryLandingPage
+import com.tokopedia.catalog_library.util.CatalogAnalyticsHomePage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
@@ -57,14 +57,14 @@ class CatalogProductItemVH(
             dataModel?.catalogProduct?.let { it1 ->
                 when (dataModel?.source) {
                     CatalogLibraryConstant.SOURCE_HOMEPAGE -> {
-                        AnalyticsHomePage.sendClickCatalogOnCatalogListEvent(
+                        CatalogAnalyticsHomePage.sendClickCatalogOnCatalogListEvent(
                             it1,
                             layoutPosition - 2,
                             UserSession(itemView.context).userId
                         )
                     }
                     CatalogLibraryConstant.SOURCE_CATEGORY_LANDING_PAGE -> {
-                        AnalyticsCategoryLandingPage.sendClickCatalogOnCatalogListEvent(
+                        CatalogAnalyticsCategoryLandingPage.sendClickCatalogOnCatalogListEvent(
                             dataModel?.categoryName ?: "",
                             it1,
                             layoutPosition - 2,
