@@ -13,4 +13,5 @@ object ApplinkConstInternalDilayaniTokopedia {
 
     const val HOME = "$INTERNAL_DILAYANI_TOKOPEDIA/home"
     const val SEARCH = "$INTERNAL_DILAYANI_TOKOPEDIA/search"
+    const val DILAYANI_TOKOPEDIA_DISCOVERY_PAGENAME = "dilayani-tokopedia"
 }

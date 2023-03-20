@@ -135,7 +135,6 @@ class ShopPageProductListFragment :
         private const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208
         private const val REQUEST_CODE_MEMBERSHIP_STAMP = 2091
         private const val REQUEST_CODE_ADD_PRODUCT = 3697
-        private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         const val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
@@ -244,40 +243,6 @@ class ShopPageProductListFragment :
         }
     }
 
-    private fun onErrorAddWishList(errorMessage: String?) {
-        onErrorAddToWishList(MessageErrorException(errorMessage))
-    }
-
-    private fun onSuccessAddWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            ctaAction = {
-                goToWishlist()
-            }
-        )
-        shopProductAdapter.updateWishListStatus(productId, true)
-    }
-
-    private fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-        NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
-    }
-
-    private fun onSuccessRemoveWishlist(productId: String) {
-        showToastSuccess(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-            ctaAction = null
-        )
-        shopProductAdapter.updateWishListStatus(productId, false)
-    }
-
-    private fun showToastSuccess(message: String) {
-        activity?.run {
-            view?.let { Toaster.make(it, message) }
-        }
-    }
-
     private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
         activity?.run {
             view?.let {
@@ -299,10 +264,6 @@ class ShopPageProductListFragment :
                 ).show()
             }
         }
-    }
-
-    private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun loadNewProductData() {
@@ -428,12 +389,92 @@ class ShopPageProductListFragment :
 
     override fun onProductClicked(shopProductUiModel: ShopProductUiModel, shopTrackType: Int, productPosition: Int) {
         if (defaultEtalaseName.isNotEmpty()) {
+            if(!isOwner) {
+                when (shopTrackType) {
+                    ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.clickProduct(
+                        isLogin,
+                        getSelectedEtalaseChip(),
+                        FEATURED_PRODUCT,
+                        CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopProductUiModel.id,
+                            attribution,
+                            shopRef,
+                            shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopProductUiModel.isShowFreeOngkir
+                        ),
+                        shopProductUiModel,
+                        ShopUtil.getActualPositionFromIndex(productPosition),
+                        shopId,
+                        shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        false,
+                        shopProductUiModel.isUpcoming
+                    )
+                    ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickProduct(
+                        isLogin,
+                        getSelectedEtalaseChip(),
+                        getSelectedEtalaseChip(),
+                        CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopProductUiModel.id,
+                            attribution,
+                            shopRef,
+                            shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopProductUiModel.isShowFreeOngkir
+                        ),
+                        shopProductUiModel,
+                        ShopUtil.getActualPositionFromIndex(productPosition) - shopProductAdapter.shopProductFirstViewModelPosition,
+                        shopId,
+                        shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductUiModel.isUpcoming,
+                        shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                        userId,
+                        getSelectedTabName()
+                    )
+                    ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.clickProduct(
+                        isLogin,
+                        getSelectedEtalaseChip(),
+                        shopProductAdapter.getEtalaseNameHighLight(shopProductUiModel),
+                        CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopProductUiModel.id,
+                            attribution,
+                            shopRef,
+                            shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopProductUiModel.isShowFreeOngkir
+                        ),
+                        shopProductUiModel,
+                        ShopUtil.getActualPositionFromIndex(productPosition),
+                        shopId,
+                        shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductAdapter.getEtalaseNameHighLightType(shopProductUiModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductUiModel.isUpcoming
+                    )
+                }
+            }
+        }
+        goToPDP(
+            shopProductUiModel.productUrl,
+            attribution,
+            shopPageTracking?.getListNameOfProduct(PRODUCT, getSelectedEtalaseChip())
+                ?: ""
+        )
+    }
+
+    override fun onProductImpression(shopProductUiModel: ShopProductUiModel, shopTrackType: Int, productPosition: Int) {
+        if(!isOwner){
             when (shopTrackType) {
-                ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.clickProduct(
-                    isOwner,
+                ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.impressionProductList(
                     isLogin,
                     getSelectedEtalaseChip(),
-                    if (isOwner) "" else FEATURED_PRODUCT,
+                    FEATURED_PRODUCT,
                     CustomDimensionShopPageAttribution.create(
                         shopId,
                         isOfficialStore,
@@ -451,8 +492,7 @@ class ShopPageProductListFragment :
                     false,
                     shopProductUiModel.isUpcoming
                 )
-                ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickProduct(
-                    isOwner,
+                ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.impressionProductList(
                     isLogin,
                     getSelectedEtalaseChip(),
                     if (isOwner) "" else getSelectedEtalaseChip(),
@@ -471,13 +511,15 @@ class ShopPageProductListFragment :
                     shopId,
                     shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                     shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductUiModel.isUpcoming
+                    shopProductUiModel.isUpcoming,
+                    shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
+                    userId,
+                    getSelectedTabName()
                 )
-                ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.clickProduct(
-                    isOwner,
+                ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.impressionProductList(
                     isLogin,
                     getSelectedEtalaseChip(),
-                    if (isOwner) "" else shopProductAdapter.getEtalaseNameHighLight(shopProductUiModel),
+                    shopProductAdapter.getEtalaseNameHighLight(shopProductUiModel),
                     CustomDimensionShopPageAttribution.create(
                         shopId,
                         isOfficialStore,
@@ -496,83 +538,6 @@ class ShopPageProductListFragment :
                     shopProductUiModel.isUpcoming
                 )
             }
-        }
-        goToPDP(
-            shopProductUiModel.productUrl,
-            attribution,
-            shopPageTracking?.getListNameOfProduct(PRODUCT, getSelectedEtalaseChip())
-                ?: ""
-        )
-    }
-
-    override fun onProductImpression(shopProductUiModel: ShopProductUiModel, shopTrackType: Int, productPosition: Int) {
-        when (shopTrackType) {
-            ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.impressionProductList(
-                isOwner,
-                isLogin,
-                getSelectedEtalaseChip(),
-                if (isOwner) "" else FEATURED_PRODUCT,
-                CustomDimensionShopPageAttribution.create(
-                    shopId,
-                    isOfficialStore,
-                    isGoldMerchant,
-                    shopProductUiModel.id,
-                    attribution,
-                    shopRef,
-                    shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
-                    shopProductUiModel.isShowFreeOngkir
-                ),
-                shopProductUiModel,
-                ShopUtil.getActualPositionFromIndex(productPosition),
-                shopId,
-                shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                false,
-                shopProductUiModel.isUpcoming
-            )
-            ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.impressionProductList(
-                isOwner,
-                isLogin,
-                getSelectedEtalaseChip(),
-                if (isOwner) "" else getSelectedEtalaseChip(),
-                CustomDimensionShopPageAttribution.create(
-                    shopId,
-                    isOfficialStore,
-                    isGoldMerchant,
-                    shopProductUiModel.id,
-                    attribution,
-                    shopRef,
-                    shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
-                    shopProductUiModel.isShowFreeOngkir
-                ),
-                shopProductUiModel,
-                ShopUtil.getActualPositionFromIndex(productPosition) - shopProductAdapter.shopProductFirstViewModelPosition,
-                shopId,
-                shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                shopProductUiModel.isUpcoming
-            )
-            ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.impressionProductList(
-                isOwner,
-                isLogin,
-                getSelectedEtalaseChip(),
-                if (isOwner) "" else shopProductAdapter.getEtalaseNameHighLight(shopProductUiModel),
-                CustomDimensionShopPageAttribution.create(
-                    shopId,
-                    isOfficialStore,
-                    isGoldMerchant,
-                    shopProductUiModel.id,
-                    attribution,
-                    shopRef,
-                    shopProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
-                    shopProductUiModel.isShowFreeOngkir
-                ),
-                shopProductUiModel,
-                ShopUtil.getActualPositionFromIndex(productPosition),
-                shopId,
-                shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                shopProductAdapter.getEtalaseNameHighLightType(shopProductUiModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                shopProductUiModel.isUpcoming
-            )
         }
     }
 

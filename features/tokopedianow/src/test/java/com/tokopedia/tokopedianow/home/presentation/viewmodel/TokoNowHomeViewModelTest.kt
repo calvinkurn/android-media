@@ -44,6 +44,10 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUi
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
+import com.tokopedia.tokopedianow.data.ClaimCouponDataFactory.createCatalogCouponList
+import com.tokopedia.tokopedianow.data.ClaimCouponDataFactory.createChannelLayout
+import com.tokopedia.tokopedianow.data.ClaimCouponDataFactory.createLayoutListUiModel
+import com.tokopedia.tokopedianow.data.ClaimCouponDataFactory.createRedeemCoupon
 import com.tokopedia.tokopedianow.data.createCategoryGridDataModel
 import com.tokopedia.tokopedianow.data.createCategoryGridListFirstFetch
 import com.tokopedia.tokopedianow.data.createCategoryGridListSecondFetch
@@ -76,6 +80,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
+import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponDataModel
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
@@ -84,6 +89,7 @@ import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.ReferralEvaluateJoinResponse
 import com.tokopedia.tokopedianow.home.domain.model.Shop
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
+import com.tokopedia.tokopedianow.home.presentation.model.HomeClaimCouponDataModel
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
@@ -99,6 +105,9 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIM
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIMED
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -411,7 +420,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     title = "Category 1",
                     imageUrl = "tokopedia://",
                     appLink = "tokoepdia://",
-                    headerName = "Category Tokonow"
+                    headerName = "Category Tokonow",
+                    color = "#FFFFFF"
                 ),
                 TokoNowCategoryMenuItemSeeAllUiModel(
                     appLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID + warehouseId,
@@ -455,14 +465,16 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     title = "Category 1",
                     imageUrl = "tokopedia://",
                     appLink = "tokoepdia://",
-                    headerName = "Category Tokonow"
+                    headerName = "Category Tokonow",
+                    color = "#FFFFFF"
                 ),
                 TokoNowCategoryMenuItemUiModel(
                     id="3",
                     title="Category 3",
                     imageUrl="tokopedia://",
                     appLink="tokoepdia://",
-                    headerName = "Category Tokonow"
+                    headerName = "Category Tokonow",
+                    color = "#FFFFFF"
                 ),
                 TokoNowCategoryMenuItemSeeAllUiModel(
                     appLink = appLink
@@ -492,14 +504,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         //set second mock data to replace first mock data category list
         onGetCategoryList_thenReturn(Exception())
-
-        //prepare model that need to be changed
-        val model = TokoNowCategoryMenuUiModel(
-                id="11111",
-                title="Category Tokonow",
-                categoryListUiModel = null,
-                state= TokoNowLayoutState.SHOW
-        )
 
         viewModel.getCategoryMenu("1")
 
@@ -4117,6 +4121,366 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
          * verify the data test
          */
         assertEquals(expectedResult, translationY)
+    }
+
+    @Test
+    fun `when fetching list of catalog coupons then receiving success result with show status`() {
+        //create dummy data
+        val warehouseId = "1"
+        val widgetId = "2132"
+        val widgetTitle = "Coupon Widget"
+        val slugText = "ABC;CDE"
+        val buttonStr = COUPON_STATUS_CLAIM
+        val slugs = slugText.split(";")
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId
+        )
+        val layoutResponse = createChannelLayout(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText
+        )
+        val catalogCouponList = createCatalogCouponList(
+            slugs = slugs,
+            buttonStr = buttonStr
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = layoutResponse,
+            localCacheModel = localCacheModel
+        )
+        onGetCatalogCouponList_thenReturn(
+            catalogCouponList = catalogCouponList
+        )
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        //prepare model for expectedResult
+        val data = createLayoutListUiModel(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            isError = false,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr
+        )
+        val expectedResult = Success(data)
+
+        //verify use case and the result
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCatalogCouponListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when fetching list of catalog coupons but failed then receiving success result with hide status`() {
+        //create dummy data
+        val warehouseId = "1"
+        val widgetId = "2132"
+        val widgetTitle = "Coupon Widget"
+        val slugText = "ABC;CDE"
+        val buttonStr = COUPON_STATUS_CLAIM
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId
+        )
+        val layoutResponse = createChannelLayout(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = layoutResponse,
+            localCacheModel = localCacheModel
+        )
+        onGetCatalogCouponList_thenReturn(
+            errorThrowable = Exception()
+        )
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        //prepare model for expectedResult
+        val data = createLayoutListUiModel(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            isError = true,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr
+        )
+        val expectedResult = Success(data)
+
+        //verify use case and the result
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCatalogCouponListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when refetching list of catalog coupons then receiving success result with show status`() {
+        //create dummy data
+        val warehouseId = "1"
+        val widgetId = "2132"
+        val widgetTitle = "Coupon Widget"
+        val slugText = "ABC;CDE"
+        val slugs = slugText.split(";")
+        var buttonStr = COUPON_STATUS_CLAIM
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId
+        )
+        val layoutResponse = createChannelLayout(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText
+        )
+        var catalogCouponList = createCatalogCouponList(
+            slugs = slugs,
+            buttonStr = buttonStr
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = layoutResponse,
+            localCacheModel = localCacheModel
+        )
+        onGetCatalogCouponList_thenReturn(
+            catalogCouponList = catalogCouponList
+        )
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        //reset dummy data
+        buttonStr = COUPON_STATUS_CLAIMED
+
+        catalogCouponList = createCatalogCouponList(
+            slugs = slugs,
+            buttonStr = buttonStr
+        )
+
+        onGetCatalogCouponList_thenReturn(
+            catalogCouponList = catalogCouponList
+        )
+
+        //refetch catalog list
+        viewModel.getCatalogCouponList(widgetId, slugs)
+
+        //prepare model for expectedResult
+        val data = createLayoutListUiModel(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            isError = false,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr
+        )
+        val expectedResult = Success(data)
+
+        //verify use case and the result
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCatalogCouponListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when refetching list of catalog coupons then receiving success result with hide status`() {
+        //create dummy data
+        val warehouseId = "1"
+        val widgetId = "2132"
+        val widgetTitle = "Coupon Widget"
+        val slugText = "ABC;CDE"
+        val slugs = slugText.split(";")
+        val buttonStr = COUPON_STATUS_CLAIM
+
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = warehouseId
+        )
+        val layoutResponse = createChannelLayout(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText
+        )
+        val catalogCouponList = createCatalogCouponList(
+            slugs = slugs,
+            buttonStr = buttonStr
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = layoutResponse,
+            localCacheModel = localCacheModel
+        )
+        onGetCatalogCouponList_thenReturn(
+            catalogCouponList = catalogCouponList
+        )
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        //reset dummy data
+        onGetCatalogCouponList_thenReturn(
+            errorThrowable = Exception()
+        )
+
+        //refetch catalog list
+        viewModel.getCatalogCouponList(widgetId, slugs)
+
+        //prepare model for expectedResult
+        val data = createLayoutListUiModel(
+            widgetId = widgetId,
+            widgetTitle = widgetTitle,
+            slugText = slugText,
+            isError = true,
+            warehouseId = warehouseId,
+            buttonStr = buttonStr
+        )
+        val expectedResult = Success(data)
+
+        //verify use case and the result
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCatalogCouponListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when redeeming coupon and user has logged in then receiving success result`() {
+        //create dummy data
+        val userLoggedIn = true
+        val widgetId = "1212"
+        val catalogId = "2222"
+        val couponStatus = "Klaim"
+        val position = 0
+        val slugText = "ABC;CDE"
+        val couponName = "3% tolong diklaim"
+        val warehouseId = "12322"
+
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = userLoggedIn)
+
+        val response = createRedeemCoupon()
+        onRedeemCoupon_thenReturn(createRedeemCoupon())
+
+        //redeem the coupon
+        viewModel.claimCoupon(
+            widgetId = widgetId,
+            catalogId = catalogId,
+            couponStatus = couponStatus,
+            position = position,
+            slugText = slugText,
+            couponName = couponName,
+            warehouseId = warehouseId
+        )
+
+        //verify use case and the result
+        verifyRedeemCouponUseCaseCalled()
+        viewModel.couponClaimed
+            .verifySuccessEquals(Success(
+                response.mapToClaimCouponDataModel(
+                    couponStatus = couponStatus,
+                    position = position,
+                    slugText = slugText,
+                    couponName = couponName,
+                    warehouseId = warehouseId
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `when redeeming coupon and user has not logged in then receiving login code`() {
+        //create dummy data
+        val userLoggedIn = false
+        val widgetId = "1212"
+        val catalogId = "2222"
+        val couponStatus = "Klaim"
+        val position = 0
+        val slugText = "ABC;CDE"
+        val couponName = "3% tolong diklaim"
+        val warehouseId = "12322"
+
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = userLoggedIn)
+
+        onRedeemCoupon_thenReturn(createRedeemCoupon())
+
+        //redeem the coupon
+        viewModel.claimCoupon(
+            widgetId = widgetId,
+            catalogId = catalogId,
+            couponStatus = couponStatus,
+            position = position,
+            slugText = slugText,
+            couponName = couponName,
+            warehouseId = warehouseId
+        )
+
+        //verify the result
+        viewModel.couponClaimed
+            .verifySuccessEquals(Success(HomeClaimCouponDataModel(code = COUPON_STATUS_LOGIN)))
+    }
+
+    @Test
+    fun `when redeeming coupon then receiving error result`() {
+        //create dummy data
+        val userLoggedIn = true
+        val widgetId = "1212"
+        val catalogId = "2222"
+        val couponStatus = "Klaim"
+        val position = 0
+        val slugText = "ABC;CDE"
+        val couponName = "3% tolong diklaim"
+        val warehouseId = "12322"
+
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = userLoggedIn)
+
+        onRedeemCoupon_thenReturn(Exception())
+
+        //redeem the coupon
+        viewModel.claimCoupon(
+            widgetId = widgetId,
+            catalogId = catalogId,
+            couponStatus = couponStatus,
+            position = position,
+            slugText = slugText,
+            couponName = couponName,
+            warehouseId = warehouseId
+        )
+
+        //verify the result
+        assertTrue(viewModel.couponClaimed.value is Fail)
     }
 }
 

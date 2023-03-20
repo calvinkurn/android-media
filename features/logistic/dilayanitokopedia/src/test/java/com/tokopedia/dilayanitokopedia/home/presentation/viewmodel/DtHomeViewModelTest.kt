@@ -4,17 +4,22 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType
-import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.AnchorTabMapper.KEYWOARD_CHANNEL_GROUP_ID
-import com.tokopedia.dilayanitokopedia.home.domain.mapper.widgets.AnchorTabMapper.KEY_ANCHOR_IDENTIFIER
-import com.tokopedia.dilayanitokopedia.home.domain.model.GetHomeAnchorTabResponse
-import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
-import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetAnchorTabUseCase
-import com.tokopedia.dilayanitokopedia.home.domain.usecase.GetLayoutDataUseCase
-import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeLoadingStateUiModel
-import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
-import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
+import com.tokopedia.dilayanitokopedia.common.constant.HomeLayoutItemState
+import com.tokopedia.dilayanitokopedia.common.constant.HomeStaticLayoutId
+import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.AnchorTabMapper.KEYWOARD_CHANNEL_GROUP_ID
+import com.tokopedia.dilayanitokopedia.domain.mapper.widgets.AnchorTabMapper.KEY_ANCHOR_IDENTIFIER
+import com.tokopedia.dilayanitokopedia.domain.model.DynamicHomeChannelResponse
+import com.tokopedia.dilayanitokopedia.domain.model.GetHomeAnchorTabResponse
+import com.tokopedia.dilayanitokopedia.domain.model.GetHomeLayoutResponse
+import com.tokopedia.dilayanitokopedia.domain.model.HomeLayoutResponse
+import com.tokopedia.dilayanitokopedia.domain.usecase.GetAnchorTabUseCase
+import com.tokopedia.dilayanitokopedia.domain.usecase.GetLayoutDataUseCase
+import com.tokopedia.dilayanitokopedia.ui.home.DtHomeViewModel
+import com.tokopedia.dilayanitokopedia.ui.home.uimodel.AnchorTabUiModel
+import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLayoutItemUiModel
+import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLayoutListUiModel
+import com.tokopedia.dilayanitokopedia.ui.home.uimodel.HomeLoadingStateUiModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -35,8 +40,12 @@ class DtHomeViewModelTest {
 
     private val getLayoutDataUseCase = mockk<GetLayoutDataUseCase>(relaxed = true)
     private val getHomeAnchorTabUseCase = mockk<GetAnchorTabUseCase>(relaxed = true)
+
     private val homeLayoutListObserver =
         mockk<Observer<Result<HomeLayoutListUiModel>>>(relaxed = true)
+
+    private val homeAnchorListObserver =
+        mockk<Observer<Result<List<AnchorTabUiModel>>>>(relaxed = true)
 
     lateinit var viewModel: DtHomeViewModel
 
@@ -50,30 +59,37 @@ class DtHomeViewModelTest {
             CoroutineTestDispatchersProvider
         )
         viewModel.homeLayoutList.observeForever(homeLayoutListObserver)
+        viewModel.anchorTabState.observeForever(homeAnchorListObserver)
     }
 
     @Test
     fun `verify get home layout and get anchor tab menu success with same group id is correctly`() {
         // Inject
         val groupId = "1"
-        val feParam = "${KEY_ANCHOR_IDENTIFIER}=${KEYWOARD_CHANNEL_GROUP_ID}${groupId}"
+        val feParam = "$KEY_ANCHOR_IDENTIFIER=${KEYWOARD_CHANNEL_GROUP_ID}$groupId"
         val mockMenuResponse = spyk(
-            GetHomeAnchorTabResponse.GetHomeIconV2(
-                icons = arrayListOf(
-                    spyk(
-                        GetHomeAnchorTabResponse.GetHomeIconV2.Icon(
-                            feParam = feParam
+            GetHomeAnchorTabResponse(
+                response = GetHomeAnchorTabResponse.GetHomeIconV2(
+                    icons = arrayListOf(
+                        spyk(
+                            GetHomeAnchorTabResponse.GetHomeIconV2.Icon(
+                                feParam = feParam
+                            )
                         )
                     )
                 )
             )
         )
         val mockResponse = spyk(
-            arrayListOf(
-                spyk(
-                    HomeLayoutResponse(
-                        layout = DtLayoutType.LEGO_6_IMAGE,
-                        groupId = groupId
+            GetHomeLayoutResponse(
+                response = DynamicHomeChannelResponse(
+                    data = arrayListOf(
+                        spyk(
+                            HomeLayoutResponse(
+                                layout = DtLayoutType.LEGO_6_IMAGE,
+                                groupId = groupId
+                            )
+                        )
                     )
                 )
             )
@@ -81,57 +97,98 @@ class DtHomeViewModelTest {
 
         // Given
         coEvery {
-            getHomeAnchorTabUseCase.execute(any())
+            getHomeAnchorTabUseCase(any())
         } returns mockMenuResponse
         coEvery {
-            getLayoutDataUseCase.execute(localCacheModel = any())
+            getLayoutDataUseCase(any())
         } returns mockResponse
 
         // When
-        viewModel.getHomeLayout(mockk())
+        viewModel.getHomeLayout(LocalCacheModel())
 
         // Then
         Assert.assertNotNull(viewModel.isLastWidgetIsRecommendationForYou())
         Assert.assertTrue(viewModel.isLastWidgetIsRecommendationForYou() ?: false)
-        Assert.assertNotNull(viewModel.getAnchorTabByVisitablePosition(0))
         Assert.assertNotNull(viewModel.getPositionUsingGroupId(groupId))
         Assert.assertFalse(viewModel.isOnLoading)
+    }
+
+    /**
+     *
+     * buat test sendiri si anchor tab
+     * getAnchorTabMenu
+     *
+     */
+
+    @Test
+    fun `verify get anchor tab list`() {
+        // Inject
+        val groupId = "1"
+        val feParam = "$KEY_ANCHOR_IDENTIFIER=${KEYWOARD_CHANNEL_GROUP_ID}$groupId"
+        val mockMenuResponse = spyk(
+            GetHomeAnchorTabResponse(
+                response = GetHomeAnchorTabResponse.GetHomeIconV2(
+                    icons = arrayListOf(spyk(GetHomeAnchorTabResponse.GetHomeIconV2.Icon(feParam = feParam)))
+                )
+            )
+        )
+        val data = listOf(AnchorTabUiModel("0", "", "", groupId))
+
+        // Given
+        coEvery {
+            getHomeAnchorTabUseCase(any())
+        } returns mockMenuResponse
+
+        // When
+        viewModel.getAnchorTabMenu(LocalCacheModel())
+
+        // Then
+
+        verify {
+            homeAnchorListObserver.onChanged(Success(data))
+        }
     }
 
     @Test
     fun `verify get home layout and get anchor tab menu success but different group id is correctly`() {
         // Inject
         val groupId = "1"
-        val feParam = "${KEY_ANCHOR_IDENTIFIER}=${KEYWOARD_CHANNEL_GROUP_ID}${groupId}"
+        val feParam = "$KEY_ANCHOR_IDENTIFIER=${KEYWOARD_CHANNEL_GROUP_ID}$groupId"
         val mockMenuResponse = spyk(
-            GetHomeAnchorTabResponse.GetHomeIconV2(
-                icons = arrayListOf(
-                    spyk(
-                        GetHomeAnchorTabResponse.GetHomeIconV2.Icon(
-                            feParam = feParam
+            GetHomeAnchorTabResponse(
+                response = GetHomeAnchorTabResponse.GetHomeIconV2(
+                    icons = arrayListOf(
+                        spyk(
+                            GetHomeAnchorTabResponse.GetHomeIconV2.Icon(
+                                feParam = feParam
+                            )
                         )
                     )
                 )
             )
         )
         val mockResponse = spyk(
-            arrayListOf(
-                spyk(
-                    HomeLayoutResponse()
+            GetHomeLayoutResponse(
+                response = DynamicHomeChannelResponse(
+                    data = arrayListOf(
+                        spyk(
+                            HomeLayoutResponse()
+                        )
+                    )
                 )
             )
         )
 
         // Given
         coEvery {
-            getHomeAnchorTabUseCase.execute(any())
+            getHomeAnchorTabUseCase(any())
         } returns mockMenuResponse
         coEvery {
-            getLayoutDataUseCase.execute(localCacheModel = any())
+            getLayoutDataUseCase(any())
         } returns mockResponse
 
         // When
-        viewModel.getHomeLayout(mockk())
+        viewModel.getHomeLayout(LocalCacheModel())
 
         // Then
         Assert.assertNotNull(viewModel.isLastWidgetIsRecommendationForYou())
@@ -145,23 +202,29 @@ class DtHomeViewModelTest {
         // Inject
         val groupId = "1"
         val mockResponse = spyk(
-            arrayListOf(
-                spyk(
-                    HomeLayoutResponse()
+            GetHomeLayoutResponse(
+                response = DynamicHomeChannelResponse(
+                    data = spyk(
+                        arrayListOf(
+                            spyk(
+                                HomeLayoutResponse()
+                            )
+                        )
+                    )
                 )
             )
         )
 
         // Given
         coEvery {
-            getHomeAnchorTabUseCase.execute(any())
+            getHomeAnchorTabUseCase(any())
         } throws mockThrowable
         coEvery {
-            getLayoutDataUseCase.execute(localCacheModel = any())
+            getLayoutDataUseCase(any())
         } returns mockResponse
 
         // When
-        viewModel.getHomeLayout(mockk())
+        viewModel.getHomeLayout(LocalCacheModel())
 
         // Then
         Assert.assertNotNull(viewModel.isLastWidgetIsRecommendationForYou())
@@ -175,11 +238,11 @@ class DtHomeViewModelTest {
     fun `verify when get home layout request error`() {
         // Given
         coEvery {
-            getLayoutDataUseCase.execute(localCacheModel = any())
+            getLayoutDataUseCase(any())
         } throws mockThrowable
 
         // When
-        viewModel.getHomeLayout(mockk())
+        viewModel.getHomeLayout(LocalCacheModel())
 
         // Then
         Assert.assertNull(viewModel.isLastWidgetIsRecommendationForYou())

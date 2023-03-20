@@ -11,12 +11,12 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 sealed class ViewToViewItemViewHolder(
     view: View,
-    protected val listener: ViewToViewItemListener,
+    protected val listener: ViewToViewItemListener
 ) : AbstractViewHolder<ViewToViewItemData>(view) {
 
     class Big(
         view: View,
-        listener: ViewToViewItemListener,
+        listener: ViewToViewItemListener
     ) : ViewToViewItemViewHolder(view, listener) {
 
         private var binding: ItemRecomViewToViewBinding? by viewBinding()
@@ -53,7 +53,7 @@ sealed class ViewToViewItemViewHolder(
 
     class Regular(
         view: View,
-        listener: ViewToViewItemListener,
+        listener: ViewToViewItemListener
     ) : ViewToViewItemViewHolder(view, listener) {
 
         private var binding: ItemRecomViewToViewBinding? by viewBinding()
@@ -61,7 +61,6 @@ sealed class ViewToViewItemViewHolder(
         init {
             binding?.root?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
         }
-
 
         override fun bind(element: ViewToViewItemData?) {
             val element = element ?: return

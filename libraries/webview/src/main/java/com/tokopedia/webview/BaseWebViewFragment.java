@@ -75,6 +75,7 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.URLGenerator;
+import com.tokopedia.picker.common.MediaPicker;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -110,6 +111,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
+    public final static String FILE_PREFIX = "file:";
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
@@ -321,8 +323,23 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isTokopediaUrl) {
             webView.requestFocus();
             webView.loadAuthUrl(url, new UserSession(getContext()));
+        } else if(isWhitelisted(url)) {
+            webView.requestFocus();
+            webView.loadAuthUrl(url, null);
         } else {
             redirectToNativeBrowser();
+        }
+    }
+
+    private boolean isWhitelisted(String mUrl) {
+        try {
+            if (getActivity() instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity baseSimpleWebViewActivity = (BaseSimpleWebViewActivity) getActivity();
+                return baseSimpleWebViewActivity.isDomainWhitelisted(baseSimpleWebViewActivity.getDomainName(baseSimpleWebViewActivity.getBaseDomain(mUrl)));
+            }
+            return false;
+        } catch (Exception ex) {
+            return false;
         }
     }
 
@@ -405,9 +422,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     }
 
                     String dataString = intent.getDataString();
-                    if (dataString != null) {
+                    if(dataString != null) {
                         results = new Uri[]{Uri.parse(dataString)};
-
+                    }else {
+                        List<String> images = MediaPicker.INSTANCE.result(intent).getOriginalPaths();
+                        if(!images.isEmpty()){
+                            results = new Uri[]{Uri.parse(FILE_PREFIX + images.get(0))};
+                        }
                     }
                 }
             }
@@ -538,6 +559,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
             contentSelectionIntent.setType("*/*");
             Intent[] intentArray = new Intent[0];
+            if(getContext() != null){
+                intentArray = new Intent[1];
+                Intent mediaPickerIntent =  WebViewHelper.INSTANCE.getMediaPickerIntent(getContext());
+                intentArray[0] = mediaPickerIntent;
+            }
 
             Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
             chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);

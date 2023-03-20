@@ -20,12 +20,9 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
     @Test
     fun template_chat_shown_if_enabled() {
         // Given
-        val templateChats = listOf(
-                "Hi barang ini ready gk?", "Lorem Ipsum"
-        )
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
+        getTemplateChatRoomUseCase.response = getTemplateChatRoomUseCase.getTemplateResponseBuyer(true)
         launchChatRoomActivity()
         setupRemoteConfigValue(false)
 
@@ -34,7 +31,7 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
 
         // Then
         assertTemplateChatVisibility(isDisplayed())
-        assertComposedTextValue(" Hi barang ini ready gk? ")
+        assertComposedTextValue("Hi Barang ini ready ga?")
     }
 
     @Test
@@ -42,24 +39,21 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        getTemplateChatRoomUseCase.response = generateTemplateResponse(enable = false)
+        getTemplateChatRoomUseCase.response = getTemplateChatRoomUseCase.getTemplateResponseBuyer(false)
+        getTemplateChatRoomUseCase.response
         launchChatRoomActivity()
         setupRemoteConfigValue(false)
 
         // Then
-
         assertTemplateChatVisibility(not(isDisplayed()))
     }
 
     @Test
     fun should_enabled_send_msg_btn_after_choosing_template() {
         // Given
-        val templateChats = listOf(
-                "Hi barang ini ready gk?", "Lorem Ipsum"
-        )
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
+        getTemplateChatRoomUseCase.response = getTemplateChatRoomUseCase.successGetTemplateResponseBuyer
         launchChatRoomActivity()
         setupRemoteConfigValue(false)
 
@@ -67,19 +61,16 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         clickTemplateChatAt(0)
 
         // Then
-        assertComposedTextValue(" Hi barang ini ready gk? ")
+        assertComposedTextValue("Hi Barang ini ready ga?")
         DrawableMatcher.compareDrawableWithIndex(R.id.send_but, R.drawable.bg_topchat_send_btn, 0)
     }
 
     @Test
     fun should_able_to_send_msg_after_choosing_template() {
         // Given
-        val templateChats = listOf(
-                "Test"
-        )
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
+        getTemplateChatRoomUseCase.response = getTemplateChatRoomUseCase.successGetTemplateResponseBuyer
         launchChatRoomActivity()
         setupRemoteConfigValue(false)
 
@@ -95,7 +86,7 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
                 withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                         0, R.id.tvMessage
                 ))
-                .check(matches(withText("Test ")))
+                .check(matches(withSubstring("Hi Barang ini ready ga?")))
         onView(withId(R.id.recycler_view_chatroom)).check(matches(withTotalItem(count+1)))
         assertComposedTextValue("")
     }

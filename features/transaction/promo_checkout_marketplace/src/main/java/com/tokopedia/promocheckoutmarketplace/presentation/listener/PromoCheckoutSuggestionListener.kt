@@ -5,5 +5,4 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggesti
 interface PromoCheckoutSuggestionListener {
 
     fun onClickItem(model: PromoSuggestionItemUiModel)
-
 }

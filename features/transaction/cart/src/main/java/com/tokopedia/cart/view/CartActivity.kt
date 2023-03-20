@@ -6,8 +6,9 @@ import com.tokopedia.cart.R
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.telemetry.ITelemetryActivity
 
-class CartActivity : BaseCheckoutActivity(),
-    ITelemetryActivity{
+class CartActivity :
+    BaseCheckoutActivity(),
+    ITelemetryActivity {
 
     private var fragment: CartFragment? = null
     private var cartId: String? = null
@@ -63,5 +64,4 @@ class CartActivity : BaseCheckoutActivity(),
     }
 
     override fun getTelemetrySectionName() = "atc"
-
 }

@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TrackingDetailsItemUiModel(
-        var promoDetailsTracking: String = "",
-        var productId: Long = 0,
-        var promoCodesTracking: String = ""
+    var promoDetailsTracking: String = "",
+    var productId: Long = 0,
+    var promoCodesTracking: String = ""
 ) : Parcelable

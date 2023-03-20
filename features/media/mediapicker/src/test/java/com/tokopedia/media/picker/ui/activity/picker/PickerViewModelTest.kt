@@ -7,22 +7,27 @@ import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.mapper.toModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
-import com.tokopedia.media.picker.data.repository.MediaRepository
-import com.tokopedia.media.picker.ui.observer.*
+import com.tokopedia.media.picker.data.repository.MediaFileRepository
+import com.tokopedia.media.picker.ui.publisher.*
+import com.tokopedia.media.picker.utils.internal.NetworkStateManager
+import com.tokopedia.media.picker.utils.internal.ResourceManager
 import com.tokopedia.media.update
 import com.tokopedia.media.util.awaitItem
 import com.tokopedia.media.util.collectIntoChannel
+import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
-import com.tokopedia.picker.common.observer.EventFlowFactory
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -38,18 +43,30 @@ class PickerViewModelTest {
         coroutineScopeRule.dispatchers.main
     )
 
+    private val bitmapConverterRepository = mockk<BitmapConverterRepository>(relaxed = true)
     private val deviceInfoRepository = mockk<DeviceInfoRepository>()
-    private val bitmapConverterRepository = mockk<BitmapConverterRepository>()
-    private val mediaRepository = mockk<MediaRepository>()
+    private val mediaRepository = mockk<MediaFileRepository>()
     private val paramCacheManager = mockk<PickerCacheManager>()
     private val featureToggleManager = mockk<FeatureToggleManager>()
+    private val networkStateManager = mockk<NetworkStateManager>()
+    private val resourcesManager = mockk<ResourceManager>()
 
+    private lateinit var eventBus: PickerEventBus
     private lateinit var viewModel: PickerViewModel
 
     @Before
     fun setup() {
+        Dispatchers.setMain(
+            coroutineScopeRule.dispatchers.main
+        )
+
         mockkStatic(::mediaToUiModel)
         every { mediaToUiModel(any()) } returns mediaUiModelList
+        every { paramCacheManager.get() } returns PickerParam()
+
+        eventBus = PickerEventBusImpl(
+            paramCacheManager
+        )
 
         viewModel = PickerViewModel(
             deviceInfoRepository,
@@ -57,7 +74,10 @@ class PickerViewModelTest {
             bitmapConverterRepository,
             paramCacheManager,
             featureToggleManager,
-            coroutineScopeRule.dispatchers
+            networkStateManager,
+            resourcesManager,
+            coroutineScopeRule.dispatchers,
+            eventBus
         )
     }
 
@@ -69,7 +89,7 @@ class PickerViewModelTest {
     @Test
     fun `ui event should be invoked the CameraCapture when camera state is published`() = runBlocking {
         // Given
-        stateOnCameraCapturePublished(mediaUiModelList.first(), eventTestKey.value)
+        eventBus.cameraCaptureEvent(mediaUiModelList.first())
 
         // When
         val result = viewModel.uiEvent
@@ -78,13 +98,13 @@ class PickerViewModelTest {
 
         // Then
         assert(result is EventPickerState.CameraCaptured)
-        EventFlowFactory.reset(eventTestKey.value)
+        eventBus.reset()
     }
 
     @Test
     fun `ui event should be invoked the SelectionChanged when camera state is published`() = runBlocking {
         // Given
-        stateOnChangePublished(mediaUiModelList, eventTestKey.value)
+        eventBus.notifyDataOnChangedEvent(mediaUiModelList)
 
         // When
         val result = viewModel.uiEvent
@@ -93,7 +113,7 @@ class PickerViewModelTest {
 
         // Then
         assert(result is EventPickerState.SelectionChanged)
-        EventFlowFactory.reset(eventTestKey.value)
+        eventBus.reset()
     }
 
     @Test
@@ -105,43 +125,63 @@ class PickerViewModelTest {
 
         // Then
         viewModel.preSelectedMedias(paramCacheManager.get())
-
-        coVerify {
-            bitmapConverterRepository.convert(any())!! wasNot Called
-        }
+        verify { bitmapConverterRepository.convert(any()) wasNot Called }
     }
 
     @Test
-    fun `ui event should be invoked the SelectionChanged when includeMedias is exist`() = coroutineScopeRule.runBlockingTest {
-        // Given
+    fun `ui event should be not invoked the SelectionChanged when includeMedias is exist but no internet connection`() = coroutineScopeRule.runBlockingTest {
+        // When
+        val noInternetMessage = "Opps!"
         val mockImageUrl = "https://isfa.com/sample.png"
-        val mockConvertedPath = "/DCIM/Camera/sample.png"
 
         val includeMedias = listOf(
             mockImageUrl,
             "/DCIM/AnotherSample/download.jpeg"
         )
 
-        val expectedValue = includeMedias
-            .update(0, mockConvertedPath)
-
         // When
+        every { networkStateManager.isNetworkConnected() } returns false
+        every { resourcesManager.string(any()) } returns noInternetMessage
         every { paramCacheManager.get().includeMedias() } returns includeMedias
-        coEvery { bitmapConverterRepository.convert(mockImageUrl) } returns mockConvertedPath
 
         // Then
         viewModel.preSelectedMedias(paramCacheManager.get())
 
-        assertEquals(
-            expectedValue,
-            viewModel.includeMedias.value
+        assert(viewModel.connectionIssue.value == noInternetMessage)
+        verify { bitmapConverterRepository.convert(any()) wasNot Called }
+    }
+
+    @Test
+    fun `ui event should be invoked the SelectionChanged when includeMedias is exist`() = coroutineScopeRule.runBlockingTest {
+        // Given
+        val includeMedias = listOf(
+            "https://isfa.com/sample.png",
+            "/DCIM/AnotherSample/download.jpeg"
         )
+
+        val convertedResultMedias = listOf(
+            "/DCIM/Camera/sample.png",
+            "/DCIM/AnotherSample/download.jpeg"
+        )
+
+        // When
+        every { networkStateManager.isNetworkConnected() } returns true
+        every { paramCacheManager.get().includeMedias() } returns includeMedias
+        every { bitmapConverterRepository.convert(any()) } returns flow {
+            emit(convertedResultMedias)
+        }
+
+        // Then
+        viewModel.preSelectedMedias(paramCacheManager.get())
+
+        assert(viewModel.includeMedias.value != null)
+        assert(viewModel.isLoading.value != null)
     }
 
     @Test
     fun `ui event should be invoked the SelectionRemoved when camera state is published`() = runBlocking {
         // Given
-        stateOnRemovePublished(mediaUiModelList.first(), eventTestKey.value)
+        eventBus.removeMediaEvent(mediaUiModelList.first())
 
         // When
         val result = viewModel.uiEvent
@@ -150,26 +190,7 @@ class PickerViewModelTest {
 
         // Then
         assert(result is EventPickerState.SelectionRemoved)
-        EventFlowFactory.reset(eventTestKey.value)
-    }
-
-    @Test
-    fun `ui event should be invoked the SelectionAdded when camera state is published`() = runBlocking {
-        // Given
-        val givenFile = mockk<PickerFile>(relaxed = true)
-        every { givenFile.exists() } returns true
-        every { givenFile.path } returns ""
-
-        stateOnAddPublished(givenFile.toUiModel(), eventTestKey.value)
-
-        // When
-        val result = viewModel.uiEvent
-            .collectIntoChannel(testCoroutineScope)
-            .awaitItem()
-
-        // Then
-        assert(result is EventPickerState.SelectionAdded)
-        EventFlowFactory.reset(eventTestKey.value)
+        eventBus.reset()
     }
 
     @Test
@@ -179,7 +200,7 @@ class PickerViewModelTest {
 
         // When
         every { paramCacheManager.get() } returns PickerParam()
-        every { deviceInfoRepository.execute(any()) } returns expectedValue
+        every { deviceInfoRepository.isDeviceStorageAlmostFull(any()) } returns expectedValue
 
         val isStorageLimit = viewModel.isDeviceStorageAlmostFull()
 
@@ -194,7 +215,7 @@ class PickerViewModelTest {
 
         // When
         every { paramCacheManager.get() } returns PickerParam()
-        every { deviceInfoRepository.execute(any()) } returns expectedValue
+        every { deviceInfoRepository.isDeviceStorageAlmostFull(any()) } returns expectedValue
 
         val isStorageLimit = viewModel.isDeviceStorageAlmostFull()
 
@@ -205,13 +226,124 @@ class PickerViewModelTest {
     @Test
     fun `fetch local gallery data should be return list of media`() = coroutineScopeRule.runBlockingTest {
         // Given
-        coEvery { mediaRepository.invoke(any()) } returns mediaList
+        every { mediaRepository.invoke(any(), any()) } returns flow {
+            emit(mediaList)
+        }
 
         // When
-        viewModel.loadLocalGalleryBy(-1)
+        viewModel.loadMedia(-1)
 
         // Then
         assert(viewModel.medias.value?.size == mediaList.size)
+        assert(viewModel.isFetchMediaLoading.value != null)
+        assert(viewModel.isMediaEmpty.value != null)
+    }
+
+    @Test
+    fun `it should be able to navigate to editor page`() {
+        // Given
+        val result = PickerResult()
+        every { paramCacheManager.get().getEditorParam() } returns EditorParam()
+
+        // When
+        viewModel.navigateToEditorPage(result)
+
+        // Then
+        assert(viewModel.editorParam.value?.first == result)
+    }
+
+    @Test
+    fun `it should be able to navigate to editor page with editor param is null`() {
+        // Given
+        val result = PickerResult()
+        every { paramCacheManager.get().getEditorParam() } returns null
+
+        // When
+        viewModel.navigateToEditorPage(result)
+
+        // Then
+        assert(viewModel.editorParam.value?.first == result)
+    }
+
+    @Test
+    fun `it should not be able to apply the picker param`() {
+        // When
+        viewModel.setPickerParam(null)
+
+        // Then
+        assert(viewModel.pickerParam.value == null)
+    }
+
+    @Test
+    fun `it should be able to apply the picker param`() {
+        // Given
+        val param = PickerParam()
+
+        every { paramCacheManager.set(any()) } returns param
+
+        // When
+        viewModel.setPickerParam(param)
+
+        // Then
+        assert(viewModel.pickerParam.value != null)
+    }
+
+    @Test
+    fun `it should be able to apply the picker param and remove the editor`() {
+        // Given
+        val param = PickerParam().apply {
+            withEditor { /* no-op */ }
+        }
+
+        every { featureToggleManager.isEditorEnabled() } returns false
+        every { paramCacheManager.set(any()) } returns param
+
+        // When
+        viewModel.setPickerParam(param)
+
+        // Then
+        assert(viewModel.pickerParam.value != null)
+    }
+
+    @Test
+    fun `it should be able to apply the picker param and add the editor`() {
+        // Given
+        val param = PickerParam().apply {
+            withEditor { /* no-op */ }
+        }
+
+        every { featureToggleManager.isEditorEnabled() } returns true
+        every { paramCacheManager.set(any()) } returns param
+
+        // When
+        viewModel.setPickerParam(param)
+
+        // Then
+        assert(viewModel.pickerParam.value != null)
+    }
+
+    @Test
+    fun `it should be able to change state to true of the video recording`() {
+        // Given
+        val expectedValue = true
+
+        // When
+        viewModel.isOnVideoRecording(expectedValue)
+
+        // Then
+        assert(viewModel.isOnVideoRecording.value == expectedValue)
+    }
+
+    @Test
+    fun `it should be able to change state to false of the video recording`() {
+        // Given
+        val expectedValue = false
+
+        // When
+        viewModel.isOnVideoRecording(expectedValue)
+
+        // Then
+        assert(viewModel.isOnVideoRecording.value == expectedValue)
     }
 
     companion object {
