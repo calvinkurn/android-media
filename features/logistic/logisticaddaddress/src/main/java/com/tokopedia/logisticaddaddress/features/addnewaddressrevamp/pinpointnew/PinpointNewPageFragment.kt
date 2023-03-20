@@ -41,11 +41,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_ADDRESS_NEW
 import com.tokopedia.logisticCommon.data.constant.PinpointSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -449,7 +449,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 isFromAddressForm = it.getBoolean(EXTRA_FROM_ADDRESS_FORM),
                 isEdit = it.getBoolean(EXTRA_IS_EDIT),
                 source = it.getString(PARAM_SOURCE, ""),
-                isGetPinPointOnly = it.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY),
+                isGetPinPointOnly = it.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
             )
 
             getGmsAvailability(it)
@@ -776,11 +776,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (activity?.let {
-                    ContextCompat.checkSelfPermission(
+                ContextCompat.checkSelfPermission(
                         it,
                         permission
                     )
-                } != PackageManager.PERMISSION_GRANTED
+            } != PackageManager.PERMISSION_GRANTED
             ) {
                 return false
             }
@@ -895,9 +895,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                                     // result in onActivityResult().
                                     val rae = e as ResolvableApiException
                                     val intentSenderRequest = IntentSenderRequest.Builder(
-                                        rae.resolution.intentSender).build()
-                                    gpsResultResolutionContract.launch(intentSenderRequest
-                                    )
+                                        rae.resolution.intentSender
+                                    ).build()
+                                    gpsResultResolutionContract.launch(intentSenderRequest)
                                 } catch (sie: IntentSender.SendIntentException) {
                                     sie.printStackTrace()
                                 }
