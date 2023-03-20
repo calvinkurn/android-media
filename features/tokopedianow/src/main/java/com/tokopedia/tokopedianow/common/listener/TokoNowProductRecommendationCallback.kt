@@ -72,8 +72,6 @@ class TokoNowProductRecommendationCallback(
         listener?.productCardAddToCartBlocked()
     }
 
-    override fun hasBlockedAddToCart(): Boolean = listener?.hasBlockedAddToCart().orFalse()
-
     override fun onSeeAllClicked(headerName: String, appLink: String) {
         listener?.seeAllClicked(appLink)
     }

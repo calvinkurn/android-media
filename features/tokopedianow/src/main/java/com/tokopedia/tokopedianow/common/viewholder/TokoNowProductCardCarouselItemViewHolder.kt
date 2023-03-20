@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.common.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
@@ -46,9 +45,7 @@ class TokoNowProductCardCarouselItemViewHolder(
                     product = element
                 )
             }
-            setOnBlockAddToCartListener(
-                hasBlockedAddToCart = listener?.hasBlockedAddToCart().orFalse()
-            ) {
+            setOnBlockAddToCartListener {
                 listener?.onProductCardAddToCartBlocked()
             }
             addOnImpressionListener(element.impressHolder) {
@@ -87,6 +84,5 @@ class TokoNowProductCardCarouselItemViewHolder(
             product: TokoNowProductCardCarouselItemUiModel
         )
         fun onProductCardAddToCartBlocked()
-        fun hasBlockedAddToCart(): Boolean
     }
 }

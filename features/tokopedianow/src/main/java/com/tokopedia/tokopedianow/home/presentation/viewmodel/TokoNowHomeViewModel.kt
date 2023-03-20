@@ -13,6 +13,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -63,7 +64,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProduct
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingReferralData
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeProgressBar
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.setStateToLoading
@@ -101,7 +101,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -137,8 +137,6 @@ class TokoNowHomeViewModel @Inject constructor(
         private const val SUCCESS_CODE = "200"
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
     }
-
-    var needToBlockAtc: Boolean = false
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
         get() = _homeLayoutList
@@ -202,6 +200,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private var headerYCoordinate = 0f
     private var getHomeLayoutJob: Job? = null
     private var getMiniCartJob: Job? = null
+    private var needToBlockAtc: Boolean = false
 
     fun trackOpeningScreen(screenName: String) {
         _openScreenTracker.value = screenName
@@ -250,17 +249,23 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
+            val tickerData = getTickerDataAsync().await()
+
             val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                 localCacheModel = localCacheModel
             )
+
             channelToken = homeLayoutResponse.first().token
+            needToBlockAtc = tickerData?.first.orFalse()
 
             homeLayoutItemList.mapHomeLayoutList(
-                homeLayoutResponse,
-                removeAbleWidgets,
-                miniCartSimplifiedData,
-                localCacheModel,
-                userSession.isLoggedIn
+                response = homeLayoutResponse,
+                removeAbleWidgets = removeAbleWidgets,
+                miniCartData = miniCartSimplifiedData,
+                localCacheModel = localCacheModel,
+                isLoggedIn = userSession.isLoggedIn,
+                hasBlockedAddToCart = needToBlockAtc,
+                tickerList = tickerData?.second.orEmpty()
             )
 
             val data = HomeLayoutListUiModel(
@@ -300,10 +305,11 @@ class TokoNowHomeViewModel @Inject constructor(
 
                 homeLayoutItemList.removeProgressBar()
                 homeLayoutItemList.addMoreHomeLayout(
-                    homeLayoutResponse,
-                    removeAbleWidgets,
-                    miniCartSimplifiedData,
-                    localCacheModel
+                    response = homeLayoutResponse,
+                    removeAbleWidgets = removeAbleWidgets,
+                    miniCartData = miniCartSimplifiedData,
+                    localCacheModel = localCacheModel,
+                    hasBlockedAddToCart = needToBlockAtc
                 )
 
                 getLayoutComponentData(localCacheModel)
@@ -635,7 +641,6 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     private suspend fun getTokoNowGlobalComponent(item: Visitable<*>?, warehouseId: String) {
         when (item) {
-            is TokoNowTickerUiModel -> getTickerDataAsync(item).await()
             is TokoNowCategoryMenuUiModel -> getCategoryMenuDataAsync(warehouseId).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
             else -> removeUnsupportedLayout(item)
@@ -669,21 +674,14 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTickerDataAsync(item: TokoNowTickerUiModel): Deferred<Unit?> {
+    private suspend fun getTickerDataAsync(): Deferred<Pair<Boolean, List<TickerData>>?> {
         return asyncCatchError(block = {
             val tickerList = getTargetedTickerUseCase.execute(
                 page = HOME_PAGE
             )
-            tickerList.getTargetedTicker
-            val (blockAddToCart, tickerData) = TickerMapper.mapTickerData(tickerList)
-            needToBlockAtc = blockAddToCart
-            if (tickerData.isEmpty()) {
-                homeLayoutItemList.removeItem(item.id)
-            } else {
-                homeLayoutItemList.mapTickerData(item, tickerData)
-            }
+            TickerMapper.mapTickerData(tickerList)
         }) {
-            homeLayoutItemList.removeItem(item.id)
+            Pair(false, emptyList())
         }
     }
 

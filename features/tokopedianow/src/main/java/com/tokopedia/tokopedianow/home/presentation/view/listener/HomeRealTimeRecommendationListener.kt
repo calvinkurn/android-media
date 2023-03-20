@@ -77,6 +77,4 @@ class HomeRealTimeRecommendationListener(
     }
 
     override fun onAddToCartProductBlocked() = onAddToCartBlocked()
-
-    override fun hasBlockedAddToCart(): Boolean = viewModel.needToBlockAtc
 }

@@ -34,7 +34,8 @@ object LeftCarouselMapper {
         state: HomeLayoutItemState,
         miniCartData: MiniCartSimplifiedData? = null,
         warehouseId: String,
-        layoutType: String
+        layoutType: String,
+        hasBlockedAddToCart: Boolean
     ): HomeLayoutItemUiModel {
         val channelModel = mapToChannelModel(response)
         val productList = mutableListOf<Visitable<*>>()
@@ -57,7 +58,7 @@ object LeftCarouselMapper {
                     recommendationType = channelGrid.recommendationType,
                     warehouseId = channelGrid.warehouseId,
                     campaignCode = channelGrid.campaignCode,
-                    productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData, layoutType),
+                    productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData, layoutType, hasBlockedAddToCart),
                     categoryBreadcrumbs = channelGrid.categoryBreadcrumbs
                 )
             )
@@ -113,7 +114,8 @@ object LeftCarouselMapper {
     private fun mapChannelGridToProductCard(
         channelGrid: ChannelGrid,
         miniCartData: MiniCartSimplifiedData? = null,
-        layoutType: String
+        layoutType: String,
+        hasBlockedAddToCart: Boolean
     ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
         productId = channelGrid.id,
         imageUrl = channelGrid.imageUrl,
@@ -138,6 +140,7 @@ object LeftCarouselMapper {
                 imageUrl = it.url
             )
         },
+        hasBlockedAddToCart = hasBlockedAddToCart,
         usePreDraw = true
     )
 

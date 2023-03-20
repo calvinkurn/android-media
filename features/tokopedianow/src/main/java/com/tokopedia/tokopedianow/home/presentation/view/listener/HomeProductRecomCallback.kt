@@ -110,8 +110,6 @@ class HomeProductRecomCallback(
 
     override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
 
-    override fun hasBlockedAddToCart(): Boolean = viewModel.needToBlockAtc
-
     private fun openAppLink(appLink: String) {
         if (appLink.isNotEmpty()) {
             RouteManager.route(context, appLink)

@@ -83,8 +83,6 @@ class HomeLeftCarouselAtcCallback(
 
     override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
 
-    override fun hasBlockedAddToCart(): Boolean = viewModel.needToBlockAtc
-
     override fun onSeeMoreClicked(
         appLink: String,
         channelId: String,

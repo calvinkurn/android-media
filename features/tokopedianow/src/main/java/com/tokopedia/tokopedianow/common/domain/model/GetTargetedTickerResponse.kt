@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class GetTargetedTickerResponse(
     @SerializedName("GetTargetedTicker")
     @Expose
-    val getTargetedTicker: GetTargetedTicker?
+    val getTargetedTicker: GetTargetedTicker? = null
 ) {
     data class GetTargetedTicker(
         @SerializedName("List")

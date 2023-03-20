@@ -35,7 +35,8 @@ object ProductRecomMapper {
 
     private fun mapChannelGridToProductCard(
         channelGrid: ChannelGrid,
-        miniCartData: MiniCartSimplifiedData? = null
+        miniCartData: MiniCartSimplifiedData? = null,
+        hasBlockedAddToCart: Boolean
     ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
         productId = channelGrid.id,
         imageUrl = channelGrid.imageUrl,
@@ -60,6 +61,7 @@ object ProductRecomMapper {
                 imageUrl = it.url
             )
         },
+        hasBlockedAddToCart = hasBlockedAddToCart,
         usePreDraw = true
     )
 
@@ -73,7 +75,8 @@ object ProductRecomMapper {
         response: HomeLayoutResponse,
         state: HomeLayoutItemState,
         miniCartData: MiniCartSimplifiedData? = null,
-        warehouseId: String
+        warehouseId: String,
+        hasBlockedAddToCart: Boolean
     ): HomeLayoutItemUiModel {
         val channelModel = ChannelMapper.mapToChannelModel(response)
 
@@ -88,7 +91,7 @@ object ProductRecomMapper {
                 TokoNowProductCardCarouselItemUiModel(
                     recomType = channelGrid.recommendationType,
                     pageName = channelModel.pageName,
-                    productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData),
+                    productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData, hasBlockedAddToCart),
                     shopId = channelGrid.shopId,
                     shopName = channelGrid.shop.shopName,
                     shopType = getShopType(channelGrid.shop),

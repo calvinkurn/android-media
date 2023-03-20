@@ -127,8 +127,6 @@ data class ProductRecommendationCallback(
 
     override fun productCardAddToCartBlocked() {}
 
-    override fun hasBlockedAddToCart(): Boolean = false
-
     private fun directToSeeMorePage(
         appLink: String
     ) {

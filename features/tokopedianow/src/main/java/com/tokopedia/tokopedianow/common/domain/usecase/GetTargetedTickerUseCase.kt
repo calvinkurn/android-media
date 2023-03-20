@@ -2,7 +2,8 @@ package com.tokopedia.tokopedianow.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokopedianow.common.domain.query.GetTargetedTickerNow
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.tokopedianow.common.domain.query.GetTargetedTickerQuery
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.home.domain.request.GetTargetedTickerRequest
 import com.tokopedia.usecase.RequestParams
@@ -28,7 +29,7 @@ class GetTargetedTickerUseCase @Inject constructor(
                     targets = listOf(
                         GetTargetedTickerRequest.Target(
                             type = TARGET_TYPE,
-                            value = arrayListOf(warehouseId)
+                            value = arrayListOf("344061")
                         )
                     )
                 )
@@ -37,7 +38,7 @@ class GetTargetedTickerUseCase @Inject constructor(
     }
 
     init {
-        setGraphqlQuery(GetTargetedTickerNow)
+        setGraphqlQuery(GetTargetedTickerQuery)
         setTypeClass(GetTargetedTickerResponse::class.java)
     }
 

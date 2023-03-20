@@ -104,8 +104,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         listener?.onProductCardAddToCartBlocked()
     }
 
-    override fun hasBlockedAddToCart(): Boolean = listener?.hasBlockedAddToCart().orFalse()
-
     override fun onProductCardSeeMoreClickListener(
         seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
     ) {
@@ -167,7 +165,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
             seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
         )
         fun onProductCardAddToCartBlocked()
-        fun hasBlockedAddToCart(): Boolean
     }
 
 

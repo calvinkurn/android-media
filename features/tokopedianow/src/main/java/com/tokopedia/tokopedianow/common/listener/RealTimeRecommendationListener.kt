@@ -23,8 +23,6 @@ interface RealTimeRecommendationListener {
 
     fun onAddToCartProductBlocked()
 
-    fun hasBlockedAddToCart(): Boolean
-
     fun refreshRealTimeRecommendation(data: HomeRealTimeRecomUiModel)
 
     fun removeRealTimeRecommendation(data: HomeRealTimeRecomUiModel)

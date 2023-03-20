@@ -79,7 +79,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
             maxOrder = model.maxOrder,
             orderQuantity = model.orderQuantity,
             isOos = model.isOos(),
-            needToShowQuantityEditor = model.needToShowQuantityEditor
+            needToShowQuantityEditor = model.needToShowQuantityEditor,
+            hasBlockedAddToCart = model.hasBlockedAddToCart
         )
         initAssignedValueTypography(
             labelGroup = model.getAssignedValueLabelGroup()
@@ -143,9 +144,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
         maxOrder: Int,
         orderQuantity: Int,
         isOos: Boolean,
-        needToShowQuantityEditor: Boolean
+        needToShowQuantityEditor: Boolean,
+        hasBlockedAddToCart: Boolean
     ) {
         quantityEditor.showIfWithBlock(!isOos && needToShowQuantityEditor) {
+            quantityEditor.hasBlockedAddToCart = hasBlockedAddToCart
             quantityEditor.isVariant = isVariant
             quantityEditor.minQuantity = minOrder
             quantityEditor.maxQuantity = maxOrder
@@ -519,10 +522,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     fun setOnBlockAddToCartListener(
-        hasBlockedAddToCart: Boolean,
         onBlockAddToCartListener: () -> Unit
     ) {
-        binding.quantityEditor.hasBlockedAddToCart = hasBlockedAddToCart
         binding.quantityEditor.onBlockAddToCartListener = onBlockAddToCartListener
     }
 }

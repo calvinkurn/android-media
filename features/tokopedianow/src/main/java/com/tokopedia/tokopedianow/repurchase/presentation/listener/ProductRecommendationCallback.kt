@@ -71,8 +71,6 @@ class ProductRecommendationCallback(
 
     override fun productCardAddToCartBlocked() {}
 
-    override fun hasBlockedAddToCart(): Boolean = false
-
     override fun productCardImpressed(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel,

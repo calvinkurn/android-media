@@ -6,19 +6,19 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object TickerMapper {
-    private const val TYPE_WARNING = "warning"
+    private const val TICKER_TYPE_WARNING = "warning"
+    private const val METADATA_TYPE_BLOCK_ADD_TO_CART = "blockAddToCart"
 
-    fun mapTickerData(tickerList: GetTargetedTickerResponse): List<TickerData> {
-        val uiTickerList = mutableListOf<TickerData>()
-        tickerList.getTargetedTicker?.tickers?.map { tickerData ->
-            uiTickerList.add(
-                TickerData(
-                    title = tickerData.title,
-                    description = tickerData.content,
-                    type = if (tickerData.type == TYPE_WARNING) Ticker.TYPE_WARNING else Ticker.TYPE_ANNOUNCEMENT
-                )
+    fun mapTickerData(tickerList: GetTargetedTickerResponse): Pair<Boolean, List<TickerData>> {
+        var blockAddToCart = false
+        val uiTickerList = tickerList.getTargetedTicker?.tickers?.map { tickerData ->
+            blockAddToCart = tickerData.metadata.find { it.type == METADATA_TYPE_BLOCK_ADD_TO_CART }?.values?.firstOrNull()?.toBooleanStrictOrNull().orFalse()
+            TickerData(
+                title = tickerData.title,
+                description = tickerData.content,
+                type = if (tickerData.type == TICKER_TYPE_WARNING) Ticker.TYPE_WARNING else Ticker.TYPE_ANNOUNCEMENT
             )
         }
-        return uiTickerList
+        return Pair(blockAddToCart, uiTickerList.orEmpty())
     }
 }
