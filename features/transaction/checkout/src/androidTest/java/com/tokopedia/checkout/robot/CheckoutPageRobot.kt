@@ -17,7 +17,7 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.ShipmentActivity
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentCartItemTopViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentCartItemBottomViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.unifyprinciples.Typography
@@ -35,7 +35,7 @@ class CheckoutPageRobot {
         Thread.sleep(2000)
     }
 
-    private fun scrollRecyclerViewToFirstOrder(activityRule: IntentsTestRule<ShipmentActivity>): Int {
+    private fun scrollRecyclerViewToFirstShipmentCartItemBottom(activityRule: IntentsTestRule<ShipmentActivity>): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
@@ -43,7 +43,7 @@ class CheckoutPageRobot {
         for (i in 0 until itemCount) {
             scrollRecyclerViewToPosition(activityRule, recyclerView, i)
             when (recyclerView.findViewHolderForAdapterPosition(i)) {
-                is ShipmentCartItemTopViewHolder -> {
+                is ShipmentCartItemBottomViewHolder -> {
                     position = i
                     break
                 }
@@ -107,7 +107,7 @@ class CheckoutPageRobot {
     }
 
     fun clickChooseDuration(activityRule: IntentsTestRule<ShipmentActivity>) {
-        val position = scrollRecyclerViewToFirstOrder(activityRule)
+        val position = scrollRecyclerViewToFirstShipmentCartItemBottom(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
                 .perform(
@@ -170,7 +170,7 @@ class CheckoutPageRobot {
         eta: String,
         message: String? = null
     ) {
-        val position = scrollRecyclerViewToFirstOrder(activityRule)
+        val position = scrollRecyclerViewToFirstShipmentCartItemBottom(activityRule)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
                 .perform(
