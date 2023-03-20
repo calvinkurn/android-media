@@ -34,6 +34,7 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateDiscoPromoListActivity
 import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateSSAShopListActivity
@@ -291,7 +292,11 @@ class AffiliatePromoFragment :
                 view?.findViewById<Group>(R.id.disco_promotion_group)?.show()
                 view?.findViewById<Typography>(R.id.disco_inspiration_lihat_semua)
                     ?.setOnClickListener {
-
+                        context?.let {
+                            startActivity(
+                                Intent(it, AffiliateDiscoPromoListActivity::class.java)
+                            )
+                        }
                     }
                 view?.findViewById<RecyclerView>(R.id.rv_disco_promotion)?.apply {
                     val discoBannerAdapter = AffiliateAdapter(AffiliateAdapterFactory())
