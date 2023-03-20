@@ -34,17 +34,11 @@ import java.util.*
  * Created By : Muhammad Furqan on 16/03/23
  */
 enum class FeedCampaignRibbonType {
-    ASGC_GENERAL,
-    ASGC_DISCOUNT,
-    TITLE_ONLY,
-    TITLE_WITH_TIMER,
-    START_IN,
-    ON_GOING
+    ASGC_GENERAL, ASGC_DISCOUNT, TITLE_ONLY, TITLE_WITH_TIMER, START_IN, ON_GOING
 }
 
 class FeedCampaignRibbonView(
-    private val binding: LayoutFeedCampaignRibbonBinding,
-    private val listener: FeedListener
+    private val binding: LayoutFeedCampaignRibbonBinding, private val listener: FeedListener
 ) {
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -69,8 +63,6 @@ class FeedCampaignRibbonView(
 
             type = getRibbonType(modelType)
             buildRibbonBasedOnType(campaign, ctaModel)
-
-            Toast.makeText(root.context, modelType, Toast.LENGTH_SHORT).show()
 
 //            tyFeedCampaignRibbonTitle.text = campaign.shortName
 //            renderRibbonByType(campaign.isReminderActive)
@@ -98,12 +90,12 @@ class FeedCampaignRibbonView(
     private fun setBackgroundGradient(cta: FeedCardCtaModel) {
         with(binding) {
             when {
-                type == FeedCampaignRibbonType.ASGC_GENERAL && cta.colorGradient.isEmpty() ->
-                    containerFeedCampaignRibbon.setBackgroundColor(Color.parseColor(cta.color))
+                type == FeedCampaignRibbonType.ASGC_GENERAL && cta.colorGradient.isEmpty() -> root.setBackgroundColor(
+                    Color.parseColor(cta.color)
+                )
                 type == FeedCampaignRibbonType.ASGC_GENERAL && cta.colorGradient.isNotEmpty() -> {
-                    containerFeedCampaignRibbon.background = GradientDrawable(
-                        GradientDrawable.Orientation.LEFT_RIGHT,
-                        cta.colorGradient.map {
+                    root.background = GradientDrawable(
+                        GradientDrawable.Orientation.LEFT_RIGHT, cta.colorGradient.map {
                             it.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
                         }.toIntArray()
                     ).apply {
@@ -115,8 +107,7 @@ class FeedCampaignRibbonView(
     }
 
     private fun buildRibbonBasedOnType(
-        campaign: FeedCardCampaignModel,
-        ctaModel: FeedCardCtaModel
+        campaign: FeedCardCampaignModel, ctaModel: FeedCardCtaModel
     ) {
         with(binding) {
             when (type) {
@@ -153,11 +144,23 @@ class FeedCampaignRibbonView(
             when (type) {
                 FeedCampaignRibbonType.ASGC_GENERAL -> {
                     tyFeedCampaignRibbonTitle.show()
+                    tyFeedCampaignRibbonTitleSecond.show()
                     tyFeedCampaignRibbonSmall.hide()
                     pbFeedCampaignRibbon.hide()
                     timerFeedCampaignRibbon.hide()
 
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
+                    Toast.makeText(root.context, "ASGC General", Toast.LENGTH_SHORT).show()
+                }
+                FeedCampaignRibbonType.ASGC_DISCOUNT -> {
+                    tyFeedCampaignRibbonTitle.show()
+                    tyFeedCampaignRibbonTitleSecond.show()
+                    tyFeedCampaignRibbonSmall.hide()
+                    pbFeedCampaignRibbon.hide()
+                    timerFeedCampaignRibbon.hide()
+
+                    icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
+                    Toast.makeText(root.context, "ASGC Discount", Toast.LENGTH_SHORT).show()
                 }
                 FeedCampaignRibbonType.TITLE_ONLY -> {
                     tyFeedCampaignRibbonTitle.show()
@@ -234,17 +237,14 @@ class FeedCampaignRibbonView(
 
     private fun showStartInGradientCampaignRibbon() {
         type = FeedCampaignRibbonType.START_IN
-        binding.containerFeedCampaignRibbon.background = ContextCompat.getDrawable(
-            binding.root.context,
-            R.drawable.bg_feed_campaign_ribbon_flashsale_gradient
+        binding.root.background = ContextCompat.getDrawable(
+            binding.root.context, R.drawable.bg_feed_campaign_ribbon_flashsale_gradient
         )
         renderRibbonByType(campaign?.isReminderActive ?: false)
     }
 
     private fun animateSwipeUp(
-        viewOne: WeakReference<View>,
-        viewTwo: WeakReference<View>,
-        onAnimationEnd: () -> Unit
+        viewOne: WeakReference<View>, viewTwo: WeakReference<View>, onAnimationEnd: () -> Unit
     ) {
         viewOne.get()?.let { v1 ->
             viewTwo.get()?.let { v2 ->
@@ -252,9 +252,7 @@ class FeedCampaignRibbonView(
                 val alphaAnimObjOne = ObjectAnimator.ofPropertyValuesHolder(v1, alphaAnimPropOne)
 
                 val translateAnimPropOne = PropertyValuesHolder.ofFloat(
-                    View.TRANSLATION_Y,
-                    ZERO,
-                    v1.measuredHeight * MINUS_ONE
+                    View.TRANSLATION_Y, ZERO, v1.measuredHeight * MINUS_ONE
                 )
                 val translateAnimObjOne =
                     ObjectAnimator.ofPropertyValuesHolder(v1, translateAnimPropOne)
@@ -262,12 +260,9 @@ class FeedCampaignRibbonView(
                 val alphaAnimPropTwo = PropertyValuesHolder.ofFloat(View.ALPHA, ONE, ZERO)
                 val alphaAnimObjTwo = ObjectAnimator.ofPropertyValuesHolder(v2, alphaAnimPropTwo)
 
-                val translateAnimPropTwo =
-                    PropertyValuesHolder.ofFloat(
-                        View.TRANSLATION_Y,
-                        v2.measuredHeight.toFloat(),
-                        ZERO
-                    )
+                val translateAnimPropTwo = PropertyValuesHolder.ofFloat(
+                    View.TRANSLATION_Y, v2.measuredHeight.toFloat(), ZERO
+                )
                 val translateAnimObjTwo =
                     ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
 
@@ -289,10 +284,7 @@ class FeedCampaignRibbonView(
 
                 val animatorSet = AnimatorSet()
                 animatorSet.playTogether(
-                    alphaAnimObjOne,
-                    translateAnimObjOne,
-                    alphaAnimObjTwo,
-                    translateAnimObjTwo
+                    alphaAnimObjOne, translateAnimObjOne, alphaAnimObjTwo, translateAnimObjTwo
                 )
                 animatorSet.duration = SIX_MILISECOND
                 animatorSet.start()
