@@ -653,7 +653,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void scrollToTop(Fragment fragment) {
-        if (fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
         }
     }
