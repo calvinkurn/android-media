@@ -2,6 +2,7 @@ package com.tokopedia.profilecompletion.addname
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -15,44 +16,42 @@ class AddNameRegisterPhoneAnalytics @Inject constructor() {
     }
 
     fun trackSuccessRegisterPhoneNumber(userId: String) {
-	TrackApp.getInstance().gtm.sendGeneralEvent(
-	    TrackAppUtils.gtmData(
-		"clickRegister",
-		"register with phone number page",
-		"click on button selesai",
-		"success"
-	    )
-	)
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
+                "clickRegister",
+                "register with phone number page",
+                "click on button selesai",
+                "success"
+            )
+        )
 
-	try {
-	    TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(
-		userId,
-		"Phone Number"
-	    )
-	} catch (e: Exception) {
-	    e.printStackTrace()
-	}
+        try {
+            TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(
+                userId,
+                "Phone Number"
+            )
+        } catch (_: Exception) { }
     }
 
     fun trackClickFinishAddNameButton() {
-	TrackApp.getInstance().gtm.sendGeneralEvent(
-	    TrackAppUtils.gtmData(
-		"clickRegister",
-		"register with phone number page",
-		"click on button selesai",
-		"click"
-	    )
-	)
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
+                "clickRegister",
+                "register with phone number page",
+                "click on button selesai",
+                "click"
+            )
+        )
     }
 
     fun trackErrorFinishAddNameButton(errorMessage: String) {
-	TrackApp.getInstance().gtm.sendGeneralEvent(
-	    TrackAppUtils.gtmData(
-		"clickRegister",
-		"register with phone number page",
-		"click on button selesai",
-		String.format("failed - %s", errorMessage)
-	    )
-	)
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
+                "clickRegister",
+                "register with phone number page",
+                "click on button selesai",
+                String.format(Locale.getDefault(), "failed - %s", errorMessage)
+            )
+        )
     }
 }

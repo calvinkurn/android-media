@@ -2,7 +2,6 @@ package com.tokopedia.logisticCommon.domain.request
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
-
 /**
  * Created by fajarnuha on 2019-05-24.
  */

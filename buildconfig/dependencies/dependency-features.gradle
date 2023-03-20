@@ -86,7 +86,6 @@ ext {
             homeComponent                   : ":features:discovery:home_component",
             homeRecom                       : ":features:discovery:home_recom",
             homeNav                         : ":features:discovery:home_nav",
-            recentview                      : ":features:discovery:recentview",
             search                          : ":features:discovery:search",
             topAdsSdk                       : ":features:discovery:topadssdk",
             productCard                     : ":features:discovery:productcard",
@@ -132,7 +131,6 @@ ext {
             localizationchooseaddress_common: ":features:logistic:localizationchooseaddress_common",
 
             mediauploader                   : ":features:media:mediauploader",
-            mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
             liveBroadcaster                 : ":features:media:live-broadcaster",
             mediaeditor		                : ":features:media:mediaeditor",

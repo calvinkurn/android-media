@@ -51,6 +51,7 @@ import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalMyBillsAdapter
 import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListener
+import com.tokopedia.digital_checkout.presentation.bottomsheet.DigitalPlusMoreInfoBottomSheet
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
@@ -774,7 +775,13 @@ class DigitalCartFragment :
             getCategoryName(),
             getOperatorName()
         )
-        renderSubscriptionMoreInfoBottomSheet()
+        binding?.checkoutBottomViewWidget?.let {
+            if (it.isGoToPlusCheckout) {
+                renderPlusSubscriptionMoreInfoBottomSheet()
+            } else {
+                renderSubscriptionMoreInfoBottomSheet()
+            }
+        }
     }
 
     override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {
@@ -975,6 +982,11 @@ class DigitalCartFragment :
             it.contentCheckout.hide()
             it.checkoutBottomViewWidget.hide()
         }
+    }
+
+    private fun renderPlusSubscriptionMoreInfoBottomSheet() {
+        val bottomSheet = DigitalPlusMoreInfoBottomSheet()
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun renderSubscriptionMoreInfoBottomSheet() {
