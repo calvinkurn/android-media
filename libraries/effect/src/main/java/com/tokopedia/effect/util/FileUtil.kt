@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util.asset
+package com.tokopedia.effect.util
 
 import com.tokopedia.config.GlobalConfig
 import okhttp3.ResponseBody
@@ -108,3 +108,4 @@ object FileUtil {
         return true
     }
 }
+

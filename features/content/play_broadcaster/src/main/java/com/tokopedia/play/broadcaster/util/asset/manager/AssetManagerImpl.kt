@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.util.asset.manager
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.broadcaster.util.asset.FileUtil
+import com.tokopedia.effect.util.FileUtil
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import java.io.File

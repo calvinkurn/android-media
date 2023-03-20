@@ -7,7 +7,6 @@ import com.tokopedia.play.broadcaster.domain.usecase.beautification.SetBeautific
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.util.asset.AssetHelper
 import com.tokopedia.play.broadcaster.util.asset.AssetPathHelper
-import com.tokopedia.play.broadcaster.util.asset.FileUtil
 import com.tokopedia.play.broadcaster.util.asset.checker.AssetChecker
 import com.tokopedia.play.broadcaster.util.asset.manager.AssetManager
 import kotlinx.coroutines.withContext
