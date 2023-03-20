@@ -16,8 +16,10 @@ import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTickerTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
@@ -25,6 +27,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
@@ -77,7 +80,9 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     TokoNowRepurchaseTypeFactory,
     TokoNowEmptyStateOocTypeFactory,
     TokoNowFeedbackWidgetTypeFactory,
-    TokoNowProductRecommendationTypeFactory{
+    TokoNowProductRecommendationTypeFactory,
+    TokoNowTickerTypeFactory
+{
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = BaseChooseAddressViewHolder.LAYOUT
 
@@ -112,6 +117,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     override fun type(uiModel: TokoNowFeedbackWidgetUiModel): Int = TokoNowFeedbackWidgetViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowProductRecommendationUiModel): Int = TokoNowProductRecommendationViewHolder.LAYOUT
+
+    override fun type(uiModel: TokoNowTickerUiModel): Int  = TokoNowTickerViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -167,6 +174,9 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             TokoNowFeedbackWidgetViewHolder.LAYOUT -> TokoNowFeedbackWidgetViewHolder(
                 itemView = view,
                 listener = feedbackWidgetListener
+            )
+            TokoNowTickerViewHolder.LAYOUT -> TokoNowTickerViewHolder(
+                itemView = view
             )
             else -> super.createViewHolder(view, type)
         }

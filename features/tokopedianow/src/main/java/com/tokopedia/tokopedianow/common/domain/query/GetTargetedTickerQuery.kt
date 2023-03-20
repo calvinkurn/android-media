@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.common.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-internal object GetTargetedTickerNow: GqlQueryInterface {
+internal object GetTargetedTickerQuery: GqlQueryInterface {
 
     override fun getOperationNameList(): List<String> {
         return listOf("GetTargetedTicker")

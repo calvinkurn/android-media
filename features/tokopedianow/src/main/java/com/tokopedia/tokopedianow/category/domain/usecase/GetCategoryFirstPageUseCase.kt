@@ -7,6 +7,9 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.CategoryDetail
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.CATEGORY_PAGE
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.createGetTargetedTickerRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createAceSearchProductRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createCategoryFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createDynamicChannelRequest
@@ -38,6 +41,12 @@ class GetCategoryFirstPageUseCase(
         val quickFilterParams = createQuickFilterParams(queryParams)
 
         graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(
+            request = createGetTargetedTickerRequest(
+                page = CATEGORY_PAGE,
+                warehouseId = queryParams[SearchApiConst.USER_WAREHOUSE_ID].toString()
+            )
+        )
         graphqlUseCase.addRequest(createTokonowCategoryDetailRequest())
         graphqlUseCase.addRequest(createAceSearchProductRequest(queryParams))
         graphqlUseCase.addRequest(createCategoryFilterRequest(categoryFilterParams))
@@ -49,6 +58,7 @@ class GetCategoryFirstPageUseCase(
         val graphqlResponse = graphqlUseCase.executeOnBackground()
 
         return CategoryModel(
+                targetedTicker = getTargetedTickerResponse(graphqlResponse),
                 categoryDetail = getCategoryDetail(graphqlResponse),
                 searchProduct = getSearchProduct(graphqlResponse),
                 categoryFilter = getCategoryFilter(graphqlResponse),
@@ -93,6 +103,8 @@ class GetCategoryFirstPageUseCase(
                 .getData<TokonowCategoryDetail?>(TokonowCategoryDetail::class.java)
                 ?.categoryDetail ?: CategoryDetail()
     }
+
+    private fun getTargetedTickerResponse(graphqlResponse: GraphqlResponse): GetTargetedTickerResponse = graphqlResponse.getData(GetTargetedTickerResponse::class.java)
 
     companion object {
         private const val TOKONOW_CATEGORY_DETAIL_GQL_QUERY = """

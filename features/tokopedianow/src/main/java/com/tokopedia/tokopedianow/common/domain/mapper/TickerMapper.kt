@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.common.domain.mapper
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData

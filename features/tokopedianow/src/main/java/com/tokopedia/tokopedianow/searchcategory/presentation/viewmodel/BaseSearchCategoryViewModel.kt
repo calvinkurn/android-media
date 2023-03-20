@@ -33,6 +33,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -54,6 +55,8 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
@@ -62,6 +65,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
@@ -123,7 +127,7 @@ abstract class BaseSearchCategoryViewModel(
     private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     protected val chooseAddressWrapper: ChooseAddressWrapper,
-    protected val userSession: UserSessionInterface,
+    protected val userSession: UserSessionInterface
 ): BaseViewModel(baseDispatcher.io) {
     companion object {
         private const val MIN_PRODUCT_COUNT = 6
@@ -147,11 +151,14 @@ abstract class BaseSearchCategoryViewModel(
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
+
     var warehouseId = ""
         private set
     var autoCompleteApplink = ""
         private set
     var serviceType = ""
+        private set
+    var needToBlockAtc = false
         private set
 
     private val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
@@ -516,6 +523,7 @@ abstract class BaseSearchCategoryViewModel(
         val headerList = mutableListOf<Visitable<*>>()
 
         headerList.add(chooseAddressDataView)
+        headerList.addTicker(headerDataView)
         headerList.add(createBannerDataView(headerDataView))
         headerList.add(createTitleDataView(headerDataView))
 
@@ -527,6 +535,19 @@ abstract class BaseSearchCategoryViewModel(
         postProcessHeaderList(headerList)
 
         return headerList
+    }
+
+    private fun MutableList<Visitable<*>>.addTicker(headerDataView: HeaderDataView) {
+        val (hasBlockedAddToCart, tickerData) = TickerMapper.mapTickerData(headerDataView.targetedTicker)
+        needToBlockAtc = hasBlockedAddToCart
+        if (tickerData.isNotEmpty()) {
+            add(
+                TokoNowTickerUiModel(
+                    id = String.EMPTY,
+                    tickers = tickerData
+                )
+            )
+        }
     }
 
     protected abstract fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView
@@ -1340,6 +1361,7 @@ abstract class BaseSearchCategoryViewModel(
             categoryFilterDataValue: DataValue = DataValue(),
             quickFilterDataValue: DataValue = DataValue(),
             val bannerChannel: Channels = Channels(),
+            val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse()
     ) {
         val categoryFilterDataValue = DataValue(
                 filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)

@@ -677,7 +677,11 @@ class TokoNowHomeViewModel @Inject constructor(
             tickerList.getTargetedTicker
             val (blockAddToCart, tickerData) = TickerMapper.mapTickerData(tickerList)
             needToBlockAtc = blockAddToCart
-            homeLayoutItemList.mapTickerData(item, tickerData)
+            if (tickerData.isEmpty()) {
+                homeLayoutItemList.removeItem(item.id)
+            } else {
+                homeLayoutItemList.mapTickerData(item, tickerData)
+            }
         }) {
             homeLayoutItemList.removeItem(item.id)
         }
