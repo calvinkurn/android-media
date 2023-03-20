@@ -2,9 +2,14 @@ package com.tokopedia.loginHelper.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginHelper.data.mapper.toHeaderUiModel
+import com.tokopedia.loginHelper.data.mapper.toUserDataUiModel
+import com.tokopedia.loginHelper.data.response.LoginDataResponse
+import com.tokopedia.loginHelper.data.response.UserDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
 import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
@@ -13,6 +18,7 @@ import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperAction
 import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperEvent
 import com.tokopedia.loginHelper.presentation.viewmodel.state.LoginHelperUiState
+import com.tokopedia.loginHelper.util.ENCRYPTION_KEY
 import com.tokopedia.loginHelper.util.exception.ErrorGetAdminTypeException
 import com.tokopedia.loginHelper.util.exception.GoToActivationPageException
 import com.tokopedia.loginHelper.util.exception.GoToSecurityQuestionException
@@ -64,7 +70,7 @@ class LoginHelperViewModel @Inject constructor(
                 handleBackButtonTap()
             }
             is LoginHelperEvent.GetLoginData -> {
-                getLoginData()
+                // Removed now, Can be directly used when moved to REST endpoint      getLoginData()
             }
             is LoginHelperEvent.LoginUser -> {
                 loginUser(event.email, event.password, event.useHash)
@@ -81,89 +87,55 @@ class LoginHelperViewModel @Inject constructor(
             is LoginHelperEvent.LogOutUser -> {
                 logOutUser()
             }
-        }
-    }
-
-    private fun getLoginData() {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val userDetails = listOfUsers(_uiState.value.envType)
-                val sortedUserList = userDetails.users?.sortedBy {
-                    it.email
-                }
-                val userList = LoginDataUiModel(userDetails.count, sortedUserList)
-                updateUserDataList(Success(userList))
-            },
-            onError = {
-                updateUserDataList(Fail(it))
-            }
-        )
-    }
-
-    private fun listOfUsers(envType: LoginHelperEnvType): LoginDataUiModel {
-        return when (envType) {
-            LoginHelperEnvType.PRODUCTION -> {
-                provideProdLoginData()
-            }
-            LoginHelperEnvType.STAGING -> {
-                provideStagingLoginData()
+            is LoginHelperEvent.SaveUserDetailsFromAssets -> {
+                storeUserDetailsInState(event.userDetails)
             }
         }
     }
 
-    private fun provideStagingLoginData(): LoginDataUiModel {
-        return LoginDataUiModel(
-            count = HeaderUiModel(7),
-            users = listOf<UserDataUiModel>(
-                UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "toped1234", "Cex"),
-                UserDataUiModel("pbs-hanifah.puji+buystag1@tokopedia.com", "toped123", "Cex"),
-                UserDataUiModel("dwi.widodo+06@tokopedia.com", "dodopass", "Cex"),
-                UserDataUiModel("gaung.utama+01@tokopedia.com", "Q1w2e3r4", "Cex"),
-                UserDataUiModel("pbs-farhan+paylater6@tokopedia.com", "tokopedia", "Fintech"),
-                UserDataUiModel("yoshua.mandali+atomereject1@tokopedia.com", "tokopedia", "Fintech"),
-                UserDataUiModel("elly.susilowati+089@tokopedia.com", "tokopedia2015", "Digital")
-            )
-        )
-    }
+    // Can be directly used when moved to REST endpoints
+//    private fun getLoginData() {
+//        launchCatchError(
+//            dispatchers.io,
+//            block = {
+//
+//                val userDetails = listOfUsers(_uiState.value.envType)
+//                val sortedUserList = userDetails.users?.sortedBy {
+//                    it.email
+//                }
+//                val userList = LoginDataUiModel(userDetails.count, sortedUserList)
+//                updateUserDataList(Success(userList))
+//            },
+//            onError = {
+//                updateUserDataList(Fail(it))
+//            }
+//        )
+//    }
 
-    private fun provideProdLoginData(): LoginDataUiModel {
-        return LoginDataUiModel(
-            count = HeaderUiModel(7),
-            users = listOf<UserDataUiModel>(
-                UserDataUiModel("pbs-bagas.priyadi+01@tokopedia.com", "toped123", "Cex"),
-                UserDataUiModel(
-                    "android.automation.seller.h5+frontendtest@tokopedia.com",
-                    "tokopedia789",
-                    "Payment"
-                ),
-                UserDataUiModel(
-                    "pbs-adam.izzulhaq+manualbuyer.gplcicil.trx.ovrdue@tokopedia.com",
-                    "tokopedia",
-                    "Fintech"
-                ),
-                UserDataUiModel(
-                    "pbs-adam.izzulhaq+manualbuy.gplcicil+03@tokopedia.com",
-                    "tokopedia",
-                    "Fintech"
-                ),
-                UserDataUiModel(
-                    "elly.susilowati+090@tokopedia.com",
-                    "tokopedia2015",
-                    "All"
-                ),
-                UserDataUiModel(
-                    "te.digital@tokopedia.com",
-                    "Pikapika123",
-                    "Digital"
-                ),
-                UserDataUiModel(
-                    "qa-travent@tokopedia.com",
-                    "tokopedia789",
-                    "Digital"
+    private fun storeUserDetailsInState(loginData: LoginDataResponse) {
+        val aesEncryptorCBC = AESEncryptorCBC(ENCRYPTION_KEY)
+        val secretKey = aesEncryptorCBC.generateKey(ENCRYPTION_KEY)
+
+        val decryptedUserDetails = mutableListOf<UserDataResponse>()
+        loginData.users?.forEach {
+            decryptedUserDetails.add(
+                UserDataResponse(
+                    aesEncryptorCBC.decrypt(
+                        it.email ?: "",
+                        secretKey
+                    ),
+                    aesEncryptorCBC.decrypt(it.password ?: "", secretKey)
                 )
             )
-        )
+        }
+        val sortedUserList = decryptedUserDetails.sortedBy {
+            it.email
+        }
+
+        val userList =
+            LoginDataUiModel(loginData.count?.toHeaderUiModel(), sortedUserList.toUserDataUiModel())
+
+        updateUserDataList(Success(userList))
     }
 
     private fun loginUser(email: String, password: String, useHash: Boolean = true) {
@@ -256,7 +228,6 @@ class LoginHelperViewModel @Inject constructor(
                 envType = envType
             )
         }
-        getLoginData()
     }
 
     private fun handleBackButtonTap() {

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -18,6 +19,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
@@ -42,6 +44,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
+import java.io.IOException
 import javax.inject.Inject
 
 class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
@@ -127,7 +130,27 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                     loginHelperChipStaging.chipType = ChipsUnify.TYPE_NORMAL
                 }
             }
+            setLoginDataFromAssets(envType)
         }
+    }
+
+    private fun setLoginDataFromAssets(envType: LoginHelperEnvType) {
+        val fileName = if (envType is LoginHelperEnvType.STAGING) {
+            "user_details_staging.json"
+        } else {
+            "user_details_prod.json"
+        }
+        var jsonString: String = ""
+        context?.let { context ->
+            try {
+                jsonString = context.assets.open(fileName)
+                    .bufferedReader()
+                    .use { it.readText() }
+            } catch (ioException: IOException) {
+            }
+        }
+        val loginUserDetails = Gson().fromJson(jsonString, LoginDataResponse::class.java)
+        viewModel.processEvent(LoginHelperEvent.SaveUserDetailsFromAssets(loginUserDetails))
     }
 
     private fun FragmentLoginHelperBinding.setUpView() {
@@ -196,6 +219,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     private fun handleLoader(shouldShow: Boolean) {
         binding?.apply {
             loginDataLoader.showWithCondition(shouldShow)
+            loginDataLoader.bringToFront()
         }
     }
 
