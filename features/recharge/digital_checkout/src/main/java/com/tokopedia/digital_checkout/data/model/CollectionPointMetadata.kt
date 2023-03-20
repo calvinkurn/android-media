@@ -13,7 +13,7 @@ data class CollectionPointMetadata(
     @SerializedName("collection_point_version")
     @Expose
     val collectionPointVersion: String = "",
-    @SerializedName("metadata")
+    @SerializedName("consent_payload")
     @Expose
-    var metadata: String = ""
+    var consentPayload: String = ""
 ) : Parcelable

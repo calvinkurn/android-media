@@ -76,7 +76,7 @@ class DigitalCheckoutGqlUseCase @Inject constructor(
                         // checking metadata
                         val metadataKey = checkoutMetadataMap[KEY_METADATA]
                         val consentMetadata = customGson.fromJson(metadataKey.toString(), CollectionPointMetadata::class.java)
-                        consentMetadata.metadata = additionalMetadataJson.toString()
+                        consentMetadata.consentPayload = additionalMetadataJson.toString()
 
                         checkoutMetadataMap[KEY_METADATA] = customGson.toJson(consentMetadata)
                     } catch (e: JsonSyntaxException) {
