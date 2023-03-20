@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.common.util
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 /**
  * Created by fwidjaja on 2019-08-30.
  */
@@ -35,6 +37,7 @@ object SomConsts {
     const val DETAIL_SHIPPING_TYPE = "shipping"
     const val DETAIL_PAYMENT_TYPE = "payment"
     const val DETAIL_MVC_USAGE_TYPE = "mvc_usage"
+    const val DETAIL_POF_DATA_TYPE = "pof_data"
 
     const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
     const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
@@ -135,8 +138,8 @@ object SomConsts {
     const val SORT_BY_PAYMENT_DATE_DESCENDING = 2L
 
     // Som List Illustration
-    const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://images.tokopedia.net/android/others/som_list_empty_state_illustration.png"
-    const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = "https://images.tokopedia.net/android/others/som_list_empty_state_with_filter_illustration.png"
+    const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = TokopediaImageUrl.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION
+    const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = TokopediaImageUrl.SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION
 
     // Som print awb
     const val PATH_PRINT_AWB = "shipping-label"
