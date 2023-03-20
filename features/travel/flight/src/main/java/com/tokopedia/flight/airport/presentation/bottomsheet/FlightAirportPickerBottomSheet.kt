@@ -93,16 +93,18 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        bottomSheetHeader.setPadding(
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
+        context?.let { context ->
+            bottomSheetHeader.setPadding(
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
                 bottomSheetHeader.top,
                 bottomSheetWrapper.right,
                 bottomSheetHeader.bottom)
+        }
+
         bottomSheetWrapper.setPadding(0,
-                bottomSheetWrapper.paddingTop,
-                0,
-                bottomSheetWrapper.paddingBottom)
+            bottomSheetWrapper.paddingTop,
+            0,
+            bottomSheetWrapper.paddingBottom)
         bottomSheetWrapper.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
 
         initView()
