@@ -1515,7 +1515,10 @@ class ShipmentAdapter @Inject constructor(
             getShipmentCartItemByCartString(cartItem.cartString)
         if (cartItem.isProtectionOptIn && shipmentCartItem.selectedShipmentDetailData?.useDropshipper == true) {
             shipmentCartItem.selectedShipmentDetailData?.useDropshipper = false
-            shipmentCartItem.cartItemModels[cartItem.cartItemPosition] = cartItem
+            shipmentCartItem.cartItemModels =
+                shipmentCartItem.cartItemModels.toMutableList().apply {
+                    set(position, cartItem)
+                }
             shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
             notifyItemChanged(shipmentCartItemPosition)
             shipmentDataList[position] = cartItem

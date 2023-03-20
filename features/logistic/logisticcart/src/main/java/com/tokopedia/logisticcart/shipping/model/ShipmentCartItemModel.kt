@@ -60,7 +60,7 @@ data class ShipmentCartItemModel(
     var isProductFcancelPartial: Boolean = false,
     var isProductIsPreorder: Boolean = false,
 
-    var cartItemModels: ArrayList<CartItemModel> = ArrayList(),
+    var cartItemModels: List<CartItemModel> = ArrayList(),
 
     // View state
     var isStateDetailSubtotalViewExpanded: Boolean = false,
