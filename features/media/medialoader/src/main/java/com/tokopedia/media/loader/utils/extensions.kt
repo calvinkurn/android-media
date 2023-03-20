@@ -1,0 +1,65 @@
+package com.tokopedia.media.loader.utils
+
+import android.net.Uri
+import android.os.Handler
+import android.os.Looper
+import android.widget.ImageView
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.media.loader.MediaLoaderApi
+import com.tokopedia.media.loader.data.*
+import com.tokopedia.media.loader.module.GlideRequest
+
+private val handler by lazy(LazyThreadSafetyMode.NONE) {
+    Looper.myLooper()?.let {
+        Handler(it)
+    }
+}
+
+// convert String to Uri
+fun String.toUri(): Uri? {
+    return Uri.parse(this)
+}
+
+fun String.isValidUrl(): Boolean {
+    return this.isNotEmpty() && (this.contains("https") || this.contains("http"))
+}
+
+fun Properties.generateUrl(): Any {
+    val data = data.toString()
+
+    if (isSecure.not()) {
+        return data
+    }
+
+    return GlideUrl(
+        data,
+        LazyHeaders.Builder()
+            .apply {
+                addHeader(HEADER_KEY_AUTH, "$PREFIX_BEARER %s".format(accessToken))
+                addHeader(HEADER_X_DEVICE, "android-${GlobalConfig.VERSION_NAME}")
+                addHeader(HEADER_USER_ID, userId)
+            }
+            .build()
+    )
+}
+
+fun <T> GlideRequest<T>.mediaLoad(properties: Properties): GlideRequest<T> {
+    return if (properties.data is String) {
+        load(properties.generateUrl())
+    } else {
+        load(properties.data)
+    }
+}
+
+fun <T> GlideRequest<T>.delayInto(imageView: ImageView, properties: Properties) {
+    // render image
+    if (properties.renderDelay <= 0L) {
+        into(imageView)
+    } else {
+        handler?.postDelayed({
+            into(imageView)
+        }, properties.renderDelay)
+    }
+}

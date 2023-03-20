@@ -1,6 +1,7 @@
 package com.tokopedia.editshipping.ui.customproductlogistic
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -139,7 +140,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             context?.let {
                 val normalServiceView = getNormalServiceView()
 
-                val coachMarkItems = generateOnBoardingCoachMark(normalServiceView, whitelabelView)
+                val coachMarkItems =
+                    generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
                 whitelabelCoachmark = CoachMark2(it).apply {
                     setOnBoardingListener(coachMarkItems, data)
                     setStateAfterOnBoardingShown()
@@ -150,6 +152,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun generateOnBoardingCoachMark(
+        context: Context,
         normalService: View?,
         whitelabelService: View
     ): ArrayList<CoachMark2Item> {
@@ -158,8 +161,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         coachMarkItems.add(
             CoachMark2Item(
                 binding.tvAntarCpl,
-                getString(R.string.whitelabel_instan_title_coachmark),
-                getString(R.string.whitelabel_instan_description_coachmark)
+                context.getString(R.string.whitelabel_instan_title_coachmark),
+                context.getString(R.string.whitelabel_instan_description_coachmark)
             )
         )
 
@@ -167,8 +170,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    getString(R.string.whitelabel_onboarding_title_coachmark),
-                    getString(R.string.whitelabel_onboarding_description_coachmark),
+                    context.getString(R.string.whitelabel_onboarding_title_coachmark),
+                    context.getString(R.string.whitelabel_onboarding_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )
@@ -178,8 +181,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    getString(R.string.whitelabel_instan_title_coachmark),
-                    getString(R.string.whitelabel_instan_description_coachmark),
+                    context.getString(R.string.whitelabel_instan_title_coachmark),
+                    context.getString(R.string.whitelabel_instan_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )
@@ -187,7 +190,10 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         return coachMarkItems
     }
 
-    private fun CoachMark2.setOnBoardingListener(coachMarkItems: ArrayList<CoachMark2Item>, data: CustomProductLogisticModel) {
+    private fun CoachMark2.setOnBoardingListener(
+        coachMarkItems: ArrayList<CoachMark2Item>,
+        data: CustomProductLogisticModel
+    ) {
         this.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                 if (currentIndex < 1) {
@@ -201,7 +207,10 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         })
     }
 
-    private fun CoachMark2.manualScroll(coachMarkItems: ArrayList<CoachMark2Item>, currentIndex: Int = 1) {
+    private fun CoachMark2.manualScroll(
+        coachMarkItems: ArrayList<CoachMark2Item>,
+        currentIndex: Int = 1
+    ) {
         coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { rv ->
             binding.svShippingEditor.smoothScrollTo(0, rv.top)
             this.showCoachMark(coachMarkItems, null, currentIndex)
@@ -224,7 +233,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun initObserver() {
-        viewModel.cplState.observe(viewLifecycleOwner, {
+        viewModel.cplState.observe(viewLifecycleOwner) {
             when (it) {
                 is CPLState.FirstLoad -> {
                     populateView(it.data)
@@ -249,7 +258,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                     binding.btnSaveShipper.gone()
                 }
             }
-        })
+        }
     }
 
     private fun populateView(data: CustomProductLogisticModel) {

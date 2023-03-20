@@ -12,6 +12,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
+import com.tokopedia.oneclickcheckout.order.domain.DynamicPaymentFeeUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
@@ -28,6 +29,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -78,6 +80,9 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var goCicilInstallmentOptionUseCase: GoCicilInstallmentOptionUseCase
 
     @MockK(relaxed = true)
+    lateinit var dynamicPaymentFeeUseCase: DynamicPaymentFeeUseCase
+
+    @MockK(relaxed = true)
     lateinit var clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>
 
     @MockK(relaxed = true)
@@ -102,13 +107,48 @@ open class BaseOrderSummaryPageViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         helper = OrderSummaryPageViewModelTestHelper()
-        orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers,
-                OrderSummaryPageCartProcessor(addToCartOccMultiExternalUseCase, getOccCartUseCase, updateCartOccUseCase, getPrescriptionIdsUseCase, testDispatchers),
-                OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, chooseAddressRepository, chooseAddressMapper, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
-                OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers, gson),
-                OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
-                { OrderSummaryPagePaymentProcessor(creditCardTenorListUseCase, goCicilInstallmentOptionUseCase, testDispatchers) },
-                OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
-                userSessionInterface, orderSummaryAnalytics, eligibleForAddressUseCase)
+        orderSummaryPageViewModel = OrderSummaryPageViewModel(
+            testDispatchers,
+            OrderSummaryPageCartProcessor(
+                addToCartOccMultiExternalUseCase,
+                getOccCartUseCase,
+                updateCartOccUseCase,
+                getPrescriptionIdsUseCase,
+                testDispatchers
+            ),
+            OrderSummaryPageLogisticProcessor(
+                ratesUseCase,
+                ratesResponseStateConverter,
+                chooseAddressRepository,
+                chooseAddressMapper,
+                editAddressUseCase,
+                orderSummaryAnalytics,
+                testDispatchers
+            ),
+            OrderSummaryPageCheckoutProcessor(
+                checkoutOccUseCase,
+                orderSummaryAnalytics,
+                testDispatchers,
+                gson
+            ),
+            OrderSummaryPagePromoProcessor(
+                validateUsePromoRevampUseCase,
+                clearCacheAutoApplyStackUseCase,
+                orderSummaryAnalytics,
+                testDispatchers
+            ),
+            {
+                OrderSummaryPagePaymentProcessor(
+                    creditCardTenorListUseCase,
+                    goCicilInstallmentOptionUseCase,
+                    dynamicPaymentFeeUseCase,
+                    testDispatchers
+                )
+            },
+            OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
+            userSessionInterface, orderSummaryAnalytics, eligibleForAddressUseCase
+        )
+
+        coEvery { dynamicPaymentFeeUseCase.invoke(any()) } returns emptyList()
     }
 }

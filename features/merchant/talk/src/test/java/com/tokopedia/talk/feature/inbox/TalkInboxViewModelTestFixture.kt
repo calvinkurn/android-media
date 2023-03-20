@@ -1,10 +1,11 @@
 package com.tokopedia.talk.feature.inbox
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
 import com.tokopedia.talk.feature.inbox.domain.usecase.TalkInboxListUseCase
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -22,15 +23,24 @@ abstract class TalkInboxViewModelTestFixture {
     @RelaxedMockK
     lateinit var talkInboxTracking: TalkInboxTracking
 
+    @RelaxedMockK
+    lateinit var firebaseRemoteConfig: RemoteConfig
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    protected lateinit var viewModel: TalkInboxViewModel
+    protected val viewModel: TalkInboxViewModel by lazy {
+        TalkInboxViewModel(
+            CoroutineTestDispatchersProvider,
+            talkInboxListUseCase,
+            userSession,
+            talkInboxTracking,
+            firebaseRemoteConfig
+        )
+    }
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TalkInboxViewModel(CoroutineTestDispatchersProvider, talkInboxListUseCase, userSession, talkInboxTracking)
-        viewModel.inboxList.observeForever {  }
     }
 }

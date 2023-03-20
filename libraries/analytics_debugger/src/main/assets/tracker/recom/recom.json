@@ -46,6 +46,7 @@
       "eventCategory": "recommendation page with product id",
       "item_list": ".*",
       "event": "view_item_list",
+      "item_list_name": ".*",
       "eventAction": "impression - product recommendation|impression - product recommendation - non login",
       "sessionIris" : ".*",
       "items": [{
@@ -67,6 +68,7 @@
       "item_list": ".*",
       "event": "view_item_list",
       "eventAction": "impression primary product",
+      "item_list_name": ".*",
       "sessionIris" : ".*",
       "shopId" : ".*",
       "items": [{

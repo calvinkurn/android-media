@@ -42,9 +42,9 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.FintechWidgetViewHolder
@@ -65,7 +65,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMerchantVoucherSummaryViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMiniShopWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofStockViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofViewHolder
+import com.tokopedia.product.detail.view.viewholder.social_proof.ProductMiniSocialProofViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductNotifyMeViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
@@ -79,11 +79,12 @@ import com.tokopedia.product.detail.view.viewholder.ProductShopCredibilityViewHo
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductTickerInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductTopAdsImageViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.ShipmentViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
+import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
 
 class DynamicProductDetailAdapterFactoryImpl(
     private val listener: DynamicProductDetailListener,
@@ -109,10 +110,6 @@ class DynamicProductDetailAdapterFactoryImpl(
 
     override fun type(data: PageErrorDataModel): Int {
         return PageErrorViewHolder.LAYOUT
-    }
-
-    override fun type(data: VariantDataModel): Int {
-        return ProductVariantViewHolder.LAYOUT
     }
 
     override fun type(data: ProductNotifyMeDataModel): Int {
@@ -176,7 +173,11 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(data: ProductSingleVariantDataModel): Int {
-        return ProductSingleVariantViewHolder.LAYOUT
+        return if (data.isThumbnailType) {
+            ProductThumbnailVariantViewHolder.LAYOUT
+        } else {
+            ProductSingleVariantViewHolder.LAYOUT
+        }
     }
 
     override fun type(data: ProductMiniShopWidgetDataModel): Int {
@@ -243,6 +244,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ProductCustomInfoTitleViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductShopReviewDataModel): Int {
+        return ProductShopReviewViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view, listener)
@@ -258,11 +263,6 @@ class DynamicProductDetailAdapterFactoryImpl(
             ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
             ProductShimmeringViewHolder.LAYOUT -> ProductShimmeringViewHolder(view)
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
-            ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(
-                view,
-                variantListener,
-                listener
-            )
             ProductNotifyMeViewHolder.LAYOUT -> ProductNotifyMeViewHolder(view, listener)
             ProductMediaViewHolder.LAYOUT -> ProductMediaViewHolder(view, listener)
             ProductContentViewHolder.LAYOUT -> ProductContentViewHolder(view, listener)
@@ -299,6 +299,11 @@ class DynamicProductDetailAdapterFactoryImpl(
                 variantListener,
                 listener
             )
+            ProductThumbnailVariantViewHolder.LAYOUT -> ProductThumbnailVariantViewHolder(
+                view,
+                variantListener,
+                listener
+            )
             OneLinersViewHolder.LAYOUT -> OneLinersViewHolder(view, listener)
             ProductRecomWidgetViewHolder.LAYOUT -> ProductRecomWidgetViewHolder(view, listener)
             ProductCategoryCarouselViewHolder.LAYOUT -> ProductCategoryCarouselViewHolder(
@@ -311,13 +316,16 @@ class DynamicProductDetailAdapterFactoryImpl(
                 val playWidgetView: View? = view.findViewById(R.id.pdp_play_widget_view)
                 if (playWidgetView != null) {
                     ContentWidgetViewHolder(
-                        view, PlayWidgetViewHolder(
+                        view,
+                        PlayWidgetViewHolder(
                             itemView = playWidgetView,
                             coordinator = playWidgetCoordinator
                         ),
                         listener
                     )
-                } else super.createViewHolder(view, type)
+                } else {
+                    super.createViewHolder(view, type)
+                }
             }
             ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(
                 view,
@@ -336,8 +344,11 @@ class DynamicProductDetailAdapterFactoryImpl(
             ProductArViewHolder.LAYOUT -> ProductArViewHolder(view, listener)
             ViewToViewWidgetViewHolder.LAYOUT -> ViewToViewWidgetViewHolder(view, listener)
             ProductCustomInfoTitleViewHolder.LAYOUT -> ProductCustomInfoTitleViewHolder(view = view)
+            ProductShopReviewViewHolder.LAYOUT -> ProductShopReviewViewHolder(
+                view = view,
+                listener = listener
+            )
             else -> super.createViewHolder(view, type)
         }
     }
-
 }

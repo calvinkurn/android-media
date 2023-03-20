@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "id": "89953ffd-6655-4581-b811-8e1a6145661b",
+      "channel_id": "b0c80252-c6a6-40f1-a3ce-a9894a32ac6d",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at varius odio. In ipsum nisi, hendrerit quis bibendum sed, gravida ut ipsum. Sed tincidunt, tortor tempor rhoncus dictum, justo tortor placerat odio, at cursus velit dolor ac eros. Mauris aliquam ultrices nibh sit amet consequat. Proin euismod nisi dapibus ex placerat, vel semper ipsum congue. Maecenas sagittis felis in est sodales, non mattis nisi facilisis. Curabitur tempus iaculis urna, nec ultrices erat semper et. Pellentesque quis urna cursus metus luctus rutrum. Vestibulum vitae sem a lectus sagittis facilisis. Nullam ut luctus neque, sit amet suscipit nulla. Cras malesuada lectus ut enim blandit, sed feugiat augue placerat. Maecenas vestibulum euismod aliquam. Praesent ultrices rhoncus risus nec volutpat. Maecenas vestibulum euismod aliquam. Praesent ultrices rhoncus risus nec volutpat. Maecenas vestibulum euismod aliquam. Praesent ultrices rhoncus risus nec volutpat. Maecenas vestibulum euismod aliquam. Praesent ultri.",
+      "data": "{\"tracking_id\":\"E63E0505-418B-4B6C-8125-B8889784001E\"}",
+      "type": "text",
+      "sender": {
+        "id": "835a69de-577e-4881-bf1d-4e3eed13c643",
+        "name": "bctiga",
+        "phone": "89676955972",
+        "country_code": "62"
+      },
+      "sent_at": 1673950390655
+    }
+  ],
+  "success": true,
+  "errors": []
+}

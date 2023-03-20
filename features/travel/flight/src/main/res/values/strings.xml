@@ -362,6 +362,7 @@ di tempatmu.</string>
 
     <string name="flight_order_detail_trip_city">%1$s (%2$s) ➝ %3$s (%4$s)</string>
     <string name="flight_order_detail_airport_with_terminal">%1$s (Terminal %2$s)</string>
+    <string name="share_string_container">Coba cek penerbangan dari %1$s - %2$s di Tokopedia, deh %3$s</string>
     <string name="flight_order_detail_airport_journey_with_transit">%1$s \u2022 %2$s \u2022 %3$d Transit</string>
     <string name="flight_order_detail_airport_journey_without_transit">%1$s \u2022 %2$s</string>
 

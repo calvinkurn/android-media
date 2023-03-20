@@ -1,7 +1,9 @@
 package com.tokopedia.analyticsdebugger.websocket.di
 
-import com.tokopedia.analyticsdebugger.websocket.data.repository.WebSocketLogRepositoryImpl
-import com.tokopedia.analyticsdebugger.websocket.domain.repository.WebSocketLogRespository
+import com.tokopedia.analyticsdebugger.websocket.data.repository.PlayWebSocketLogRepositoryImpl
+import com.tokopedia.analyticsdebugger.websocket.data.repository.TopchatWebSocketLogRepositoryImpl
+import com.tokopedia.analyticsdebugger.websocket.domain.repository.PlayWebSocketLogRepository
+import com.tokopedia.analyticsdebugger.websocket.domain.repository.TopchatWebSocketLogRepository
 import dagger.Binds
 import dagger.Module
 
@@ -14,5 +16,13 @@ abstract class WebSocketLoggingBindModule {
 
     @Binds
     @WebSocketLoggingScope
-    abstract fun bindWebSocketRepository(webSocketLogRepositoryImpl: WebSocketLogRepositoryImpl): WebSocketLogRespository
+    abstract fun bindPlayWebSocketRepository(
+        repository: PlayWebSocketLogRepositoryImpl
+    ): PlayWebSocketLogRepository
+
+    @Binds
+    @WebSocketLoggingScope
+    abstract fun bindTopchatWebSocketRepository(
+        repository: TopchatWebSocketLogRepositoryImpl
+    ): TopchatWebSocketLogRepository
 }

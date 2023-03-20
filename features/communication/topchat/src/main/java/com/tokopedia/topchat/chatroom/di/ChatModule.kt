@@ -23,7 +23,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
 import com.tokopedia.topchat.common.Constant.NET_READ_TIMEOUT
@@ -46,7 +45,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 
 /**
  * @author : Steven 29/11/18
@@ -82,12 +80,6 @@ class ChatModule {
             NET_CONNECT_TIMEOUT,
             NET_RETRY
         )
-    }
-
-    @ChatScope
-    @Provides
-    fun provideChatRoomApi(@Named("retrofit") retrofit: Retrofit): ChatRoomApi {
-        return retrofit.create(ChatRoomApi::class.java)
     }
 
     @ChatScope
@@ -225,9 +217,11 @@ class ChatModule {
     @ChatScope
     @Provides
     fun provideTopChatWebSocket(
+        @ApplicationContext context: Context,
         userSession: UserSessionInterface,
         client: OkHttpClient,
-        irisSession: Session
+        irisSession: Session,
+        webSocketParser: WebSocketParser
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN
             .plus(ChatUrl.CONNECT_WEBSOCKET)
@@ -239,11 +233,13 @@ class ChatModule {
                 userSession.userId
             )
         return DefaultTopChatWebSocket(
+            context,
             client,
             webSocketUrl,
             userSession.accessToken,
             PAGE_CHATROOM,
-            irisSession
+            irisSession,
+            webSocketParser
         )
     }
 

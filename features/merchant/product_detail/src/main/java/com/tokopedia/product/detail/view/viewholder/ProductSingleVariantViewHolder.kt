@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -16,6 +17,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.databinding.ItemLocalLoadUnifyBinding
 import com.tokopedia.product.detail.databinding.ItemSingleVariantViewHolderBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.ThumbnailSmoothScroller
 
 /**
  * Created by Yehezkiel on 02/06/21
@@ -35,6 +37,9 @@ class ProductSingleVariantViewHolder(val view: View,
 
     private val binding = ItemSingleVariantViewHolderBinding.bind(view)
     private val itemLocalLoadUnifyBinding = ItemLocalLoadUnifyBinding.bind(binding.root)
+    private val smoothScroller by lazyThreadSafetyNone {
+        ThumbnailSmoothScroller(binding.root.context, binding.rvSingleVariant)
+    }
 
     init {
         containerAdapter = AtcVariantOptionAdapter(this)
@@ -42,7 +47,7 @@ class ProductSingleVariantViewHolder(val view: View,
 
     fun scrollToPosition(position: Int) {
         if (position != -1) {
-            binding.rvSingleVariant.scrollToPosition(position)
+            smoothScroller.scrollThumbnail(position)
         }
     }
 
@@ -55,6 +60,7 @@ class ProductSingleVariantViewHolder(val view: View,
                 binding.rvSingleVariant.adapter = containerAdapter
                 binding.rvSingleVariant.itemAnimator = null
                 binding.rvSingleVariant.layoutManager = layoutManager
+                binding.rvSingleVariant.setRecycledViewPool(pdpListener.getParentRecyclerViewPool())
                 containerAdapter?.setData(it.variantOptions)
 
                 itemView.setOnClickListener {

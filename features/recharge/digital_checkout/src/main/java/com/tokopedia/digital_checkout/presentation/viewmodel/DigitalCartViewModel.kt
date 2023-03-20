@@ -19,6 +19,7 @@ import com.tokopedia.digital_checkout.data.PaymentSummary
 import com.tokopedia.digital_checkout.data.PaymentSummary.Payment
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
+import com.tokopedia.digital_checkout.data.request.DigitalCrossSellData
 import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
 import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
@@ -320,7 +321,12 @@ class DigitalCartViewModel @Inject constructor(
         _totalPrice.forceRefresh()
     }
 
-    fun onSubscriptionChecked(isChecked: Boolean) {
+    fun onSubscriptionChecked(
+        fintechProduct: FintechProduct,
+        isChecked: Boolean
+    ) {
+        val digitalCrossSellData = DigitalCrossSellData(fintechProduct, true)
+        updateRequestCheckoutParamWithCrossSellData(digitalCrossSellData, isChecked)
         requestCheckoutParam.isSubscriptionChecked = isChecked
     }
 
@@ -329,23 +335,34 @@ class DigitalCartViewModel @Inject constructor(
         isChecked: Boolean,
         inputPrice: Double?
     ) {
-        if (requestCheckoutParam.fintechProducts.containsKey(fintechProduct.tierId) && !isChecked) {
-            // remove
-            requestCheckoutParam.fintechProducts.remove(fintechProduct.tierId)
-        } else if (!requestCheckoutParam.fintechProducts.containsKey(fintechProduct.tierId) && isChecked) {
-            // add
-            requestCheckoutParam.fintechProducts[fintechProduct.tierId] = fintechProduct
-        }
+        val digitalCrossSellData = DigitalCrossSellData(fintechProduct, false)
+        updateRequestCheckoutParamWithCrossSellData(digitalCrossSellData, isChecked)
         updateTotalPriceWithFintechProduct(inputPrice)
         updateCheckoutSummaryWithFintechProduct(fintechProduct, isChecked)
+    }
+
+    private fun updateRequestCheckoutParamWithCrossSellData(
+        digitalCrossSellData: DigitalCrossSellData,
+        isChecked: Boolean
+    ) {
+        val fintechProduct = digitalCrossSellData.product
+        if (requestCheckoutParam.crossSellProducts.containsKey(fintechProduct.tierId) && !isChecked) {
+            // remove
+            requestCheckoutParam.crossSellProducts.remove(fintechProduct.tierId)
+        } else if (!requestCheckoutParam.crossSellProducts.containsKey(fintechProduct.tierId) && isChecked) {
+            // add
+            requestCheckoutParam.crossSellProducts[fintechProduct.tierId] = digitalCrossSellData
+        }
     }
 
     private fun updateTotalPriceWithFintechProduct(inputPrice: Double?) {
         cartDigitalInfoData.value?.attributes?.let { attributes ->
             var totalPrice = inputPrice ?: attributes.pricePlain
 
-            requestCheckoutParam.fintechProducts.forEach { fintech ->
-                totalPrice += fintech.value.fintechAmount
+            requestCheckoutParam.crossSellProducts.forEach { crossSell ->
+                if (!crossSell.value.isSubscription) {
+                    totalPrice += crossSell.value.product.fintechAmount
+                }
             }
             _totalPrice.postValue(
                 calculateTotalPrice(
@@ -408,22 +425,21 @@ class DigitalCartViewModel @Inject constructor(
 
                     _paymentPassData.postValue(checkoutData)
 
-                    requestCheckoutParam.fintechProducts.let { fintech ->
-                        if (fintech.isNotEmpty()) {
-                            fintech.values.forEach {
-                                if (it.info.iconUrl.isNotEmpty()) {
-                                    analytics.eventProceedCheckoutTebusMurah(
-                                        it,
-                                        cartDigitalInfoData.attributes.categoryName,
-                                        userSession.userId
-                                    )
-                                } else {
-                                    analytics.eventProceedCheckoutCrossell(
-                                        it,
-                                        cartDigitalInfoData.attributes.categoryName,
-                                        userSession.userId
-                                    )
-                                }
+                    requestCheckoutParam.crossSellProducts.let { crossSell ->
+                        crossSell.values.forEach {
+                            if (it.isSubscription) return@forEach
+                            if (it.product.info.iconUrl.isNotEmpty()) {
+                                analytics.eventProceedCheckoutTebusMurah(
+                                    it.product,
+                                    cartDigitalInfoData.attributes.categoryName,
+                                    userSession.userId
+                                )
+                            } else {
+                                analytics.eventProceedCheckoutCrossell(
+                                    it.product,
+                                    cartDigitalInfoData.attributes.categoryName,
+                                    userSession.userId
+                                )
                             }
                         }
                     }

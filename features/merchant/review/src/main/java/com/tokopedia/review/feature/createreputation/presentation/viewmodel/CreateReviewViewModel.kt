@@ -21,6 +21,7 @@ import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.review.R
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.common.extension.combine
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.domain.RequestState
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
@@ -124,10 +125,7 @@ class CreateReviewViewModel @Inject constructor(
     companion object {
         private const val STATE_FLOW_TIMEOUT_MILLIS = 5000L
         private const val UPDATE_POEM_INTERVAL = 1000L
-        private const val GOOD_RATING_THRESHOLD = 2
         private const val REVIEW_TOPICS_PEEK_ANIMATION_RUN_INTERVAL_DAYS = 1L
-        private const val CREATE_REVIEW_IMAGE_SOURCE_ID = "bjFkPX"
-        private const val CREATE_REVIEW_VIDEO_SOURCE_ID = "wKpVIv"
 
         private const val SAVED_STATE_RATING = "savedStateRating"
         private const val SAVED_STATE_REVIEW_TEXT = "savedStateReviewText"
@@ -154,8 +152,6 @@ class CreateReviewViewModel @Inject constructor(
         private const val CACHE_KEY_IS_REVIEW_TOPICS_PEEK_ANIMATION_ALREADY_RUN = "cacheKeyIsReviewTopicsPeekAnimationAlreadyRun"
 
         private const val REVIEW_INSPIRATION_ENABLED = "experiment_variant"
-
-        private const val MEDIA_UPLOAD_ERROR_MESSAGE = "Error when uploading %s. Cause: %s"
     }
 
     // region state that need to be saved and restored
@@ -188,7 +184,7 @@ class CreateReviewViewModel @Inject constructor(
     private val mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
     private val textAreaHasFocus = MutableStateFlow(false)
     private val shouldResetFailedUploadStatus = MutableStateFlow(false)
-    private val _toasterQueue = MutableSharedFlow<CreateReviewToasterUiModel>(extraBufferCapacity = 50)
+    private val _toasterQueue = MutableSharedFlow<CreateReviewToasterUiModel<Any>>(extraBufferCapacity = 50)
     private val bottomSheetBottomInset = MutableStateFlow(Int.ZERO)
     // endregion state that must not be saved nor restored
 
@@ -347,7 +343,7 @@ class CreateReviewViewModel @Inject constructor(
     ).toStateFlow(CreateReviewAnonymousInfoBottomSheetUiState.Hidden)
     // endregion anonymous info bottom sheet state
 
-    val toasterQueue: Flow<CreateReviewToasterUiModel>
+    val toasterQueue: Flow<CreateReviewToasterUiModel<Any>>
         get() = _toasterQueue
 
     val submitReviewResult: Flow<SubmitReviewRequestState>
@@ -391,7 +387,7 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     private fun mapIsGoodRating(rating: Int): Boolean {
-        return rating > GOOD_RATING_THRESHOLD
+        return rating > ReviewConstants.BAD_RATING_CATEGORY_THRESHOLD
     }
 
     private fun mapMediaItems(
@@ -400,11 +396,12 @@ class CreateReviewViewModel @Inject constructor(
         mediaUploadJobs: MediaUploadJobMap
     ): List<CreateReviewMediaUiModel> {
         return CreateReviewMapper.mapMediaItems(
-            mediaUris,
-            mediaUploadResults,
-            mediaUploadJobs,
-            mediaItems.value,
-            uploadBatchNumber
+            reviewItemMediaUris = mediaUris,
+            reviewItemsMediaUploadResults = mediaUploadResults,
+            reviewItemMediaUploadJobs = mediaUploadJobs,
+            existingMediaItems = mediaItems.value,
+            uploadBatchNumber = uploadBatchNumber,
+            showLargeAddMediaItem = true
         )
     }
 
@@ -457,7 +454,7 @@ class CreateReviewViewModel @Inject constructor(
         reviewFormResult: ReviewFormRequestSuccessState
     ): StringRes {
         val badRatingCategoriesShowing = badRatingCategoriesUiState is CreateReviewBadRatingCategoriesUiState.Showing
-        return if (rating in CreateReviewFragment.RATING_1..CreateReviewFragment.RATING_2) {
+        return if (rating in ReviewConstants.RATING_1..ReviewConstants.RATING_2) {
             if (badRatingCategoriesShowing) {
                 if (isOnlyBadRatingOtherCategorySelected) {
                     StringRes(R.string.review_form_bad_helper_must_fill)
@@ -469,7 +466,7 @@ class CreateReviewViewModel @Inject constructor(
                 // it isn't showing yet, so we need to wait for it to be showing
                 textAreaHint.value
             }
-        } else if (rating == CreateReviewFragment.RATING_3) {
+        } else if (rating == ReviewConstants.RATING_3) {
             StringRes(R.string.review_form_neutral_helper)
         } else {
             reviewFormResult.result.productrevGetForm.placeholder.takeIf {
@@ -578,9 +575,9 @@ class CreateReviewViewModel @Inject constructor(
     ): CreateReviewTextAreaTitleUiState {
         return if (canRenderForm) {
             val stringResId = when (rating) {
-                CreateReviewFragment.RATING_1 -> R.string.review_create_worst_title
-                CreateReviewFragment.RATING_2 -> R.string.review_form_bad_title
-                CreateReviewFragment.RATING_3 -> R.string.review_form_neutral_title
+                ReviewConstants.RATING_1 -> R.string.review_create_worst_title
+                ReviewConstants.RATING_2 -> R.string.review_form_bad_title
+                ReviewConstants.RATING_3 -> R.string.review_form_neutral_title
                 else -> R.string.review_create_best_title
             }
             CreateReviewTextAreaTitleUiState.Showing(StringRes(stringResId))
@@ -699,7 +696,7 @@ class CreateReviewViewModel @Inject constructor(
                 val concatenatedErrorMessage = mediaItems.filter {
                     it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED
                 }.joinToString("|") {
-                    String.format(MEDIA_UPLOAD_ERROR_MESSAGE, it.uri, it.message)
+                    String.format(ReviewConstants.MEDIA_UPLOAD_ERROR_MESSAGE, it.uri, it.message)
                 }
                 val errorCode = ErrorHandler.getErrorMessagePair(
                     context = null,
@@ -715,7 +712,8 @@ class CreateReviewViewModel @Inject constructor(
                     CreateReviewMediaPickerUiState.FailedUpload(
                         failedOccurrenceCount = currentMediaPickerUiState.failedOccurrenceCount + 1,
                         mediaItems = mediaItems,
-                        errorCode = errorCode
+                        errorCode = errorCode,
+                        shouldQueueToaster = false
                     )
                 }
             } else {
@@ -1261,7 +1259,8 @@ class CreateReviewViewModel @Inject constructor(
                 message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message, listOf(errorCode)),
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_ERROR
+                type = Toaster.TYPE_ERROR,
+                payload = Unit
             )
         )
     }
@@ -1272,7 +1271,8 @@ class CreateReviewViewModel @Inject constructor(
                 message = StringRes(R.string.review_form_media_picker_toaster_wait_for_upload_message),
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_NORMAL
+                type = Toaster.TYPE_NORMAL,
+                payload = Unit
             )
         )
     }
@@ -1283,13 +1283,14 @@ class CreateReviewViewModel @Inject constructor(
                 message = StringRes(R.string.review_create_fail_toaster, listOf(errorCode)),
                 actionText = StringRes(R.string.review_oke),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_ERROR
+                type = Toaster.TYPE_ERROR,
+                payload = Unit
             )
         )
     }
 
     private fun getUploadSourceId(uri: String): String {
-        return if (isVideoFormat(uri)) CREATE_REVIEW_VIDEO_SOURCE_ID else CREATE_REVIEW_IMAGE_SOURCE_ID
+        return if (isVideoFormat(uri)) ReviewConstants.CREATE_REVIEW_VIDEO_SOURCE_ID else ReviewConstants.CREATE_REVIEW_IMAGE_SOURCE_ID
     }
 
     private fun getErrorCode(throwable: Throwable): String {
@@ -1346,7 +1347,8 @@ class CreateReviewViewModel @Inject constructor(
                 message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
-                type = Toaster.TYPE_NORMAL
+                type = Toaster.TYPE_NORMAL,
+                payload = Unit
             )
         )
     }
