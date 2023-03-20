@@ -332,7 +332,7 @@ interface ShipmentContract {
         )
 
         var recipientAddressModel: RecipientAddressModel?
-        var shipmentCartItemModelList: List<ShipmentCartItemModel>?
+        var shipmentCartItemModelList: List<ShipmentCartItemModel>
         fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>?)
         fun getShipmentCostModel(): ShipmentCostModel
         fun setShipmentCostModel(shipmentCostModel: ShipmentCostModel?)
@@ -369,9 +369,11 @@ interface ShipmentContract {
         fun setListShipmentCrossSellModel(listShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>?)
         fun setShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel?)
         val shipmentButtonPayment: CheckoutMutableLiveData<ShipmentButtonPaymentModel>
-        fun updateShipmentButtonPaymentModel(enable: Boolean?,
-                                             totalPrice: String?,
-                                             loading: Boolean?)
+        fun updateShipmentButtonPaymentModel(
+            enable: Boolean?,
+            totalPrice: String?,
+            loading: Boolean?
+        )
         fun setShippingCourierViewModelsState(
             shippingCourierUiModelsState: List<ShippingCourierUiModel>,
             orderNumber: Int

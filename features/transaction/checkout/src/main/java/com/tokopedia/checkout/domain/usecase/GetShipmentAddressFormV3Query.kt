@@ -82,6 +82,12 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   }
                 }
                 group_shop {
+                  # group_type
+                  # ui_group_type
+                  # group_information {
+                      # name
+                      # badge_url
+                  # }
                   add_ons {
                     status
                     add_on_data {
@@ -220,6 +226,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                     telp_no
                   }
                   cart_details {
+                    # origin_warehouse_ids
                     errors
                     bundle_detail {
                       bundle_group_id
@@ -465,6 +472,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                     voucher_orders {
                       code
                       unique_id
+                      # cart_string_grouping
                       address_id
                       type
                       cart_id

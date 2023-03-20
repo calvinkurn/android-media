@@ -6,6 +6,7 @@ import com.tokopedia.checkout.data.model.request.saf.ShipmentAddressFormRequest
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -24,50 +25,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<ShipmentAddressFormRequest, CartShipmentAddressFormData>(dispatchers.io) {
 
-//    private var params: Map<String, Any>? = null
-//
-//    fun setParams(
-//        isOneClickShipment: Boolean,
-//        isTradeIn: Boolean,
-//        isSkipUpdateOnboardingState: Boolean,
-//        cornerId: String?,
-//        deviceId: String?,
-//        leasingId: String?,
-//        isPlusSelected: Boolean
-//    ) {
-//        val params: MutableMap<String, Any> = HashMap()
-//        params[ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS] =
-//            chosenAddressRequestHelper.getChosenAddress()
-//        params[PARAM_KEY_LANG] = "id"
-//        params[PARAM_KEY_IS_ONE_CLICK_SHIPMENT] = isOneClickShipment
-//        params[PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE] = if (isSkipUpdateOnboardingState) 1 else 0
-//        if (cornerId != null) {
-//            try {
-//                val tmpCornerId = cornerId.toIntOrZero()
-//                params[PARAM_KEY_CORNER_ID] = tmpCornerId
-//            } catch (e: NumberFormatException) {
-//                Timber.d(e)
-//            }
-//        }
-//        if (leasingId != null && leasingId.isNotEmpty()) {
-//            try {
-//                val tmpLeasingId = leasingId.toIntOrZero()
-//                params[PARAM_KEY_VEHICLE_LEASING_ID] = tmpLeasingId
-//            } catch (e: NumberFormatException) {
-//                Timber.d(e)
-//            }
-//        }
-//        if (isTradeIn) {
-//            params[PARAM_KEY_IS_TRADEIN] = true
-//            params[PARAM_KEY_DEVICE_ID] = deviceId ?: ""
-//        }
-//        params[PARAM_KEY_IS_PLUS_SELECTED] = isPlusSelected
-//
-//        this.params = mapOf(
-//            "params" to params
-//        )
-//    }
-
+    @GqlQuery(QUERY_SHIPMENT_ADDRESS_FORM, SHIPMENT_ADDRESS_FORM_V3_QUERY)
     override fun graphqlQuery(): String {
         return SHIPMENT_ADDRESS_FORM_V3_QUERY
     }
@@ -102,7 +60,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
         paramMap[PARAM_KEY_IS_PLUS_SELECTED] = params.isPlusSelected
 
         val request = GraphqlRequest(
-            ShipmentAddressFormQuery(),
+            graphqlQuery(),
             ShipmentAddressFormGqlResponse::class.java,
             mapOf(
                 "params" to paramMap

@@ -201,7 +201,7 @@ class ShipmentPresenter @Inject constructor(
     override var shipmentNewUpsellModel = ShipmentNewUpsellModel()
         private set
 
-    override var shipmentCartItemModelList: List<ShipmentCartItemModel>? = null
+    override var shipmentCartItemModelList: List<ShipmentCartItemModel> = emptyList()
 
     override var shipmentTickerErrorModel = ShipmentTickerErrorModel()
         private set

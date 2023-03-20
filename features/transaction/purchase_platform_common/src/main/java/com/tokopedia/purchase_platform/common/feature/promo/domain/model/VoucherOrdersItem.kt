@@ -23,4 +23,7 @@ data class VoucherOrdersItem(
     @SuppressLint("Invalid Data Type")
     @SerializedName("sp_id")
     val spId: Int = 0,
+
+    @SerializedName("cart_string_grouping")
+    val cartStringGroup: String = ""
 )
