@@ -15,7 +15,6 @@ import androidx.core.text.toSpanned
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -105,10 +104,14 @@ class ContentCommentBottomSheet @Inject constructor(
 
             override fun afterTextChanged(p0: Editable?) {
                 binding.ivCommentSend.background.setTint(
-                    if (!p0.isNullOrBlank()) MethodChecker.getColor(
-                        requireContext(),
-                        unifyR.color.Unify_GN500
-                    ) else MethodChecker.getColor(requireContext(), unifyR.color.Unify_NN300)
+                    if (!p0.isNullOrBlank()) {
+                        MethodChecker.getColor(
+                            requireContext(),
+                            unifyR.color.Unify_GN500
+                        )
+                    } else {
+                        MethodChecker.getColor(requireContext(), unifyR.color.Unify_NN300)
+                    }
                 )
 
                 if (p0 == null) return
@@ -138,15 +141,6 @@ class ContentCommentBottomSheet @Inject constructor(
                 super.onDismissed(transientBottomBar, event)
 
                 viewModel.submitAction(CommentAction.PermanentRemoveComment)
-            }
-        }
-    }
-
-
-    private val adapterObserver by lazyThreadSafetyNone {
-        object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (binding.rvComment.childCount > 0) binding.rvComment.scrollToPosition(0)
             }
         }
     }
@@ -190,7 +184,6 @@ class ContentCommentBottomSheet @Inject constructor(
         }
         binding.rvComment.adapter = commentAdapter
         binding.rvComment.addOnScrollListener(scrollListener)
-        commentAdapter.registerAdapterDataObserver(adapterObserver)
 
         binding.ivCommentSend.setOnClickListener {
             handleSendComment()
@@ -200,10 +193,14 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.root.setOnApplyWindowInsetsListener { _, windowInsets ->
             val height = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 windowInsets.getInsets(WindowInsets.Type.ime()).bottom
-            } else windowInsets.systemWindowInsetBottom
+            } else {
+                windowInsets.systemWindowInsetBottom
+            }
             val isKeyboardOnScreen = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 windowInsets.isVisible(WindowInsets.Type.ime())
-            } else height > keyboardHeight
+            } else {
+                height > keyboardHeight
+            }
             if (isKeyboardOnScreen) {
                 binding.root.setPadding(0, 0, 0, binding.root.paddingBottom + keyboardHeight)
             } else {
@@ -220,11 +217,13 @@ class ContentCommentBottomSheet @Inject constructor(
                 when (it.state) {
                     ResultState.Success -> {
                         showError(false)
-                        commentAdapter.setItemsAndAnimateChanges(it.list.ifEmpty {
-                            listOf(
-                                CommentUiModel.Empty
-                            )
-                        })
+                        commentAdapter.setItemsAndAnimateChanges(
+                            it.list.ifEmpty {
+                                listOf(
+                                    CommentUiModel.Empty
+                                )
+                            }
+                        )
                     }
                     ResultState.Loading -> {
                         showError(false)
@@ -299,6 +298,7 @@ class ContentCommentBottomSheet @Inject constructor(
                         binding.newComment.requestFocus()
                         showKeyboard(true)
                     }
+                    CommentEvent.ReplySuccess -> binding.rvComment.scrollToPosition(0)
                 }
             }
         }
@@ -392,15 +392,17 @@ class ContentCommentBottomSheet @Inject constructor(
     private fun showKeyboard(needToShow: Boolean) {
         val imm =
             binding.newComment.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (needToShow) imm.showSoftInput(binding.newComment, InputMethodManager.SHOW_IMPLICIT)
-        else imm.hideSoftInputFromWindow(binding.newComment.windowToken, 0)
+        if (needToShow) {
+            imm.showSoftInput(binding.newComment, InputMethodManager.SHOW_IMPLICIT)
+        } else {
+            imm.hideSoftInputFromWindow(binding.newComment.windowToken, 0)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         setEntrySource(null)
         binding.rvComment.removeOnScrollListener(scrollListener)
-        commentAdapter.unregisterAdapterDataObserver(adapterObserver)
         _binding = null
     }
 
@@ -473,8 +475,10 @@ class ContentCommentBottomSheet @Inject constructor(
             val convert = TagMentionBuilder.getRawText(binding.newComment.text?.toSpanned())
             viewModel.submitAction(
                 CommentAction.ReplyComment(
-                    convert, TagMentionBuilder.isChildOrParent(
-                        binding.newComment.text?.toSpanned(), binding.newComment.tag.toString()
+                    convert,
+                    TagMentionBuilder.isChildOrParent(
+                        binding.newComment.text?.toSpanned(),
+                        binding.newComment.tag.toString()
                     )
                 )
             )
