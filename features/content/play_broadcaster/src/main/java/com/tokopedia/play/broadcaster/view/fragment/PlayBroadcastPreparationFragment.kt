@@ -44,6 +44,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
@@ -1099,6 +1100,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun startBroadcast(ingestUrl: String) {
         broadcaster.start(ingestUrl)
+    }
+
+    override fun uploadSetupCover(cover: PlayCoverUiModel) {
+        parentViewModel.submitAction(PlayBroadcastAction.SetCover(cover))
     }
 
     companion object {

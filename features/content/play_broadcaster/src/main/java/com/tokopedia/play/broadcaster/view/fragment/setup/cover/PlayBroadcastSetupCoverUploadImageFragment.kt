@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentSetupCoverUploadImageBinding
-import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -70,9 +69,7 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
             is PlayBroadcastSetupBottomSheet -> {
                 childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
                     override fun onCoverChanged(cover: PlayCoverUiModel) {
-                        parentViewModel.submitAction(
-                            PlayBroadcastAction.SetCover(cover)
-                        )
+                        mListener?.uploadSetupCover(cover)
                     }
                 })
                 childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {

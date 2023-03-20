@@ -29,6 +29,7 @@ import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryPr
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
@@ -332,6 +333,12 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     companion object {
         private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         private const val PAGE_NAME = "report page"
+    }
+
+    override fun uploadSetupCover(cover: PlayCoverUiModel) {
+        parentViewModel.submitAction(
+            PlayBroadcastAction.SetCover(cover)
+        )
     }
 
     override fun dismissSetupCover(source: Int) {

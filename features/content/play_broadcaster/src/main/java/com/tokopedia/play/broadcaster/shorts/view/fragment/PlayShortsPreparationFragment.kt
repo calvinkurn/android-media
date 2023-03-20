@@ -34,6 +34,7 @@ import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
@@ -569,6 +570,10 @@ class PlayShortsPreparationFragment @Inject constructor(
         viewModel.submitAction(PlayShortsAction.SetCoverUploadedSource(source))
     }
 
+    override fun uploadSetupCover(cover: PlayCoverUiModel) {
+        viewModel.submitAction(PlayShortsAction.SetCover(cover.croppedCover))
+    }
+
     companion object {
         private const val TAG = "PlayShortsPreparationFragment"
         private const val PAGE_NAME = "prep page"
@@ -577,7 +582,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): PlayShortsPreparationFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(PlayShortsPreparationFragment.TAG) as? PlayShortsPreparationFragment
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayShortsPreparationFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 PlayShortsPreparationFragment::class.java.name
