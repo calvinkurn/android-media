@@ -93,13 +93,15 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
     }
 
     private fun setupAccomodationType(accomodation: List<Filter.FilterAccomodation>) {
-        val filterAccomodation = accomodation.map {
-            HotelSearchResultFilterAdapter.HotelFilterItem(it.id.toString(), it.displayName, false) }
-        binding?.filterAccomodationType?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding?.filterAccomodationType?.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
+        context?.let { context ->
+            val filterAccomodation = accomodation.map {
+                HotelSearchResultFilterAdapter.HotelFilterItem(it.id.toString(), it.displayName, false) }
+            binding?.filterAccomodationType?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            binding?.filterAccomodationType?.addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
                 LinearLayoutManager.HORIZONTAL))
-        binding?.filterAccomodationType?.adapter = propertyTypeAdapter
-        propertyTypeAdapter.updateItems(filterAccomodation, selectedFilter.propertyType.map { it.toString() }.toSet())
+            binding?.filterAccomodationType?.adapter = propertyTypeAdapter
+            propertyTypeAdapter.updateItems(filterAccomodation, selectedFilter.propertyType.map { it.toString() }.toSet())
+        }
     }
 
     private fun setupPriceFilter(price: Filter.FilterPrice) {
@@ -127,20 +129,22 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         else binding?.ratingSeekbar?.progress = filterReview.maxReview.toInt() - max(selectedFilter.reviewScore, 5)
 
         ratingStep.forEachIndexed { index, item ->
-            val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
+            context?.let { context ->
+                val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
 
-            when {
-                item > 0 -> stepView.findViewById<TextView>(R.id.title_step).text = String.format("  %.1f   ", item.toFloat())
-                else -> stepView.findViewById<TextView>(R.id.title_step).text = getString(R.string.hotel_search_filter_rating_all)
-            }
+                when {
+                    item > 0 -> stepView.findViewById<TextView>(R.id.title_step).text = String.format("  %.1f   ", item.toFloat())
+                    else -> stepView.findViewById<TextView>(R.id.title_step).text = context.resources.getString(R.string.hotel_search_filter_rating_all)
+                }
 
-            binding?.baseRatingStep?.addView(stepView)
-            if (index < ratingStep.size - 1){
-                val separator = View(context)
-                val lp = LinearLayout.LayoutParams(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
+                binding?.baseRatingStep?.addView(stepView)
+                if (index < ratingStep.size - 1){
+                    val separator = View(context)
+                    val lp = LinearLayout.LayoutParams(context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
                         ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
-                separator.layoutParams = lp
-                binding?.baseRatingStep?.addView(separator)
+                    separator.layoutParams = lp
+                    binding?.baseRatingStep?.addView(separator)
+                }
             }
         }
 
@@ -158,14 +162,16 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
     }
 
     private fun setupStarFilter(filterStar: Filter.FilterStar) {
-        val filterStars
+        context?.let { context ->
+            val filterStars
                 = filterStar.stars.map { HotelSearchResultFilterAdapter.HotelFilterItem(it.toString(), it.toString(), true) }
-        binding?.filterStar?.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
-                false, resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
-        binding?.filterStar?.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
+            binding?.filterStar?.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
+                false, context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
+            binding?.filterStar?.addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
                 LinearLayoutManager.HORIZONTAL))
-        binding?.filterStar?.adapter = starAdapter
-        starAdapter.updateItems(filterStars, selectedFilter.star.map { it.toString() }.toSet())
+            binding?.filterStar?.adapter = starAdapter
+            starAdapter.updateItems(filterStars, selectedFilter.star.map { it.toString() }.toSet())
+        }
     }
 
     private fun hidePayAtHotelFilter() {
