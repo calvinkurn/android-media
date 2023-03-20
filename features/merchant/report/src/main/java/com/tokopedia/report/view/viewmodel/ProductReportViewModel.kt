@@ -76,10 +76,14 @@ class ProductReportViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProductReportUiState())
     val uiState get() = _uiState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<ProductReportUiEvent>()
+    private val _uiEvent = MutableSharedFlow<ProductReportUiEvent>(replay = 1)
     val uiEvent get() = _uiEvent.asSharedFlow()
 
-    fun getReportReason() = viewModelScope.launch {
+    init {
+        getReportReason()
+    }
+
+    private fun getReportReason() = viewModelScope.launch {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(query, ProductReportReason.Response::class.java)
             val data = graphqlRepository.response(listOf(graphqlRequest))

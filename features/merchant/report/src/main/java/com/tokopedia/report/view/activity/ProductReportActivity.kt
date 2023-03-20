@@ -58,8 +58,6 @@ class ProductReportActivity : AppCompatActivity() {
                     onToasterError = ::showToasterError
                 )
             }
-
-            viewModel.getReportReason()
         }
     }
 

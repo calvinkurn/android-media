@@ -34,6 +34,20 @@ fun ProductReportScreen(
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
+    LaunchedEffect(key1 = viewModel.uiEvent, block = {
+        viewModel.uiEvent.collectLatest {
+            when (it) {
+                is ProductReportUiEvent.OnFooterClicked -> onFooterClicked()
+                is ProductReportUiEvent.OnScrollTop -> onScrollTop(it.reason)
+                is ProductReportUiEvent.OnGoToForm -> onGoToForm(it.reason)
+                is ProductReportUiEvent.OnBackPressed -> onFinish()
+                is ProductReportUiEvent.OnToasterError -> onToasterError(it.error)
+                else -> {
+                }
+            }
+        }
+    })
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         backgroundColor = MaterialTheme.colors.background,
@@ -52,18 +66,4 @@ fun ProductReportScreen(
             onEvent = viewModel::onEvent
         )
     }
-
-    LaunchedEffect(key1 = viewModel.uiEvent, block = {
-        viewModel.uiEvent.collectLatest {
-            when (it) {
-                is ProductReportUiEvent.OnFooterClicked -> onFooterClicked()
-                is ProductReportUiEvent.OnScrollTop -> onScrollTop(it.reason)
-                is ProductReportUiEvent.OnGoToForm -> onGoToForm(it.reason)
-                is ProductReportUiEvent.OnBackPressed -> onFinish()
-                is ProductReportUiEvent.OnToasterError -> onToasterError(it.error)
-                else -> {
-                }
-            }
-        }
-    })
 }
