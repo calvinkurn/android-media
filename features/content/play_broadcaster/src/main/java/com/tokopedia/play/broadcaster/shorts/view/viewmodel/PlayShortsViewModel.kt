@@ -27,9 +27,6 @@ import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.util.extension.combine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -82,6 +79,12 @@ class PlayShortsViewModel @Inject constructor(
 
     val isFirstSwitchAccount: Boolean
         get() = sharedPref.isFirstSwitchAccount()
+
+    val isShowSetupCoverCoachMark: Boolean
+        get() = sharedPref.isShowSetupCoverCoachMark()
+
+    val uploadedCoverSource: Int
+        get() = sharedPref.getUploadedCoverSource()
 
     private val _globalLoader = MutableStateFlow(false)
     private val _config = MutableStateFlow(PlayShortsConfigUiModel.Empty)
@@ -192,6 +195,8 @@ class PlayShortsViewModel @Inject constructor(
 
             /** Others */
             is PlayShortsAction.SetNotFirstSwitchAccount -> handleSetNotFirstSwitchAccount()
+            is PlayShortsAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
+            is PlayShortsAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(action.source)
         }
     }
 
@@ -354,6 +359,14 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleSetNotFirstSwitchAccount() {
         sharedPref.setNotFirstSwitchAccount()
+    }
+
+    private fun handleSetShowSetupCoverCoachMark() {
+        sharedPref.setShowSetupCoverCoachMark()
+    }
+
+    private fun handleSetCoverUploadedSource(source: Int) {
+        sharedPref.setUploadedCoverSource(source)
     }
 
     private fun setSelectedAccount(account: ContentAccountUiModel) {
