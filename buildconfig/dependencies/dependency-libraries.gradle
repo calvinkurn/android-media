@@ -60,6 +60,7 @@ ext {
             deviceInfo              : ":libraries:device_info",
             devMonitoringTools      : ":libraries:dev_monitoring_tools",
             dynamicFeatures         : ":libraries:dynamic_features",
+            effect                  : ":libraries:effect",
             encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
             floatingWindow          : ":libraries:floating_window",

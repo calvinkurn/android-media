@@ -1,0 +1,3 @@
+-keep class com.bytedance.labcv.effectsdk.** {*;}
+-keep class com.bef.effectsdk.* {*;}
+-keep class com.bytedance.labcv.licenselibrary.** {*;}
