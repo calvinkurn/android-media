@@ -45,8 +45,10 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
+import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
+import com.tokopedia.checkout.domain.usecase.DynamicPlatformFeeUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
@@ -207,6 +209,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final EPharmacyPrepareProductsGroupUseCase epharmacyUseCase;
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
+
+    private final DynamicPlatformFeeUseCase dynamicPlatformFeeUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
     private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
@@ -276,7 +280,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              Gson gson,
                              ExecutorSchedulers executorSchedulers,
                              EligibleForAddressUseCase eligibleForAddressUseCase,
-                             GetRatesWithScheduleUseCase ratesWithScheduleUseCase) {
+                             GetRatesWithScheduleUseCase ratesWithScheduleUseCase,
+                             DynamicPlatformFeeUseCase platformFeeUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormV3UseCase = getShipmentAddressFormV3UseCase;
@@ -301,6 +306,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.gson = gson;
         this.executorSchedulers = executorSchedulers;
         this.eligibleForAddressUseCase = eligibleForAddressUseCase;
+        this.dynamicPlatformFeeUseCase = platformFeeUseCase;
     }
 
     @Override
@@ -322,6 +328,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         if (epharmacyUseCase != null) {
             epharmacyUseCase.cancelJobs();
+        }
+        if (dynamicPlatformFeeUseCase != null) {
+            dynamicPlatformFeeUseCase.cancelJobs();
         }
         ratesPublisher = null;
         logisticDonePublisher = null;
@@ -3300,5 +3309,47 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         }
+    }
+
+    @Override
+    public void getDynamicPlatformFee(PlatformFeeRequest request) {
+        getView().showPlatformFeeSkeletonLoading();
+
+        dynamicPlatformFeeUseCase.setParams(request);
+        dynamicPlatformFeeUseCase.execute(
+                cartShipmentAddressFormData -> {
+                    if (getView() != null) {
+                            getView().setHasRunningApiCall(false);
+                            getView().resetPromoBenefit();
+                            getView().clearTotalBenefitPromoStacking();
+                            getView().hideLoading();
+                        } else {
+                            getView().hideInitialLoading();
+                        }
+
+                        validateShipmentAddressFormData(cartShipmentAddressFormData, isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment);
+                        getView().stopTrace();
+                    return Unit.INSTANCE;
+                }, throwable -> {
+                    Timber.d(throwable);
+                    if (getView() != null) {
+                        getView().stopEmbraceTrace();
+                        if (isReloadData) {
+                            getView().setHasRunningApiCall(false);
+                            getView().hideLoading();
+                        } else {
+                            getView().hideInitialLoading();
+                        }
+                        String errorMessage = throwable.getMessage();
+                        if (!(throwable instanceof CartResponseErrorException) && !(throwable instanceof AkamaiErrorException)) {
+                            errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), throwable);
+                        }
+                        getView().showToastError(errorMessage);
+                        getView().stopTrace();
+                        getView().logOnErrorLoadCheckoutPage(throwable);
+                    }
+                    return Unit.INSTANCE;
+                }
+        );
     }
 }

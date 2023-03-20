@@ -14,6 +14,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
+import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest;
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -203,6 +204,10 @@ public interface ShipmentContract {
         void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
 
         void showCoachMarkEpharmacy(UploadPrescriptionUiModel epharmacyGroupIds);
+
+        void showPlatformFeeSkeletonLoading();
+
+        void hidePlatformFeeSkeletonLoading();
     }
 
     interface AnalyticsActionListener {
@@ -449,6 +454,8 @@ public interface ShipmentContract {
         void clearAllBoOnTemporaryUpsell();
 
         boolean validatePrescriptionOnBackPressed();
+
+        void getDynamicPlatformFee(PlatformFeeRequest platformFeeRequest);
     }
 
 }

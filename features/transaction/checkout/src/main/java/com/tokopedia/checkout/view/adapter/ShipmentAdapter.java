@@ -115,6 +115,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int lastChooseCourierItemPosition;
     private int lastServiceId;
 
+    private boolean isShowPlatformFeeLoader;
+    private boolean isShowTickerPlatformFee;
+
     @Inject
     public ShipmentAdapter(
             ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -133,6 +136,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setShowOnboarding(boolean showOnboarding) {
         this.isShowOnboarding = showOnboarding;
+    }
+
+    public void setShowPlatformFeeLoader(boolean showPlatformFeeLoader) {
+        this.isShowPlatformFeeLoader = showPlatformFeeLoader;
+    }
+
+    public void setShowTickerPlatformFee(boolean showTickerPlatformFee) {
+        this.isShowTickerPlatformFee = isShowTickerPlatformFee;
     }
 
     @Override
@@ -860,11 +871,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public boolean checkHasSelectAllCourier(boolean passCheckShipmentFromPaymentClick,
-                                            int lastSelectedCourierOrderIndex,
-                                            String lastSelectedCourierOrdercartString,
-                                            boolean forceHitValidateUse,
-                                            boolean skipValidateUse) {
+    public boolean doCheckAllCourier() {
         int cartItemCounter = 0;
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
@@ -878,13 +885,28 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
             if (cartItemCounter == shipmentCartItemModelList.size()) {
-                RequestData requestData = getRequestData(null, null, false);
-                if (!passCheckShipmentFromPaymentClick) {
-                    shipmentAdapterActionListener.onFinishChoosingShipment(lastSelectedCourierOrderIndex, lastSelectedCourierOrdercartString, forceHitValidateUse, skipValidateUse);
-                }
-                shipmentAdapterActionListener.updateCheckoutRequest(requestData.getCheckoutRequestData());
                 return true;
+
+                // check flag for dynamic platform fee
+                // hit new platform fee API
+
             }
+        }
+        return false;
+    }
+
+    public boolean checkHasSelectAllCourier(boolean passCheckShipmentFromPaymentClick,
+                                            int lastSelectedCourierOrderIndex,
+                                            String lastSelectedCourierOrdercartString,
+                                            boolean forceHitValidateUse,
+                                            boolean skipValidateUse) {
+        if (doCheckAllCourier()) {
+            RequestData requestData = getRequestData(null, null, false);
+            if (!passCheckShipmentFromPaymentClick) {
+                shipmentAdapterActionListener.onFinishChoosingShipment(lastSelectedCourierOrderIndex, lastSelectedCourierOrdercartString, forceHitValidateUse, skipValidateUse);
+            }
+            shipmentAdapterActionListener.updateCheckoutRequest(requestData.getCheckoutRequestData());
+            return true;
         }
         return false;
     }

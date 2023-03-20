@@ -150,7 +150,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
 
     private fun renderAddOnCost(shipmentCost: ShipmentCostModel) {
         if (shipmentCost.hasAddOn) {
-            mTvSummaryAddOnLabel.text = mTvDiscountLabel.context.getString(R.string.label_add_on_cost)
+            mTvSummaryAddOnLabel.text = mTvSummaryAddOnLabel.context.getString(R.string.label_add_on_cost)
 
             // exclusion : need to write if totalAddOnPrice is Rp 0
             mTvSummaryAddOnLabel.visibility = View.VISIBLE
