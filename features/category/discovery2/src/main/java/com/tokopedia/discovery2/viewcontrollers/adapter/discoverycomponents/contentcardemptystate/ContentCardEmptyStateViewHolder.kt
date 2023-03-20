@@ -11,14 +11,14 @@ import com.tokopedia.unifycomponents.Toaster
 
 class ContentCardEmptyStateViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val binding: DiscoContentCardEmptyStateBinding = DiscoContentCardEmptyStateBinding.bind(itemView)
-    private lateinit var emptyStateViewModel: ContentCardEmptyStateViewModel
+    private var emptyStateViewModel: ContentCardEmptyStateViewModel? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         emptyStateViewModel = discoveryBaseViewModel as ContentCardEmptyStateViewModel
-        val emptyStateTexts = emptyStateViewModel.getToastMessage((fragment as? DiscoveryFragment)?.getItemCount())
-        binding.errorContentCardTitle.text = emptyStateTexts.first
+        val emptyStateTexts = emptyStateViewModel?.getToastMessage((fragment as? DiscoveryFragment)?.getItemCount())
+        binding.errorContentCardTitle.text = emptyStateTexts?.first
         binding.contentEmptyCardImageContainer.setOnClickListener {
-            Toaster.build(itemView, emptyStateTexts.second, Toast.LENGTH_SHORT).show()
+            emptyStateTexts?.second?.let { it1 -> Toaster.build(itemView, it1, Toast.LENGTH_SHORT).show() }
         }
     }
 }
