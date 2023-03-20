@@ -333,6 +333,10 @@ object AffiliateAnalytics {
             const val CLICK_SSA_SHOP_PAGE = "click - shop - ssa shop list"
             const val CLICK_SALIN_LINK_SSA_SHOP = "click - salin link - ssa shop list"
             const val IMPRESSION_SSA_SHOP = "impression - shop - ssa shop list"
+            const val IMPRESSION_EVENT_DISCO_BANNER = "impression - event - discovery banner"
+            const val CLICK_EVENT_DISCO_BANNER = "click - event - discovery banner"
+            const val CLICK_SALIN_DISCO_BANNER = "click - salin link - discovery banner"
+            const val CLICK_LIHAT_DISCO_BANNER = "click - lihat semua - discovery banner"
         }
     }
 

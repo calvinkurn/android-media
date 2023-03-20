@@ -25,7 +25,7 @@ data class AffiliateDiscoveryCampaignResponse(
             data class Campaign(
 
                 @SerializedName("additionalInformation")
-                val additionalInformation: List<Any?>? = null,
+                val additionalInformation: List<CampaignItem?>? = null,
 
                 @SerializedName("appUrl")
                 val appUrl: String? = null,
@@ -50,6 +50,15 @@ data class AffiliateDiscoveryCampaignResponse(
 
                     @SerializedName("percentage")
                     val percentage: Int? = null
+                )
+
+                data class CampaignItem(
+                    @SerializedName("htmlText")
+                    val htmlText: String? = null,
+                    @SerializedName("type")
+                    val type: Int? = null,
+                    @SerializedName("color")
+                    val color: String? = null
                 )
             }
         }

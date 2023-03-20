@@ -32,6 +32,9 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateRecommendedAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.PromotionClickInterface
+import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
+import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateDiscoPromoListActivity
@@ -40,8 +43,8 @@ import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateSSAShopListActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPasteInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
-import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
@@ -67,7 +70,8 @@ import javax.inject.Inject
 
 class AffiliatePromoFragment :
     AffiliateBaseFragment<AffiliatePromoViewModel>(),
-    AffiliatePromoInterface {
+    AffiliatePromoInterface,
+    PromotionClickInterface {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -297,19 +301,36 @@ class AffiliatePromoFragment :
                                 Intent(it, AffiliateDiscoPromoListActivity::class.java)
                             )
                         }
+                        sendDiscoLihatEvent()
                     }
                 view?.findViewById<RecyclerView>(R.id.rv_disco_promotion)?.apply {
-                    val discoBannerAdapter = AffiliateAdapter(AffiliateAdapterFactory())
+                    val discoBannerAdapter =
+                        AffiliateAdapter(
+                            source = AffiliateAdapter.SOURCE_PROMOSIKAN,
+                            affiliateAdapterFactory = AffiliateAdapterFactory(
+                                promotionClickInterface = this@AffiliatePromoFragment
+                            ),
+                            userId = userSessionInterface.userId
+                        )
                     discoBannerAdapter.setVisitables(
                         it.recommendedAffiliateDiscoveryCampaign?.data?.items?.mapNotNull { campaign ->
                             AffiliateDiscoBannerUiModel(campaign)
                         }
                     )
                     this.adapter = discoBannerAdapter
-
                 }
             }
         }
+    }
+
+    private fun sendDiscoLihatEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_LIHAT_DISCO_BANNER,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            "",
+            userSessionInterface.userId
+        )
     }
 
     private fun sendTickerImpression(tickerType: String?, tickerId: Long?) {
@@ -357,10 +378,6 @@ class AffiliatePromoFragment :
         affiliatePromoViewModel = viewModel as AffiliatePromoViewModel
     }
 
-    private fun disableSearchButton() {
-        view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.isEnabled = false
-    }
-
     private fun setCustomTabText(context: Context?, tabLayout: TabLayout?) {
         if (context != null && tabLayout != null) {
             val tabOne = Typography(context)
@@ -396,7 +413,6 @@ class AffiliatePromoFragment :
     }
 
     override fun onSystemDown() {
-        disableSearchButton()
         affiliatePromoViewModel.setValidateUserType(SYSTEM_DOWN)
         affiliatePromoViewModel.getAnnouncementInformation()
     }
@@ -428,6 +444,39 @@ class AffiliatePromoFragment :
     override fun enterLinkButtonClicked() {
         startActivity(Intent(context, AffiliatePromoSearchActivity::class.java))
     }
+
+    override fun onPromotionClick(
+        itemID: String,
+        itemName: String,
+        itemImage: String,
+        itemURL: String,
+        position: Int,
+        commison: String,
+        status: String,
+        type: String?,
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
+    ) {
+        AffiliatePromotionBottomSheet.newInstance(
+            AffiliatePromotionBottomSheetParams(
+                null,
+                itemID,
+                itemName,
+                itemImage,
+                itemURL,
+                itemID,
+                commission = commison,
+                type = type,
+                isLinkGenerationEnabled = true,
+                origin = AffiliatePromotionBottomSheet.ORIGIN_PROMO_DISCO_BANNER,
+                ssaInfo = ssaInfo
+            ),
+            AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+            null
+        ).show(childFragmentManager, "")
+    }
+
+    override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) =
+        Unit
 }
 
 interface AffiliatePromoInterface {

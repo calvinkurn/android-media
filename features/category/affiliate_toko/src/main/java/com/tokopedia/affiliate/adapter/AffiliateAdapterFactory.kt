@@ -176,7 +176,7 @@ class AffiliateAdapterFactory(
             AffiliateEducationSeeAllVH.LAYOUT -> AffiliateEducationSeeAllVH(parent, educationSeeAllCardClickInterface)
             AffiliateEduCategoryChipVH.LAYOUT -> AffiliateEduCategoryChipVH(parent, affiliateEduCategoryChipClick)
             AffiliateSSAShopItemVH.LAYOUT -> AffiliateSSAShopItemVH(parent, productClickInterface)
-            AffiliateDiscoBannerVH.LAYOUT -> AffiliateDiscoBannerVH(parent)
+            AffiliateDiscoBannerVH.LAYOUT -> AffiliateDiscoBannerVH(parent, promotionClickInterface)
             AffiliateDiscoBannerListVH.LAYOUT -> AffiliateDiscoBannerListVH(parent)
             else -> super.createViewHolder(parent, type)
         }
