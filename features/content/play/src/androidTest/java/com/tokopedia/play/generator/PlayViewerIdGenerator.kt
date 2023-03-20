@@ -22,7 +22,6 @@ import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.factory.TestFragmentFactory
 import com.tokopedia.content.test.factory.TestViewModelFactory
 import com.tokopedia.content.test.util.isSiblingWith
-import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -54,7 +53,6 @@ import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
 import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
@@ -249,7 +247,7 @@ class PlayViewerIdGenerator {
             resultState = ResultState.Success,
         )
 
-        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItem
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
             channelList = listOf(
                 uiModelBuilder.buildChannelData(
