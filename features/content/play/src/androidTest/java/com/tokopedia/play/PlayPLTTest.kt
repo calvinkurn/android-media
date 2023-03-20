@@ -47,8 +47,6 @@ class PlayPLTTest {
 
     private val channelCount = 1
 
-    private val channelIds = List(channelCount) { it.toString() }
-
     private val channelData = List(channelCount) {
         uiModelBuilder.buildChannelData(
             id = it.toString(),
@@ -74,7 +72,7 @@ class PlayPLTTest {
 
     init {
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(channelData, "")
-        every { mockChannelStorage.getChannelList() } returns channelIds
+        every { mockChannelStorage.getChannelList() } returns channelData
         every { mockChannelStorage.getData(any()) } answers {
             val channelId = (invocation.args[0] as String).toInt()
             channelData[channelId]
