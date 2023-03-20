@@ -696,6 +696,152 @@ class ReviewVariantViewModelTest {
     //endregion
 
     //region handleRemoveVariant
+    @Test
+    fun `when removing a variant, should delete the variant from list`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                )
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0), isEligible = true)
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0), isEligible = true)
+            val selectedProduct =
+                SelectedProduct(parentProductId = product.id, variantProductIds = listOf(111, 112))
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    )
+                )
+            )
+
+            val emittedValues = arrayListOf<ReviewVariantUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            viewModel.processEvent(
+                ReviewVariantEvent.FetchProductVariants(
+                    isParentProductSelected = false,
+                    selectedProduct = selectedProduct,
+                    originalVariantIds = listOf(firstVariant.variantId, secondVariant.variantId),
+                    isVariantCheckable = true,
+                    isVariantDeletable = true
+                )
+            )
+
+
+            //When
+            viewModel.processEvent(ReviewVariantEvent.ApplyRemoveVariant(firstVariant.variantId))
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(secondVariant.copy(variantName = "Biru")),
+                actual.variants
+            )
+            assertEquals(emptySet<Long>(), actual.selectedVariantIds)
+
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `when removing a non exist variant, should not delete any variant from list`() {
+        runBlockingTest {
+            //Given
+            val product = populateProduct().copy(
+                id = 1,
+                originalVariants = listOf(
+                    Product.Variant(
+                        variantProductId = 111,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    ),
+                    Product.Variant(
+                        variantProductId = 112,
+                        isEligible = true,
+                        reason = "",
+                        isSelected = false
+                    )
+                )
+            )
+            val firstVariant = populateVariant().copy(variantId = 111, combinations = listOf(0), isEligible = true)
+            val secondVariant = populateVariant().copy(variantId = 112, combinations = listOf(0), isEligible = true)
+            val selectedProduct =
+                SelectedProduct(parentProductId = product.id, variantProductIds = listOf(111, 112))
+
+            mockResponse(
+                productId = product.id,
+                variants = listOf(firstVariant, secondVariant),
+                selections = listOf(
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Biru"))
+                    ),
+                    VariantResult.Selection(
+                        options = listOf(VariantResult.Selection.Option(value = "Merah"))
+                    )
+                )
+            )
+
+            val emittedValues = arrayListOf<ReviewVariantUiState>()
+            val job = launch {
+                viewModel.uiState.toList(emittedValues)
+            }
+
+            viewModel.processEvent(
+                ReviewVariantEvent.FetchProductVariants(
+                    isParentProductSelected = false,
+                    selectedProduct = selectedProduct,
+                    originalVariantIds = listOf(firstVariant.variantId, secondVariant.variantId),
+                    isVariantCheckable = true,
+                    isVariantDeletable = true
+                )
+            )
+
+
+            //When
+            val unknownVariantId: Long = 99
+            viewModel.processEvent(ReviewVariantEvent.ApplyRemoveVariant(unknownVariantId))
+
+            //Then
+            val actual = emittedValues.last()
+
+            assertEquals(
+                listOf(
+                    firstVariant.copy(variantName = "Biru"),
+                    secondVariant.copy(variantName = "Biru")
+                ),
+                actual.variants
+            )
+            assertEquals(emptySet<Long>(), actual.selectedVariantIds)
+
+            job.cancel()
+        }
+    }
+
     //endregion
 
     //region handleBulkDeleteVariant
