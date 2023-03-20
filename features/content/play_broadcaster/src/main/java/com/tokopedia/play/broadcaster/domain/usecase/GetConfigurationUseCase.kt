@@ -91,23 +91,24 @@ class GetConfigurationUseCase @Inject constructor(
         private const val VALUE_WITH_CHANNEL_STATE = true
 
         const val QUERY_NAME = "GetConfigurationUseCaseQuery"
-        /** TODO: dont forget to add PARAMS_DEVICE_SPECS in this QUERY PARAM */
-        /** TODO: dont forget to add beautificationConfig in this QUERY BODY */
         const val QUERY_BROADCASTER_GET_AUTHOR_CONFIG = """
             query BroadcasterGetAuthorConfig(
                 ${"$$PARAMS_AUTHOR_ID"}: Int64!, 
                 ${"$$PARAMS_AUTHOR_TYPE"}: Int!, 
-                ${"$$PARAMS_WITH_CHANNEL_STATE"}: Boolean
+                ${"$$PARAMS_WITH_CHANNEL_STATE"}: Boolean,
+                ${"$$PARAMS_DEVICE_SPECS"}: String
             ) {
               broadcasterGetAuthorConfig(
                  $PARAMS_AUTHOR_ID: ${"$$PARAMS_AUTHOR_ID"}, 
                  $PARAMS_AUTHOR_TYPE: ${"$$PARAMS_AUTHOR_TYPE"}, 
-                 $PARAMS_WITH_CHANNEL_STATE: ${"$$PARAMS_WITH_CHANNEL_STATE"}
+                 $PARAMS_WITH_CHANNEL_STATE: ${"$$PARAMS_WITH_CHANNEL_STATE"},
+                 $PARAMS_DEVICE_SPECS: ${"$$PARAMS_DEVICE_SPECS"}
               ) {
                 streamAllowed
                 shortVideoAllowed
                 isBanned
                 config
+                beautificationConfig
                 tnc {
                   description
                 }
