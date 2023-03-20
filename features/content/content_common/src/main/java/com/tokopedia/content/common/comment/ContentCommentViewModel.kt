@@ -288,7 +288,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             viewModelScope.launchCatchError(block = {
                 _event.emit(CommentEvent.HideKeyboard)
                 if (regex.findAll(comment)
-                        .count() > 0
+                        .count() > 0 && !comment.contains("tokopedia")
                 ) throw MessageErrorException(CommentException.LinkNotAllowed.message)
                 val result =
                     repo.replyComment(source, commentType, comment, _comments.value.commenterType)

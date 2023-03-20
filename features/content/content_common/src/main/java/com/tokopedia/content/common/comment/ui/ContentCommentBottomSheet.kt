@@ -35,6 +35,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
@@ -260,11 +261,12 @@ class ContentCommentBottomSheet @Inject constructor(
                         Toaster.build(
                             view,
                             text = if (event.message is UnknownHostException) getString(R.string.content_comment_error_connection) else event.message.message.orEmpty(),
-                            actionText = getString(R.string.feed_content_coba_lagi_text),
+                            actionText = if(event.message.message?.equals(CommentException.LinkNotAllowed.message).orFalse()) "" else getString(R.string.feed_content_coba_lagi_text),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 run { event.onClick() }
-                            }
+                            },
+                            type = if (event.message.message?.equals(CommentException.LinkNotAllowed.message).orFalse()) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
                         ).show()
                     }
                     is CommentEvent.OpenAppLink -> {
