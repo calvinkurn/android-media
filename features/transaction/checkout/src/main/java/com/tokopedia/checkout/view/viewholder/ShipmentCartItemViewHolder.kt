@@ -48,38 +48,37 @@ class ShipmentCartItemViewHolder(
     fun bind(
         shipmentCartItemModel: ShipmentCartItemModel
     ) {
-        val cartItem = shipmentCartItemModel.cartItemModels[shipmentCartItemModel.groupProductPosition]
-        val isFirstItem = shipmentCartItemModel.groupProductPosition == 0
-
-        renderError(shipmentCartItemModel)
-        renderItem(cartItem)
-        renderProductPrice(cartItem)
-        renderNotesToSeller(cartItem)
-        renderPurchaseProtection(cartItem)
-        renderProductTicker(cartItem)
-        renderProductProperties(cartItem)
-        renderBundlingInfo(cartItem, isFirstItem)
-        renderAddOnProductLevel(cartItem, shipmentCartItemModel.addOnWordingModel!!)
+//        val cartItem = shipmentCartItemModel.cartItemModels[shipmentCartItemModel.groupProductPosition]
+//        val isFirstItem = shipmentCartItemModel.groupProductPosition == 0
+//
+//        renderError(shipmentCartItemModel.isError)
+//        renderItem(cartItem)
+//        renderProductPrice(cartItem)
+//        renderNotesToSeller(cartItem)
+//        renderPurchaseProtection(cartItem)
+//        renderProductTicker(cartItem)
+//        renderProductProperties(cartItem)
+//        renderBundlingInfo(cartItem, isFirstItem)
+//        renderAddOnProductLevel(cartItem, shipmentCartItemModel.addOnWordingModel!!)
     }
 
-    @Deprecated("")
     fun bind(
-        cartItem: CartItemModel,
-        addOnWordingModel: AddOnWordingModel,
-        isFirstItem: Boolean
+        cartItem: CartItemModel
     ) {
+        renderError(cartItem)
         renderItem(cartItem)
         renderProductPrice(cartItem)
         renderNotesToSeller(cartItem)
         renderPurchaseProtection(cartItem)
         renderProductTicker(cartItem)
         renderProductProperties(cartItem)
+        val isFirstItem = cartItem.cartItemPosition == 0
         renderBundlingInfo(cartItem, isFirstItem)
-        renderAddOnProductLevel(cartItem, addOnWordingModel)
+        renderAddOnProductLevel(cartItem, cartItem.addOnOrderLevelModel)
     }
 
-    private fun renderError(shipmentCartItemModel: ShipmentCartItemModel) {
-        if (shipmentCartItemModel.isError) {
+    private fun renderError(cartItem: CartItemModel) {
+        if (cartItem.isError) {
             binding.llItemProductContainer.alpha = VIEW_ALPHA_DISABLED
             binding.checkboxPpp.isEnabled = false
             binding.iconTooltip.isClickable = false
@@ -235,9 +234,12 @@ class ShipmentCartItemViewHolder(
                 binding.checkboxPpp.isEnabled = true
                 binding.checkboxPpp.isChecked = cartItem.isProtectionOptIn
                 binding.checkboxPpp.skipAnimation()
-                binding.checkboxPpp.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
+                binding.checkboxPpp.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
                     if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                        listener?.onCheckPurchaseProtection(bindingAdapterPosition, checked)
+                        val updatedCartItemModel = cartItem.copy(
+                            isProtectionOptIn = isChecked
+                        )
+                        listener?.onCheckPurchaseProtection(bindingAdapterPosition, updatedCartItemModel)
                     }
                 }
             }
@@ -398,7 +400,7 @@ class ShipmentCartItemViewHolder(
 
     interface Listener {
 
-        fun onCheckPurchaseProtection(position: Int, isChecked: Boolean)
+        fun onCheckPurchaseProtection(position: Int, cartItem: CartItemModel)
 
         fun onClickPurchaseProtectionTooltip(cartItem: CartItemModel)
 

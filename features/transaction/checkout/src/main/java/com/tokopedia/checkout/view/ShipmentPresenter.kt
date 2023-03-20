@@ -922,7 +922,7 @@ class ShipmentPresenter @Inject constructor(
                 for (cartItemModel in value) {
                     val index = newShipmentCartItemModelList.indexOf(key)
                     val cartItemModels =
-                        newShipmentCartItemModelList[index].cartItemModels.toMutableList()
+                        newShipmentCartItemModelList[index].cartItemModels
                     cartItemModels.remove(cartItemModel)
                     newShipmentCartItemModelList[index].cartItemModels = cartItemModels
                 }

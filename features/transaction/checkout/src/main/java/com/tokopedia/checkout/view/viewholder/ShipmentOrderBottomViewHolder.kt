@@ -54,7 +54,7 @@ import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
-class ShipmentGroupFooterViewHolder(
+class ShipmentOrderBottomViewHolder(
     itemView: View,
     private val ratesDataConverter: RatesDataConverter,
     private val listener: Listener? = null,
@@ -117,7 +117,7 @@ class ShipmentGroupFooterViewHolder(
         currentAddress: RecipientAddressModel?,
         ratesDataConverter: RatesDataConverter
     ) {
-        binding.shippingWidget.setupListener(this@ShipmentGroupFooterViewHolder)
+        binding.shippingWidget.setupListener(this@ShipmentOrderBottomViewHolder)
         binding.shippingWidget.hideTradeInShippingInfo()
         if (shipmentCartItemModel.isError) {
             renderErrorCourierState(shipmentCartItemModel)

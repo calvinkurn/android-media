@@ -6,9 +6,9 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemShipmentGroupProductExpandBinding
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.CartItemExpandModel
 
-class ShipmentGroupProductExpandViewHolder(
+class ShipmentCartItemExpandViewHolder(
     itemView: View,
     private val listener: Listener? = null
 ) : RecyclerView.ViewHolder(itemView) {
@@ -22,30 +22,26 @@ class ShipmentGroupProductExpandViewHolder(
     private val binding: ItemShipmentGroupProductExpandBinding =
         ItemShipmentGroupProductExpandBinding.bind(itemView)
 
-    fun bind(shipmentCartItemModel: ShipmentCartItemModel) {
+    fun bind(cartItemExpandModel: CartItemExpandModel) {
         with(binding) {
             rlExpandOtherProduct.setOnClickListener {
-                shipmentCartItemModel.isStateAllItemViewExpanded =
-                    !shipmentCartItemModel.isStateAllItemViewExpanded
-                if (shipmentCartItemModel.isStateAllItemViewExpanded) {
-                    listener?.onClickExpandGroupProduct(
-                        bindingAdapterPosition,
-                        shipmentCartItemModel
-                    )
+                val position = bindingAdapterPosition
+                val updatedCartExpandModel = cartItemExpandModel.copy(
+                    isExpanded = !cartItemExpandModel.isExpanded
+                )
+                if (updatedCartExpandModel.isExpanded) {
+                    listener?.onClickExpandGroupProduct(position, updatedCartExpandModel)
                 } else {
-                    listener?.onClickCollapseGroupProduct(
-                        bindingAdapterPosition,
-                        shipmentCartItemModel
-                    )
+                    listener?.onClickCollapseGroupProduct(position, updatedCartExpandModel)
                 }
             }
             vSeparatorMultipleProductSameStore.visible()
-            if (shipmentCartItemModel.isStateAllItemViewExpanded) {
+            if (cartItemExpandModel.isExpanded) {
                 tvExpandOtherProduct.setText(R.string.label_hide_other_item_new)
                 ivExpandOtherProduct.setImage(IconUnify.CHEVRON_UP, null, null, null, null)
             } else {
                 val expandItemCount =
-                    shipmentCartItemModel.cartItemModels.size - 1
+                    cartItemExpandModel.cartSize - 1
                 tvExpandOtherProduct.text = itemView.context.getString(
                     R.string.label_show_other_item_count,
                     expandItemCount
@@ -59,12 +55,12 @@ class ShipmentGroupProductExpandViewHolder(
 
         fun onClickCollapseGroupProduct(
             position: Int,
-            shipmentCartItemModel: ShipmentCartItemModel
+            cartItemExpandModel: CartItemExpandModel
         )
 
         fun onClickExpandGroupProduct(
             position: Int,
-            shipmentCartItemModel: ShipmentCartItemModel
+            cartItemExpandModel: CartItemExpandModel
         )
     }
 }

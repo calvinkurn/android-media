@@ -61,13 +61,13 @@ class ShipmentItemDecoration : RecyclerView.ItemDecoration() {
                     outRect.top = it.resources.getDimension(R.dimen.dp_0).toInt()
                     outRect.bottom = if (viewHolder.isEmptyTicker()) it.resources.getDimension(R.dimen.dp_0).toInt() else verticalSpaceHeight
                 }
-                viewHolder is ShipmentGroupHeaderViewHolder -> {
+                viewHolder is ShipmentOrderTopViewHolder -> {
                     outRect.bottom = it.resources.getDimension(R.dimen.dp_0).toInt()
                 }
                 viewHolder is ShipmentCartItemViewHolder -> {
                     outRect.bottom = it.resources.getDimension(R.dimen.dp_0).toInt()
                 }
-                viewHolder is ShipmentGroupProductExpandViewHolder -> {
+                viewHolder is ShipmentCartItemExpandViewHolder -> {
                     outRect.bottom = it.resources.getDimension(R.dimen.dp_0).toInt()
                 }
                 else -> {

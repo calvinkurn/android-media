@@ -26,16 +26,16 @@ import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder.Companion.ITEM_VIEW_PROMO_CHECKOUT
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder.Companion.ITEM_VIEW_PAYMENT_BUTTON
+import com.tokopedia.checkout.view.viewholder.ShipmentCartItemExpandViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentCartItemViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentCostViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentCrossSellViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentGroupFooterViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentGroupHeaderViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentGroupProductExpandViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentOrderBottomViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentOrderTopViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder
@@ -44,8 +44,10 @@ import com.tokopedia.checkout.view.viewholder.ShipmentUpsellViewHolder
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder.Companion.ITEM_VIEW_TICKER_SHIPPING_COMPLETION
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticcart.shipping.model.CartItemExpandModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemHeaderModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -83,10 +85,10 @@ class ShipmentAdapter @Inject constructor(
     private val sellerCashbackListener: SellerCashbackListener,
     private val uploadPrescriptionListener: UploadPrescriptionListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
-    ShipmentGroupHeaderViewHolder.Listener,
+    ShipmentOrderTopViewHolder.Listener,
     ShipmentCartItemViewHolder.Listener,
-    ShipmentGroupProductExpandViewHolder.Listener,
-    ShipmentGroupFooterViewHolder.Listener {
+    ShipmentCartItemExpandViewHolder.Listener,
+    ShipmentOrderBottomViewHolder.Listener {
 
     companion object {
         const val DEFAULT_ERROR_POSITION = -1
@@ -197,18 +199,20 @@ class ShipmentAdapter @Inject constructor(
                 return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL
             }
 
+            is ShipmentCartItemHeaderModel -> {
+                return ShipmentOrderTopViewHolder.LAYOUT
+            }
+
             is ShipmentCartItemModel -> {
-                return if (data.isGroupHeader) {
-                    ShipmentGroupHeaderViewHolder.LAYOUT
-                } else if (data.isGroupProduct) {
-                    ShipmentCartItemViewHolder.LAYOUT
-                } else if (data.isGroupProductExpand) {
-                    ShipmentGroupProductExpandViewHolder.LAYOUT
-                } else if (data.isGroupFooter) {
-                    ShipmentGroupFooterViewHolder.LAYOUT
-                } else {
-                    super.getItemViewType(position)
-                }
+                return ShipmentOrderBottomViewHolder.LAYOUT
+            }
+
+            is CartItemModel -> {
+                return ShipmentCartItemViewHolder.LAYOUT
+            }
+
+            is CartItemExpandModel -> {
+                return ShipmentCartItemExpandViewHolder.LAYOUT
             }
 
             else -> return super.getItemViewType(position)
@@ -283,20 +287,20 @@ class ShipmentAdapter @Inject constructor(
                 return ShipmentNewUpsellViewHolder(view, actionListener)
             }
 
-            ShipmentGroupHeaderViewHolder.LAYOUT -> {
-                return ShipmentGroupHeaderViewHolder(view)
+            ShipmentOrderTopViewHolder.LAYOUT -> {
+                return ShipmentOrderTopViewHolder(view)
             }
 
             ShipmentCartItemViewHolder.LAYOUT -> {
                 return ShipmentCartItemViewHolder(view, this@ShipmentAdapter)
             }
 
-            ShipmentGroupProductExpandViewHolder.LAYOUT -> {
-                return ShipmentGroupProductExpandViewHolder(view, this@ShipmentAdapter)
+            ShipmentCartItemExpandViewHolder.LAYOUT -> {
+                return ShipmentCartItemExpandViewHolder(view, this@ShipmentAdapter)
             }
 
-            ShipmentGroupFooterViewHolder.LAYOUT -> {
-                return ShipmentGroupFooterViewHolder(
+            ShipmentOrderBottomViewHolder.LAYOUT -> {
+                return ShipmentOrderBottomViewHolder(
                     view,
                     ratesDataConverter,
                     this@ShipmentAdapter,
@@ -381,20 +385,20 @@ class ShipmentAdapter @Inject constructor(
                 (holder as ShipmentNewUpsellViewHolder).bind((data as ShipmentNewUpsellModel?)!!)
             }
 
-            ShipmentGroupHeaderViewHolder.LAYOUT -> {
-                (holder as ShipmentGroupHeaderViewHolder).bind((data as ShipmentCartItemModel))
+            ShipmentOrderTopViewHolder.LAYOUT -> {
+                (holder as ShipmentOrderTopViewHolder).bind((data as ShipmentCartItemHeaderModel))
             }
 
             ShipmentCartItemViewHolder.LAYOUT -> {
-                (holder as ShipmentCartItemViewHolder).bind(data as ShipmentCartItemModel)
+                (holder as ShipmentCartItemViewHolder).bind(data as CartItemModel)
             }
 
-            ShipmentGroupProductExpandViewHolder.LAYOUT -> {
-                (holder as ShipmentGroupProductExpandViewHolder).bind(data as ShipmentCartItemModel)
+            ShipmentCartItemExpandViewHolder.LAYOUT -> {
+                (holder as ShipmentCartItemExpandViewHolder).bind(data as CartItemExpandModel)
             }
 
-            ShipmentGroupFooterViewHolder.LAYOUT -> {
-                (holder as ShipmentGroupFooterViewHolder).bind(
+            ShipmentOrderBottomViewHolder.LAYOUT -> {
+                (holder as ShipmentOrderBottomViewHolder).bind(
                     (data as ShipmentCartItemModel),
                     addressShipmentData
                 )
@@ -412,7 +416,7 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         super.onViewRecycled(holder)
-        (holder as? ShipmentGroupFooterViewHolder)?.unsubscribeDebouncer()
+        (holder as? ShipmentOrderBottomViewHolder)?.unsubscribeDebouncer()
     }
 
     fun clearCompositeSubscription() {
@@ -468,18 +472,23 @@ class ShipmentAdapter @Inject constructor(
     fun addCartItemDataList(shipmentCartItems: List<ShipmentCartItemModel>) {
         this.shipmentCartItemModelList = shipmentCartItems
         shipmentCartItems.forEach { shipmentCartItem ->
-            shipmentDataList.add(shipmentCartItem.copy(isGroupHeader = true))
+            shipmentDataList.add(ShipmentCartItemHeaderModel(shipmentCartItem))
             if (shipmentCartItem.isStateAllItemViewExpanded) {
-                shipmentCartItem.cartItemModels.forEachIndexed { index, _ ->
-                    shipmentDataList.add(shipmentCartItem.copy(isGroupProduct = true, groupProductPosition = index))
+                shipmentCartItem.cartItemModels.forEach {
+                    shipmentDataList.add(it)
                 }
             } else {
-                shipmentDataList.add(shipmentCartItem.copy(isGroupProduct = true))
+                shipmentDataList.add(shipmentCartItem.cartItemModels.first())
             }
             if (shipmentCartItem.cartItemModels.size > 1) {
-                shipmentDataList.add(shipmentCartItem.copy(isGroupProductExpand = true))
+                shipmentDataList.add(
+                    CartItemExpandModel(
+                        cartString = shipmentCartItem.cartString,
+                        cartSize = shipmentCartItem.cartItemModels.size
+                    )
+                )
             }
-            shipmentDataList.add(shipmentCartItem.copy(isGroupFooter = true))
+            shipmentDataList.add(shipmentCartItem)
         }
         checkDataForCheckout()
     }
@@ -1450,77 +1459,37 @@ class ShipmentAdapter @Inject constructor(
 
     private fun getGroupHeaderByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentCartItemModel && data.isGroupHeader &&
-                data.cartString == cartString
+            data is ShipmentCartItemHeaderModel && data.shipmentCartItemModel.cartString == cartString
         }
         return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
     }
 
-    private fun getFirstCartItemByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
+    private fun getFirstCartItemByCartString(cartString: String): Pair<Int, CartItemModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentCartItemModel && data.cartString == cartString &&
-                data.isGroupProduct && data.groupProductPosition == 0
+            data is CartItemModel && data.cartString == cartString && data.cartItemPosition == 0
         }
-        return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
+        return Pair(index, shipmentDataList[index] as CartItemModel)
     }
 
-    private fun getFirstErrorCartItemByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
+    private fun getFirstErrorCartItemByCartString(cartString: String): Pair<Int, CartItemModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentCartItemModel && data.cartString == cartString &&
-                data.firstProductErrorIndex == data.groupProductPosition
+            data is CartItemModel && data.cartString == cartString && data.isError
         }
-        return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
+        return Pair(index, shipmentDataList[index] as CartItemModel)
     }
 
-    private fun getGroupCartExpandByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
+    private fun getGroupCartExpandByCartString(cartString: String): Pair<Int, CartItemExpandModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentCartItemModel && data.isGroupProductExpand &&
-                data.cartString == cartString
+            data is CartItemExpandModel && data.cartString == cartString
         }
-        return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
+        return Pair(index, shipmentDataList[index] as CartItemExpandModel)
     }
 
-    private fun getGroupFooterByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
+    private fun getShipmentCartItemByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
         val index = shipmentDataList.indexOfFirst { data ->
-            data is ShipmentCartItemModel && data.isGroupFooter &&
-                data.cartString == cartString
+            data is ShipmentCartItemModel && data.cartString == cartString
         }
         return Pair(index, shipmentDataList[index] as ShipmentCartItemModel)
-    }
-
-    private fun getGroupShipmentsByCartString(cartString: String): Pair<Int, List<Any>> {
-        val (startIndex, _) = getGroupHeaderByCartString(cartString)
-        val data = shipmentDataList.filterIsInstance<ShipmentCartItemModel>()
-        return Pair(startIndex, data)
-    }
-
-    private fun updateGroupShipmentsByCartString(
-        cartString: String,
-        shipmentCartItemModel: ShipmentCartItemModel
-    ) {
-        val (startIndex, newShipmentCartItems) = getGroupShipmentsByCartString(cartString)
-        val endIndex = startIndex + newShipmentCartItems.size
-        for (index in startIndex..endIndex) {
-            when (val data = shipmentDataList[index]) {
-                is ShipmentCartItemModel -> {
-                    shipmentDataList[index] = shipmentCartItemModel.copy(
-                        isGroupHeader = data.isGroupHeader,
-                        isGroupProduct = data.isGroupProduct,
-                        groupProductPosition = data.groupProductPosition,
-                        isGroupProductExpand = data.isGroupProductExpand,
-                        isGroupFooter = data.isGroupFooter
-                    )
-                }
-                else -> {
-                    // no-op
-                }
-            }
-            notifyItemRangeChanged(startIndex, endIndex)
-        }
-
-        val (_, updatedData) = getGroupShipmentsByCartString(cartString)
-        this.shipmentCartItemModelList = updatedData.filterIsInstance<ShipmentCartItemModel>()
-            .filter { it.isGroupHeader }.map { it.copy(isGroupHeader = false) }
     }
 
     override fun onViewFreeShippingPlusBadge() {
@@ -1541,18 +1510,20 @@ class ShipmentAdapter @Inject constructor(
         actionListener.scrollToPositionWithOffset(position)
     }
 
-    override fun onCheckPurchaseProtection(position: Int, isChecked: Boolean) {
-        val data = shipmentDataList[position]
-        if (data is ShipmentCartItemModel && data.isGroupProduct) {
-            data.cartItemModels[data.groupProductPosition].isProtectionOptIn = isChecked
-            if (isChecked && data.selectedShipmentDetailData?.useDropshipper == true) {
-                data.selectedShipmentDetailData?.useDropshipper = false
-                updateGroupShipmentsByCartString(data.cartString, data)
-                actionListener.onPurchaseProtectionLogicError()
-            }
-            actionListener.onNeedUpdateRequestData()
-            actionListener.onPurchaseProtectionChangeListener(position)
+    override fun onCheckPurchaseProtection(position: Int, cartItem: CartItemModel) {
+        val (shipmentCartItemPosition, shipmentCartItem) =
+            getShipmentCartItemByCartString(cartItem.cartString)
+        if (cartItem.isProtectionOptIn && shipmentCartItem.selectedShipmentDetailData?.useDropshipper == true) {
+            shipmentCartItem.selectedShipmentDetailData?.useDropshipper = false
+            shipmentCartItem.cartItemModels[cartItem.cartItemPosition] = cartItem
+            shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
+            notifyItemChanged(shipmentCartItemPosition)
+            shipmentDataList[position] = cartItem
+            notifyItemChanged(position)
+            actionListener.onPurchaseProtectionLogicError()
         }
+        actionListener.onNeedUpdateRequestData()
+        actionListener.onPurchaseProtectionChangeListener(position)
     }
 
     override fun onClickPurchaseProtectionTooltip(cartItem: CartItemModel) {
@@ -1572,15 +1543,15 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onClickCollapseGroupProduct(
         position: Int,
-        shipmentCartItemModel: ShipmentCartItemModel
+        cartItemExpandModel: CartItemExpandModel
     ) {
-        shipmentDataList[position] = shipmentCartItemModel
+        shipmentDataList[position] = cartItemExpandModel
         notifyItemChanged(position)
 
         val (firstCartItemPosition, _) =
-            getFirstCartItemByCartString(shipmentCartItemModel.cartString)
+            getFirstCartItemByCartString(cartItemExpandModel.cartString)
         val removedCartItemSize =
-            shipmentCartItemModel.cartItemModels.size - 1
+            cartItemExpandModel.cartSize - 1
         repeat(removedCartItemSize) {
             shipmentDataList.removeAt(firstCartItemPosition + 1)
         }
@@ -1589,20 +1560,14 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onClickExpandGroupProduct(
         position: Int,
-        shipmentCartItemModel: ShipmentCartItemModel
+        cartItemExpandModel: CartItemExpandModel
     ) {
-        shipmentDataList[position] = shipmentCartItemModel
+        shipmentDataList[position] = cartItemExpandModel
         notifyItemChanged(position)
 
-        val (firstCartItemPosition, firstShipmentCartItem) =
-            getFirstCartItemByCartString(shipmentCartItemModel.cartString)
-        val newCartItems =
-            List(shipmentCartItemModel.cartItemModels.size) { index ->
-                firstShipmentCartItem.copy(
-                    isGroupProduct = true,
-                    groupProductPosition = index
-                )
-            }.drop(1)
+        val (_, shipmentCartItem) = getShipmentCartItemByCartString(cartItemExpandModel.cartString)
+        val (firstCartItemPosition, _) = getFirstCartItemByCartString(cartItemExpandModel.cartString)
+        val newCartItems = shipmentCartItem.cartItemModels.drop(1)
         shipmentDataList.addAll(firstCartItemPosition + 1, newCartItems)
         notifyItemRangeInserted(firstCartItemPosition + 1, newCartItems.size)
     }
