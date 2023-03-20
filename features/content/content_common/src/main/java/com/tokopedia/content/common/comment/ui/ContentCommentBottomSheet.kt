@@ -205,7 +205,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 binding.root.setPadding(0, 0, 0, binding.root.paddingBottom + keyboardHeight)
             } else {
                 val paddingBottom = binding.root.paddingBottom
-                binding.root.setPadding(0, 0, 0, if (paddingBottom >= 16.toPx()) paddingBottom - keyboardHeight else paddingBottom)
+                binding.root.setPadding(0, 0, 0, 16.toPx())
             }
             windowInsets
         }
