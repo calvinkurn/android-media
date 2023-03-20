@@ -1,20 +1,18 @@
 package com.tokopedia.universal_sharing.model
 
-import android.content.Context
 import com.tokopedia.universal_sharing.util.DateUtil
 
 /**
  * @param startTime in unix form
  * @param endTime in unix form
  */
-data class PersonalizedCampaignModel (
+data class PersonalizedCampaignModel(
     val campaignName: String = "",
     val price: String = "",
     val isThematicCampaign: Boolean = false,
     val discountPercentage: Float = 0F,
     val startTime: Long = 0L,
-    val endTime: Long = 0L,
-    val isNonDiscCampaign: Boolean = false
+    val endTime: Long = 0L
 ) {
 
     /**

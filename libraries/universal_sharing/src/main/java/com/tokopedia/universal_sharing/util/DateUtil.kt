@@ -1,5 +1,6 @@
 package com.tokopedia.universal_sharing.util
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -16,12 +17,13 @@ object DateUtil {
             val now = System.currentTimeMillis()
             val diff = (endDate.time - now).toFloat()
             if (diff < 0) {
-                //End date is out dated
+                // End date is out dated
                 false
             } else {
                 TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1
             }
         } catch (e: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             false
         }
     }
@@ -33,12 +35,13 @@ object DateUtil {
             val now = System.currentTimeMillis()
             val diff = (endDate.time - now).toFloat()
             if (diff < 0) {
-                //End date is out dated
+                // End date is out dated
                 false
             } else {
                 TimeUnit.MILLISECONDS.toMinutes(endDate.time - now) < threshold
             }
         } catch (e: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             false
         }
     }
@@ -55,12 +58,13 @@ object DateUtil {
             val now = System.currentTimeMillis()
             val diff = (endDate.time - now).toFloat()
             if (diff < 0) {
-                //End date is out dated
-               0L
+                // End date is out dated
+                0L
             } else {
                 TimeUnit.MILLISECONDS.toMinutes(endDate.time - now)
             }
         } catch (e: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             0L
         }
     }
@@ -78,6 +82,6 @@ object DateUtil {
         val formatterHour = SimpleDateFormat(HOUR_FORMAT, locale)
         val date = formatterDate.format(dateTime)
         val hour = formatterHour.format(dateTime)
-        return return String.format("%s, jam %s WIB", date, hour)
+        return return String.format("%s, jam %s WIB", date, hour, Locale.getDefault())
     }
 }
