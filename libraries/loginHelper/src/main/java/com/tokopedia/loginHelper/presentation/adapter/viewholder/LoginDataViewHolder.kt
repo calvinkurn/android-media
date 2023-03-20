@@ -17,7 +17,7 @@ class LoginDataViewHolder(itemView: View?, private val listener: LoginHelperClic
             if (element?.email != null) {
                 userEmail.text = element.email
             }
-            if (element?.tribe != null && element.tribe.isNotEmpty()){
+            if (element?.tribe != null && element.tribe.isNotEmpty()) {
                 tribeChip.chipText = element.tribe
             } else {
                 tribeChip.hide()
@@ -32,7 +32,6 @@ class LoginDataViewHolder(itemView: View?, private val listener: LoginHelperClic
         @LayoutRes
         val RES_LAYOUT = com.tokopedia.loginHelper.R.layout.item_login_data
     }
-
 }
 
 interface LoginHelperClickListener {

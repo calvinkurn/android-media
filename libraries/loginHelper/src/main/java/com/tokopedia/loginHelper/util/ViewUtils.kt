@@ -52,7 +52,6 @@ fun View?.showToasterError(
     }
 }
 
-
 private fun View?.showToasterError(message: String) {
     Toaster.build(
         this ?: return,

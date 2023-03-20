@@ -7,7 +7,7 @@ data class UserDataUiModel(
     val email: String?,
     val password: String?,
     val tribe: String?
-): Visitable<LoginHelperAdapterFactory> {
+) : Visitable<LoginHelperAdapterFactory> {
 
     override fun type(typeFactory: LoginHelperAdapterFactory): Int {
         return typeFactory.type(this)

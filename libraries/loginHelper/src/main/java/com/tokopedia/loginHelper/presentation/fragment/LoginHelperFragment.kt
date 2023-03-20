@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -140,13 +141,14 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         } else {
             "user_details_prod.json"
         }
-        var jsonString: String = ""
+        var jsonString = ""
         context?.let { context ->
             try {
                 jsonString = context.assets.open(fileName)
                     .bufferedReader()
                     .use { it.readText() }
             } catch (ioException: IOException) {
+                FirebaseCrashlytics.getInstance().recordException(ioException)
             }
         }
         val loginUserDetails = Gson().fromJson(jsonString, LoginDataResponse::class.java)

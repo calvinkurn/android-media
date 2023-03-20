@@ -15,7 +15,7 @@
         tools:text="@string/login_helper_total_users"
         android:padding="8dp"
         android:textColor="@color/Unify_N700_96"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         app:typographyType="display_1"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

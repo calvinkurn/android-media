@@ -46,7 +46,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class LoginHelperViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers,
     private val getUserDetailsRestUseCase: GetUserDetailsRestUseCase,
     private val loginTokenV2UseCase: LoginTokenV2UseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,

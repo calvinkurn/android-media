@@ -5,7 +5,7 @@ import com.tokopedia.loginHelper.presentation.adapter.factory.LoginHelperAdapter
 
 data class HeaderUiModel(
     val userCount: Int
-): Visitable<LoginHelperAdapterFactory> {
+) : Visitable<LoginHelperAdapterFactory> {
 
     override fun type(typeFactory: LoginHelperAdapterFactory): Int {
         return typeFactory.type(this)

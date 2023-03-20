@@ -20,7 +20,7 @@ class LoginHelperAdapterFactoryImpl(private val listener: LoginHelperClickListen
     }
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
+        return when (type) {
             LoginDataViewHolder.RES_LAYOUT -> LoginDataViewHolder(parent, listener)
             LoginHeaderViewHolder.RES_LAYOUT -> LoginHeaderViewHolder(parent)
             else -> super.createViewHolder(parent, type)

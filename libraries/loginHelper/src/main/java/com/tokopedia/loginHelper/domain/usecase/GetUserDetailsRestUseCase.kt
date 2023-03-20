@@ -11,15 +11,14 @@ import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-class GetUserDetailsRestUseCase @Inject constructor(private val repository: RestRepository)
-    :RestRequestUseCase(repository){
+class GetUserDetailsRestUseCase @Inject constructor(private val repository: RestRepository) :
+    RestRequestUseCase(repository) {
 
     private val url = "http://172.21.56.230:3123/users?env=staging"
     var requestParams = RequestParams()
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse?> {
-
-        val token = object: TypeToken<LoginDataResponse>() {}.type
+        val token = object : TypeToken<LoginDataResponse>() {}.type
 
         val restRequest = RestRequest.Builder(url, token)
             .setRequestType(RequestType.GET)
@@ -30,5 +29,4 @@ class GetUserDetailsRestUseCase @Inject constructor(private val repository: Rest
         restRequestList.add(restRequest)
         return repository.getResponses(restRequestList)
     }
-
 }

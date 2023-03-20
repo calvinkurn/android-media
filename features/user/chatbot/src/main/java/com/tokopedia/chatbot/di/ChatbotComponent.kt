@@ -26,7 +26,7 @@ interface ChatbotComponent {
 
     fun inject(contactUsMigrationActivity: ContactUsMigrationActivity)
 
-    fun inject(chatbotProvideRatingFragment: ChatBotProvideRatingFragment)
+    fun inject(chatbotProvideRatingFragment : ChatBotProvideRatingFragment)
 
     fun inject(chatbotOnboardingActivity: ChatbotOnboardingActivity)
 }

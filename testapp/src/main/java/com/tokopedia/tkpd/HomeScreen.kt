@@ -47,7 +47,7 @@ fun HomeScreen(
                     .fillMaxSize()
                     .padding(horizontal = 72.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),

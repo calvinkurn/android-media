@@ -8,7 +8,7 @@ import com.tokopedia.loginHelper.databinding.ItemLoginHeaderBinding
 import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class LoginHeaderViewHolder(itemView: View?): AbstractViewHolder<HeaderUiModel>(itemView) {
+class LoginHeaderViewHolder(itemView: View?) : AbstractViewHolder<HeaderUiModel>(itemView) {
 
     private var binding: ItemLoginHeaderBinding? by viewBinding()
 
