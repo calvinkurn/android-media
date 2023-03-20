@@ -772,9 +772,10 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void reloadPage(int position) {
-        finish();
         getIntent().putExtra(ARGS_TAB_POSITION, position);
-        startActivity(getIntent());
+//        finish();
+//        startActivity(getIntent());
+        recreate();
     }
 
     private List<Fragment> fragments() {
