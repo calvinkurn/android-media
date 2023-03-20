@@ -1195,10 +1195,10 @@ class CartFragment :
                                         uniqueId = voucher.uniqueId,
                                         boType = availableGroup.boMetadata.boType,
                                         codes = arrayListOf(voucher.code),
-                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        shopId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(
+                                        poDuration = availableGroup.groupShopCartData.getOrNull(0)?.cartDetails?.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
                                             ?: "0"
@@ -1238,10 +1238,10 @@ class CartFragment :
                                         uniqueId = voucher.uniqueId,
                                         boType = availableGroup.boMetadata.boType,
                                         codes = arrayListOf(voucher.code),
-                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        shopId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(
+                                        poDuration = availableGroup.groupShopCartData.getOrNull(0)?.cartDetails?.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
                                             ?: "0"
@@ -1284,10 +1284,10 @@ class CartFragment :
                                         uniqueId = voucher.uniqueId,
                                         boType = availableGroup.boMetadata.boType,
                                         codes = arrayListOf(voucher.code),
-                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        shopId = availableGroup.groupShopCartData.getOrNull(0)?.shop?.shopId.toLongOrZero(),
                                         warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                         isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                        poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(
+                                        poDuration = availableGroup.groupShopCartData.getOrNull(0)?.cartDetails?.getOrNull(0)?.products?.getOrNull(
                                             0
                                         )?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() }
                                             ?: "0"

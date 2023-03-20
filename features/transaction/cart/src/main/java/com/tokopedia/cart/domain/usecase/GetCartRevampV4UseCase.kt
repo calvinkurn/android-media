@@ -18,9 +18,7 @@ class GetCartRevampV4UseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<GetCartParam, CartData>(dispatchers.io) {
 
-    override fun graphqlQuery(): String {
-        return ""
-    }
+    override fun graphqlQuery(): String = CART_REVAMP_V4_QUERY
 
     override suspend fun execute(params: GetCartParam): CartData {
         val request = GraphqlRequest(
@@ -56,8 +54,6 @@ class GetCartRevampV4UseCase @Inject constructor(
         const val PARAM_KEY_STATE = "state"
 
         private const val PARAM_VALUE_ID = "id"
-
-        private const val QUERY_CART_REVAMP = "CartRevampQuery"
     }
 }
 
