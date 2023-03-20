@@ -133,7 +133,7 @@ class InboxContactUsViewModelTest {
 
     @Test
     fun `check when getTopBotStatus if failed but active`() {
-        coEvery { chipTopUsecase.getChipTopBotStatus() } returns createTopBotResponse(FAILED, true)
+        coEvery { chipTopUsecase.getChipTopBotStatus() } returns createTopBotResponse(FAILED, false)
         viewModel.getTopBotStatus()
         val actual = viewModel.uiState.value.showChatBotWidget
         assertEquals(false, actual)

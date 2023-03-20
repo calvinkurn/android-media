@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.common.analytics
 
 import android.content.Context
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
@@ -17,9 +18,13 @@ import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search_map.data.model.params.SearchParam
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils.*
+import com.tokopedia.track.TrackAppUtils.EVENT
+import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
+import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
+import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.DateUtil
+import java.text.ParseException
 import kotlin.math.roundToLong
 
 /**
@@ -429,7 +434,12 @@ class TrackingHotelUtil {
         position: Int,
         screenName: String
     ) {
-        val duration = DateUtil.getDayDiff(addToCartParam.checkIn, addToCartParam.checkOut)
+        var duration: Long = 0
+        try {
+            duration = DateUtil.getDayDiff(addToCartParam.checkIn, addToCartParam.checkOut)
+        } catch (parseException: ParseException) {
+            FirebaseCrashlytics.getInstance().recordException(parseException)
+        }
 
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - ${addToCartParam.destinationType} - ${addToCartParam.destinationName} - ${addToCartParam.roomCount} - ${addToCartParam.adult} - ${convertDate(addToCartParam.checkIn)} - $duration - ${addToCartParam.propertyId}"
