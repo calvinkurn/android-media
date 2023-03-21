@@ -3,6 +3,7 @@ package com.tkpd.atcvariant
 import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
 import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atcvariant.util.AtcVariantJsonHelper.generateParamsVariantFulfilled
+import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -12,6 +13,7 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.getCurrencyFormatted
@@ -32,6 +34,8 @@ import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -104,25 +108,26 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         val visitablesData = (viewModel.initialData.value as Success).data
 
-        assertVisitables(visitablesData,
-                showQuantityEditor = true,
-                expectedSelectedProductId = "2147818576",
-                expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-                expectedSelectedStockFmt = "Stock : 10",
-                expectedSelectedOptionIdsLevelOne = "254080",
-                expectedSelectedOptionIdsLevelTwo = "254085",
-                expectedVariantName = listOf("Merah", "M"),
-                expectedQuantity = 23,
-                expectedMinOrder = 3, //use min order campaign
-                cashBackPercentage = 102,
-                uspImageUrl = "icon usp",
-                isTokoCabang = true
+        assertVisitables(
+            visitablesData,
+            showQuantityEditor = true,
+            expectedSelectedProductId = "2147818576",
+            expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
+            expectedSelectedStockFmt = "Stock : 10",
+            expectedSelectedOptionIdsLevelOne = "254080",
+            expectedSelectedOptionIdsLevelTwo = "254085",
+            expectedVariantName = listOf("Merah", "M"),
+            expectedQuantity = 23,
+            expectedMinOrder = 3, // use min order campaign
+            cashBackPercentage = 102,
+            uspImageUrl = "icon usp",
+            isTokoCabang = true
         )
 
         assertCampaign(
-                visitablesData,
-                expectedCampaignActive = true,
-                expectedDiscountedPrice = 208000.getCurrencyFormatted()
+            visitablesData,
+            expectedCampaignActive = true,
+            expectedDiscountedPrice = 208000.getCurrencyFormatted()
         )
         assertStockCopy("")
         assertButton(expectedCartText = "Simpan Perubahan")
@@ -165,9 +170,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `test must hit gql when showQtyEditor and mini cart null`() {
-        val aggregatorParams = generateParamsVariantFulfilled("2147818569",
-                false,
-                true)
+        val aggregatorParams = generateParamsVariantFulfilled(
+            "2147818569",
+            false,
+            true
+        )
 
         aggregatorParams.showQtyEditor = true
 
@@ -197,19 +204,20 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         val visitablesData = (viewModel.initialData.value as Success).data
 
-        assertVisitables(visitablesData,
-                showQuantityEditor = false,
-                expectedSelectedProductId = "2147818576",
-                expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-                expectedSelectedStockFmt = "Stock : 10",
-                expectedSelectedOptionIdsLevelOne = "254080",
-                expectedSelectedOptionIdsLevelTwo = "254085",
-                expectedVariantName = listOf("Merah", "M"),
-                expectedQuantity = 0,
-                expectedMinOrder = 3,
-                cashBackPercentage = 102,
-                uspImageUrl = "icon usp",
-                isTokoCabang = true
+        assertVisitables(
+            visitablesData,
+            showQuantityEditor = false,
+            expectedSelectedProductId = "2147818576",
+            expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
+            expectedSelectedStockFmt = "Stock : 10",
+            expectedSelectedOptionIdsLevelOne = "254080",
+            expectedSelectedOptionIdsLevelTwo = "254085",
+            expectedVariantName = listOf("Merah", "M"),
+            expectedQuantity = 0,
+            expectedMinOrder = 3,
+            cashBackPercentage = 102,
+            uspImageUrl = "icon usp",
+            isTokoCabang = true
         )
         assertStockCopy("")
         assertButton()
@@ -222,19 +230,20 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         val visitablesData = (viewModel.initialData.value as Success).data
 
-        assertVisitables(visitablesData,
-                showQuantityEditor = true,
-                expectedSelectedProductId = "2147818576",
-                expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-                expectedSelectedStockFmt = "Stock : 10",
-                expectedSelectedOptionIdsLevelOne = "254080",
-                expectedSelectedOptionIdsLevelTwo = "254085",
-                expectedVariantName = listOf("Merah", "M"),
-                expectedQuantity = 0,
-                expectedMinOrder = 3,
-                cashBackPercentage = 102,
-                uspImageUrl = "icon usp",
-                isTokoCabang = true
+        assertVisitables(
+            visitablesData,
+            showQuantityEditor = true,
+            expectedSelectedProductId = "2147818576",
+            expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
+            expectedSelectedStockFmt = "Stock : 10",
+            expectedSelectedOptionIdsLevelOne = "254080",
+            expectedSelectedOptionIdsLevelTwo = "254085",
+            expectedVariantName = listOf("Merah", "M"),
+            expectedQuantity = 0,
+            expectedMinOrder = 3,
+            cashBackPercentage = 102,
+            uspImageUrl = "icon usp",
+            isTokoCabang = true
         )
         assertStockCopy("")
         assertButton()
@@ -252,19 +261,20 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         val visitablesData = (viewModel.initialData.value as Success).data
 
-        assertVisitables(visitablesData,
-                showQuantityEditor = true,
-                expectedSelectedProductId = "2147818576",
-                expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-                expectedSelectedStockFmt = "Stock : 10",
-                expectedSelectedOptionIdsLevelOne = "254080",
-                expectedSelectedOptionIdsLevelTwo = "254085",
-                expectedVariantName = listOf("Merah", "M"),
-                expectedQuantity = 23,
-                expectedMinOrder = 3,
-                cashBackPercentage = 102,
-                uspImageUrl = "icon usp",
-                isTokoCabang = true
+        assertVisitables(
+            visitablesData,
+            showQuantityEditor = true,
+            expectedSelectedProductId = "2147818576",
+            expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
+            expectedSelectedStockFmt = "Stock : 10",
+            expectedSelectedOptionIdsLevelOne = "254080",
+            expectedSelectedOptionIdsLevelTwo = "254085",
+            expectedVariantName = listOf("Merah", "M"),
+            expectedQuantity = 23,
+            expectedMinOrder = 3,
+            cashBackPercentage = 102,
+            uspImageUrl = "icon usp",
+            isTokoCabang = true
         )
         assertStockCopy("")
         assertButton(expectedCartText = "Simpan Perubahan")
@@ -281,30 +291,33 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         val visitablesData = (viewModel.initialData.value as Success).data
 
-        assertVisitables(visitablesData,
-                showQuantityEditor = true,
-                expectedSelectedProductId = "2147818593",
-                expectedSelectedMainPrice = 3000.getCurrencyFormatted(),
-                expectedSelectedStockFmt = "Stock : 120",
-                expectedSelectedOptionIdsLevelOne = "254083",
-                expectedSelectedOptionIdsLevelTwo = "254087",
-                expectedVariantName = listOf("Ungu", "XL"),
-                expectedQuantity = 0,
-                expectedMinOrder = 2,
-                cashBackPercentage = 102,
-                uspImageUrl = "icon usp",
-                isTokoCabang = false
+        assertVisitables(
+            visitablesData,
+            showQuantityEditor = true,
+            expectedSelectedProductId = "2147818593",
+            expectedSelectedMainPrice = 3000.getCurrencyFormatted(),
+            expectedSelectedStockFmt = "Stock : 120",
+            expectedSelectedOptionIdsLevelOne = "254083",
+            expectedSelectedOptionIdsLevelTwo = "254087",
+            expectedVariantName = listOf("Ungu", "XL"),
+            expectedQuantity = 0,
+            expectedMinOrder = 2,
+            cashBackPercentage = 102,
+            uspImageUrl = "icon usp",
+            isTokoCabang = false
         )
-        assertCampaign(visitablesData,
-                expectedCampaignActive = false,
-                expectedDiscountedPrice = 2000.getCurrencyFormatted())
+        assertCampaign(
+            visitablesData,
+            expectedCampaignActive = false,
+            expectedDiscountedPrice = 2000.getCurrencyFormatted()
+        )
         assertStockCopy("")
         assertButton()
         assertRestrictionData(
-                assertSuccess = true,
-                expectedProductId = "2147818593",
-                expectedDescription = "desc re gan",
-                expectedTitle = "title re gan platinum"
+            assertSuccess = true,
+            expectedProductId = "2147818593",
+            expectedDescription = "desc re gan",
+            expectedTitle = "title re gan platinum"
         )
     }
 
@@ -320,26 +333,29 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         val visitablesData = (viewModel.initialData.value as Success).data
 
-        assertVisitables(visitablesData,
-                showQuantityEditor = false,
-                expectedSelectedProductId = "2147818570",
-                expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-                expectedSelectedStockFmt = "kosong bro",
-                expectedSelectedOptionIdsLevelOne = "254079",
-                expectedSelectedOptionIdsLevelTwo = "254084",
-                expectedQuantity = 2,
-                expectedVariantName = listOf("Biru", "S"),
-                expectedMinOrder = 3,
-                cashBackPercentage = 102,
-                uspImageUrl = "icon usp",
-                isTokoCabang = false
+        assertVisitables(
+            visitablesData,
+            showQuantityEditor = false,
+            expectedSelectedProductId = "2147818570",
+            expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
+            expectedSelectedStockFmt = "kosong bro",
+            expectedSelectedOptionIdsLevelOne = "254079",
+            expectedSelectedOptionIdsLevelTwo = "254084",
+            expectedQuantity = 2,
+            expectedVariantName = listOf("Biru", "S"),
+            expectedMinOrder = 3,
+            cashBackPercentage = 102,
+            uspImageUrl = "icon usp",
+            isTokoCabang = false
         )
 
         assertStockCopy("kosong bro copy")
-        assertButton(expectedIsBuyable = false,
-                expectedCartType = "remind_me",
-                expectedCartColor = "secondary_green",
-                expectedCartText = "Ingatkan Saya")
+        assertButton(
+            expectedIsBuyable = false,
+            expectedCartType = "remind_me",
+            expectedCartColor = "secondary_green",
+            expectedCartText = "Ingatkan Saya"
+        )
 
         assertRestrictionData(assertSuccess = false)
     }
@@ -355,7 +371,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
      */
     @Test
     fun `render variant after change level one in already selected variant`() {
-        //call to fill initial value
+        // call to fill initial value
         `render initial variant with given parent id and hit gql non tokonow`()
 
         val warnaId = "121018"
@@ -364,41 +380,47 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.onVariantClicked(false, warnaId, hijauId, "image variant", 1)
 
         val visitablesData = (viewModel.initialData.value as Success).data
-        assertVisitables(visitablesData,
-                showQuantityEditor = false,
-                expectedSelectedProductId = "2147818586",
-                expectedSelectedMainPrice = 7000.getCurrencyFormatted(),
-                expectedSelectedStockFmt = "Stock : 10",
-                expectedSelectedOptionIdsLevelOne = "254082",
-                expectedSelectedOptionIdsLevelTwo = "254085",
-                expectedVariantName = listOf("Hijau", "M"),
-                expectedQuantity = 0,
-                expectedMinOrder = 1,
-                cashBackPercentage = 102,
-                uspImageUrl = "icon usp",
-                isTokoCabang = false
+        assertVisitables(
+            visitablesData,
+            showQuantityEditor = false,
+            expectedSelectedProductId = "2147818586",
+            expectedSelectedMainPrice = 7000.getCurrencyFormatted(),
+            expectedSelectedStockFmt = "Stock : 10",
+            expectedSelectedOptionIdsLevelOne = "254082",
+            expectedSelectedOptionIdsLevelTwo = "254085",
+            expectedVariantName = listOf("Hijau", "M"),
+            expectedQuantity = 0,
+            expectedMinOrder = 1,
+            cashBackPercentage = 102,
+            uspImageUrl = "icon usp",
+            isTokoCabang = false
         )
         assertStockCopy("")
-        assertButton(expectedIsBuyable = true,
-                expectedCartText = "+ Keranjang Hijau M")
+        assertButton(
+            expectedIsBuyable = true,
+            expectedCartText = "+ Keranjang Hijau M"
+        )
 
         val updateResultData = viewModel.getActivityResultData()
         val variantDataVisitable = visitablesData[1] as VariantComponentDataModel
-        Assert.assertTrue(updateResultData.mapOfSelectedVariantOption?.values?.toList()?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
-                ?: false)
+        Assert.assertTrue(
+            updateResultData.mapOfSelectedVariantOption?.values?.toList()?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
+                ?: false
+        )
         Assert.assertEquals(updateResultData.selectedProductId, "2147818586")
 
         assertRestrictionData(
-                assertSuccess = true,
-                expectedProductId = "2147818586",
-                expectedDescription = "desc re gan",
-                expectedTitle = "title re gan gold")
+            assertSuccess = true,
+            expectedProductId = "2147818586",
+            expectedDescription = "desc re gan",
+            expectedTitle = "title re gan gold"
+        )
 
         assertRatesData(
-                assertSuccess = true,
-                containProductId = "2147818586",
-                expectedTitle = "Jarak pengiriman terlalu jauh",
-                expectedSubtitle = "Tidak ada kurir yang mendukung pengiriman barang ini ke alamat kamu."
+            assertSuccess = true,
+            containProductId = "2147818586",
+            expectedTitle = "Jarak pengiriman terlalu jauh",
+            expectedSubtitle = "Tidak ada kurir yang mendukung pengiriman barang ini ke alamat kamu."
         )
     }
 
@@ -409,7 +431,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
      */
     @Test
     fun `render variant after change level one in empty selected variant`() {
-        //call to fill initial value, with not buyable because we dont want to select any variant here
+        // call to fill initial value, with not buyable because we dont want to select any variant here
         `render initial variant with given child id not buyable and hit gql tokonow`()
 
         val warnaId = "121018"
@@ -419,25 +441,28 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         val visitablesData = (viewModel.initialData.value as Success).data
         val expectedLevelOneVariantIdChanged = merahId
-        assertVisitables(visitablesData,
-                showQuantityEditor = false,
-                expectedSelectedProductId = "2147818575",
-                expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-                expectedSelectedStockFmt = "kosong bro",
-                expectedSelectedOptionIdsLevelOne = expectedLevelOneVariantIdChanged,
-                expectedSelectedOptionIdsLevelTwo = "254084",
-                expectedVariantName = listOf("Merah", "S"),
-                expectedQuantity = 0,
-                expectedMinOrder = 1,
-                cashBackPercentage = 102,
-                uspImageUrl = "icon usp",
-                isTokoCabang = false
+        assertVisitables(
+            visitablesData,
+            showQuantityEditor = false,
+            expectedSelectedProductId = "2147818575",
+            expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
+            expectedSelectedStockFmt = "kosong bro",
+            expectedSelectedOptionIdsLevelOne = expectedLevelOneVariantIdChanged,
+            expectedSelectedOptionIdsLevelTwo = "254084",
+            expectedVariantName = listOf("Merah", "S"),
+            expectedQuantity = 0,
+            expectedMinOrder = 1,
+            cashBackPercentage = 102,
+            uspImageUrl = "icon usp",
+            isTokoCabang = false
         )
         assertStockCopy("kosong bro copy")
-        assertButton(expectedIsBuyable = false,
-                expectedCartType = "empty",
-                expectedCartColor = "disabled",
-                expectedCartText = "Stok Habis")
+        assertButton(
+            expectedIsBuyable = false,
+            expectedCartType = "empty",
+            expectedCartColor = "disabled",
+            expectedCartText = "Stok Habis"
+        )
         assertRestrictionData(assertSuccess = false)
     }
 
@@ -451,6 +476,157 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.onVariantClicked(true, warnaId, unguId, "image variant", 1)
 
         assertRestrictionData(assertSuccess = false)
+    }
+
+    /**
+     * initial selected variant
+     * level one: 121018 -> 254080
+     * level two: 121019 -> 254085
+     */
+    private fun `select variant oos by new logic`(
+        optionKey: String,
+        optionId: String,
+        selectedLevel: Int,
+        block: (List<AtcVariantVisitable>) -> Unit
+    ) {
+        `render initial variant with given parent id and hit gql non tokonow`()
+
+        viewModel.onVariantClicked(
+            showQtyEditor = false,
+            selectedOptionKey = optionKey,
+            selectedOptionId = optionId,
+            variantImage = "image variant",
+            variantLevel = selectedLevel
+        )
+
+        val visitableData = (viewModel.initialData.value as Success).data
+        block.invoke(visitableData)
+    }
+
+    @Test
+    fun `ensure variant level one is right(oos or not) after variant level one selected`() {
+        `select variant oos by new logic`(optionKey = "121018", optionId = "254080", selectedLevel = 1) {
+            // get variant level one
+            val variantComponentLevelOne = it.firstOrNull { component ->
+                component is VariantComponentDataModel
+            } as VariantComponentDataModel
+            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.firstOrNull()?.variantOptions ?: emptyList()
+
+            assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_EMPTY) // 254079
+            assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_SELECTED) // 254080
+            assertTrue(optionLevelOne[2].currentState == VariantConstant.STATE_EMPTY) // 254081
+            assertTrue(optionLevelOne[3].currentState == VariantConstant.STATE_UNSELECTED) // 254082
+            assertTrue(optionLevelOne[4].currentState == VariantConstant.STATE_UNSELECTED) // 254083
+
+            assertFalse(optionLevelOne[0].flashSale)
+            assertTrue(optionLevelOne[1].flashSale)
+            assertFalse(optionLevelOne[2].flashSale)
+            assertFalse(optionLevelOne[3].flashSale)
+            assertFalse(optionLevelOne[4].flashSale)
+        }
+    }
+
+    @Test
+    fun `ensure variant level two is right(oos or not) after variant level one selected`() {
+        `select variant oos by new logic`(optionKey = "121018", optionId = "254083", selectedLevel = 1) {
+            // get variant level one
+            val variantComponentLevelOne = it.lastOrNull { component ->
+                component is VariantComponentDataModel
+            } as VariantComponentDataModel
+            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
+
+            assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_UNSELECTED) // 254084
+            assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_SELECTED) // 254085
+            assertTrue(optionLevelOne[2].currentState == VariantConstant.STATE_EMPTY) // 254086
+            assertTrue(optionLevelOne[3].currentState == VariantConstant.STATE_UNSELECTED) // 254087
+            assertTrue(optionLevelOne[4].currentState == VariantConstant.STATE_UNSELECTED) // 254088
+
+            assertFalse(optionLevelOne[0].flashSale)
+            assertFalse(optionLevelOne[1].flashSale)
+            assertFalse(optionLevelOne[2].flashSale)
+            assertTrue(optionLevelOne[3].flashSale)
+            assertFalse(optionLevelOne[4].flashSale)
+        }
+    }
+
+    @Test
+    fun `ensure variant level one is right(oos or not) after variant level two selected`() {
+        `select variant oos by new logic`(optionKey = "121019", optionId = "254088", selectedLevel = 2) {
+            // get variant level one
+            val variantComponentLevelOne = it.firstOrNull { component ->
+                component is VariantComponentDataModel
+            } as VariantComponentDataModel
+            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.firstOrNull()?.variantOptions ?: emptyList()
+
+            assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_EMPTY) // 254079
+            assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_SELECTED) // 254080
+            assertTrue(optionLevelOne[2].currentState == VariantConstant.STATE_EMPTY) // 254081
+            assertTrue(optionLevelOne[3].currentState == VariantConstant.STATE_UNSELECTED) // 254082
+            assertTrue(optionLevelOne[4].currentState == VariantConstant.STATE_UNSELECTED) // 254083
+
+            assertFalse(optionLevelOne[0].flashSale)
+            assertFalse(optionLevelOne[1].flashSale)
+            assertFalse(optionLevelOne[2].flashSale)
+            assertFalse(optionLevelOne[3].flashSale)
+            assertFalse(optionLevelOne[4].flashSale)
+        }
+    }
+
+    @Test
+    fun `ensure variant level two is right(oos or not) after variant level two selected`() {
+        `select variant oos by new logic`(optionKey = "121019", optionId = "254088", selectedLevel = 1) {
+            // get variant level one
+            val variantComponentLevelOne = it.lastOrNull { component ->
+                component is VariantComponentDataModel
+            } as VariantComponentDataModel
+            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
+
+            assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_EMPTY) // 254084
+            assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_UNSELECTED) // 254085
+            assertTrue(optionLevelOne[2].currentState == VariantConstant.STATE_EMPTY) // 254086
+            assertTrue(optionLevelOne[3].currentState == VariantConstant.STATE_UNSELECTED) // 254087
+            assertTrue(optionLevelOne[4].currentState == VariantConstant.STATE_SELECTED) // 254088
+
+            assertFalse(optionLevelOne[0].flashSale)
+            assertTrue(optionLevelOne[1].flashSale)
+            assertFalse(optionLevelOne[2].flashSale)
+            assertTrue(optionLevelOne[3].flashSale)
+            assertFalse(optionLevelOne[4].flashSale)
+        }
+    }
+
+    @Test
+    fun `variant level one is oos but it variant selected()`() {
+        `select variant oos by new logic`(optionKey = "121018", optionId = "254079", selectedLevel = 1) {
+            // get variant level one
+            val variantComponentLevelOne = it.firstOrNull { component ->
+                component is VariantComponentDataModel
+            } as VariantComponentDataModel
+            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.firstOrNull()?.variantOptions ?: emptyList()
+
+            assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_SELECTED_EMPTY) // 254079
+            assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_UNSELECTED) // 254080
+            assertTrue(optionLevelOne[2].currentState == VariantConstant.STATE_EMPTY) // 254081
+            assertTrue(optionLevelOne[3].currentState == VariantConstant.STATE_UNSELECTED) // 254082
+            assertTrue(optionLevelOne[4].currentState == VariantConstant.STATE_UNSELECTED) // 254083
+        }
+    }
+
+    @Test
+    fun `variant level two is oos but it variant selected`() {
+        `select variant oos by new logic`(optionKey = "121019", optionId = "254086", selectedLevel = 1) {
+            // get variant level one
+            val variantComponentLevelOne = it.lastOrNull { component ->
+                component is VariantComponentDataModel
+            } as VariantComponentDataModel
+            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
+
+            assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_EMPTY) // 254084
+            assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_UNSELECTED) // 254085
+            assertTrue(optionLevelOne[2].currentState == VariantConstant.STATE_SELECTED_EMPTY) // 254086
+            assertTrue(optionLevelOne[3].currentState == VariantConstant.STATE_UNSELECTED) // 254087
+            assertTrue(optionLevelOne[4].currentState == VariantConstant.STATE_UNSELECTED) // 254088
+        }
     }
     //endregion
 
@@ -480,14 +656,14 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertTrue(viewModel.deleteCartLiveData.value is Success)
         Assert.assertNotNull((viewModel.deleteCartLiveData.value as Success).data, "sukses delete cart")
 
-        //after delete cart, delete icon must not visible
+        // after delete cart, delete icon must not visible
         val quantityDataModel = (viewModel.initialData.value as Success).data.first {
             it is VariantQuantityDataModel
         } as VariantQuantityDataModel
 
         Assert.assertEquals(quantityDataModel.shouldShowDeleteButton, false)
 
-        //after delete cart, button should back to cart redir + keranjang
+        // after delete cart, button should back to cart redir + keranjang
         assertButton(expectedCartText = "+ Keranjang", expectedIsBuyable = true)
     }
 
@@ -769,7 +945,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val result = viewModel.toggleFavoriteShop
         Assert.assertEquals((result.value as Success).data, true)
 
-        //Assert request params
+        // Assert request params
         Assert.assertEquals(captureParams.captured.getString("shopID", ""), "12345")
         Assert.assertEquals(captureParams.captured.getString("action", ""), "follow")
     }
@@ -794,7 +970,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertTrue(result.value is Fail)
         Assert.assertEquals((result.value as Fail).throwable.message, "Fail")
 
-        //Assert request params
+        // Assert request params
         Assert.assertEquals(captureParams.captured.getString("shopID", ""), "12345")
         Assert.assertEquals(captureParams.captured.getString("action", ""), "follow")
     }
@@ -818,13 +994,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertTrue(result.value is Fail)
         Assert.assertEquals((result.value as Fail).throwable.message, "Fail")
 
-        //Assert request params
+        // Assert request params
         Assert.assertEquals(captureParams.captured.getString("shopID", ""), "12345")
         Assert.assertEquals(captureParams.captured.getString("action", ""), "follow")
     }
 
     @Test
-    fun `variant image clicked will post gallery data value`(){
+    fun `variant image clicked will post gallery data value`() {
         val imageUrl = "url1234"
         val productId = "2147818570"
         val userId = "123"
@@ -840,11 +1016,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             type = type
         )
 
-        val optionIds = listOf("254079", "254080","254081", "254082" ,"254083")
+        val optionIds = listOf("254079", "254080", "254081", "254082", "254083")
         val tags = listOf("Biru", "Merah", "Kuning", "Hijau", "Ungu")
         val expectedUrl = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/27/f4f95629-5b09-423c-a1c2-58691e1a2f30.jpg"
 
-        val items = optionIds.mapIndexed{ index, optionId ->
+        val items = optionIds.mapIndexed { index, optionId ->
             ProductDetailGallery.Item(
                 id = optionId,
                 url = expectedUrl,
@@ -865,7 +1041,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     }
 
     @Test
-    fun `variant image clicked fallback test with empty images and available default image`(){
+    fun `variant image clicked fallback test with empty images and available default image`() {
         val imageUrl = "url1234"
         val productId = "2147818570"
         val userId = "123"
@@ -881,7 +1057,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     }
 
     @Test
-    fun `variant image clicked fallback test with empty images and empty default image`(){
+    fun `variant image clicked fallback test with empty images and empty default image`() {
         val imageUrl = ""
         val productId = "2147818570"
         val userId = "123"
@@ -893,7 +1069,6 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         Assert.assertEquals(null, data)
     }
-
 
     //endregion
 
@@ -921,7 +1096,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     }
 
     @Test
-    fun `verify add to wishlistv2 returns success` () {
+    fun `verify add to wishlistv2 returns success`() {
         val productId = "123"
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
@@ -936,7 +1111,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     }
 
     @Test
-    fun `verify add to wishlistv2 returns fail` () {
+    fun `verify add to wishlistv2 returns fail`() {
         val productId = "123"
         val mockThrowable = mockk<Throwable>("fail")
 

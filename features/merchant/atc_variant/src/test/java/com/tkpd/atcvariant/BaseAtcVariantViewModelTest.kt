@@ -6,6 +6,7 @@ import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atcvariant.usecase.GetAggregatorAndMiniCartUseCase
 import com.tkpd.atcvariant.util.AtcVariantJsonHelper
+import com.tkpd.atcvariant.util.REMOTE_CONFIG_NEW_VARIANT_LOG
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
@@ -76,6 +77,10 @@ abstract class BaseAtcVariantViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+
+        coEvery {
+            remoteConfig.getBoolean(REMOTE_CONFIG_NEW_VARIANT_LOG, true)
+        } returns true
     }
 
     //region assert helper
