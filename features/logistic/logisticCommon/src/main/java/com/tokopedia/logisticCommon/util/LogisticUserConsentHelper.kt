@@ -49,7 +49,7 @@ object LogisticUserConsentHelper {
         val lastIndex = firstIndex.plus("Syarat & Ketentuan".length)
 
         val consentText = SpannableString(tncDescription).apply {
-            setSpan(onTermsAndConditionClicked, firstIndex,  lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(onTermsAndConditionClicked, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             setSpan(boldSpan, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
