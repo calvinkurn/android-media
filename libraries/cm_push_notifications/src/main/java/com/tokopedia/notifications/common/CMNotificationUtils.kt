@@ -317,8 +317,8 @@ object CMNotificationUtils {
     private fun createReminderPromptFreqRecord(context: Context, pageName: String){
         val reminderPromptAppDataObj = ReminderPromptAppDataObj()
         reminderPromptAppDataObj.firstShown = currentLocalTimeStamp
-        reminderPromptAppDataObj.lastShown = currentLocalTimeStamp
-        writeReminderPromptObjToSharedPref(context, pageName, reminderPromptAppDataObj)
+        reminderPromptAppDataObj.lastShown = 0L
+        writeReminderPromptObjToSharedPref(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA, reminderPromptAppDataObj)
     }
 
     private fun writeReminderPromptObjToSharedPref(context: Context,
@@ -365,7 +365,7 @@ object CMNotificationUtils {
         }
         reminderPromptAppDataObj.currentCount += 1
         reminderPromptAppDataObj.lastShown = currentLocalTimeStamp
-        writeReminderPromptObjToSharedPref(context, pageName, reminderPromptAppDataObj)
+        writeReminderPromptObjToSharedPref(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA, reminderPromptAppDataObj)
         return true
     }
 
@@ -384,7 +384,7 @@ object CMNotificationUtils {
         //create record if does not exist
         initReminderPromptSharedPref(context)
         if(sharedPreference?.contains(pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA) == false){
-            createReminderPromptFreqRecord(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA)
+            createReminderPromptFreqRecord(context, pageName)
         }
         return updateReminderPromptFreqRecord(context, pageName)
     }
