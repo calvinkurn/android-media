@@ -230,6 +230,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_ALPHA_TESTING = "df_alpha_testing"
     const val DF_DIGITAL = "df_digital"
     const val DF_TOKOCHAT = "df_comm_tokochat"
+    const val DF_SELLER_PERSONA = "df_seller_persona"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -821,6 +822,13 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(INTERNAL_MEDIA_EDITOR)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_editor))
+
+            //sellerapp
+            add(DFP({
+                it.startsWith(SellerApp.SELLER_PERSONA) || it.startsWith(
+                    ApplinkConstInternalSellerapp.SELLER_PERSONA
+                )
+            }, DF_SELLER_PERSONA, R.string.title_seller_persona))
         }
     }
 

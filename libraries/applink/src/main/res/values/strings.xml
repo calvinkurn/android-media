@@ -114,6 +114,8 @@
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
 
+    <string name="title_seller_persona">Seller Persona</string>
+
 <!--    pms-->
     <string name="payment_title_payment_status">Menunggu Pembayaran</string>
     <string name="payment_title_activity_howtopay">Cara Pembayaran</string>
