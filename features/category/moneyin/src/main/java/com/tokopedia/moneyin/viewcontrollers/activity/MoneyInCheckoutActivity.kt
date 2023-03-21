@@ -126,10 +126,10 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         }
     }
 
-    private fun openAddressList() {
+    fun openAddressList() {
         val intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.MANAGE_ADDRESS).apply {
             putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
-            putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, ManageAddressSource.MONEY_IN.source) 
+            putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, ManageAddressSource.MONEY_IN.source)
         }
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
     }
