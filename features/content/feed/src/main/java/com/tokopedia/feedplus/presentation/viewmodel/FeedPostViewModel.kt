@@ -15,6 +15,8 @@ import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FollowShopModel
 import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
@@ -52,8 +54,8 @@ class FeedPostViewModel @Inject constructor(
     val atcRespData: LiveData<FeedResult<Boolean>>
         get() = _atcResp
 
-    private val _followResult = MutableLiveData<Result<FollowShopModel>>()
-    val followResult: LiveData<Result<FollowShopModel>>
+    private val _followResult = MutableLiveData<Result<String>>()
+    val followResult: LiveData<Result<String>>
         get() = _followResult
 
     private val _likeKolResp = MutableLiveData<FeedResult<LikeFeedDataModel>>()
@@ -182,7 +184,9 @@ class FeedPostViewModel @Inject constructor(
                         )
                     }
                 }
-                _followResult.value = Success(response)
+
+                updateFollowStatus(response.id, response.isFollowing)
+                _followResult.value = Success(if (isShop) SHOP else USER)
             } catch (it: Throwable) {
                 _followResult.value = Fail(it)
             }
@@ -199,7 +203,7 @@ class FeedPostViewModel @Inject constructor(
                 val response = likeContentUseCase.executeOnBackground()
 
                 if (response.doLikeKolPost.error.isNotEmpty()) {
-                    throw com.tokopedia.network.exception.MessageErrorException(response.doLikeKolPost.error)
+                    throw MessageErrorException(response.doLikeKolPost.error)
                 }
                 if (response.doLikeKolPost.data.success != SubmitLikeContentUseCase.SUCCESS) {
                     throw CustomUiMessageThrowable(R.string.feed_like_error_message)
@@ -245,6 +249,35 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    private fun updateFollowStatus(id: String, isFollowing: Boolean) {
+        val currentValue = feedHome.value
+
+        currentValue?.let {
+            when (it) {
+                is Success -> {
+                    _feedHome.value = Success(it.data.copy(
+                        items = it.data.items.map { item ->
+                            when {
+                                item is FeedCardImageContentModel && item.author.id == id -> item.copy(
+                                    followers = item.followers.copy(
+                                        isFollowed = isFollowing
+                                    )
+                                )
+                                item is FeedCardVideoContentModel && item.author.id == id -> item.copy(
+                                    followers = item.followers.copy(
+                                        isFollowed = isFollowing
+                                    )
+                                )
+                                else -> item
+                            }
+                        }
+                    ))
+                }
+                else -> {}
+            }
+        }
+    }
+
     private val Result<FeedModel>.cursor: String
         get() = when (this) {
             is Success -> data.pagination.cursor
@@ -256,5 +289,10 @@ class FeedPostViewModel @Inject constructor(
             is Success -> data.items
             else -> emptyList()
         }
+
+    companion object {
+        private const val SHOP = "toko"
+        private const val USER = "akun"
+    }
 
 }

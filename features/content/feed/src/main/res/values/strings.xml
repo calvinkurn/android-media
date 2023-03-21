@@ -117,6 +117,9 @@ dari Feed.</string>
 
     <string name="feed_asgc_exclusive_follower">Eksklusif Follower Toko</string>
 
+    <string name="feed_message_success_follow">Berhasil follow %s ini!</string>
+    <string name="feed_message_failed_follow">Oops, gagal follow akun ini.</string>
+
     <!-- Transcoding Livestream to VOD -->
     <string name="feed_transcoding_livestream_to_vod_message">Sedang menyimpan video. Kami akan infokan jika berhasil disimpan.</string>
     <string name="feed_transcoding_livestream_to_vod_action">Lihat</string>

@@ -495,7 +495,7 @@ class FeedFragment :
     private fun initView() {
         binding.let {
             it.swipeRefreshFeedLayout.setOnRefreshListener {
-                feedPostViewModel.fetchFeedPosts(isNewData = true)
+                feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true)
             }
 
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -533,7 +533,7 @@ class FeedFragment :
                 is Success -> {
                     adapter?.hideLoading()
                     if (it.data.items.isEmpty()) {
-                        adapter?.setElements(FeedNoContentModel())
+                        adapter?.setElements(listOf(FeedNoContentModel()))
                     } else {
                         adapter?.setElements(it.data.items)
                     }
@@ -550,15 +550,11 @@ class FeedFragment :
         feedPostViewModel.followResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    adapter?.updateList(
-                        feedPostViewModel.updateFollowStatus(
-                            adapter?.list ?: emptyList(),
-                            it.data.id,
-                            it.data.isFollowing
-                        )
-                    )
+                    showToast(getString(feedR.string.feed_message_success_follow), Toaster.TYPE_NORMAL)
                 }
-                is Fail -> {}
+                is Fail -> {
+                    showToast(getString(feedR.string.feed_message_failed_follow), Toaster.TYPE_ERROR)
+                }
             }
         }
     }
