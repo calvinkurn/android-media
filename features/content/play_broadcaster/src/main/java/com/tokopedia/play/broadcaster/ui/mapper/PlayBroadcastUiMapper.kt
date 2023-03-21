@@ -158,113 +158,113 @@ class PlayBroadcastUiMapper @Inject constructor(
             },
             beautificationConfig = BeautificationConfigUiModel(
                 /** TODO: mocking purpose */
-                licenseLink = "https://assets.tokopedia.net/asts/android/content/play/tokopedia_20221231_20231231_com.tokopedia.tkpd_4.2.3.licbag",
-                modelLink = "https://assets.tokopedia.net/asts/android/content/play/ModelResource.bundle.zip",
-                customFaceAssetLink = "https://assets.tokopedia.net/asts/android/content/play/beauty_Android_standard.zip",
-                faceFilters = listOf(
-                    FaceFilterUiModel(
-                        id = FaceFilterUiModel.Type.None.id,
-                        name = "Tidak Ada",
-                        minValue = 0.0,
-                        maxValue = 1.0,
-                        defaultValue = 0.0,
-                        value = 0.0,
-                        isSelected = false,
-                    ),
-                    FaceFilterUiModel(
-                        id = FaceFilterUiModel.Type.Blur.id,
-                        name = "Halus",
-                        minValue = 0.0,
-                        maxValue = 1.0,
-                        defaultValue = 0.7,
-                        value = 0.7,
-                        isSelected = false,
-                    ),
-                    FaceFilterUiModel(
-                        id = FaceFilterUiModel.Type.Sharpen.id,
-                        name = "Tajam",
-                        minValue = 0.0,
-                        maxValue = 1.0,
-                        defaultValue = 0.5,
-                        value = 0.5,
-                        isSelected = false,
-                    ),
-                    FaceFilterUiModel(
-                        id = FaceFilterUiModel.Type.Clarity.id,
-                        name = "Cerah",
-                        minValue = 0.0,
-                        maxValue = 1.0,
-                        defaultValue = 0.4,
-                        value = 0.4,
-                        isSelected = false,
-                    )
-                ),
-                presets = List(3) {
-                    val iconUrl = when(it) {
-                        1 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/idol.jpg"
-                        2 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/energetic.jpg"
-                        else -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/sweety.jpg"
-                    }
-
-                    val id = when(it) {
-                        1 -> "aidou"
-                        2 -> "palette"
-                        else -> ""
-                    }
-
-                    val name = when(it) {
-                        1 -> "Aidou"
-                        2 -> "Palette"
-                        else -> ""
-                    }
-
-                    val assetLink = when(it) {
-                        1 -> "https://assets.tokopedia.net/asts/android/content/play/aidou.zip"
-                        2 -> "https://assets.tokopedia.net/asts/android/content/play/palette.zip"
-                        else -> ""
-                    }
-
-                    PresetFilterUiModel(
-                        id = if(it == 0) "none" else id,
-                        name = if(it == 0) "Tidak Ada" else name,
-                        active = false,
-                        minValue = 0.0,
-                        maxValue = 1.0,
-                        defaultValue = it * 0.1,
-                        value = it * 0.1,
-                        iconUrl = iconUrl,
-                        assetLink = assetLink,
-                        assetStatus = if(assetChecker.isPresetFileAvailable(id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
-                    )
-                },
-//                licenseLink = config.beautificationConfig.license,
-//                modelLink = config.beautificationConfig.model,
-//                customFaceAssetLink = config.beautificationConfig.customFace.assetAndroid,
-//                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
+//                licenseLink = "https://assets.tokopedia.net/asts/android/content/play/tokopedia_20221231_20231231_com.tokopedia.tkpd_4.2.3.licbag",
+//                modelLink = "https://assets.tokopedia.net/asts/android/content/play/ModelResource.bundle.zip",
+//                customFaceAssetLink = "https://assets.tokopedia.net/asts/android/content/play/beauty_Android_standard.zip",
+//                faceFilters = listOf(
 //                    FaceFilterUiModel(
-//                        id = menu.id,
-//                        name = menu.name,
-//                        minValue = menu.minValue,
-//                        maxValue = menu.maxValue,
-//                        defaultValue = menu.defaultValue,
-//                        value = menu.value,
+//                        id = FaceFilterUiModel.Type.None.id,
+//                        name = "Tidak Ada",
+//                        minValue = 0.0,
+//                        maxValue = 1.0,
+//                        defaultValue = 0.0,
+//                        value = 0.0,
+//                        isSelected = false,
+//                    ),
+//                    FaceFilterUiModel(
+//                        id = FaceFilterUiModel.Type.Blur.id,
+//                        name = "Halus",
+//                        minValue = 0.0,
+//                        maxValue = 1.0,
+//                        defaultValue = 0.7,
+//                        value = 0.7,
+//                        isSelected = false,
+//                    ),
+//                    FaceFilterUiModel(
+//                        id = FaceFilterUiModel.Type.Sharpen.id,
+//                        name = "Tajam",
+//                        minValue = 0.0,
+//                        maxValue = 1.0,
+//                        defaultValue = 0.5,
+//                        value = 0.5,
+//                        isSelected = false,
+//                    ),
+//                    FaceFilterUiModel(
+//                        id = FaceFilterUiModel.Type.Clarity.id,
+//                        name = "Cerah",
+//                        minValue = 0.0,
+//                        maxValue = 1.0,
+//                        defaultValue = 0.4,
+//                        value = 0.4,
 //                        isSelected = false,
 //                    )
-//                },
-//                presets = config.beautificationConfig.presets.map { preset ->
+//                ),
+//                presets = List(3) {
+//                    val iconUrl = when(it) {
+//                        1 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/idol.jpg"
+//                        2 -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/energetic.jpg"
+//                        else -> "https://images.tokopedia.net/img/broadcaster/beautification-filter/sweety.jpg"
+//                    }
+//
+//                    val id = when(it) {
+//                        1 -> "aidou"
+//                        2 -> "palette"
+//                        else -> ""
+//                    }
+//
+//                    val name = when(it) {
+//                        1 -> "Aidou"
+//                        2 -> "Palette"
+//                        else -> ""
+//                    }
+//
+//                    val assetLink = when(it) {
+//                        1 -> "https://assets.tokopedia.net/asts/android/content/play/aidou.zip"
+//                        2 -> "https://assets.tokopedia.net/asts/android/content/play/palette.zip"
+//                        else -> ""
+//                    }
+//
 //                    PresetFilterUiModel(
-//                        id = preset.id,
-//                        name = preset.name,
-//                        active = preset.active,
-//                        minValue = preset.minValue,
-//                        maxValue = preset.maxValue,
-//                        defaultValue = preset.defaultValue,
-//                        value = preset.value,
-//                        iconUrl = preset.urlIcon,
-//                        assetLink = preset.assetLink,
-//                        assetStatus = if(assetChecker.isPresetFileAvailable(preset.id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
+//                        id = if(it == 0) "none" else id,
+//                        name = if(it == 0) "Tidak Ada" else name,
+//                        active = false,
+//                        minValue = 0.0,
+//                        maxValue = 1.0,
+//                        defaultValue = it * 0.1,
+//                        value = it * 0.1,
+//                        iconUrl = iconUrl,
+//                        assetLink = assetLink,
+//                        assetStatus = if(assetChecker.isPresetFileAvailable(id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
 //                    )
-//                }
+//                },
+                licenseLink = config.beautificationConfig.license,
+                modelLink = config.beautificationConfig.model,
+                customFaceAssetLink = config.beautificationConfig.customFace.assetAndroid,
+                faceFilters = config.beautificationConfig.customFace.menu.map { menu ->
+                    FaceFilterUiModel(
+                        id = menu.id,
+                        name = menu.name,
+                        minValue = menu.minValue,
+                        maxValue = menu.maxValue,
+                        defaultValue = menu.defaultValue,
+                        value = menu.value,
+                        isSelected = false,
+                    )
+                },
+                presets = config.beautificationConfig.presets.map { preset ->
+                    PresetFilterUiModel(
+                        id = preset.id,
+                        name = preset.name,
+                        active = preset.active,
+                        minValue = preset.minValue,
+                        maxValue = preset.maxValue,
+                        defaultValue = preset.defaultValue,
+                        value = preset.value,
+                        iconUrl = preset.urlIcon,
+                        assetLink = preset.assetLink,
+                        assetStatus = if(assetChecker.isPresetFileAvailable(preset.id)) BeautificationAssetStatus.Available else BeautificationAssetStatus.NotDownloaded,
+                    )
+                }
             )
         )
     }
