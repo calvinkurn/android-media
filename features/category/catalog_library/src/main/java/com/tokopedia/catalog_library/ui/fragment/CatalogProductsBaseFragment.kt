@@ -84,8 +84,13 @@ abstract class CatalogProductsBaseFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getProducts() {
+    fun getProducts() {
+        resetPage()
         productsBaseVM?.getCatalogListData(categoryId, sortType, rows, page = 1, brandId = brandId)
+    }
+
+    private fun resetPage() {
+        loadMoreTriggerListener?.resetState()
     }
 
     private fun setObservers() {

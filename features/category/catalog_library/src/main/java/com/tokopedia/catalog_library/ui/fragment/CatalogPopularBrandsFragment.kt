@@ -18,6 +18,7 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS_WITH_CATALOGS
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogPopularBrandsVM
 import com.tokopedia.globalerror.GlobalError
@@ -111,12 +112,11 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
 
     private fun getData() {
         addShimmer()
-        updateUi()
         popularBrandsVM?.getBrandsWithCatalogs()
     }
 
     private fun addShimmer() {
-        catalogLibraryUiUpdater.setUpForHomePage()
+        catalogLibraryUiUpdater.setUpForPopularBrand()
         updateUi()
     }
 
@@ -124,7 +124,7 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
         popularBrandsVM?.brandsWithCatalogsLiveData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    catalogLibraryUiUpdater.removeShimmer()
+                    catalogLibraryUiUpdater.removeModel(CATALOG_CONTAINER_POPULAR_BRANDS_WITH_CATALOGS)
                     it.data.listOfComponents.forEach { component ->
                         catalogLibraryUiUpdater.updateModel(component)
                     }

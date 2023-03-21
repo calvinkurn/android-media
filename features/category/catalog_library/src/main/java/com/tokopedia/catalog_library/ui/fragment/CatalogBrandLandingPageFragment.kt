@@ -17,18 +17,14 @@ import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDM
-import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDM
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
+import com.tokopedia.catalog_library.ui.bottomsheet.CatalogLibraryComponentBottomSheet
 import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.CatalogAnalyticsCategoryLandingPage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_TOP_FIVE
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_TOP_FIVE
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_VIRAL
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_CONTAINER_CATEGORY_HEADER
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
-import com.tokopedia.catalog_library.viewmodels.CatalogBrandLandingPageVM
-import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageVM
+import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -50,11 +46,11 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    private val brandLandingPageViewModel: CatalogBrandLandingPageVM by lazy(
+    private val brandLandingPageViewModel: CatalogLihatSemuaPageVM by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(requireActivity(), viewModelFactory.get())
-        viewModelProvider.get(CatalogBrandLandingPageVM::class.java)
+        viewModelProvider.get(CatalogLihatSemuaPageVM::class.java)
     }
 
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
@@ -149,7 +145,6 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
         brandLandingPageViewModel.catalogLihatLiveDataResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    catalogLibraryUiUpdater.removeModel(CatalogLibraryConstant.CATALOG_LIHAT_SEMUA_HORIZONTAL)
                     it.data.listOfComponents.forEach { component ->
                         catalogLibraryUiUpdater.updateModel(component)
                     }
@@ -157,7 +152,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
                 }
 
                 is Fail -> {
-                    //onError(it.throwable)
+                    onError(it.throwable)
                 }
             }
         }
@@ -165,7 +160,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
 
     private fun initHeaderTitle(view: View) {
         view.findViewById<HeaderUnify>(R.id.clp_header).apply {
-            headerTitle = ""
+            headerTitle = getString(R.string.brand_terpopuler)
             setNavigationOnClickListener {
                 activity?.finish()
             }
@@ -183,6 +178,9 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     }
 
     private fun onError(e: Throwable) {
+        if(catalogLibraryUiUpdater.hasData()){
+            return
+        }
         catalogLandingRecyclerView?.hide()
         if (e is UnknownHostException ||
             e is SocketTimeoutException
@@ -203,7 +201,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     }
 
     private fun getDataFromViewModel() {
-        brandLandingPageViewModel.getLihatSemuaPageData("0")
+        brandLandingPageViewModel.getLihatSemuaByBrandData(brandIdStr,false)
     }
 
     private fun addShimmer() {
@@ -236,6 +234,34 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
 
     override fun onErrorFetchingProducts(throwable: Throwable) {
         onError(throwable)
+    }
+
+    override fun onBrandCategoryArrowClick() {
+        super.onBrandCategoryArrowClick()
+        openBottomSheet(brandIdStr)
+    }
+
+    override fun onBrandCategoryTabSelected(categoryName: String, categoryIdentifier : String) {
+        super.onBrandCategoryTabSelected(categoryName, categoryIdentifier)
+        onChangeCategory(categoryIdentifier)
+    }
+
+    override fun onChangeCategory(categoryIdentifier: String) {
+        super.onChangeCategory(categoryIdentifier)
+        val categoryModel = catalogLibraryUiUpdater.mapOfData[CATALOG_CONTAINER_CATEGORY_HEADER]
+        catalogLibraryUiUpdater.clearAll()
+        categoryModel?.let { cm ->
+            catalogLibraryUiUpdater.updateModel(cm)
+        }
+        setCategory(categoryIdentifier)
+        getProducts()
+    }
+
+    private fun openBottomSheet(brandIdStr: String) {
+        val catalogComparisonBottomSheet = CatalogLibraryComponentBottomSheet.newInstance(
+            brandIdStr
+        )
+        catalogComparisonBottomSheet.show(childFragmentManager, CatalogLibraryComponentBottomSheet::class.java.name)
     }
 
     override fun catalogProductsCategoryLandingImpression(

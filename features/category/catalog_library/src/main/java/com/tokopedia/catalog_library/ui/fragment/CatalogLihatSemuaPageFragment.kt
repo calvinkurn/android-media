@@ -19,6 +19,7 @@ import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDM
+import com.tokopedia.catalog_library.ui.bottomsheet.CatalogLibraryComponentBottomSheet
 import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
@@ -43,14 +44,23 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     private var sortAsc: ChipsUnify? = null
     private var sortDesc: ChipsUnify? = null
     private var globalError: GlobalError? = null
-    var viewStr = CatalogLibraryConstant.GRID_VIEW_STR
     var order = CatalogLibraryConstant.ASCENDING_ORDER_STR
+    private var isOriginBrand = false
+    private var categoryId = ""
 
     companion object {
         const val DEFAULT_ASC_SORT_ORDER = "0"
         const val DESC_SORT_ORDER = "1"
-        fun newInstance(): CatalogLihatSemuaPageFragment {
-            return CatalogLihatSemuaPageFragment()
+        private const val ARG_IS_ORIGIN_BRAND = "ARG_IS_ORIGIN_BRAND"
+        private const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
+        fun newInstance(isOriginBrand : Boolean = false,
+                        categoryId : String = ""): CatalogLihatSemuaPageFragment {
+            return CatalogLihatSemuaPageFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(ARG_IS_ORIGIN_BRAND, isOriginBrand)
+                    putString(ARG_CATEGORY_ID, categoryId)
+                }
+            }
         }
     }
 
@@ -101,17 +111,30 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        extractArguments()
         initViews(view)
         setObservers()
         initData()
     }
 
+    private fun extractArguments() {
+        isOriginBrand = arguments?.getBoolean(ARG_IS_ORIGIN_BRAND) ?: false
+        categoryId = arguments?.getString(ARG_CATEGORY_ID) ?: ""
+    }
+
     private fun initData() {
-        lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
+        if(isOriginBrand){
+            lihatViewModel?.getLihatSemuaByBrandData(categoryId)
+        }else {
+            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
+        }
     }
 
     private fun initHeaderTitle(view: View) {
         view.findViewById<HeaderUnify>(R.id.lihat_semua_page_header).apply {
+            if(isOriginBrand){
+                hide()
+            }
             setNavigationOnClickListener {
                 activity?.finish()
             }
@@ -120,12 +143,23 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
 
     private fun initViews(view: View) {
         globalError = view.findViewById(R.id.global_error_page)
+        initChips(view)
+        initHeaderTitle(view)
+        setupRecyclerView(view)
+        addShimmer()
+    }
+
+    private fun initChips(view : View) {
         sortAsc = view.findViewById(R.id.chip_sort_asc)
         sortDesc = view.findViewById(R.id.chip_sort_desc)
         sortAsc?.setOnClickListener {
             sortAsc?.chipType = ChipsUnify.TYPE_SELECTED
             sortDesc?.chipType = ChipsUnify.TYPE_NORMAL
-            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
+            if(isOriginBrand){
+                lihatViewModel?.getLihatSemuaByBrandData(categoryId)
+            }else {
+                lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
+            }
 
             CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.DESCENDING_ORDER_STR}" +
@@ -136,7 +170,12 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         sortDesc?.setOnClickListener {
             sortAsc?.chipType = ChipsUnify.TYPE_NORMAL
             sortDesc?.chipType = ChipsUnify.TYPE_SELECTED
-            lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER)
+
+            if(isOriginBrand){
+                lihatViewModel?.getLihatSemuaByBrandData(categoryId)
+            }else {
+                lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER)
+            }
 
             CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.ASCENDING_ORDER_STR}" +
@@ -144,9 +183,10 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
                 UserSession(context).userId
             )
         }
-        initHeaderTitle(view)
-        setupRecyclerView(view)
-        addShimmer()
+        if(isOriginBrand){
+            sortAsc?.hide()
+            sortDesc?.hide()
+        }
     }
 
     private fun setupRecyclerView(view: View) {
@@ -200,16 +240,24 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         globalError?.errorAction?.setOnClickListener {
             catalogLihatPageRecyclerView?.show()
             globalError?.hide()
-            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
+            if(isOriginBrand){
+                lihatViewModel?.getLihatSemuaByBrandData(categoryId)
+            }else {
+                lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
+            }
         }
     }
 
     override fun onCategoryItemClicked(categoryIdentifier: String?) {
         super.onCategoryItemClicked(categoryIdentifier)
-        RouteManager.route(
-            context,
-            "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryIdentifier"
-        )
+        if(isOriginBrand){
+            (parentFragment as? CatalogLibraryComponentBottomSheet)?.onChangeCategory(categoryIdentifier ?: "")
+        }else {
+            RouteManager.route(
+                context,
+                "${CatalogLibraryConstant.APP_LINK_KATEGORI}/$categoryIdentifier"
+            )
+        }
     }
 
     private fun addShimmer() {

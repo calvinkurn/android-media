@@ -21,6 +21,7 @@ object CatalogLibraryConstant {
     const val CATALOG_CONTAINER_POPULAR_BRANDS = "catalog_container_popular_brands"
     const val CATALOG_CONTAINER_POPULAR_BRANDS_WITH_CATALOGS = "catalog_container_popular_brands_with_catalogs"
     const val CATALOG_CONTAINER_PRODUCT_HEADER = "catalog_container_product_header"
+    const val CATALOG_CONTAINER_CATEGORY_HEADER = "catalog_container_category_header"
 
     const val CATALOG_SHIMMER_TOP_FIVE = 1
     const val CATALOG_SHIMMER_VIRAL = 2

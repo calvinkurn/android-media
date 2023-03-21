@@ -22,5 +22,8 @@ interface CatalogHomepageAdapterFactory {
     fun type(data: CatalogContainerDM): Int
     fun type(data: CatalogProductLoadMoreDM): Int
 
+    fun type(data: CatalogBrandCategoryDM): Int
+    fun type(data: CatalogLihatListItemDM): Int
+
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

@@ -12,11 +12,13 @@ import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
+import com.tokopedia.catalog_library.adapter.decoration.GridSpacingItemDecoration
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDM
+import com.tokopedia.catalog_library.model.datamodel.CatalogLihatListItemDM
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse.CategoryListLibraryPage.CategoryData
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_LIHAT_SEMUA_ITEM
 
@@ -49,20 +51,21 @@ class CatalogLihatVH(
                 element.catalogLibraryDataList?.accordionExpandedState = isExpanded
             }
         }
-        getAccordionData(element.catalogLibraryDataList, element.isAsc)
+        getAccordionData(element.catalogLibraryDataList, element.isAsc, element.isTypeList)
     }
 
-    private fun getAccordionData(catalogLibraryData: CategoryData?, isAsc: Boolean) {
+    private fun getAccordionData(catalogLibraryData: CategoryData?, isAsc: Boolean, isTypeList : Boolean) {
         accordionView.apply {
             addGroup(
-                setExpandableChildView(catalogLibraryData, isAsc)
+                setExpandableChildView(catalogLibraryData, isAsc, isTypeList)
             )
         }
     }
 
     private fun setExpandableChildView(
         catalogLibraryData: CategoryData?,
-        isAsc: Boolean
+        isAsc: Boolean,
+        isTypeList : Boolean
     ): AccordionDataUnify {
         val listAdapter = CatalogLibraryAdapter(
             AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build(),
@@ -73,8 +76,12 @@ class CatalogLihatVH(
         expandableLayout.findViewById<RecyclerView>(R.id.lihat_grid_view).apply {
             setRecycledViewPool(sharedRecycledViewPool)
             adapter = listAdapter
-            //layoutManager = GridLayoutManager(view.context, COLUMN_COUNT)
-            layoutManager = LinearLayoutManager(view.context)
+            layoutManager = if(isTypeList){
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            }else {
+                addItemDecoration(GridSpacingItemDecoration(COLUMN_COUNT,0,false))
+                GridLayoutManager(view.context, COLUMN_COUNT)
+            }
         }
 
         listAdapter.submitList(
@@ -82,7 +89,7 @@ class CatalogLihatVH(
                 catalogLibraryData?.childCategoryList,
                 catalogLibraryData?.rootCategoryName,
                 catalogLibraryData?.rootCategoryId,
-                isAsc
+                isAsc,isTypeList
             )
         )
         return AccordionDataUnify(
@@ -96,21 +103,36 @@ class CatalogLihatVH(
         childCategoryList: ArrayList<CategoryData.ChildCategoryList>?,
         rootCategoryName: String?,
         rootCategoryId: String?,
-        isAsc: Boolean
+        isAsc: Boolean,
+        isTypeList: Boolean
     ): MutableList<BaseCatalogLibraryDM> {
         val visitableList = arrayListOf<BaseCatalogLibraryDM>()
         childCategoryList?.forEach {
-            visitableList.add(
-                CatalogLihatItemDM(
-                    CATALOG_LIHAT_SEMUA_ITEM,
-                    CATALOG_LIHAT_SEMUA_ITEM,
-                    it,
-                    rootCategoryId ?: "",
-                    rootCategoryName ?: "",
-                    true,
-                    isAsc
+            if(isTypeList){
+                visitableList.add(
+                    CatalogLihatListItemDM(
+                        CATALOG_LIHAT_SEMUA_ITEM,
+                        CATALOG_LIHAT_SEMUA_ITEM,
+                        it,
+                        rootCategoryId ?: "",
+                        rootCategoryName ?: "",
+                        false,
+                        isAsc
+                    )
                 )
-            )
+            }else {
+                visitableList.add(
+                    CatalogLihatItemDM(
+                        CATALOG_LIHAT_SEMUA_ITEM,
+                        CATALOG_LIHAT_SEMUA_ITEM,
+                        it,
+                        rootCategoryId ?: "",
+                        rootCategoryName ?: "",
+                        true,
+                        isAsc
+                    )
+                )
+            }
         }
         return visitableList
     }

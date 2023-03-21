@@ -62,6 +62,14 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
         return CatalogProductLoadMoreVH.LAYOUT
     }
 
+    override fun type(data: CatalogBrandCategoryDM): Int {
+        return CatalogBrandCategoryItemVH.LAYOUT
+    }
+
+    override fun type(data: CatalogLihatListItemDM): Int {
+        return CatalogLihatListItemVH.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             CatalogTopFiveItemVH.LAYOUT -> CatalogTopFiveItemVH(
@@ -93,9 +101,16 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
                 view,
                 catalogLibraryListener
             )
+            CatalogLihatListItemVH.LAYOUT -> CatalogLihatListItemVH(
+                view,
+                catalogLibraryListener
+            )
             CatalogProductItemVH.LAYOUT -> CatalogProductItemVH(
                 view,
                 catalogLibraryListener
+            )
+            CatalogBrandCategoryItemVH.LAYOUT -> CatalogBrandCategoryItemVH(
+                view,catalogLibraryListener
             )
             CatalogContainerItemVH.LAYOUT -> CatalogContainerItemVH(
                 view,

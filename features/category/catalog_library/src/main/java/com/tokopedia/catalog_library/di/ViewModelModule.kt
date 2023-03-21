@@ -46,9 +46,4 @@ abstract class ViewModelModule {
     @ViewModelKey(CatalogPopularBrandsVM::class)
     internal abstract fun popularBrandsViewModel(viewModel: CatalogPopularBrandsVM): ViewModel
 
-    @Binds
-    @IntoMap
-    @CatalogLibraryScope
-    @ViewModelKey(CatalogBrandLandingPageVM::class)
-    internal abstract fun catalogBrandLandingPageVM(viewModel: CatalogBrandLandingPageVM): ViewModel
 }
