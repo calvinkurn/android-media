@@ -12,12 +12,12 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest
+import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestMapper.map
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_REGULAR_PRODUCT
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_TOKONOW_PRODUCT
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.EgoldData
 import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest
@@ -53,6 +53,7 @@ import com.tokopedia.checkout.utils.CheckoutFingerprintUtil.getFingerprintPublic
 import com.tokopedia.checkout.view.ShipmentContract.AnalyticsActionListener
 import com.tokopedia.checkout.view.converter.RatesDataConverter.Companion.getLogisticPromoCode
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter.Companion.generateRatesFeature
 import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper.getFirstProductId
 import com.tokopedia.checkout.view.helper.ShipmentGetCourierHolderData
@@ -195,7 +196,8 @@ class ShipmentPresenter @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val ratesWithScheduleUseCase: GetRatesWithScheduleUseCase,
-    private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+    private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase,
+    private val shipmentDataRequestConverter: ShipmentDataRequestConverter
 ) : ShipmentContract.Presenter, ViewModel() {
 
     private var view: ShipmentContract.View? = null
@@ -290,6 +292,9 @@ class ShipmentPresenter @Inject constructor(
 
     var deviceId: String = ""
 
+    val cornerId: String?
+        get() = recipientAddressModel.cornerId
+
     var checkoutPageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
 
     var isPlusSelected: Boolean = false
@@ -314,17 +319,6 @@ class ShipmentPresenter @Inject constructor(
     override fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>) {
         this.dataCheckoutRequestList = dataCheckoutRequestList
     }
-
-//    override fun getShipmentCostModel(): ShipmentCostModel {
-//        return shipmentCostModel
-//    }
-
-//    override fun setShipmentCostModel(shipmentCostModel: ShipmentCostModel?) {
-//        this.shipmentCostModel = shipmentCostModel ?: ShipmentCostModel()
-//        if (egoldAttributeModel?.isEligible == true) {
-//            updateEgoldBuyValue()
-//        }
-//    }
 
     fun updateShipmentCostModel() {
         var totalWeight = 0.0
@@ -486,7 +480,6 @@ class ShipmentPresenter @Inject constructor(
             } else if (shipmentCost.emasPrice > 0) {
                 shipmentCost.emasPrice = 0.0
             }
-//            notifyDataSetChanged()
         }
         shipmentCost.bookingFee = totalBookingFee
         shipmentCostModel.value = shipmentCost
@@ -733,14 +726,8 @@ class ShipmentPresenter @Inject constructor(
 
     override fun processInitialLoadCheckoutPage(
         isReloadData: Boolean,
-//        isOneClickShipment: Boolean,
-//        isTradeIn: Boolean,
         skipUpdateOnboardingState: Boolean,
-        isReloadAfterPriceChangeHinger: Boolean,
-        cornerId: String?
-//        deviceId: String?,
-//        leasingId: String?,
-//        isPlusSelected: Boolean
+        isReloadAfterPriceChangeHinger: Boolean
     ) {
         if (isReloadData) {
             view?.setHasRunningApiCall(true)
@@ -888,7 +875,6 @@ class ShipmentPresenter @Inject constructor(
                     response.eligibleForRevampAna.eligible
                 )
             }
-            Unit
         }, { throwable: Throwable ->
             if (view != null) {
                 var errorMessage = throwable.message
@@ -898,7 +884,6 @@ class ShipmentPresenter @Inject constructor(
                 }
                 view?.showToastError(errorMessage)
             }
-            Unit
         }, AddressConstant.ANA_REVAMP_FEATURE_ID)
     }
 
@@ -946,7 +931,7 @@ class ShipmentPresenter @Inject constructor(
             cartShipmentAddressFormData.lastApplyData.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
         shipmentCartItemModelList = shipmentDataConverter.getShipmentItems(
             cartShipmentAddressFormData,
-            newAddress != null && newAddress.locationDataModel != null,
+            newAddress.locationDataModel != null,
             userSessionInterface.name
         )
         codData = cartShipmentAddressFormData.cod
@@ -986,29 +971,16 @@ class ShipmentPresenter @Inject constructor(
         this.isPurchaseProtectionPage = isPurchaseProtectionPage
     }
 
-    override fun processCheckout(
-        isOneClickShipment: Boolean,
-        isTradeIn: Boolean,
-        isTradeInDropOff: Boolean,
-        deviceId: String?,
-        cornerId: String?,
-        leasingId: String?,
-        isPlusSelected: Boolean
-    ) {
+    override fun processCheckout() {
         removeErrorShopProduct()
-        val checkoutRequest = generateCheckoutRequest(
-            null,
-            if (shipmentDonationModel?.isChecked == true) 1 else 0,
-            listShipmentCrossSellModel,
-            leasingId
-        )
-        if (checkoutRequest?.data?.isNotEmpty() == true) {
+        val checkoutRequest = generateCheckoutRequest()
+        if (checkoutRequest.data?.isNotEmpty() == true) {
             // Get additional param for trade in analytics
             var deviceModel = ""
             var devicePrice = 0L
             var diagnosticId = ""
-            if (shipmentCartItemModelList?.isNotEmpty() == true) {
-                val cartItemModels = shipmentCartItemModelList!![0].cartItemModels
+            if (shipmentCartItemModelList.isNotEmpty()) {
+                val cartItemModels = shipmentCartItemModelList[0].cartItemModels
                 if (cartItemModels.isNotEmpty()) {
                     val cartItemModel = cartItemModels[0]
                     deviceModel = cartItemModel.deviceModel
@@ -1019,7 +991,7 @@ class ShipmentPresenter @Inject constructor(
             val params = generateCheckoutParams(
                 isOneClickShipment,
                 isTradeIn,
-                isTradeInDropOff,
+                isTradeInByDropOff,
                 deviceId,
                 checkoutRequest,
                 dynamicData
@@ -1073,15 +1045,9 @@ class ShipmentPresenter @Inject constructor(
                             )
                         }
                         processInitialLoadCheckoutPage(
-                            true,
-//                            isOneClickShipment,
-//                            isTradeIn,
-                            true,
-                            false,
-                            cornerId
-//                            deviceId,
-//                            leasingId,
-//                            isPlusSelected
+                            isReloadData = true,
+                            skipUpdateOnboardingState = true,
+                            isReloadAfterPriceChangeHinger = false
                         )
                     }
                 } catch (e: Throwable) {
@@ -1095,15 +1061,9 @@ class ShipmentPresenter @Inject constructor(
                     view?.setHasRunningApiCall(false)
                     view?.showToastError(errorMessage)
                     processInitialLoadCheckoutPage(
-                        true,
-//                        isOneClickShipment,
-//                        isTradeIn,
-                        true,
-                        false,
-                        cornerId
-//                        deviceId,
-//                        leasingId,
-//                        isPlusSelected
+                        isReloadData = true,
+                        skipUpdateOnboardingState = true,
+                        isReloadAfterPriceChangeHinger = false
                     )
                     view?.logOnErrorCheckout(e, checkoutRequest.toString())
                 }
@@ -1119,10 +1079,10 @@ class ShipmentPresenter @Inject constructor(
         isOneClickShipment: Boolean,
         isTradeIn: Boolean,
         isTradeInDropOff: Boolean,
-        deviceId: String?,
-        checkoutRequest: CheckoutRequest?,
+        deviceId: String,
+        checkoutRequest: com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest,
         dynamicData: String
-    ): com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest {
+    ): CheckoutRequest {
         var publicKey = ""
         var fingerprintSupport = false
         if (getEnableFingerprintPayment(view?.activityContext)) {
@@ -1134,13 +1094,13 @@ class ShipmentPresenter @Inject constructor(
                 fingerprintSupport = true
             }
         }
-        return com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest(
-            map(checkoutRequest!!),
+        return CheckoutRequest(
+            map(checkoutRequest),
             isOneClickShipment.toString(),
             dynamicData,
             isTradeIn,
             isTradeIn && isTradeInDropOff,
-            if (isTradeIn) deviceId!! else "",
+            if (isTradeIn) deviceId else "",
             0,
             true,
             true,
@@ -1210,7 +1170,7 @@ class ShipmentPresenter @Inject constructor(
         }
         // workaround: always generate new to make sure latest data
         dataCheckoutRequestList =
-            view!!.generateNewCheckoutRequest(newShipmentCartItemModelList, false)
+            shipmentDataRequestConverter.generateRequestData(newShipmentCartItemModelList, recipientAddressModel, false, isTradeInByDropOff).checkoutRequestData
     }
 
     // This is for akamai error case
@@ -1905,30 +1865,17 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun generateCheckoutRequest(
-        analyticsDataCheckoutRequests: List<DataCheckoutRequest>?,
-        isDonation: Int,
-        crossSellModelArrayList: ArrayList<ShipmentCrossSellModel>,
-        leasingId: String?
-    ): CheckoutRequest? {
-        if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
-            view?.showToastError(view?.activityContext?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short))
-            return null
-        }
-
+    override fun generateCheckoutRequest(): com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest {
         // Set promo merchant request data
         if (validateUsePromoRevampUiModel != null) {
-            if (dataCheckoutRequestList != null) {
-                setCheckoutRequestPromoData(dataCheckoutRequestList!!)
-            }
-            analyticsDataCheckoutRequests?.let { setCheckoutRequestPromoData(it) }
+            setCheckoutRequestPromoData(dataCheckoutRequestList)
         }
         var cornerData: TokopediaCornerData? = null
-        if (recipientAddressModel != null && recipientAddressModel!!.isCornerAddress) {
+        if (recipientAddressModel.isCornerAddress) {
             cornerData = TokopediaCornerData(
                 true,
-                recipientAddressModel!!.userCornerId,
-                recipientAddressModel!!.cornerId
+                recipientAddressModel.userCornerId,
+                recipientAddressModel.cornerId
                     .toLongOrZero()
             )
         }
@@ -1940,9 +1887,9 @@ class ShipmentPresenter @Inject constructor(
         }
         val crossSellRequest = CrossSellRequest()
         val listCrossSellItemRequest = ArrayList<CrossSellItemRequestModel>()
-        if (crossSellModelArrayList.isNotEmpty()) {
+        if (listShipmentCrossSellModel.isNotEmpty()) {
             val crossSellItemRequestModel = CrossSellItemRequestModel()
-            for (shipmentCrossSellModel in crossSellModelArrayList) {
+            for (shipmentCrossSellModel in listShipmentCrossSellModel) {
                 if (shipmentCrossSellModel.isChecked) {
                     crossSellItemRequestModel.id =
                         shipmentCrossSellModel.crossSellModel.id
@@ -1969,10 +1916,10 @@ class ShipmentPresenter @Inject constructor(
             listCrossSellItemRequest.add(crossSellItemRequestModel)
         }
         crossSellRequest.listItem = listCrossSellItemRequest
-        val checkoutRequest = CheckoutRequest()
-        checkoutRequest.isDonation = isDonation
+        val checkoutRequest = com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest()
+        checkoutRequest.isDonation = if (shipmentDonationModel?.isChecked == true) 1 else 0
         checkoutRequest.crossSell = crossSellRequest
-        checkoutRequest.data = analyticsDataCheckoutRequests ?: dataCheckoutRequestList
+        checkoutRequest.data = dataCheckoutRequestList
         checkoutRequest.egoldData = egoldData
         setCheckoutFeatureTypeData(checkoutRequest)
         if (cornerData != null) {
@@ -2001,14 +1948,14 @@ class ShipmentPresenter @Inject constructor(
             }
             checkoutRequest.hasPromoStacking = true
         }
-        if (leasingId != null && leasingId.isNotEmpty()) {
-            checkoutRequest.leasingId = leasingId
+        if (checkoutLeasingId.isNotEmpty()) {
+            checkoutRequest.leasingId = checkoutLeasingId
                 .toLongOrZero()
         }
         return checkoutRequest
     }
 
-    private fun setCheckoutFeatureTypeData(checkoutRequest: CheckoutRequest) {
+    private fun setCheckoutFeatureTypeData(checkoutRequest: com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest) {
         var hasTokoNowProduct = false
         val dataCheckoutRequests = checkoutRequest.data
         if (dataCheckoutRequests != null) {
@@ -3773,11 +3720,9 @@ class ShipmentPresenter @Inject constructor(
     ) {
         hitClearAllBo()
         processInitialLoadCheckoutPage(
-            isReloadData, /*isOneClickShipment, isTradeIn,*/
-            skipUpdateOnboardingState,
-            isReloadAfterPriceChangeHinger,
-            cornerId/*,
-            deviceId, leasingId, isPlusSelected*/
+            isReloadData = isReloadData,
+            skipUpdateOnboardingState = skipUpdateOnboardingState,
+            isReloadAfterPriceChangeHinger = isReloadAfterPriceChangeHinger
         )
     }
 

@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view
 
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
@@ -42,23 +41,23 @@ interface ShipmentAdapterActionListener {
         skipValidateUse: Boolean
     )
 
-    fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>)
+//    fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>)
     fun onInsuranceChecked(position: Int)
     fun onPriorityChecked(position: Int)
     fun onNeedUpdateViewItem(position: Int)
     fun onSubTotalItemClicked(position: Int)
     fun onInsuranceTncClicked()
     fun onPriorityTncClicker()
-    fun onOntimeDeliveryClicked(url: String?)
+    fun onOntimeDeliveryClicked(url: String)
     fun onNeedUpdateRequestData()
     fun onDropshipCheckedForTrackingAnalytics()
     fun onInsuranceCheckedForTrackingAnalytics()
     fun onDonationChecked(checked: Boolean)
-    fun onCrossSellItemChecked(checked: Boolean, crossSellModel: CrossSellModel?, index: Int)
+    fun onCrossSellItemChecked(checked: Boolean, crossSellModel: CrossSellModel, index: Int)
     fun onEgoldChecked(checked: Boolean)
     fun onChangeShippingDuration(
-        shipmentCartItemModel: ShipmentCartItemModel?,
-        recipientAddressModel: RecipientAddressModel?,
+        shipmentCartItemModel: ShipmentCartItemModel,
+        recipientAddressModel: RecipientAddressModel,
         position: Int
     )
 

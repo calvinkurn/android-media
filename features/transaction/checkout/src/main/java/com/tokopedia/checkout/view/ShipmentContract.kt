@@ -122,10 +122,11 @@ interface ShipmentContract {
         )
 
         fun navigateToSetPinpoint(message: String, locationPass: LocationPass?)
-        fun generateNewCheckoutRequest(
-            shipmentCartItemModelList: List<ShipmentCartItemModel>?,
-            isAnalyticsPurpose: Boolean
-        ): List<DataCheckoutRequest>
+
+//        fun generateNewCheckoutRequest(
+//            shipmentCartItemModelList: List<ShipmentCartItemModel>?,
+//            isAnalyticsPurpose: Boolean
+//        ): List<DataCheckoutRequest>
 
         val activityContext: Activity?
         fun setCourierPromoApplied(itemPosition: Int)
@@ -144,7 +145,6 @@ interface ShipmentContract {
         )
 
         fun removeIneligiblePromo(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>)
-        fun updateTickerAnnouncementMessage()
         fun resetPromoBenefit()
         fun setPromoBenefit(summariesUiModels: List<SummariesItemUiModel>)
         val isTradeInByDropOff: Boolean
@@ -272,25 +272,11 @@ interface ShipmentContract {
 
         fun processInitialLoadCheckoutPage(
             isReloadData: Boolean,
-//            isOneClickShipment: Boolean,
-//            isTradeIn: Boolean,
             skipUpdateOnboardingState: Boolean,
-            isReloadAfterPriceChangeHinger: Boolean,
-            cornerId: String?
-//            deviceId: String?,
-//            leasingId: String?,
-//            isPlusSelected: Boolean
+            isReloadAfterPriceChangeHinger: Boolean
         )
 
-        fun processCheckout(
-            isOneClickShipment: Boolean,
-            isTradeIn: Boolean,
-            isTradeInDropOff: Boolean,
-            deviceId: String?,
-            cornerId: String?,
-            leasingId: String?,
-            isPlusSelected: Boolean
-        )
+        fun processCheckout()
 
         fun checkPromoCheckoutFinalShipment(
             validateUsePromoRequest: ValidateUsePromoRequest,
@@ -405,12 +391,7 @@ interface ShipmentContract {
 
 //        fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentCartItemModels: List<ShipmentCartItemModel>): List<DataCheckoutRequest>
         val isIneligiblePromoDialogEnabled: Boolean
-        fun generateCheckoutRequest(
-            analyticsDataCheckoutRequests: List<DataCheckoutRequest>?,
-            isDonation: Int,
-            crossSellModelArrayList: ArrayList<ShipmentCrossSellModel>,
-            leasingId: String?
-        ): CheckoutRequest?
+        fun generateCheckoutRequest(): CheckoutRequest
 
         fun releaseBooking()
         fun fetchEpharmacyData()

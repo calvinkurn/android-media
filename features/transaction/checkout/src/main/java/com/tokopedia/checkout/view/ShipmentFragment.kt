@@ -36,7 +36,6 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_ADDON_DETAILS
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ATTRIBUTE_DONATION
 import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.ORDER_LEVEL
@@ -245,7 +244,6 @@ class ShipmentFragment :
     private var shipmentTracePerformance: PerformanceMonitoring? = null
     private var isShipmentTraceStopped = false
 
-//    var cornerId: String? = null
     private var promoNotEligibleBottomsheet: PromoNotEligibleBottomSheet? = null
 
     @Inject
@@ -358,7 +356,7 @@ class ShipmentFragment :
             .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
             .setCancelable(false)
             .create()
-        (rvShipment?.itemAnimator as SimpleItemAnimator?)?.supportsChangeAnimations = false
+        (rvShipment?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         rvShipment?.addItemDecoration(ShipmentItemDecoration())
     }
 
@@ -411,23 +409,24 @@ class ShipmentFragment :
         shipmentPresenter.isPlusSelected = isPlusSelected()
         shipmentPresenter.checkoutPageSource = checkoutPageSource
         shipmentPresenter.processInitialLoadCheckoutPage(
-            false, /*isOneClickShipment, isTradeIn,*/
-            true,
-            false,
-            null/*, deviceId, checkoutLeasingId,
-            isPlusSelected()*/
+            isReloadData = false,
+            skipUpdateOnboardingState = true,
+            isReloadAfterPriceChangeHinger = false
         )
         observeData()
     }
 
     private fun observeData() {
         shipmentPresenter.tickerAnnouncementHolderData.observe(viewLifecycleOwner) {
-            updateTickerAnnouncementMessage()
+            val index = shipmentAdapter.tickerAnnouncementHolderDataIndex
+            if (index != RecyclerView.NO_POSITION) {
+                onNeedUpdateViewItem(index)
+            }
         }
         shipmentPresenter.egoldAttributeModel.observe(viewLifecycleOwner) {
             if (it != null) {
                 val indexToUpdate = shipmentAdapter.updateEgold(it)
-                if (indexToUpdate > -1) {
+                if (indexToUpdate > RecyclerView.NO_POSITION) {
                     onNeedUpdateViewItem(indexToUpdate)
                 }
             }
@@ -886,11 +885,9 @@ class ShipmentFragment :
             llNetworkErrorView?.visibility = View.GONE
             rvShipment?.visibility = View.VISIBLE
             shipmentPresenter.processInitialLoadCheckoutPage(
-                false, /*isOneClickShipment, isTradeIn,*/
-                true,
-                false,
-                null/*, deviceId, checkoutLeasingId,
-                isPlusSelected()*/
+                isReloadData = false,
+                skipUpdateOnboardingState = true,
+                isReloadAfterPriceChangeHinger = false
             )
         }
     }
@@ -1031,11 +1028,9 @@ class ShipmentFragment :
             priceValidationDialog.setPrimaryCTAText(action)
             priceValidationDialog.setPrimaryCTAClickListener {
                 shipmentPresenter.processInitialLoadCheckoutPage(
-                    true, /*isOneClickShipment, isTradeIn,*/
-                    true,
-                    true,
-                    null/*, deviceId, checkoutLeasingId,
-                    isPlusSelected()*/
+                    isReloadData = true,
+                    skipUpdateOnboardingState = true,
+                    isReloadAfterPriceChangeHinger = true
                 )
                 priceValidationDialog.dismiss()
             }
@@ -1118,16 +1113,13 @@ class ShipmentFragment :
         val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position)
         if (shipmentCartItemModel != null) {
             shippingCourierBottomsheet = null
-            val recipientAddressModel: RecipientAddressModel?
-            recipientAddressModel = shipmentPresenter.recipientAddressModel
+            val recipientAddressModel = shipmentPresenter.recipientAddressModel
             if (shipmentCartItemModel.isDisableChangeCourier) {
                 // refresh page
                 shipmentPresenter.processInitialLoadCheckoutPage(
-                    true, /*isOneClickShipment, isTradeIn,*/
-                    true,
-                    false,
-                    null/*, deviceId, checkoutLeasingId,
-                    isPlusSelected()*/
+                    isReloadData = true,
+                    skipUpdateOnboardingState = true,
+                    isReloadAfterPriceChangeHinger = false
                 )
             } else {
                 onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position)
@@ -1335,11 +1327,9 @@ class ShipmentFragment :
     override fun renderChangeAddressSuccess(refreshCheckoutPage: Boolean) {
         if (refreshCheckoutPage) {
             shipmentPresenter.processInitialLoadCheckoutPage(
-                true, /*isOneClickShipment, isTradeIn,*/
-                true,
-                false,
-                shipmentAdapter.addressShipmentData?.cornerId/*, deviceId, checkoutLeasingId,
-                isPlusSelected()*/
+                isReloadData = true,
+                skipUpdateOnboardingState = true,
+                isReloadAfterPriceChangeHinger = false
             )
         }
     }
@@ -1364,14 +1354,14 @@ class ShipmentFragment :
         onNeedUpdateViewItem(shipmentAdapter.recipientAddressModelPosition)
     }
 
-    override fun generateNewCheckoutRequest(
-        shipmentCartItemModelList: List<ShipmentCartItemModel>?,
-        isAnalyticsPurpose: Boolean
-    ): List<DataCheckoutRequest> {
-        val requestData =
-            shipmentAdapter.getRequestData(null, shipmentCartItemModelList, isAnalyticsPurpose)
-        return requestData.checkoutRequestData
-    }
+//    override fun generateNewCheckoutRequest(
+//        shipmentCartItemModelList: List<ShipmentCartItemModel>?,
+//        isAnalyticsPurpose: Boolean
+//    ): List<DataCheckoutRequest> {
+//        val requestData =
+//            shipmentAdapter.getRequestData(null, shipmentCartItemModelList, isAnalyticsPurpose)
+//        return requestData.checkoutRequestData
+//    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -1546,11 +1536,9 @@ class ShipmentFragment :
 
     private fun onResultFromEditAddress() {
         shipmentPresenter.processInitialLoadCheckoutPage(
-            true, /*isOneClickShipment, isTradeIn,*/
-            true,
-            false,
-            null/*, deviceId, checkoutLeasingId,
-            isPlusSelected()*/
+            isReloadData = true,
+            skipUpdateOnboardingState = true,
+            isReloadAfterPriceChangeHinger = false
         )
     }
 
@@ -1582,11 +1570,9 @@ class ShipmentFragment :
                     )
                 ) {
                     shipmentPresenter.processInitialLoadCheckoutPage(
-                        true, /*isOneClickShipment, isTradeIn,*/
-                        true,
-                        false,
-                        null/*, deviceId, checkoutLeasingId,
-                        isPlusSelected()*/
+                        isReloadData = true,
+                        skipUpdateOnboardingState = true,
+                        isReloadAfterPriceChangeHinger = false
                     )
                 }
                 if (data != null && data.getBooleanExtra(
@@ -1643,11 +1629,9 @@ class ShipmentFragment :
                     addressDataModel?.let { updateLocalCacheAddressData(it) }
                 }
                 shipmentPresenter.processInitialLoadCheckoutPage(
-                    false, /*isOneClickShipment, isTradeIn,*/
-                    false,
-                    false,
-                    null/*, deviceId, checkoutLeasingId,
-                    isPlusSelected()*/
+                    isReloadData = false,
+                    skipUpdateOnboardingState = false,
+                    isReloadAfterPriceChangeHinger = false
                 )
             }
         }
@@ -1674,11 +1658,9 @@ class ShipmentFragment :
                 activity!!.finish()
             }
             else -> shipmentPresenter.processInitialLoadCheckoutPage(
-                false, /*isOneClickShipment, isTradeIn,*/
-                false,
-                false,
-                null/*, deviceId, checkoutLeasingId,
-                isPlusSelected()*/
+                isReloadData = false,
+                skipUpdateOnboardingState = false,
+                isReloadAfterPriceChangeHinger = false
             )
         }
     }
@@ -1942,9 +1924,9 @@ class ShipmentFragment :
         }
     }
 
-    override fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>) {
-        shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData)
-    }
+//    override fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>) {
+//        shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData)
+//    }
 
     // Project ARMY, clear from promo BBO ticker
     override fun onCancelVoucherLogisticClicked(
@@ -2109,15 +2091,7 @@ class ShipmentFragment :
 
     override fun doCheckout() {
         shipmentPresenter.processSaveShipmentState()
-        shipmentPresenter.processCheckout(
-            isOneClickShipment,
-            isTradeIn,
-            isTradeInByDropOff,
-            deviceId,
-            null,
-            checkoutLeasingId,
-            isPlusSelected()
-        )
+        shipmentPresenter.processCheckout()
     }
 
     private fun updateCheckboxDynamicData(newParam: DynamicDataParam, isChecked: Boolean) {
@@ -2196,30 +2170,36 @@ class ShipmentFragment :
     }
 
     override fun onInsuranceTncClicked() {
-        val intent = newInstance(
-            context!!,
-            CartConstant.TERM_AND_CONDITION_URL,
-            getString(R.string.title_activity_checkout_tnc_webview)
-        )
-        startActivity(intent)
+        context?.let {
+            val intent = newInstance(
+                it,
+                CartConstant.TERM_AND_CONDITION_URL,
+                getString(R.string.title_activity_checkout_tnc_webview)
+            )
+            startActivity(intent)
+        }
     }
 
     override fun onPriorityTncClicker() {
-        val intent = newInstance(
-            context!!,
-            CartConstant.PRIORITY_TNC_URL,
-            getString(R.string.title_activity_checkout_tnc_webview)
-        )
-        startActivity(intent)
+        context?.let {
+            val intent = newInstance(
+                it,
+                CartConstant.PRIORITY_TNC_URL,
+                getString(R.string.title_activity_checkout_tnc_webview)
+            )
+            startActivity(intent)
+        }
     }
 
-    override fun onOntimeDeliveryClicked(url: String?) {
-        val intent = newInstance(
-            context!!,
-            url!!,
-            getString(R.string.title_activity_checkout_tnc_webview)
-        )
-        startActivity(intent)
+    override fun onOntimeDeliveryClicked(url: String) {
+        context?.let {
+            val intent = newInstance(
+                it,
+                url,
+                getString(R.string.title_activity_checkout_tnc_webview)
+            )
+            startActivity(intent)
+        }
     }
 
     override fun onNeedUpdateRequestData() {
@@ -2257,7 +2237,7 @@ class ShipmentFragment :
 
     override fun onCrossSellItemChecked(
         checked: Boolean,
-        crossSellModel: CrossSellModel?,
+        crossSellModel: CrossSellModel,
         index: Int
     ) {
         if (rvShipment?.isComputingLayout == true) {
@@ -2660,8 +2640,8 @@ class ShipmentFragment :
     }
 
     override fun onChangeShippingDuration(
-        shipmentCartItemModel: ShipmentCartItemModel?,
-        recipientAddressModel: RecipientAddressModel?,
+        shipmentCartItemModel: ShipmentCartItemModel,
+        recipientAddressModel: RecipientAddressModel,
         cartPosition: Int
     ) {
         if (shipmentLoadingIndex == -1 && !shipmentPresenter.shipmentButtonPayment.value.loading) {
@@ -2678,8 +2658,8 @@ class ShipmentFragment :
     }
 
     private fun showShippingDurationBottomsheet(
-        shipmentCartItemModel: ShipmentCartItemModel?,
-        recipientAddressModel: RecipientAddressModel?,
+        shipmentCartItemModel: ShipmentCartItemModel,
+        recipientAddressModel: RecipientAddressModel,
         cartPosition: Int
     ) {
         if (shipmentCartItemModel!!.shopShipmentList == null || shipmentCartItemModel.shopShipmentList!!.isEmpty()) {
@@ -3421,14 +3401,6 @@ class ShipmentFragment :
             shipmentPresenter.validateDynamicData()
         } else {
             doCheckout()
-        }
-    }
-
-    override fun updateTickerAnnouncementMessage() {
-        val index = shipmentAdapter.tickerAnnouncementHolderDataIndex
-        if (index != RecyclerView.NO_POSITION) {
-            // If ticker exist, update the view
-            onNeedUpdateViewItem(index)
         }
     }
 
@@ -4545,11 +4517,9 @@ class ShipmentFragment :
         if (data != null && data.hasExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED)) {
             shipmentPresenter.isPlusSelected = data.getBooleanExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED, false)
             shipmentPresenter.processInitialLoadCheckoutPage(
-                true, /*isOneClickShipment, isTradeIn,*/
-                true,
-                false,
-                null/*, deviceId, checkoutLeasingId,
-                isPlusSelected()*/
+                isReloadData = true,
+                skipUpdateOnboardingState = true,
+                isReloadAfterPriceChangeHinger = false
             )
         }
     }

@@ -11,6 +11,7 @@ import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
@@ -109,11 +110,13 @@ open class BaseShipmentPresenterTest {
     @MockK(relaxed = true)
     lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
-    var shipmentDataConverter = ShipmentDataConverter()
+    val gson = Gson()
+
+    private val shipmentDataRequestConverter = ShipmentDataRequestConverter(gson)
+
+    private val shipmentDataConverter = ShipmentDataConverter()
 
     lateinit var presenter: ShipmentPresenter
-
-    var gson = Gson()
 
     @Before
     fun before() {
@@ -144,7 +147,8 @@ open class BaseShipmentPresenterTest {
             CoroutineTestDispatchers,
             eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
+            updateDynamicDataPassingUseCase,
+            shipmentDataRequestConverter
         )
         presenter.attachView(view)
     }

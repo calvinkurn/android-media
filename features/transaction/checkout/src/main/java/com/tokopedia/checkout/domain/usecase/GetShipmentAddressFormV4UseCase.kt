@@ -11,7 +11,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -39,7 +39,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
         paramMap[PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE] = if (params.isSkipUpdateOnboardingState) 1 else 0
         if (params.cornerId != null) {
             try {
-                val tmpCornerId = params.cornerId.toIntOrZero()
+                val tmpCornerId = params.cornerId.toLongOrZero()
                 paramMap[PARAM_KEY_CORNER_ID] = tmpCornerId
             } catch (e: NumberFormatException) {
                 Timber.d(e)
@@ -47,7 +47,7 @@ class GetShipmentAddressFormV4UseCase @Inject constructor(
         }
         if (params.leasingId != null && params.leasingId.isNotEmpty()) {
             try {
-                val tmpLeasingId = params.leasingId.toIntOrZero()
+                val tmpLeasingId = params.leasingId.toLongOrZero()
                 paramMap[PARAM_KEY_VEHICLE_LEASING_ID] = tmpLeasingId
             } catch (e: NumberFormatException) {
                 Timber.d(e)
