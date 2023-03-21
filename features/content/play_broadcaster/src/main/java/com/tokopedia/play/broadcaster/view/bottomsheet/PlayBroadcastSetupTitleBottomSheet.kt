@@ -11,11 +11,12 @@ import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSetupTitleBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import javax.inject.Inject
 
 /**
  * Created by fachrizalmrsln on 10/01/23
  */
-class PlayBroadcastSetupTitleBottomSheet: BottomSheetUnify() {
+class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify() {
 
     private var _binding: BottomSheetPlayBroSetupTitleBinding? = null
     private val binding: BottomSheetPlayBroSetupTitleBinding

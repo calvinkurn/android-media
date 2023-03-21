@@ -29,7 +29,6 @@ import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryPr
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
@@ -122,11 +121,19 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when(childFragment) {
             is PlayBroadcastSetupCoverBottomSheet -> {
-                childFragment.setupData(this, PAGE_NAME)
+                childFragment.setupData(
+                    listener = this,
+                    entryPoint = PAGE_NAME,
+                    productList = parentViewModel.productSectionList,
+                    contentAccount = parentViewModel.selectedAccount,
+                    channelId = parentViewModel.channelId,
+                    channelTitle = parentViewModel.channelTitle,
+                    dataStore = parentViewModel.mDataStore,
+                )
 
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
-                if (isShowCoachMark) parentViewModel.setShowSetupCoverCoachMark()
+                if (isShowCoachMark) parentViewModel.submitAction(PlayBroadcastAction.SetShowSetupCoverCoachMark)
             }
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
@@ -335,12 +342,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         private const val PAGE_NAME = "report page"
     }
 
-    override fun uploadSetupCover(cover: PlayCoverUiModel) {
-        parentViewModel.submitAction(
-            PlayBroadcastAction.SetCover(cover)
-        )
-    }
-
     override fun dismissSetupCover(source: Int) {
         if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
 
@@ -349,7 +350,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         } else if (parentViewModel.uploadedCoverSource == TAB_UPLOAD_IMAGE && source != TAB_UPLOAD_IMAGE) {
             showToast(R.string.play_setup_cover_auto_generated_toaster)
         }
-        parentViewModel.setCoverUploadedSource(source)
+        parentViewModel.submitAction(PlayBroadcastAction.SetCoverUploadedSource(source))
     }
 
     override fun setupCoverProductClicked() {
