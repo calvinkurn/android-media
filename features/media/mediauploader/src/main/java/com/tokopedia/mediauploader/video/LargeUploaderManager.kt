@@ -1,6 +1,5 @@
 package com.tokopedia.mediauploader.video
 
-import com.tokopedia.logger.utils.globalScopeLaunch
 import com.tokopedia.mediauploader.common.data.consts.POLICY_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
@@ -72,9 +71,11 @@ class LargeUploaderManager @Inject constructor(
         val videoUrl = completeUpload()
 
         // 4. this using loop for retrying transcoding checker within 5-sec delayed
+        val maxRetry = videoPolicy.timeOutOfTranscode() / videoPolicy.retryInterval()
+
         if (withTranscode) {
             while (true) {
-                if (maxRetryTranscoding >= MAX_RETRY_TRANSCODING) {
+                if (maxRetryTranscoding >= maxRetry) {
                     resetUpload()
                     return UploadResult.Error(TRANSCODING_FAILED)
                 }
@@ -292,7 +293,6 @@ class LargeUploaderManager @Inject constructor(
     }
 
     companion object {
-        private const val MAX_RETRY_TRANSCODING = 24
         private const val MAX_PROGRESS_LOADER = 100
 
         private const val MAX_RETRY_COUNT = 5
