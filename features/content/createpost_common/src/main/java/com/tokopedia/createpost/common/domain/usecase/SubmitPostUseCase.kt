@@ -92,13 +92,19 @@ open class SubmitPostUseCase @Inject constructor(
 
                     val result = super.executeOnBackground()
 
+                    uploadMultipleMediaUseCase.deleteCacheFile()
+
                     _state.update { SubmitPostResult.Success(result) }
                 }
             }
             else if (state.images is UploadMediaDataModel.Media.Fail) {
+                uploadMultipleMediaUseCase.deleteCacheFile()
+
                 _state.update { SubmitPostResult.Fail(state.images.throwable) }
             }
             else if (state.videos is UploadMediaDataModel.Media.Fail) {
+                uploadMultipleMediaUseCase.deleteCacheFile()
+
                 _state.update { SubmitPostResult.Fail(state.videos.throwable) }
             }
         }
