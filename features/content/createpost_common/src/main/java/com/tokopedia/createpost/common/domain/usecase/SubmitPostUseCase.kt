@@ -10,6 +10,8 @@ import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
 import com.tokopedia.createpost.common.domain.entity.UploadMediaDataModel
+import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
+import com.tokopedia.createpost.common.domain.usecase.cache.SaveMediaPostCacheUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -26,6 +28,8 @@ import kotlin.collections.ArrayList
 open class SubmitPostUseCase @Inject constructor(
     private val uploadMultipleMediaUseCase: UploadMultipleMediaUseCase,
     graphqlRepository: GraphqlRepository,
+    private val saveMediaPostCacheUseCase: SaveMediaPostCacheUseCase,
+    private val deleteMediaPostCacheUseCase: DeleteMediaPostCacheUseCase,
 ) : GraphqlUseCase<SubmitPostData>(graphqlRepository) {
 
     var postUpdateProgressManager: PostUpdateProgressManager? = null
@@ -57,6 +61,10 @@ open class SubmitPostUseCase @Inject constructor(
         uploadMultipleMediaUseCase.postUpdateProgressManager = postUpdateProgressManager
 
         val mediumList = getMediumList(media, mediaList)
+
+        /** Save Media Post Cache Reference */
+        val setMediaUrl = mediumList.map { it.mediaURL }.toSet()
+        saveMediaPostCacheUseCase(setMediaUrl)
 
         uploadMultipleMediaUseCase.execute(mediumList)
 
@@ -92,19 +100,15 @@ open class SubmitPostUseCase @Inject constructor(
 
                     val result = super.executeOnBackground()
 
-                    uploadMultipleMediaUseCase.deleteCacheFile()
+                    deleteMediaPostCacheUseCase(Unit)
 
                     _state.update { SubmitPostResult.Success(result) }
                 }
             }
             else if (state.images is UploadMediaDataModel.Media.Fail) {
-                uploadMultipleMediaUseCase.deleteCacheFile()
-
                 _state.update { SubmitPostResult.Fail(state.images.throwable) }
             }
             else if (state.videos is UploadMediaDataModel.Media.Fail) {
-                uploadMultipleMediaUseCase.deleteCacheFile()
-
                 _state.update { SubmitPostResult.Fail(state.videos.throwable) }
             }
         }

@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
@@ -45,8 +46,12 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
 
     override fun initInjector() {
         DaggerCreatePostComponent.builder()
-            .createPostCommonModule(CreatePostCommonModule(requireContext().applicationContext))
-            .createPostModule(CreatePostModule(requireContext().applicationContext)).build()
+            .baseAppComponent(
+                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+            )
+            .createPostCommonModule(CreatePostCommonModule(requireContext()))
+            .createPostModule(CreatePostModule(requireContext()))
+            .build()
             .inject(this)
     }
     override fun onCreateView(

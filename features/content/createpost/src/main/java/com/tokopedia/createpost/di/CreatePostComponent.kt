@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.di
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.content.common.di.ContentFragmentFactoryModule
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
@@ -23,6 +24,7 @@ import dagger.Component
         ContentCreationProductTagModule::class,
         ContentFragmentFactoryModule::class,
     ],
+    dependencies = [BaseAppComponent::class]
 )
 interface CreatePostComponent {
 

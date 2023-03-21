@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
@@ -105,8 +106,11 @@ class ProductTagActivity : BaseActivity() {
 
     private fun inject() {
         DaggerCreatePostComponent.builder()
+            .baseAppComponent(
+                (applicationContext as BaseMainApplication).baseAppComponent
+            )
             .createPostModule(CreatePostModule(this))
-            .createPostCommonModule(CreatePostCommonModule(applicationContext))
+            .createPostCommonModule(CreatePostCommonModule(this))
             .build()
             .inject(this)
     }

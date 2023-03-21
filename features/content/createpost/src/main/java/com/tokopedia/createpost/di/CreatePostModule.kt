@@ -35,12 +35,6 @@ class CreatePostModule(private val context: Context) {
 
     @Provides
     @CreatePostScope
-    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
-    }
-
-    @Provides
-    @CreatePostScope
     fun provideFeedAccountTypeAnalytic(userSession: UserSessionInterface): FeedAccountTypeAnalytic {
         return FeedAccountTypeAnalyticImpl(userSession)
     }

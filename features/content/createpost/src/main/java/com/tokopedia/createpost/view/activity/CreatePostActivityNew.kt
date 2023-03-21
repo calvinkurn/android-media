@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.webkit.MimeTypeMap
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -149,8 +150,12 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     private fun initInjector() {
         DaggerCreatePostComponent.builder()
-            .createPostCommonModule(CreatePostCommonModule(applicationContext))
-            .createPostModule(CreatePostModule(applicationContext)).build()
+            .baseAppComponent(
+                (applicationContext as BaseMainApplication).baseAppComponent
+            )
+            .createPostCommonModule(CreatePostCommonModule(this))
+            .createPostModule(CreatePostModule(this))
+            .build()
             .inject(this)
     }
 
