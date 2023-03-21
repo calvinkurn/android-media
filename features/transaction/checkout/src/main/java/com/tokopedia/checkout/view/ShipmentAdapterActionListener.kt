@@ -127,4 +127,6 @@ interface ShipmentAdapterActionListener {
         position: Int,
         donePublisher: PublishSubject<Boolean>
     )
+
+    fun updateShipmentCostModel()
 }

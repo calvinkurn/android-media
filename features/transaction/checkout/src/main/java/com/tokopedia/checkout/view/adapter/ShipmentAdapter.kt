@@ -382,12 +382,12 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    fun addShipmentCostData(shipmentCostModel: ShipmentCostModel?) {
-        if (shipmentCostModel != null) {
-            this.shipmentCostModel = shipmentCostModel
-            shipmentDataList.add(shipmentCostModel)
-            updateShipmentCostModel()
-        }
+    fun addShipmentCostData(shipmentCostModel: ShipmentCostModel) {
+//        if (shipmentCostModel != null) {
+        this.shipmentCostModel = shipmentCostModel
+        shipmentDataList.add(shipmentCostModel)
+//            updateShipmentCostModel()
+//        }
     }
 
     fun addEgoldAttributeData(egoldAttributeModel: EgoldAttributeModel?) {
@@ -404,18 +404,29 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    fun addShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel?) {
-        if (shipmentButtonPaymentModel != null) {
-            shipmentDataList.add(shipmentButtonPaymentModel)
-        }
+    fun addShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel) {
+//        if (shipmentButtonPaymentModel != null) {
+        shipmentDataList.add(shipmentButtonPaymentModel)
+//        }
     }
 
-    fun updateShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel) {
-        val lastOrNull = shipmentDataList.lastOrNull()
-        if (lastOrNull is ShipmentButtonPaymentModel) {
+    fun updateShipmentButtonPaymentModel(shipmentButtonPaymentModel: ShipmentButtonPaymentModel): Boolean {
+        val item = shipmentDataList.lastOrNull()
+        if (item is ShipmentButtonPaymentModel) {
             shipmentDataList.removeLast()
             shipmentDataList.add(shipmentButtonPaymentModel)
+            return true
         }
+        return false
+    }
+
+    fun updateShipmentCostModel(shipmentCostModel: ShipmentCostModel): Boolean {
+        val item = shipmentDataList.getOrNull(shipmentCostPosition)
+        if (item is ShipmentCostModel) {
+            shipmentDataList[shipmentCostPosition] = shipmentCostModel
+            return true
+        }
+        return false
     }
 
     fun updateCheckoutButtonData(defaultTotal: String?) {
@@ -545,8 +556,8 @@ class ShipmentAdapter @Inject constructor(
     fun updateDonation(checked: Boolean) {
         if (shipmentDonationModel != null) {
             shipmentDonationModel!!.isChecked = checked
-            updateShipmentCostModel()
-            notifyItemChanged(shipmentCostPosition)
+            shipmentAdapterActionListener.updateShipmentCostModel()
+//            notifyItemChanged(shipmentCostPosition)
         }
     }
 
@@ -563,8 +574,8 @@ class ShipmentAdapter @Inject constructor(
                 if (shipmentCrossSellModel != null && crossSellModel != null) {
                     if (shipmentCrossSellModel.crossSellModel.id == crossSellModel.id) {
                         shipmentCrossSellModel.isChecked = checked
-                        updateShipmentCostModel()
-                        notifyItemChanged(shipmentCostPosition)
+                        shipmentAdapterActionListener.updateShipmentCostModel()
+//                        notifyItemChanged(shipmentCostPosition)
                         break
                     }
                 }
@@ -625,8 +636,8 @@ class ShipmentAdapter @Inject constructor(
     fun updateEgold(checked: Boolean) {
         if (egoldAttributeModel != null) {
             egoldAttributeModel!!.isChecked = checked
-            updateShipmentCostModel()
-            notifyItemChanged(shipmentCostPosition)
+            shipmentAdapterActionListener.updateShipmentCostModel()
+//            notifyItemChanged(shipmentCostPosition)
         }
     }
 
@@ -636,7 +647,7 @@ class ShipmentAdapter @Inject constructor(
             if (shipmentCartItemModel!!.selectedShipmentDetailData != null) {
                 shipmentCartItemModel.selectedShipmentDetailData = null
                 shipmentCartItemModel.voucherLogisticItemUiModel = null
-                updateShipmentCostModel()
+                shipmentAdapterActionListener.updateShipmentCostModel()
                 updateInsuranceTncVisibility()
             }
         }
@@ -657,7 +668,7 @@ class ShipmentAdapter @Inject constructor(
                 }
             }
         }
-        updateShipmentCostModel()
+        shipmentAdapterActionListener.updateShipmentCostModel()
         updateInsuranceTncVisibility()
         if (eligibleNewShippingExperience) {
             updateShippingCompletionTickerVisibility()
@@ -782,13 +793,13 @@ class ShipmentAdapter @Inject constructor(
                     shipmentDetailData.selectedCourierTradeInDropOff = courierItemData
                     shipmentCartItemModel.selectedShipmentDetailData = shipmentDetailData
                 }
-                updateShipmentCostModel()
+                shipmentAdapterActionListener.updateShipmentCostModel()
                 checkDataForCheckout()
                 break
             }
         }
         if (index > 0) {
-            notifyItemChanged(shipmentCostPosition)
+//            notifyItemChanged(shipmentCostPosition)
             notifyItemChanged(index)
             checkHasSelectAllCourier(false, index, shipmentCartItemModel!!.cartString, false, false)
             if (shipmentCartItemModel.isEligibleNewShippingExperience) {
@@ -846,10 +857,10 @@ class ShipmentAdapter @Inject constructor(
                 shipmentCartItemModel.isShowScheduleDelivery =
                     newCourierItemData.scheduleDeliveryUiModel != null
             }
-            updateShipmentCostModel()
+            shipmentAdapterActionListener.updateShipmentCostModel()
             checkDataForCheckout()
         }
-        notifyItemChanged(shipmentCostPosition)
+//        notifyItemChanged(shipmentCostPosition)
         notifyItemChanged(position)
         val tmpPosition = if (isForceReload) position else -1
         if (shipmentCartItemModel != null && shipmentCartItemModel.isEligibleNewShippingExperience) {
@@ -1231,7 +1242,7 @@ class ShipmentAdapter @Inject constructor(
         }
 
     fun updateItemAndTotalCost(position: Int) {
-        notifyItemChanged(shipmentCostPosition)
+//        notifyItemChanged(shipmentCostPosition)
         notifyItemChanged(position)
     }
 

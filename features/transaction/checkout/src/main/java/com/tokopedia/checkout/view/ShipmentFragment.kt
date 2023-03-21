@@ -31,7 +31,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
@@ -125,7 +124,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
@@ -246,7 +244,8 @@ class ShipmentFragment :
     private var shippingCourierBottomsheet: ShippingCourierBottomsheet? = null
     private var shipmentTracePerformance: PerformanceMonitoring? = null
     private var isShipmentTraceStopped = false
-    var cornerId: String? = null
+
+//    var cornerId: String? = null
     private var promoNotEligibleBottomsheet: PromoNotEligibleBottomSheet? = null
 
     @Inject
@@ -288,18 +287,6 @@ class ShipmentFragment :
 
     @Inject
     lateinit var ePharmacyAnalytics: EPharmacyAnalytics
-    private var saveInstanceCacheManager: SaveInstanceCacheManager? = null
-    private var savedTickerAnnouncementModel: TickerAnnouncementHolderData? = null
-    private var savedShipmentCartItemModelList: List<ShipmentCartItemModel>? = null
-    private var savedShipmentCostModel: ShipmentCostModel? = null
-    private var savedEgoldAttributeModel: EgoldAttributeModel? = null
-    private var savedRecipientAddressModel: RecipientAddressModel? = null
-    private var savedShipmentDonationModel: ShipmentDonationModel? = null
-    private var savedListShipmentCrossSellModel: ArrayList<ShipmentCrossSellModel>? = null
-    private var benefitSummaryInfoUiModel: BenefitSummaryInfoUiModel? = null
-    private var savedShipmentButtonPaymentModel: ShipmentButtonPaymentModel? = null
-    private var savedLastApplyData: LastApplyUiModel? = null
-    private var savedUploadPrescriptionUiModel: UploadPrescriptionUiModel? = null
     private var hasClearPromoBeforeCheckout = false
     private var hasRunningApiCall = false
     private var bboPromoCodes = ArrayList<String>()
@@ -314,6 +301,7 @@ class ShipmentFragment :
     private var cdLayout: View? = null
     private var cdView: TimerUnify? = null
     private var cdText: Typography? = null
+
     override fun initInjector() {
         if (activity != null) {
             val baseMainApplication = activity!!.application as BaseMainApplication
@@ -327,59 +315,6 @@ class ShipmentFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        if (context != null) {
-//            saveInstanceCacheManager = SaveInstanceCacheManager(context!!, savedInstanceState)
-//        }
-//        if (savedInstanceState != null) {
-//            savedShipmentCartItemModelList =
-//                saveInstanceCacheManager?.get<List<ShipmentCartItemModel>>(
-//                    ShipmentCartItemModel::class.java.simpleName,
-//                    object : TypeToken<ArrayList<ShipmentCartItemModel>>() {}.type
-//                )
-//            if (savedShipmentCartItemModelList != null) {
-//                savedTickerAnnouncementModel =
-//                    saveInstanceCacheManager?.get<TickerAnnouncementHolderData>(
-//                        TickerAnnouncementHolderData::class.java.simpleName,
-//                        TickerAnnouncementHolderData::class.java
-//                    )
-//                savedRecipientAddressModel = saveInstanceCacheManager?.get<RecipientAddressModel>(
-//                    RecipientAddressModel::class.java.simpleName,
-//                    RecipientAddressModel::class.java
-//                )
-//                savedShipmentCostModel = saveInstanceCacheManager?.get<ShipmentCostModel>(
-//                    ShipmentCostModel::class.java.simpleName,
-//                    ShipmentCostModel::class.java
-//                )
-//                savedEgoldAttributeModel = saveInstanceCacheManager?.get<EgoldAttributeModel>(
-//                    EgoldAttributeModel::class.java.simpleName,
-//                    EgoldAttributeModel::class.java
-//                )
-//                savedShipmentDonationModel = saveInstanceCacheManager?.get<ShipmentDonationModel>(
-//                    ShipmentDonationModel::class.java.simpleName,
-//                    ShipmentDonationModel::class.java
-//                )
-//                savedListShipmentCrossSellModel =
-//                    saveInstanceCacheManager?.get<ArrayList<ShipmentCrossSellModel>>(
-//                        ShipmentCrossSellModel::class.java.simpleName,
-//                        object : TypeToken<ArrayList<ShipmentCrossSellModel>>() {}.type
-//                    )
-//                savedShipmentButtonPaymentModel =
-//                    saveInstanceCacheManager?.get<ShipmentButtonPaymentModel>(
-//                        ShipmentButtonPaymentModel::class.java.simpleName,
-//                        ShipmentButtonPaymentModel::class.java
-//                    )
-//                savedLastApplyData = saveInstanceCacheManager?.get<LastApplyUiModel>(
-//                    LastApplyUiModel::class.java.simpleName,
-//                    LastApplyUiModel::class.java
-//                )
-//                savedUploadPrescriptionUiModel =
-//                    saveInstanceCacheManager?.get<UploadPrescriptionUiModel>(
-//                        UploadPrescriptionUiModel::class.java.simpleName,
-//                        UploadPrescriptionUiModel::class.java
-//                    )
-//            }
-//        }
-//        shipmentPresenter.attachView(this)
         shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE)
     }
 
@@ -469,37 +404,32 @@ class ShipmentFragment :
         super.onViewCreated(view, savedInstanceState)
         setBackground()
         shipmentPresenter.attachView(this)
-//        if (savedInstanceState == null || savedShipmentCartItemModelList == null) {
+        shipmentPresenter.isOneClickShipment = isOneClickShipment
+        shipmentPresenter.isTradeIn = isTradeIn
+        shipmentPresenter.deviceId = deviceId
+        shipmentPresenter.checkoutLeasingId = checkoutLeasingId
+        shipmentPresenter.isPlusSelected = isPlusSelected()
+        shipmentPresenter.checkoutPageSource = checkoutPageSource
         shipmentPresenter.processInitialLoadCheckoutPage(
-            false, isOneClickShipment, isTradeIn, true,
-            false, null, deviceId, checkoutLeasingId,
-            isPlusSelected()
+            false, /*isOneClickShipment, isTradeIn,*/
+            true,
+            false,
+            null/*, deviceId, checkoutLeasingId,
+            isPlusSelected()*/
         )
-//        } else {
-//            shipmentPresenter.tickerAnnouncementHolderData = savedTickerAnnouncementModel!!
-//            shipmentPresenter.shipmentCartItemModelList = savedShipmentCartItemModelList
-//            shipmentPresenter.recipientAddressModel = savedRecipientAddressModel
-//            shipmentPresenter.setShipmentCostModel(savedShipmentCostModel)
-//            shipmentPresenter.shipmentDonationModel = savedShipmentDonationModel
-//            shipmentPresenter.setListShipmentCrossSellModel(savedListShipmentCrossSellModel)
-//            shipmentPresenter.setShipmentButtonPaymentModel(savedShipmentButtonPaymentModel)
-//            shipmentPresenter.egoldAttributeModel = savedEgoldAttributeModel
-//            shipmentAdapter.lastChooseCourierItemPosition =
-//                savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION)
-//            shipmentAdapter.lastServiceId =
-//                savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID)
-//            shipmentPresenter.lastApplyData = savedLastApplyData
-//            shipmentPresenter.setUploadPrescriptionData(savedUploadPrescriptionUiModel)
-//            renderCheckoutPage(true, false, isOneClickShipment)
-//            swipeToRefresh?.isEnabled = false
-//        }
         observeData()
     }
 
     private fun observeData() {
         shipmentPresenter.shipmentButtonPayment.observe(viewLifecycleOwner) {
-            shipmentAdapter.updateShipmentButtonPaymentModel(it)
-            onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
+            if (shipmentAdapter.updateShipmentButtonPaymentModel(it)) {
+                onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
+            }
+        }
+        shipmentPresenter.shipmentCostModel.observe(viewLifecycleOwner) {
+            if (shipmentAdapter.updateShipmentCostModel(it)) {
+                onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
+            }
         }
     }
 
@@ -519,52 +449,6 @@ class ShipmentFragment :
         } else {
             ""
         }
-
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        saveInstanceCacheManager?.onSave(outState)
-//        if (shipmentPresenter.shipmentCartItemModelList != null) {
-//            saveInstanceCacheManager?.put(
-//                TickerAnnouncementHolderData::class.java.simpleName,
-//                shipmentPresenter.tickerAnnouncementHolderData
-//            )
-//            saveInstanceCacheManager?.put(
-//                ShipmentCartItemModel::class.java.simpleName,
-//                shipmentPresenter.shipmentCartItemModelList?.let {
-//                    ArrayList(
-//                        it
-//                    )
-//                }
-//            )
-//            saveInstanceCacheManager?.put(
-//                RecipientAddressModel::class.java.simpleName,
-//                shipmentPresenter.recipientAddressModel
-//            )
-//            saveInstanceCacheManager?.put(
-//                ShipmentCostModel::class.java.simpleName,
-//                shipmentPresenter.getShipmentCostModel()
-//            )
-//            saveInstanceCacheManager?.put(
-//                ShipmentDonationModel::class.java.simpleName,
-//                shipmentPresenter.shipmentDonationModel
-//            )
-//            saveInstanceCacheManager?.put(
-//                ShipmentButtonPaymentModel::class.java.simpleName,
-//                shipmentPresenter.shipmentButtonPayment.value
-//            )
-//            outState.putInt(
-//                DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION,
-//                shipmentAdapter.lastChooseCourierItemPosition
-//            )
-//            outState.putInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID, shipmentAdapter.lastServiceId)
-//            saveInstanceCacheManager?.put(
-//                UploadPrescriptionUiModel::class.java.simpleName,
-//                shipmentPresenter.uploadPrescriptionUiModel
-//            )
-//        } else {
-//            saveInstanceCacheManager?.put(ShipmentCartItemModel::class.java.simpleName, null)
-//        }
-//    }
 
     private val isOneClickShipment: Boolean
         get() = arguments != null && arguments!!.getBoolean(ARG_IS_ONE_CLICK_SHIPMENT)
@@ -609,17 +493,17 @@ class ShipmentFragment :
     private fun initRecyclerViewData(
         shipmentTickerErrorModel: ShipmentTickerErrorModel,
         tickerAnnouncementHolderData: TickerAnnouncementHolderData?,
-        recipientAddressModel: RecipientAddressModel?,
+        recipientAddressModel: RecipientAddressModel,
         shipmentUpsellModel: ShipmentUpsellModel,
         shipmentNewUpsellModel: ShipmentNewUpsellModel,
         shipmentCartItemModelList: List<ShipmentCartItemModel>,
         shipmentDonationModel: ShipmentDonationModel?,
         shipmentCrossSellModelList: List<ShipmentCrossSellModel>,
         lastApplyUiModel: LastApplyUiModel?,
-        shipmentCostModel: ShipmentCostModel?,
+        shipmentCostModel: ShipmentCostModel,
         egoldAttributeModel: EgoldAttributeModel?,
-        shipmentButtonPaymentModel: ShipmentButtonPaymentModel?,
-        uploadPrescriptionUiModel: UploadPrescriptionUiModel?,
+        shipmentButtonPaymentModel: ShipmentButtonPaymentModel,
+        uploadPrescriptionUiModel: UploadPrescriptionUiModel,
         isInitialRender: Boolean,
         isReloadAfterPriceChangeHigher: Boolean,
         isLocalReload: Boolean
@@ -631,33 +515,17 @@ class ShipmentFragment :
         if (tickerAnnouncementHolderData != null) {
             shipmentAdapter.addTickerAnnouncementData(tickerAnnouncementHolderData)
         }
-        if (recipientAddressModel != null) {
-            shipmentAdapter.addAddressShipmentData(recipientAddressModel)
-        }
+        shipmentAdapter.addAddressShipmentData(recipientAddressModel)
         if (shipmentUpsellModel.isShow) {
             shipmentAdapter.addUpsellData(shipmentUpsellModel)
         }
         if (shipmentNewUpsellModel.isShow) {
             shipmentAdapter.addNewUpsellData(shipmentNewUpsellModel)
         }
-        isPlusSelected = shipmentNewUpsellModel.isSelected
+        shipmentPresenter.isPlusSelected = shipmentNewUpsellModel.isSelected
         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList)
-        val cartIdsStringBuilder = StringBuilder()
-        for (i in shipmentCartItemModelList.indices) {
-            if (shipmentCartItemModelList[i].cartItemModels.isNotEmpty()) {
-                for ((cartId) in shipmentCartItemModelList[i].cartItemModels) {
-                    cartIdsStringBuilder.append(cartId)
-                    cartIdsStringBuilder.append(",")
-                }
-            }
-        }
-        cartIdsStringBuilder.replace(
-            cartIdsStringBuilder.lastIndexOf(","),
-            cartIdsStringBuilder.lastIndexOf(",") + 1,
-            ""
-        )
         var hasEpharmacyWidget = false
-        if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.showImageUpload) {
+        if (uploadPrescriptionUiModel.showImageUpload) {
             shipmentAdapter.addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel)
             hasEpharmacyWidget = true
         }
@@ -806,7 +674,7 @@ class ShipmentFragment :
             .subscribe(object : Subscriber<Long>() {
                 override fun onCompleted() {}
                 override fun onError(e: Throwable) {
-                    e.printStackTrace()
+                    Timber.d(e)
                 }
 
                 override fun onNext(aLong: Long) {
@@ -1007,9 +875,11 @@ class ShipmentFragment :
             llNetworkErrorView?.visibility = View.GONE
             rvShipment?.visibility = View.VISIBLE
             shipmentPresenter.processInitialLoadCheckoutPage(
-                false, isOneClickShipment, isTradeIn, true,
-                false, null, deviceId, checkoutLeasingId,
-                isPlusSelected()
+                false, /*isOneClickShipment, isTradeIn,*/
+                true,
+                false,
+                null/*, deviceId, checkoutLeasingId,
+                isPlusSelected()*/
             )
         }
     }
@@ -1046,7 +916,7 @@ class ShipmentFragment :
             shipmentPresenter.shipmentDonationModel,
             shipmentPresenter.getListShipmentCrossSellModel(),
             shipmentPresenter.lastApplyData,
-            shipmentPresenter.getShipmentCostModel(),
+            shipmentPresenter.shipmentCostModel.value,
             shipmentPresenter.egoldAttributeModel,
             shipmentPresenter.shipmentButtonPayment.value,
             shipmentPresenter.uploadPrescriptionUiModel,
@@ -1068,26 +938,26 @@ class ShipmentFragment :
         stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap)
     }
 
-    override fun renderDataChanged() {
-        initRecyclerViewData(
-            shipmentPresenter.shipmentTickerErrorModel,
-            shipmentPresenter.tickerAnnouncementHolderData,
-            shipmentPresenter.recipientAddressModel,
-            shipmentPresenter.shipmentUpsellModel,
-            shipmentPresenter.shipmentNewUpsellModel,
-            shipmentPresenter.shipmentCartItemModelList!!,
-            shipmentPresenter.shipmentDonationModel,
-            shipmentPresenter.getListShipmentCrossSellModel(),
-            shipmentPresenter.lastApplyData,
-            shipmentPresenter.getShipmentCostModel(),
-            shipmentPresenter.egoldAttributeModel,
-            shipmentPresenter.shipmentButtonPayment.value,
-            shipmentPresenter.uploadPrescriptionUiModel,
-            false,
-            false,
-            true
-        )
-    }
+//    override fun renderDataChanged() {
+//        initRecyclerViewData(
+//            shipmentPresenter.shipmentTickerErrorModel,
+//            shipmentPresenter.tickerAnnouncementHolderData,
+//            shipmentPresenter.recipientAddressModel,
+//            shipmentPresenter.shipmentUpsellModel,
+//            shipmentPresenter.shipmentNewUpsellModel,
+//            shipmentPresenter.shipmentCartItemModelList!!,
+//            shipmentPresenter.shipmentDonationModel,
+//            shipmentPresenter.getListShipmentCrossSellModel(),
+//            shipmentPresenter.lastApplyData,
+//            shipmentPresenter.shipmentCostModel.value,
+//            shipmentPresenter.egoldAttributeModel,
+//            shipmentPresenter.shipmentButtonPayment.value,
+//            shipmentPresenter.uploadPrescriptionUiModel,
+//            false,
+//            false,
+//            true
+//        )
+//    }
 
     override fun renderCheckoutPageNoAddress(
         shipmentAddressFormData: CartShipmentAddressFormData?,
@@ -1150,9 +1020,11 @@ class ShipmentFragment :
             priceValidationDialog.setPrimaryCTAText(action)
             priceValidationDialog.setPrimaryCTAClickListener {
                 shipmentPresenter.processInitialLoadCheckoutPage(
-                    true, isOneClickShipment, isTradeIn, true,
-                    true, null, deviceId, checkoutLeasingId,
-                    isPlusSelected()
+                    true, /*isOneClickShipment, isTradeIn,*/
+                    true,
+                    true,
+                    null/*, deviceId, checkoutLeasingId,
+                    isPlusSelected()*/
                 )
                 priceValidationDialog.dismiss()
             }
@@ -1236,18 +1108,18 @@ class ShipmentFragment :
         if (shipmentCartItemModel != null) {
             shippingCourierBottomsheet = null
             val recipientAddressModel: RecipientAddressModel?
-            if (shipmentPresenter.recipientAddressModel != null) {
-                recipientAddressModel = shipmentPresenter.recipientAddressModel
-                if (shipmentCartItemModel.isDisableChangeCourier) {
-                    // refresh page
-                    shipmentPresenter.processInitialLoadCheckoutPage(
-                        true, isOneClickShipment, isTradeIn, true,
-                        false, null, deviceId, checkoutLeasingId,
-                        isPlusSelected()
-                    )
-                } else {
-                    onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position)
-                }
+            recipientAddressModel = shipmentPresenter.recipientAddressModel
+            if (shipmentCartItemModel.isDisableChangeCourier) {
+                // refresh page
+                shipmentPresenter.processInitialLoadCheckoutPage(
+                    true, /*isOneClickShipment, isTradeIn,*/
+                    true,
+                    false,
+                    null/*, deviceId, checkoutLeasingId,
+                    isPlusSelected()*/
+                )
+            } else {
+                onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position)
             }
         }
     }
@@ -1452,9 +1324,11 @@ class ShipmentFragment :
     override fun renderChangeAddressSuccess(refreshCheckoutPage: Boolean) {
         if (refreshCheckoutPage) {
             shipmentPresenter.processInitialLoadCheckoutPage(
-                true, isOneClickShipment, isTradeIn, true,
-                false, shipmentAdapter.addressShipmentData?.cornerId, deviceId, checkoutLeasingId,
-                isPlusSelected()
+                true, /*isOneClickShipment, isTradeIn,*/
+                true,
+                false,
+                shipmentAdapter.addressShipmentData?.cornerId/*, deviceId, checkoutLeasingId,
+                isPlusSelected()*/
             )
         }
     }
@@ -1661,9 +1535,11 @@ class ShipmentFragment :
 
     private fun onResultFromEditAddress() {
         shipmentPresenter.processInitialLoadCheckoutPage(
-            true, isOneClickShipment, isTradeIn, true,
-            false, null, deviceId, checkoutLeasingId,
-            isPlusSelected()
+            true, /*isOneClickShipment, isTradeIn,*/
+            true,
+            false,
+            null/*, deviceId, checkoutLeasingId,
+            isPlusSelected()*/
         )
     }
 
@@ -1695,9 +1571,11 @@ class ShipmentFragment :
                     )
                 ) {
                     shipmentPresenter.processInitialLoadCheckoutPage(
-                        true, isOneClickShipment, isTradeIn, true,
-                        false, null, deviceId, checkoutLeasingId,
-                        isPlusSelected()
+                        true, /*isOneClickShipment, isTradeIn,*/
+                        true,
+                        false,
+                        null/*, deviceId, checkoutLeasingId,
+                        isPlusSelected()*/
                     )
                 }
                 if (data != null && data.getBooleanExtra(
@@ -1754,9 +1632,11 @@ class ShipmentFragment :
                     addressDataModel?.let { updateLocalCacheAddressData(it) }
                 }
                 shipmentPresenter.processInitialLoadCheckoutPage(
-                    false, isOneClickShipment, isTradeIn, false,
-                    false, null, deviceId, checkoutLeasingId,
-                    isPlusSelected()
+                    false, /*isOneClickShipment, isTradeIn,*/
+                    false,
+                    false,
+                    null/*, deviceId, checkoutLeasingId,
+                    isPlusSelected()*/
                 )
             }
         }
@@ -1783,9 +1663,11 @@ class ShipmentFragment :
                 activity!!.finish()
             }
             else -> shipmentPresenter.processInitialLoadCheckoutPage(
-                false, isOneClickShipment, isTradeIn, false,
-                false, null, deviceId, checkoutLeasingId,
-                isPlusSelected()
+                false, /*isOneClickShipment, isTradeIn,*/
+                false,
+                false,
+                null/*, deviceId, checkoutLeasingId,
+                isPlusSelected()*/
             )
         }
     }
@@ -2221,7 +2103,7 @@ class ShipmentFragment :
             isTradeIn,
             isTradeInByDropOff,
             deviceId,
-            cornerId,
+            null,
             checkoutLeasingId,
             isPlusSelected()
         )
@@ -2267,11 +2149,11 @@ class ShipmentFragment :
     override fun onPriorityChecked(position: Int) {
         if (rvShipment?.isComputingLayout == true) {
             rvShipment?.post {
-                shipmentAdapter.updateShipmentCostModel()
+                shipmentPresenter.updateShipmentCostModel()
                 shipmentAdapter.updateItemAndTotalCost(position)
             }
         } else {
-            shipmentAdapter.updateShipmentCostModel()
+            shipmentPresenter.updateShipmentCostModel()
             shipmentAdapter.updateItemAndTotalCost(position)
         }
     }
@@ -2279,12 +2161,12 @@ class ShipmentFragment :
     override fun onInsuranceChecked(position: Int) {
         if (rvShipment?.isComputingLayout == true) {
             rvShipment?.post {
-                shipmentAdapter.updateShipmentCostModel()
+                shipmentPresenter.updateShipmentCostModel()
                 shipmentAdapter.updateItemAndTotalCost(position)
                 shipmentAdapter.updateInsuranceTncVisibility()
             }
         } else {
-            shipmentAdapter.updateShipmentCostModel()
+            shipmentPresenter.updateShipmentCostModel()
             shipmentAdapter.updateItemAndTotalCost(position)
             shipmentAdapter.updateInsuranceTncVisibility()
         }
@@ -2630,10 +2512,10 @@ class ShipmentFragment :
                             }
                         }
                         shipmentCartItemModel.voucherLogisticItemUiModel = null
-                        benefitSummaryInfoUiModel = null
+//                        benefitSummaryInfoUiModel = null
                         shipmentAdapter.clearTotalPromoStackAmount()
-                        shipmentAdapter.updateShipmentCostModel()
-                        shipmentAdapter.updateCheckoutButtonData(null)
+                        shipmentPresenter.updateShipmentCostModel()
+//                        shipmentAdapter.updateCheckoutButtonData(null)
                     }
                     shipmentAdapter.setSelectedCourier(
                         cartItemPosition,
@@ -2696,10 +2578,10 @@ class ShipmentFragment :
     }
 
     override fun onShowLogisticPromo(listLogisticPromo: List<LogisticPromoUiModel>) {
-        for ((promoCode, _, _, _, _, _, _, _, _, _, _, _, _, _, _, disabled) in listLogisticPromo) {
-            checkoutAnalyticsCourierSelection.eventViewPromoLogisticTicker(promoCode)
-            if (disabled) {
-                checkoutAnalyticsCourierSelection.eventViewPromoLogisticTickerDisable(promoCode)
+        for (logisticPromo in listLogisticPromo) {
+            checkoutAnalyticsCourierSelection.eventViewPromoLogisticTicker(logisticPromo.promoCode)
+            if (logisticPromo.disabled) {
+                checkoutAnalyticsCourierSelection.eventViewPromoLogisticTickerDisable(logisticPromo.promoCode)
             }
         }
     }
@@ -2978,12 +2860,12 @@ class ShipmentFragment :
     override fun onPurchaseProtectionChangeListener(position: Int) {
         if (rvShipment?.isComputingLayout == true) {
             rvShipment?.post {
-                shipmentAdapter.updateShipmentCostModel()
+                shipmentPresenter.updateShipmentCostModel()
                 shipmentAdapter.updateItemAndTotalCost(position)
                 shipmentAdapter.updateInsuranceTncVisibility()
             }
         } else {
-            shipmentAdapter.updateShipmentCostModel()
+            shipmentPresenter.updateShipmentCostModel()
             shipmentAdapter.updateItemAndTotalCost(position)
             shipmentAdapter.updateInsuranceTncVisibility()
         }
@@ -3443,7 +3325,7 @@ class ShipmentFragment :
 
     override fun clearTotalBenefitPromoStacking() {
         shipmentAdapter.clearTotalPromoStackAmount()
-        shipmentAdapter.updateShipmentCostModel()
+        shipmentPresenter.updateShipmentCostModel()
     }
 
     // Keep this method
@@ -3565,7 +3447,7 @@ class ShipmentFragment :
     override fun resetPromoBenefit() {
         shipmentAdapter.resetPromoBenefit()
         onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
-        shipmentAdapter.updateShipmentCostModel()
+        shipmentPresenter.updateShipmentCostModel()
     }
 
     override fun onChangeTradeInDropOffClicked(latitude: String?, longitude: String?) {
@@ -3812,7 +3694,7 @@ class ShipmentFragment :
         if (hasSetAllCourier || forceSetPromoBenefit) {
             resetPromoBenefit()
             setPromoBenefit(summariesUiModels)
-            shipmentAdapter.updateShipmentCostModel()
+            shipmentPresenter.updateShipmentCostModel()
         }
         return hasSetAllCourier
     }
@@ -4320,11 +4202,13 @@ class ShipmentFragment :
     }
 
     override fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?) {
-        isPlusSelected = false
+        shipmentPresenter.isPlusSelected = false
         shipmentPresenter.cancelUpsell(
-            true, isOneClickShipment, isTradeIn, true,
-            false, null, deviceId, checkoutLeasingId,
-            isPlusSelected()
+            true, /*isOneClickShipment, isTradeIn,*/
+            true,
+            false,
+            null/*, deviceId, checkoutLeasingId,
+            isPlusSelected()*/
         )
         checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel!!.isSelected)
     }
@@ -4393,9 +4277,9 @@ class ShipmentFragment :
                         }
                     }
                     shipmentCartItemModel.voucherLogisticItemUiModel = null
-                    benefitSummaryInfoUiModel = null
+//                    benefitSummaryInfoUiModel = null
                     shipmentAdapter.clearTotalPromoStackAmount()
-                    shipmentAdapter.updateShipmentCostModel()
+                    shipmentPresenter.updateShipmentCostModel()
                     shipmentAdapter.updateCheckoutButtonData(null)
                 }
                 shipmentAdapter.setSelectedCourier(
@@ -4463,6 +4347,10 @@ class ShipmentFragment :
                 }
             }
         }
+    }
+
+    override fun updateShipmentCostModel() {
+        shipmentPresenter.updateShipmentCostModel()
     }
 
     override fun onInsuranceInfoTooltipClickedTrackingAnalytics() {
@@ -4578,8 +4466,8 @@ class ShipmentFragment :
         } else {
             shipmentAdapter.notifyItemChanged(shipmentAdapter.getAddOnOrderLevelPosition(cartString))
         }
-        shipmentAdapter.updateShipmentCostModel()
-        onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
+        shipmentPresenter.updateShipmentCostModel()
+//        onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
     }
 
     override fun updateAddOnsDynamicDataPassing(
@@ -4662,11 +4550,13 @@ class ShipmentFragment :
 
     private fun onResultFromUpsell(data: Intent?) {
         if (data != null && data.hasExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED)) {
-            isPlusSelected = data.getBooleanExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED, false)
+            shipmentPresenter.isPlusSelected = data.getBooleanExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED, false)
             shipmentPresenter.processInitialLoadCheckoutPage(
-                true, isOneClickShipment, isTradeIn, true,
-                false, null, deviceId, checkoutLeasingId,
-                isPlusSelected()
+                true, /*isOneClickShipment, isTradeIn,*/
+                true,
+                false,
+                null/*, deviceId, checkoutLeasingId,
+                isPlusSelected()*/
             )
         }
     }

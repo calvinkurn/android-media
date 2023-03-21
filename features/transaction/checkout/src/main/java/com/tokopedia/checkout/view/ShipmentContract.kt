@@ -14,7 +14,6 @@ import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
-import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
@@ -81,7 +80,7 @@ interface ShipmentContract {
             addressState: Int
         )
 
-        fun renderDataChanged()
+//        fun renderDataChanged()
         fun renderCheckoutCartSuccess(checkoutData: CheckoutData?)
         fun renderCheckoutCartError(message: String)
         fun renderCheckoutPriceUpdated(priceValidationData: PriceValidationData?)
@@ -273,14 +272,14 @@ interface ShipmentContract {
 
         fun processInitialLoadCheckoutPage(
             isReloadData: Boolean,
-            isOneClickShipment: Boolean,
-            isTradeIn: Boolean,
+//            isOneClickShipment: Boolean,
+//            isTradeIn: Boolean,
             skipUpdateOnboardingState: Boolean,
             isReloadAfterPriceChangeHinger: Boolean,
-            cornerId: String?,
-            deviceId: String?,
-            leasingId: String?,
-            isPlusSelected: Boolean
+            cornerId: String?
+//            deviceId: String?,
+//            leasingId: String?,
+//            isPlusSelected: Boolean
         )
 
         fun processCheckout(
@@ -334,8 +333,9 @@ interface ShipmentContract {
         var recipientAddressModel: RecipientAddressModel
         var shipmentCartItemModelList: List<ShipmentCartItemModel>
         fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>)
-        fun getShipmentCostModel(): ShipmentCostModel
-        fun setShipmentCostModel(shipmentCostModel: ShipmentCostModel?)
+
+//        fun getShipmentCostModel(): ShipmentCostModel
+//        fun setShipmentCostModel(shipmentCostModel: ShipmentCostModel?)
         var egoldAttributeModel: EgoldAttributeModel?
         val shipmentTickerErrorModel: ShipmentTickerErrorModel
         var tickerAnnouncementHolderData: TickerAnnouncementHolderData
@@ -443,14 +443,14 @@ interface ShipmentContract {
         fun hitClearAllBo()
         fun cancelUpsell(
             isReloadData: Boolean,
-            isOneClickShipment: Boolean,
-            isTradeIn: Boolean,
+//            isOneClickShipment: Boolean,
+//            isTradeIn: Boolean,
             skipUpdateOnboardingState: Boolean,
             isReloadAfterPriceChangeHinger: Boolean,
-            cornerId: String?,
-            deviceId: String?,
-            leasingId: String?,
-            isPlusSelected: Boolean
+            cornerId: String?
+//            deviceId: String?,
+//            leasingId: String?,
+//            isPlusSelected: Boolean
         )
 
         fun clearAllBoOnTemporaryUpsell()
