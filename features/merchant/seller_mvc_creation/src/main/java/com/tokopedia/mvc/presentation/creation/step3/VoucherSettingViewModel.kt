@@ -266,7 +266,7 @@ class VoucherSettingViewModel @Inject constructor(
         handleVoucherInputValidation()
     }
 
-    private fun handleVoucherInputValidation() {
+    fun handleVoucherInputValidation() {
         val voucherConfiguration = currentState.voucherConfiguration
         launchCatchError(
             dispatchers.io,
