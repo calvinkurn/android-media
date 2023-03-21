@@ -35,10 +35,10 @@ import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
-import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentUpsellV3ViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentUpsellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -170,7 +170,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (item instanceof ShipmentUpsellModel) {
             return ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL;
         } else if (item instanceof ShipmentNewUpsellModel) {
-            return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL;
+            return ShipmentUpsellV3ViewHolder.LAYOUT;
         }
 
         return super.getItemViewType(position);
@@ -217,8 +217,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new UploadPrescriptionViewHolder(view, uploadPrescriptionListener);
         } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
             return new ShipmentUpsellViewHolder(view, shipmentAdapterActionListener);
-        } else if (viewType == ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL) {
-            return new ShipmentNewUpsellViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ShipmentUpsellV3ViewHolder.LAYOUT) {
+            return new ShipmentUpsellV3ViewHolder(view);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -258,8 +258,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((UploadPrescriptionViewHolder) holder).bindViewHolder((UploadPrescriptionUiModel) data);
         } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
             ((ShipmentUpsellViewHolder) holder).bind((ShipmentUpsellModel) data);
-        } else if (viewType == ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL) {
-            ((ShipmentNewUpsellViewHolder) holder).bind((ShipmentNewUpsellModel) data);
+        } else if (viewType == ShipmentUpsellV3ViewHolder.LAYOUT) {
+            ((ShipmentUpsellV3ViewHolder) holder).bind((ShipmentNewUpsellModel) data);
         }
     }
 
