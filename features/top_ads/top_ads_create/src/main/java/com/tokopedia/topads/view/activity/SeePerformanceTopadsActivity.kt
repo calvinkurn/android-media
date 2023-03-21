@@ -230,9 +230,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         getString(R.string.tidak_dibatasi)
                     } else {
                         "Rp ${
-                            it.response?.data?.get(
-                                0
-                            )?.groupPriceDaily
+                        it.response?.data?.get(
+                            0
+                        )?.groupPriceDaily
                         }"
                     }
                 if (it.response?.data?.get(0)?.groupPriceDaily != 0f) {
@@ -323,7 +323,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                             seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
                                 0
                             )?.statTotalImpression
-                        ), R.color.Unify_GN500
+                        ),
+                        R.color.Unify_GN500
                     )
                 }
                 adPerformanceCount > 5 -> {
@@ -339,7 +340,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                             seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
                                 0
                             )?.statTotalImpression
-                        ), R.color.Unify_YN500
+                        ),
+                        R.color.Unify_YN500
                     )
                 }
                 adPerformanceCount > 0 -> {
@@ -355,7 +357,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                             seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
                                 0
                             )?.statTotalImpression
-                        ), R.color.Unify_RN500
+                        ),
+                        R.color.Unify_RN500
                     )
                 }
                 else -> {
@@ -363,7 +366,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         getString(R.string.topads_ads_performance_performa_tampil),
                         "",
                         getString(R.string.topads_ads_performance_not_rated),
-                        "", 0, R.color.Unify_NN600
+                        "",
+                        0,
+                        R.color.Unify_NN600
                     )
                 }
             }
@@ -620,7 +625,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 ColorStateList.valueOf(
                     ContextCompat.getColor(
                         this,
-                        heading1Color
+                        heading2Color
                     )
                 )
             )
@@ -639,8 +644,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     private fun showStatusIklanBottomSheet() {
         var list = seePerformanceTopAdsViewModel?.getStatusIklanList()
 
-        if(list.isNullOrEmpty()){
-            list?.add( ItemListUiModel(getString(R.string.ads_active)))
+        if (list.isNullOrEmpty()) {
+            list?.add(ItemListUiModel(getString(R.string.ads_active)))
             list?.add(ItemListUiModel(getString(R.string.topads_non_active)))
         }
 
