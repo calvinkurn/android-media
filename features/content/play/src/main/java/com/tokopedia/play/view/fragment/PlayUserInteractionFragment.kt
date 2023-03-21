@@ -19,6 +19,9 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.PageSource
+import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
+import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
+import com.tokopedia.content.common.comment.analytic.IContentCommentAnalytics
 import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -128,7 +131,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val performanceClassConfig: PerformanceClassConfig,
     private val newAnalytic: PlayNewAnalytic,
     private val analyticManager: PlayChannelAnalyticManager,
-    private val router: Router
+    private val router: Router,
+    private val commentAnalytics: ContentCommentAnalytics.Creator,
 ) :
     TkpdBaseV4Fragment(),
     PlayMoreActionBottomSheet.Listener,
@@ -412,7 +416,18 @@ class PlayUserInteractionFragment @Inject constructor(
             is InteractiveDialogFragment -> {
                 childFragment.setDataSource(interactiveDialogDataSource)
             }
-            is ContentCommentBottomSheet -> childFragment.setEntrySource(commentEntrySource)
+            is ContentCommentBottomSheet -> {
+                childFragment.setEntrySource(commentEntrySource)
+                childFragment.setAnalytic(
+                    commentAnalytics.create(
+                        PageSource.Play(channelId),
+                        model = ContentCommentAnalyticsModel(
+                            eventCategory = "groupchat room",
+                            eventLabel = "$channelId - ${playViewModel.partnerId}"
+                        )
+                    )
+                )
+            }
         }
     }
 

@@ -22,6 +22,7 @@ import com.tokopedia.content.common.R
 import com.tokopedia.content.common.comment.*
 import com.tokopedia.content.common.comment.adapter.CommentAdapter
 import com.tokopedia.content.common.comment.adapter.CommentViewHolder
+import com.tokopedia.content.common.comment.analytic.IContentCommentAnalytics
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
@@ -146,6 +147,8 @@ class ContentCommentBottomSheet @Inject constructor(
             }
         }
     }
+
+    private var analytics: IContentCommentAnalytics? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -416,13 +419,17 @@ class ContentCommentBottomSheet @Inject constructor(
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
             FeedMenuIdentifier.DELETE -> deleteCommentChecker()
-            FeedMenuIdentifier.LAPORKAN -> viewModel.submitAction(CommentAction.RequestReportAction)
+            FeedMenuIdentifier.LAPORKAN -> {
+                viewModel.submitAction(CommentAction.RequestReportAction)
+                analytics?.clickReportComment()
+            }
         }
     }
 
     private fun deleteCommentChecker() {
         requireInternet {
             viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
+            analytics?.clickRemoveComment()
         }
     }
 
@@ -515,6 +522,10 @@ class ContentCommentBottomSheet @Inject constructor(
                 action(isInetAvailable)
             }
         }
+    }
+
+    fun setAnalytic(tracker: IContentCommentAnalytics) {
+        analytics = tracker
     }
 
     interface EntrySource {
