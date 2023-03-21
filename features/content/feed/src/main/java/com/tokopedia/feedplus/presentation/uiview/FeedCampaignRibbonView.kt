@@ -98,7 +98,9 @@ class FeedCampaignRibbonView(
                                 cta.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely(),
                                 cta.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
                             )
-                        )
+                        ).apply {
+                            cornerRadius = CORNER_RADIUS
+                        }
                 type == FeedCampaignRibbonType.ASGC_GENERAL && cta.colorGradient.isNotEmpty() -> {
                     root.background = GradientDrawable(
                         GradientDrawable.Orientation.LEFT_RIGHT,
