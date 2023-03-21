@@ -975,6 +975,7 @@ class ShipmentPresenter @Inject constructor(
         )
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
         cartDataForRates = cartShipmentAddressFormData.cartData
+        dataCheckoutRequestList = view!!.generateNewCheckoutRequest(shipmentCartItemModelList, true)
     }
 
     fun setPurchaseProtection(isPurchaseProtectionPage: Boolean) {
@@ -1432,97 +1433,175 @@ class ShipmentPresenter @Inject constructor(
 
     fun generateCheckoutAnalyticsDataLayer(
         checkoutRequest: CheckoutRequest?,
-        step: String?,
+        step: String,
         pageSource: String
     ): Map<String, Any>? {
-        if (checkoutRequest != null) {
-            val checkoutMapData: MutableMap<String, Any> = HashMap()
-            val enhancedECommerceActionField = EnhancedECommerceActionField()
-            enhancedECommerceActionField.setStep(step!!)
-            var option = ""
-            if (step.equals(EnhancedECommerceActionField.STEP_2, ignoreCase = true)) {
-                option = EnhancedECommerceActionField.STEP_2_OPTION_CHECKOUT_PAGE_LOADED
-            } else if (step.equals(EnhancedECommerceActionField.STEP_3, ignoreCase = true)) {
-                option = EnhancedECommerceActionField.STEP_3_OPTION_DATA_VALIDATION
-            } else if (step.equals(EnhancedECommerceActionField.STEP_4, ignoreCase = true)) {
-                option = EnhancedECommerceActionField.STEP_4_OPTION_CLICK_PAYMENT_OPTION_BUTTON
-            }
-            enhancedECommerceActionField.setOption(option)
-            val enhancedECommerceCheckout = EnhancedECommerceCheckout()
-            for (dataCheckoutRequest in checkoutRequest.data!!) {
-                for (shopProductCheckoutRequest in dataCheckoutRequest.shopProducts!!) {
-                    for (productDataCheckoutRequest in shopProductCheckoutRequest.productData!!) {
-                        val enhancedECommerceProductCartMapData =
-                            EnhancedECommerceProductCartMapData()
-                        enhancedECommerceProductCartMapData.setProductName(if (productDataCheckoutRequest.productName != null) productDataCheckoutRequest.productName else "")
-                        enhancedECommerceProductCartMapData.setProductID(
-                            productDataCheckoutRequest.productId.toString()
-                        )
-                        enhancedECommerceProductCartMapData.setPrice(if (productDataCheckoutRequest.productPrice != null) productDataCheckoutRequest.productPrice else "")
-                        enhancedECommerceProductCartMapData.setBrand("")
-                        enhancedECommerceProductCartMapData.setCategory(if (productDataCheckoutRequest.productCategory != null) productDataCheckoutRequest.productCategory else "")
-                        enhancedECommerceProductCartMapData.setVariant("")
-                        enhancedECommerceProductCartMapData.setQty(
-                            productDataCheckoutRequest.productQuantity
-                        )
-                        enhancedECommerceProductCartMapData.setShopId(if (productDataCheckoutRequest.productShopId != null) productDataCheckoutRequest.productShopId else "")
-                        enhancedECommerceProductCartMapData.setShopName(if (productDataCheckoutRequest.productShopName != null) productDataCheckoutRequest.productShopName else "")
-                        enhancedECommerceProductCartMapData.setShopType(
-                            productDataCheckoutRequest.productShopType
-                        )
-                        enhancedECommerceProductCartMapData.setCategoryId(if (productDataCheckoutRequest.productCategoryId != null) productDataCheckoutRequest.productCategoryId else "")
-                        enhancedECommerceProductCartMapData.setDimension38(if (productDataCheckoutRequest.productAttribution != null) productDataCheckoutRequest.productAttribution else "")
-                        enhancedECommerceProductCartMapData.setDimension40(if (productDataCheckoutRequest.productListName != null) productDataCheckoutRequest.productListName else "")
-                        enhancedECommerceProductCartMapData.setDimension45(
-                            productDataCheckoutRequest.cartId.toString()
-                        )
-                        enhancedECommerceProductCartMapData.setDimension53(
-                            productDataCheckoutRequest.isDiscountedPrice
-                        )
-                        enhancedECommerceProductCartMapData.setDimension54(
-                            getFulfillmentStatus(shopProductCheckoutRequest.shopId)
-                        )
-                        enhancedECommerceProductCartMapData.setDimension12(if (shopProductCheckoutRequest.shippingInfo!!.analyticsDataShippingCourierPrice != null) shopProductCheckoutRequest.shippingInfo!!.analyticsDataShippingCourierPrice else "")
-                        enhancedECommerceProductCartMapData.setWarehouseId(if (productDataCheckoutRequest.warehouseId != null) productDataCheckoutRequest.warehouseId else "")
-                        enhancedECommerceProductCartMapData.setProductWeight(if (productDataCheckoutRequest.productWeight != null) productDataCheckoutRequest.productWeight else "")
-                        enhancedECommerceProductCartMapData.setPromoCode(if (productDataCheckoutRequest.promoCode != null) productDataCheckoutRequest.promoCode else "")
-                        enhancedECommerceProductCartMapData.setPromoDetails(if (productDataCheckoutRequest.promoDetails != null) productDataCheckoutRequest.promoDetails else "")
-                        enhancedECommerceProductCartMapData.setCartId(
-                            productDataCheckoutRequest.cartId.toString()
-                        )
-                        enhancedECommerceProductCartMapData.setBuyerAddressId(if (productDataCheckoutRequest.buyerAddressId != null) productDataCheckoutRequest.buyerAddressId else "")
-                        enhancedECommerceProductCartMapData.setShippingDuration(if (productDataCheckoutRequest.shippingDuration != null) productDataCheckoutRequest.shippingDuration else "")
-                        enhancedECommerceProductCartMapData.setCourier(if (productDataCheckoutRequest.courier != null) productDataCheckoutRequest.courier else "")
-                        enhancedECommerceProductCartMapData.setShippingPrice(if (productDataCheckoutRequest.shippingPrice != null) productDataCheckoutRequest.shippingPrice else "")
-                        enhancedECommerceProductCartMapData.setCodFlag(if (productDataCheckoutRequest.codFlag != null) productDataCheckoutRequest.codFlag else "")
-                        enhancedECommerceProductCartMapData.setTokopediaCornerFlag(if (productDataCheckoutRequest.tokopediaCornerFlag != null) productDataCheckoutRequest.tokopediaCornerFlag else "")
-                        enhancedECommerceProductCartMapData.setIsFulfillment(if (productDataCheckoutRequest.isFulfillment != null) productDataCheckoutRequest.isFulfillment else "")
-                        enhancedECommerceProductCartMapData.setDimension83(
-                            productDataCheckoutRequest.freeShippingName
-                        )
-                        enhancedECommerceProductCartMapData.setCampaignId(
-                            productDataCheckoutRequest.campaignId.toString()
-                        )
-                        enhancedECommerceProductCartMapData.setPageSource(pageSource)
-                        enhancedECommerceProductCartMapData.setDimension117(
-                            productDataCheckoutRequest.bundleType
-                        )
-                        enhancedECommerceProductCartMapData.setDimension118(
-                            productDataCheckoutRequest.bundleId
-                        )
-                        enhancedECommerceCheckout.addProduct(
-                            enhancedECommerceProductCartMapData.getProduct()
-                        )
+//        if (checkoutRequest != null) {
+        val checkoutMapData: MutableMap<String, Any> = HashMap()
+        val enhancedECommerceActionField = EnhancedECommerceActionField()
+        enhancedECommerceActionField.setStep(step)
+        var option = ""
+        if (step.equals(EnhancedECommerceActionField.STEP_2, ignoreCase = true)) {
+            option = EnhancedECommerceActionField.STEP_2_OPTION_CHECKOUT_PAGE_LOADED
+        } else if (step.equals(EnhancedECommerceActionField.STEP_3, ignoreCase = true)) {
+            option = EnhancedECommerceActionField.STEP_3_OPTION_DATA_VALIDATION
+        } else if (step.equals(EnhancedECommerceActionField.STEP_4, ignoreCase = true)) {
+            option = EnhancedECommerceActionField.STEP_4_OPTION_CLICK_PAYMENT_OPTION_BUTTON
+        }
+        enhancedECommerceActionField.setOption(option)
+        val enhancedECommerceCheckout = EnhancedECommerceCheckout()
+        for (shipmentCartItemModel in shipmentCartItemModelList) {
+            for (cartItemModel in shipmentCartItemModel.cartItemModels) {
+                val shipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
+                var courierItemData: CourierItemData? = null
+                if (shipmentDetailData != null && (
+                    shipmentDetailData.selectedCourier != null ||
+                        shipmentDetailData.selectedCourierTradeInDropOff != null
+                    )
+                ) {
+                    if (isTradeInByDropOff && shipmentDetailData.selectedCourierTradeInDropOff != null) {
+                        courierItemData = shipmentDetailData.selectedCourierTradeInDropOff
+                    } else if (!isTradeInByDropOff && shipmentDetailData.selectedCourier != null) {
+                        courierItemData = shipmentDetailData.selectedCourier
                     }
                 }
+                val enhancedECommerceProductCartMapData =
+                    EnhancedECommerceProductCartMapData()
+                enhancedECommerceProductCartMapData.setProductName(cartItemModel.analyticsProductCheckoutData.productName)
+                enhancedECommerceProductCartMapData.setProductID(
+                    cartItemModel.productId.toString()
+                )
+                enhancedECommerceProductCartMapData.setPrice(cartItemModel.analyticsProductCheckoutData.productPrice)
+                enhancedECommerceProductCartMapData.setBrand(cartItemModel.analyticsProductCheckoutData.productBrand)
+                enhancedECommerceProductCartMapData.setCategory(cartItemModel.analyticsProductCheckoutData.productCategory)
+                enhancedECommerceProductCartMapData.setVariant(cartItemModel.analyticsProductCheckoutData.productVariant)
+                enhancedECommerceProductCartMapData.setQty(
+                    cartItemModel.analyticsProductCheckoutData.productQuantity
+                )
+                enhancedECommerceProductCartMapData.setShopId(cartItemModel.analyticsProductCheckoutData.productShopId)
+                enhancedECommerceProductCartMapData.setShopName(cartItemModel.analyticsProductCheckoutData.productShopName)
+                enhancedECommerceProductCartMapData.setShopType(
+                    cartItemModel.analyticsProductCheckoutData.productShopType
+                )
+                enhancedECommerceProductCartMapData.setCategoryId(cartItemModel.analyticsProductCheckoutData.productCategoryId)
+                enhancedECommerceProductCartMapData.setDimension38(cartItemModel.analyticsProductCheckoutData.productAttribution)
+                enhancedECommerceProductCartMapData.setDimension40(cartItemModel.analyticsProductCheckoutData.productListName)
+                enhancedECommerceProductCartMapData.setDimension45(
+                    cartItemModel.cartId.toString()
+                )
+                enhancedECommerceProductCartMapData.setDimension53(
+                    cartItemModel.analyticsProductCheckoutData.isDiscountedPrice
+                )
+                enhancedECommerceProductCartMapData.setDimension54(
+                    getFulfillmentStatus(shipmentCartItemModel.shopId)
+                )
+                enhancedECommerceProductCartMapData.setDimension12(courierItemData?.selectedShipper?.shipperPrice?.toString() ?: "")
+                enhancedECommerceProductCartMapData.setWarehouseId(cartItemModel.analyticsProductCheckoutData.warehouseId)
+                enhancedECommerceProductCartMapData.setProductWeight(cartItemModel.analyticsProductCheckoutData.productWeight)
+                enhancedECommerceProductCartMapData.setPromoCode(cartItemModel.analyticsProductCheckoutData.promoCode)
+                enhancedECommerceProductCartMapData.setPromoDetails(cartItemModel.analyticsProductCheckoutData.promoDetails)
+                enhancedECommerceProductCartMapData.setCartId(
+                    cartItemModel.cartId.toString()
+                )
+                enhancedECommerceProductCartMapData.setBuyerAddressId(cartItemModel.analyticsProductCheckoutData.buyerAddressId)
+                enhancedECommerceProductCartMapData.setShippingDuration(courierItemData?.selectedShipper?.serviceId?.toString() ?: "")
+                enhancedECommerceProductCartMapData.setCourier(courierItemData?.selectedShipper?.shipperProductId?.toString() ?: "")
+                enhancedECommerceProductCartMapData.setShippingPrice(courierItemData?.selectedShipper?.shipperPrice?.toString() ?: "")
+                enhancedECommerceProductCartMapData.setCodFlag(cartItemModel.analyticsProductCheckoutData.codFlag)
+                enhancedECommerceProductCartMapData.setTokopediaCornerFlag(cartItemModel.analyticsProductCheckoutData.tokopediaCornerFlag)
+                enhancedECommerceProductCartMapData.setIsFulfillment(cartItemModel.analyticsProductCheckoutData.isFulfillment)
+                enhancedECommerceProductCartMapData.setDimension83(
+                    cartItemModel.freeShippingName
+                )
+                enhancedECommerceProductCartMapData.setCampaignId(
+                    cartItemModel.analyticsProductCheckoutData.campaignId.toString()
+                )
+                enhancedECommerceProductCartMapData.setPageSource(pageSource)
+                enhancedECommerceProductCartMapData.setDimension117(
+                    cartItemModel.bundleType
+                )
+                enhancedECommerceProductCartMapData.setDimension118(
+                    cartItemModel.bundleId
+                )
+                enhancedECommerceCheckout.addProduct(
+                    enhancedECommerceProductCartMapData.getProduct()
+                )
             }
-            enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
-            enhancedECommerceCheckout.setActionField(enhancedECommerceActionField.getActionFieldMap())
-            checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] =
-                enhancedECommerceCheckout.getCheckoutMap()
-            return checkoutMapData
         }
-        return null
+//            for (dataCheckoutRequest in checkoutRequest.data!!) {
+//                for (shopProductCheckoutRequest in dataCheckoutRequest.shopProducts!!) {
+//                    for (productDataCheckoutRequest in shopProductCheckoutRequest.productData!!) {
+//                        val enhancedECommerceProductCartMapData =
+//                            EnhancedECommerceProductCartMapData()
+//                        enhancedECommerceProductCartMapData.setProductName(if (productDataCheckoutRequest.productName != null) productDataCheckoutRequest.productName else "")
+//                        enhancedECommerceProductCartMapData.setProductID(
+//                            productDataCheckoutRequest.productId.toString()
+//                        )
+//                        enhancedECommerceProductCartMapData.setPrice(if (productDataCheckoutRequest.productPrice != null) productDataCheckoutRequest.productPrice else "")
+//                        enhancedECommerceProductCartMapData.setBrand("")
+//                        enhancedECommerceProductCartMapData.setCategory(if (productDataCheckoutRequest.productCategory != null) productDataCheckoutRequest.productCategory else "")
+//                        enhancedECommerceProductCartMapData.setVariant("")
+//                        enhancedECommerceProductCartMapData.setQty(
+//                            productDataCheckoutRequest.productQuantity
+//                        )
+//                        enhancedECommerceProductCartMapData.setShopId(if (productDataCheckoutRequest.productShopId != null) productDataCheckoutRequest.productShopId else "")
+//                        enhancedECommerceProductCartMapData.setShopName(if (productDataCheckoutRequest.productShopName != null) productDataCheckoutRequest.productShopName else "")
+//                        enhancedECommerceProductCartMapData.setShopType(
+//                            productDataCheckoutRequest.productShopType
+//                        )
+//                        enhancedECommerceProductCartMapData.setCategoryId(if (productDataCheckoutRequest.productCategoryId != null) productDataCheckoutRequest.productCategoryId else "")
+//                        enhancedECommerceProductCartMapData.setDimension38(if (productDataCheckoutRequest.productAttribution != null) productDataCheckoutRequest.productAttribution else "")
+//                        enhancedECommerceProductCartMapData.setDimension40(if (productDataCheckoutRequest.productListName != null) productDataCheckoutRequest.productListName else "")
+//                        enhancedECommerceProductCartMapData.setDimension45(
+//                            productDataCheckoutRequest.cartId.toString()
+//                        )
+//                        enhancedECommerceProductCartMapData.setDimension53(
+//                            productDataCheckoutRequest.isDiscountedPrice
+//                        )
+//                        enhancedECommerceProductCartMapData.setDimension54(
+//                            getFulfillmentStatus(shopProductCheckoutRequest.shopId)
+//                        )
+//                        enhancedECommerceProductCartMapData.setDimension12(if (shopProductCheckoutRequest.shippingInfo!!.analyticsDataShippingCourierPrice != null) shopProductCheckoutRequest.shippingInfo!!.analyticsDataShippingCourierPrice else "")
+//                        enhancedECommerceProductCartMapData.setWarehouseId(if (productDataCheckoutRequest.warehouseId != null) productDataCheckoutRequest.warehouseId else "")
+//                        enhancedECommerceProductCartMapData.setProductWeight(if (productDataCheckoutRequest.productWeight != null) productDataCheckoutRequest.productWeight else "")
+//                        enhancedECommerceProductCartMapData.setPromoCode(if (productDataCheckoutRequest.promoCode != null) productDataCheckoutRequest.promoCode else "")
+//                        enhancedECommerceProductCartMapData.setPromoDetails(if (productDataCheckoutRequest.promoDetails != null) productDataCheckoutRequest.promoDetails else "")
+//                        enhancedECommerceProductCartMapData.setCartId(
+//                            productDataCheckoutRequest.cartId.toString()
+//                        )
+//                        enhancedECommerceProductCartMapData.setBuyerAddressId(if (productDataCheckoutRequest.buyerAddressId != null) productDataCheckoutRequest.buyerAddressId else "")
+//                        enhancedECommerceProductCartMapData.setShippingDuration(if (productDataCheckoutRequest.shippingDuration != null) productDataCheckoutRequest.shippingDuration else "")
+//                        enhancedECommerceProductCartMapData.setCourier(if (productDataCheckoutRequest.courier != null) productDataCheckoutRequest.courier else "")
+//                        enhancedECommerceProductCartMapData.setShippingPrice(if (productDataCheckoutRequest.shippingPrice != null) productDataCheckoutRequest.shippingPrice else "")
+//                        enhancedECommerceProductCartMapData.setCodFlag(if (productDataCheckoutRequest.codFlag != null) productDataCheckoutRequest.codFlag else "")
+//                        enhancedECommerceProductCartMapData.setTokopediaCornerFlag(if (productDataCheckoutRequest.tokopediaCornerFlag != null) productDataCheckoutRequest.tokopediaCornerFlag else "")
+//                        enhancedECommerceProductCartMapData.setIsFulfillment(if (productDataCheckoutRequest.isFulfillment != null) productDataCheckoutRequest.isFulfillment else "")
+//                        enhancedECommerceProductCartMapData.setDimension83(
+//                            productDataCheckoutRequest.freeShippingName
+//                        )
+//                        enhancedECommerceProductCartMapData.setCampaignId(
+//                            productDataCheckoutRequest.campaignId.toString()
+//                        )
+//                        enhancedECommerceProductCartMapData.setPageSource(pageSource)
+//                        enhancedECommerceProductCartMapData.setDimension117(
+//                            productDataCheckoutRequest.bundleType
+//                        )
+//                        enhancedECommerceProductCartMapData.setDimension118(
+//                            productDataCheckoutRequest.bundleId
+//                        )
+//                        enhancedECommerceCheckout.addProduct(
+//                            enhancedECommerceProductCartMapData.getProduct()
+//                        )
+//                    }
+//                }
+//            }
+        enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
+        enhancedECommerceCheckout.setActionField(enhancedECommerceActionField.getActionFieldMap())
+        checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] =
+            enhancedECommerceCheckout.getCheckoutMap()
+        return checkoutMapData
+//        }
+//        return null
     }
 
     private fun getFulfillmentStatus(shopId: Long): Boolean {
