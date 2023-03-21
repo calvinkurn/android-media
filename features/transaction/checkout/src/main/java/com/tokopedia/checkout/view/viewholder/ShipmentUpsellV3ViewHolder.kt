@@ -9,6 +9,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class ShipmentUpsellV3ViewHolder(
     itemView: View
@@ -27,6 +28,11 @@ class ShipmentUpsellV3ViewHolder(
         itemView.findViewById(R.id.checkout_upsell_image)
     private val checkoutUpsellLogoContainer: CardUnify2 =
         itemView.findViewById(R.id.checkout_upsell_logo_container)
+    private val checkoutUpsellTitle: Typography =
+        itemView.findViewById(R.id.checkout_upsell_title)
+    private val checkoutUpsellDescription: Typography =
+        itemView.findViewById(R.id.checkout_upsell_description)
+
 
     fun bind(data: ShipmentNewUpsellModel) {
         checkoutUpsellContainer.setBackgroundColor(

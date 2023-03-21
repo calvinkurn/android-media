@@ -24,9 +24,8 @@
                 android:layout_width="44dp"
                 android:layout_height="44dp"
                 android:background="@color/Unify_Background"
-                android:translationX="-22dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/checkout_upsell_image"
+                app:layout_constraintStart_toEndOf="@+id/space"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -38,15 +37,24 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/checkout_module_upsell_v3_background" />
 
+            <androidx.legacy.widget.Space
+                android:id="@+id/space"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/checkout_upsell_image"
+                app:layout_constraintStart_toStartOf="@id/checkout_upsell_image"
+                android:layout_width="1dp"
+                android:layout_height="0dp"/>
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/checkout_upsell_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:textColor="@color/Unify_NN950"
-                android:translationX="-22dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/checkout_upsell_description"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/checkout_upsell_icon"
                 app:layout_constraintStart_toEndOf="@+id/checkout_upsell_logo_container"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed"
@@ -59,7 +67,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/Unify_NN600"
-                android:translationX="-22dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/checkout_upsell_title"
                 app:layout_constraintStart_toStartOf="@+id/checkout_upsell_title"
@@ -69,11 +76,21 @@
                 app:typographyWeight="bold"
                 tools:text="Rp37.500/bulan" />
 
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/checkout_upsell_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="16dp"
+                app:icon_name="CHEVRON_RIGHT"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/checkout_upsell_unselected_group"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:constraint_referenced_ids="checkout_upsell_logo_container, checkout_upsell_title, checkout_upsell_description"/>
+                app:constraint_referenced_ids="checkout_upsell_logo_container, checkout_upsell_title, checkout_upsell_description" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.unifycomponents.CardUnify2>
