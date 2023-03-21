@@ -19,7 +19,6 @@ class ImmersiveFeedOnboarding private constructor(
 
     private val coachMark = CoachMark2(context)
 
-    @OptIn(ExperimentalStdlibApi::class)
     suspend fun show() {
         val coachMarkItems = buildList {
             if (createContentView != null) {
@@ -31,7 +30,10 @@ class ImmersiveFeedOnboarding private constructor(
             }
         }
 
-        if (coachMarkItems.isEmpty()) return
+        if (coachMarkItems.isEmpty()) {
+            listener.onFinished()
+            return
+        }
 
         if (coachMarkItems.size > 1) {
             coachMark.setStepListener(object : CoachMark2.OnStepListener {
@@ -39,14 +41,14 @@ class ImmersiveFeedOnboarding private constructor(
 
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     if (mPrevIndex >= currentIndex) {
-                        coachMark.onDismissListener = listener::onDismissed
+                        coachMark.onDismissListener = listener::onFinished
                     } else {
                         val prevItem = coachMarkItems[currentIndex - 1]
                         triggerListenerForItem(prevItem)
 
                         coachMark.onDismissListener = {
                             triggerListenerForItem(coachMarkItem)
-                            listener.onDismissed()
+                            listener.onFinished()
                         }
                     }
 
@@ -57,7 +59,7 @@ class ImmersiveFeedOnboarding private constructor(
 
         coachMark.onDismissListener = {
             triggerListenerForItem(coachMarkItems.first())
-            listener.onDismissed()
+            listener.onFinished()
         }
 
         coachMarkItems.forEach {
@@ -69,7 +71,7 @@ class ImmersiveFeedOnboarding private constructor(
     }
 
     fun dismiss() {
-        coachMark.onDismissListener = listener::onDismissed
+        coachMark.onDismissListener = listener::onFinished
         coachMark.dismissCoachMark()
     }
 
@@ -95,7 +97,7 @@ class ImmersiveFeedOnboarding private constructor(
 
             override fun onCompleteProfileEntryPointOnboarding() {}
 
-            override fun onDismissed() {}
+            override fun onFinished() {}
         }
 
         fun setCreateContentView(view: View?) = builder {
@@ -147,6 +149,6 @@ class ImmersiveFeedOnboarding private constructor(
         fun onStarted()
         fun onCompleteCreateContentOnboarding()
         fun onCompleteProfileEntryPointOnboarding()
-        fun onDismissed()
+        fun onFinished()
     }
 }

@@ -9,7 +9,15 @@ import kotlinx.android.parcel.Parcelize
 data class FeedTabsModel(
     val data: List<FeedDataModel>,
     val meta: MetaModel
-)
+) {
+    companion object {
+        val Empty: FeedTabsModel
+            get() = FeedTabsModel(
+                data = emptyList(),
+                meta = MetaModel.Empty,
+            )
+    }
+}
 
 @Parcelize
 data class FeedDataModel(
@@ -28,4 +36,17 @@ data class MetaModel(
     val isCreationActive: Boolean,
     val showLive: Boolean,
     val liveApplink: String
-)
+) {
+    companion object {
+        val Empty: MetaModel
+            get() = MetaModel(
+                selectedIndex = -1,
+                profileApplink = "",
+                profilePhotoUrl = "",
+                showMyProfile = false,
+                isCreationActive = false,
+                showLive = false,
+                liveApplink = "",
+            )
+    }
+}

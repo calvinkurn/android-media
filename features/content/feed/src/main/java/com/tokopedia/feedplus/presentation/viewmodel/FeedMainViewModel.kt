@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,7 @@ import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
+import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -24,6 +26,12 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
@@ -45,9 +53,8 @@ class FeedMainViewModel @Inject constructor(
     val isInClearView: LiveData<Boolean>
         get() = _isInClearView
 
-    private val _feedTabs = MutableLiveData<Result<FeedTabsModel>>()
-    val feedTabs: LiveData<Result<FeedTabsModel>>
-        get() = _feedTabs
+    private val _feedTabs = MutableStateFlow<Result<FeedTabsModel>?>(null)
+    val feedTabs get() = _feedTabs.asStateFlow()
 
     private val _reportResponse = MutableLiveData<Result<FeedComplaintSubmitReportResponse>>()
     val reportResponse: LiveData<Result<FeedComplaintSubmitReportResponse>>
@@ -58,6 +65,8 @@ class FeedMainViewModel @Inject constructor(
     val feedCreateContentBottomSheetData: LiveData<Result<List<ContentCreationTypeItem>>>
         get() = _feedCreateContentBottomSheetData
 
+    private val _swipeOnboardingState = MutableStateFlow(SwipeOnboardingStateModel.Empty)
+
     val uiEvent: Flow<FeedMainEvent?>
         get() = uiEventManager.event
 
@@ -67,6 +76,20 @@ class FeedMainViewModel @Inject constructor(
     private val _isLoggedIn = AtomicBoolean(userSession.isLoggedIn)
     val isLoggedIn: Boolean
         get() = _isLoggedIn.get()
+
+    init {
+        viewModelScope.launch {
+            _swipeOnboardingState
+                .map { it.isEligibleToShow }
+                .distinctUntilChanged()
+                .collectLatest { isEligible ->
+                    if (!isEligible) return@collectLatest
+                    uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding)
+
+                    _swipeOnboardingState.update { it.copy(hasShown = true) }
+                }
+        }
+    }
 
     fun consumeEvent(event: FeedMainEvent) {
         viewModelScope.launch {
@@ -81,8 +104,21 @@ class FeedMainViewModel @Inject constructor(
         }
     }
 
+    fun onPostDataLoaded(isLoaded: Boolean) {
+        _swipeOnboardingState.update {
+            it.copy(onDataLoaded = isLoaded)
+        }
+    }
+
+    fun setReadyToShowOnboarding() {
+        _swipeOnboardingState.update {
+            it.copy(isReadyToShow = true)
+        }
+    }
+
     fun fetchFeedTabs() {
         viewModelScope.launchCatchError(block = {
+            Log.d("Onboarding Shown", "Calling Gql")
             val response = withContext(dispatchers.io) {
                 feedXHeaderUseCase.setRequestParams(
                     FeedXHeaderUseCase.createParam()

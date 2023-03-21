@@ -101,6 +101,7 @@ dari Feed.</string>
     <string name="feed_for_you_label">Untuk Kamu</string>
     <string name="feed_following_label">Following</string>
     <string name="feed_live_label">LIVE</string>
+    <string name="feed_check_next_content">Cek konten berikutnya</string>
 
     <!-- Transcoding Livestream to VOD -->
     <string name="feed_transcoding_livestream_to_vod_message">Sedang menyimpan video. Kami akan infokan jika berhasil disimpan.</string>

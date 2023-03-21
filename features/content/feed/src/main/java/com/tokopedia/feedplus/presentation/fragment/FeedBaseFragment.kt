@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.presentation.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,9 +46,14 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -138,6 +144,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     override fun onDestroyView() {
+        binding.viewVerticalSwipeOnboarding.hideAnimated()
         _binding = null
         adapter = null
         super.onDestroyView()
@@ -186,20 +193,37 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         }
     }
 
+    @OptIn(ExperimentalTime::class)
+    fun showSwipeOnboarding() {
+        lifecycleScope.launchWhenResumed {
+            delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
+            binding.viewVerticalSwipeOnboarding.showAnimated()
+        }
+    }
+
     private fun setupView() {
         if (isJustLoggedIn) showJustLoggedInToaster()
         isJustLoggedIn = false
+
+        binding.viewVerticalSwipeOnboarding.setText(
+            getString(R.string.feed_check_next_content)
+        )
     }
 
     private fun observeFeedTabData() {
-        feedMainViewModel.feedTabs.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> initView(it.data)
-                is Fail -> Toast.makeText(
-                    requireContext(),
-                    it.throwable.localizedMessage,
-                    Toast.LENGTH_SHORT
-                ).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                feedMainViewModel.feedTabs.collectLatest {
+                    when (it) {
+                        is Success -> initView(it.data)
+                        is Fail -> Toast.makeText(
+                            requireContext(),
+                            it.throwable.localizedMessage,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        else -> {}
+                    }
+                }
             }
         }
     }
@@ -225,8 +249,11 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     if (event == null) return@collect
 
                     when (event) {
-                        is FeedMainEvent.HasJustLoggedIn -> {
+                        FeedMainEvent.HasJustLoggedIn -> {
                             showJustLoggedInToaster()
+                        }
+                        FeedMainEvent.ShowSwipeOnboarding -> {
+                            showSwipeOnboarding()
                         }
                     }
 
@@ -301,6 +328,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     override fun onResume() {
         super.onResume()
         feedMainViewModel.updateUserInfo()
+        Log.d("Onboarding Shown", "On Resume, Fragment ${hashCode()}")
         feedMainViewModel.fetchFeedTabs()
     }
 
@@ -339,6 +367,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
         }
 
+        Log.d("Onboarding Shown", "Fragment ${this.hashCode()}, Data: $data")
         mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
             .setCreateContentView(
                 if (data.meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
@@ -367,13 +396,15 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                     feedMainViewModel.setHasShownProfileEntryPoint()
                 }
 
-                override fun onDismissed() {
+                override fun onFinished() {
                     binding.vOnboardingPreventInteraction.hide()
+                    feedMainViewModel.setReadyToShowOnboarding()
                 }
             })
             .build()
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            mOnboarding?.dismiss()
             mOnboarding?.show()
         }
 
@@ -530,5 +561,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     companion object {
         const val TAB_FIRST_INDEX = 0
         const val TAB_SECOND_INDEX = 1
+
+        private const val COACHMARK_START_DELAY_IN_SEC = 1
     }
 }

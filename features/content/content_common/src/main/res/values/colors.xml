@@ -3,4 +3,7 @@
     <color name="content_dms_white_disable" tools:ignore="UnusedResources">#BFC9D9</color>
     <color name="content_dms_soft_gray">#AAB4C8</color>
     <color name="content_dms_soft_dark">#212121</color>
+
+    <!--Vertical Swipe-->
+    <color name="play_dms_vertical_swipe_overlay">#99212121</color>
 </resources>
