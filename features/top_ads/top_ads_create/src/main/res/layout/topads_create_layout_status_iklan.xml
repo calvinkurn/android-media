@@ -17,6 +17,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/status_iklan_loader"
+        android:layout_width="100dp"
+        android:layout_height="14dp"
+        app:loader_type="rect"
+        app:layout_constraintTop_toBottomOf="@id/ad_status_heading"
+        app:layout_constraintStart_toStartOf="@id/ad_status_heading"
+        android:visibility="visible"/>
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ad_status_dot"
         android:layout_width="8dp"
@@ -37,7 +47,7 @@
         app:layout_constraintStart_toEndOf="@id/ad_status_dot"
         app:layout_constraintTop_toBottomOf="@id/ad_status_heading"
         app:typographyType="display_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ad_status_dropdown"
@@ -58,7 +68,8 @@
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/manual_ad_status"
-        app:typographyType="small" />
+        app:typographyType="small"
+        android:visibility="invisible"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ad_status_info_btn"
@@ -68,6 +79,14 @@
         app:layout_constraintStart_toEndOf="@id/ad_status_desc"
         app:layout_constraintBottom_toBottomOf="@id/ad_status_desc"
         app:srcCompat="@drawable/ic_info_topads"
-        android:layout_marginStart="4dp"/>
+        android:layout_marginStart="4dp"
+        android:visibility="invisible"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/status_iklan_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="ad_status_dot,manual_ad_status,ad_status_dropdown"
+        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

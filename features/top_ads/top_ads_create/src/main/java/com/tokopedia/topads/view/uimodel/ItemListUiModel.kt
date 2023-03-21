@@ -7,7 +7,7 @@ import com.tokopedia.topads.view.adapter.ItemListTypeFactory
 data class ItemListUiModel(
     val title: String = "",
     val content: String = "",
-    var isEnabled: Boolean = true,
+//    var isEnabled: Boolean = false,
     var isSelected: Boolean = false
 )
     : Visitable<ItemListTypeFactory> {

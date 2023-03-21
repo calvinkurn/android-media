@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant.STATUS_IKLAN_ACTION_ACTIVATE
 import com.tokopedia.topads.common.data.model.AdGroupsParams
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.Deposit
@@ -24,8 +23,6 @@ import com.tokopedia.topads.common.domain.usecase.TopAdsGetShopInfoV1UseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetAutoAdsUseCase
 import com.tokopedia.topads.common.domain.usecase.GetTopadsDashboardGroups
-import com.tokopedia.topads.create.R
-import com.tokopedia.topads.view.uimodel.ItemListUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -71,13 +68,14 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     private val _isSingleAds: MutableLiveData<Boolean> = MutableLiveData()
     val isSingleAds: LiveData<Boolean> = _isSingleAds
 
+    private val _goalId: MutableLiveData<Int> = MutableLiveData(1)
+    val goalId: LiveData<Int> = _goalId
+
     private val _topAdsGetShopInfo: MutableLiveData<TopAdsGetShopInfo> = MutableLiveData()
     val topAdsGetShopInfo: LiveData<TopAdsGetShopInfo> = _topAdsGetShopInfo
 
     private val _topAdsGetGroupInfo: MutableLiveData<TopAdsGroupsResponse> = MutableLiveData()
     val topAdsGetGroupInfo: LiveData<TopAdsGroupsResponse> = _topAdsGetGroupInfo
-
-    private var statusIklanList : MutableList<ItemListUiModel> = mutableListOf()
 
     fun getTopAdsDeposit() {
         topAdsGetDepositUseCase.execute({
@@ -126,7 +124,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         resources: Resources,
         startDate: String,
         endDate: String,
-        goalId: Int = 0
+        goalId: Int
     ) {
         topAdsGetProductStatisticsUseCase.setGraphqlQuery(
             GraphqlHelper.loadRawString(
@@ -142,6 +140,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         )
         topAdsGetProductStatisticsUseCase.executeQuerySafeMode({
             _productStatistics.value = Success(it)
+            _goalId.value = goalId
         }, {
             _productStatistics.value = Fail(it)
             it.printStackTrace()
@@ -152,7 +151,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         action: String, adIds: List<String>, selectedFilter: String?
     ) {
         launchCatchError(block = {
-            val params = topAdsProductActionUseCase.setParams(STATUS_IKLAN_ACTION_ACTIVATE, adIds, selectedFilter)
+            val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
             topAdsProductActionUseCase.execute(params)
             getPromoInfo()
         }, onError = {
@@ -183,10 +182,6 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
 
     fun checkIsSingleAds() {
         _isSingleAds.value = _adId.value != "0" && (_topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == null || _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == "0")
-    }
-
-    fun getStatusIklanList(): MutableList<ItemListUiModel>{
-        return statusIklanList
     }
 
     fun getAutoAdsInfo(

@@ -221,6 +221,14 @@
     <string name="topads_ads_performance_not_rated">Belum Dinilai</string>
     <string name="topads_ads_performance_count">%sx teratas dari %s total tampil</string>
     <string name="topads_ads_performance_status_info_title">Kenapa iklanmu tidak tampil?</string>
+    <string name="topads_ads_performance_choose_time_range">Pilih rentang waktu</string>
+    <string name="topads_ads_performance_ad_placement">Penempatan Iklan</string>
+    <string name="topads_ads_performance_all_placements_filter_title">Semua Penempatan</string>
+    <string name="topads_ads_performance_all_placements_filter_desc">Iklan produk yang tampil di halaman pencarian dan rekomendasi.</string>
+    <string name="topads_ads_performance_in_search_filter_title">Di Pencarian</string>
+    <string name="topads_ads_performance_in_search_filter_desc">Iklan produk yang tampil di halaman pencarian</string>
+    <string name="topads_ads_performance_in_recommendation_filter_title">Di Rekomendasi</string>
+    <string name="topads_ads_performance_in_recommendation_filter_desc">Iklan produk yang tampil di bagian rekomendasi</string>
     <string name="topads_ads_performance_status_info_description"><![CDATA[
         <ul>
             <li>&nbsp;&nbsp;Kredit TopAds tidak mencukupi</li>

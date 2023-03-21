@@ -54,32 +54,25 @@ class ListBottomSheet(private val title: String, private val itemList: List<Item
         setTitle(title)
         setChild(binding.root)
     }
-    @SuppressLint("NotifyDataSetChanged")
-    private fun updateItemList(title: String){
-        itemList.forEach{it.isSelected = it.title == title}
-        adapterItemList.notifyDataSetChanged()
-    }
 
     companion object {
 
-        fun show(fm: FragmentManager, title:String, list: MutableList<ItemListUiModel>?): ListBottomSheet {
-            val bottomSheet = ListBottomSheet(title, list ?: mutableListOf())
+        fun show(fm: FragmentManager, title:String, list: List<ItemListUiModel>): ListBottomSheet {
+            val bottomSheet = ListBottomSheet(title, list)
             bottomSheet.show(fm, "")
             return bottomSheet
         }
     }
 
     override fun onClickItemListener(title: String) {
-        updateItemList(title)
         when(title){
-            getString(R.string.ads_active) -> {
-
-            }
-            getString(R.string.topads_non_active) -> {
-
-            }
+            getString(R.string.ads_active) -> (activity as SeePerformanceTopadsActivity).updateStatusIklan("2")
+            getString(R.string.topads_non_active) -> (activity as SeePerformanceTopadsActivity).updateStatusIklan("3")
+            getString(R.string.topads_ads_performance_all_placements_filter_title) -> (activity as SeePerformanceTopadsActivity).getProductStatistics(1)
+            getString(R.string.topads_ads_performance_in_search_filter_title) -> (activity as SeePerformanceTopadsActivity).getProductStatistics(2)
+            getString(R.string.topads_ads_performance_in_recommendation_filter_title) -> (activity as SeePerformanceTopadsActivity).getProductStatistics(3)
         }
-//        this.dismiss()
+        this.dismiss()
 //        (activity as SeePerformanceTopadsActivity).updateStatusIklan()
 //        (activity as SeePerformanceTopadsActivity).openCalendar()
     }

@@ -70,7 +70,7 @@
                 android:layout_marginStart="8dp"
                 app:chipImageSrc="@drawable/ic_speaker_black"
                 app:chipSize="medium"
-                app:chipText="Semua Penempatan"
+                tools:chipText="Semua Penempatan"
                 app:layout_constraintStart_toEndOf="@id/date_filter"
                 app:layout_constraintTop_toTopOf="parent" />
 
