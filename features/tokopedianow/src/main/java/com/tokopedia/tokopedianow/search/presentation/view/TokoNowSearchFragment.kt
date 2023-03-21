@@ -476,6 +476,10 @@ class TokoNowSearchFragment :
         RouteManager.route(context, getBroadMatchSeeAllApplink(appLink))
     }
 
+    override fun onBroadMatchAddToCartBlocked() {
+        showToasterWhenAddToCartBlocked()
+    }
+
     private fun getBroadMatchSeeAllApplink(appLink: String) =
         if (appLink.startsWith(ApplinkConst.TokopediaNow.SEARCH))
             modifyApplinkToSearchResult(appLink)

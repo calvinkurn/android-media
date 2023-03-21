@@ -4,11 +4,16 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.GetFeedbackFieldModel
 
 data class SearchModel(
+        @SerializedName("GetTargetedTicker")
+        @Expose
+        val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse(),
+
         @SerializedName("ace_search_product_v4")
         @Expose
         val searchProduct: SearchProduct = SearchProduct(),

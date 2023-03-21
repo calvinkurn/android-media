@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.common.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopedianow.common.domain.query.GetTargetedTickerQuery
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.home.domain.request.GetTargetedTickerRequest
@@ -35,6 +36,8 @@ class GetTargetedTickerUseCase @Inject constructor(
                 )
             )
         )
+
+        fun getTargetedTickerResponse(graphqlResponse: GraphqlResponse): GetTargetedTickerResponse = graphqlResponse.getData(GetTargetedTickerResponse::class.java)
     }
 
     init {

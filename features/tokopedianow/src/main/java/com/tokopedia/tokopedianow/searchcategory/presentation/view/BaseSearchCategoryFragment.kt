@@ -1135,7 +1135,7 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
 
-    private fun showToasterWhenAddToCartBlocked() {
+    protected fun showToasterWhenAddToCartBlocked() {
         showToaster(
             message = getString(R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop),
             toasterType = Toaster.TYPE_ERROR

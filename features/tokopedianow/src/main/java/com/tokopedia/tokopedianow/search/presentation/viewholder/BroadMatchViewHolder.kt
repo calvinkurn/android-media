@@ -126,7 +126,7 @@ class BroadMatchViewHolder(
         )
     }
 
-    override fun onProductCardAddToCartBlocked() {}
+    override fun onProductCardAddToCartBlocked() = listener.onBroadMatchAddToCartBlocked()
 
     override fun onSeeAllClicked(headerName: String, appLink: String) {
         listener.onBroadMatchSeeAllClicked(

@@ -12,7 +12,8 @@ import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductMo
 object SearchBroadMatchMapper {
     fun createBroadMatchDataView(
         otherRelated: AceSearchProductModel.OtherRelated,
-        cartService: CartService
+        cartService: CartService,
+        hasBlockedAddToCart: Boolean
     ) = BroadMatchDataView(
             seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
                   appLink = otherRelated.applink
@@ -44,6 +45,7 @@ object SearchBroadMatchMapper {
                             availableStock = otherRelatedProduct.stock,
                             orderQuantity = cartService.getProductQuantity(otherRelatedProduct.id),
                             needToShowQuantityEditor = true,
+                            hasBlockedAddToCart = hasBlockedAddToCart,
                             usePreDraw = true
                         ),
                         alternativeKeyword = otherRelated.keyword,

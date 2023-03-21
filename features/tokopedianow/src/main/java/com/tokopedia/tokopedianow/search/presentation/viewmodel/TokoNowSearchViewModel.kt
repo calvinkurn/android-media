@@ -168,6 +168,7 @@ class TokoNowSearchViewModel @Inject constructor (
                 categoryFilterDataValue = searchModel.categoryFilter,
                 quickFilterDataValue = searchModel.quickFilter,
                 bannerChannel = searchModel.bannerChannel,
+                targetedTicker = searchModel.targetedTicker
         )
 
         val contentDataView = ContentDataView(
@@ -197,7 +198,8 @@ class TokoNowSearchViewModel @Inject constructor (
         )
         broadMatchVisitableList.addBroadMatchDataView(
             related = related,
-            cartService = cartService
+            cartService = cartService,
+            hasBlockedAddToCart = needToBlockAtc
         )
 
         return broadMatchVisitableList
