@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemShopBinding
+import com.tokopedia.cart.databinding.ItemGroupBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -31,8 +31,8 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.math.min
 
-class CartShopViewHolder(
-    private val binding: ItemShopBinding,
+class CartGroupViewHolder(
+    private val binding: ItemGroupBinding,
     private val actionListener: ActionListener,
     private val compositeSubscription: CompositeSubscription,
     private var plusCoachmark: CoachMark2?
@@ -46,26 +46,26 @@ class CartShopViewHolder(
         PlusCoachmarkPrefs(itemView.context)
     }
 
-    fun bindData(cartShopHolderData: CartShopHolderData) {
-        renderShopName(cartShopHolderData)
-        renderShopBadge(cartShopHolderData)
-        renderIconPin(cartShopHolderData)
-        renderShopEnabler(cartShopHolderData)
-        renderCartItems(cartShopHolderData)
-        renderCheckBox(cartShopHolderData)
-        renderFulfillment(cartShopHolderData)
-        renderPreOrder(cartShopHolderData)
-        renderIncidentLabel(cartShopHolderData)
-        renderFreeShipping(cartShopHolderData)
-        renderEstimatedTimeArrival(cartShopHolderData)
-        renderMaximumWeight(cartShopHolderData)
-        renderAddOnInfo(cartShopHolderData)
+    fun bindData(cartGroupHolderData: CartGroupHolderData) {
+        renderGroupName(cartGroupHolderData)
+        renderGroupBadge(cartGroupHolderData)
+        renderIconPin(cartGroupHolderData)
+        renderShopEnabler(cartGroupHolderData)
+        renderCartItems(cartGroupHolderData)
+        renderCheckBox(cartGroupHolderData)
+        renderFulfillment(cartGroupHolderData)
+        renderPreOrder(cartGroupHolderData)
+        renderIncidentLabel(cartGroupHolderData)
+        renderFreeShipping(cartGroupHolderData)
+        renderEstimatedTimeArrival(cartGroupHolderData)
+        renderMaximumWeight(cartGroupHolderData)
+        renderAddOnInfo(cartGroupHolderData)
     }
 
-    private fun renderIconPin(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.isShowPin) {
+    private fun renderIconPin(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.isShowPin) {
             binding.iconPin.show()
-            cartShopHolderData.pinCoachmarkMessage.let {
+            cartGroupHolderData.pinCoachmarkMessage.let {
                 if (it.isNotBlank()) {
                     showIconPinOnboarding(it)
                 }
@@ -95,50 +95,51 @@ class CartShopViewHolder(
         }
     }
 
-    private fun renderShopEnabler(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.enablerLabel.isNotBlank()) {
-            binding.labelEpharmacy.text = cartShopHolderData.enablerLabel
+    private fun renderShopEnabler(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.enablerLabel.isNotBlank()) {
+            binding.labelEpharmacy.text = cartGroupHolderData.enablerLabel
             binding.labelEpharmacy.visible()
         } else {
             binding.labelEpharmacy.gone()
         }
     }
 
-    private fun renderCartItems(cartShopHolderData: CartShopHolderData) {
-        if (!cartShopHolderData.isError && cartShopHolderData.isCollapsed) {
-            renderCollapsedCartItems(cartShopHolderData)
+    private fun renderCartItems(cartGroupHolderData: CartGroupHolderData) {
+        if (!cartGroupHolderData.isError && cartGroupHolderData.isCollapsed) {
+            renderCollapsedCartItems(cartGroupHolderData)
             binding.rvCartItem.visible()
         } else {
             binding.rvCartItem.gone()
         }
     }
 
-    private fun renderShopName(cartShopHolderData: CartShopHolderData) {
-        val shopName = cartShopHolderData.shopName
+    private fun renderGroupName(cartGroupHolderData: CartGroupHolderData) {
+        val shopName = cartGroupHolderData.groupName
         binding.tvShopName.text = Utils.getHtmlFormat(shopName)
         binding.tvShopName.setOnClickListener {
             actionListener.onCartShopNameClicked(
-                cartShopHolderData.shopId,
-                cartShopHolderData.shopName,
-                cartShopHolderData.isTokoNow
+                cartGroupHolderData.shopId,
+                cartGroupHolderData.groupName,
+                cartGroupHolderData.isTokoNow
             )
         }
     }
 
-    private fun renderShopBadge(cartShopHolderData: CartShopHolderData) {
-        val shopTypeInfoData = cartShopHolderData.shopTypeInfo
-        if (shopTypeInfoData.shopBadge.isNotBlank()) {
-            ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, shopTypeInfoData.shopBadge)
-            binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopTypeInfoData.title.toLowerCase(Locale("id")))
+    private fun renderGroupBadge(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.groupBadge.isNotBlank()) {
+            ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, cartGroupHolderData.groupBadge)
+            val contentDescription = if (cartGroupHolderData.isOWOC()) cartGroupHolderData.groupName else cartGroupHolderData.shopTypeInfo.title
+            binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, contentDescription)
             binding.imageShopBadge.show()
-        } else {
+        }
+        else {
             binding.imageShopBadge.gone()
         }
     }
 
-    private fun renderCollapsedCartItems(cartShopHolderData: CartShopHolderData) {
+    private fun renderCollapsedCartItems(cartGroupHolderData: CartGroupHolderData) {
         // remove item with the same bundleGroupId or productId value
-        val cartItemDataList = cartShopHolderData.productUiModelList.distinctBy {
+        val cartItemDataList = cartGroupHolderData.productUiModelList.distinctBy {
             if (it.isBundlingItem) it.bundleGroupId else it.productId
         }
         val maxIndex = min(COLLAPSED_PRODUCTS_LIMIT, cartItemDataList.size)
@@ -178,17 +179,17 @@ class CartShopViewHolder(
         }
     }
 
-    private fun renderCheckBox(cartShopHolderData: CartShopHolderData) {
+    private fun renderCheckBox(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
             val padding10 = SHOP_HEADER_PADDING_10.dpToPx(itemView.resources.displayMetrics)
             val padding16 = itemView.resources.getDimensionPixelSize(R.dimen.dp_16)
-            if (!cartShopHolderData.isError) {
+            if (!cartGroupHolderData.isError) {
                 cbSelectShop.show()
 //                cbSelectShop.isEnabled = true
-                cbSelectShop.isChecked = cartShopHolderData.isAllSelected
+                cbSelectShop.isChecked = cartGroupHolderData.isAllSelected
                 cbSelectShop.skipAnimation()
                 rlShopHeader.setPadding(padding10, padding16, padding10, padding10)
-                initCheckboxWatcherDebouncer(cartShopHolderData, compositeSubscription)
+                initCheckboxWatcherDebouncer(cartGroupHolderData, compositeSubscription)
             } else {
                 cbSelectShop.gone()
                 rlShopHeader.setPadding(padding16, padding16, padding10, padding10)
@@ -196,12 +197,12 @@ class CartShopViewHolder(
         }
     }
 
-    private fun initCheckboxWatcherDebouncer(cartShopHolderData: CartShopHolderData, compositeSubscription: CompositeSubscription) {
+    private fun initCheckboxWatcherDebouncer(cartGroupHolderData: CartGroupHolderData, compositeSubscription: CompositeSubscription) {
         binding.cbSelectShop.let {
             compositeSubscription.add(
                 rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
                     override fun onNext(isChecked: Boolean) {
-                        cbSelectShopClickListener(cartShopHolderData)
+                        cbSelectShopClickListener(cartGroupHolderData)
                     }
 
                     override fun onCompleted() {
@@ -214,17 +215,17 @@ class CartShopViewHolder(
         }
     }
 
-    private fun renderFulfillment(cartShopHolderData: CartShopHolderData) {
+    private fun renderFulfillment(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
-            if (cartShopHolderData.fulfillmentName.isNotBlank()) {
-                if (cartShopHolderData.isFulfillment && cartShopHolderData.fulfillmentBadgeUrl.isNotEmpty()) {
+            if (cartGroupHolderData.fulfillmentName.isNotBlank()) {
+                if (cartGroupHolderData.isFulfillment && cartGroupHolderData.fulfillmentBadgeUrl.isNotEmpty()) {
                     iuImageFulfill.show()
-                    iuImageFulfill.loadImageWithoutPlaceholder(cartShopHolderData.fulfillmentBadgeUrl)
+                    iuImageFulfill.loadImageWithoutPlaceholder(cartGroupHolderData.fulfillmentBadgeUrl)
                 } else {
                     iuImageFulfill.gone()
                 }
                 tvFulfillDistrict.show()
-                tvFulfillDistrict.text = cartShopHolderData.fulfillmentName
+                tvFulfillDistrict.text = cartGroupHolderData.fulfillmentName
             } else {
                 iuImageFulfill.gone()
                 tvFulfillDistrict.gone()
@@ -232,8 +233,8 @@ class CartShopViewHolder(
         }
     }
 
-    private fun renderEstimatedTimeArrival(cartShopHolderData: CartShopHolderData) {
-        val eta = cartShopHolderData.estimatedTimeArrival
+    private fun renderEstimatedTimeArrival(cartGroupHolderData: CartGroupHolderData) {
+        val eta = cartGroupHolderData.estimatedTimeArrival
         with(binding) {
             if (eta.isNotBlank()) {
                 textEstimatedTimeArrival.text = eta
@@ -246,32 +247,32 @@ class CartShopViewHolder(
         }
     }
 
-    private fun cbSelectShopClickListener(cartShopHolderData: CartShopHolderData) {
+    private fun cbSelectShopClickListener(cartGroupHolderData: CartGroupHolderData) {
         val isChecked: Boolean
-        if (cartShopHolderData.isPartialSelected) {
+        if (cartGroupHolderData.isPartialSelected) {
             isChecked = true
-            cartShopHolderData.isAllSelected = true
-            cartShopHolderData.isPartialSelected = false
+            cartGroupHolderData.isAllSelected = true
+            cartGroupHolderData.isPartialSelected = false
         } else {
-            isChecked = !cartShopHolderData.isAllSelected
+            isChecked = !cartGroupHolderData.isAllSelected
         }
         var isAllSelected = true
-        cartShopHolderData.productUiModelList.forEach {
+        cartGroupHolderData.productUiModelList.forEach {
             if (it.isError && it.isSingleChild) {
                 isAllSelected = false
                 return@forEach
             }
         }
-        cartShopHolderData.isAllSelected = isAllSelected
+        cartGroupHolderData.isAllSelected = isAllSelected
         if (adapterPosition != RecyclerView.NO_POSITION) {
             actionListener.onShopItemCheckChanged(adapterPosition, isChecked)
         }
     }
 
-    private fun renderPreOrder(cartShopHolderData: CartShopHolderData) {
+    private fun renderPreOrder(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
-            if (cartShopHolderData.preOrderInfo.isNotBlank()) {
-                labelPreOrder.text = cartShopHolderData.preOrderInfo
+            if (cartGroupHolderData.preOrderInfo.isNotBlank()) {
+                labelPreOrder.text = cartGroupHolderData.preOrderInfo
                 labelPreOrder.show()
                 separatorPreOrder.show()
             } else {
@@ -281,10 +282,10 @@ class CartShopViewHolder(
         }
     }
 
-    private fun renderIncidentLabel(cartShopHolderData: CartShopHolderData) {
+    private fun renderIncidentLabel(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
-            if (cartShopHolderData.incidentInfo.isNotBlank()) {
-                labelIncident.text = cartShopHolderData.incidentInfo
+            if (cartGroupHolderData.incidentInfo.isNotBlank()) {
+                labelIncident.text = cartGroupHolderData.incidentInfo
                 labelIncident.show()
                 separatorIncident.show()
             } else {
@@ -294,14 +295,14 @@ class CartShopViewHolder(
         }
     }
 
-    private fun renderFreeShipping(cartShopHolderData: CartShopHolderData) {
+    private fun renderFreeShipping(cartGroupHolderData: CartGroupHolderData) {
         with(binding) {
-            if (cartShopHolderData.freeShippingBadgeUrl.isNotBlank()) {
+            if (cartGroupHolderData.freeShippingBadgeUrl.isNotBlank()) {
                 ImageHandler.loadImageWithoutPlaceholderAndError(
                     imgFreeShipping,
-                    cartShopHolderData.freeShippingBadgeUrl
+                    cartGroupHolderData.freeShippingBadgeUrl
                 )
-                val contentDescriptionStringResource = if (cartShopHolderData.isFreeShippingPlus) {
+                val contentDescriptionStringResource = if (cartGroupHolderData.isFreeShippingPlus) {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
                 } else {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
@@ -309,17 +310,17 @@ class CartShopViewHolder(
                 imgFreeShipping.contentDescription = itemView.context.getString(contentDescriptionStringResource)
                 imgFreeShipping.show()
                 separatorFreeShipping.show()
-                if (!cartShopHolderData.hasSeenFreeShippingBadge && cartShopHolderData.isFreeShippingPlus) {
-                    cartShopHolderData.hasSeenFreeShippingBadge = true
+                if (!cartGroupHolderData.hasSeenFreeShippingBadge && cartGroupHolderData.isFreeShippingPlus) {
+                    cartGroupHolderData.hasSeenFreeShippingBadge = true
                     actionListener.onViewFreeShippingPlusBadge()
                 }
-                if (cartShopHolderData.coachmarkPlus.isShown && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
+                if (cartGroupHolderData.coachmarkPlus.isShown && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
                     val coachMarkItem = ArrayList<CoachMark2Item>()
                     coachMarkItem.add(
                         CoachMark2Item(
                             imgFreeShipping,
-                            cartShopHolderData.coachmarkPlus.title,
-                            cartShopHolderData.coachmarkPlus.content,
+                            cartGroupHolderData.coachmarkPlus.title,
+                            cartGroupHolderData.coachmarkPlus.content,
                             CoachMark2.POSITION_BOTTOM
                         )
                     )
@@ -333,16 +334,16 @@ class CartShopViewHolder(
         }
     }
 
-    private fun renderMaximumWeight(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.shouldValidateWeight) {
-            val currentWeight = cartShopHolderData.totalWeight
-            val maximumWeight = cartShopHolderData.maximumShippingWeight
+    private fun renderMaximumWeight(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.shouldValidateWeight) {
+            val currentWeight = cartGroupHolderData.totalWeight
+            val maximumWeight = cartGroupHolderData.maximumShippingWeight
             val extraWeight = (currentWeight - maximumWeight) / 1000
-            val descriptionText = cartShopHolderData.maximumWeightWording
+            val descriptionText = cartGroupHolderData.maximumWeightWording
             if (extraWeight > 0 && descriptionText.isNotEmpty()) {
                 with(binding) {
                     tickerWarning.tickerTitle = null
-                    tickerWarning.setTextDescription(descriptionText.replace(CartShopHolderData.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY, NumberFormat.getNumberInstance(Locale("in", "id")).format(extraWeight)))
+                    tickerWarning.setTextDescription(descriptionText.replace(CartGroupHolderData.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY, NumberFormat.getNumberInstance(Locale("in", "id")).format(extraWeight)))
                     tickerWarning.tickerType = TYPE_WARNING
                     tickerWarning.tickerShape = SHAPE_LOOSE
                     tickerWarning.closeButtonVisibility = View.GONE
@@ -367,24 +368,24 @@ class CartShopViewHolder(
         }
     }
 
-    private fun renderAddOnInfo(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.addOnText.isNotEmpty()) {
+    private fun renderAddOnInfo(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.addOnText.isNotEmpty()) {
             binding.addonInfoWidgetLayout.root.visible()
-            binding.addonInfoWidgetLayout.descAddonInfo.text = cartShopHolderData.addOnText
-            binding.addonInfoWidgetLayout.ivAddonLeft.loadImage(cartShopHolderData.addOnImgUrl)
+            binding.addonInfoWidgetLayout.descAddonInfo.text = cartGroupHolderData.addOnText
+            binding.addonInfoWidgetLayout.ivAddonLeft.loadImage(cartGroupHolderData.addOnImgUrl)
             binding.addonInfoWidgetLayout.root.setOnClickListener {
-                if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_GIFTING) {
+                if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_GIFTING) {
                     actionListener.onClickAddOnCart(
-                        cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "",
-                        cartShopHolderData.addOnId
+                        cartGroupHolderData.productUiModelList.firstOrNull()?.productId ?: "",
+                        cartGroupHolderData.addOnId
                     )
-                } else if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_EPHARMACY) {
-                    actionListener.onClickEpharmacyInfoCart(cartShopHolderData.enablerLabel, cartShopHolderData.shopId, cartShopHolderData.productUiModelList)
+                } else if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_EPHARMACY) {
+                    actionListener.onClickEpharmacyInfoCart(cartGroupHolderData.enablerLabel, cartGroupHolderData.shopId, cartGroupHolderData.productUiModelList)
                 }
             }
-            if (cartShopHolderData.addOnType == CartShopHolderData.ADD_ON_GIFTING) {
+            if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_GIFTING) {
                 actionListener.addOnImpression(
-                    cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: ""
+                    cartGroupHolderData.productUiModelList.firstOrNull()?.productId ?: ""
                 )
             }
         } else {
@@ -393,7 +394,7 @@ class CartShopViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_shop
+        val LAYOUT = R.layout.item_group
 
         private const val COLLAPSED_PRODUCTS_LIMIT = 10
 
