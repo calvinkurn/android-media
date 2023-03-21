@@ -1485,7 +1485,7 @@ class ShipmentAdapter @Inject constructor(
         return Pair(index, shipmentDataList[index] as CartItemExpandModel)
     }
 
-    private fun getShipmentCartItemByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
+    fun getShipmentCartItemByCartString(cartString: String): Pair<Int, ShipmentCartItemModel> {
         val index = shipmentDataList.indexOfFirst { data ->
             data is ShipmentCartItemModel && data.cartString == cartString
         }
