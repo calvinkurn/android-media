@@ -21,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -630,7 +631,7 @@ class AddEditProductDescriptionFragment :
         val description = descriptionViewModel.descriptionInputModel?.productDescription ?: ""
         val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList?.toMutableList()
 
-        textFieldDescription?.setText(description)
+        textFieldDescription?.setText(MethodChecker.fromHtml(description).toString())
         if (!videoLinks.isNullOrEmpty()) {
             super.clearAllData()
             super.renderList(videoLinks)
