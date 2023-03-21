@@ -1162,10 +1162,10 @@ class FeedShopFragment :
         return context?.let {
             val dialog =
                 DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.kol_delete_post))
-            dialog.setDescription(getString(R.string.kol_delete_post_desc))
-            dialog.setPrimaryCTAText(getString(R.string.kol_title_delete))
-            dialog.setSecondaryCTAText(getString(R.string.kol_title_cancel))
+            dialog.setTitle(getString(R.string.feed_shop_delete_post))
+            dialog.setDescription(getString(R.string.feed_shop_delete_post_desc))
+            dialog.setPrimaryCTAText(getString(R.string.feed_shop_title_delete))
+            dialog.setSecondaryCTAText(getString(R.string.feed_shop_title_cancel))
             dialog.setPrimaryCTAClickListener {
                 presenter.deletePost(id, rowNumber)
                 dialog.dismiss()

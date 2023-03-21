@@ -1,15 +1,15 @@
 <resources>
 
-    <string name="kol_delete_post_desc">Setelah dihapus, kamu tidak akan bisa melihat post ini lagi.</string>
-    <string name="string_btn_whitelist">Buat Post</string>
-    <string name="empty_feed_title">Tingkatkan Penjualanmu</string>
-    <string name="empty_feed_subtitle">Yuk, post promo dan update dari Tokomu \nsupaya makin banyak yang belanja!</string>
-    <string name="empty_feed_btn">Post Sekarang</string>
+    <string name="feed_shop_delete_post_desc">Setelah dihapus, kamu tidak akan bisa melihat post ini lagi.</string>
+    <string name="feed_shop_string_btn_whitelist">Buat Post</string>
+    <string name="feed_shop_empty_feed_title">Tingkatkan Penjualanmu</string>
+    <string name="feed_shop_empty_feed_subtitle">Yuk, post promo dan update dari Tokomu \nsupaya makin banyak yang belanja!</string>
+    <string name="feed_shop_empty_feed_btn">Post Sekarang</string>
 
-    <string name="kol_delete_post">Hapus Post</string>
-    <string name="kol_title_cancel">Batal</string>
-    <string name="kol_title_delete">Hapus</string>
-    <string name="kol_edit_post">Edit Post</string>
-    <string name="kol_report">Laporkan</string>
+    <string name="feed_shop_delete_post">Hapus Post</string>
+    <string name="feed_shop_title_cancel">Batal</string>
+    <string name="feed_shop_title_delete">Hapus</string>
+    <string name="feed_shop_edit_post">Edit Post</string>
+    <string name="feed_shop_report">Laporkan</string>
 
 </resources>
