@@ -119,7 +119,7 @@ class FeedCampaignRibbonView(
                     ).show()
                     tyFeedCampaignRibbonTitle.text =
                         "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}"
-                    renderRibbonByType(campaign.isReminderActive)
+//                    renderRibbonByType(campaign.isReminderActive)
 //                    startDelayProcess(TWO_SECOND) {
 //                        setBackgroundGradient(ctaModel)
 //                    }
@@ -131,7 +131,7 @@ class FeedCampaignRibbonView(
                         Toast.LENGTH_SHORT
                     ).show()
                     tyFeedCampaignRibbonTitle.text = ctaModel.text
-                    renderRibbonByType(campaign.isReminderActive)
+//                    renderRibbonByType(campaign.isReminderActive)
 //                    startDelayProcess(TWO_SECOND) {
 //                        setBackgroundGradient(ctaModel)
 //                    }
