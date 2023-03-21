@@ -5,5 +5,8 @@ import com.tokopedia.filter.common.data.Option
 interface InspirationFilterListener {
     fun isFilterSelected(optionList: List<Option>): Boolean
 
-    fun onInspirationFilterOptionClicked(filterOptionDataView: InspirationFilterOptionDataView)
+    fun onInspirationFilterOptionClicked(
+        filterOptionDataView: InspirationFilterOptionDataView,
+        filterOptionDataViewList: List<InspirationFilterOptionDataView>,
+    )
 }

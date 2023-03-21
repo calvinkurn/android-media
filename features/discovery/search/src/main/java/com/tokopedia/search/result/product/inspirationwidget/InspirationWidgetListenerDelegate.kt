@@ -30,8 +30,6 @@ class InspirationWidgetListenerDelegate(
     ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
 
-    private var previousOptionList: List<Option> = emptyList()
-
     override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {
         trackEventClickInspirationCardOption(optionData)
 
@@ -45,15 +43,19 @@ class InspirationWidgetListenerDelegate(
     }
 
     override fun onInspirationFilterOptionClicked(
-        filterOptionDataView: InspirationFilterOptionDataView
+        filterOptionDataView: InspirationFilterOptionDataView,
+        filterOptionDataViewList: List<InspirationFilterOptionDataView>,
     ) {
         val optionList = filterOptionDataView.optionList
         val isFilterSelectedReversed = !isFilterSelected(optionList)
+
+        val nonSelectedFilterList = filterOptionDataViewList - filterOptionDataView
 
         trackInspirationFilterOptionClick(isFilterSelectedReversed, filterOptionDataView)
 
         applyInspirationFilter(
             optionList,
+            nonSelectedFilterList,
             isFilterSelectedReversed,
             filterOptionDataView.componentId
         )
@@ -98,16 +100,20 @@ class InspirationWidgetListenerDelegate(
 
     private fun applyInspirationFilter(
         optionList: List<Option>,
+        nonSelectedFilterList: List<InspirationFilterOptionDataView>,
         isFilterSelected: Boolean,
         componentId: String,
     ) {
-        if (optionList.hasCategoryFilter()) removePreviousOptionFromFilterController()
+        if (optionList.hasCategoryFilter()) {
+            val previousOptionList = nonSelectedFilterList
+                .filter { isFilterSelected(it.optionList) }
+                .flatMap { it.optionList }
+            removePreviousOptionFromFilterController(previousOptionList)
+        }
 
         optionList.forEach { option ->
             applyFilterToFilterController(option, isFilterSelected)
         }
-
-        previousOptionList = optionList
 
         val queryParams = filterController.getParameter() +
             originFilterMap() +
@@ -118,7 +124,7 @@ class InspirationWidgetListenerDelegate(
         parameterListener.reloadData()
     }
 
-    private fun removePreviousOptionFromFilterController() {
+    private fun removePreviousOptionFromFilterController(previousOptionList: List<Option>) {
         previousOptionList.forEach { option ->
             applyFilterToFilterController(option, false)
         }
