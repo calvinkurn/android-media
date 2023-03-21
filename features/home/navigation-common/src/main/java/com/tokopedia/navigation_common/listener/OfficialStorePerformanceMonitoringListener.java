@@ -4,6 +4,5 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 
 public interface OfficialStorePerformanceMonitoringListener {
     void stopOfficialStorePerformanceMonitoring(boolean isCache);
-    void startOfficialStorePerformanceMonitoring();
     PageLoadTimePerformanceInterface getOfficialStorePageLoadTimePerformanceInterface();
 }

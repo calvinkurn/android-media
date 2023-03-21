@@ -443,16 +443,6 @@ public class MainParentActivity extends BaseActivity implements
         Fragment fragment = fragmentList.get(tabPosition);
         if (fragment != null) {
             this.currentFragment = fragment;
-//            if (fragment instanceof OfficialHomeContainerFragment
-//                    && getIntent().getExtras() != null
-//                    && getIntent().getExtras().get(OfficialHomeContainerFragment.KEY_CATEGORY) != null) {
-//                String keyCategory = getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY, "");
-//                if (keyCategory.equals(OS_KEY_MOBILE)) {
-//                    ((OfficialHomeContainerFragment) fragment).selectFirstTab();
-//                } else {
-//                    ((OfficialHomeContainerFragment) fragment).selectTabByCategoryId(keyCategory);
-//                }
-//            }
             selectFragment(fragment);
         }
     }
@@ -494,8 +484,6 @@ public class MainParentActivity extends BaseActivity implements
             case HOME_MENU:
                 startHomePerformanceMonitoring();
                 break;
-            case OS_MENU:
-                startOfficialStorePerformanceMonitoring();
         }
     }
 
@@ -1249,24 +1237,6 @@ public class MainParentActivity extends BaseActivity implements
             officialStorePageLoadTimePerformanceCallback.stopRenderPerformanceMonitoring();
             officialStorePageLoadTimePerformanceCallback.stopMonitoring();
             officialStorePageLoadTimePerformanceCallback = null;
-        }
-    }
-
-    @Override
-    public void startOfficialStorePerformanceMonitoring() {
-        if (officialStorePageLoadTimePerformanceCallback == null) {
-            officialStorePageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
-                    OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS,
-                    OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS,
-                    OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS,
-                    0,
-                    0,
-                    0,
-                    0,
-                    null
-            );
-            officialStorePageLoadTimePerformanceCallback.startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
-            officialStorePageLoadTimePerformanceCallback.startPreparePagePerformanceMonitoring();
         }
     }
 
