@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
+import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.util.animateGone
 import com.tokopedia.play.broadcaster.shorts.util.animateShow
@@ -34,7 +35,6 @@ import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
@@ -172,7 +172,15 @@ class PlayShortsPreparationFragment @Inject constructor(
                 childFragment.setMaxCharacter(viewModel.maxTitleCharacter)
             }
             is PlayBroadcastSetupCoverBottomSheet -> {
-                childFragment.setupData(this, PAGE_NAME)
+                childFragment.setupData(
+                    listener = this,
+                    entryPoint = PAGE_NAME,
+                    productList = viewModel.productSectionList,
+                    contentAccount = viewModel.selectedAccount,
+                    channelId = viewModel.shortsId,
+                    channelTitle = viewModel.title,
+                    dataStore = viewModel.mDataStore,
+                )
 
                 val isShowCoachMark = viewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
@@ -269,6 +277,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
+                renderTitleForm(it.prevValue, it.value)
                 renderMedia(it.prevValue, it.value)
                 renderToolbar(it.prevValue, it.value)
                 renderPreparationMenu(it.prevValue, it.value)
@@ -280,14 +289,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayShortsUiEvent.ErrorUploadTitle -> {
-                        toaster.showError(
-                            event.throwable,
-                            duration = Toaster.LENGTH_LONG,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = {
-                                event.onRetry()
-                            }
-                        )
+                        getSetupTitleBottomSheet().failSubmit(event.throwable.message)
                     }
                     is PlayShortsUiEvent.ErrorSwitchAccount -> {
                         toaster.showError(
@@ -310,6 +312,18 @@ class PlayShortsPreparationFragment @Inject constructor(
                     PlayShortsIdleManager.State.Idle -> setupUiIdle()
                 }
             }
+        }
+    }
+
+    private fun renderTitleForm(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if (prev?.titleForm == curr.titleForm) return
+
+        if (curr.titleForm.state == PlayShortsTitleFormUiState.State.Unknown
+            && getSetupTitleBottomSheet().isAdded && getSetupTitleBottomSheet().isVisible) {
+            getSetupTitleBottomSheet().dismiss()
         }
     }
 
@@ -555,8 +569,8 @@ class PlayShortsPreparationFragment @Inject constructor(
         viewModel.submitAction(PlayShortsAction.UploadTitle(title))
     }
 
-    override fun setupCoverProductClicked() {
-        // no opt because shorts cover require title & product first
+    override fun onUploadCoverSuccess() {
+        viewModel.submitAction(PlayShortsAction.UpdateCover)
     }
 
     override fun dismissSetupCover(source: Int) {
@@ -570,13 +584,9 @@ class PlayShortsPreparationFragment @Inject constructor(
         viewModel.submitAction(PlayShortsAction.SetCoverUploadedSource(source))
     }
 
-    override fun uploadSetupCover(cover: PlayCoverUiModel) {
-        viewModel.submitAction(PlayShortsAction.SetCover(cover.croppedCover))
-    }
-
     companion object {
         private const val TAG = "PlayShortsPreparationFragment"
-        private const val PAGE_NAME = "prep page"
+        private const val PAGE_NAME = "shorts"
 
         fun getFragment(
             fragmentManager: FragmentManager,

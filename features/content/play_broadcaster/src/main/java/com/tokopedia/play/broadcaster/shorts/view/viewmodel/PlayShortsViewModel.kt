@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
@@ -19,7 +20,6 @@ import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
-import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
@@ -35,6 +35,7 @@ import kotlin.coroutines.CoroutineContext
  * Created By : Jonathan Darwin on November 08, 2022
  */
 class PlayShortsViewModel @Inject constructor(
+    dataStore: PlayBroadcastDataStore,
     private val repo: PlayShortsRepository,
     private val sharedPref: HydraSharedPreferences,
     private val accountManager: PlayShortsAccountManager,
@@ -85,6 +86,8 @@ class PlayShortsViewModel @Inject constructor(
 
     val uploadedCoverSource: Int
         get() = sharedPref.getUploadedCoverSource()
+
+    val mDataStore = dataStore
 
     private val _globalLoader = MutableStateFlow(false)
     private val _config = MutableStateFlow(PlayShortsConfigUiModel.Empty)
@@ -174,14 +177,10 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.SwitchAccount -> handleSwitchAccount()
 
             /** Title Form */
-            is PlayShortsAction.OpenTitleForm -> handleOpenTitleForm()
             is PlayShortsAction.UploadTitle -> handleUploadTitle(action.title)
-            is PlayShortsAction.CloseTitleForm -> handleCloseTitleForm()
 
             /** Cover Form */
-            is PlayShortsAction.OpenCoverForm -> handleOpenCoverForm()
-            is PlayShortsAction.SetCover -> handleSetCover(action.cover)
-            is PlayShortsAction.CloseCoverForm -> handleCloseCoverForm()
+            is PlayShortsAction.UpdateCover -> handleUpdateCover()
 
             /** Product */
             is PlayShortsAction.SetProduct -> handleSetProduct(action.productSectionList)
@@ -273,27 +272,10 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun handleCloseTitleForm() {
-        if (_titleForm.value.state != PlayShortsTitleFormUiState.State.Loading) {
-            _titleForm.update { it.copy(state = PlayShortsTitleFormUiState.State.Unknown) }
-        }
-    }
-
-    private fun handleOpenCoverForm() {
+    private fun handleUpdateCover() {
+        val cover = mDataStore.getSetupDataStore().getSelectedCover() ?: return
         _coverForm.update {
-            it.copy(state = PlayShortsCoverFormUiState.State.Editing)
-        }
-    }
-
-    private fun handleSetCover(cover: CoverSetupState) {
-        _coverForm.update {
-            it.copy(cover = cover)
-        }
-    }
-
-    private fun handleCloseCoverForm() {
-        _coverForm.update {
-            it.copy(state = PlayShortsCoverFormUiState.State.Unknown)
+            it.copy(cover = cover.croppedCover)
         }
     }
 
