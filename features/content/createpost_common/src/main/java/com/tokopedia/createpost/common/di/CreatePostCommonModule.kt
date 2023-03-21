@@ -28,15 +28,8 @@ import kotlinx.coroutines.CoroutineScope
  * @author by milhamj on 9/26/18.
  */
 @Module(includes = [VideoUploaderModule::class])
-class CreatePostCommonModule(private val context: Context) {
+class CreatePostCommonModule {
 
-    @Provides
-    @ActivityContext
-    fun provideActivityContext(): Context {
-        return context
-    }
-
-    @Provides
     @CreatePostScope
     fun provideAffiliateAnalytics(userSessionInterface: UserSessionInterface): AffiliateAnalytics {
         return AffiliateAnalytics(userSessionInterface)

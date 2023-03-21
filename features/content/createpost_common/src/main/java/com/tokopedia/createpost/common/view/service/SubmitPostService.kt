@@ -16,7 +16,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.common.TYPE_CONTENT_USER
-import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
 import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
 import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
@@ -223,12 +222,11 @@ class SubmitPostService : JobIntentServiceX() {
     }
 
     private fun initInjector() {
-        DaggerCreatePostCommonComponent.builder()
-            .baseAppComponent(
-                (applicationContext as BaseMainApplication).baseAppComponent
+        DaggerCreatePostCommonComponent.factory()
+            .create(
+                baseAppComponent = (applicationContext as BaseMainApplication).baseAppComponent,
+                context = baseContext,
             )
-            .createPostCommonModule(CreatePostCommonModule(baseContext))
-            .build()
             .inject(this)
     }
 
