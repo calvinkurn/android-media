@@ -4,8 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.content.common.producttag.util.extension.combine
 import com.tokopedia.content.common.producttag.util.extension.setValue
-import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
-import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.*
@@ -362,7 +361,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     FOLLOW_TYPE_SHOP -> {
                         followRepo.followShop(
                             currentItem.id.toString(),
-                            if (currentState == FOLLOW) UnFollow else Follow
+                            ShopFollowAction.getActionByState(currentState == FOLLOW)
                         )
                     }
                     FOLLOW_TYPE_BUYER -> {

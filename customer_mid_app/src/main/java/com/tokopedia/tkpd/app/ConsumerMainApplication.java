@@ -71,8 +71,7 @@ import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.media.common.Loader;
-import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
+import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
@@ -194,7 +193,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks();
         checkAppPackageNameAsync();
 
-        Loader.init(this);
         initializationNewRelic();
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
