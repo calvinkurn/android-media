@@ -119,10 +119,10 @@ abstract class PlayBroadcastFragmentModule {
     @Binds
     @IntoMap
     @FragmentKey(BeautificationSetupFragment::class)
-    abstract fun getBeautificationSetupFragment(bottomSheet: BeautificationSetupFragment) : Fragment
+    abstract fun getBeautificationSetupFragment(fragment: BeautificationSetupFragment) : Fragment
 
     @Binds
     @IntoMap
     @FragmentKey(BeautificationTabFragment::class)
-    abstract fun getBeautificationTabFragment(bottomSheet: BeautificationTabFragment) : Fragment
+    abstract fun getBeautificationTabFragment(fragment: BeautificationTabFragment) : Fragment
 }
