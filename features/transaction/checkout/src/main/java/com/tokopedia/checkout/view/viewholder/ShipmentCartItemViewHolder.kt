@@ -93,9 +93,9 @@ class ShipmentCartItemViewHolder(
     }
 
     private fun renderProductProperties(cartItemModel: CartItemModel) {
-        val productInformationList = cartItemModel.productInformation
-        if (productInformationList.isNotEmpty()) {
-            for (i in productInformationList.indices) {
+        binding.layoutProductInfo.removeAllViews()
+        if (cartItemModel.productInformation.isNotEmpty()) {
+            cartItemModel.productInformation.forEach { productInformation ->
                 val productInfo = Typography(itemView.context)
                 productInfo.setTextColor(
                     ContextCompat.getColor(
@@ -105,9 +105,9 @@ class ShipmentCartItemViewHolder(
                 )
                 productInfo.setType(SMALL)
                 if (binding.layoutProductInfo.childCount > 0) {
-                    productInfo.text = ", " + productInformationList[i]
+                    productInfo.text = ", $productInformation"
                 } else {
-                    productInfo.text = productInformationList[i]
+                    productInfo.text = productInformation
                 }
                 binding.layoutProductInfo.addView(productInfo)
             }
