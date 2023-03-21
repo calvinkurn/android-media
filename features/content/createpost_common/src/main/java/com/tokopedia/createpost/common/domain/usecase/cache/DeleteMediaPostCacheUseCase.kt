@@ -35,7 +35,7 @@ class DeleteMediaPostCacheUseCase @Inject constructor(
             }
         }
         catch (e: Exception) {
-
+            e.printStackTrace()
         }
     }
 }

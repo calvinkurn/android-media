@@ -254,7 +254,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
 
                                 if (info.type == UploadType.Shorts) {
                                     showNormalToaster(
-                                        getString(R.string.feed_upload_shorts_success),
+                                        getString(R.string.feed_upload_content_success),
                                         duration = Toaster.LENGTH_LONG,
                                         actionText = getString(R.string.feed_upload_shorts_see_video),
                                         actionListener = {
@@ -272,7 +272,7 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                                     )
                                 } else {
                                     showNormalToaster(
-                                        getString(R.string.feed_upload_shorts_success),
+                                        getString(R.string.feed_upload_content_success),
                                         duration = Toaster.LENGTH_LONG,
                                     )
                                 }
@@ -288,6 +288,10 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
                                         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
                                             uploadReceiver.releaseCurrent()
                                             binding.uploadView.hide()
+                                        }
+
+                                        if (info.type == UploadType.Post) {
+                                            feedMainViewModel.deletePostCache()
                                         }
                                     }
                                 })

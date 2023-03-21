@@ -9,6 +9,7 @@ import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.UiEventManager
+import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.feedplus.domain.mapper.MapperFeedTabs
 import com.tokopedia.feedplus.domain.usecase.FeedXHeaderUseCase
 import com.tokopedia.feedplus.presentation.model.ContentCreationItem
@@ -17,6 +18,7 @@ import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabsModel
 import com.tokopedia.feedplus.presentation.onboarding.OnboardingPreferences
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,6 +37,7 @@ import javax.inject.Inject
 class FeedMainViewModel @Inject constructor(
     private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val submitReportUseCase: FeedComplaintSubmitReportUseCase,
+    private val deletePostCacheUseCase: DeleteMediaPostCacheUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val onboardingPreferences: OnboardingPreferences,
     private val userSession: UserSessionInterface,
@@ -71,6 +74,12 @@ class FeedMainViewModel @Inject constructor(
     fun consumeEvent(event: FeedMainEvent) {
         viewModelScope.launch {
             uiEventManager.clearEvent(event.id)
+        }
+    }
+
+    fun deletePostCache() {
+        viewModelScope.launch {
+            deletePostCacheUseCase(Unit)
         }
     }
 
