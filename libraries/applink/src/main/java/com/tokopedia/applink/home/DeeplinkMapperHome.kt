@@ -7,8 +7,6 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.user.session.UserSession
 
 object DeeplinkMapperHome {
