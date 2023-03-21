@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.STATUS_IKLAN_ACTION_ACTIVATE
 import com.tokopedia.topads.common.data.model.AdGroupsParams
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.Deposit
@@ -14,6 +15,7 @@ import com.tokopedia.topads.common.data.response.SingleAdInFo
 import com.tokopedia.topads.common.data.response.TopAdsGroupsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.ProductStatisticsResponse
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.common.domain.model.TopAdsGetProductManage
 import com.tokopedia.topads.common.domain.model.TopAdsGetShopInfo
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
@@ -22,6 +24,8 @@ import com.tokopedia.topads.common.domain.usecase.TopAdsGetShopInfoV1UseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetAutoAdsUseCase
 import com.tokopedia.topads.common.domain.usecase.GetTopadsDashboardGroups
+import com.tokopedia.topads.create.R
+import com.tokopedia.topads.view.uimodel.ItemListUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -39,6 +43,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     private val topAdsGetGroupIdUseCase: TopAdsGetPromoUseCase,
     private val topAdsGetAutoAdsUseCase: TopAdsGetAutoAdsUseCase,
     private val topAdsGetGroupInfoUseCase: GraphqlUseCase<TopAdsGroupsResponse>,
+    private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
     private val userSession: UserSessionInterface,
 ) : BaseViewModel(dispatchers.io) {
 
@@ -71,6 +76,8 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
 
     private val _topAdsGetGroupInfo: MutableLiveData<TopAdsGroupsResponse> = MutableLiveData()
     val topAdsGetGroupInfo: LiveData<TopAdsGroupsResponse> = _topAdsGetGroupInfo
+
+    private var statusIklanList : MutableList<ItemListUiModel> = mutableListOf()
 
     fun getTopAdsDeposit() {
         topAdsGetDepositUseCase.execute({
@@ -141,6 +148,19 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         })
     }
 
+    fun setProductAction(
+        action: String, adIds: List<String>, selectedFilter: String?
+    ) {
+        launchCatchError(block = {
+            val params = topAdsProductActionUseCase.setParams(STATUS_IKLAN_ACTION_ACTIVATE, adIds, selectedFilter)
+            topAdsProductActionUseCase.execute(params)
+            getPromoInfo()
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
+
     fun getGroupInfo() {
         topAdsGetGroupInfoUseCase.setRequestParams(
             mapOf(
@@ -163,6 +183,10 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
 
     fun checkIsSingleAds() {
         _isSingleAds.value = _adId.value != "0" && (_topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == null || _topAdsPromoInfo.value?.topAdsGetPromo?.data?.get(0)?.groupID == "0")
+    }
+
+    fun getStatusIklanList(): MutableList<ItemListUiModel>{
+        return statusIklanList
     }
 
     fun getAutoAdsInfo(

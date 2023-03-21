@@ -126,9 +126,12 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         seePerformanceTopAdsViewModel?.topAdsDeposits?.observe(this) {
             when (it) {
                 is Success -> {
-                    mainBottomSheetBinding.includeTambahKredit.creditsLoader.visibility = View.INVISIBLE
-                    mainBottomSheetBinding.includeTambahKredit.creditAmount.visibility = View.VISIBLE
-                    mainBottomSheetBinding.includeTambahKredit.btnRefreshCredits.visibility = View.VISIBLE
+                    mainBottomSheetBinding.includeTambahKredit.creditsLoader.visibility =
+                        View.INVISIBLE
+                    mainBottomSheetBinding.includeTambahKredit.creditAmount.visibility =
+                        View.VISIBLE
+                    mainBottomSheetBinding.includeTambahKredit.btnRefreshCredits.visibility =
+                        View.VISIBLE
                     mainBottomSheetBinding.includeTambahKredit.creditAmount.text =
                         String.format("Rp %d", it.data.topadsDashboardDeposits.data.amount)
                 }
@@ -194,11 +197,11 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     it.response?.data?.get(0)?.statTotalTopSlotImpression.toDoubleOrZero() /
                     it.response?.data?.get(0)?.statTotalImpression.toDoubleOrZero()
                 mainBottomSheetBinding.includePerformaTampil.adPerformance.text = when {
-                    adPerformance > 50 -> {
+                    adPerformance > 20 -> {
                         setGreenCondition()
                         getString(R.string.topads_ads_performance_top_frequently)
                     }
-                    adPerformance > 10 -> {
+                    adPerformance > 5 -> {
                         setYellowCondition()
                         getString(R.string.topads_ads_performance_top_rarity)
                     }
@@ -227,13 +230,18 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         getString(R.string.tidak_dibatasi)
                     } else {
                         "Rp ${
-                        it.response?.data?.get(
-                            0
-                        )?.groupPriceDaily
+                            it.response?.data?.get(
+                                0
+                            )?.groupPriceDaily
                         }"
                     }
                 if (it.response?.data?.get(0)?.groupPriceDaily != 0f) {
-                    mainBottomSheetBinding.includeAdGroupManual.dailyBudgetDesc.text = String.format("Rp %d dari %d", it.response?.data?.get(0)?.groupPriceDailySpentFmt, it.response?.data?.get(0)?.groupPriceDaily)
+                    mainBottomSheetBinding.includeAdGroupManual.dailyBudgetDesc.text =
+                        String.format(
+                            "Rp %s dari %f",
+                            it.response?.data?.get(0)?.groupPriceDailySpentFmt,
+                            it.response?.data?.get(0)?.groupPriceDaily
+                        )
                 }
             } else {
                 mainBottomSheetBinding.includePerformaTampil.adPerformance.text =
@@ -253,8 +261,10 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         600 -> getString(R.string.topads_dash_tidak_tampil)
                         else -> ""
                     }
-                mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudget2.text = String.format("Rp %d", it.data.dailyBudget)
-                mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetDesc2.text = String.format("Rp %d dari ", it.data.dailyUsage, it.data.dailyBudget)
+                mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudget2.text =
+                    String.format("Rp %d", it.data.dailyBudget)
+                mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetDesc2.text =
+                    String.format("Rp %d dari ", it.data.dailyUsage, it.data.dailyBudget)
             }
         }
     }
@@ -277,6 +287,10 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             }
         }
 
+//        mainBottomSheetBinding.includeStatusIklan.adStatusDropdown.setOnClickListener {
+//            showStatusIklanBottomSheet()
+//        }
+
         mainBottomSheetBinding.includeStatusIklan.adStatusInfoBtn.setOnClickListener {
             showDescriptionBottomSheet(
                 getString(R.string.topads_ads_performance_status_info_title),
@@ -295,16 +309,64 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.statTotalTopSlotImpression.toDoubleOrZero() /
                     seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.statTotalImpression.toDoubleOrZero()
                 ).toInt()
-            showDescriptionBottomSheet(
-                getString(R.string.topads_ads_performance_performa_tampil),
-                "$adPerformanceCount%",
-                mainBottomSheetBinding.includePerformaTampil.adPerformance.text.toString(),
-                String.format(
-                    getString(R.string.topads_ads_performance_count),
-                    seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.statTotalTopSlotImpression,
-                    seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.statTotalImpression
-                )
-            )
+            when {
+                adPerformanceCount > 20 -> {
+                    showDescriptionBottomSheet(
+                        getString(R.string.topads_ads_performance_performa_tampil),
+                        "$adPerformanceCount%",
+                        getString(R.string.topads_ads_performance_top_keyword),
+                        String.format(
+                            getString(R.string.topads_ads_performance_count),
+                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
+                                0
+                            )?.statTotalTopSlotImpression,
+                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
+                                0
+                            )?.statTotalImpression
+                        ), R.color.Unify_GN500
+                    )
+                }
+                adPerformanceCount > 5 -> {
+                    showDescriptionBottomSheet(
+                        getString(R.string.topads_ads_performance_performa_tampil),
+                        "$adPerformanceCount%",
+                        getString(R.string.topads_ads_performance_top_keyword),
+                        String.format(
+                            getString(R.string.topads_ads_performance_count),
+                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
+                                0
+                            )?.statTotalTopSlotImpression,
+                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
+                                0
+                            )?.statTotalImpression
+                        ), R.color.Unify_YN500
+                    )
+                }
+                adPerformanceCount > 0 -> {
+                    showDescriptionBottomSheet(
+                        getString(R.string.topads_ads_performance_performa_tampil),
+                        "$adPerformanceCount%",
+                        getString(R.string.topads_ads_performance_top_keyword),
+                        String.format(
+                            getString(R.string.topads_ads_performance_count),
+                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
+                                0
+                            )?.statTotalTopSlotImpression,
+                            seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
+                                0
+                            )?.statTotalImpression
+                        ), R.color.Unify_RN500
+                    )
+                }
+                else -> {
+                    showDescriptionBottomSheet(
+                        getString(R.string.topads_ads_performance_performa_tampil),
+                        "",
+                        getString(R.string.topads_ads_performance_not_rated),
+                        "", 0, R.color.Unify_NN600
+                    )
+                }
+            }
         }
 
         mainBottomSheetBinding.includeTips.tips.setOnClickListener {
@@ -525,7 +587,9 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         title: String,
         heading1: String,
         heading2: String,
-        description: CharSequence
+        description: CharSequence,
+        heading1Color: Int = 0,
+        heading2Color: Int = 0
     ) {
         val binding = BottomsheetProductNameSeePerformanceBinding.inflate(LayoutInflater.from(this))
         val bottomSheet = BottomSheetUnify().apply {
@@ -541,12 +605,58 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             binding.heading1.visibility = View.VISIBLE
             binding.heading1.text = heading1
         }
+        if (heading1Color > 0) {
+            binding.heading1.setTextColor(
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        this,
+                        heading1Color
+                    )
+                )
+            )
+        }
+        if (heading2Color > 0) {
+            binding.heading2.setTextColor(
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        this,
+                        heading1Color
+                    )
+                )
+            )
+        }
         if (!heading2.isNullOrEmpty()) {
             binding.heading2.visibility = View.VISIBLE
             binding.heading2.text = heading2
         }
-        binding.description.text = description
+        if (!description.isNullOrEmpty()) {
+            binding.description.visibility = View.VISIBLE
+            binding.description.text = description
+        }
         bottomSheet.show(supportFragmentManager, "descriptionBottomSheet")
+    }
+
+    private fun showStatusIklanBottomSheet() {
+        var list = seePerformanceTopAdsViewModel?.getStatusIklanList()
+
+        if(list.isNullOrEmpty()){
+            list?.add( ItemListUiModel(getString(R.string.ads_active)))
+            list?.add(ItemListUiModel(getString(R.string.topads_non_active)))
+        }
+
+        ListBottomSheet.show(
+            supportFragmentManager,
+            getString(R.string.topads_ad_status),
+            list
+        )
+    }
+
+    fun updateStatusIklan() {
+        seePerformanceTopAdsViewModel?.setProductAction(
+            "",
+            arrayListOf(seePerformanceTopAdsViewModel?.adId?.value ?: ""),
+            seePerformanceTopAdsViewModel?.topAdsPromoInfo?.value?.topAdsGetPromo?.data?.get(0)?.groupID
+        )
     }
 
     private fun showChooseDateBottomSheet() {

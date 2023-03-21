@@ -11,7 +11,7 @@
         android:id="@+id/ad_status_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/ad_status"
+        android:text="@string/topads_ad_status"
         android:textColor="@color/Unify_NN600"
         app:typographyType="small"
         app:layout_constraintTop_toTopOf="parent"

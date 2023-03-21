@@ -85,6 +85,7 @@
     <string name="info_text_summary">Sistem TopAds akan melindungi iklanmu dari klik yang tidak valid.</string>
     <string name="anggaran_dibatasi">Anggaran harian Dibatasi</string>
     <string name="ads_active">Aktif</string>
+    <string name="topads_non_active">Nonaktif</string>
     <string name="ads_deactive">Tidak Aktif</string>
     <string name="ads_inprogress">Dalam Proses</string>
     <string name="ads_not_delivered">Tidak Tampil</string>
@@ -192,7 +193,7 @@
     <string name="product_successfully_advertised">Produk berhasil diiklankan!</string>
     <string name="success_dailog_description">Kamu bisa tambah produk, atur biaya iklan, kata kunci, dan anggaran harian dengan klik tombol Atur Grup Iklan.</string>
     <string name="manage_ads_group">Atur Grup Iklan</string>
-    <string name="ad_status">Status Iklan</string>
+    <string name="topads_ad_status">Status Iklan</string>
     <string name="topads_create_failed_to_load">Gagal Memuat</string>
     <string name="your_product_ad_performance">Performa Iklan Produkmu</string>
     <string name="product_and_advertising_costs_are_set_automatically_by_topads">Produk dan biaya iklan diatur otomatis oleh TopAds.</string>
@@ -212,6 +213,7 @@
     <string name="ad_groups_character_limit_error_msg">Grup iklan maksimal 70 karakter</string>
     <string name="see_ads_performance_tips_heading">Tips optimalkan iklan</string>
     <string name="keywords">Kata Kunci</string>
+    <string name="topads_ads_performance_top_keyword">teratas</string>
     <string name="topads_ads_performance_performa_tampil">Performa tampil</string>
     <string name="topads_ads_performance_top_frequently">Sering Teratas</string>
     <string name="topads_ads_performance_top_rarity">Jarang Teratas</string>

@@ -2,5 +2,5 @@ package com.tokopedia.topads.view.utils
 
 
 interface ScheduleSlotListener {
-    fun onClickItemListener()
+    fun onClickItemListener(title: String)
 }

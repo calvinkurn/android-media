@@ -1,5 +1,6 @@
 package com.tokopedia.topads.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.topads.create.R
 import com.tokopedia.topads.create.databinding.LayoutBottomsheetListBinding
 import com.tokopedia.topads.view.activity.SeePerformanceTopadsActivity
 import com.tokopedia.topads.view.adapter.ItemListAdapter
@@ -52,18 +54,33 @@ class ListBottomSheet(private val title: String, private val itemList: List<Item
         setTitle(title)
         setChild(binding.root)
     }
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateItemList(title: String){
+        itemList.forEach{it.isSelected = it.title == title}
+        adapterItemList.notifyDataSetChanged()
+    }
 
     companion object {
 
-        fun show(fm: FragmentManager, title:String, list: List<ItemListUiModel>): ListBottomSheet {
-            val bottomSheet = ListBottomSheet(title, list)
+        fun show(fm: FragmentManager, title:String, list: MutableList<ItemListUiModel>?): ListBottomSheet {
+            val bottomSheet = ListBottomSheet(title, list ?: mutableListOf())
             bottomSheet.show(fm, "")
             return bottomSheet
         }
     }
 
-    override fun onClickItemListener() {
-        this.dismiss()
-        (activity as SeePerformanceTopadsActivity).openCalendar()
+    override fun onClickItemListener(title: String) {
+        updateItemList(title)
+        when(title){
+            getString(R.string.ads_active) -> {
+
+            }
+            getString(R.string.topads_non_active) -> {
+
+            }
+        }
+//        this.dismiss()
+//        (activity as SeePerformanceTopadsActivity).updateStatusIklan()
+//        (activity as SeePerformanceTopadsActivity).openCalendar()
     }
 }

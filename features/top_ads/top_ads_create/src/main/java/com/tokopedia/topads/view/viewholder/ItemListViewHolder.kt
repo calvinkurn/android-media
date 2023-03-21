@@ -38,7 +38,11 @@ class ItemListViewHolder(
         }
 
         viewBinding.container.setOnClickListener {
-            listener.onClickItemListener()
+            listener.onClickItemListener(element.title)
+        }
+
+        viewBinding.radioButton.setOnCheckedChangeListener { _, _ ->
+            listener.onClickItemListener(element.title)
         }
     }
 
