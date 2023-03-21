@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -118,7 +117,6 @@ class FeedMainViewModel @Inject constructor(
 
     fun fetchFeedTabs() {
         viewModelScope.launchCatchError(block = {
-            Log.d("Onboarding Shown", "Calling Gql")
             val response = withContext(dispatchers.io) {
                 feedXHeaderUseCase.setRequestParams(
                     FeedXHeaderUseCase.createParam()

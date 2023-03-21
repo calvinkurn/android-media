@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.presentation.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -328,7 +327,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     override fun onResume() {
         super.onResume()
         feedMainViewModel.updateUserInfo()
-        Log.d("Onboarding Shown", "On Resume, Fragment ${hashCode()}")
         feedMainViewModel.fetchFeedTabs()
     }
 
@@ -367,7 +365,6 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
             }
         }
 
-        Log.d("Onboarding Shown", "Fragment ${this.hashCode()}, Data: $data")
         mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
             .setCreateContentView(
                 if (data.meta.isCreationActive && !feedMainViewModel.hasShownCreateContent()) {
