@@ -13,7 +13,6 @@ import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
@@ -58,18 +57,16 @@ class CommentViewHolder {
                 val childView = item.commentType is CommentType.Child && !item.commentType.isNewlyAdded
                 val layout32 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl4)
                 val layout24 = itemView.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl3)
-                root.addOneTimeGlobalLayoutListener {
-                    root.setPadding(
-                        if (childView) ivCommentPhoto.width + 8.toPx() else 8.toPx(),
-                        root.paddingTop,
-                        root.paddingTop,
-                        root.paddingBottom
-                    )
-                    ivCommentPhoto.updateLayoutParams {
-                        width = if (childView) layout24 else layout32
-                        height = if (childView) layout24 else layout32
-                    }
+                ivCommentPhoto.updateLayoutParams {
+                    width = if (childView) layout24 else layout32
+                    height = if (childView) layout24 else layout32
                 }
+                root.setPadding(
+                    if (childView) 48.toPx() else 8.toPx(),
+                    root.paddingTop,
+                    root.paddingTop,
+                    root.paddingBottom
+                )
 
                 ivCommentPhoto.loadImage(item.photo)
                 ivCommentPhoto.setOnClickListener {
@@ -77,7 +74,14 @@ class CommentViewHolder {
                 }
 
                 tvCommentContent.text = TagMentionBuilder
-                    .getMentionTag(item = item, mentionColor, parentColor, mentionListener, parentListener, context = itemView.context)
+                    .getMentionTag(
+                        item = item,
+                        mentionColor,
+                        parentColor,
+                        mentionListener,
+                        parentListener,
+                        context = itemView.context
+                    )
                 tvCommentContent.movementMethod = LinkMovementMethod.getInstance()
                 tvCommentTime.text = item.createdTime
 
