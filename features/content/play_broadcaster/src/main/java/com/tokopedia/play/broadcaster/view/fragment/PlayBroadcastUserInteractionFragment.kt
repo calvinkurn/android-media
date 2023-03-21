@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -54,6 +55,7 @@ import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFor
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
+import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComponent
@@ -68,6 +70,7 @@ import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.util.extension.commit
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -103,6 +106,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
+    private val faceFilterSetupContainer: FragmentContainerView by detachableView(R.id.face_filter_setup_container)
 
     private val actionBarLiveView by viewComponent {
         ActionBarLiveViewComponent(
@@ -334,7 +338,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         icFaceFilter.setOnClickListener {
-            /** TODO: handle this */
+            FaceFilterSetupFragment.getFragment(
+                childFragmentManager,
+                requireActivity().classLoader
+            ).showFaceSetupBottomSheet()
+        }
+
+        childFragmentManager.commit {
+            replace(
+                faceFilterSetupContainer.id,
+                FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                FaceFilterSetupFragment.TAG,
+            )
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -439,6 +454,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
+        val faceFilterSetupFragment = FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+
         return when {
             isPinnedFormVisible() -> {
                 parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
@@ -446,6 +463,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
             isQuizFormVisible() -> {
                 parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnQuiz)
+                true
+            }
+            faceFilterSetupFragment.isBottomSheetShown -> {
+                parentViewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
                 true
             }
             /** TODO: gonna delete this */
@@ -831,6 +852,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.ShowBroadcastError -> handleBroadcastError(event.error)
                     is PlayBroadcastEvent.BroadcastRecovered -> handleBroadcastRecovered()
+                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
+                        clInteraction.hide()
+                    }
+                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
+                        clInteraction.show()
+                    }
                     else -> {}
                 }
             }

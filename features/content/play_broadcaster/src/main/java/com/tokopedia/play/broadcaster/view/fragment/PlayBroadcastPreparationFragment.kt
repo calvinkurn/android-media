@@ -59,6 +59,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.*
@@ -197,6 +198,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
+        val faceFilterSetupFragment = FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+
         return when {
             binding.formTitle.visibility == View.VISIBLE -> {
                 showTitleForm(false)
@@ -204,6 +207,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             binding.formCover.visibility == View.VISIBLE -> {
                 showCoverForm(false)
+                true
+            }
+            faceFilterSetupFragment.isBottomSheetShown -> {
+                parentViewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
                 true
             }
             else -> {
@@ -393,6 +400,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             description = getString(R.string.play_bro_banner_shorts_description)
             bannerIcon = IconUnify.SHORT_VIDEO
         }
+
+        childFragmentManager.commit {
+            replace(
+                binding.faceFilterSetupContainer.id,
+                FaceFilterSetupFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                FaceFilterSetupFragment.TAG,
+            )
+        }
     }
 
     private fun setupInsets() {
@@ -447,7 +462,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         eventBus.emit(Event.ClickSetSchedule)
                     }
                     DynamicPreparationMenu.Menu.FaceFilter -> {
-                        /** TODO: handle this */
+                        FaceFilterSetupFragment.getFragment(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        ).showFaceSetupBottomSheet()
                     }
                 }
             }
@@ -689,6 +707,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         showLoading(false)
                         handleBroadcastError(event.error)
                     }
+                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
+                        showMainComponent(false)
+                        showOverlayBackground(false)
+                    }
+                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
+                        showMainComponent(true)
+                        showOverlayBackground(true)
+                    }
                     else -> {}
                 }
             }
@@ -927,6 +953,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             binding.preparationMenu.dismissCoachMark()
         }
         binding.groupPreparationMain.showWithCondition(isShow)
+    }
+
+    private fun showOverlayBackground(isShow: Boolean) {
+        if(isShow) {
+            binding.root.setBackgroundResource(R.color.play_bro_dms_preparation_overlay)
+        }
+        else {
+            binding.root.setBackgroundResource(0)
+        }
     }
 
     private fun getProperErrorMessage(err: Throwable): String {

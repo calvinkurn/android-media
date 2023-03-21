@@ -230,6 +230,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _cover = getCurrentSetupDataStore().getSelectedCoverAsFlow()
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
+    private val _faceFilter = MutableStateFlow<List<FaceFilterUiModel>>(emptyList())
 
     var warningInfoType: WarningType = WarningType.UNKNOWN
     val tncList = mutableListOf<TermsAndConditionUiModel>()
@@ -264,6 +265,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val title = getCurrentSetupDataStore().getTitle()
             return title is PlayTitleUiModel.HasTitle && title.title.isNotEmpty()
         }
+
+    val selectedFaceFilter: FaceFilterUiModel?
+        get() = _faceFilter.value.firstOrNull { it.isSelected }
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -375,6 +379,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _menuListUiState,
         _title,
         _cover,
+        _faceFilter,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -391,7 +396,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         accountStateInfo,
         menuListUiState,
         title,
-        cover, ->
+        cover,
+        faceFilter, ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -410,6 +416,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             menuList = menuListUiState,
             title = title,
             cover = cover,
+            faceFilter = faceFilter,
         )
     }.stateIn(
         viewModelScope,
@@ -450,6 +457,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _observableChatList.value = mutableListOf()
 
         setupPreparationMenu()
+
+        /** TODO: for mocking purpose, will delete this later */
+        _faceFilter.update {
+            listOf(
+                FaceFilterUiModel(name = "Tidak ada", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Halus", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tirus", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Cerah", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 2", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 3", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 4", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+                FaceFilterUiModel(name = "Tak tau lah 5", minValue = 0.0, maxValue = 1.0, defaultValue = 0.7, value =0.7, iconUrl = "asdf", assetLink = "", isSelected = false, assetStatus = FaceFilterUiModel.AssetStatus.Available),
+            )
+        }
     }
 
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
@@ -519,6 +541,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.ClickRefreshQuizOption -> handleRefreshQuizOptionDetail()
             is PlayBroadcastAction.ClickPinProduct -> handleClickPin(event.product)
             is PlayBroadcastAction.BroadcastStateChanged -> handleBroadcastStateChanged(event.state)
+
+            /** Beautification */
+            is PlayBroadcastAction.FaceFilterBottomSheetShown -> handleFaceFilterBottomSheetShown(event.bottomSheetHeight)
+            is PlayBroadcastAction.FaceFilterBottomSheetDismissed -> handleFaceFilterBottomSheetDismissed()
+            is PlayBroadcastAction.SelectFaceFilterOption -> handleSelectFaceFilterOption(event.faceFilter)
+            is PlayBroadcastAction.ChangeFaceFilterValue -> handleChangeFaceFilterValue(event.newValue)
         }
     }
 
@@ -1631,6 +1659,40 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         mIsBroadcastStopped = true
+    }
+
+    /** Beautification */
+    private fun handleFaceFilterBottomSheetShown(bottomSheetHeight: Int) {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastEvent.FaceFilterBottomSheetShown(bottomSheetHeight))
+        }
+    }
+
+    private fun handleFaceFilterBottomSheetDismissed() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayBroadcastEvent.FaceFilterBottomSheetDismissed)
+        }
+    }
+
+    private fun handleSelectFaceFilterOption(faceFilter: FaceFilterUiModel) {
+        viewModelScope.launch {
+            _faceFilter.update { faceFilters ->
+                faceFilters.map {
+                    it.copy(isSelected = it.name == faceFilter.name)
+                }
+            }
+        }
+    }
+
+    private fun handleChangeFaceFilterValue(newValue: Int) {
+        viewModelScope.launch {
+            _faceFilter.update { faceFilters ->
+                faceFilters.map {
+                    if(it.isSelected) it.copy(value = (newValue / 100.toDouble()))
+                    else it
+                }
+            }
+        }
     }
 
     private fun getSelectedAccount(

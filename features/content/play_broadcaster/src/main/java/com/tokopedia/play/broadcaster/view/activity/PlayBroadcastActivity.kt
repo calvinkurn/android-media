@@ -1,18 +1,19 @@
 package com.tokopedia.play.broadcaster.view.activity
 
 import android.Manifest
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.SurfaceHolder
-import android.view.SurfaceView
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
@@ -32,7 +34,9 @@ import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_UNKNOWN
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PAGE
 import com.tokopedia.play.broadcaster.analytic.PLAY_BROADCASTER_TRACE_PREPARE_PAGE
@@ -48,6 +52,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
+import com.tokopedia.play.broadcaster.ui.model.FaceFilterUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
@@ -63,16 +68,23 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPreparationFrag
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.facefilter.FaceFilterSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
+import com.tokopedia.play.broadcaster.view.scale.BroadcasterFrameScalingManager
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
+import com.tokopedia.play_common.util.extension.withCache
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifycomponents.RangeSliderUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
@@ -111,18 +123,29 @@ class PlayBroadcastActivity : BaseActivity(),
     @Inject
     lateinit var remoteConfig: RemoteConfig
 
+    @Inject
+    lateinit var broadcasterFrameScalingManager: BroadcasterFrameScalingManager
+
     private lateinit var viewModel: PlayBroadcastViewModel
 
     private lateinit var containerSetup: FrameLayout
     private lateinit var globalErrorView: GlobalError
     private lateinit var aspectFrameLayout: AspectFrameLayout
     private lateinit var surfaceView: SurfaceView
+    private lateinit var surfaceCardView: CardView
 
     private var isRecreated = false
     private var isResultAfterAskPermission = false
     private var channelType = ChannelStatus.Unknown
 
     private var toasterBottomMargin = 0
+
+    private val offset8 by lazyThreadSafetyNone {
+        resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    }
+    private val offset16 by lazyThreadSafetyNone {
+        resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    }
 
     private var systemUiVisibility: Int
         get() = window.decorView.systemUiVisibility
@@ -156,6 +179,7 @@ class PlayBroadcastActivity : BaseActivity(),
         isRecreated = (savedInstanceState != null)
 
         initView()
+        initListener()
 
         if (savedInstanceState != null) {
             populateSavedState(savedInstanceState)
@@ -221,15 +245,29 @@ class PlayBroadcastActivity : BaseActivity(),
         isResultAfterAskPermission = false
     }
 
-    override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
+    override fun <T : Fragment> navigateToFragment(
+        fragmentClass: Class<out T>,
+        extras: Bundle,
+        sharedElements: List<View>,
+        onFragment: (T) -> Unit,
+        isAddToBackStack: Boolean,
+    ) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
         val currentFragment = supportFragmentManager.findFragmentById(R.id.fl_container)
         if (currentFragment == null || currentFragment::class.java != fragmentClass) {
             destFragment.arguments = extras
             fragmentTransaction
-                    .replace(R.id.fl_container, destFragment, fragmentClass.name)
-                    .commit()
+                .apply {
+                    if(isAddToBackStack) {
+                        add(R.id.fl_container, destFragment, fragmentClass.name)
+                        addToBackStack(null)
+                    }
+                    else {
+                        replace(R.id.fl_container, destFragment, fragmentClass.name)
+                    }
+                }
+                .commit()
         }
     }
 
@@ -290,6 +328,16 @@ class PlayBroadcastActivity : BaseActivity(),
                         initBroadcaster(event.data)
                         createBroadcaster()
                     }
+                    is PlayBroadcastEvent.FaceFilterBottomSheetShown -> {
+                        val fullPageHeight = findViewById<ViewGroup>(android.R.id.content).rootView.height
+                        val bottomSheetHeight = event.bottomSheetHeight
+
+                        broadcasterFrameScalingManager.scaleDown(aspectFrameLayout, bottomSheetHeight, fullPageHeight)
+                    }
+                    is PlayBroadcastEvent.FaceFilterBottomSheetDismissed -> {
+                        broadcasterFrameScalingManager.scaleUp(aspectFrameLayout)
+                        supportFragmentManager.popBackStack()
+                    }
                     else -> {}
                 }
             }
@@ -312,7 +360,34 @@ class PlayBroadcastActivity : BaseActivity(),
         globalErrorView = findViewById(R.id.global_error)
         aspectFrameLayout = findViewById(R.id.aspect_ratio_view)
         surfaceView = findViewById(R.id.surface_view)
+        surfaceCardView = findViewById(R.id.surface_card_view)
+
         surfaceView.holder.addCallback(this)
+    }
+
+    private fun initListener() {
+        broadcasterFrameScalingManager.setListener(object : BroadcasterFrameScalingManager.Listener {
+            override fun onStartScaleDown() {
+                surfaceCardView.radius = offset8.toFloat()
+            }
+
+            override fun onStartScaleUp() {
+                surfaceCardView.radius = 0f
+            }
+        })
+
+        aspectFrameLayout.setOnClickListener {
+            getCurrentFragment()?.let {
+                val isFaceFilterBottomSheetShown = FaceFilterSetupFragment.getFragment(
+                    it.childFragmentManager,
+                    classLoader
+                ).isBottomSheetShown
+
+                if(isFaceFilterBottomSheetShown) {
+                    viewModel.submitAction(PlayBroadcastAction.FaceFilterBottomSheetDismissed)
+                }
+            }
+        }
     }
 
     private fun getConfiguration() {
