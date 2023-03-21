@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_NEW_PRODUCTS
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_RESTOCK
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_ASGC_SHOP_DISCOUNT
 import com.tokopedia.feedplus.databinding.LayoutFeedCampaignRibbonBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
@@ -42,7 +43,6 @@ class FeedCampaignRibbonView(
 ) {
     private val scope = CoroutineScope(Dispatchers.Main)
 
-    var campaign: FeedCardCampaignModel? = null
     var type: FeedCampaignRibbonType = FeedCampaignRibbonType.TITLE_ONLY
     var animation: FeedXCardSubtitlesAnimationHandler? = null
 
@@ -53,7 +53,6 @@ class FeedCampaignRibbonView(
         hasVoucher: Boolean,
         isTypeHighlight: Boolean
     ) {
-        this.campaign = campaign
         with(binding) {
             if (!isTypeHighlight) {
                 root.hide()
@@ -63,16 +62,6 @@ class FeedCampaignRibbonView(
 
             type = getRibbonType(modelType)
             buildRibbonBasedOnType(campaign, ctaModel)
-
-//            tyFeedCampaignRibbonTitle.text = campaign.shortName
-//            renderRibbonByType(campaign.isReminderActive)
-//            setupTimer(campaign.endTime) {
-//                if (campaign.isUpcoming) {
-//                    listener.onTimerFinishUpcoming()
-//                } else if (campaign.isOngoing) {
-//                    listener.onTimerFinishOnGoing()
-//                }
-//            }
         }
     }
 
@@ -84,6 +73,7 @@ class FeedCampaignRibbonView(
 
     private fun getRibbonType(type: String) = when (type) {
         TYPE_FEED_ASGC_RESTOCK, TYPE_FEED_ASGC_NEW_PRODUCTS -> FeedCampaignRibbonType.ASGC_GENERAL
+        TYPE_FEED_ASGC_SHOP_DISCOUNT -> FeedCampaignRibbonType.ASGC_DISCOUNT
         else -> FeedCampaignRibbonType.TITLE_ONLY
     }
 
@@ -122,27 +112,37 @@ class FeedCampaignRibbonView(
         with(binding) {
             when (type) {
                 FeedCampaignRibbonType.ASGC_GENERAL -> {
+                    Toast.makeText(
+                        root.context,
+                        "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     tyFeedCampaignRibbonTitle.text =
                         "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}"
                     renderRibbonByType(campaign.isReminderActive)
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient(ctaModel)
-                    }
+//                    startDelayProcess(TWO_SECOND) {
+//                        setBackgroundGradient(ctaModel)
+//                    }
                 }
                 FeedCampaignRibbonType.ASGC_DISCOUNT -> {
+                    Toast.makeText(
+                        root.context,
+                        "${ctaModel.text} ${ctaModel.subtitle.joinToString(" ")}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     tyFeedCampaignRibbonTitle.text = ctaModel.text
                     renderRibbonByType(campaign.isReminderActive)
-                    startDelayProcess(TWO_SECOND) {
-                        setBackgroundGradient(ctaModel)
-                    }
+//                    startDelayProcess(TWO_SECOND) {
+//                        setBackgroundGradient(ctaModel)
+//                    }
 
-                    animation = FeedXCardSubtitlesAnimationHandler(
-                        WeakReference(tyFeedCampaignRibbonTitle),
-                        WeakReference(tyFeedCampaignRibbonTitleSecond)
-                    )
-                    animation?.subtitles = listOf(ctaModel.text) + ctaModel.subtitle
-                    animation?.checkToCancelTimer()
-                    animation?.startTimer()
+//                    animation = FeedXCardSubtitlesAnimationHandler(
+//                        WeakReference(tyFeedCampaignRibbonTitle),
+//                        WeakReference(tyFeedCampaignRibbonTitleSecond)
+//                    )
+//                    animation?.subtitles = listOf(ctaModel.text) + ctaModel.subtitle
+//                    animation?.checkToCancelTimer()
+//                    animation?.startTimer()
                 }
                 else -> {}
             }
@@ -154,7 +154,7 @@ class FeedCampaignRibbonView(
             when (type) {
                 FeedCampaignRibbonType.ASGC_GENERAL -> {
                     tyFeedCampaignRibbonTitle.show()
-                    tyFeedCampaignRibbonTitleSecond.show()
+                    tyFeedCampaignRibbonTitleSecond.hide()
                     tyFeedCampaignRibbonSmall.hide()
                     pbFeedCampaignRibbon.hide()
                     timerFeedCampaignRibbon.hide()
@@ -251,7 +251,7 @@ class FeedCampaignRibbonView(
             binding.root.context,
             R.drawable.bg_feed_campaign_ribbon_flashsale_gradient
         )
-        renderRibbonByType(campaign?.isReminderActive ?: false)
+//        renderRibbonByType(campaign?.isReminderActive ?: false)
     }
 
     private fun animateSwipeUp(
