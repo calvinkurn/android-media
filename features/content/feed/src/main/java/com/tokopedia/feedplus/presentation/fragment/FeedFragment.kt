@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
@@ -80,7 +81,8 @@ class FeedFragment :
     ProductItemInfoBottomSheet.Listener,
     ShareBottomsheetListener {
 
-    private var binding: FragmentFeedImmersiveBinding? = null
+    private var _binding: FragmentFeedImmersiveBinding? = null
+    private val binding get() = _binding!!
 
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
@@ -141,14 +143,18 @@ class FeedFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFeedImmersiveBinding.inflate(inflater, container, false)
-        return binding?.root
+        _binding = FragmentFeedImmersiveBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        feedPostViewModel.fetchFeedPosts(data?.type ?: "")
+        feedPostViewModel.fetchFeedPosts(
+            data?.type ?: "",
+            isNewData = true,
+            postId = arguments?.getString(UF_EXTRA_FEED_RELEVANT_POST)
+        )
 
         initView()
         observeClearViewData()
@@ -177,7 +183,7 @@ class FeedFragment :
     }
 
     override fun onDestroyView() {
-        binding = null
+        _binding = null
         (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOMSHEET) as? ProductItemInfoBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
@@ -487,7 +493,11 @@ class FeedFragment :
     }
 
     private fun initView() {
-        binding?.let {
+        binding.let {
+            it.swipeRefreshFeedLayout.setOnRefreshListener {
+                feedPostViewModel.fetchFeedPosts(isNewData = true)
+            }
+
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = FeedPostAdapter(FeedAdapterTypeFactory(this))
             if (adapter!!.itemCount == 0) {
@@ -518,13 +528,14 @@ class FeedFragment :
 
     private fun observePostData() {
         feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
+            binding.swipeRefreshFeedLayout.isRefreshing = false
             when (it) {
                 is Success -> {
                     adapter?.hideLoading()
                     if (it.data.items.isEmpty()) {
-                        adapter?.addElement(FeedNoContentModel())
+                        adapter?.setElements(FeedNoContentModel())
                     } else {
-                        adapter?.addElement(it.data.items)
+                        adapter?.setElements(it.data.items)
                     }
                 }
                 is Fail -> {
@@ -755,9 +766,13 @@ class FeedFragment :
         private const val TAG_FEED_MENU_BOTTOMSHEET = "TAG_FEED_MENU_BOTTOMSHEET"
         private const val TAG_FEED_PRODUCT_BOTTOMSHEET = "TAG_FEED_PRODUCT_BOTTOMSHEET"
 
-        fun createFeedFragment(data: FeedDataModel): FeedFragment = FeedFragment().also {
+        fun createFeedFragment(
+            data: FeedDataModel,
+            extras: Bundle,
+        ): FeedFragment = FeedFragment().also {
             it.arguments = Bundle().apply {
                 putParcelable(ARGUMENT_DATA, data)
+                putAll(extras)
             }
         }
     }

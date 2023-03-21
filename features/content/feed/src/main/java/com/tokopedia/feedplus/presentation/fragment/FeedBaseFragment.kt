@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.feedplus.R
@@ -57,6 +58,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     private var profileApplink: String = ""
 
     private var mOnboarding: ImmersiveFeedOnboarding? = null
+
+    private val appLinkTabPosition: Int
+        get() = arguments?.getInt(
+            ApplinkConstInternalContent.EXTRA_FEED_TAB_POSITION,
+            TAB_FIRST_INDEX
+        ) ?: TAB_FIRST_INDEX
 
     private val onNonLoginGoToFollowingTab =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -293,27 +300,32 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
     }
 
     private fun initTabsView(data: List<FeedDataModel>) {
-        adapter = FeedPagerAdapter(childFragmentManager, lifecycle, data)
+        adapter = FeedPagerAdapter(
+            childFragmentManager,
+            lifecycle,
+            data,
+            appLinkExtras = arguments ?: Bundle.EMPTY,
+        )
 
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                        onNonLoginGoToFollowingTab.launch(
-                            RouteManager.getIntent(
-                                context,
-                                ApplinkConst.LOGIN
-                            )
+            OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                    onNonLoginGoToFollowingTab.launch(
+                        RouteManager.getIntent(
+                            context,
+                            ApplinkConst.LOGIN
                         )
-                    }
-                    onChangeTab(position)
+                    )
                 }
-            })
+                onChangeTab(position)
+            }
+        })
 
         var firstTabData: FeedDataModel? = null
         var secondTabData: FeedDataModel? = null
@@ -344,6 +356,12 @@ class FeedBaseFragment : BaseDaggerFragment(), FeedContentCreationTypeBottomShee
         } else {
             binding.tyFeedSecondTab.hide()
         }
+
+        scrollToDefaultTabPosition()
+    }
+
+    private fun scrollToDefaultTabPosition() {
+        binding.vpFeedTabItemsContainer.setCurrentItem(appLinkTabPosition, true)
     }
 
     private fun onChangeTab(position: Int) {

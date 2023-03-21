@@ -122,6 +122,7 @@ class PickerViewModel @Inject constructor(
                 .flowOn(dispatchers.io)
                 .onStart { _isFetchMediaLoading.value = true }
                 .onCompletion { _isFetchMediaLoading.value = false }
+                .catch { _isFetchMediaLoading.value = false }
                 .collect { data ->
                     _medias.value = mediaToUiModel(data)
 
@@ -137,5 +138,4 @@ class PickerViewModel @Inject constructor(
     fun isOnVideoRecording(isRecord: Boolean) {
         _isOnVideoRecording.value = isRecord
     }
-
 }

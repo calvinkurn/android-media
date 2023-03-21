@@ -9,4 +9,12 @@ import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 data class FeedModel(
     val items: List<Visitable<FeedAdapterTypeFactory>>,
     val pagination: FeedPaginationModel
-)
+) {
+    companion object {
+        val Empty: FeedModel
+            get() = FeedModel(
+                items = emptyList(),
+                pagination = FeedPaginationModel.Empty,
+            )
+    }
+}

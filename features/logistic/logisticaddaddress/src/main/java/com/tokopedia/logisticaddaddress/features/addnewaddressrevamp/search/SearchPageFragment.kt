@@ -19,6 +19,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,7 +52,6 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_KOTA_KECAM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
-import com.tokopedia.logisticaddaddress.common.AddressConstants.GPS_REQUEST
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
@@ -116,6 +117,18 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
     private var binding by autoClearedNullable<FragmentSearchAddressBinding>()
 
+    private val gpsResultResolutionContract = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            bottomSheetLocUndefined?.dismiss()
+            if (allPermissionsGranted()) {
+                binding?.loaderCurrentLocation?.visibility = View.VISIBLE
+                Handler().postDelayed({ getLocation() }, GPS_DELAY)
+            }
+        }
+    }
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -178,12 +191,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             } else if (requestCode == REQUEST_ADDRESS_FORM_PAGE) {
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 newAddress?.let { finishActivity(it, false) }
-            } else if (requestCode == GPS_REQUEST) {
-                bottomSheetLocUndefined?.dismiss()
-                if (allPermissionsGranted()) {
-                    binding?.loaderCurrentLocation?.visibility = View.VISIBLE
-                    Handler().postDelayed({ getLocation() }, GPS_DELAY)
-                }
             }
         } else {
             showInitialLoadMessage()
@@ -451,7 +458,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                                     // Show the dialog by calling startResolutionForResult(), and check the
                                     // result in onActivityResult().
                                     val rae = e as ResolvableApiException
-                                    startIntentSenderForResult(rae.resolution.intentSender, GPS_REQUEST, null, 0, 0, 0, null)
+                                    val intentSenderRequest = IntentSenderRequest.Builder(rae.resolution.intentSender).build()
+                                    gpsResultResolutionContract.launch(intentSenderRequest)
                                 } catch (sie: IntentSender.SendIntentException) {
                                     sie.printStackTrace()
                                 }

@@ -347,7 +347,6 @@ class CartFragment :
                 loadCachedData()
             } else {
                 EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART)
-                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART_INCOMPLETE)
                 cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
                 cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE)
             }
@@ -3127,9 +3126,6 @@ class CartFragment :
     override fun stopCartPerformanceTrace(isSuccessLoadCart: Boolean) {
         if (!isTraceCartStopped) {
             EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART)
-            if (!isSuccessLoadCart) {
-                EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART_INCOMPLETE)
-            }
             cartPerformanceMonitoring?.stopTrace()
             isTraceCartStopped = true
         }

@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.navigation.people.UserProfileParam
 import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.content.common.navigation.shorts.PlayShortsParam
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
@@ -523,9 +524,9 @@ class UserProfileFragment @Inject constructor(
 
         if (pagerAdapter.getTabs().isEmpty()) return
         if (pagerAdapter.getFeedsTabs().isNotEmpty())
-            viewModel.submitAction(UserProfileAction.LoadFeedPosts())
+            viewModel.submitAction(UserProfileAction.LoadFeedPosts(isRefresh = true))
         if (pagerAdapter.getVideoTabs().isNotEmpty())
-            viewModel.submitAction(UserProfileAction.LoadPlayVideo())
+            viewModel.submitAction(UserProfileAction.LoadPlayVideo(isRefresh = true))
     }
 
     private fun addLiveClickListener(appLink: String) {
@@ -745,6 +746,17 @@ class UserProfileFragment @Inject constructor(
 
         pagerAdapter.insertFragment(value.tabs)
         mainBinding.profileTabs.tabLayout.showWithCondition(value.showTabs)
+
+        setupAutoSelectTabIfAny(value.tabs)
+    }
+
+    private fun setupAutoSelectTabIfAny(tabs: List<ProfileTabUiModel.Tab>) {
+        val selectedTab = UserProfileParam.getSelectedTab(activity?.intent, isRemoveAfterGet = true)
+
+        val idx = tabs.indexOfFirst { it.key == selectedTab.key }
+        if(idx != -1) {
+            mainBinding.profileTabs.viewPager.setCurrentItem(idx, false)
+        }
     }
 
     private fun createLiveFab(): FloatingButtonItem {
@@ -1102,12 +1114,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomItemClicked(item: ShopRecomUiModelItem, postPosition: Int) {
-        userProfileTracker.clickProfileRecommendation(
-            viewModel.profileUserID,
-            item,
-            item.logoImageURL,
-            postPosition
-        )
+        userProfileTracker.clickProfileRecommendation(viewModel.profileUserID, item)
         RouteManager.route(requireContext(), item.applink)
     }
 
@@ -1135,7 +1142,6 @@ class UserProfileFragment @Inject constructor(
 
         when (requestCode) {
             REQUEST_CODE_LOGIN_TO_FOLLOW -> doFollowUnfollow(isFromLogin = true)
-            REQUEST_CODE_LOGIN_TO_SET_REMINDER -> viewModel.submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
             REQUEST_CODE_LOGIN -> refreshLandingPageData(isRefreshPost = true)
         }
     }

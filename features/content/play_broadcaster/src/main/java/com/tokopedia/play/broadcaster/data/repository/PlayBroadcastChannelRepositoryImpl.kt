@@ -45,9 +45,8 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         return@withContext mapper.mapBroadcastingConfig(request)
     }
 
-    override suspend fun getAccountList(): List<ContentAccountUiModel> =
-        withContext(dispatchers.io) {
-            val response = getWhiteListUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
+    override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
+        val response = getWhiteListUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
 
             return@withContext mapper.mapAuthorList(response)
         }

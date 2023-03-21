@@ -452,6 +452,17 @@ public class MainParentActivity extends BaseActivity implements
                 } else {
                     ((OfficialHomeContainerFragment) fragment).selectTabByCategoryId(keyCategory);
                 }
+            } else if (fragment.getClass().getName().equalsIgnoreCase(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT)) {
+                try {
+                    Bundle oldArgs = fragment.getArguments();
+                    if (oldArgs == null) {
+                        oldArgs = new Bundle();
+                    }
+                    oldArgs.putAll(getIntent().getExtras());
+                    fragment.setArguments(oldArgs);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                }
             }
             selectFragment(fragment);
         }
