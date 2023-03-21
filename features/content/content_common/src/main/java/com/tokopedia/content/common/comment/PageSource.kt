@@ -40,3 +40,9 @@ sealed class PageSource {
 
     }
 }
+
+val PageSource.isPlay : Boolean
+    get() = this is PageSource.Play
+
+val PageSource.isFeed : Boolean
+    get() = this is PageSource.Feed

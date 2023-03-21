@@ -245,7 +245,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun setAnalytic(analytic: FeedAccountTypeAnalytic) {
+    fun setAnalytic(analytic: FeedAccountTypeAnalytic) { //change analytic
         mAnalytic = analytic
     }
 
