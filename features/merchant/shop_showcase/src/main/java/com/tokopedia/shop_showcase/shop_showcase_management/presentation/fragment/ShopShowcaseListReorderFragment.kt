@@ -34,10 +34,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
-        ShopShowcaseReorderListener,
-    OnStartDragListener,
-        HasComponent<ShopShowcaseManagementComponent> {
+class ShopShowcaseListReorderFragment : BaseDaggerFragment(), ShopShowcaseReorderListener,
+    OnStartDragListener, HasComponent<ShopShowcaseManagementComponent> {
 
     companion object {
         const val SHOWCASE_LIST = "SHOWCASE_LIST"
@@ -119,7 +117,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         val itemTouchHelperCallback =
             SimpleItemTouchHelperCallback(
-                shopShowcaseListReorderAdapter
+                shopShowcaseListReorderAdapter ?: return
             )
         initHeaderUnify()
         initRecyclerView()

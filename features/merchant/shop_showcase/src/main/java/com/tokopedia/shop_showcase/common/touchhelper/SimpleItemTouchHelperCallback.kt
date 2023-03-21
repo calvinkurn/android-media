@@ -13,111 +13,118 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.tokopedia.shop_showcase.common.touchhelper
 
-package com.tokopedia.shop_showcase.common.touchhelper;
-
-import android.graphics.Canvas;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
+import android.graphics.Canvas
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 
 /**
- * An implementation of {@link ItemTouchHelper.Callback} that enables basic drag & drop and
- * swipe-to-dismiss. Drag events are automatically started by an item long-press.<br/>
- * </br/>
- * Expects the <code>RecyclerView.Adapter</code> to listen for {@link
- * ItemTouchHelperAdapter} callbacks and the <code>RecyclerView.ViewHolder</code> to implement
- * {@link ItemTouchHelperViewHolder}.
+ * An implementation of [ItemTouchHelper.Callback] that enables basic drag & drop and
+ * swipe-to-dismiss. Drag events are automatically started by an item long-press.<br></br>
+ *
+ * Expects the `RecyclerView.Adapter` to listen for [ ] callbacks and the `RecyclerView.ViewHolder` to implement
+ * [ItemTouchHelperViewHolder].
  *
  * @author Paul Burke (ipaulpro)
  */
-public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
-
-    public static final float ALPHA_FULL = 1.0f;
-
-    private final ItemTouchHelperAdapter mAdapter;
-
-    public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
-        mAdapter = adapter;
+class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter) :
+    ItemTouchHelper.Callback() {
+    override fun isLongPressDragEnabled(): Boolean {
+        return true
     }
 
-    @Override
-    public boolean isLongPressDragEnabled() {
-        return true;
+    override fun isItemViewSwipeEnabled(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean isItemViewSwipeEnabled() {
-        return false;
-    }
-
-    @Override
-    public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+    override fun getMovementFlags(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
+    ): Int {
         // Set movement flags based on the layout manager
-        if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {
-            final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
-            final int swipeFlags = 0;
-            return makeMovementFlags(dragFlags, swipeFlags);
+        return if (recyclerView.layoutManager is GridLayoutManager) {
+            val dragFlags =
+                ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            val swipeFlags = 0
+            makeMovementFlags(
+                dragFlags,
+                swipeFlags
+            )
         } else {
-            final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-            final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-            return makeMovementFlags(dragFlags, swipeFlags);
+            val dragFlags =
+                ItemTouchHelper.UP or ItemTouchHelper.DOWN
+            val swipeFlags =
+                ItemTouchHelper.START or ItemTouchHelper.END
+            makeMovementFlags(
+                dragFlags,
+                swipeFlags
+            )
         }
     }
 
-    @Override
-    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder source, RecyclerView.ViewHolder target) {
-        if (source.getItemViewType() != target.getItemViewType()) {
-            return false;
+    override fun onMove(
+        recyclerView: RecyclerView,
+        source: RecyclerView.ViewHolder,
+        target: RecyclerView.ViewHolder
+    ): Boolean {
+        if (source.itemViewType != target.itemViewType) {
+            return false
         }
 
         // Notify the adapter of the move
-        mAdapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
-        return true;
+        mAdapter.onItemMove(source.adapterPosition, target.adapterPosition)
+        return true
     }
 
-    @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
         // Notify the adapter of the dismissal
-        mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+        mAdapter.onItemDismiss(viewHolder.adapterPosition)
     }
 
-    @Override
-    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+    override fun onChildDraw(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
+    ) {
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
             // Fade out the view as it is swiped out of the parent's bounds
-            final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
-            viewHolder.itemView.setAlpha(alpha);
-            viewHolder.itemView.setTranslationX(dX);
+            val alpha = ALPHA_FULL - Math.abs(dX) / viewHolder.itemView.width.toFloat()
+            viewHolder.itemView.alpha = alpha
+            viewHolder.itemView.translationX = dX
         } else {
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         }
     }
 
-    @Override
-    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+    override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         // We only want the active item to change
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            if (viewHolder instanceof ItemTouchHelperViewHolder) {
+            if (viewHolder is ItemTouchHelperViewHolder) {
                 // Let the view holder know that this item is being moved or dragged
-                ItemTouchHelperViewHolder itemViewHolder = (ItemTouchHelperViewHolder) viewHolder;
-                itemViewHolder.onItemSelected();
+                val itemViewHolder = viewHolder as ItemTouchHelperViewHolder
+                itemViewHolder.onItemSelected()
             }
         }
-
-        super.onSelectedChanged(viewHolder, actionState);
+        super.onSelectedChanged(viewHolder, actionState)
     }
 
-    @Override
-    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        super.clearView(recyclerView, viewHolder);
-
-        viewHolder.itemView.setAlpha(ALPHA_FULL);
-
-        if (viewHolder instanceof ItemTouchHelperViewHolder) {
+    override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+        super.clearView(recyclerView, viewHolder)
+        viewHolder.itemView.alpha = ALPHA_FULL
+        if (viewHolder is ItemTouchHelperViewHolder) {
             // Tell the view holder it's time to restore the idle state
-            ItemTouchHelperViewHolder itemViewHolder = (ItemTouchHelperViewHolder) viewHolder;
-            itemViewHolder.onItemClear();
+            val itemViewHolder = viewHolder as ItemTouchHelperViewHolder
+            itemViewHolder.onItemClear()
         }
+    }
+
+    companion object {
+        const val ALPHA_FULL = 1.0f
     }
 }
