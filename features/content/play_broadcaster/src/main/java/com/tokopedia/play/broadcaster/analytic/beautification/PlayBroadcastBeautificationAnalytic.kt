@@ -29,7 +29,7 @@ interface PlayBroadcastBeautificationAnalytic {
     fun openScreenBeautificationBottomSheet()
 
     /** Row 6 */
-    fun clickCustomFace(account: ContentAccountUiModel, page: Page, customFace: String) /** TODO: which one is shaping/buffing/toning? */
+    fun clickCustomFace(account: ContentAccountUiModel, page: Page, customFace: String)
 
     /** Row 7 */
     fun clickNoneCustomFace(account: ContentAccountUiModel, page: Page)
@@ -41,7 +41,7 @@ interface PlayBroadcastBeautificationAnalytic {
     fun clickBeautyFilterReset(account: ContentAccountUiModel, page: Page)
 
     /** Row 10 */
-    fun clickSliderBeautyFilter(account: ContentAccountUiModel, page: Page, tab: Tab, customFace: String) /** TODO: if user choose makeup, what is the value for shaping/buffing/toning? */
+    fun clickSliderBeautyFilter(account: ContentAccountUiModel, page: Page, tab: Tab, filterName: String)
 
     /** Row 11 */
     fun viewResetFilterPopup(account: ContentAccountUiModel, page: Page, tab: Tab)
