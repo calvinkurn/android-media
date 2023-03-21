@@ -21,6 +21,7 @@ import com.tokopedia.media.editor.utils.*
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.cache.EditorCacheManager
 import com.tokopedia.picker.common.cache.PickerCacheManager
+import com.tokopedia.utils.file.cleaner.InternalStorageCleaner
 import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
@@ -56,6 +57,11 @@ class EditorActivity : BaseEditorActivity() {
         setHeader(
             getString(editorR.string.editor_main_header_title_text),
             getString(editorR.string.editor_main_header_action_text)
+        )
+
+        InternalStorageCleaner.cleanUpInternalStorageIfNeeded(
+            this,
+            getEditorSaveFolderPath()
         )
     }
 
@@ -156,8 +162,6 @@ class EditorActivity : BaseEditorActivity() {
                 )
 
                 editorHomeAnalytics.clickUpload()
-
-                viewModel.cleanImageCache()
 
                 val intent = Intent()
                 intent.putExtra(RESULT_INTENT_EDITOR, result)

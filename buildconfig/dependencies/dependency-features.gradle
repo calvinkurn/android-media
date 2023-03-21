@@ -120,6 +120,7 @@ ext {
 
             logisticCommon                  : ":features:logistic:logisticCommon",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
+            dilayanitokopedia               : ":features:logistic:dilayanitokopedia",
             dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
             logisticseller		          : ":features:logistic:logisticseller",

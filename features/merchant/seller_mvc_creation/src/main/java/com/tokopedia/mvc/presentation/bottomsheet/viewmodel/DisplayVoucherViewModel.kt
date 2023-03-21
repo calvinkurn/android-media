@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
 import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
@@ -32,7 +33,6 @@ class DisplayVoucherViewModel @Inject constructor(
     }
 
     fun previewImage(
-        isCreateMode: Boolean,
         voucherConfiguration: VoucherConfiguration,
         parentProductIds: List<Long>,
         imageRatio: ImageRatio
@@ -41,7 +41,7 @@ class DisplayVoucherViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val result = getCouponImagePreviewUseCase.execute(
-                    isCreateMode,
+                    checkIsAdding(voucherConfiguration),
                     voucherConfiguration,
                     parentProductIds,
                     imageRatio
@@ -52,5 +52,9 @@ class DisplayVoucherViewModel @Inject constructor(
                 _error.postValue(it)
             }
         )
+    }
+
+    fun checkIsAdding(configuration: VoucherConfiguration): Boolean {
+        return configuration.voucherId.isZero()
     }
 }
