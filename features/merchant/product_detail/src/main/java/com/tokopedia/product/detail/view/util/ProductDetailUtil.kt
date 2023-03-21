@@ -371,3 +371,7 @@ fun ViewStub.inflateWithBinding(onInflate: (View) -> Unit) {
         this.inflate()
     }
 }
+
+fun ViewStub.isInflated(): Boolean {
+    return this.parent == null
+}

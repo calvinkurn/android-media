@@ -1,5 +1,8 @@
 package com.tokopedia.tokopedianow.home.presentation.adapter
 
+import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemShimmeringUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetItemUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEmptyStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
@@ -29,4 +32,7 @@ interface HomeTypeFactory {
     fun type(uiModel: HomeSwitcherUiModel): Int
     fun type(uiModel: HomeLeftCarouselAtcUiModel): Int
     fun type(uiModel: HomePlayWidgetUiModel): Int
+    fun type(uiModel: HomeClaimCouponWidgetItemUiModel): Int
+    fun type(uiModel: HomeClaimCouponWidgetUiModel): Int
+    fun type(uiModel: HomeClaimCouponWidgetItemShimmeringUiModel): Int
 }

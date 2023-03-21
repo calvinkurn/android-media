@@ -21,13 +21,19 @@ import com.tokopedia.tokomember_seller_dashboard.model.TripleDotsItem
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_CASHBACK
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DELETED
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_ENDED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_MEMBER
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_NOT_STARTED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_ON_GOING
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_PROCESSING
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_SHIPPING
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_STOPPED
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TYPE_CASHBACK
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TYPE_DISCOUNT
+import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TYPE_SHIPPING
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
@@ -57,7 +63,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
     lateinit var btnAddQuota: UnifyButton
 
     @SuppressLint("ResourcePackage", "SetTextI18n")
-    fun bind(item: VouchersItem, tmCouponActions: TmCouponActions,callback: TmCouponDetailCallback?,tmTracker:TmTracker?, tmCouponListRefreshCallback: TmCouponListRefreshCallback) {
+    fun bind(item: VouchersItem, tmCouponActions: TmCouponActions, callback: TmCouponDetailCallback?, tmTracker: TmTracker?, tmCouponListRefreshCallback: TmCouponListRefreshCallback) {
         viewStatus = itemView.findViewById(R.id.view_status)
         tvCouponState = itemView.findViewById(R.id.tv_coupon_state)
         tvDate = itemView.findViewById(R.id.tv_date)
@@ -69,9 +75,9 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
         btnAddQuota = itemView.findViewById(R.id.btn_add_quota)
 
         tvDate.text = "${item.voucherStartTime?.let { setDatePreview(it.replace("T", " ").replace("Z", "")) }} - ${
-            item.voucherFinishTime?.let {
-                setDatePreview(it.replace("T", " ").replace("Z", ""))
-            }
+        item.voucherFinishTime?.let {
+            setDatePreview(it.replace("T", " ").replace("Z", ""))
+        }
         }"
         tvCouponTitle.text = item.voucherName
         when (item.minimumTierLevel) {
@@ -164,14 +170,22 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                         tripleDots.add(TripleDotsItem("Ubah Kupon", EDIT))
                         tripleDots.add(TripleDotsItem("Hapus Kupon", DELETE))
                         actions.tripleDots = tripleDots
-                        item.voucherTypeFormatted?.let { it2 ->
-                            item.voucherQuota?.let { it3 ->
-                                TokomemberOptionsMenuBottomsheet.show(
-                                    Gson().toJson(actions), fragmentManager, tmCouponActions, it1,
-                                    it2,
-                                    it3
-                                )
-                            }
+
+                        val voucherType = when (item.voucherType) {
+                            COUPON_TYPE_SHIPPING -> COUPON_SHIPPING
+                            COUPON_TYPE_CASHBACK -> COUPON_CASHBACK
+                            COUPON_TYPE_DISCOUNT -> COUPON_DISCOUNT
+                            else -> { "" }
+                        }
+                        item.voucherQuota?.let { it3 ->
+                            TokomemberOptionsMenuBottomsheet.show(
+                                Gson().toJson(actions),
+                                fragmentManager,
+                                tmCouponActions,
+                                it1,
+                                voucherType,
+                                it3
+                            )
                         }
                     }
                 }
@@ -201,19 +215,23 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                         tripleDots.add(TripleDotsItem("Bagikan", SHARE))
                         tripleDots.add(TripleDotsItem("Hentikan Kupon", STOP))
                         actions.tripleDots = tripleDots
-                        item.voucherTypeFormatted?.let { it2 ->
-                            item.voucherQuota?.let { it3 ->
-                                item.voucherDiscountAmtMax?.let { it4 ->
-                                    TokomemberOptionsMenuBottomsheet.show(
-                                        Gson().toJson(actions),
-                                        fragmentManager,
-                                        tmCouponActions,
-                                        it1,
-                                        it2,
-                                        it3,
-                                        it4
-                                    )
-                                }
+                        val voucherType = when (item.voucherType) {
+                            COUPON_TYPE_SHIPPING -> COUPON_SHIPPING
+                            COUPON_TYPE_CASHBACK -> COUPON_CASHBACK
+                            COUPON_TYPE_DISCOUNT -> COUPON_DISCOUNT
+                            else -> { "" }
+                        }
+                        item.voucherQuota?.let { it3 ->
+                            item.voucherDiscountAmtMax?.let { it4 ->
+                                TokomemberOptionsMenuBottomsheet.show(
+                                    Gson().toJson(actions),
+                                    fragmentManager,
+                                    tmCouponActions,
+                                    it1,
+                                    voucherType,
+                                    it3,
+                                    it4
+                                )
                             }
                         }
                     }
@@ -260,9 +278,19 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                     val tripleDots = arrayListOf<TripleDotsItem?>()
                     tripleDots.add(TripleDotsItem("Duplikat Kupon", DUPLICATE))
                     actions.tripleDots = tripleDots
+
+                    val voucherType = when (item.voucherType) {
+                        COUPON_TYPE_SHIPPING -> COUPON_SHIPPING
+                        COUPON_TYPE_CASHBACK -> COUPON_CASHBACK
+                        COUPON_TYPE_DISCOUNT -> COUPON_DISCOUNT
+                        else -> { "" }
+                    }
                     TokomemberOptionsMenuBottomsheet.show(
-                        Gson().toJson(actions), fragmentManager, tmCouponActions, item.voucherId,
-                        item.voucherTypeFormatted,
+                        Gson().toJson(actions),
+                        fragmentManager,
+                        tmCouponActions,
+                        item.voucherId,
+                        voucherType,
                         0
                     )
                 }
@@ -291,13 +319,22 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                     val tripleDots = arrayListOf<TripleDotsItem?>()
                     tripleDots.add(TripleDotsItem("Duplikat Kupon", DUPLICATE))
                     actions.tripleDots = tripleDots
+
+                    val voucherType = when (item.voucherType) {
+                        COUPON_TYPE_SHIPPING -> COUPON_SHIPPING
+                        COUPON_TYPE_CASHBACK -> COUPON_CASHBACK
+                        COUPON_TYPE_DISCOUNT -> COUPON_DISCOUNT
+                        else -> { "" }
+                    }
                     TokomemberOptionsMenuBottomsheet.show(
-                        Gson().toJson(actions), fragmentManager, tmCouponActions, item.voucherId,
-                        item.voucherTypeFormatted,
+                        Gson().toJson(actions),
+                        fragmentManager,
+                        tmCouponActions,
+                        item.voucherId,
+                        voucherType,
                         0
                     )
                 }
-
             }
         }
 
@@ -319,16 +356,23 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
             )
             btnAddQuota.show()
             btnAddQuota.setOnClickListener {
+                val voucherType = when (item.voucherType) {
+                    COUPON_TYPE_SHIPPING -> COUPON_SHIPPING
+                    COUPON_TYPE_CASHBACK -> COUPON_CASHBACK
+                    COUPON_TYPE_DISCOUNT -> COUPON_DISCOUNT
+                    else -> { "" }
+                }
                 tmTracker?.clickBsAddQuotaButton(item.shopId)
                 item.voucherId?.let { it1 ->
-                    item.voucherTypeFormatted?.let { it2 ->
-                        item.voucherQuota?.let { it3 ->
-                            item.voucherDiscountAmtMax?.let { it4 ->
-                                tmCouponActions.option(
-                                    ADD_QUOTA, it1,
-                                    it2.lowercase(), it3, it4
-                                )
-                            }
+                    item.voucherQuota?.let { it3 ->
+                        item.voucherDiscountAmtMax?.let { it4 ->
+                            tmCouponActions.option(
+                                ADD_QUOTA,
+                                it1,
+                                voucherType,
+                                it3,
+                                it4
+                            )
                         }
                     }
                 }
@@ -344,14 +388,22 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                     val tripleDots = arrayListOf<TripleDotsItem?>()
                     tripleDots.add(TripleDotsItem("Hentikan Kupon", STOP))
                     actions.tripleDots = tripleDots
-                    item.voucherTypeFormatted?.let { it2 ->
-                        item.voucherQuota?.let { it3 ->
-                            TokomemberOptionsMenuBottomsheet.show(
-                                Gson().toJson(actions), fragmentManager, tmCouponActions, it1,
-                                it2,
-                                it3,
-                            )
-                        }
+
+                    val voucherType = when (item.voucherType) {
+                        COUPON_TYPE_SHIPPING -> COUPON_SHIPPING
+                        COUPON_TYPE_CASHBACK -> COUPON_CASHBACK
+                        COUPON_TYPE_DISCOUNT -> COUPON_DISCOUNT
+                        else -> { "" }
+                    }
+                    item.voucherQuota?.let { it3 ->
+                        TokomemberOptionsMenuBottomsheet.show(
+                            Gson().toJson(actions),
+                            fragmentManager,
+                            tmCouponActions,
+                            it1,
+                            voucherType,
+                            it3
+                        )
                     }
                 }
             }
@@ -363,7 +415,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
         }
     }
 
-    companion object{
+    companion object {
         val LAYOUT = R.layout.tm_coupon_list_item
     }
 }

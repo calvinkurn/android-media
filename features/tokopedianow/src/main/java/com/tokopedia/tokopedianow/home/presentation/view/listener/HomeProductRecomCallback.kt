@@ -80,7 +80,7 @@ class HomeProductRecomCallback(
         channelId: String
     ) {
         if (userSession.isLoggedIn) {
-            viewModel.addProductToCart(
+            viewModel.onCartQuantityChanged(
                 channelId = channelId,
                 productId = product.productCardModel.productId,
                 quantity = quantity,

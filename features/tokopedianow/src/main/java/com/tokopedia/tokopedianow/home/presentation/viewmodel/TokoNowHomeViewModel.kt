@@ -3,31 +3,25 @@ package com.tokopedia.tokopedianow.home.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
-import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ServiceType
@@ -36,28 +30,33 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
+import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.HOME_PAGE
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
+import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHomeLayout
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProgressBar
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getItem
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCatalogCouponList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryMenuData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeClaimCouponList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapPlayWidgetData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
@@ -81,13 +80,20 @@ import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapReal
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapRealTimeRecommendation
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.mapRefreshRealTimeRecommendation
 import com.tokopedia.tokopedianow.home.domain.mapper.RealTimeRecomMapper.removeRealTimeRecommendation
-import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getVisitableId
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
-import com.tokopedia.tokopedianow.home.domain.usecase.*
+import com.tokopedia.tokopedianow.home.domain.usecase.GetCatalogCouponListUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeReferralUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.RedeemCouponUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.ReferralEvaluateJoinUseCase
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.DEFAULT_QUANTITY
+import com.tokopedia.tokopedianow.home.presentation.model.HomeClaimCouponDataModel
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
@@ -101,6 +107,9 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeReceiverReferralDialogUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIMED
+import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -116,9 +125,6 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getCategoryListUseCase: GetCategoryListUseCase,
     private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
-    private val addToCartUseCase: AddToCartUseCase,
-    private val updateCartUseCase: UpdateCartUseCase,
-    private val deleteCartUseCase: DeleteCartUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val getRepurchaseWidgetUseCase: GetRepurchaseWidgetUseCase,
@@ -126,11 +132,25 @@ class TokoNowHomeViewModel @Inject constructor(
     private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     private val getHomeReferralUseCase: GetHomeReferralUseCase,
     private val referralEvaluateJoinUseCase: ReferralEvaluateJoinUseCase,
+    private val getCatalogCouponListUseCase: GetCatalogCouponListUseCase,
+    private val redeemCouponUseCase: RedeemCouponUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.io) {
+    private val dispatchers: CoroutineDispatchers,
+    addToCartUseCase: AddToCartUseCase,
+    updateCartUseCase: UpdateCartUseCase,
+    deleteCartUseCase: DeleteCartUseCase,
+    addressData: TokoNowLocalAddress
+) : BaseTokoNowViewModel(
+    addToCartUseCase,
+    updateCartUseCase,
+    deleteCartUseCase,
+    getMiniCartUseCase,
+    addressData,
+    userSession,
+    dispatchers
+) {
 
     companion object {
         private const val DEFAULT_INDEX = 1
@@ -142,16 +162,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _homeLayoutList
     val keywordSearch: LiveData<SearchPlaceholder>
         get() = _keywordSearch
-    val miniCart: LiveData<Result<MiniCartSimplifiedData>>
-        get() = _miniCart
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
-    val miniCartAdd: LiveData<Result<AddToCartDataModel>>
-        get() = _miniCartAdd
-    val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
-        get() = _miniCartUpdate
-    val miniCartRemove: LiveData<Result<Pair<String, String>>>
-        get() = _miniCartRemove
     val homeAddToCartTracker: LiveData<HomeAddToCartTracker>
         get() = _homeAddToCartTracker
     val homeRemoveFromCartTracker: LiveData<HomeRemoveFromCartTracker>
@@ -172,16 +184,14 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _updateToolbarNotification
     val referralEvaluate: LiveData<Result<HomeReceiverReferralDialogUiModel>>
         get() = _referralEvaluate
+    val couponClaimed: LiveData<Result<HomeClaimCouponDataModel>>
+        get() = _couponClaimed
     val blockAddToCart: LiveData<Unit>
         get() = _blockAddToCart
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
-    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
-    private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
-    private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
-    private val _miniCartRemove = MutableLiveData<Result<Pair<String, String>>>()
     private val _homeAddToCartTracker = MutableLiveData<HomeAddToCartTracker>()
     private val _homeRemoveFromCartTracker = MutableLiveData<HomeRemoveFromCartTracker>()
     private val _atcQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
@@ -192,10 +202,10 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _invalidatePlayImpression = MutableLiveData<Boolean>()
     private val _updateToolbarNotification = MutableLiveData<Boolean>()
     private val _referralEvaluate = MutableLiveData<Result<HomeReceiverReferralDialogUiModel>>()
+    private val _couponClaimed = MutableLiveData<Result<HomeClaimCouponDataModel>>()
     private val _blockAddToCart = MutableLiveData<Unit>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel?>()
-    private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var channelToken = ""
     private var headerYCoordinate = 0f
     private var getHomeLayoutJob: Job? = null
@@ -261,7 +271,7 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.mapHomeLayoutList(
                 response = homeLayoutResponse,
                 removeAbleWidgets = removeAbleWidgets,
-                miniCartData = miniCartSimplifiedData,
+                miniCartData = miniCartData,
                 localCacheModel = localCacheModel,
                 isLoggedIn = userSession.isLoggedIn,
                 hasBlockedAddToCart = needToBlockAtc,
@@ -307,7 +317,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutItemList.addMoreHomeLayout(
                     response = homeLayoutResponse,
                     removeAbleWidgets = removeAbleWidgets,
-                    miniCartData = miniCartSimplifiedData,
+                    miniCartData = miniCartData,
                     localCacheModel = localCacheModel,
                     hasBlockedAddToCart = needToBlockAtc
                 )
@@ -379,27 +389,110 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    fun addProductToCart(
+    fun getCatalogCouponList(
+        widgetId: String,
+        slugs: List<String>
+    ) {
+        launchCatchError(block = {
+            val response = getCatalogCouponListUseCase.execute(
+                catalogSlugs = slugs
+            )
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                response = response,
+                widgetId = widgetId,
+                slugs = slugs,
+                state = TokoNowLayoutState.SHOW,
+            )
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.UPDATE
+            )
+            _homeLayoutList.postValue(Success(data))
+        }) {
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                widgetId = widgetId,
+                slugs = slugs,
+                state = TokoNowLayoutState.HIDE
+            )
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.UPDATE
+            )
+            _homeLayoutList.postValue(Success(data))
+        }
+    }
+
+    fun claimCoupon(
+        widgetId: String,
+        catalogId: String,
+        couponStatus: String,
+        position: Int,
+        slugText: String,
+        couponName: String,
+        warehouseId: String
+    ) {
+        launchCatchError(block = {
+            if (userSession.isLoggedIn) {
+                val response = redeemCouponUseCase.execute(catalogId)
+                val coupon = response.mapToClaimCouponDataModel(
+                    couponStatus = couponStatus,
+                    position = position,
+                    slugText = slugText,
+                    couponName = couponName,
+                    warehouseId = warehouseId
+                )
+                _couponClaimed.postValue(Success(coupon))
+
+                homeLayoutItemList.mapHomeClaimCouponList(
+                    widgetId = widgetId,
+                    catalogId = catalogId,
+                    ctaText = COUPON_STATUS_CLAIMED
+                )
+                val data = HomeLayoutListUiModel(
+                    items = getHomeVisitableList(),
+                    state = TokoNowLayoutState.UPDATE
+                )
+                _homeLayoutList.postValue(Success(data))
+            } else {
+                _couponClaimed.postValue(Success(HomeClaimCouponDataModel(code = COUPON_STATUS_LOGIN)))
+            }
+        }) {
+            _couponClaimed.postValue(Fail(it))
+        }
+    }
+
+    fun onCartQuantityChanged(
         channelId: String = "",
         productId: String,
         quantity: Int,
         shopId: String,
         @TokoNowLayoutType type: String
     ) {
-        val miniCartItem = getMiniCartItem(productId)
-        when {
-            // this only blocks add to cart when using repurchase widget
-            needToBlockAtc -> _blockAddToCart.value = Unit
-            miniCartItem == null && quantity.isZero() -> { /* do nothing */ }
-            miniCartItem == null -> addItemToCart(channelId, productId, shopId, quantity, type)
-            quantity.isZero() -> removeItemCart(miniCartItem, type)
-            else -> updateItemCart(miniCartItem, quantity, type)
-        }
-    }
-
-    fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
-        val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
-        return items.getMiniCartItemProduct(productId)
+        onCartQuantityChanged(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity,
+            onSuccessAddToCart = {
+                trackProductAddToCart(productId, quantity, type, it.data.cartId)
+                updateProductCartQuantity(productId, quantity, type)
+                checkRealTimeRecommendation(channelId, productId, type)
+                updateToolbarNotification()
+            },
+            onSuccessUpdateCart = { miniCartItem, _ ->
+                val cartId = miniCartItem.cartId
+                trackProductUpdateCart(productId, quantity, type, cartId)
+                updateProductCartQuantity(productId, quantity, type)
+                updateToolbarNotification()
+            },
+            onSuccessDeleteCart = { miniCartItem, _ ->
+                trackProductRemoveCart(productId, type, miniCartItem.cartId)
+                updateProductCartQuantity(productId, DEFAULT_QUANTITY, type)
+                updateToolbarNotification()
+            },
+            onError = {
+                updateProductCartQuantity(productId, quantity, type)
+            }
+        )
     }
 
     fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
@@ -627,6 +720,7 @@ class TokoNowHomeViewModel @Inject constructor(
             is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
             is HomePlayWidgetUiModel -> getPlayWidgetAsync(item).await()
+            is HomeClaimCouponWidgetUiModel -> getCatalogCouponListAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
     }
@@ -654,7 +748,7 @@ class TokoNowHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val response = getRepurchaseWidgetUseCase.execute(warehouseId)
             if (response.products.isNotEmpty()) {
-                homeLayoutItemList.mapProductPurchaseData(item, response, miniCartSimplifiedData)
+                homeLayoutItemList.mapProductPurchaseData(item, response, miniCartData)
             } else {
                 homeLayoutItemList.removeItem(item.id)
             }
@@ -671,6 +765,24 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.mapHomeCategoryMenuData(response, warehouseId)
         }) {
             homeLayoutItemList.mapHomeCategoryMenuData(emptyList())
+        }
+    }
+
+    private suspend fun getCatalogCouponListAsync(item: HomeClaimCouponWidgetUiModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getCatalogCouponListUseCase.execute(
+                catalogSlugs = item.slugs
+            )
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                widgetId = item.id,
+                response = response,
+                state = TokoNowLayoutState.SHOW
+            )
+        }) {
+            homeLayoutItemList.mapHomeCatalogCouponList(
+                widgetId = item.id,
+                state = TokoNowLayoutState.HIDE
+            )
         }
     }
 
@@ -782,31 +894,6 @@ class TokoNowHomeViewModel @Inject constructor(
         return HomePlayWidgetUiModel(item.id, widgetType, widgetState, isAutoRefresh)
     }
 
-    private fun addItemToCart(
-        channelId: String,
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        @TokoNowLayoutType type: String
-    ) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-            productId = productId,
-            shopId = shopId,
-            quantity = quantity
-        )
-        addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute({
-            trackProductAddToCart(productId, quantity, type, it.data.cartId)
-            updateAddToCartQuantity(productId, quantity, type)
-            checkRealTimeRecommendation(channelId, productId, type)
-            updateToolbarNotification()
-            _miniCartAdd.postValue(Success(it))
-        }, {
-            updateAddToCartQuantity(productId, quantity, type)
-            _miniCartAdd.postValue(Fail(it))
-        })
-    }
-
     fun refreshRealTimeRecommendation(
         channelId: String,
         productId: String,
@@ -881,7 +968,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutItemList.mapRealTimeRecommendation(
                     channelId,
                     recommendationWidgets.first(),
-                    miniCartSimplifiedData,
+                    miniCartData,
                     type
                 )
             } else {
@@ -928,7 +1015,7 @@ class TokoNowHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    private fun updateAddToCartQuantity(
+    private fun updateProductCartQuantity(
         productId: String,
         quantity: Int,
         @TokoNowLayoutType type: String
@@ -943,52 +1030,6 @@ class TokoNowHomeViewModel @Inject constructor(
         _atcQuantity.postValue(Success(data))
     }
 
-    private fun updateItemCart(
-        miniCartItem: MiniCartItem.MiniCartItemProduct,
-        quantity: Int,
-        @TokoNowLayoutType type: String
-    ) {
-        miniCartItem.quantity = quantity
-        val cartId = miniCartItem.cartId
-        val productId = miniCartItem.productId
-
-        val updateCartRequest = UpdateCartRequest(
-            cartId = cartId,
-            quantity = miniCartItem.quantity,
-            notes = miniCartItem.notes
-        )
-        updateCartUseCase.setParams(
-            updateCartRequestList = listOf(updateCartRequest),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
-        )
-        updateCartUseCase.execute({
-            trackProductUpdateCart(productId, quantity, type, cartId)
-            updateAddToCartQuantity(productId, quantity, type)
-            updateToolbarNotification()
-            _miniCartUpdate.value = Success(it)
-        }, {
-            updateAddToCartQuantity(productId, quantity, type)
-            _miniCartUpdate.postValue(Fail(it))
-        })
-    }
-
-    private fun removeItemCart(miniCartItem: MiniCartItem.MiniCartItemProduct, @TokoNowLayoutType type: String) {
-        deleteCartUseCase.setParams(
-            cartIdList = listOf(miniCartItem.cartId)
-        )
-        val productId = miniCartItem.productId
-        deleteCartUseCase.execute({
-            val data = Pair(productId, it.data.message.joinToString(separator = ", "))
-            trackProductRemoveCart(productId, type, miniCartItem.cartId)
-            updateAddToCartQuantity(productId, DEFAULT_QUANTITY, type)
-            updateToolbarNotification()
-            _miniCartRemove.postValue(Success(data))
-        }, {
-            updateAddToCartQuantity(productId, DEFAULT_QUANTITY, type)
-            _miniCartRemove.postValue(Fail(it))
-        })
-    }
-
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
         setMiniCartSimplifiedData(miniCart)
         updateProductQuantity(miniCart)
@@ -1001,7 +1042,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData) {
-        miniCartSimplifiedData = miniCart
+        setMiniCartData(miniCart)
     }
 
     private fun trackProductAddToCart(

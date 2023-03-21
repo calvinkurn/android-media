@@ -8,6 +8,7 @@ import javax.inject.Inject
 class TokoChatAnalytics @Inject constructor() {
 
     private val tracking: ContextAnalytics by lazy(LazyThreadSafetyMode.NONE) { TrackApp.getInstance().gtm }
+    private val pendingTracker: ArrayList<MutableMap<String, String>> = arrayListOf()
 
     fun clickCallButtonFromChatRoom(
         orderStatus: String,
@@ -173,7 +174,69 @@ class TokoChatAnalytics @Inject constructor() {
         role: String,
         source: String
     ) {
-        val mapData = mapOf(
+        val mapData = createMapDataImpressImageAttachment(
+            attachmentId,
+            orderStatus,
+            orderId,
+            role,
+            source
+        )
+        tracking.sendGeneralEvent(mapData.toMap())
+    }
+
+    fun saveImpressionOnImageAttachment(
+        attachmentId: String,
+        orderStatus: String,
+        orderId: String,
+        role: String,
+        source: String
+    ) {
+        val mutableMap = createMapDataImpressImageAttachment(
+            attachmentId,
+            orderStatus,
+            orderId,
+            role,
+            source
+        )
+        mutableMap[TokoChatAnalyticsConstants.ATTACHMENT_ID] = attachmentId
+        mutableMap[TokoChatAnalyticsConstants.ORDER_ID] = orderId
+        mutableMap[TokoChatAnalyticsConstants.ROLE] = role
+        mutableMap[TokoChatAnalyticsConstants.SOURCE] = source
+        pendingTracker.add(mutableMap)
+    }
+
+    fun sendPendingImpressionOnImageAttachment(orderStatus: String) {
+        val iterator = pendingTracker.iterator()
+        while (iterator.hasNext()) {
+            val mapData = iterator.next()
+            if (mapData[TrackAppUtils.EVENT_ACTION] ==
+                TokoChatAnalyticsConstants.IMPRESSION_ON_IMAGE_ATTACHMENT
+            ) {
+                val attachmentId = mapData[TokoChatAnalyticsConstants.ATTACHMENT_ID]
+                mapData.remove(TokoChatAnalyticsConstants.ATTACHMENT_ID)
+                val orderId = mapData[TokoChatAnalyticsConstants.ORDER_ID]
+                mapData.remove(TokoChatAnalyticsConstants.ORDER_ID)
+                val source = mapData[TokoChatAnalyticsConstants.SOURCE]
+                mapData.remove(TokoChatAnalyticsConstants.SOURCE)
+                val role = mapData[TokoChatAnalyticsConstants.ROLE]
+                mapData.remove(TokoChatAnalyticsConstants.ROLE)
+                mapData.remove(TokoChatAnalyticsConstants.ORDER_STATUS)
+                mapData[TrackAppUtils.EVENT_LABEL] =
+                    "$attachmentId - $orderStatus - $orderId - $source - $role"
+                tracking.sendGeneralEvent(mapData.toMap())
+                iterator.remove()
+            }
+        }
+    }
+
+    private fun createMapDataImpressImageAttachment(
+        attachmentId: String,
+        orderStatus: String,
+        orderId: String,
+        role: String,
+        source: String
+    ): MutableMap<String, String> {
+        return mutableMapOf(
             TrackAppUtils.EVENT to TokoChatAnalyticsConstants.VIEW_COMMUNICATION_IRIS,
             TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.IMPRESSION_ON_IMAGE_ATTACHMENT,
             TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_DETAIL,
@@ -182,7 +245,6 @@ class TokoChatAnalytics @Inject constructor() {
             TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
             TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
         )
-        tracking.sendGeneralEvent(mapData)
     }
 
     fun clickImageAttachment(

@@ -35,7 +35,7 @@ class HomeRealTimeRecommendationListener(
         quantity: Int
     ) {
         if (userSession.isLoggedIn) {
-            viewModel.addProductToCart(
+            viewModel.onCartQuantityChanged(
                 channelId = channelId,
                 productId = item.getProductId(),
                 quantity = quantity,

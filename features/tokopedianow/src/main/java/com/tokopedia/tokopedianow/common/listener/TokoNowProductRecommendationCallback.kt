@@ -46,7 +46,7 @@ class TokoNowProductRecommendationCallback(
         if (!viewModel.isLogin) {
             listener?.openLoginPage()
         } else {
-            viewModel.addProductToCart(
+            viewModel.onCartQuantityChanged(
                 position = position,
                 shopId = product.shopId,
                 quantity = quantity
