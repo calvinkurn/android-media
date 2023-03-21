@@ -109,38 +109,38 @@ import com.tokopedia.config.GlobalConfig
  */
 @TokopediaAppLink(
     ApplinkConst.TokopediaNow.SHOP_PAGE_NOW_1,
-    DLP.DLPType.START_WITH,
-    ApplinkConstInternalTokopediaNow.HOME
+    ApplinkConstInternalTokopediaNow.HOME,
+    DLP.DLPType.START_WITH
 )
 @TokopediaAppLink(
     ApplinkConst.TokopediaNow.SHOP_PAGE_NOW_2,
+    ApplinkConstInternalTokopediaNow.HOME,
     DLP.DLPType.START_WITH,
-    ApplinkConstInternalTokopediaNow.HOME
 )
 @TokopediaAppLink(
     ApplinkConst.SHOP,
+    ApplinkConstInternalMarketplace.SHOP_PAGE,
     DLP.DLPType.MATCH_PATTERN,
-    ApplinkConstInternalMarketplace.SHOP_PAGE
 )
 @TokopediaAppLink(
     ApplinkConst.SHOP_HOME,
-    DLP.DLPType.MATCH_PATTERN,
-    ApplinkConstInternalMarketplace.SHOP_PAGE_HOME
+    ApplinkConstInternalMarketplace.SHOP_PAGE_HOME,
+    DLP.DLPType.MATCH_PATTERN
 )
 @TokopediaAppLink(
     ApplinkConst.SHOP_PRODUCT,
-    DLP.DLPType.MATCH_PATTERN,
-    ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT
+    ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT,
+    DLP.DLPType.MATCH_PATTERN
 )
 @TokopediaAppLink(
     ApplinkConst.SHOP_FEED,
-    DLP.DLPType.MATCH_PATTERN,
-    ApplinkConstInternalMarketplace.SHOP_PAGE_FEED
+    ApplinkConstInternalMarketplace.SHOP_PAGE_FEED,
+    DLP.DLPType.MATCH_PATTERN
 )
 @TokopediaAppLink(
     ApplinkConst.SHOP_REVIEW,
-    DLP.DLPType.MATCH_PATTERN,
-    ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW
+    ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW,
+    DLP.DLPType.MATCH_PATTERN
 )
 object DeeplinkMapper {
 
