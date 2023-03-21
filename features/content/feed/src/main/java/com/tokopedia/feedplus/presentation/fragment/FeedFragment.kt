@@ -550,10 +550,16 @@ class FeedFragment :
         feedPostViewModel.followResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    showToast(getString(feedR.string.feed_message_success_follow), Toaster.TYPE_NORMAL)
+                    showToast(
+                        getString(feedR.string.feed_message_success_follow, it.data),
+                        Toaster.TYPE_NORMAL
+                    )
                 }
                 is Fail -> {
-                    showToast(getString(feedR.string.feed_message_failed_follow), Toaster.TYPE_ERROR)
+                    showToast(
+                        getString(feedR.string.feed_message_failed_follow),
+                        Toaster.TYPE_ERROR
+                    )
                 }
             }
         }
@@ -764,7 +770,7 @@ class FeedFragment :
 
         fun createFeedFragment(
             data: FeedDataModel,
-            extras: Bundle,
+            extras: Bundle
         ): FeedFragment = FeedFragment().also {
             it.arguments = Bundle().apply {
                 putParcelable(ARGUMENT_DATA, data)
