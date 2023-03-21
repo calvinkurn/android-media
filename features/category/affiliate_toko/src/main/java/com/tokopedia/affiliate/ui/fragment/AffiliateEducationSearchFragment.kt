@@ -90,8 +90,8 @@ class AffiliateEducationSearchFragment :
         searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
         searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH && !searchTextField.text.toString()
-                        .isNullOrEmpty()
+                if (actionId == EditorInfo.IME_ACTION_SEARCH && !searchTextField.text
+                    .isNullOrEmpty()
                 ) {
                     affiliateEducationSearchViewModel?.searchKeyword?.value =
                         searchTextField.text.toString()
@@ -109,6 +109,7 @@ class AffiliateEducationSearchFragment :
     private fun setupViewPager() {
         val tabLayout = view?.findViewById<TabsUnify>(R.id.tab_layout_education_search)
         viewPager = view?.findViewById(R.id.view_pager_education_search)
+        viewPager?.isUserInputEnabled = false
         activity?.let {
             tabFragments.add(
                 AffiliateEducationSearchArticleFragment.getFragmentInstance(
@@ -155,7 +156,6 @@ class AffiliateEducationSearchFragment :
                             adapter.setOnSelectView(tab)
                         }
                     }
-
                 })
         }
         setCustomTabText(requireContext(), tabLayout?.getUnifyTabLayout())
@@ -166,7 +166,6 @@ class AffiliateEducationSearchFragment :
             .builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .build()
-
 
     private fun setCustomTabText(context: Context?, tabLayout: TabLayout?) {
         if (context != null && tabLayout != null) {
@@ -209,7 +208,6 @@ class AffiliateEducationSearchFragment :
                         com.tokopedia.unifyprinciples.R.color.Unify_N700_44
                     )
                 )
-
             }
             tabLayout.getTabAt(0)?.customView = tabOne
             tabLayout.getTabAt(1)?.customView = tabTwo

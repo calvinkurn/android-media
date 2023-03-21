@@ -46,8 +46,10 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
     private var categoryToArticleCardMap =
         mutableMapOf<String, AffiliateEducationSearchArticleCardsResponse.SearchEducation.Data?>()
     var currentCategoryId: String? = null
-    private var highlightedArticleCardMap =
+    private var latestArticleCardMap =
         mutableMapOf<Int, AffiliateEducationArticleCardsResponse>()
+    private var latestCardCount = MutableLiveData<Int>()
+    private var errorMessage = MutableLiveData<String>()
 
     fun fetchSearchData(pageType: String?, keyword: String?, categoryID: String? = null) {
         launchCatchError(block = {
@@ -71,35 +73,41 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
                 categoryToArticleCardMap[key] = educationSearchArticleCards.searchEducation?.data
                 setVisitable(educationSearchArticleCards.searchEducation?.data, pageType)
             }
-
-        }, onError = { Timber.e(it) })
+        }, onError = {
+                errorMessage.value = it.localizedMessage
+                Timber.e(it)
+            })
     }
 
     private fun setVisitable(
         data: AffiliateEducationSearchArticleCardsResponse.SearchEducation.Data?,
-        pageType: String?,
+        pageType: String?
     ) {
         launchCatchError(block = {
             val totalItems = data?.results?.getOrNull(0)?.section?.filter { it?.id == "articles" }
                 ?.getOrNull(0)?.meta?.totalHits
             if (totalItems.isZero()) {
-                val educationArticleCards = if (highlightedArticleCardMap.containsKey(type)) {
-                    highlightedArticleCardMap[type]
+                val educationArticleCards = if (latestArticleCardMap.containsKey(type)) {
+                    latestArticleCardMap[type]
                 } else {
                     educationArticleCardsUseCase.getEducationArticleCards(
                         type,
                         offset = offset ?: 0,
-                        filter = "highlights"
-                    ).also { highlightedArticleCardMap[type] = it }
+                        filter = "latest"
+                    ).also { latestArticleCardMap[type] = it }
                 }
                 totalCount.value = 0
+                latestCardCount.value =
+                    educationArticleCards?.cardsArticle?.data?.cards?.get(0)?.totalCount ?: 0
                 educationArticleCards?.let { convertToVisitableArticleCard(it, pageType) }
             } else {
                 convertToVisitableSearchResult(data, pageType)
             }
-        }, onError = { Timber.e(it) })
+        }, onError = {
+                errorMessage.value = it.localizedMessage
+                Timber.e(it)
+            })
     }
-
 
     private fun convertToVisitableArticleCard(
         educationArticleCards: AffiliateEducationArticleCardsResponse,
@@ -148,7 +156,8 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
                     categories = listOf(
                         AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article.CategoriesItem(
                             level = it?.categories?.get(0)?.level,
-                            id = it?.categories?.get(0)?.id, title = it?.categories?.get(0)?.title
+                            id = it?.categories?.get(0)?.id,
+                            title = it?.categories?.get(0)?.title
                         )
                     )
                 ),
@@ -179,7 +188,7 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
                             if (categoryId?.toInt() == 0) {
                                 AffiliateEduCategoryChipModel(
                                     category.apply {
-                                        this?.isSelected = true;
+                                        this?.isSelected = true
                                         categoryId = this?.id
                                     }
                                 )
@@ -190,20 +199,21 @@ class AffiliateEducationSearchArticleViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
     fun getTotalCount(): LiveData<Int> = totalCount
+    fun getLatestCardCount(): LiveData<Int> = latestCardCount
     fun getEducationSearchData(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> =
         educationSearchPageData
 
     fun getEducationCategoryChip(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> =
         educationCategoryChip
 
+    fun getErrorMessage(): LiveData<String> = errorMessage
+
     fun resetList(pageType: String?, keyword: String?, categoryID: String?) {
         offset = 0
         categoryID?.let { currentCategoryId = categoryID }
         fetchSearchData(pageType, keyword, currentCategoryId)
     }
-
 }

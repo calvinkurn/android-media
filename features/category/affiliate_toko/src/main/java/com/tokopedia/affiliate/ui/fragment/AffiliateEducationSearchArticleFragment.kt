@@ -27,6 +27,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
@@ -160,12 +161,16 @@ class AffiliateEducationSearchArticleFragment :
             if (it.isZero()) {
                 view?.findViewById<EmptyStateUnify>(R.id.eta_empty_state)?.visible()
                 view?.findViewById<Typography>(R.id.tv_latest_article_education_search).apply {
-                    this?.visible()
-                    this?.text = when (identifier) {
-                        ARTICLE -> getString(R.string.affiliate_article_empty_state_heading)
-                        EVENT -> getString(R.string.affiliate_event_empty_state_heading)
-                        TUTORIAL -> getString(R.string.affiliate_tutorial_empty_state_heading)
-                        else -> ""
+                    affiliateEducationSearchArticleViewModel?.getLatestCardCount()?.observe(viewLifecycleOwner) {
+                        if (it.isMoreThanZero()) {
+                            this?.visible()
+                            this?.text = when (identifier) {
+                                ARTICLE -> getString(R.string.affiliate_article_empty_state_heading)
+                                EVENT -> getString(R.string.affiliate_event_empty_state_heading)
+                                TUTORIAL -> getString(R.string.affiliate_tutorial_empty_state_heading)
+                                else -> ""
+                            }
+                        }
                     }
                 }
             } else {

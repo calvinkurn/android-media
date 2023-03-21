@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class AffiliateEducationArticleCardsResponse(
 
     @SerializedName("cardsArticle")
-    val cardsArticle: CardsArticle? = null
+    var cardsArticle: CardsArticle? = null
 ) {
     data class CardsArticle(
 
@@ -15,7 +15,7 @@ data class AffiliateEducationArticleCardsResponse(
         data class Data(
 
             @SerializedName("cards")
-            val cards: List<CardsItem?>? = null,
+            var cards: List<CardsItem?>? = null,
 
             @SerializedName("status")
             val status: String? = null

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class AffiliateEducationSearchArticleCardsResponse(
 
     @SerializedName("searchEducation")
-    val searchEducation: SearchEducation? = null
+    var searchEducation: SearchEducation? = null
 ) {
     data class SearchEducation(
 
@@ -23,7 +23,7 @@ data class AffiliateEducationSearchArticleCardsResponse(
             data class ResultsItem(
 
                 @SerializedName("section")
-                val section: List<SectionItem?>? = null
+                var section: List<SectionItem?>? = null
             ) {
                 data class SectionItem(
 

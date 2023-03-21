@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL_WEBVIEW
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_PROD_URL
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_STAGING_URL
-import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -25,10 +24,8 @@ import com.tokopedia.affiliate.interfaces.AffiliateEducationEventArticleClickInt
 import com.tokopedia.affiliate.interfaces.AffiliateEducationLearnClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSocialCTAClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
-import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationLandingViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
@@ -89,7 +86,7 @@ class AffiliateEducationLandingPage :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =  inflater.inflate(R.layout.affiliate_education_landing_page, container, false)
+        val view = inflater.inflate(R.layout.affiliate_education_landing_page, container, false)
         searchBar = view.findViewById(R.id.edukasi_navToolbar)
         return view
     }
@@ -112,27 +109,40 @@ class AffiliateEducationLandingPage :
             view.findViewById<RecyclerView>(R.id.rv_education_page).adapter = adapter
         }
         view.findViewById<SearchBarUnify>(R.id.edukasi_navToolbar)?.run {
-
         }
     }
 
     private fun setSearchListener(searchBar: SearchBarUnify?) {
-
         val searchTextField = searchBar?.searchBarTextField
         val searchClearButton = searchBar?.searchBarIcon
 
         searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
         searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH && !searchTextField.text.toString().isNullOrEmpty()) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH && !searchTextField.text.toString()
+                    .isNullOrEmpty()
+                ) {
                     context?.let {
-                        startActivity(AffiliateEducationSearchActivity.createIntent(it, searchTextField.text.toString()))
+                        startActivity(
+                            AffiliateEducationSearchActivity.createIntent(
+                                it,
+                                searchTextField.text.toString()
+                            )
+                        )
                     }
                     return true
                 }
                 return false
             }
         })
+
+        searchTextField?.setOnFocusChangeListener { _, isFocus ->
+            searchBar.searchBarPlaceholder = if (isFocus) {
+                getString(R.string.affiliate_landing_page_search_active_placeholder)
+            } else {
+                getString(R.string.affiliate_landing_page_search_passive_placeholder)
+            }
+        }
 
         searchClearButton?.setOnClickListener {
             searchTextField?.text?.clear()

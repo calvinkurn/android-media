@@ -8,7 +8,7 @@
 
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/edukasi_navToolbar"
-        app:search_bar_placeholder="Mau cari tahu apa?"
+        app:search_bar_placeholder="@string/affiliate_landing_page_search_passive_placeholder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"

@@ -196,4 +196,6 @@
     <string name="affiliate_empty_ssa_list_title">Yaah, belum ada toko dengan Komisi Ekstra</string>
     <string name="affiliate_empty_ssa_list_desc">Kamu bisa cari produk dengan Komisi Ekstra juga, lho.</string>
     <string name="affiliate_empty_ssa_list_cta">Balik ke Promosikan</string>
+    <string name="affiliate_landing_page_search_passive_placeholder">Artikel, Event, atau Kamus Affiliate</string>
+    <string name="affiliate_landing_page_search_active_placeholder">Mau cari tahu apa?</string>
 </resources>
