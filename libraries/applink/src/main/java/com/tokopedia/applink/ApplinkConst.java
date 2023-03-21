@@ -599,6 +599,8 @@ public interface ApplinkConst {
         String RECIPE_HOME = "tokopedia://now/recipe";
         String RECIPE_SEARCH = "tokopedia://now/recipe/search";
         String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
+        String SHOP_PAGE_NOW_1 = "tokopedia://shop/11515028";
+        String SHOP_PAGE_NOW_2 = "tokopedia://shop/11530573";
     }
 
     interface TokoFood {

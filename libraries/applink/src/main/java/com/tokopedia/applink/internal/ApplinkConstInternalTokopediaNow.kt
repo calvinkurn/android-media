@@ -4,30 +4,27 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalTokopediaNow {
 
-    @JvmField
-    val HOST_TOKOPEDIA_NOW = "now"
+    const val HOST_TOKOPEDIA_NOW = "now"
 
-    @JvmField
-    val INTERNAL_TOKOPEDIA_NOW = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_TOKOPEDIA_NOW}"
+    const val INTERNAL_TOKOPEDIA_NOW = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TOKOPEDIA_NOW"
 
-    //TokoNowHomeActivity
-    @JvmField
-    val HOME = "$INTERNAL_TOKOPEDIA_NOW/home"
+    // TokoNowHomeActivity
+    const val HOME = "$INTERNAL_TOKOPEDIA_NOW/home"
 
-    //TokoNowCategoryListActivity
+    // TokoNowCategoryListActivity
     @JvmField
     val CATEGORY_LIST = "$INTERNAL_TOKOPEDIA_NOW/category-list?warehouse_id={warehouse_id}"
 
     @JvmField
     val SEE_ALL_CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/see-all-category"
 
-    //TokoNowSortFilterActivity
+    // TokoNowSortFilterActivity
     val SORT_FILTER = "$INTERNAL_TOKOPEDIA_NOW/sort-filter"
 
-    //TokoNowDateFilterActivity
+    // TokoNowDateFilterActivity
     val DATE_FILTER = "$INTERNAL_TOKOPEDIA_NOW/date-filter"
 
-    //TokoNowEducationalInfoActivity
+    // TokoNowEducationalInfoActivity
     val EDUCATIONAL_INFO = "$INTERNAL_TOKOPEDIA_NOW/educational-info"
 
     @JvmField
@@ -36,39 +33,39 @@ object ApplinkConstInternalTokopediaNow {
     @JvmField
     val CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category"
 
-    //TokoNowRepurchaseActivity
+    // TokoNowRepurchaseActivity
     @JvmField
     val REPURCHASE = "$INTERNAL_TOKOPEDIA_NOW/repurchase-page"
 
-    //TokoNowCategoryFilterActivity
+    // TokoNowCategoryFilterActivity
     @JvmField
     val CATEGORY_FILTER = "$INTERNAL_TOKOPEDIA_NOW/category-filter?warehouse_id={warehouse_id}"
 
-    //TokoNowRecipeDetailActivity
+    // TokoNowRecipeDetailActivity
     @JvmField
     val RECIPE_DETAIL = "$INTERNAL_TOKOPEDIA_NOW/recipe/detail"
 
-    //TokoNowRecipeBookmarkActivity
+    // TokoNowRecipeBookmarkActivity
     @JvmField
     val RECIPE_BOOKMARK = "$INTERNAL_TOKOPEDIA_NOW/recipe/bookmark"
 
-    //TokoNowRecipeHomeActivity
+    // TokoNowRecipeHomeActivity
     @JvmField
     val RECIPE_HOME = "$INTERNAL_TOKOPEDIA_NOW/recipe/home"
 
-    //TokoNowRecipeSearchActivity
+    // TokoNowRecipeSearchActivity
     @JvmField
     val RECIPE_SEARCH = "$INTERNAL_TOKOPEDIA_NOW/recipe/search"
 
-    //TokoNowRecipeAutoCompleteActivity
+    // TokoNowRecipeAutoCompleteActivity
     @JvmField
     val RECIPE_AUTO_COMPLETE = "$INTERNAL_TOKOPEDIA_NOW/recipe/auto-complete"
 
-    //TokoNowRecipeSimilarProductActivity
+    // TokoNowRecipeSimilarProductActivity
     @JvmField
     val RECIPE_SIMILAR_PRODUCT_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/recipe/similar-product-bottomsheet"
 
-    //TokoNowRecipeSearchIngredientActivity
+    // TokoNowRecipeSearchIngredientActivity
     @JvmField
     val RECIPE_INGREDIENT_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/recipe/ingredient-bottomsheet"
 }

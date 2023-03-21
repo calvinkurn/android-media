@@ -10,16 +10,41 @@ import javax.lang.model.element.TypeElement
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 
-
 @AutoService(Processor::class)
 class TokopediaAppLinkAnnotationProcessor : AbstractProcessor() {
 
     companion object {
-        var messenger: Messager? = null
-        var filer: Filer? = null
-        var typeUtils: Types? = null
-        var elementUtils: Elements? = null
+        private const val MAPPER_CLASS_NAME = "TokopediaAppLinkMapper"
     }
+
+    private val list = ClassName.get("java.util", "List")
+    private val arrayList = ClassName.get("java.util", "ArrayList")
+    private val dlpClassName: ClassName = ClassName.get("com.tokopedia.applink", "DLP")
+    private val function4ClassName: ClassName = ClassName.get("kotlin.jvm.functions", "Function4")
+    private val contextClassName: ClassName = ClassName.get("android.content", "Context")
+    private val uriClassName: ClassName = ClassName.get("android.net", "Uri")
+    private val collectionsClassName: ClassName = ClassName.get("java.util", "Collections")
+    private val stringClassName: ClassName = ClassName.get("java.lang", "String")
+    private val uriUtilClassName: ClassName = ClassName.get("com.tokopedia.applink", "UriUtil")
+
+    private val parameterizedArrayListDlp: TypeName = ParameterizedTypeName.get(
+        arrayList,
+        dlpClassName
+    )
+    private val parameterizedListString: TypeName = ParameterizedTypeName.get(list, stringClassName)
+    private val parameterizedFunction4: TypeName = ParameterizedTypeName.get(
+        function4ClassName,
+        contextClassName,
+        uriClassName,
+        stringClassName,
+        parameterizedListString,
+        stringClassName
+    )
+    private val listType: TypeName = ParameterizedTypeName.get(list, dlpClassName)
+    private var messenger: Messager? = null
+    private var filer: Filer? = null
+    private var typeUtils: Types? = null
+    private var elementUtils: Elements? = null
 
     override fun init(processingEnv: ProcessingEnvironment?) {
         super.init(processingEnv)
@@ -33,112 +58,130 @@ class TokopediaAppLinkAnnotationProcessor : AbstractProcessor() {
         annotations: MutableSet<out TypeElement>?,
         roundEnv: RoundEnvironment?
     ): Boolean {
-        val elementsWithTokopediaAppLinks = roundEnv?.getElementsAnnotatedWith(
-            TokopediaAppLinks::class.java
-        ) ?: listOf()
-        val elementsWithTokopediaAppLink = roundEnv?.getElementsAnnotatedWith(
-            TokopediaAppLink::class.java
-        ) ?: listOf()
-        val mappedElement = mutableListOf<Element>().apply {
-            addAll(elementsWithTokopediaAppLinks)
-            addAll(elementsWithTokopediaAppLink)
-        }
-        val typeSpecBuilder = TypeSpec.classBuilder("TokopediaAppLinkMapper")
-        val list = ClassName.get("java.util", "List")
-        val arrayList = ClassName.get("java.util", "ArrayList")
-
-        val dlpClassName: ClassName = ClassName.get("com.tokopedia.applink", "DLP")
-        val function4ClassName: ClassName = ClassName.get("kotlin.jvm.functions", "Function4")
-        val contextClassName: ClassName = ClassName.get("android.content", "Context")
-        val uriClassName: ClassName = ClassName.get("android.net", "Uri")
-        val stringClassName: ClassName = ClassName.get("java.lang", "String")
-
-
-        val parameterizedArrayListDlp: TypeName = ParameterizedTypeName.get(arrayList, dlpClassName)
-        val parameterizedListString: TypeName = ParameterizedTypeName.get(list, stringClassName)
-        val parameterizedFunction4: TypeName = ParameterizedTypeName.get(
-            function4ClassName,
-            contextClassName,
-            uriClassName,
-            stringClassName,
-            parameterizedListString,
-            stringClassName
-        )
-
-
-        val listType: TypeName =
-            ParameterizedTypeName.get(list, dlpClassName)
-        val operationNameListMethodBuilder = MethodSpec.methodBuilder("listCustomerAppMappedAppLink")
-            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-            .returns(listType)
-            .addStatement("\$T list = new \$T<>()", parameterizedArrayListDlp, arrayList)
-
-        mappedElement.forEach { element ->
-            val listTokopediaAppLinkDetails = element.getAnnotation(TokopediaAppLinks::class.java)
-            val listTokopediaAppLinkDetail = element.getAnnotation(TokopediaAppLink::class.java)
-            val mappedTokopediaAppLinkDetail = mutableListOf<TokopediaAppLink>().apply {
-                addAll(listTokopediaAppLinkDetails?.value?.toList() ?: listOf())
-                if(listTokopediaAppLinkDetail != null) {
-                    add(listTokopediaAppLinkDetail)
-                }
-            }
-            mappedTokopediaAppLinkDetail.forEachIndexed { index, tokopediaAppLinkDetail ->
-                val interfaceTypeMirror =
-                    elementUtils?.getTypeElement("com.tokopedia.applink.CustomAppLinkMapping")
-                        ?.asType()
-                val elementTypeMirror = element.asType()
-                val res = typeUtils?.isAssignable(elementTypeMirror, interfaceTypeMirror)
-                val methodInvoke = MethodSpec.methodBuilder("invoke")
-                    .addAnnotation(Override::class.java)
-                    .addModifiers(
-                        Modifier.PUBLIC
-                    )
-                    .addParameter(contextClassName, "context")
-                    .addParameter(uriClassName, "uri")
-                    .addParameter(stringClassName, "s")
-                    .addParameter(parameterizedListString, "strings")
-                    .returns(stringClassName).also { methodSpec ->
-                        if (index == 0 && res == true) {
-                            val customMappingClassName: ClassName = ClassName.get(
-                                "com.tokopedia.applink",
-                                element.simpleName.toString()
-                            )
-                            methodSpec.addStatement(
-                                "return \$T.INSTANCE.customDest(context, uri, s, strings)",
-                                customMappingClassName
-                            )
-                        } else {
-                            methodSpec.addStatement(
-                                "return \$S",
-                                tokopediaAppLinkDetail.internalAppLink
-                            )
-                        }
-                    }.build()
-                val dlpLogicClassName: ClassName =
-                    ClassName.get("com.tokopedia.applink", tokopediaAppLinkDetail.dlpLogic)
-                operationNameListMethodBuilder.addStatement(
-                    "list.add(new \$T(new \$T(\$S), \$L))",
-                    dlpClassName,
-                    dlpLogicClassName,
-                    tokopediaAppLinkDetail.matchedAppLink,
-                    TypeSpec.anonymousClassBuilder("").addSuperinterface(parameterizedFunction4)
-                        .addMethod(methodInvoke).build()
-                )
+        val matchedElementWithAnnotation = getElementsWithTokopediaAppLinkAnnotation(roundEnv)
+        val mapperClass = createMapperClass()
+        val mapperMethod = createMapperMethodHeader()
+        matchedElementWithAnnotation.forEach { element ->
+            val listTokopediaAppLinkAnnotation = getListTokopediaAppLinkAnnotation(element)
+            listTokopediaAppLinkAnnotation.forEachIndexed { index, tokopediaAppLinkAnnotation ->
+                createMapperFromAnnotation(element, index, tokopediaAppLinkAnnotation, mapperMethod)
             }
         }.also {
-            if (mappedElement.size > 0) {
-                operationNameListMethodBuilder.addStatement("return list")
-                typeSpecBuilder.addMethod(operationNameListMethodBuilder.build())
-                val typeSpec = typeSpecBuilder.build()
-
-                val javaFile2 = JavaFile.builder(
-                    "com.tokopedia.applink",
-                    typeSpec
-                ).build()
-                javaFile2.writeTo(filer)
+            if (matchedElementWithAnnotation.isNotEmpty()) {
+                finishGenerateMapperClass(mapperClass, mapperMethod)
             }
         }
         return true
+    }
+
+    private fun finishGenerateMapperClass(
+        mapperClass: TypeSpec.Builder?,
+        mapperMethod: MethodSpec.Builder?
+    ) {
+        mapperMethod?.addStatement("\$T.reverse(list)", collectionsClassName)
+        mapperMethod?.addStatement("return list")
+        mapperClass?.addMethod(mapperMethod?.build())
+        JavaFile.builder(
+            "com.tokopedia.applink",
+            mapperClass?.build()
+        ).build().run {
+            writeTo(filer)
+        }
+    }
+
+    private fun createMapperFromAnnotation(
+        element: Element,
+        index: Int,
+        tokopediaAppLinkAnnotation: TokopediaAppLink,
+        mapperMethod: MethodSpec.Builder?
+    ) {
+        val interfaceCustomLogic = elementUtils?.getTypeElement(
+            "com.tokopedia.applink.CustomAppLinkMapping"
+        )?.asType()
+        val elementType = element.asType()
+        val isElementForCustomAppLinkMapperLogic =
+            typeUtils?.isAssignable(elementType, interfaceCustomLogic)
+        val methodInvoke = MethodSpec.methodBuilder("invoke")
+            .addAnnotation(Override::class.java)
+            .addModifiers(
+                Modifier.PUBLIC
+            )
+            .addParameter(contextClassName, "context")
+            .addParameter(uriClassName, "uri")
+            .addParameter(stringClassName, "s")
+            .addParameter(parameterizedListString, "strings")
+            .returns(stringClassName).also { methodSpec ->
+                if (index == 0 && isElementForCustomAppLinkMapperLogic == true) {
+                    val customMappingClassName: ClassName = ClassName.get(
+                        "com.tokopedia.applink",
+                        element.simpleName.toString()
+                    )
+                    methodSpec.addStatement(
+                        "return \$T.INSTANCE.customDest(context, uri, s, strings)",
+                        customMappingClassName
+                    )
+                } else {
+                    if (tokopediaAppLinkAnnotation.dlpLogic == "MatchPattern") {
+                        methodSpec.addStatement(
+                            "return \$T.buildUri(\$S, strings.toArray(new \$T[strings.size()]))",
+                            uriUtilClassName,
+                            tokopediaAppLinkAnnotation.internalAppLink,
+                            stringClassName
+                        )
+                    } else {
+                        methodSpec.addStatement(
+                            "return \$S",
+                            tokopediaAppLinkAnnotation.internalAppLink
+                        )
+                    }
+                }
+            }.build()
+        val dlpLogicClassName: ClassName =
+            ClassName.get("com.tokopedia.applink", tokopediaAppLinkAnnotation.dlpLogic)
+        mapperMethod?.addStatement(
+            "list.add(new \$T(new \$T(\$S), \$L))",
+            dlpClassName,
+            dlpLogicClassName,
+            tokopediaAppLinkAnnotation.matchedAppLink,
+            TypeSpec.anonymousClassBuilder("").addSuperinterface(parameterizedFunction4)
+                .addMethod(methodInvoke).build()
+        )
+    }
+
+    private fun createMapperMethodHeader(): MethodSpec.Builder? {
+        return MethodSpec.methodBuilder("listCustomerAppMappedAppLink")
+            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+            .returns(listType)
+            .addStatement("\$T list = new \$T<>()", parameterizedArrayListDlp, arrayList)
+    }
+
+    private fun createMapperClass(): TypeSpec.Builder? {
+        return TypeSpec.classBuilder(MAPPER_CLASS_NAME)
+    }
+
+    private fun getListTokopediaAppLinkAnnotation(element: Element): MutableList<TokopediaAppLink> {
+        val listTokopediaAppLinksAnnotation = element.getAnnotation(TokopediaAppLinks::class.java)
+        val listTokopediaAppLinkAnnotation = element.getAnnotation(TokopediaAppLink::class.java)
+        return mutableListOf<TokopediaAppLink>().apply {
+            addAll(listTokopediaAppLinksAnnotation?.value?.toList() ?: listOf())
+            if (listTokopediaAppLinkAnnotation != null) {
+                add(listTokopediaAppLinkAnnotation)
+            }
+        }
+    }
+
+    private fun getElementsWithTokopediaAppLinkAnnotation(roundEnv: RoundEnvironment?): Collection<Element> {
+        val elementsWithTokopediaAppLinksAnnotation = roundEnv?.getElementsAnnotatedWith(
+            TokopediaAppLinks::class.java
+        ) ?: listOf()
+        val elementsWithTokopediaAppLinkAnnotation = roundEnv?.getElementsAnnotatedWith(
+            TokopediaAppLink::class.java
+        ) ?: listOf()
+        val mappedElement = mutableListOf<Element>().apply {
+            addAll(elementsWithTokopediaAppLinksAnnotation)
+            addAll(elementsWithTokopediaAppLinkAnnotation)
+        }
+        return mappedElement
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
@@ -151,5 +194,4 @@ class TokopediaAppLinkAnnotationProcessor : AbstractProcessor() {
     override fun getSupportedSourceVersion(): SourceVersion {
         return SourceVersion.latestSupported()
     }
-
 }

@@ -107,70 +107,41 @@ import com.tokopedia.config.GlobalConfig
  * tokopedia://product/add and tokopedia://product/{id}
  * tokopedia://product/add will be mapped to tokopedia-android-internal:// to prevent conflict.
  */
-@TokopediaAppLink(ApplinkConst.SHOP, dlpLogic = DLP.DLPType.MATCH_PATTERN)
-object ShopCustomMapping : CustomAppLinkMapping {
-    override fun customDest(ctx: Context, uri: Uri, deeplink: String, ids: List<String>?): String {
-        return getShopPageInternalAppLink(
-            ctx,
-            uri,
-            deeplink,
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE, ids?.getOrNull(0)),
-            ids?.getOrNull(0).orEmpty()
-        )
-    }
-}
-
-@TokopediaAppLink(ApplinkConst.SHOP_HOME, dlpLogic = DLP.DLPType.MATCH_PATTERN)
-object ShopHomeCustomMapping : CustomAppLinkMapping {
-    override fun customDest(ctx: Context, uri: Uri, deeplink: String, ids: List<String>?): String {
-        return getShopPageInternalAppLink(
-            ctx,
-            uri,
-            deeplink,
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_HOME, ids?.getOrNull(0)),
-            ids?.getOrNull(0).orEmpty()
-        )
-    }
-}
-
-@TokopediaAppLink(ApplinkConst.SHOP_PRODUCT, dlpLogic = DLP.DLPType.MATCH_PATTERN)
-object ShopProductCustomMapping : CustomAppLinkMapping {
-    override fun customDest(ctx: Context, uri: Uri, deeplink: String, ids: List<String>?): String {
-        return getShopPageInternalAppLink(
-            ctx,
-            uri,
-            deeplink,
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT, ids?.getOrNull(0)),
-            ids?.getOrNull(0).orEmpty()
-        )
-    }
-}
-
-@TokopediaAppLink(ApplinkConst.SHOP_FEED, dlpLogic = DLP.DLPType.MATCH_PATTERN)
-object ShopFeedCustomMapping : CustomAppLinkMapping {
-    override fun customDest(ctx: Context, uri: Uri, deeplink: String, ids: List<String>?): String {
-        return getShopPageInternalAppLink(
-            ctx,
-            uri,
-            deeplink,
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, ids?.getOrNull(0)),
-            ids?.getOrNull(0).orEmpty()
-        )
-    }
-}
-
-@TokopediaAppLink(ApplinkConst.SHOP_REVIEW, dlpLogic = DLP.DLPType.MATCH_PATTERN)
-object ShopReviewCustomMapping : CustomAppLinkMapping {
-    override fun customDest(ctx: Context, uri: Uri, deeplink: String, ids: List<String>?): String {
-        return getShopPageInternalAppLink(
-            ctx,
-            uri,
-            deeplink,
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, ids?.getOrNull(0)),
-            ids?.getOrNull(0).orEmpty()
-        )
-    }
-}
+@TokopediaAppLink(
+    ApplinkConst.TokopediaNow.SHOP_PAGE_NOW_1,
+    DLP.DLPType.START_WITH,
+    ApplinkConstInternalTokopediaNow.HOME
+)
+@TokopediaAppLink(
+    ApplinkConst.TokopediaNow.SHOP_PAGE_NOW_2,
+    DLP.DLPType.START_WITH,
+    ApplinkConstInternalTokopediaNow.HOME
+)
+@TokopediaAppLink(
+    ApplinkConst.SHOP,
+    DLP.DLPType.MATCH_PATTERN,
+    ApplinkConstInternalMarketplace.SHOP_PAGE
+)
+@TokopediaAppLink(
+    ApplinkConst.SHOP_HOME,
+    DLP.DLPType.MATCH_PATTERN,
+    ApplinkConstInternalMarketplace.SHOP_PAGE_HOME
+)
+@TokopediaAppLink(
+    ApplinkConst.SHOP_PRODUCT,
+    DLP.DLPType.MATCH_PATTERN,
+    ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT
+)
+@TokopediaAppLink(
+    ApplinkConst.SHOP_FEED,
+    DLP.DLPType.MATCH_PATTERN,
+    ApplinkConstInternalMarketplace.SHOP_PAGE_FEED
+)
+@TokopediaAppLink(
+    ApplinkConst.SHOP_REVIEW,
+    DLP.DLPType.MATCH_PATTERN,
+    ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW
+)
 object DeeplinkMapper {
 
     private const val TOKOPEDIANOW_SEARCH_PATH = "/now/search"
@@ -823,7 +794,7 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isSellerMvcIntroAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcIntro()
                 DeeplinkMapperMerchant.isSellerMvcCreate(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcCreate(deeplink)
                 DeeplinkMapperMerchant.isSellerMvcDetailAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcDetail(deeplink)
-                //For Tokomember applinks with params
+                // For Tokomember applinks with params
                 trimmedDeeplink.startsWith(ApplinkConst.Tokomember.MAIN_PATH) -> getDynamicDeeplinkForTokomember(trimmedDeeplink)
                 else -> ""
             }
@@ -890,7 +861,7 @@ class DLP(
     val logic: DLPLogic,
     val targetDeeplink: (context: Context, uri: Uri, deeplink: String, idList: List<String>?) -> String
 ) {
-    object DLPType{
+    object DLPType {
         const val START_WITH = "StartsWith"
         const val MATCH_PATTERN = "MatchPattern"
         const val EXACT = "Exact"
