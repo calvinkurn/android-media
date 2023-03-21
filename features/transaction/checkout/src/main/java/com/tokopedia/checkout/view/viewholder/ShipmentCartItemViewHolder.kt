@@ -113,7 +113,7 @@ class ShipmentCartItemViewHolder(
             }
             binding.layoutProductInfo.visibility = View.VISIBLE
         } else {
-            binding.checkoutTickerProductError.visibility = View.GONE
+            binding.layoutProductInfo.visibility = View.GONE
         }
         renderEthicalDrugsProperty(cartItemModel)
     }
@@ -121,7 +121,7 @@ class ShipmentCartItemViewHolder(
     private fun renderEthicalDrugsProperty(cartItemModel: CartItemModel) {
         if (cartItemModel.ethicalDrugDataModel.needPrescription) {
             val ethicalDrugView: View = createProductInfoTextWithIcon(cartItemModel)
-            if (binding.checkoutTickerProductError.childCount > 0) {
+            if (binding.layoutProductInfo.childCount > 0) {
                 ethicalDrugView.setPadding(
                     4.dpToPx(ethicalDrugView.resources.displayMetrics),
                     0,
@@ -129,8 +129,8 @@ class ShipmentCartItemViewHolder(
                     0
                 )
             }
-            binding.checkoutTickerProductError.addView(ethicalDrugView)
-            binding.checkoutTickerProductError.visibility = View.VISIBLE
+            binding.layoutProductInfo.addView(ethicalDrugView)
+            binding.layoutProductInfo.visibility = View.VISIBLE
         }
     }
 
