@@ -1165,6 +1165,10 @@ class TokoNowHomeFragment : Fragment(),
                 )
             }
         }
+
+        observe(viewModelTokoNow.blockAddToCart) {
+            showToasterWhenAddToCartBlocked()
+        }
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {

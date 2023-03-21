@@ -199,7 +199,7 @@ class TokoNowSearchViewModel @Inject constructor (
         broadMatchVisitableList.addBroadMatchDataView(
             related = related,
             cartService = cartService,
-            hasBlockedAddToCart = needToBlockAtc
+            hasBlockedAddToCart = hasBlockedAddToCart
         )
 
         return broadMatchVisitableList

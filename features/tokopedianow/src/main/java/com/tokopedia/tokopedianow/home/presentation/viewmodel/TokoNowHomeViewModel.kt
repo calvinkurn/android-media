@@ -135,18 +135,19 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getCatalogCouponListUseCase: GetCatalogCouponListUseCase,
     private val redeemCouponUseCase: RedeemCouponUseCase,
     private val playWidgetTools: PlayWidgetTools,
-    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
     addressData: TokoNowLocalAddress
 ) : BaseTokoNowViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
+    getTargetedTickerUseCase,
     addressData,
     userSession,
     dispatchers
@@ -210,7 +211,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private var headerYCoordinate = 0f
     private var getHomeLayoutJob: Job? = null
     private var getMiniCartJob: Job? = null
-    private var needToBlockAtc: Boolean = false
+    private var hasBlockedAddToCart: Boolean = false
 
     fun trackOpeningScreen(screenName: String) {
         _openScreenTracker.value = screenName
@@ -266,7 +267,7 @@ class TokoNowHomeViewModel @Inject constructor(
             )
 
             channelToken = homeLayoutResponse.first().token
-            needToBlockAtc = tickerData?.first.orFalse()
+            hasBlockedAddToCart = tickerData?.first.orFalse()
 
             homeLayoutItemList.mapHomeLayoutList(
                 response = homeLayoutResponse,
@@ -274,7 +275,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 miniCartData = miniCartData,
                 localCacheModel = localCacheModel,
                 isLoggedIn = userSession.isLoggedIn,
-                hasBlockedAddToCart = needToBlockAtc,
+                hasBlockedAddToCart = hasBlockedAddToCart,
                 tickerList = tickerData?.second.orEmpty()
             )
 
@@ -319,7 +320,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     removeAbleWidgets = removeAbleWidgets,
                     miniCartData = miniCartData,
                     localCacheModel = localCacheModel,
-                    hasBlockedAddToCart = needToBlockAtc
+                    hasBlockedAddToCart = hasBlockedAddToCart
                 )
 
                 getLayoutComponentData(localCacheModel)
@@ -468,31 +469,36 @@ class TokoNowHomeViewModel @Inject constructor(
         shopId: String,
         @TokoNowLayoutType type: String
     ) {
-        onCartQuantityChanged(
-            productId = productId,
-            shopId = shopId,
-            quantity = quantity,
-            onSuccessAddToCart = {
-                trackProductAddToCart(productId, quantity, type, it.data.cartId)
-                updateProductCartQuantity(productId, quantity, type)
-                checkRealTimeRecommendation(channelId, productId, type)
-                updateToolbarNotification()
-            },
-            onSuccessUpdateCart = { miniCartItem, _ ->
-                val cartId = miniCartItem.cartId
-                trackProductUpdateCart(productId, quantity, type, cartId)
-                updateProductCartQuantity(productId, quantity, type)
-                updateToolbarNotification()
-            },
-            onSuccessDeleteCart = { miniCartItem, _ ->
-                trackProductRemoveCart(productId, type, miniCartItem.cartId)
-                updateProductCartQuantity(productId, DEFAULT_QUANTITY, type)
-                updateToolbarNotification()
-            },
-            onError = {
-                updateProductCartQuantity(productId, quantity, type)
-            }
-        )
+        if (hasBlockedAddToCart) {
+            // this only blocks add to cart when using repurchase widget
+            _blockAddToCart.value = Unit
+        } else {
+            onCartQuantityChanged(
+                productId = productId,
+                shopId = shopId,
+                quantity = quantity,
+                onSuccessAddToCart = {
+                    trackProductAddToCart(productId, quantity, type, it.data.cartId)
+                    updateProductCartQuantity(productId, quantity, type)
+                    checkRealTimeRecommendation(channelId, productId, type)
+                    updateToolbarNotification()
+                },
+                onSuccessUpdateCart = { miniCartItem, _ ->
+                    val cartId = miniCartItem.cartId
+                    trackProductUpdateCart(productId, quantity, type, cartId)
+                    updateProductCartQuantity(productId, quantity, type)
+                    updateToolbarNotification()
+                },
+                onSuccessDeleteCart = { miniCartItem, _ ->
+                    trackProductRemoveCart(productId, type, miniCartItem.cartId)
+                    updateProductCartQuantity(productId, DEFAULT_QUANTITY, type)
+                    updateToolbarNotification()
+                },
+                onError = {
+                    updateProductCartQuantity(productId, quantity, type)
+                }
+            )
+        }
     }
 
     fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
@@ -783,17 +789,6 @@ class TokoNowHomeViewModel @Inject constructor(
                 widgetId = item.id,
                 state = TokoNowLayoutState.HIDE
             )
-        }
-    }
-
-    private suspend fun getTickerDataAsync(): Deferred<Pair<Boolean, List<TickerData>>?> {
-        return asyncCatchError(block = {
-            val tickerList = getTargetedTickerUseCase.execute(
-                page = HOME_PAGE
-            )
-            TickerMapper.mapTickerData(tickerList)
-        }) {
-            Pair(false, emptyList())
         }
     }
 

@@ -155,7 +155,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
                 requestParam?.let { requestParam ->
                     setRecommendationPageName(requestParam.pageName)
-                    getRecommendationCarousel(requestParam)
+                    getFirstRecommendationCarousel(requestParam)
                 }
             }
         }

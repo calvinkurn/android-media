@@ -11,6 +11,7 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem.MiniCartItemProduct
@@ -18,12 +19,16 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 
 open class BaseTokoNowViewModel(
@@ -31,6 +36,7 @@ open class BaseTokoNowViewModel(
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
@@ -134,6 +140,17 @@ open class BaseTokoNowViewModel(
     fun getShopId(): Long = addressData.getShopId()
 
     fun updateAddressData() = addressData.updateLocalData()
+
+    suspend fun getTickerDataAsync(): Deferred<Pair<Boolean, List<TickerData>>?> {
+        return asyncCatchError(block = {
+            val tickerList = getTargetedTickerUseCase.execute(
+                page = GetTargetedTickerUseCase.HOME_PAGE
+            )
+            TickerMapper.mapTickerData(tickerList)
+        }) {
+            Pair(false, emptyList())
+        }
+    }
 
     private fun addItemToCart(
         productId: String,

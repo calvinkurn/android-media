@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -22,6 +23,7 @@ import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapp
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.NO_ORDER_QUANTITY
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.resetAllProductCardCarouselItemQuantities
 import com.tokopedia.tokopedianow.common.domain.mapper.VisitableMapper.updateProductCardCarouselItemQuantity
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -41,6 +43,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
     addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
@@ -48,6 +51,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     updateCartUseCase,
     deleteCartUseCase,
     getMiniCartUseCase,
+    getTargetedTickerUseCase,
     addressData,
     userSession,
     dispatchers
@@ -63,6 +67,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
 
     private var productModels: MutableList<Visitable<*>> = mutableListOf()
     private var productRecommendationPageNames: MutableList<String> = mutableListOf()
+    private var hasBlockedAddToCart: Boolean = false
     private var job: Job? = null
 
     val productRecommendation: LiveData<Result<TokoNowProductRecommendationViewUiModel>>
@@ -125,39 +130,12 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         if (type !in productRecommendationPageNames) productRecommendationPageNames.add(type)
     }
 
-    fun getRecommendationCarousel(
-        requestParam: GetRecommendationRequestParam
-    ) {
-        job?.cancel()
-        job = launchCatchError(
-            block = {
-                _loadingState.postValue(true)
-                val result = getRecommendationUseCase.getData(requestParam)
-                if (result.isNotEmpty()) {
-                    val productRecommendation = mapResponseToProductRecommendation(
-                        recommendationWidget = result.first(),
-                        miniCartData = miniCartData,
-                        hasBlockedAddToCart = false
-                    )
-                    if (productRecommendation.productModels.isEmpty()) {
-                        _productRecommendation.postValue(Fail(Throwable()))
-                    } else {
-                        productModels = productRecommendation.productModels.toMutableList()
-                        if (productRecommendation.seeMoreModel.appLink.isNotEmpty()) {
-                            productModels.add(productRecommendation.seeMoreModel)
-                        }
-                        _productRecommendation.postValue(Success(productRecommendation))
-                    }
-                } else {
-                    _productRecommendation.postValue(Fail(Throwable()))
-                }
-                _loadingState.postValue(false)
-            },
-            onError = { throwable ->
-                _productRecommendation.postValue(Fail(throwable))
-                _loadingState.postValue(false)
-            }
-        )
+    fun getFirstRecommendationCarousel(requestParam: GetRecommendationRequestParam) {
+        launch {
+            val tickerData = getTickerDataAsync().await()
+            hasBlockedAddToCart = tickerData?.first.orFalse()
+            getRecommendationCarousel(requestParam)
+        }
     }
 
     fun onCartQuantityChanged(
@@ -209,6 +187,41 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         if (job != null && requestParam.pageName in productRecommendationPageNames) {
             getRecommendationCarousel(requestParam)
         }
+    }
+
+    private fun getRecommendationCarousel(
+        requestParam: GetRecommendationRequestParam
+    ) {
+        job?.cancel()
+        job = launchCatchError(
+            block = {
+                _loadingState.postValue(true)
+                val result = getRecommendationUseCase.getData(requestParam)
+                if (result.isNotEmpty()) {
+                    val productRecommendation = mapResponseToProductRecommendation(
+                        recommendationWidget = result.first(),
+                        miniCartData = miniCartData,
+                        hasBlockedAddToCart = hasBlockedAddToCart
+                    )
+                    if (productRecommendation.productModels.isEmpty()) {
+                        _productRecommendation.postValue(Fail(Throwable()))
+                    } else {
+                        productModels = productRecommendation.productModels.toMutableList()
+                        if (productRecommendation.seeMoreModel.appLink.isNotEmpty()) {
+                            productModels.add(productRecommendation.seeMoreModel)
+                        }
+                        _productRecommendation.postValue(Success(productRecommendation))
+                    }
+                } else {
+                    _productRecommendation.postValue(Fail(Throwable()))
+                }
+                _loadingState.postValue(false)
+            },
+            onError = { throwable ->
+                _productRecommendation.postValue(Fail(throwable))
+                _loadingState.postValue(false)
+            }
+        )
     }
 
     private fun updateProductItemQuantity(productId: String, quantity: Int) {

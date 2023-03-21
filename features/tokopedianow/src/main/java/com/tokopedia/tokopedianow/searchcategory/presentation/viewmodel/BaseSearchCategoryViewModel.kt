@@ -141,6 +141,7 @@ abstract class BaseSearchCategoryViewModel(
     protected var totalData = 0
     protected var chooseAddressData: LocalCacheModel? = null
     protected var feedbackFieldToggle = false
+    protected var hasBlockedAddToCart = false
 
     private val filterController = FilterController()
     private var headerYCoordinate = 0f
@@ -159,8 +160,6 @@ abstract class BaseSearchCategoryViewModel(
     var autoCompleteApplink = ""
         private set
     var serviceType = ""
-        private set
-    var needToBlockAtc = false
         private set
 
     private val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
@@ -535,8 +534,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun MutableList<Visitable<*>>.addTicker(headerDataView: HeaderDataView) {
-        val (hasBlockedAddToCart, tickerData) = TickerMapper.mapTickerData(headerDataView.targetedTicker)
-        needToBlockAtc = hasBlockedAddToCart
+        val (needToBlockAtc, tickerData) = TickerMapper.mapTickerData(headerDataView.targetedTicker)
+        hasBlockedAddToCart = needToBlockAtc
         if (tickerData.isNotEmpty()) {
             add(
                 TokoNowTickerUiModel(
@@ -711,7 +710,7 @@ abstract class BaseSearchCategoryViewModel(
                 index = index,
                 product = product,
                 cartService = cartService,
-                hasBlockedAddToCart = needToBlockAtc
+                hasBlockedAddToCart = hasBlockedAddToCart
             )
         }
         contentVisitableList.addAll(productListDataView)
@@ -1148,36 +1147,31 @@ abstract class BaseSearchCategoryViewModel(
         val shopId = productItem.shop.id
         val currentQuantity = productItem.productCardModel.orderQuantity
 
-        if (needToBlockAtc) {
-            // this only blocks add to cart when using repurchase widget
-            blockAddToCartMutableLiveData.value = Unit
-        } else {
-            cartService.handleCart(
-                cartProductItem = CartProductItem(productId, shopId, currentQuantity),
-                quantity = quantity,
-                onSuccessAddToCart = {
-                    addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                    sendAddToCartTracking(quantity, it.data.cartId, productItem)
-                    onAddToCartSuccess(productItem, it.data.quantity)
-                    updateToolbarNotification()
-                },
-                onSuccessUpdateCart = {
-                    sendTrackingUpdateQuantity(quantity, productItem)
-                    onAddToCartSuccess(productItem, quantity)
-                    updateToolbarNotification()
-                },
-                onSuccessDeleteCart = {
-                    removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                    sendDeleteCartTracking(productItem)
-                    onAddToCartSuccess(productItem, 0)
-                    updateToolbarNotification()
-                },
-                onError = ::onAddToCartFailed,
-                handleCartEventNonLogin = {
-                    handleAddToCartEventNonLogin(visitableList.indexOf(productItem))
-                },
-            )
-        }
+        cartService.handleCart(
+            cartProductItem = CartProductItem(productId, shopId, currentQuantity),
+            quantity = quantity,
+            onSuccessAddToCart = {
+                addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                sendAddToCartTracking(quantity, it.data.cartId, productItem)
+                onAddToCartSuccess(productItem, it.data.quantity)
+                updateToolbarNotification()
+            },
+            onSuccessUpdateCart = {
+                sendTrackingUpdateQuantity(quantity, productItem)
+                onAddToCartSuccess(productItem, quantity)
+                updateToolbarNotification()
+            },
+            onSuccessDeleteCart = {
+                removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                sendDeleteCartTracking(productItem)
+                onAddToCartSuccess(productItem, 0)
+                updateToolbarNotification()
+            },
+            onError = ::onAddToCartFailed,
+            handleCartEventNonLogin = {
+                handleAddToCartEventNonLogin(visitableList.indexOf(productItem))
+            },
+        )
     }
 
     private fun sendAddToCartTracking(quantity: Int, cartId: String, productItem: ProductItemDataView) {
@@ -1304,29 +1298,34 @@ abstract class BaseSearchCategoryViewModel(
         val shopId = repurchaseProduct.shopId
         val currentQuantity = nonVariant.quantity
 
-        cartService.handleCart(
-            CartProductItem(productId, shopId, currentQuantity),
-            quantity,
-            onSuccessAddToCart = {
-                addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
-                sendAddToCartRepurchaseProductTracking(quantity, it.data.cartId, repurchaseProduct)
-                updateToolbarNotification()
-            },
-            onSuccessUpdateCart = {
-                onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
-                updateToolbarNotification()
-            },
-            onSuccessDeleteCart = {
-                removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, 0)
-                updateToolbarNotification()
-            },
-            onError = ::onAddToCartFailed,
-            handleCartEventNonLogin = {
-                handleAddToCartEventNonLogin(getRepurchaseWidgetIndex())
-            }
-        )
+        if (hasBlockedAddToCart) {
+            // this only blocks add to cart when using repurchase widget
+            blockAddToCartMutableLiveData.value = Unit
+        } else {
+            cartService.handleCart(
+                CartProductItem(productId, shopId, currentQuantity),
+                quantity,
+                onSuccessAddToCart = {
+                    addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                    onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
+                    sendAddToCartRepurchaseProductTracking(quantity, it.data.cartId, repurchaseProduct)
+                    updateToolbarNotification()
+                },
+                onSuccessUpdateCart = {
+                    onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
+                    updateToolbarNotification()
+                },
+                onSuccessDeleteCart = {
+                    removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                    onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, 0)
+                    updateToolbarNotification()
+                },
+                onError = ::onAddToCartFailed,
+                handleCartEventNonLogin = {
+                    handleAddToCartEventNonLogin(getRepurchaseWidgetIndex())
+                }
+            )
+        }
     }
 
     private fun onSuccessATCRepurchaseWidgetProduct(
