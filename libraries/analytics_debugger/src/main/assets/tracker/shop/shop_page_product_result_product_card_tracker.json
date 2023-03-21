@@ -7,11 +7,12 @@
       "eventCategory": "shop page - (buyer|seller)",
       "productId": ".+",
       "item_list": "/shoppage - (.+) - etalase chip (.+) - (login|non login) - search result",
+      "item_list_name": "/shoppage - (.+) - etalase chip (.+) - (login|non login) - search result",
       "dimension90": ".*",
       "shopId": ".+",
       "shopType": ".+",
       "event": "view_item_list",
-      "eventAction": "product list impression - etalase chip",
+      "eventAction": "product list impression - etalase chip (.+) - (login|non login) - search result",
       "sessionIris": ".+",
       "items": [{
         "item_id": ".+",
@@ -41,7 +42,7 @@
       "shopId": ".+",
       "shopType": ".+",
       "event": "select_content",
-      "eventAction": "click product - etalase chip",
+      "eventAction": "click product - etalase chip (.+) - (login|non login) - search result",
       "sessionIris": ".+",
       "items": [{
         "item_id": ".+",

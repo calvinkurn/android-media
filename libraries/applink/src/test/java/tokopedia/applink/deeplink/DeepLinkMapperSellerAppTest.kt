@@ -446,4 +446,11 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         )
         assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, appLink, expectedDeepLink)
     }
+
+    @Test
+    fun `check persona external app link should mapping to internal app link`() {
+        val appLink = ApplinkConst.SellerApp.SELLER_PERSONA
+        val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_PERSONA
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, appLink, expectedDeepLink)
+    }
 }

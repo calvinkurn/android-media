@@ -137,7 +137,6 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
         binding?.voucherLoader?.show()
         voucherConfiguration?.let {
             viewModel.previewImage(
-                isCreateMode = false,
                 voucherConfiguration = it,
                 parentProductIds = it.productIds,
                 imageRatio = imageRatio

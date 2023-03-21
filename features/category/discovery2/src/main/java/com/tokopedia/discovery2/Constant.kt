@@ -101,6 +101,7 @@ object Constant {
     }
 
     const val LABEL_FULFILLMENT = "fulfillment"
+    const val DISCO_EMPTY_STATE_IMG = "disco_empty_state_img"
     const val DISCO_PAGE_SOURCE = "discovery_page_source"
     const val DISCOVERY_APPLINK = "discovery_applink"
 

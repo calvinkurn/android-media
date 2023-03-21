@@ -12,6 +12,7 @@ import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemImageBubbleBinding
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatImageBubbleViewHolderBinder.generateLeftBg
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatImageBubbleViewHolderBinder.generateRightBg
+import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder.bindChatReadStatus
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
@@ -32,6 +33,7 @@ class TokoChatImageBubbleViewHolder(
         bindImage(element)
         bindRetryButton(element)
         bindStatus(element)
+        bindTime(element)
         bindOnClick(element)
     }
 
@@ -90,6 +92,11 @@ class TokoChatImageBubbleViewHolder(
         binding?.tokochatIconImageBubbleError?.setOnClickListener {
             bindImage(element, isFromRetry = true)
         }
+    }
+
+    private fun bindTime(element: TokoChatImageBubbleUiModel) {
+        val time = TokoChatMessageBubbleViewHolderBinder.getHourTime(element.messageTime)
+        binding?.tokochatImageBubbleHour?.text = time
     }
 
     companion object {

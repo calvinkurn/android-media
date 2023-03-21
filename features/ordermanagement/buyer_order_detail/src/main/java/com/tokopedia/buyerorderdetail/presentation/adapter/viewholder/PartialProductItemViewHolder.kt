@@ -27,6 +27,11 @@ class PartialProductItemViewHolder(
     private var element: ProductListUiModel.ProductUiModel
 ) : View.OnClickListener {
 
+    companion object {
+        const val CARD_ALPHA_NON_POF = 1f
+        const val CARD_ALPHA_POF = 0.5f
+    }
+
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
 
     private val ivBuyerOrderDetailInsuranceLogo =
@@ -50,6 +55,7 @@ class PartialProductItemViewHolder(
 
     init {
         setupClickListeners()
+        setupCardProductAlpha(element.isPof)
         setupProductName(element.productName)
         setupProductQuantityAndPrice(element.quantity, element.priceText)
         setupProductNote(element.productNote)
@@ -79,7 +85,20 @@ class PartialProductItemViewHolder(
         if (oldItem.insurance != newItem.insurance) {
             setupInsurance(newItem.insurance)
         }
+
+        if (oldItem.isPof != newItem.isPof) {
+            setupCardProductAlpha(newItem.isPof)
+        }
+
         container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+    }
+
+    private fun setupCardProductAlpha(isPof: Boolean) {
+        container?.alpha = if (isPof) {
+            CARD_ALPHA_POF
+        } else {
+            CARD_ALPHA_NON_POF
+        }
     }
 
     private fun goToProductSnapshotPage() {

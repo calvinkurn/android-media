@@ -16,16 +16,19 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.SellerHomeConst
+import com.tokopedia.sellerhome.data.SellerHomeSharedPref
 import com.tokopedia.sellerhome.settings.view.activity.SellerEduWebviewActivity
 import com.tokopedia.sellerhomecommon.common.const.ShcConst
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 
 class OtherMenuAdapter(
     private val context: Context?,
     private val listener: Listener,
+    private val userSession: UserSessionInterface,
+    private val sharedPref: SellerHomeSharedPref,
     typeFactory: OtherMenuAdapterTypeFactory
-) :
-    BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
+) : BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
 
     companion object {
         private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
@@ -146,13 +149,17 @@ class OtherMenuAdapter(
     }
 
     private fun getSettingsTag(): String {
-        val expiredDateMillis = PERSONA_EXPIRED_DATE
-        val todayMillis = Date().time
-        return if (todayMillis < expiredDateMillis) {
-            context?.getString(R.string.setting_new_tag).orEmpty()
-        } else {
-            SellerHomeConst.EMPTY_STRING
+        context?.let {
+            val expiredDateMillis = PERSONA_EXPIRED_DATE
+            val todayMillis = Date().time
+            val isNotExpired = todayMillis < expiredDateMillis
+            return if (sharedPref.shouldShowPersonaEntryPoint(userSession.userId) && isNotExpired) {
+                it.getString(R.string.setting_new_tag)
+            } else {
+                SellerHomeConst.EMPTY_STRING
+            }
         }
+        return SellerHomeConst.EMPTY_STRING
     }
 
     private fun getCentralizedPromoTag(): String {

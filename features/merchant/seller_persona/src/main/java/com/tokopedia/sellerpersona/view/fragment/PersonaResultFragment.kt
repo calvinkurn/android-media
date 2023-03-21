@@ -152,7 +152,8 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
             }
             val param = mapOf(
                 SellerHomeApplinkConst.TOASTER_MESSAGE to toasterMessage,
-                SellerHomeApplinkConst.TOASTER_CTA to it.getString(R.string.sp_oke)
+                SellerHomeApplinkConst.TOASTER_CTA to it.getString(R.string.sp_oke),
+                SellerHomeApplinkConst.IS_PERSONA to true.toString()
             )
             val appLink =
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME, param)

@@ -53,4 +53,17 @@ interface PlayWidgetLargeAnalyticListener {
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
     ) {}
+
+    fun onClickMenuActionChannel(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int
+    ) {}
+
+    fun onClickDeleteChannel(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int
+    ) {
+    }
 }
