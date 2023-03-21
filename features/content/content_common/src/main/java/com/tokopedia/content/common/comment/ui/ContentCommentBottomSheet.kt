@@ -293,7 +293,10 @@ class ContentCommentBottomSheet @Inject constructor(
                         showKeyboard(false)
                     }
                     CommentEvent.OpenReportEvent -> sheetMenu.showReportLayoutWhenLaporkanClicked()
-                    CommentEvent.ReportSuccess -> sheetMenu.setFinalView()
+                    CommentEvent.ReportSuccess -> {
+                        sheetMenu.setFinalView()
+                        analytics?.impressSuccessReport()
+                    }
                     CommentEvent.ReportSuccess -> {
                         binding.newComment.text = null
                         binding.rvComment.scrollToPosition(0)
@@ -455,6 +458,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 )
             )
         )
+        analytics?.clickReportReason(feedReportRequestParamModel.reportType)
     }
 
     override fun onMenuBottomSheetCloseClick(contentId: String) {
