@@ -165,6 +165,16 @@ class InboxContactUsFragment :
             showChatBotWidget(welcomeMessage.toString(), uiState.unReadNotification, appLink)
         } else {
             hideChatBotWidget()
+            showErrorTopChatStatus(uiState.errorMessageChatBotWidget)
+        }
+    }
+
+    private fun showErrorTopChatStatus(errorMessage: String){
+        if(errorMessage.isNotEmpty()) {
+            binding?.rvEmailList.showToasterErrorWithCta(
+                errorMessage,
+                context?.getString(R.string.contact_us_ok).orEmpty()
+            )
         }
     }
 
