@@ -92,7 +92,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
                     override fun afterTextChanged(s: Editable?) {
                         removeTextChangedListener(this)
                         s?.let {
-                            val formattedText = customInputNumberFormatter?.invoke(it.toString()) ?: DEFAULT_EMPTY_STRING
+                            val formattedText = customInputNumberFormatter?.invoke(it.toString()) ?: it.toString()
                             it.replace(0, it.length, formattedText)
                         }
                         addTextChangedListener(this)
