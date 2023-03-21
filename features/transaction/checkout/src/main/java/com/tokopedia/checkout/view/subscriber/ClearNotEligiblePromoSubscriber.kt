@@ -26,9 +26,10 @@ class ClearNotEligiblePromoSubscriber(
 
     override fun onNext(response: ClearPromoUiModel?) {
         if (response?.successDataModel?.tickerMessage?.isNotBlank() == true) {
-            presenter.tickerAnnouncementHolderData.title = ""
-            presenter.tickerAnnouncementHolderData.message = response.successDataModel.tickerMessage
-            view?.updateTickerAnnouncementMessage()
+            val ticker = presenter.tickerAnnouncementHolderData.value
+            ticker.title = ""
+            ticker.message = response.successDataModel.tickerMessage
+            presenter.tickerAnnouncementHolderData.value = ticker
         }
         view?.removeIneligiblePromo(notEligiblePromoHolderdata)
     }

@@ -421,14 +421,25 @@ class ShipmentFragment :
     }
 
     private fun observeData() {
-        shipmentPresenter.shipmentButtonPayment.observe(viewLifecycleOwner) {
-            if (shipmentAdapter.updateShipmentButtonPaymentModel(it)) {
-                onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
+        shipmentPresenter.tickerAnnouncementHolderData.observe(viewLifecycleOwner) {
+            updateTickerAnnouncementMessage()
+        }
+        shipmentPresenter.egoldAttributeModel.observe(viewLifecycleOwner) {
+            if (it != null) {
+                val indexToUpdate = shipmentAdapter.updateEgold(it)
+                if (indexToUpdate > -1) {
+                    onNeedUpdateViewItem(indexToUpdate)
+                }
             }
         }
         shipmentPresenter.shipmentCostModel.observe(viewLifecycleOwner) {
             if (shipmentAdapter.updateShipmentCostModel(it)) {
                 onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
+            }
+        }
+        shipmentPresenter.shipmentButtonPayment.observe(viewLifecycleOwner) {
+            if (shipmentAdapter.updateShipmentButtonPaymentModel(it)) {
+                onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
             }
         }
     }
@@ -698,31 +709,31 @@ class ShipmentFragment :
     }
 
     private fun sendEEStep2() {
-        val shipmentCartItemModelList = shipmentAdapter.shipmentCartItemModelList!!
-        for (shipmentCartItemModel in shipmentCartItemModelList) {
-            val dataCheckoutRequests: List<DataCheckoutRequest> = if (shipmentCartItemModel.isSaveStateFlag) {
-                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-                    shipmentCartItemModel.cartString,
-                    "",
-                    "",
-                    ""
-                )
-            } else {
-                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-                    shipmentCartItemModel.cartString,
-                    "",
-                    "",
-                    shipmentCartItemModel.spId.toString()
-                )
-            }
-            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests)
-        }
-        val dataCheckoutRequests =
-            shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
-                shipmentCartItemModelList
-            )
+//        val shipmentCartItemModelList = shipmentAdapter.shipmentCartItemModelList!!
+//        for (shipmentCartItemModel in shipmentCartItemModelList) {
+//            val dataCheckoutRequests: List<DataCheckoutRequest> = if (shipmentCartItemModel.isSaveStateFlag) {
+//                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+//                    shipmentCartItemModel.cartString,
+//                    "",
+//                    "",
+//                    ""
+//                )
+//            } else {
+//                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+//                    shipmentCartItemModel.cartString,
+//                    "",
+//                    "",
+//                    shipmentCartItemModel.spId.toString()
+//                )
+//            }
+//            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests)
+//        }
+//        val dataCheckoutRequests =
+//            shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
+//                shipmentCartItemModelList
+//            )
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-            dataCheckoutRequests,
+            null,
             null,
             EnhancedECommerceActionField.STEP_2,
             ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
@@ -908,7 +919,7 @@ class ShipmentFragment :
         setCampaignTimer()
         initRecyclerViewData(
             shipmentPresenter.shipmentTickerErrorModel,
-            shipmentPresenter.tickerAnnouncementHolderData,
+            shipmentPresenter.tickerAnnouncementHolderData.value,
             shipmentPresenter.recipientAddressModel,
             shipmentPresenter.shipmentUpsellModel,
             shipmentPresenter.shipmentNewUpsellModel,
@@ -917,7 +928,7 @@ class ShipmentFragment :
             shipmentPresenter.getListShipmentCrossSellModel(),
             shipmentPresenter.lastApplyData,
             shipmentPresenter.shipmentCostModel.value,
-            shipmentPresenter.egoldAttributeModel,
+            shipmentPresenter.egoldAttributeModel.value,
             shipmentPresenter.shipmentButtonPayment.value,
             shipmentPresenter.uploadPrescriptionUiModel,
             isInitialRender,
@@ -1510,12 +1521,12 @@ class ShipmentFragment :
                     promoUiModel.titleDescription =
                         clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
                     val tickerAnnouncementHolderData =
-                        shipmentPresenter.tickerAnnouncementHolderData
-                    if (!TextUtils.isEmpty(clearPromoUiModel.successDataModel.tickerMessage)) {
+                        shipmentPresenter.tickerAnnouncementHolderData.value
+                    if (clearPromoUiModel.successDataModel.tickerMessage.isNotEmpty()) {
                         tickerAnnouncementHolderData.title = ""
                         tickerAnnouncementHolderData.message =
                             clearPromoUiModel.successDataModel.tickerMessage
-                        updateTickerAnnouncementMessage()
+                        shipmentPresenter.tickerAnnouncementHolderData.value = tickerAnnouncementHolderData
                     }
                     doUpdateButtonPromoCheckout(promoUiModel)
                     shipmentPresenter.validateUsePromoRevampUiModel = null
@@ -1903,22 +1914,22 @@ class ShipmentFragment :
                 courierHasReseted = true
                 break
             }
-            val dataCheckoutRequests =
-                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-                    shipmentCartItemModel.cartString,
-                    selectedCourier.selectedShipper.serviceId.toString(),
-                    selectedCourier.selectedShipper.shipperPrice.toString(),
-                    shipmentCartItemModel.spId.toString()
-                )
-            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests)
+//            val dataCheckoutRequests =
+//                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+//                    shipmentCartItemModel.cartString,
+//                    selectedCourier.selectedShipper.serviceId.toString(),
+//                    selectedCourier.selectedShipper.shipperPrice.toString(),
+//                    shipmentCartItemModel.spId.toString()
+//                )
+//            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests)
         }
         if (!courierHasReseted) {
-            val dataCheckoutRequests =
-                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
-                    shipmentCartItemModels
-                )
+//            val dataCheckoutRequests =
+//                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
+//                    shipmentCartItemModels
+//                )
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-                dataCheckoutRequests,
+                null,
                 null,
                 EnhancedECommerceActionField.STEP_3,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
@@ -3273,10 +3284,10 @@ class ShipmentFragment :
         devicePrice: Long,
         diagnosticId: String
     ) {
-        val dataCheckoutRequests =
-            shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
-                shipmentAdapter.shipmentCartItemModelList!!
-            )
+//        val dataCheckoutRequests =
+//            shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
+//                shipmentAdapter.shipmentCartItemModelList!!
+//            )
         var eventCategory = ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION
         var eventAction = ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN
         var eventLabel = ConstantTransactionAnalytics.EventLabel.SUCCESS
@@ -3306,7 +3317,7 @@ class ShipmentFragment :
             }
         }
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-            dataCheckoutRequests,
+            null,
             tradeInCustomDimension,
             EnhancedECommerceActionField.STEP_4,
             eventCategory,
@@ -3418,24 +3429,6 @@ class ShipmentFragment :
         if (index != RecyclerView.NO_POSITION) {
             // If ticker exist, update the view
             onNeedUpdateViewItem(index)
-        } else {
-            // If ticker not exist, add ticker to list, then update the list
-            val tickerAnnouncementHolderData = shipmentPresenter.tickerAnnouncementHolderData
-            shipmentAdapter.addTickerAnnouncementData(tickerAnnouncementHolderData)
-            if (rvShipment?.isComputingLayout == true) {
-                rvShipment?.post { onAddTickerAnnouncementMessage() }
-            } else {
-                onAddTickerAnnouncementMessage()
-            }
-        }
-    }
-
-    private fun onAddTickerAnnouncementMessage() {
-        if (rvShipment?.canScrollVertically(-1) == false) {
-            shipmentAdapter.notifyItemInserted(ShipmentAdapter.SECOND_HEADER_POSITION)
-            rvShipment?.scrollToPosition(0)
-        } else {
-            shipmentAdapter.notifyItemInserted(ShipmentAdapter.SECOND_HEADER_POSITION)
         }
     }
 

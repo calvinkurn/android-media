@@ -429,6 +429,15 @@ class ShipmentAdapter @Inject constructor(
         return false
     }
 
+    fun updateEgold(egoldAttributeModel: EgoldAttributeModel): Int {
+        val index = shipmentDataList.indexOfLast { it is EgoldAttributeModel }
+        if (index > -1) {
+            shipmentDataList[index] = egoldAttributeModel
+            return index
+        }
+        return -1
+    }
+
     fun updateCheckoutButtonData(defaultTotal: String?) {
         if (shipmentCostModel != null && shipmentCartItemModelList != null) {
             var cartItemCounter = 0
@@ -685,7 +694,7 @@ class ShipmentAdapter @Inject constructor(
             return RecyclerView.NO_POSITION
         }
     val tickerAnnouncementHolderDataIndex: Int
-        get() = shipmentDataList.indexOf(tickerAnnouncementHolderData!!)
+        get() = shipmentDataList.indexOfFirst { it is TickerAnnouncementHolderData }
 
     private fun checkDataForCheckout() {
         var availableCheckout = true

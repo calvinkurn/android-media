@@ -336,9 +336,9 @@ interface ShipmentContract {
 
 //        fun getShipmentCostModel(): ShipmentCostModel
 //        fun setShipmentCostModel(shipmentCostModel: ShipmentCostModel?)
-        var egoldAttributeModel: EgoldAttributeModel?
+        val egoldAttributeModel: CheckoutMutableLiveData<EgoldAttributeModel?>
         val shipmentTickerErrorModel: ShipmentTickerErrorModel
-        var tickerAnnouncementHolderData: TickerAnnouncementHolderData
+        val tickerAnnouncementHolderData: CheckoutMutableLiveData<TickerAnnouncementHolderData>
         fun editAddressPinpoint(
             latitude: String,
             longitude: String,
@@ -396,14 +396,14 @@ interface ShipmentContract {
             pageSource: String
         )
 
-        fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-            cartString: String,
-            shippingDuration: String,
-            shippingPrice: String,
-            courierName: String
-        ): List<DataCheckoutRequest>?
+//        fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+//            cartString: String,
+//            shippingDuration: String,
+//            shippingPrice: String,
+//            courierName: String
+//        ): List<DataCheckoutRequest>?
 
-        fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentCartItemModels: List<ShipmentCartItemModel>): List<DataCheckoutRequest>
+//        fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentCartItemModels: List<ShipmentCartItemModel>): List<DataCheckoutRequest>
         val isIneligiblePromoDialogEnabled: Boolean
         fun generateCheckoutRequest(
             analyticsDataCheckoutRequests: List<DataCheckoutRequest>?,

@@ -20,9 +20,10 @@ import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomS
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import java.util.Locale
+import java.util.*
 
 class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
+
     private val buyEmas: CheckBox = itemView.findViewById(R.id.cb_emas)
     private val tvEmasTitle: Typography = itemView.findViewById(R.id.tv_emas_title)
     private val tvEmasDesc: Typography = itemView.findViewById(R.id.tv_emas_sub_title)

@@ -211,14 +211,14 @@ class ShipmentPresenter @Inject constructor(
     override var shipmentTickerErrorModel = ShipmentTickerErrorModel()
         private set
 
-    override var tickerAnnouncementHolderData: TickerAnnouncementHolderData =
-        TickerAnnouncementHolderData()
+    override val tickerAnnouncementHolderData: CheckoutMutableLiveData<TickerAnnouncementHolderData> =
+        CheckoutMutableLiveData(TickerAnnouncementHolderData())
 
     override var recipientAddressModel: RecipientAddressModel = RecipientAddressModel()
 
-    var shipmentCostModel: CheckoutMutableLiveData<ShipmentCostModel> = CheckoutMutableLiveData(ShipmentCostModel())
+    val shipmentCostModel: CheckoutMutableLiveData<ShipmentCostModel> = CheckoutMutableLiveData(ShipmentCostModel())
 
-    override var egoldAttributeModel: EgoldAttributeModel? = null
+    override val egoldAttributeModel: CheckoutMutableLiveData<EgoldAttributeModel?> = CheckoutMutableLiveData(null)
 
     override var shipmentDonationModel: ShipmentDonationModel? = null
 
@@ -476,12 +476,13 @@ class ShipmentPresenter @Inject constructor(
             shipmentCost.totalPrice = totalPrice
         }
         shipmentCost.listCrossSell = listCheckedCrossModel
-        if (egoldAttributeModel != null && egoldAttributeModel!!.isEligible) {
-            updateEmasCostModel(shipmentCost)
-            if (egoldAttributeModel!!.isChecked) {
-                totalPrice += egoldAttributeModel!!.buyEgoldValue.toDouble()
+        val egoldAttribute = egoldAttributeModel.value
+        if (egoldAttribute != null && egoldAttribute.isEligible) {
+            egoldAttributeModel.value = updateEmasCostModel(shipmentCost, egoldAttribute)
+            if (egoldAttribute.isChecked) {
+                totalPrice += egoldAttribute.buyEgoldValue.toDouble()
                 shipmentCost.totalPrice = totalPrice
-                shipmentCost.emasPrice = egoldAttributeModel!!.buyEgoldValue.toDouble()
+                shipmentCost.emasPrice = egoldAttribute.buyEgoldValue.toDouble()
             } else if (shipmentCost.emasPrice > 0) {
                 shipmentCost.emasPrice = 0.0
             }
@@ -492,14 +493,17 @@ class ShipmentPresenter @Inject constructor(
         updateCheckoutButtonData(shipmentCost)
     }
 
-    private fun updateEmasCostModel(shipmentCost: ShipmentCostModel) {
+    private fun updateEmasCostModel(
+        shipmentCost: ShipmentCostModel,
+        egoldAttribute: EgoldAttributeModel
+    ): EgoldAttributeModel {
         val totalPrice = shipmentCost.totalPrice.toLong()
         var valueTOCheck = 0
         var buyEgoldValue: Long = 0
-        if (egoldAttributeModel!!.isTiering) {
-            egoldAttributeModel!!.egoldTieringModelArrayList.sortWith { o1, o2 -> (o1.minTotalAmount - o2.minTotalAmount).toInt() }
+        if (egoldAttribute.isTiering) {
+            egoldAttribute.egoldTieringModelArrayList.sortWith { o1, o2 -> (o1.minTotalAmount - o2.minTotalAmount).toInt() }
             var egoldTieringModel = EgoldTieringModel()
-            for (data in egoldAttributeModel!!.egoldTieringModelArrayList) {
+            for (data in egoldAttribute.egoldTieringModelArrayList) {
                 if (totalPrice >= data.minTotalAmount) {
                     valueTOCheck = (totalPrice % data.basisAmount).toInt()
                     egoldTieringModel = data
@@ -515,12 +519,13 @@ class ShipmentPresenter @Inject constructor(
             valueTOCheck = (totalPrice % LAST_THREE_DIGIT_MODULUS).toInt()
             buyEgoldValue = calculateBuyEgoldValue(
                 valueTOCheck,
-                egoldAttributeModel!!.minEgoldRange,
-                egoldAttributeModel!!.maxEgoldRange,
+                egoldAttribute.minEgoldRange,
+                egoldAttribute.maxEgoldRange,
                 LAST_THREE_DIGIT_MODULUS
             )
         }
-        egoldAttributeModel!!.buyEgoldValue = buyEgoldValue
+        egoldAttribute.buyEgoldValue = buyEgoldValue
+        return egoldAttribute
     }
 
     private fun calculateBuyEgoldValue(
@@ -622,29 +627,29 @@ class ShipmentPresenter @Inject constructor(
         transactionId: String,
         pageSource: String
     ) {
-        val checkoutRequest = generateCheckoutRequest(
-            dataCheckoutRequests,
-            if (shipmentDonationModel?.isChecked == true) 1 else 0,
-            listShipmentCrossSellModel,
-            leasingId
-        )
-        val eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step, pageSource)
-        if (eeDataLayer != null) {
+//        val checkoutRequest = generateCheckoutRequest(
+//            dataCheckoutRequests,
+//            if (shipmentDonationModel?.isChecked == true) 1 else 0,
+//            listShipmentCrossSellModel,
+//            leasingId
+//        )
+        val eeDataLayer = generateCheckoutAnalyticsDataLayer(step, pageSource)
+//        if (eeDataLayer != null) {
 //            val transactionId = checkoutData?.transactionId ?: ""
-            analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
-                eeDataLayer,
-                tradeInCustomDimension,
-                transactionId,
-                userSessionInterface.userId,
-                getPromoFlag(step),
-                eventCategory,
-                eventAction,
-                eventLabel
-            )
-        }
+        analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
+            eeDataLayer,
+            tradeInCustomDimension,
+            transactionId,
+            userSessionInterface.userId,
+            getPromoFlag(step),
+            eventCategory,
+            eventAction,
+            eventLabel
+        )
+//        }
     }
 
-    override fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+    /*override fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
         cartString: String,
         shippingDuration: String,
         shippingPrice: String,
@@ -724,7 +729,7 @@ class ShipmentPresenter @Inject constructor(
             }
         }
         return dataCheckoutRequests
-    }
+    }*/
 
     override fun processInitialLoadCheckoutPage(
         isReloadData: Boolean,
@@ -903,16 +908,16 @@ class ShipmentPresenter @Inject constructor(
         shipmentTickerErrorModel = ShipmentTickerErrorModel(cartShipmentAddressFormData.errorTicker)
         val tickerData = cartShipmentAddressFormData.tickerData
         if (tickerData != null) {
-            tickerAnnouncementHolderData = TickerAnnouncementHolderData(
+            tickerAnnouncementHolderData.value = TickerAnnouncementHolderData(
                 tickerData.id,
                 tickerData.title,
                 tickerData.message
             )
             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
-                tickerAnnouncementHolderData.id
+                tickerData.id
             )
         } else {
-            tickerAnnouncementHolderData = TickerAnnouncementHolderData()
+            tickerAnnouncementHolderData.value = TickerAnnouncementHolderData()
         }
         val newAddress = shipmentDataConverter
             .getRecipientAddressModel(cartShipmentAddressFormData)
@@ -959,7 +964,7 @@ class ShipmentPresenter @Inject constructor(
         if (egoldAttributes != null) {
             egoldAttributes.isEnabled = !shipmentTickerErrorModel.isError
         }
-        egoldAttributeModel = egoldAttributes
+        egoldAttributeModel.value = egoldAttributes
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled
         setUploadPrescriptionData(
@@ -975,7 +980,6 @@ class ShipmentPresenter @Inject constructor(
         )
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
         cartDataForRates = cartShipmentAddressFormData.cartData
-        dataCheckoutRequestList = view!!.generateNewCheckoutRequest(shipmentCartItemModelList, true)
     }
 
     fun setPurchaseProtection(isPurchaseProtectionPage: Boolean) {
@@ -1369,15 +1373,17 @@ class ShipmentPresenter @Inject constructor(
     }
 
     private fun updateTickerAnnouncementData(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
-        if (!isNullOrEmpty(validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.message)) {
-            tickerAnnouncementHolderData.id =
+        if (validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.message.isNotEmpty()) {
+            val ticker = tickerAnnouncementHolderData.value
+            ticker.id =
                 validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.statusCode.toString()
-            tickerAnnouncementHolderData.title = ""
-            tickerAnnouncementHolderData.message =
+            ticker.title = ""
+            ticker.message =
                 validateUsePromoRevampUiModel.promoUiModel.tickerInfoUiModel.message
-            view?.updateTickerAnnouncementMessage()
+            tickerAnnouncementHolderData.value = ticker
+//            view?.updateTickerAnnouncementMessage()
             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
-                tickerAnnouncementHolderData.id
+                ticker.id
             )
         }
     }
@@ -1432,10 +1438,9 @@ class ShipmentPresenter @Inject constructor(
     }
 
     fun generateCheckoutAnalyticsDataLayer(
-        checkoutRequest: CheckoutRequest?,
         step: String,
         pageSource: String
-    ): Map<String, Any>? {
+    ): Map<String, Any> {
 //        if (checkoutRequest != null) {
         val checkoutMapData: MutableMap<String, Any> = HashMap()
         val enhancedECommerceActionField = EnhancedECommerceActionField()
@@ -1505,7 +1510,10 @@ class ShipmentPresenter @Inject constructor(
                 )
                 enhancedECommerceProductCartMapData.setBuyerAddressId(cartItemModel.analyticsProductCheckoutData.buyerAddressId)
                 enhancedECommerceProductCartMapData.setShippingDuration(courierItemData?.selectedShipper?.serviceId?.toString() ?: "")
-                enhancedECommerceProductCartMapData.setCourier(courierItemData?.selectedShipper?.shipperProductId?.toString() ?: "")
+                enhancedECommerceProductCartMapData.setCourier(
+                    courierItemData?.selectedShipper?.shipperProductId?.toString()
+                        ?: if (shipmentCartItemModel.isSaveStateFlag) shipmentCartItemModel.spId.toString() else ""
+                )
                 enhancedECommerceProductCartMapData.setShippingPrice(courierItemData?.selectedShipper?.shipperPrice?.toString() ?: "")
                 enhancedECommerceProductCartMapData.setCodFlag(cartItemModel.analyticsProductCheckoutData.codFlag)
                 enhancedECommerceProductCartMapData.setTokopediaCornerFlag(cartItemModel.analyticsProductCheckoutData.tokopediaCornerFlag)
@@ -1925,9 +1933,10 @@ class ShipmentPresenter @Inject constructor(
             )
         }
         val egoldData = EgoldData()
-        if (egoldAttributeModel != null && egoldAttributeModel!!.isEligible) {
-            egoldData.isEgold = egoldAttributeModel!!.isChecked
-            egoldData.egoldAmount = egoldAttributeModel!!.buyEgoldValue
+        val egoldAttribute = egoldAttributeModel.value
+        if (egoldAttribute != null && egoldAttribute.isEligible) {
+            egoldData.isEgold = egoldAttribute.isChecked
+            egoldData.egoldAmount = egoldAttribute.buyEgoldValue
         }
         val crossSellRequest = CrossSellRequest()
         val listCrossSellItemRequest = ArrayList<CrossSellItemRequestModel>()
@@ -2370,11 +2379,13 @@ class ShipmentPresenter @Inject constructor(
                     )
                 ).executeOnBackground()
                 if (view != null) {
-                    if (!isNullOrEmpty(responseData.successDataModel.tickerMessage)) {
-                        tickerAnnouncementHolderData.title = ""
-                        tickerAnnouncementHolderData.message =
+                    if (responseData.successDataModel.tickerMessage.isNotEmpty()) {
+                        val ticker = tickerAnnouncementHolderData.value
+                        ticker.title = ""
+                        ticker.message =
                             responseData.successDataModel.tickerMessage
-                        view?.updateTickerAnnouncementMessage()
+                        tickerAnnouncementHolderData.value = ticker
+//                        view?.updateTickerAnnouncementMessage()
                     }
                     val isLastAppliedPromo = isLastAppliedPromo(promoCode)
                     if (isLastAppliedPromo) {
@@ -2478,10 +2489,12 @@ class ShipmentPresenter @Inject constructor(
                         )
                     ).executeOnBackground()
                     if (response.successDataModel.tickerMessage.isNotBlank()) {
-                        tickerAnnouncementHolderData.title = ""
-                        tickerAnnouncementHolderData.message =
+                        val ticker = tickerAnnouncementHolderData.value
+                        ticker.title = ""
+                        ticker.message =
                             response.successDataModel.tickerMessage
-                        view?.updateTickerAnnouncementMessage()
+                        tickerAnnouncementHolderData.value = ticker
+//                        view?.updateTickerAnnouncementMessage()
                     }
                     view?.removeIneligiblePromo(notEligiblePromoHolderdataArrayList)
                 } catch (t: Throwable) {
