@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.report.data.model.SubmitReportParams
@@ -12,6 +11,7 @@ import com.tokopedia.report.usecase.SubmitReportUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -34,19 +34,18 @@ class ProductReportSubmitViewModel @Inject constructor(
     fun getCurrentParams() = currentParams
 
     fun submitReport(productId: Long, categoryId: Int, input: Map<String, Any>) {
-        launchCatchError(
-            block = {
+        launch(coroutineContext) {
+            try {
                 val params = SubmitReportParams(productId, categoryId, processImages(input))
                 submitReportUseCase.setParams(params)
                 currentParams = params
 
                 val result = submitReportUseCase.executeOnBackground()
                 submitResult.postValue(Success(result.submitReport.isSuccess))
-            },
-            onError = {
-                submitResult.postValue(Fail(it))
+            } catch (t: Throwable) {
+                submitResult.postValue(Fail(t))
             }
-        )
+        }
     }
 
     private suspend fun processImages(input: Map<String, Any>): Map<String, Any> {
