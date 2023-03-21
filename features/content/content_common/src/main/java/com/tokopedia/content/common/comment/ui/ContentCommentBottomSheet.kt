@@ -31,6 +31,7 @@ import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
+import com.tokopedia.content.common.util.ConnectionHelper
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
@@ -414,10 +415,14 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
-            FeedMenuIdentifier.DELETE -> {
-                viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
-            }
+            FeedMenuIdentifier.DELETE -> deleteCommentChecker()
             FeedMenuIdentifier.LAPORKAN -> viewModel.submitAction(CommentAction.RequestReportAction)
+        }
+    }
+
+    private fun deleteCommentChecker() {
+        requireInternet {
+            viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
         }
     }
 
@@ -490,6 +495,26 @@ class ContentCommentBottomSheet @Inject constructor(
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         dismiss()
+    }
+
+    private fun requireInternet(action: (isAvailable: Boolean) -> Unit) {
+        val isInetAvailable = ConnectionHelper.isInternetAvailable(requireContext(),
+            checkWifi = true,
+            checkCellular = true,
+            checkEthernet = true
+        )
+        if (isInetAvailable) {
+            action(true)
+        } else {
+            Toaster.showErrorWithAction(
+                requireView().rootView,
+                getString(R.string.content_comment_error_connection),
+                Toaster.LENGTH_LONG,
+                getString(R.string.feed_content_coba_lagi_text)
+            ) {
+                action(isInetAvailable)
+            }
+        }
     }
 
     interface EntrySource {
