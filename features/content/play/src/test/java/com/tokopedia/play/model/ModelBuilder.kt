@@ -8,15 +8,11 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.variant_common.model.GetProductVariantResponse
-
 
 /**
  * Created by jegul on 20/02/20
@@ -1551,7 +1547,8 @@ class ModelBuilder {
                 "max_retries": 5,
                 "min_reconnect_delay": 5000
               }
-        }""".trimIndent()
+        }
+    """.trimIndent()
 
     fun buildChannel(): ChannelDetailsWithRecomResponse =
         gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
@@ -1676,7 +1673,7 @@ class ModelBuilder {
         isRilisanSpesial = isRilisanSpesial,
         buttons = buttons,
         isNumerationShown = isProductNumerationShown,
-        number = number,
+        number = number
     )
 
     fun buildProductStockAvailable(
@@ -1739,10 +1736,14 @@ class ModelBuilder {
         isShown: Boolean = false,
         isPreviousSameState: Boolean = false,
         estimatedInsetsHeight: Int = 250
-    ) = if (isShown) BottomInsetsState.Shown(
-        estimatedInsetsHeight,
-        isPreviousSameState
-    ) else BottomInsetsState.Hidden(isPreviousSameState)
+    ) = if (isShown) {
+        BottomInsetsState.Shown(
+            estimatedInsetsHeight,
+            isPreviousSameState
+        )
+    } else {
+        BottomInsetsState.Hidden(isPreviousSameState)
+    }
 
     fun <T> buildPlayResultLoading(
         showPlaceholder: Boolean = true
@@ -1766,10 +1767,10 @@ class ModelBuilder {
 
         return PlayShareInfoUiModel(
             content = fullShareContent,
-            shouldShow = channel.share.isShowButton
-                    && channel.share.redirectUrl.isNotBlank()
-                    && channel.configuration.active
-                    && !channel.configuration.freezed
+            shouldShow = channel.share.isShowButton &&
+                channel.share.redirectUrl.isNotBlank() &&
+                channel.configuration.active &&
+                !channel.configuration.freezed
         )
     }
 
@@ -1806,72 +1807,1093 @@ class ModelBuilder {
         minQty: Int = 1,
         isFreeShipping: Boolean = false,
         applink: String? = null,
-        gradient: List<String>? = null,
+        gradient: List<String>? = null
     ): ProductSection.Response {
-        var productList = ""
-        for (i in 1..size) {
-            productList += """
-                {
-                    app_link: "$applink",
-                    discount: 0,
-                    id: $i,
-                    image_url: "$imageUrl",
-                    is_available: false,
-                    is_free_shipping: $isFreeShipping,
-                    is_variant: $isVariantAvailable,
-                    min_quantity: $minQty,
-                    name: "Barang $i",
-                    order: 0,
-                    original_price: 123,
-                    original_price_formatted: "123",
-                    price: 0,
-                    price_formatted: "",
-                    quantity: 0,
-                    shop_id: "$shopId",
-                    web_link: "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447",
-                    number: $i
-              }
-            """.trimIndent()
-            if (i != size) productList += ","
-        }
-
-        var sectionList = ""
-        for (x in 1..size) {
-            sectionList += """{
-                type: "active",
-                title: "$title $x",
-                countdown: {
-                    copy: "Berakhir dalam"
-                },
-                background: {
-                    gradient: "$gradient",
-                    image_url: "https://via.placeholder.com/150"
-                },
-                start_time: "2022-01-02T15:04:05Z07:00",
-                end_time: "2022-01-02T16:04:05Z07:00",
-                server_time: "2022-01-02T15:14:05Z07:00",
-                products : [
-                    $productList
-                 ]
-                }
-            """.trimIndent()
-            if (x != size) sectionList += ","
-        }
         val data = """
-             {
-                "data": {
-                      "playGetTagsItemSection":{
-                          "sections" : [
-                            $sectionList
-                          ],
-                          "config" : {
-                            "peek_product_count" : 15,
-                            "title_bottomsheet" : "Promo dan Produk Lainnya"
+                 {
+                  "playGetTagsItemSection": {
+                    "sections": [
+                      {
+                        "type": "other",
+                        "title": "",
+                        "countdown": {
+                          "copy": ""
+                        },
+                        "background": {
+                          "gradient": [],
+                          "image_url": ""
+                        },
+                        "start_time": "1970-01-01T07:00:00+07:00",
+                        "end_time": "1970-01-01T07:00:00+07:00",
+                        "server_time": "2023-03-21T15:36:25+07:00",
+                        "source_id": "0",
+                        "products": [
+                          {
+                            "id": "6925401702",
+                            "name": "Hampers 6 Kaleng Cookies Kue Kering",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/916aeea4-a7c5-45f2-b930-2c2b7642120e.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 195000,
+                            "original_price_formatted": "Rp 195.000",
+                            "discount": 5,
+                            "price": 185250,
+                            "price_formatted": "Rp 185.250",
+                            "quantity": 4483,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 0,
+                            "app_link": "tokopedia://product/8174237886",
+                            "web_link": "https://www.tokopedia.com/missogura/hampers-6-kaleng-cookies-kue-kering-batch2-17-21mar",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 1
+                          },
+                          {
+                            "id": "8175013631",
+                            "name": "Kurma Medjool Cake Cupcake Muffin",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/0a756fc8-5a58-46d6-a049-9f3d7ff85820.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 5,
+                            "price": 61750,
+                            "price_formatted": "Rp 61.750",
+                            "quantity": 8979,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 1,
+                            "app_link": "tokopedia://product/8175013641",
+                            "web_link": "https://www.tokopedia.com/missogura/kurma-medjool-cake-cupcake-muffin-isi-12-batch7-11-15apr-76baf",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 2
+                          },
+                          {
+                            "id": "3325111748",
+                            "name": "Ameena Hampers Lebaran Eid Trio Nastar",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/9e0672a0-bc8d-40cb-8b02-c73ed87913c5.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 5,
+                            "price": 61750,
+                            "price_formatted": "Rp 61.750",
+                            "quantity": 8956,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 2,
+                            "app_link": "tokopedia://product/8160582985",
+                            "web_link": "https://www.tokopedia.com/missogura/ameena-hampers-lebaran-eid-trio-nastar-isi-12-batch8-16-20apr",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 3
+                          },
+                          {
+                            "id": "7506341076",
+                            "name": "Melted Cookies / Messy Cookies / Cookies Siram",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/3/5/6b6ccfaa-602c-43ff-842d-a77832599eb9.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 5,
+                            "price": 57000,
+                            "price_formatted": "Rp 57.000",
+                            "quantity": 8980,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 3,
+                            "app_link": "tokopedia://product/8319956789",
+                            "web_link": "https://www.tokopedia.com/missogura/melted-cookies-messy-cookies-cookies-siram-pandan-kurma-batch2-17-21mar",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 4
+                          },
+                          {
+                            "id": "1953633275",
+                            "name": "Seaweed edamame",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/f181fcc4-e3c6-4dbb-84a8-d2c7cb45dd90.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 40000,
+                            "original_price_formatted": "Rp 40.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 2027,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 4,
+                            "app_link": "tokopedia://product/1953633275",
+                            "web_link": "https://www.tokopedia.com/missogura/seaweed-edamame",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 5
+                          },
+                          {
+                            "id": "8584759533",
+                            "name": "KOKO Kookies Kocok / Cookies / Kue Kering",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/3/17/d5649a0f-c2bc-4b31-a5d5-043965eac2d6.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 27000,
+                            "original_price_formatted": "Rp 27.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1485,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 5,
+                            "app_link": "tokopedia://product/8584759541",
+                            "web_link": "https://www.tokopedia.com/missogura/koko-kookies-kocok-cookies-kue-kering-mie-goreng-788e8",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 6
+                          },
+                          {
+                            "id": "2851476971",
+                            "name": "Nastar Ronde",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/2/1/2bee065f-f056-4731-953f-253a98752505.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1076,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 6,
+                            "app_link": "tokopedia://product/2851476977",
+                            "web_link": "https://www.tokopedia.com/missogura/nastar-ronde-isi-12",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 7
+                          },
+                          {
+                            "id": "1953652961",
+                            "name": "Nastar Klepon",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/be20e6b4-f9b9-42c2-971f-27fc902448ef.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 3471,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 7,
+                            "app_link": "tokopedia://product/2012242417",
+                            "web_link": "https://www.tokopedia.com/missogura/nastar-klepon-isi-12",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 8
+                          },
+                          {
+                            "id": "1953621470",
+                            "name": "Greentea tea bag cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/930957b9-5d2c-4511-9999-48a7c2ef0f20.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 75000,
+                            "original_price_formatted": "Rp 75.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 983,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 8,
+                            "app_link": "tokopedia://product/1953621470",
+                            "web_link": "https://www.tokopedia.com/missogura/greentea-tea-bag-cookies",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 9
+                          },
+                          {
+                            "id": "6924972249",
+                            "name": "Rum Kartoshka Cake - Rum Balls",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/11/9/d475c2e3-eeb3-4f39-87fe-5b05bd275de6.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 75000,
+                            "original_price_formatted": "Rp 75.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 134,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 9,
+                            "app_link": "tokopedia://product/7326019550",
+                            "web_link": "https://www.tokopedia.com/missogura/rum-kartoshka-cake-rum-balls-isi-12pc",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 10
+                          },
+                          {
+                            "id": "1953600735",
+                            "name": "Earl grey tea bag cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/67083bf9-1341-4f40-aaae-138be0dd083f.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 70000,
+                            "original_price_formatted": "Rp 70.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 1481,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 10,
+                            "app_link": "tokopedia://product/1953600735",
+                            "web_link": "https://www.tokopedia.com/missogura/earl-grey-tea-bag-cookies",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 11
+                          },
+                          {
+                            "id": "2671545794",
+                            "name": "Orange Marmalade Cake Hampers Imlek CNY",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/1/5/70c953ea-ed67-4f1e-8bfa-d95a6dea9a7e.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 1872,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 11,
+                            "app_link": "tokopedia://product/2671545794",
+                            "web_link": "https://www.tokopedia.com/missogura/orange-marmalade-cake-hampers-imlek-cny",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 12
+                          },
+                          {
+                            "id": "1953609394",
+                            "name": "Espresso cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/920f1dd7-a6f7-4eaf-9626-dad9881117b1.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 45000,
+                            "original_price_formatted": "Rp 45.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1809,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 12,
+                            "app_link": "tokopedia://product/2596394887",
+                            "web_link": "https://www.tokopedia.com/missogura/espresso-cookies-125gr",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 13
+                          },
+                          {
+                            "id": "1953658710",
+                            "name": "Choco Soes",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/89943743-ea61-4d2f-a8eb-e8a1c618deb2.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 35000,
+                            "original_price_formatted": "Rp 35.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 656,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 13,
+                            "app_link": "tokopedia://product/2290364287",
+                            "web_link": "https://www.tokopedia.com/missogura/choco-soes-choco",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 14
+                          },
+                          {
+                            "id": "2373468360",
+                            "name": "Lavender Cookies - vegan",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/11/4/a5f5770c-ffe1-4776-9e5b-46a59dc13df1.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 50000,
+                            "original_price_formatted": "Rp 50.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 2364,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 14,
+                            "app_link": "tokopedia://product/2373468360",
+                            "web_link": "https://www.tokopedia.com/missogura/lavender-cookies-vegan",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 15
                           }
+                        ]
                       }
-                }
-             }
-            """.trimIndent()
+                    ],
+                    "vouchers": [],
+                    "config": {
+                      "peek_product_count": 15,
+                      "title_bottomsheet": "Promo dan produk pilihan"
+                    }
+                  }
+                 }
+        """.trimIndent()
+
+        return gson.fromJson(data, ProductSection.Response::class.java)
+    }
+
+    fun generateGqlProductNumeration(): ProductSection.Response {
+        val data = """
+                 {
+                  "playGetTagsItemSection": {
+                    "sections": [
+                      {
+                        "type": "other",
+                        "title": "",
+                        "countdown": {
+                          "copy": ""
+                        },
+                        "background": {
+                          "gradient": [],
+                          "image_url": ""
+                        },
+                        "start_time": "1970-01-01T07:00:00+07:00",
+                        "end_time": "1970-01-01T07:00:00+07:00",
+                        "server_time": "2023-03-21T15:36:25+07:00",
+                        "source_id": "0",
+                        "products": [
+                          {
+                            "id": "6925401702",
+                            "name": "Hampers 6 Kaleng Cookies Kue Kering",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/916aeea4-a7c5-45f2-b930-2c2b7642120e.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 195000,
+                            "original_price_formatted": "Rp 195.000",
+                            "discount": 5,
+                            "price": 185250,
+                            "price_formatted": "Rp 185.250",
+                            "quantity": 4483,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 0,
+                            "app_link": "tokopedia://product/8174237886",
+                            "web_link": "https://www.tokopedia.com/missogura/hampers-6-kaleng-cookies-kue-kering-batch2-17-21mar",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 1
+                          },
+                          {
+                            "id": "8175013631",
+                            "name": "Kurma Medjool Cake Cupcake Muffin",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/0a756fc8-5a58-46d6-a049-9f3d7ff85820.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 5,
+                            "price": 61750,
+                            "price_formatted": "Rp 61.750",
+                            "quantity": 8979,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 1,
+                            "app_link": "tokopedia://product/8175013641",
+                            "web_link": "https://www.tokopedia.com/missogura/kurma-medjool-cake-cupcake-muffin-isi-12-batch7-11-15apr-76baf",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 2
+                          },
+                          {
+                            "id": "3325111748",
+                            "name": "Ameena Hampers Lebaran Eid Trio Nastar",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/2/25/9e0672a0-bc8d-40cb-8b02-c73ed87913c5.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 5,
+                            "price": 61750,
+                            "price_formatted": "Rp 61.750",
+                            "quantity": 8956,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 2,
+                            "app_link": "tokopedia://product/8160582985",
+                            "web_link": "https://www.tokopedia.com/missogura/ameena-hampers-lebaran-eid-trio-nastar-isi-12-batch8-16-20apr",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 3
+                          },
+                          {
+                            "id": "7506341076",
+                            "name": "Melted Cookies / Messy Cookies / Cookies Siram",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/3/5/6b6ccfaa-602c-43ff-842d-a77832599eb9.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 5,
+                            "price": 57000,
+                            "price_formatted": "Rp 57.000",
+                            "quantity": 8980,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 3,
+                            "app_link": "tokopedia://product/8319956789",
+                            "web_link": "https://www.tokopedia.com/missogura/melted-cookies-messy-cookies-cookies-siram-pandan-kurma-batch2-17-21mar",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli",
+                                "color": "SECONDARY",
+                                "button_type": "GCR"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 4
+                          },
+                          {
+                            "id": "1953633275",
+                            "name": "Seaweed edamame",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/f181fcc4-e3c6-4dbb-84a8-d2c7cb45dd90.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 40000,
+                            "original_price_formatted": "Rp 40.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 2027,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 4,
+                            "app_link": "tokopedia://product/1953633275",
+                            "web_link": "https://www.tokopedia.com/missogura/seaweed-edamame",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 5
+                          },
+                          {
+                            "id": "8584759533",
+                            "name": "KOKO Kookies Kocok / Cookies / Kue Kering",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2023/3/17/d5649a0f-c2bc-4b31-a5d5-043965eac2d6.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 27000,
+                            "original_price_formatted": "Rp 27.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1485,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 5,
+                            "app_link": "tokopedia://product/8584759541",
+                            "web_link": "https://www.tokopedia.com/missogura/koko-kookies-kocok-cookies-kue-kering-mie-goreng-788e8",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 6
+                          },
+                          {
+                            "id": "2851476971",
+                            "name": "Nastar Ronde",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/2/1/2bee065f-f056-4731-953f-253a98752505.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1076,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 6,
+                            "app_link": "tokopedia://product/2851476977",
+                            "web_link": "https://www.tokopedia.com/missogura/nastar-ronde-isi-12",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 7
+                          },
+                          {
+                            "id": "1953652961",
+                            "name": "Nastar Klepon",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/be20e6b4-f9b9-42c2-971f-27fc902448ef.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 60000,
+                            "original_price_formatted": "Rp 60.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 3471,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 7,
+                            "app_link": "tokopedia://product/2012242417",
+                            "web_link": "https://www.tokopedia.com/missogura/nastar-klepon-isi-12",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 8
+                          },
+                          {
+                            "id": "1953621470",
+                            "name": "Greentea tea bag cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/930957b9-5d2c-4511-9999-48a7c2ef0f20.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 75000,
+                            "original_price_formatted": "Rp 75.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 983,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 8,
+                            "app_link": "tokopedia://product/1953621470",
+                            "web_link": "https://www.tokopedia.com/missogura/greentea-tea-bag-cookies",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 9
+                          },
+                          {
+                            "id": "6924972249",
+                            "name": "Rum Kartoshka Cake - Rum Balls",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/11/9/d475c2e3-eeb3-4f39-87fe-5b05bd275de6.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 75000,
+                            "original_price_formatted": "Rp 75.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 134,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 9,
+                            "app_link": "tokopedia://product/7326019550",
+                            "web_link": "https://www.tokopedia.com/missogura/rum-kartoshka-cake-rum-balls-isi-12pc",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 10
+                          },
+                          {
+                            "id": "1953600735",
+                            "name": "Earl grey tea bag cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/67083bf9-1341-4f40-aaae-138be0dd083f.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 70000,
+                            "original_price_formatted": "Rp 70.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 1481,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 10,
+                            "app_link": "tokopedia://product/1953600735",
+                            "web_link": "https://www.tokopedia.com/missogura/earl-grey-tea-bag-cookies",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 11
+                          },
+                          {
+                            "id": "2671545794",
+                            "name": "Orange Marmalade Cake Hampers Imlek CNY",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/1/5/70c953ea-ed67-4f1e-8bfa-d95a6dea9a7e.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 65000,
+                            "original_price_formatted": "Rp 65.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 1872,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 11,
+                            "app_link": "tokopedia://product/2671545794",
+                            "web_link": "https://www.tokopedia.com/missogura/orange-marmalade-cake-hampers-imlek-cny",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 12
+                          },
+                          {
+                            "id": "1953609394",
+                            "name": "Espresso cookies",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/920f1dd7-a6f7-4eaf-9626-dad9881117b1.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 45000,
+                            "original_price_formatted": "Rp 45.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 1809,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 12,
+                            "app_link": "tokopedia://product/2596394887",
+                            "web_link": "https://www.tokopedia.com/missogura/espresso-cookies-125gr",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 13
+                          },
+                          {
+                            "id": "1953658710",
+                            "name": "Choco Soes",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/6/26/89943743-ea61-4d2f-a8eb-e8a1c618deb2.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 35000,
+                            "original_price_formatted": "Rp 35.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "",
+                            "quantity": 656,
+                            "is_variant": true,
+                            "is_available": true,
+                            "order": 13,
+                            "app_link": "tokopedia://product/2290364287",
+                            "web_link": "https://www.tokopedia.com/missogura/choco-soes-choco",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 14
+                          },
+                          {
+                            "id": "2373468360",
+                            "name": "Lavender Cookies - vegan",
+                            "image_url": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/11/4/a5f5770c-ffe1-4776-9e5b-46a59dc13df1.jpg",
+                            "shop_id": "11757826",
+                            "original_price": 50000,
+                            "original_price_formatted": "Rp 50.000",
+                            "discount": 0,
+                            "price": 0,
+                            "price_formatted": "Rp 0",
+                            "quantity": 2364,
+                            "is_variant": false,
+                            "is_available": true,
+                            "order": 14,
+                            "app_link": "tokopedia://product/2373468360",
+                            "web_link": "https://www.tokopedia.com/missogura/lavender-cookies-vegan",
+                            "min_quantity": 1,
+                            "is_free_shipping": false,
+                            "is_toko_now": false,
+                            "is_pinned": false,
+                            "available_buttons": [
+                              {
+                                "text": "Beli Langsung",
+                                "color": "SECONDARY",
+                                "button_type": "OCC"
+                              },
+                              {
+                                "text": "+ Keranjang",
+                                "color": "PRIMARY",
+                                "button_type": "ATC"
+                              }
+                            ],
+                            "product_number": 15
+                          }
+                        ]
+                      }
+                    ],
+                    "vouchers": [],
+                    "config": {
+                      "peek_product_count": 15,
+                      "title_bottomsheet": "Promo dan produk pilihan"
+                    }
+                  }
+                 }
+        """.trimIndent()
 
         return gson.fromJson(data, ProductSection.Response::class.java)
     }
