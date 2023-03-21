@@ -68,7 +68,9 @@ class TransactionSucsNonOvoUsr: BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun createSucsMsg(){
-        sucsMsg.text = resources.getString(R.string.ovop2p_msg_non_ovo, phnNo)
+        context?.let { context ->
+            sucsMsg.text = context.resources.getString(R.string.ovop2p_msg_non_ovo, phnNo)
+        }
     }
 
     companion object{
