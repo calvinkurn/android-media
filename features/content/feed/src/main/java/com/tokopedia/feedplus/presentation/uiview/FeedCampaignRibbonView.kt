@@ -94,7 +94,10 @@ class FeedCampaignRibbonView(
                     root.background =
                         GradientDrawable(
                             GradientDrawable.Orientation.LEFT_RIGHT,
-                            intArrayOf(cta.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely())
+                            intArrayOf(
+                                cta.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely(),
+                                cta.color.replace(HASH, INT_COLOR_PREFIX).toIntSafely()
+                            )
                         )
                 type == FeedCampaignRibbonType.ASGC_GENERAL && cta.colorGradient.isNotEmpty() -> {
                     root.background = GradientDrawable(
