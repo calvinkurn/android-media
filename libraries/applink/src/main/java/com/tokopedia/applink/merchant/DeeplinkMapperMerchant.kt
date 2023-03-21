@@ -446,12 +446,8 @@ object DeeplinkMapperMerchant {
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_SHOP_FLASH_SALE, lastSegment)
     }
 
-    fun getRegisteredNavigationForSellerTokopediaFlashSale(deeplink: String): String {
-        val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
-        return UriUtil.buildUri(
-            ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE,
-            lastSegment
-        )
+    fun getRegisteredNavigationForSellerTokopediaFlashSale(): String {
+        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE
     }
 
     fun getRegisteredNavigationForSellerTokopediaFlashSaleCampaignDetail(deeplink: String): String {

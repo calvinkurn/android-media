@@ -215,6 +215,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_USER_FINGERPRINT = "df_user_fingerprint"
+    const val DF_FLASH_SALE_TOKOPEDIA = "df_flash_sale_tokopedia"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
     const val DF_PROMO_CHECKOUT = "df_promo_checkout"
@@ -230,7 +231,6 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_ALPHA_TESTING = "df_alpha_testing"
     const val DF_DIGITAL = "df_digital"
     const val DF_TOKOCHAT = "df_comm_tokochat"
-
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
 

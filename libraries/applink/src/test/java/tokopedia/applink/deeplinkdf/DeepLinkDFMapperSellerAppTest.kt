@@ -247,4 +247,16 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
         val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://shop-admin/accepted-page"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
+
+    @Test
+    fun `check flash sale tokopedia feature appLink then should return DF_FS_TOKOPEDIA in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://tokopedia-flash-sale"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_FLASH_SALE_TOKOPEDIA)
+    }
+
+    @Test
+    fun `check flash sale tokopedia detail page appLink then should return DF_FS_TOKOPEDIA in sellerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://tokopedia-flash-sale/campaign-detail/1"
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_FLASH_SALE_TOKOPEDIA)
+    }
 }
