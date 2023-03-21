@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:alpha="0"
-        android:background="@drawable/bg_pdp_auto_collapse_text_with_icon"
+        android:background="@drawable/bg_pdp_label_carousel"
         app:layout_constraintBottom_toBottomOf="@id/container_auto_collapse"
         app:layout_constraintEnd_toEndOf="@id/container_auto_collapse"
         app:layout_constraintStart_toStartOf="@id/container_auto_collapse"
