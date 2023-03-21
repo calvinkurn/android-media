@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.CONTACT_US_NATIVE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
@@ -55,6 +56,7 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VideoMenu
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ENTRY
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
@@ -123,11 +125,13 @@ import com.tokopedia.chatbot.util.SmoothScroller
 import com.tokopedia.chatbot.util.VideoUploadData
 import com.tokopedia.chatbot.util.VideoUtil
 import com.tokopedia.chatbot.util.convertMessageIdToLong
+import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_URI
+import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.PAGE_SOURCE
 import com.tokopedia.chatbot.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
@@ -188,6 +192,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
+import java.lang.NumberFormatException
 import java.util.*
 import javax.inject.Inject
 
@@ -308,6 +313,8 @@ class ChatbotFragment :
     lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
     private var csatRemoteConfig: Boolean = false
     private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
+
+    private var pageSource: String= ""
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -653,6 +660,9 @@ class ChatbotFragment :
 
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
+        pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
+        handlingForMessageIdValidity(messageId)
+        presenter.setPageSource(pageSource)
         presenter.checkForSession(messageId)
         remoteConfigForCsatExperiment()
         showTicker()
@@ -1015,6 +1025,42 @@ class ChatbotFragment :
                     Toaster.TYPE_ERROR
                 )
             }
+        }
+    }
+
+    private fun setErrorLayoutForServer() {
+        getBindingView().layoutErrorGlobal.run {
+            visible()
+            getBindingView().homeGlobalError.run {
+                setType(SERVER_ERROR)
+                errorAction.text = context.getString(R.string.chatbot_back_to_tokopedia_care)
+                errorSecondaryAction.hide()
+                setActionClickListener {
+                    val intent = RouteManager.getIntent(requireView().context, CONTACT_US_NATIVE)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    activity?.finish()
+                }
+            }
+        }
+    }
+
+    private fun handlingForMessageIdValidity(messageId : String){
+        try{
+            val id = messageId.toLong()
+            if(id == 0L){
+                throw NumberFormatException()
+            }
+        } catch (e: NumberFormatException) {
+            setErrorLayoutForServer()
+            ChatbotNewRelicLogger.logNewRelic(
+                false,
+                messageId,
+                ChatbotConstant.NewRelic.KEY_CHATBOT_INVALID_ID_MESSAGE,
+                e,
+                pageSource = pageSource
+            )
         }
     }
 

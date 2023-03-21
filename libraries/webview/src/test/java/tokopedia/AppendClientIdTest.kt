@@ -83,4 +83,37 @@ class AppendClientIdTest {
         assertEquals("/help", uriResult.path)
         assertEquals("123", uriResult.getQueryParameter("appClientId"))
     }
+
+    @Test
+    fun testAppendClientIdHasAndAfterUrl() {
+        val url = "https://js.tokopedia.com/seamless?token=abc&os_type=1&uid=123&url=https%3A%2F%2Fpay.tokopedia.com%2Fv2%2Fovo%2Ftopup%2Fform%3Famount%3D0%26back_url%3Dhttps%3A%2F%2Fwww.tokopedia.com%2Fovo%26customer_email%3D%26customer_msisdn%3D123"
+        every {
+            WebViewHelper.getClientId()
+        } returns "456"
+        val result = WebViewHelper.appendGAClientIdAsQueryParam(url, context)
+        val uriResult = Uri.parse(result)
+        assertEquals(uriResult.scheme, "https")
+        assertEquals(uriResult.host, "js.tokopedia.com")
+        val urlQuery = uriResult.getQueryParameter("url")
+        val uriQuery = Uri.parse(urlQuery)
+        assertEquals(uriQuery.scheme, "https")
+        assertEquals(uriQuery.host, "pay.tokopedia.com")
+        assertEquals(uriQuery.path, "/v2/ovo/topup/form")
+        assertEquals(
+            "0",
+            uriQuery.getQueryParameter("amount")
+        )
+        assertEquals(
+            "https://www.tokopedia.com/ovo",
+            uriQuery.getQueryParameter("back_url")
+        )
+        assertEquals(
+            "123",
+            uriQuery.getQueryParameter("customer_msisdn")
+        )
+        assertEquals(
+            "456",
+            uriQuery.getQueryParameter("appClientId")
+        )
+    }
 }

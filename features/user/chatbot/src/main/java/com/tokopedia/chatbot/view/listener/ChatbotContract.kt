@@ -85,9 +85,12 @@ interface ChatbotContract {
         fun handleImageUploadButtonViewState(toShow: Boolean)
 
         fun handleVideoUploadButtonViewState(toShow: Boolean)
+
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
+
+        fun setPageSource(pageSource: String)
 
         fun sendInvoiceAttachment(messageId: String, invoiceLinkPojo: InvoiceLinkPojo, startTime: String, opponentId: String, isArticleEntry: Boolean, usedBy: String)
 
