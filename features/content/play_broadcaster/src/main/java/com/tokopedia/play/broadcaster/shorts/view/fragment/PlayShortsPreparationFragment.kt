@@ -21,6 +21,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
@@ -37,6 +38,7 @@ import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleMan
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
@@ -172,15 +174,33 @@ class PlayShortsPreparationFragment @Inject constructor(
                 childFragment.setMaxCharacter(viewModel.maxTitleCharacter)
             }
             is PlayBroadcastSetupCoverBottomSheet -> {
-                childFragment.setupData(
-                    listener = this,
-                    entryPoint = PAGE_NAME,
-                    productList = viewModel.productSectionList,
-                    contentAccount = viewModel.selectedAccount,
-                    channelId = viewModel.shortsId,
-                    channelTitle = viewModel.title,
-                    dataStore = viewModel.mDataStore,
-                )
+                childFragment.setupListener(listener = this)
+                childFragment.setupDataSource(dataSource = object : DataSource {
+                    override fun getEntryPoint(): String {
+                        return PAGE_NAME
+                    }
+
+                    override fun getProductList(): List<ProductTagSectionUiModel> {
+                        return viewModel.productSectionList
+                    }
+
+                    override fun getContentAccount(): ContentAccountUiModel {
+                        return viewModel.selectedAccount
+                    }
+
+                    override fun getChannelId(): String {
+                        return viewModel.shortsId
+                    }
+
+                    override fun getChannelTitle(): String {
+                        return viewModel.title
+                    }
+
+                    override fun getDataStore(): PlayBroadcastDataStore {
+                        return viewModel.mDataStore
+                    }
+
+                })
 
                 val isShowCoachMark = viewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)

@@ -46,18 +46,13 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
         get() = _binding!!
 
     private var mListener: Listener? = null
+    private var mDataSource: DataSource? = null
     private var coachMark: CoachMark2? = null
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
     private var isShowCoachMark = false
-    private var mEntryPoint = ""
-    private var mProductList = emptyList<ProductTagSectionUiModel>()
-    private var mContentAccount = ContentAccountUiModel.Empty
-    private var mChannelId = ""
-    private var mChannelTitle = ""
-    private lateinit var mDataStore: PlayBroadcastDataStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +74,7 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
                 coachMark?.dismissCoachMark()
                 childFragment.setupData(
                     listener = mListener,
-                    entryPoint = mEntryPoint,
+                    entryPoint = mDataSource?.getEntryPoint().orEmpty(),
                 )
             }
         }
@@ -89,6 +84,7 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
         super.onDestroyView()
         _binding = null
         mListener = null
+        mDataSource = null
         coachMark = null
     }
 
@@ -103,7 +99,7 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
     private fun setupView() = with(binding) {
         setTitle(getString(R.string.play_bro_setup_cover_title))
         setCloseClickListener {
-            analytic.clickCloseCoverBottomSheet(mEntryPoint)
+            analytic.clickCloseCoverBottomSheet(mDataSource?.getEntryPoint().orEmpty())
             dismiss()
         }
         binding.root.layoutParams = binding.root.layoutParams.apply {
@@ -125,10 +121,10 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
             replace(
                 fragmentContainerSetupCover.id,
                 if (selectedTab == TAB_AUTO_GENERATED) {
-                    analytic.clickCoverTab(getString(R.string.play_bro_cover_setup_choose_template), mEntryPoint)
+                    analytic.clickCoverTab(getString(R.string.play_bro_cover_setup_choose_template), mDataSource?.getEntryPoint().orEmpty())
                     getSetupCoverChooseTemplateFragment()
                 } else {
-                    analytic.clickCoverTab(getString(R.string.play_bro_cover_setup_upload_image), mEntryPoint)
+                    analytic.clickCoverTab(getString(R.string.play_bro_cover_setup_upload_image), mDataSource?.getEntryPoint().orEmpty())
                     getSetupCoverUploadImageFragment()
                 },
                 null
@@ -140,21 +136,12 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
         if (!isAdded) show(fragmentManager, TAG)
     }
 
-    fun setupData(
-        listener: Listener, entryPoint: String,
-        productList: List<ProductTagSectionUiModel>,
-        contentAccount: ContentAccountUiModel,
-        channelId: String,
-        channelTitle: String,
-        dataStore: PlayBroadcastDataStore,
-    ) {
+    fun setupListener(listener: Listener) {
         mListener = listener
-        mEntryPoint = entryPoint
-        mProductList = productList
-        mContentAccount = contentAccount
-        mChannelId = channelId
-        mChannelTitle = channelTitle
-        mDataStore = dataStore
+    }
+
+    fun setupDataSource(dataSource: DataSource) {
+        mDataSource = dataSource
     }
 
     private fun getSetupCoverUploadImageFragment() =
@@ -207,13 +194,15 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
                 modelClass: Class<T>,
                 handle: SavedStateHandle
             ): T {
-                return playBroSetupCoverViewModelFactory.create(
-                    channelTitle = mChannelTitle,
-                    channelId = mChannelId,
-                    productSectionList = mProductList,
-                    contentAccount = mContentAccount,
-                    dataStore = mDataStore,
-                ) as T
+                return mDataSource?.getDataStore()?.let { dataStore ->
+                    playBroSetupCoverViewModelFactory.create(
+                        channelTitle = mDataSource?.getChannelTitle().orEmpty(),
+                        channelId = mDataSource?.getChannelId().orEmpty(),
+                        productSectionList = mDataSource?.getProductList() ?: emptyList(),
+                        contentAccount = mDataSource?.getContentAccount() ?: ContentAccountUiModel.Empty,
+                        dataStore = dataStore,
+                    )
+                } as T
             }
         }
         return coverSetupViewModelProviderFactory
@@ -243,6 +232,15 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
         fun dismissSetupCover(source: Int)
         fun setupCoverProductClicked() {}
         fun onUploadCoverSuccess() {}
+    }
+
+    interface DataSource {
+        fun getEntryPoint(): String
+        fun getProductList(): List<ProductTagSectionUiModel>
+        fun getContentAccount(): ContentAccountUiModel
+        fun getChannelId(): String
+        fun getChannelTitle(): String
+        fun getDataStore(): PlayBroadcastDataStore
     }
 
 }

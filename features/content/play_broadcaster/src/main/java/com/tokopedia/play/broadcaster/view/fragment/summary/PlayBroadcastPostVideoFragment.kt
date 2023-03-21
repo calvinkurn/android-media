@@ -23,6 +23,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
@@ -36,6 +37,7 @@ import com.tokopedia.play.broadcaster.ui.state.TagUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_AUTO_GENERATED
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_UPLOAD_IMAGE
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -121,15 +123,33 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when(childFragment) {
             is PlayBroadcastSetupCoverBottomSheet -> {
-                childFragment.setupData(
-                    listener = this,
-                    entryPoint = PAGE_NAME,
-                    productList = parentViewModel.productSectionList,
-                    contentAccount = parentViewModel.selectedAccount,
-                    channelId = parentViewModel.channelId,
-                    channelTitle = parentViewModel.channelTitle,
-                    dataStore = parentViewModel.mDataStore,
-                )
+                childFragment.setupListener(listener = this)
+                childFragment.setupDataSource(dataSource = object : DataSource {
+                    override fun getEntryPoint(): String {
+                        return PAGE_NAME
+                    }
+
+                    override fun getProductList(): List<ProductTagSectionUiModel> {
+                        return parentViewModel.productSectionList
+                    }
+
+                    override fun getContentAccount(): ContentAccountUiModel {
+                        return parentViewModel.selectedAccount
+                    }
+
+                    override fun getChannelId(): String {
+                        return parentViewModel.channelId
+                    }
+
+                    override fun getChannelTitle(): String {
+                        return parentViewModel.channelTitle
+                    }
+
+                    override fun getDataStore(): PlayBroadcastDataStore {
+                        return parentViewModel.mDataStore
+                    }
+
+                })
 
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
