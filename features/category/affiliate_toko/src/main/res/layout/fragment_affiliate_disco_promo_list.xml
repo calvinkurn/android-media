@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -25,15 +24,14 @@
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/discovery_promo_list_swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/discovery_promo_list_navToolbar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/discovery_promo_list_recycler_view"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:visibility="visible"
             tools:itemCount="1"
             tools:listitem="@layout/affiliate_disco_promo_item_layout" />
@@ -50,15 +48,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/discovery_promo_list_navToolbar"
         tools:visibility="visible" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/discovery_promo_list_bottom_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:unify_image_url_src="https://assets.tokopedia.net/asts/affiliate/illustration/discovery-bottom-scroll.svg"
-        />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/discovery_promo_list_progress_bar"

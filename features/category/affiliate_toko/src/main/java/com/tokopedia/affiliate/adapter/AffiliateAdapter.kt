@@ -18,6 +18,7 @@ import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.custom.AffiliateStickyHeaderView
 import com.tokopedia.affiliate.ui.custom.OnStickyHeaderListener
 import com.tokopedia.affiliate.ui.viewholder.AffiliateDateFilterVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateDiscoBannerListVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateDiscoBannerVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformaSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformanceChipRVVH
@@ -26,6 +27,7 @@ import com.tokopedia.affiliate.ui.viewholder.AffiliatePromotionShopItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateSSAShopItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDataPlatformShimmerModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerListUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformanceChipRVModel
@@ -50,6 +52,7 @@ class AffiliateAdapter(
         const val SOURCE_HOME = "home"
         const val SOURCE_PROMOSIKAN = "promosikan"
         const val SOURCE_SSA_SHOP = "ssa_shop"
+        const val SOURCE_DISCO_BANNER_LIST = "disco_banner_list"
     }
 
     private val itemImpressionSet = HashSet<Int>()
@@ -91,6 +94,7 @@ class AffiliateAdapter(
             SOURCE_HOME -> handleHomeImpressions(holder)
             SOURCE_PROMOSIKAN -> handlePromoImpressions(holder)
             SOURCE_SSA_SHOP -> handleSSAShopImpression(holder)
+            SOURCE_DISCO_BANNER_LIST -> handleDiscoPromoListImpression(holder)
         }
 
         super.onViewAttachedToWindow(holder)
@@ -154,6 +158,22 @@ class AffiliateAdapter(
                     sendHomeProductImpression(item.product, holder.bindingAdapterPosition)
                 } else {
                     sendHomeShopImpression(item?.product, holder.bindingAdapterPosition)
+                }
+            }
+        }
+    }
+
+    private fun handleDiscoPromoListImpression(
+        holder: AbstractViewHolder<*>
+    ) {
+        when (holder) {
+            is AffiliateDiscoBannerListVH -> {
+                if (!itemImpressionSet.add(holder.bindingAdapterPosition)) {
+                    val item = list[holder.bindingAdapterPosition] as? AffiliateDiscoBannerListUiModel
+                    sendDiscoBannerListImpression(
+                        item?.article,
+                        holder.bindingAdapterPosition
+                    )
                 }
             }
         }
@@ -309,7 +329,24 @@ class AffiliateAdapter(
             userId,
             item?.pageId?.toString(),
             position,
-            item?.title,
+            AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_DISCO_BANNER,
+            item?.pageId.toString(),
+            itemsKey = AffiliateAnalytics.EventKeys.KEY_PROMOTIONS
+        )
+    }
+
+    private fun sendDiscoBannerListImpression(
+        item: AffiliateDiscoveryCampaignResponse.RecommendedAffiliateDiscoveryCampaign.Data.Campaign?,
+        position: Int
+    ) {
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.VIEW_ITEM,
+            AffiliateAnalytics.ActionKeys.IMPRESSION_EVENT_DISCO_BANNER_LIST,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE_DISCO_BANNER_LIST,
+            userId,
+            item?.pageId?.toString(),
+            position,
+            AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_DISCO_BANNER_LIST,
             item?.pageId.toString(),
             itemsKey = AffiliateAnalytics.EventKeys.KEY_PROMOTIONS
         )

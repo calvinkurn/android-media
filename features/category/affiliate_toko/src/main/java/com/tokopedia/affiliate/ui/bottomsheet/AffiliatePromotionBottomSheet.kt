@@ -115,6 +115,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         const val ORIGIN_TERAKHIR_DILIHAT = 5
         const val ORIGIN_HOME_GENERATED = 6
         const val ORIGIN_PROMO_DISCO_BANNER = 7
+        const val ORIGIN_PROMO_DISCO_BANNER_LIST = 8
 
         const val OTHERS_ID = 0
         const val FACEBOOK_ID = 1
@@ -571,6 +572,12 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
             ORIGIN_PROMO_DISCO_BANNER -> {
                 event = AffiliateAnalytics.EventKeys.CLICK_CONTENT
                 eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_DISCO_BANNER
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+                eventLabel = "$linkID - $status"
+            }
+            ORIGIN_PROMO_DISCO_BANNER_LIST -> {
+                event = AffiliateAnalytics.EventKeys.CLICK_CONTENT
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_DISCO_BANNER_LIST
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
                 eventLabel = "$linkID - $status"
             }
