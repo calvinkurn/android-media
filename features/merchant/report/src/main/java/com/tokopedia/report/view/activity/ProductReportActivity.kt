@@ -18,7 +18,6 @@ import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.di.DaggerMerchantReportComponent
 import com.tokopedia.report.view.fragment.ProductReportScreen
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
-import com.tokopedia.report.view.util.extensions.argsExtraString
 import com.tokopedia.report.view.viewmodel.ProductReportViewModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -34,7 +33,9 @@ class ProductReportActivity : AppCompatActivity() {
         ViewModelProvider(this, viewModelFactory)[ProductReportViewModel::class.java]
     }
 
-    private val productId by argsExtraString(ARG_PRODUCT_ID, "-1")
+    private val productId by lazy {
+        intent.data?.lastPathSegment ?: intent.extras?.getString(ARG_PRODUCT_ID) ?: "-1"
+    }
 
     private fun injectComponent() {
         DaggerMerchantReportComponent.builder()
