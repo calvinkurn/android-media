@@ -11,7 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -504,7 +504,7 @@ class FeedFragment :
                 adapter?.showLoading()
             }
 
-            LinearSnapHelper().attachToRecyclerView(it.rvFeedPost)
+            PagerSnapHelper().attachToRecyclerView(it.rvFeedPost)
             it.rvFeedPost.layoutManager = layoutManager
             it.rvFeedPost.adapter = adapter
             it.rvFeedPost.addOnScrollListener(object : RecyclerView.OnScrollListener() {
