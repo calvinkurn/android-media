@@ -10,8 +10,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinReflection
     implementation rootProject.ext.miscDependencies.javaPoet
 
-    kapt rootProject.ext.miscDependencies.guava24
-
     compileOnly rootProject.ext.miscDependencies.incap
     kapt rootProject.ext.miscDependencies.incapProcessor
     kapt rootProject.ext.miscDependencies.autoService
