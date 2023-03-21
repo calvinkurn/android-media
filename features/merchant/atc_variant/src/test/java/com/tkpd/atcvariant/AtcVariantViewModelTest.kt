@@ -480,8 +480,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     /**
      * initial selected variant
-     * level one: 121018 -> 254080
-     * level two: 121019 -> 254085
+     * level one: Merah, mapOfSelected[121018, 254080]
+     * level two: M, mapOfSelected[121019, 254085]
      */
     private fun `select variant oos by new logic`(
         optionKey: String,
@@ -505,7 +505,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `ensure variant level one is right(oos or not) after variant level one selected`() {
-        `select variant oos by new logic`(optionKey = "121018", optionId = "254080", selectedLevel = 1) {
+        // please check more detail to GQL_VARIANT_AGGREGATOR_RESPONSE_JSON
+        val variantLevelOne = "121018"
+        val variantMerahID = "254080"
+
+        `select variant oos by new logic`(optionKey = variantLevelOne, optionId = variantMerahID, selectedLevel = 1) {
             // get variant level one
             val variantComponentLevelOne = it.firstOrNull { component ->
                 component is VariantComponentDataModel
@@ -528,30 +532,38 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `ensure variant level two is right(oos or not) after variant level one selected`() {
-        `select variant oos by new logic`(optionKey = "121018", optionId = "254083", selectedLevel = 1) {
+        // please check more detail to GQL_VARIANT_AGGREGATOR_RESPONSE_JSON
+        val variantLevelOne = "121018"
+        val variantUnguID = "254083"
+
+        `select variant oos by new logic`(optionKey = variantLevelOne, optionId = variantUnguID, selectedLevel = 1) {
             // get variant level one
-            val variantComponentLevelOne = it.lastOrNull { component ->
+            val variantComponentLevelTwo = it.lastOrNull { component ->
                 component is VariantComponentDataModel
             } as VariantComponentDataModel
-            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
+            val optionLevelTwo = variantComponentLevelTwo.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
 
-            assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_UNSELECTED) // 254084
-            assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_SELECTED) // 254085
-            assertTrue(optionLevelOne[2].currentState == VariantConstant.STATE_EMPTY) // 254086
-            assertTrue(optionLevelOne[3].currentState == VariantConstant.STATE_UNSELECTED) // 254087
-            assertTrue(optionLevelOne[4].currentState == VariantConstant.STATE_UNSELECTED) // 254088
+            assertTrue(optionLevelTwo[0].currentState == VariantConstant.STATE_UNSELECTED) // 254084
+            assertTrue(optionLevelTwo[1].currentState == VariantConstant.STATE_SELECTED) // 254085
+            assertTrue(optionLevelTwo[2].currentState == VariantConstant.STATE_EMPTY) // 254086
+            assertTrue(optionLevelTwo[3].currentState == VariantConstant.STATE_UNSELECTED) // 254087
+            assertTrue(optionLevelTwo[4].currentState == VariantConstant.STATE_UNSELECTED) // 254088
 
-            assertFalse(optionLevelOne[0].flashSale)
-            assertFalse(optionLevelOne[1].flashSale)
-            assertFalse(optionLevelOne[2].flashSale)
-            assertTrue(optionLevelOne[3].flashSale)
-            assertFalse(optionLevelOne[4].flashSale)
+            assertFalse(optionLevelTwo[0].flashSale)
+            assertFalse(optionLevelTwo[1].flashSale)
+            assertFalse(optionLevelTwo[2].flashSale)
+            assertTrue(optionLevelTwo[3].flashSale)
+            assertFalse(optionLevelTwo[4].flashSale)
         }
     }
 
     @Test
     fun `ensure variant level one is right(oos or not) after variant level two selected`() {
-        `select variant oos by new logic`(optionKey = "121019", optionId = "254088", selectedLevel = 2) {
+        // please check more detail to GQL_VARIANT_AGGREGATOR_RESPONSE_JSON
+        val variantLevelTwo = "121019"
+        val variantXXLID = "254088"
+
+        `select variant oos by new logic`(optionKey = variantLevelTwo, optionId = variantXXLID, selectedLevel = 2) {
             // get variant level one
             val variantComponentLevelOne = it.firstOrNull { component ->
                 component is VariantComponentDataModel
@@ -574,30 +586,38 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     @Test
     fun `ensure variant level two is right(oos or not) after variant level two selected`() {
-        `select variant oos by new logic`(optionKey = "121019", optionId = "254088", selectedLevel = 1) {
+        // please check more detail to GQL_VARIANT_AGGREGATOR_RESPONSE_JSON
+        val variantLevelTwo = "121019"
+        val variantXXLID = "254088"
+
+        `select variant oos by new logic`(optionKey = variantLevelTwo, optionId = variantXXLID, selectedLevel = 1) {
             // get variant level one
-            val variantComponentLevelOne = it.lastOrNull { component ->
+            val variantComponentLevelTwo = it.lastOrNull { component ->
                 component is VariantComponentDataModel
             } as VariantComponentDataModel
-            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
+            val optionLevelTwo = variantComponentLevelTwo.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
 
-            assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_EMPTY) // 254084
-            assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_UNSELECTED) // 254085
-            assertTrue(optionLevelOne[2].currentState == VariantConstant.STATE_EMPTY) // 254086
-            assertTrue(optionLevelOne[3].currentState == VariantConstant.STATE_UNSELECTED) // 254087
-            assertTrue(optionLevelOne[4].currentState == VariantConstant.STATE_SELECTED) // 254088
+            assertTrue(optionLevelTwo[0].currentState == VariantConstant.STATE_EMPTY) // 254084
+            assertTrue(optionLevelTwo[1].currentState == VariantConstant.STATE_UNSELECTED) // 254085
+            assertTrue(optionLevelTwo[2].currentState == VariantConstant.STATE_EMPTY) // 254086
+            assertTrue(optionLevelTwo[3].currentState == VariantConstant.STATE_UNSELECTED) // 254087
+            assertTrue(optionLevelTwo[4].currentState == VariantConstant.STATE_SELECTED) // 254088
 
-            assertFalse(optionLevelOne[0].flashSale)
-            assertTrue(optionLevelOne[1].flashSale)
-            assertFalse(optionLevelOne[2].flashSale)
-            assertTrue(optionLevelOne[3].flashSale)
-            assertFalse(optionLevelOne[4].flashSale)
+            assertFalse(optionLevelTwo[0].flashSale)
+            assertTrue(optionLevelTwo[1].flashSale)
+            assertFalse(optionLevelTwo[2].flashSale)
+            assertTrue(optionLevelTwo[3].flashSale)
+            assertFalse(optionLevelTwo[4].flashSale)
         }
     }
 
     @Test
-    fun `variant level one is oos but it variant selected()`() {
-        `select variant oos by new logic`(optionKey = "121018", optionId = "254079", selectedLevel = 1) {
+    fun `variant level one oos selected`() {
+        // please check more detail to GQL_VARIANT_AGGREGATOR_RESPONSE_JSON
+        val variantLevelOne = "121018"
+        val variantBiruID = "254079"
+
+        `select variant oos by new logic`(optionKey = variantLevelOne, optionId = variantBiruID, selectedLevel = 1) {
             // get variant level one
             val variantComponentLevelOne = it.firstOrNull { component ->
                 component is VariantComponentDataModel
@@ -613,19 +633,23 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     }
 
     @Test
-    fun `variant level two is oos but it variant selected`() {
-        `select variant oos by new logic`(optionKey = "121019", optionId = "254086", selectedLevel = 1) {
+    fun `variant level two oos selected`() {
+        // please check more detail to GQL_VARIANT_AGGREGATOR_RESPONSE_JSON
+        val variantLevelTwo = "121019"
+        val variantLID = "254086"
+
+        `select variant oos by new logic`(optionKey = variantLevelTwo, optionId = variantLID, selectedLevel = 1) {
             // get variant level one
-            val variantComponentLevelOne = it.lastOrNull { component ->
+            val variantComponentLevelTwo = it.lastOrNull { component ->
                 component is VariantComponentDataModel
             } as VariantComponentDataModel
-            val optionLevelOne = variantComponentLevelOne.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
+            val optionLevelTwo = variantComponentLevelTwo.listOfVariantCategory?.lastOrNull()?.variantOptions ?: emptyList()
 
-            assertTrue(optionLevelOne[0].currentState == VariantConstant.STATE_EMPTY) // 254084
-            assertTrue(optionLevelOne[1].currentState == VariantConstant.STATE_UNSELECTED) // 254085
-            assertTrue(optionLevelOne[2].currentState == VariantConstant.STATE_SELECTED_EMPTY) // 254086
-            assertTrue(optionLevelOne[3].currentState == VariantConstant.STATE_UNSELECTED) // 254087
-            assertTrue(optionLevelOne[4].currentState == VariantConstant.STATE_UNSELECTED) // 254088
+            assertTrue(optionLevelTwo[0].currentState == VariantConstant.STATE_EMPTY) // 254084
+            assertTrue(optionLevelTwo[1].currentState == VariantConstant.STATE_UNSELECTED) // 254085
+            assertTrue(optionLevelTwo[2].currentState == VariantConstant.STATE_SELECTED_EMPTY) // 254086
+            assertTrue(optionLevelTwo[3].currentState == VariantConstant.STATE_UNSELECTED) // 254087
+            assertTrue(optionLevelTwo[4].currentState == VariantConstant.STATE_UNSELECTED) // 254088
         }
     }
     //endregion
