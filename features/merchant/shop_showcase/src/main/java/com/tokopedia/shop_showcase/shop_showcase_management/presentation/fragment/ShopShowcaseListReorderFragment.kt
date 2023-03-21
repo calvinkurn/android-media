@@ -15,8 +15,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.touchhelper.OnStartDragListener
-import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
+import com.tokopedia.shop_showcase.common.touchhelper.OnStartDragListener
+import com.tokopedia.shop_showcase.common.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.Companion.ETALASE_CUSTOM
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -36,7 +36,7 @@ import javax.inject.Inject
 
 class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         ShopShowcaseReorderListener,
-        OnStartDragListener,
+    OnStartDragListener,
         HasComponent<ShopShowcaseManagementComponent> {
 
     companion object {
@@ -117,7 +117,10 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val itemTouchHelperCallback = SimpleItemTouchHelperCallback(shopShowcaseListReorderAdapter)
+        val itemTouchHelperCallback =
+            SimpleItemTouchHelperCallback(
+                shopShowcaseListReorderAdapter
+            )
         initHeaderUnify()
         initRecyclerView()
         itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)

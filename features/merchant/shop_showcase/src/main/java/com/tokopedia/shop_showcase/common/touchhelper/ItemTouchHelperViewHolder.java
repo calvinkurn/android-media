@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.design.touchhelper;
+package com.tokopedia.shop_showcase.common.touchhelper;
 
 import androidx.recyclerview.widget.ItemTouchHelper;
 
