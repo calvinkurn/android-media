@@ -13,6 +13,8 @@ import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
@@ -129,6 +131,10 @@ class CommentViewHolder {
         private val binding: ItemCommentExpandableBinding,
         private val listener: Listener
     ) : BaseViewHolder(binding.root) {
+
+        private val impressHolder by lazyThreadSafetyNone {
+            ImpressHolder()
+        }
         fun bind(item: CommentUiModel.Expandable) {
             if (item.isExpanded) {
                 binding.ivChevron.setImage(newIconId = IconUnify.CHEVRON_UP)
@@ -143,10 +149,15 @@ class CommentViewHolder {
             binding.root.setOnClickListener {
                 listener.onClicked(item, absoluteAdapterPosition)
             }
+
+            binding.root.addOnImpressionListener(impressHolder){
+                listener.onImpressedExpandable()
+            }
         }
 
         interface Listener {
             fun onClicked(item: CommentUiModel.Expandable, position: Int)
+            fun onImpressedExpandable()
         }
     }
 }

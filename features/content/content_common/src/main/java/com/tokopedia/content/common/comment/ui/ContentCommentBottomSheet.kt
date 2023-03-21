@@ -25,6 +25,7 @@ import com.tokopedia.content.common.comment.adapter.CommentViewHolder
 import com.tokopedia.content.common.comment.analytic.IContentCommentAnalytics
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
+import com.tokopedia.content.common.comment.uimodel.isParent
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
@@ -185,6 +186,7 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.commentHeader.title = getString(R.string.content_comment_header)
         binding.commentHeader.closeListener = View.OnClickListener {
             mSource?.onCommentDismissed()
+            analytics?.closeCommentSheet()
             dismiss()
         }
         binding.rvComment.adapter = commentAdapter
@@ -209,10 +211,12 @@ class ContentCommentBottomSheet @Inject constructor(
             if (isKeyboardOnScreen) {
                 binding.root.setPadding(0, 0, 0, binding.root.paddingBottom + keyboardHeight)
             } else {
-                val paddingBottom = binding.root.paddingBottom
                 binding.root.setPadding(0, 0, 0, 16.toPx())
             }
             windowInsets
+        }
+        binding.newComment.setOnClickListener {
+            analytics?.clickTextBox()
         }
     }
 
@@ -346,6 +350,7 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onReplyClicked(item: CommentUiModel.Item) {
         viewModel.submitAction(CommentAction.EditTextClicked(item))
+        analytics?.clickReplyChild()
     }
 
     override fun onLongClicked(item: CommentUiModel.Item) {
@@ -353,6 +358,8 @@ class ContentCommentBottomSheet @Inject constructor(
         sheetMenu.setListener(this@ContentCommentBottomSheet)
         sheetMenu.setData(getMenuItems(item), item.id)
         sheetMenu.show(childFragmentManager)
+
+        analytics?.longClickComment()
     }
 
     override fun onMentionClicked(appLink: String) {
@@ -361,14 +368,21 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onProfileClicked(appLink: String) {
         viewModel.submitAction(CommentAction.OpenAppLinkAction(appLink))
+        analytics?.clickProfilePicture()
     }
 
     override fun onUserNameClicked(appLink: String) {
         viewModel.submitAction(CommentAction.OpenAppLinkAction(appLink))
+        analytics?.clickCommentName()
     }
 
     override fun onClicked(item: CommentUiModel.Expandable, position: Int) {
         viewModel.submitAction(CommentAction.ExpandComment(item))
+        if (!item.isExpanded) analytics?.clickLihatBalasan() else analytics?.clickSembunyikan()
+    }
+
+    override fun onImpressedExpandable() {
+        analytics?.impressLihatBalasan()
     }
 
     override fun dismiss() {
@@ -487,15 +501,17 @@ class ContentCommentBottomSheet @Inject constructor(
             )
         } else {
             val convert = TagMentionBuilder.getRawText(binding.newComment.text?.toSpanned())
+            val type = TagMentionBuilder.isChildOrParent(
+                binding.newComment.text?.toSpanned(),
+                binding.newComment.tag.toString()
+            )
             viewModel.submitAction(
                 CommentAction.ReplyComment(
                     convert,
-                    TagMentionBuilder.isChildOrParent(
-                        binding.newComment.text?.toSpanned(),
-                        binding.newComment.tag.toString()
-                    )
+                    type
                 )
             )
+            if (type.isParent) analytics?.clickSendParentComment() else analytics?.clickReplyChild()
         }
     }
 

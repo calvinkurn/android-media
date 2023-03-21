@@ -59,6 +59,12 @@ sealed class CommentType {
     }
 }
 
+val CommentType.isParent: Boolean
+    get() = this == CommentType.Parent
+
+val CommentType.isChild: Boolean
+    get() = this is CommentType.Child
+
 data class CommentParam(
     val commentType: CommentType = CommentType.Parent,
     val lastParentCursor: String = "",

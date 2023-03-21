@@ -4,7 +4,7 @@ package com.tokopedia.content.common.comment.analytic
  * @author by astidhiyaa on 21/03/23
  */
 interface IContentCommentAnalytics {
-    fun clickCommentIcon()
+    fun clickCommentIcon() // should be outside in play / feed scope
     fun closeCommentSheet()
     fun clickReplyChild()
     fun clickCommentName()
