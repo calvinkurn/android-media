@@ -3319,34 +3319,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         dynamicPlatformFeeUseCase.execute(
                 cartShipmentAddressFormData -> {
                     if (getView() != null) {
-                            getView().setHasRunningApiCall(false);
-                            getView().resetPromoBenefit();
-                            getView().clearTotalBenefitPromoStacking();
-                            getView().hideLoading();
-                        } else {
-                            getView().hideInitialLoading();
-                        }
-
-                        validateShipmentAddressFormData(cartShipmentAddressFormData, isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment);
-                        getView().stopTrace();
+                        getView().showPlatformFeeData();
+                    }
                     return Unit.INSTANCE;
                 }, throwable -> {
+
                     Timber.d(throwable);
                     if (getView() != null) {
-                        getView().stopEmbraceTrace();
-                        if (isReloadData) {
-                            getView().setHasRunningApiCall(false);
-                            getView().hideLoading();
-                        } else {
-                            getView().hideInitialLoading();
-                        }
-                        String errorMessage = throwable.getMessage();
-                        if (!(throwable instanceof CartResponseErrorException) && !(throwable instanceof AkamaiErrorException)) {
-                            errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), throwable);
-                        }
-                        getView().showToastError(errorMessage);
-                        getView().stopTrace();
-                        getView().logOnErrorLoadCheckoutPage(throwable);
+                        getView().showPlatformFeeTickerFailedToLoad();
                     }
                     return Unit.INSTANCE;
                 }

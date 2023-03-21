@@ -12,6 +12,7 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
@@ -49,6 +50,12 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
     private val mTvProductDiscountPrice: TextView = itemView.findViewById(R.id.tv_product_discount_price)
     private val mTvSummaryAddOnLabel: Typography = itemView.findViewById(R.id.tv_summary_add_on_label)
     private val mTvSummaryAddOnPrice: Typography = itemView.findViewById(R.id.tv_summary_add_on_price)
+    private val mTickerPlatformFeeInfo: Ticker = itemView.findViewById(R.id.ticker_platform_fee_info)
+    private val mTvPlatformFeeLabel: Typography = itemView.findViewById(R.id.tv_dynamic_platform_fee_label)
+    private val mIvPlatformFeeIconInfo: Typography = itemView.findViewById(R.id.ic_dynamic_platform_fee_info)
+    private val mTvPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_dynamic_platform_fee_value)
+    private val mTvDiscountPlatformFeeLabel: Typography = itemView.findViewById(R.id.tv_discount_dynamic_platform_fee_label)
+    private val mTvDiscountPlatformFeeValue: Typography = itemView.findViewById(R.id.tv_discount_dynamic_platform_fee_value)
 
     @SuppressLint("StringFormatInvalid")
     fun bindViewHolder(shipmentCost: ShipmentCostModel) {
@@ -100,6 +107,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         mTvBookingFee.text = getPriceFormat(mTvBookingFeeLabel, mTvBookingFee, shipmentCost.bookingFee.toDouble())
         renderDiscount(shipmentCost)
         renderAddOnCost(shipmentCost)
+        renderPlatformFee(shipmentCost)
     }
 
     private fun renderDiscount(shipmentCost: ShipmentCostModel) {
@@ -160,6 +168,10 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
             mTvSummaryAddOnLabel.visibility = View.GONE
             mTvSummaryAddOnPrice.visibility = View.GONE
         }
+    }
+
+    private fun renderPlatformFee(shipmentCost: ShipmentCostModel) {
+
     }
 
     private fun getTotalItemLabel(context: Context, totalItem: Int): String {

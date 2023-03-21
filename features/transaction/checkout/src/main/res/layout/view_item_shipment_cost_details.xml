@@ -522,6 +522,38 @@
         tools:text="Rp100.000"
         tools:visibility="visible" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_platform_fee_label"
+        android:layout_width="140dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_below="@+id/tv_summary_add_on_label"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_platform_fee_value"
+        android:layout_width="48dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/tv_summary_add_on_price"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="4dp"
+        android:gravity="end"
+        app:loader_type="rect"/>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_platform_fee_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        android:layout_below="@+id/tv_summary_add_on_label"
+        app:tickerShapeType="loose" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_dynamic_platform_fee_label"
         android:layout_width="wrap_content"
@@ -529,7 +561,6 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_below="@+id/tv_summary_add_on_label"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginBottom="4dp"
         android:textColor="@color/Unify_N700_96"
         android:visibility="visible"
@@ -553,7 +584,7 @@
         android:layout_alignBottom="@id/tv_dynamic_platform_fee_label"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_dynamic_platform_fee"
+        android:id="@+id/tv_dynamic_platform_fee_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
@@ -587,11 +618,11 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_discount_dynamic_platform_fee"
+        android:id="@+id/tv_discount_dynamic_platform_fee_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@id/tv_dynamic_platform_fee"
+        android:layout_below="@id/tv_dynamic_platform_fee_value"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="4dp"

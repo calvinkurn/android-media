@@ -208,6 +208,12 @@ public interface ShipmentContract {
         void showPlatformFeeSkeletonLoading();
 
         void hidePlatformFeeSkeletonLoading();
+
+        void showPlatformFeeTickerFailedToLoad();
+
+        void hidePlatformFeeTickerFailedToLoad();
+
+        void showPlatformFeeData();
     }
 
     interface AnalyticsActionListener {

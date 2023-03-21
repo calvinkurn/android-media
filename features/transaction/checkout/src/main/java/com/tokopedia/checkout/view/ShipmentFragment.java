@@ -4169,4 +4169,29 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
     }
+
+    @Override
+    public void showPlatformFeeData() {
+
+    }
+
+    @Override
+    public void showPlatformFeeSkeletonLoading() {
+
+    }
+
+    @Override
+    public void showPlatformFeeTickerFailedToLoad() {
+
+    }
+
+    @Override
+    public void hidePlatformFeeSkeletonLoading() {
+
+    }
+
+    @Override
+    public void hidePlatformFeeTickerFailedToLoad() {
+
+    }
 }
