@@ -23,10 +23,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.discovery2.CONSTANT_0
-import com.tokopedia.discovery2.CONSTANT_11
-import com.tokopedia.discovery2.ComponentNames
-import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.*
 import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
 import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
@@ -594,12 +591,14 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun checkForSamePageOpened(queryParameterMapFromBundle: MutableMap<String, String?>) {
-        if (!queryParameterMapFromBundle[RECOM_PRODUCT_ID].isNullOrEmpty())
-            discoveryDataUseCase.getDiscoResponseIfPresent(pageIdentifier)?.queryParamMap?.let {
-                if (queryParameterMapFromBundle[RECOM_PRODUCT_ID] != it[RECOM_PRODUCT_ID]) {
+        val pageData = discoveryDataUseCase.getDiscoResponseIfPresent(pageIdentifier)
+        if (pageData != null) {
+            pageData.queryParamMap?.let {
+                if (queryParameterMapFromBundle[QUERY_PARENT] != it[QUERY_PARENT] || !queryParameterMapFromBundle[ACTIVE_TAB].isNullOrEmpty()) {
                     discoveryDataUseCase.clearPage(pageIdentifier)
                 }
             }
+        }
     }
 
     private fun setParameterMap(queryParameterMap: MutableMap<String, String?>, queryParameterMapWithRpc: MutableMap<String, String>, queryParameterMapWithoutRpc: MutableMap<String, String>) {
@@ -668,6 +667,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     override fun doOnStop() {
         super.doOnStop()
-        preSelectedTab = -1
+        preSelectedTab = Constant.RESETTING_SELECTED_TAB
     }
 }

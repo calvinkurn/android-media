@@ -26,6 +26,7 @@ import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -55,10 +56,12 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
+import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatGuideChatBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatMessageBubbleListener
+import com.tokopedia.tokochat_common.view.listener.TokoChatMessageCensorListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
@@ -88,6 +91,7 @@ open class TokoChatFragment :
     TokoChatTransactionOrderWidget.Listener,
     TokoChatImageAttachmentListener,
     TokoChatMessageBubbleListener,
+    TokoChatMessageCensorListener,
     MaskingPhoneNumberBottomSheet.AnalyticsListener {
 
     @Inject
@@ -110,9 +114,10 @@ open class TokoChatFragment :
     private val unavailableBottomSheet = TokoChatGeneralUnavailableBottomSheet()
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(
-        this,
-        this,
-        this
+        reminderTickerListener = this,
+        imageAttachmentListener = this,
+        bubbleMessageBubbleListener = this,
+        messageCensorListener = this
     )
 
     override fun getScreenName(): String = TAG
@@ -381,6 +386,9 @@ open class TokoChatFragment :
                     ) {
                         viewModel.updateOrderStatusParam(Pair(viewModel.tkpdOrderId, viewModel.source))
                     }
+                    tokoChatAnalytics.sendPendingImpressionOnImageAttachment(
+                        it.data.tokochatOrderProgress.state
+                    )
                 }
                 is Fail -> {
                     logExceptionTokoChat(
@@ -987,13 +995,24 @@ open class TokoChatFragment :
         imageView: ImageView
     ) {
         imageView.addOnImpressionListener(element.impressHolder) {
-            tokoChatAnalytics.impressOnImageAttachment(
-                element.imageId,
-                getOrderState(),
-                viewModel.tkpdOrderId,
-                TokoChatAnalyticsConstants.BUYER,
-                viewModel.source
-            )
+            val state = getOrderState()
+            if (state.isNotEmpty()) {
+                tokoChatAnalytics.impressOnImageAttachment(
+                    attachmentId = element.imageId,
+                    orderStatus = state,
+                    orderId = viewModel.tkpdOrderId,
+                    role = TokoChatAnalyticsConstants.BUYER,
+                    source = viewModel.source
+                )
+            } else {
+                tokoChatAnalytics.saveImpressionOnImageAttachment(
+                    attachmentId = element.imageId,
+                    orderStatus = state,
+                    orderId = viewModel.tkpdOrderId,
+                    role = TokoChatAnalyticsConstants.BUYER,
+                    source = viewModel.source
+                )
+            }
         }
     }
 
@@ -1078,6 +1097,12 @@ open class TokoChatFragment :
         showGlobalErrorLayout(onActionClick = {
             initializeChatRoom(null)
         })
+    }
+
+
+    override fun onClickCheckGuide() {
+        view?.hideKeyboard()
+        TokoChatGuideChatBottomSheet().show(childFragmentManager)
     }
 
     companion object {

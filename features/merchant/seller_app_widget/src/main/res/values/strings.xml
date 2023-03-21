@@ -10,6 +10,9 @@
     <string name="saw_updated">Diperbarui</string>
     <string name="saw_yesterday">kemarin</string>
     <string name="saw_check_now">Cek Sekarang</string>
+    <string name="saw_create_shop">Buka Toko Gratis</string>
+    <string name="saw_order_small_no_shop_state_title">Ciptakan Peluangmu!</string>
+    <string name="saw_order_small_no_shop_state_description">Raih 90 juta pembeli dimulai dari satu tempat! Buka usaha tanpa biaya dan dapatkan pengalaman mengelola usaha semudah update status</string>
     <string name="saw_order_small_empty_state_title">Belum ada Pesanan</string>
     <string name="saw_order_small_empty_state_description">Promosikan produkmu biar makin \ncepat laris!</string>
     <string name="saw_order_small_error_state_title_small">Koneksimu \nterganggu</string>
