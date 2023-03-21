@@ -325,7 +325,7 @@ class ShipmentDataConverter @Inject constructor() {
         }
         shipmentCartItemModel.addOnDefaultTo = receiverName
         val products = groupShop.products
-        val cartItemModels = convertFromProductList(products, groupShop, username, receiverName, shipmentCartItemModel.addOnWordingModel!!)
+        val cartItemModels = convertFromProductList(products, groupShop, username, receiverName, shipmentCartItemModel.addOnWordingModel)
 
         // This is something that not well planned
         val fobject = levelUpParametersFromProductToCartSeller(cartItemModels)

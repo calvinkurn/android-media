@@ -41,7 +41,7 @@ data class ShipmentCartItemModel(
 
     // AddOns
     var addOnsOrderLevelModel: AddOnsDataModel? = null,
-    var addOnWordingModel: AddOnWordingModel? = null,
+    var addOnWordingModel: AddOnWordingModel = AddOnWordingModel(),
     var addOnDefaultFrom: String? = null,
     var addOnDefaultTo: String? = null,
 
