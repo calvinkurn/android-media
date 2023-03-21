@@ -45,17 +45,19 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
         MutableLiveData<List<Visitable<AffiliateAdapterTypeFactory>>>()
     private val totalCount = MutableLiveData<Int>()
     private val hasMoreData = MutableLiveData<Boolean>()
+    private var categoryId: String? = null
 
     fun fetchSeeAllData(pageType: String?, categoryID: String?) {
         launchCatchError(block = {
+            categoryId = categoryID
+            if (educationCategoryChip.value.isNullOrEmpty()) {
+                loadCategory(pageType)
+            }
             val educationArticleCards =
                 educationArticleCardsUseCase.getEducationArticleCards(
-                    categoryID.toIntOrZero(),
+                    categoryId.toIntOrZero(),
                     offset = offset
                 )
-            if (educationCategoryChip.value.isNullOrEmpty()) {
-                loadCategory(pageType, categoryID)
-            }
             convertToVisitable(educationArticleCards, pageType)
         }, onError = { Timber.e(it) })
     }
@@ -65,7 +67,7 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
         fetchSeeAllData(pageType, categoryID)
     }
 
-    private suspend fun loadCategory(pageType: String?, categoryID: String?) {
+    private suspend fun loadCategory(pageType: String?) {
         educationCategoryUseCase.getEducationCategoryTree().categoryTree.let { response ->
             response?.data?.categories?.let { educationCategories ->
                 if (educationCategories.isNotEmpty()) {
@@ -78,11 +80,20 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
                     }
                     educationCategoryChip.value =
                         categoryGroup[type]?.getOrNull(0)?.children?.mapNotNull { category ->
-                            AffiliateEduCategoryChipModel(
-                                category.apply {
-                                    this?.isSelected = this?.id.toString() == categoryID
-                                }
-                            )
+                            if (categoryId.isNullOrEmpty()) {
+                                AffiliateEduCategoryChipModel(
+                                    category.apply {
+                                        this?.isSelected = true
+                                        categoryId = this?.id.toString()
+                                    }
+                                )
+                            } else {
+                                AffiliateEduCategoryChipModel(
+                                    category.apply {
+                                        this?.isSelected = this?.id.toString() == categoryId
+                                    }
+                                )
+                            }
                         }
                 }
             }

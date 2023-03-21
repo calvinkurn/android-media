@@ -117,9 +117,9 @@ class AffiliateEducationLandingPage :
         }
     }
 
-    override fun onSeeMoreClick(pageType: String, categoryId: String) {
+    override fun onSeeMoreClick(pageType: String) {
         context?.let {
-            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId))
+            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, null))
         }
     }
 
