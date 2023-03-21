@@ -93,11 +93,9 @@ import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitori
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.notifications.utils.NotificationUserSettingsTracker;
-import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -445,16 +443,16 @@ public class MainParentActivity extends BaseActivity implements
         Fragment fragment = fragmentList.get(tabPosition);
         if (fragment != null) {
             this.currentFragment = fragment;
-            if (fragment instanceof OfficialHomeContainerFragment
-                    && getIntent().getExtras() != null
-                    && getIntent().getExtras().get(OfficialHomeContainerFragment.KEY_CATEGORY) != null) {
-                String keyCategory = getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY, "");
-                if (keyCategory.equals(OS_KEY_MOBILE)) {
-                    ((OfficialHomeContainerFragment) fragment).selectFirstTab();
-                } else {
-                    ((OfficialHomeContainerFragment) fragment).selectTabByCategoryId(keyCategory);
-                }
-            }
+//            if (fragment instanceof OfficialHomeContainerFragment
+//                    && getIntent().getExtras() != null
+//                    && getIntent().getExtras().get(OfficialHomeContainerFragment.KEY_CATEGORY) != null) {
+//                String keyCategory = getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY, "");
+//                if (keyCategory.equals(OS_KEY_MOBILE)) {
+//                    ((OfficialHomeContainerFragment) fragment).selectFirstTab();
+//                } else {
+//                    ((OfficialHomeContainerFragment) fragment).selectTabByCategoryId(keyCategory);
+//                }
+//            }
             selectFragment(fragment);
         }
     }
