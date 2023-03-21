@@ -30,6 +30,8 @@ class InspirationWidgetListenerDelegate(
     ContextProvider by WeakReferenceContextProvider(context),
     ApplinkOpener by ApplinkOpenerDelegate {
 
+    private var previousOptionList: List<Option> = emptyList()
+
     override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {
         trackEventClickInspirationCardOption(optionData)
 
@@ -90,14 +92,22 @@ class InspirationWidgetListenerDelegate(
         if (isFilterSelected) filterOptionDataView.click(TrackApp.getInstance().gtm)
     }
 
+    private fun List<Option>.hasCategoryFilter(): Boolean {
+        return any { it.isCategoryOption }
+    }
+
     private fun applyInspirationFilter(
         optionList: List<Option>,
         isFilterSelected: Boolean,
         componentId: String,
     ) {
+        if (optionList.hasCategoryFilter()) removePreviousOptionFromFilterController()
+
         optionList.forEach { option ->
             applyFilterToFilterController(option, isFilterSelected)
         }
+
+        previousOptionList = optionList
 
         val queryParams = filterController.getParameter() +
             originFilterMap() +
@@ -108,10 +118,17 @@ class InspirationWidgetListenerDelegate(
         parameterListener.reloadData()
     }
 
+    private fun removePreviousOptionFromFilterController() {
+        previousOptionList.forEach { option ->
+            applyFilterToFilterController(option, false)
+        }
+    }
+
     private fun applyFilterToFilterController(option: Option, isFilterSelected: Boolean) {
         when {
             option.isPriceRange -> applyPriceRangeFilter(option, isFilterSelected)
             option.isMinOrMaxPriceOption -> applyPriceFilter(option, isFilterSelected)
+            option.isCategoryOption -> applyCategoryFilter(option, isFilterSelected)
             else -> applyRegularFilter(option, isFilterSelected)
         }
     }
@@ -140,6 +157,10 @@ class InspirationWidgetListenerDelegate(
             isFilterApplied = priceValue != "",
             isCleanUpExistingFilterWithSameKey = true,
         )
+    }
+
+    private fun applyCategoryFilter(option: Option, isFilterSelected: Boolean) {
+        filterController.setFilter(option, isFilterSelected, true)
     }
 
     private fun applyRegularFilter(option: Option, isFilterSelected: Boolean) {
