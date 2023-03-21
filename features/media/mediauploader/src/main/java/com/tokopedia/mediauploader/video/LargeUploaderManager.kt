@@ -8,6 +8,7 @@ import com.tokopedia.mediauploader.common.internal.LargeUploadStateManager
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
 import com.tokopedia.mediauploader.common.logger.DebugLog
 import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
+import com.tokopedia.mediauploader.common.logger.trackToTimber
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isLessThanHoursOf
@@ -71,12 +72,16 @@ class LargeUploaderManager @Inject constructor(
         val videoUrl = completeUpload()
 
         // 4. this using loop for retrying transcoding checker within 5-sec delayed
-        val maxRetry = videoPolicy.timeOutOfTranscode() / videoPolicy.retryInterval()
+        var maxRetry = videoPolicy.timeOutOfTranscode() / videoPolicy.retryInterval()
+
+        // in case the policy return unexpected value
+        if (maxRetry <= 0) maxRetry = DEFAULT_MAX_RETRY
 
         if (withTranscode) {
             while (true) {
                 if (maxRetryTranscoding >= maxRetry) {
                     resetUpload()
+                    trackToTimber(file, sourceId, "$TRANSCODING_FAILED # $mUploadId")
                     return UploadResult.Error(TRANSCODING_FAILED)
                 }
 
@@ -108,6 +113,7 @@ class LargeUploaderManager @Inject constructor(
                 uploadId = mUploadId
             )
         } else {
+            trackToTimber(file, sourceId, "$UPLOAD_ABORT # $mUploadId")
             UploadResult.Error(UPLOAD_ABORT)
         }
     }
@@ -293,6 +299,7 @@ class LargeUploaderManager @Inject constructor(
     }
 
     companion object {
+        private const val DEFAULT_MAX_RETRY = 24
         private const val MAX_PROGRESS_LOADER = 100
 
         private const val MAX_RETRY_COUNT = 5
