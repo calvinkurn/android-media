@@ -130,7 +130,6 @@ public class MainParentActivity extends BaseActivity implements
         RefreshNotificationListener,
         MainParentStatusBarListener,
         HomePerformanceMonitoringListener,
-        OfficialStorePerformanceMonitoringListener,
         IBottomClickListener,
         MainParentStateListener,
         ITelemetryActivity,
@@ -245,7 +244,6 @@ public class MainParentActivity extends BaseActivity implements
     private PerformanceMonitoring mainParentPerformanceMonitoring;
 
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
-    private PageLoadTimePerformanceCallback officialStorePageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
     private String embracePageName = "";
@@ -1220,29 +1218,6 @@ public class MainParentActivity extends BaseActivity implements
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             this.getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-    }
-
-    @Override
-    public void stopOfficialStorePerformanceMonitoring(boolean isCache) {
-        if (officialStorePageLoadTimePerformanceCallback != null) {
-            if (isCache) {
-                officialStorePageLoadTimePerformanceCallback.addAttribution(
-                        PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
-                        PERFORMANCE_MONITORING_CACHE_VALUE);
-            } else {
-                officialStorePageLoadTimePerformanceCallback.addAttribution(
-                        PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
-                        PERFORMANCE_MONITORING_NETWORK_VALUE);
-            }
-            officialStorePageLoadTimePerformanceCallback.stopRenderPerformanceMonitoring();
-            officialStorePageLoadTimePerformanceCallback.stopMonitoring();
-            officialStorePageLoadTimePerformanceCallback = null;
-        }
-    }
-
-    @Override
-    public PageLoadTimePerformanceInterface getOfficialStorePageLoadTimePerformanceInterface() {
-        return officialStorePageLoadTimePerformanceCallback;
     }
 
     @Override
