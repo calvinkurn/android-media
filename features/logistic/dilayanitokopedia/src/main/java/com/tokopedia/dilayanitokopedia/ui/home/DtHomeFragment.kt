@@ -353,7 +353,8 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
                 } else {
                     PARAM_APPLINK_AUTOCOMPLETE
                 },
-                searchbarClickCallback = { onSearchBarClick() }, searchbarImpressionCallback = {}
+                searchbarClickCallback = { onSearchBarClick() },
+                searchbarImpressionCallback = {}
             )
         }
     }
