@@ -832,7 +832,7 @@ class ShipmentFragment :
     private fun sendEEStep2() {
         val shipmentCartItemModelList = shipmentAdapter.shipmentCartItemModelList!!
         for (shipmentCartItemModel in shipmentCartItemModelList) {
-            val dataCheckoutRequests: List<DataCheckoutRequest>? = if (shipmentCartItemModel.isSaveStateFlag) {
+            val dataCheckoutRequests: List<DataCheckoutRequest> = if (shipmentCartItemModel.isSaveStateFlag) {
                 shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
                     shipmentCartItemModel.cartString,
                     "",
@@ -861,6 +861,7 @@ class ShipmentFragment :
             ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
             ConstantTransactionAnalytics.EventLabel.SUCCESS,
             checkoutLeasingId,
+            "",
             checkoutPageSource
         )
     }
@@ -2042,12 +2043,13 @@ class ShipmentFragment :
                 ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
                 "",
                 checkoutLeasingId,
+                "",
                 checkoutPageSource
             )
         }
     }
 
-    override fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>?) {
+    override fun updateCheckoutRequest(checkoutRequestData: List<DataCheckoutRequest>) {
         shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData)
     }
 
@@ -3384,10 +3386,10 @@ class ShipmentFragment :
     }
 
     override fun triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
-        transactionId: String?,
-        deviceModel: String?,
+        transactionId: String,
+        deviceModel: String,
         devicePrice: Long,
-        diagnosticId: String?
+        diagnosticId: String
     ) {
         val dataCheckoutRequests =
             shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
@@ -3429,6 +3431,7 @@ class ShipmentFragment :
             eventAction,
             eventLabel,
             checkoutLeasingId,
+            transactionId,
             checkoutPageSource
         )
     }

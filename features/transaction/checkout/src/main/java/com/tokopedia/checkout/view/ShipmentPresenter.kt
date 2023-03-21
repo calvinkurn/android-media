@@ -42,7 +42,6 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData
-import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
@@ -209,7 +208,7 @@ class ShipmentPresenter @Inject constructor(
     override var tickerAnnouncementHolderData: TickerAnnouncementHolderData =
         TickerAnnouncementHolderData()
 
-    override var recipientAddressModel: RecipientAddressModel? = null
+    override var recipientAddressModel: RecipientAddressModel = RecipientAddressModel()
 
     private var shipmentCostModel: ShipmentCostModel = ShipmentCostModel()
 
@@ -231,9 +230,7 @@ class ShipmentPresenter @Inject constructor(
     override var lastValidateUseRequest: ValidateUsePromoRequest? = null
         private set
 
-    private var dataCheckoutRequestList: List<DataCheckoutRequest>? = null
-
-    private var checkoutData: CheckoutData? = null
+    private var dataCheckoutRequestList: List<DataCheckoutRequest> = emptyList()
 
     override var couponStateChanged = false
 
@@ -254,7 +251,7 @@ class ShipmentPresenter @Inject constructor(
 
     override var lastApplyData: LastApplyUiModel? = null
 
-    override var uploadPrescriptionUiModel: UploadPrescriptionUiModel? = null
+    override var uploadPrescriptionUiModel: UploadPrescriptionUiModel = UploadPrescriptionUiModel()
         private set
 
     private var ratesPublisher: PublishSubject<ShipmentGetCourierHolderData>? = null
@@ -265,7 +262,7 @@ class ShipmentPresenter @Inject constructor(
 
     private var logisticPromoDonePublisher: PublishSubject<Boolean>? = null
 
-    private var scheduleDeliveryMapData: MutableMap<String, ShipmentScheduleDeliveryMapData>? = null
+    private var scheduleDeliveryMapData: MutableMap<String, ShipmentScheduleDeliveryMapData> = HashMap()
 
     private var isUsingDdp = false
 
@@ -290,7 +287,7 @@ class ShipmentPresenter @Inject constructor(
         view = null
     }
 
-    override fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>?) {
+    override fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>) {
         this.dataCheckoutRequestList = dataCheckoutRequestList
     }
 
@@ -401,6 +398,7 @@ class ShipmentPresenter @Inject constructor(
         eventAction: String,
         eventLabel: String,
         leasingId: String?,
+        transactionId: String,
         pageSource: String
     ) {
         val checkoutRequest = generateCheckoutRequest(
@@ -411,7 +409,7 @@ class ShipmentPresenter @Inject constructor(
         )
         val eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step, pageSource)
         if (eeDataLayer != null) {
-            val transactionId = checkoutData?.transactionId ?: ""
+//            val transactionId = checkoutData?.transactionId ?: ""
             analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
                 eeDataLayer,
                 tradeInCustomDimension,
@@ -749,23 +747,13 @@ class ShipmentPresenter @Inject constructor(
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled
         setUploadPrescriptionData(
             UploadPrescriptionUiModel(
-                cartShipmentAddressFormData.epharmacyData.showImageUpload,
-                cartShipmentAddressFormData.epharmacyData.uploadText,
-                cartShipmentAddressFormData.epharmacyData.leftIconUrl,
-                cartShipmentAddressFormData.epharmacyData.checkoutId,
-                ArrayList(),
-                ArrayList(),
-                0,
-                "",
-                false,
-                cartShipmentAddressFormData.epharmacyData.frontEndValidation,
-                cartShipmentAddressFormData.epharmacyData.consultationFlow,
-                cartShipmentAddressFormData.epharmacyData.rejectedWording,
-                false,
-                false,
-                ArrayList(),
-                ArrayList(),
-                ArrayList()
+                showImageUpload = cartShipmentAddressFormData.epharmacyData.showImageUpload,
+                uploadImageText = cartShipmentAddressFormData.epharmacyData.uploadText,
+                leftIconUrl = cartShipmentAddressFormData.epharmacyData.leftIconUrl,
+                checkoutId = cartShipmentAddressFormData.epharmacyData.checkoutId,
+                frontEndValidation = cartShipmentAddressFormData.epharmacyData.frontEndValidation,
+                consultationFlow = cartShipmentAddressFormData.epharmacyData.consultationFlow,
+                rejectedWording = cartShipmentAddressFormData.epharmacyData.rejectedWording
             )
         )
         fetchPrescriptionIds(cartShipmentAddressFormData.epharmacyData)
@@ -818,7 +806,6 @@ class ShipmentPresenter @Inject constructor(
                 try {
                     val checkoutData = checkoutGqlUseCase(params)
                     view?.setHasRunningApiCall(false)
-                    this@ShipmentPresenter.checkoutData = checkoutData
                     if (!checkoutData.isError) {
                         view?.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
                             checkoutData.transactionId,
@@ -1001,7 +988,7 @@ class ShipmentPresenter @Inject constructor(
         }
         // workaround: always generate new to make sure latest data
         dataCheckoutRequestList =
-            view?.generateNewCheckoutRequest(newShipmentCartItemModelList, false)
+            view!!.generateNewCheckoutRequest(newShipmentCartItemModelList, false)
     }
 
     // This is for akamai error case
@@ -3061,7 +3048,7 @@ class ShipmentPresenter @Inject constructor(
         lastValidateUseRequest = latValidateUseRequest
     }
 
-    override fun setUploadPrescriptionData(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
+    override fun setUploadPrescriptionData(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
         this.uploadPrescriptionUiModel = uploadPrescriptionUiModel
     }
 
@@ -3082,10 +3069,6 @@ class ShipmentPresenter @Inject constructor(
             }
         }
         return true
-    }
-
-    override fun setCheckoutData(checkoutData: CheckoutData?) {
-        this.checkoutData = checkoutData
     }
 
     override fun updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult?) {
@@ -3642,21 +3625,14 @@ class ShipmentPresenter @Inject constructor(
     }
 
     private fun getScheduleDeliveryMapData(cartString: String): ShipmentScheduleDeliveryMapData? {
-        return if (scheduleDeliveryMapData != null) {
-            scheduleDeliveryMapData!![cartString]
-        } else {
-            null
-        }
+        return scheduleDeliveryMapData[cartString]
     }
 
     override fun setScheduleDeliveryMapData(
         cartString: String,
         shipmentScheduleDeliveryMapData: ShipmentScheduleDeliveryMapData
     ) {
-        if (scheduleDeliveryMapData == null) {
-            scheduleDeliveryMapData = HashMap()
-        }
-        scheduleDeliveryMapData!![cartString] = shipmentScheduleDeliveryMapData
+        scheduleDeliveryMapData[cartString] = shipmentScheduleDeliveryMapData
     }
 
     private fun checkUnCompletedPublisher() {

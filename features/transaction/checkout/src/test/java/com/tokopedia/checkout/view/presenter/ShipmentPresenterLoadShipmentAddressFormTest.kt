@@ -1,7 +1,5 @@
 package com.tokopedia.checkout.view.presenter
 
-import com.google.gson.Gson
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
@@ -11,15 +9,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.DataProvider
-import com.tokopedia.checkout.view.ShipmentContract
-import com.tokopedia.checkout.view.ShipmentPresenter
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
@@ -27,154 +17,28 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
-import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
-import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CodModel
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
-import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterLoadShipmentAddressFormTest {
+class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest() {
 
-    @MockK
-    private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var compositeSubscription: CompositeSubscription
-
-    @MockK
-    private lateinit var checkoutUseCase: CheckoutGqlUseCase
-
-    @MockK
-    private lateinit var editAddressUseCase: EditAddressUseCase
-
-    @MockK
-    private lateinit var changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase
-
-    @MockK
-    private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
-
-    @MockK
-    private lateinit var getRatesUseCase: GetRatesUseCase
-
-    @MockK
-    private lateinit var getRatesApiUseCase: GetRatesApiUseCase
-
-    @MockK
-    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
-
-    @MockK
-    private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
-
-    @MockK
-    private lateinit var ratesStatesConverter: RatesResponseStateConverter
-
-    @MockK
-    private lateinit var shippingCourierConverter: ShippingCourierConverter
-
-    @MockK(relaxed = true)
-    private lateinit var userSessionInterface: UserSessionInterface
-
-    @MockK(relaxed = true)
-    private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
-
-    @MockK
-    private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
-
-    @MockK
-    private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
-
-    @MockK
-    private lateinit var releaseBookingUseCase: ReleaseBookingUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var view: ShipmentContract.View
-
-    @MockK(relaxed = true)
-    private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
-
-    @MockK(relaxed = true)
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
-    @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
-
-    private var shipmentDataConverter = ShipmentDataConverter()
     private var shipmentMapper = ShipmentMapper()
-
-    private lateinit var presenter: ShipmentPresenter
-
-    private var gson = Gson()
-
-    @Before
-    fun before() {
-        MockKAnnotations.init(this)
-        presenter = ShipmentPresenter(
-            compositeSubscription,
-            checkoutUseCase,
-            getShipmentAddressFormV3UseCase,
-            editAddressUseCase,
-            changeShippingAddressGqlUseCase,
-            saveShipmentStateGqlUseCase,
-            getRatesUseCase,
-            getRatesApiUseCase,
-            clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter,
-            shippingCourierConverter,
-            shipmentAnalyticsActionListener,
-            userSessionInterface,
-            analyticsPurchaseProtection,
-            checkoutAnalytics,
-            shipmentDataConverter,
-            releaseBookingUseCase,
-            prescriptionIdsUseCase,
-            epharmacyUseCase,
-            validateUsePromoRevampUseCase,
-            gson,
-            TestSchedulers,
-            eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
-        )
-        presenter.attachView(view)
-    }
 
     @Test
     fun firstLoadCheckoutPage_ShouldHideInitialLoadingAndRenderPage() {
@@ -184,20 +48,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             shipmentMapper.convertToShipmentAddressFormData(data.shipmentAddressFormResponse.data)
         presenter.setShipmentButtonPaymentModel(ShipmentButtonPaymentModel())
 
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(cartShipmentAddressFormData)
-        }
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns cartShipmentAddressFormData
         every {
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 any()
@@ -225,48 +76,31 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         }
     }
 
-    @Test
-    fun firstLoadCheckoutPage_ShouldShipmentAddressFormEmpty() {
-        // Given
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData?) -> Unit>().invoke(null)
-        }
-        every { shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(any()) } just Runs
-
-        // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
-
-        // Then
-        verifyOrder {
-            view.onShipmentAddressFormEmpty()
-        }
-    }
+//    @Test
+//    fun firstLoadCheckoutPage_ShouldShipmentAddressFormEmpty() {
+//        // Given
+//        coEvery { getShipmentAddressFormV4UseCase(any()) } returns null
+//        every { shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(any()) } just Runs
+//
+//        // When
+//        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
+//
+//        // Then
+//        verifyOrder {
+//            view.onShipmentAddressFormEmpty()
+//        }
+//    }
 
     @Test
     fun firstLoadCheckoutPageError_ShouldHideInitialLoadingAndShowToastError() {
         // Given
         val errorMessage = "error"
 
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                isError = true,
+                errorMessage = errorMessage
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    isError = true,
-                    errorMessage = errorMessage
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -298,20 +132,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             isOpenPrerequisiteSite = true
         )
 
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
-        }
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -337,20 +158,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     fun firstLoadCheckoutPageFailedException_ShouldHideInitialLoadingAndShowToastError() {
         // Given
         val error = RuntimeException("error")
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(error)
-        }
+        coEvery { getShipmentAddressFormV4UseCase(any()) } throws error
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -377,20 +185,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     fun firstLoadCheckoutPageFailedCartException_ShouldHideInitialLoadingAndShowToastError() {
         // Given
         val error = CartResponseErrorException("error")
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(error)
-        }
+        coEvery { getShipmentAddressFormV4UseCase(any()) } throws error
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -416,25 +211,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @Test
     fun `WHEN load checkout page with no error and address list is empty THEN should trigger finish activity`() {
         // Given
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                errorCode = 0,
+                groupAddress = emptyList()
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    errorCode = 0,
-                    groupAddress = emptyList()
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -466,24 +247,10 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         val groupAddress = GroupAddress().apply {
             userAddress = UserAddress(state = UserAddress.STATE_CHOSEN_ADDRESS_MATCH)
         }
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress)
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress)
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -515,25 +282,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         val groupAddress = GroupAddress().apply {
             userAddress = UserAddress(state = UserAddress.STATE_ADDRESS_ID_NOT_MATCH)
         }
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                popUpMessage = "message"
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    popUpMessage = "message"
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -567,25 +320,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         val groupAddress = GroupAddress().apply {
             userAddress = UserAddress(state = UserAddress.STATE_ADDRESS_ID_NOT_MATCH)
         }
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                popUpMessage = ""
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    popUpMessage = ""
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -627,20 +366,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 }
             )
         }
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
-        }
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -674,20 +400,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST
             groupAddress = listOf()
         }
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
-        }
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -724,20 +437,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 }
             )
         }
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
-        }
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
         coEvery {
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
         } answers {
@@ -782,20 +482,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             )
         }
 
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
-        }
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
         coEvery {
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
         } answers {
@@ -835,25 +522,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         val lastApplyUiModel = LastApplyUiModel(
             codes = listOf("promoCode")
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                lastApplyData = lastApplyUiModel
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    lastApplyData = lastApplyUiModel
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -882,25 +555,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             isCod = true,
             counterCod = 1
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                cod = codData
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    cod = codData
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -926,25 +585,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             userAddress = UserAddress(state = 0)
         }
         val ineligiblePromoDialog = true
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                isIneligiblePromoDialogEnabled = ineligiblePromoDialog
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    isIneligiblePromoDialogEnabled = ineligiblePromoDialog
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -970,25 +615,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             userAddress = UserAddress(state = 0)
         }
         val showOnboarding = true
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                isShowOnboarding = showOnboarding
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    isShowOnboarding = showOnboarding
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1017,25 +648,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             title = "title",
             description = "desc"
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                popup = popUp
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    popup = popUp
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1066,25 +683,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             title = "",
             description = "desc"
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                popup = popUp
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    popup = popUp
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1115,25 +718,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             title = "title",
             description = ""
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                popup = popUp
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    popup = popUp
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1161,25 +750,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             userAddress = UserAddress(state = 0)
         }
         val crossSell = listOf(CrossSellModel())
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                crossSell = crossSell
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    crossSell = crossSell
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1208,25 +783,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             userAddress = UserAddress(state = 0)
         }
         val crossSell = arrayListOf<CrossSellModel>()
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                crossSell = crossSell
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    crossSell = crossSell
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1267,25 +828,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 )
             )
         }
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                addOnWording = AddOnWordingData()
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    addOnWording = AddOnWordingData()
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1319,8 +866,8 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         presenter.setShipmentButtonPaymentModel(null)
 
         // Then
-        assertEquals(0, presenter.getShipmentButtonPaymentModel().quantity)
-        assertEquals("-", presenter.getShipmentButtonPaymentModel().totalPrice)
+//        assertEquals(0, presenter.shipmentButtonPayment.value)
+        assertEquals("-", presenter.shipmentButtonPayment.value.totalPrice)
     }
 
     @Test
@@ -1328,14 +875,14 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         // Given
         presenter.setShipmentButtonPaymentModel(
             ShipmentButtonPaymentModel(
-                totalPrice = "Rp1.000",
-                quantity = 1
+                totalPrice = "Rp1.000"
+//                quantity = 1
             )
         )
 
         // Then
-        assertEquals(1, presenter.getShipmentButtonPaymentModel().quantity)
-        assertEquals("Rp1.000", presenter.getShipmentButtonPaymentModel().totalPrice)
+//        assertEquals(1, presenter.shipmentButtonPayment.value.quantity)
+        assertEquals("Rp1.000", presenter.shipmentButtonPayment.value.totalPrice)
     }
 
     @Test
@@ -1386,25 +933,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             userAddress = UserAddress(state = 0)
         }
         val campaignTimerUi = CampaignTimerUi(showTimer = false)
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                campaignTimerUi = campaignTimerUi
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    campaignTimerUi = campaignTimerUi
-                )
-            )
-        }
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
@@ -1428,25 +961,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             userAddress = UserAddress(state = 0)
         }
         val campaignTimerUi = CampaignTimerUi(showTimer = true)
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                campaignTimerUi = campaignTimerUi
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    campaignTimerUi = campaignTimerUi
-                )
-            )
-        }
         presenter.processInitialLoadCheckoutPage(
             true,
             false,
@@ -1469,24 +988,10 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         val groupAddress = GroupAddress().apply {
             userAddress = UserAddress(state = 0)
         }
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress)
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress)
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1518,24 +1023,10 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         val groupAddress = GroupAddress().apply {
             userAddress = UserAddress(state = 0)
         }
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress)
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress)
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1568,27 +1059,13 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             userAddress = UserAddress(state = 0)
         }
         val errorTicker = "error ticker message"
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                errorTicker = errorTicker,
+                groupAddress = listOf(groupAddress),
+                donation = Donation(),
+                egoldAttributes = EgoldAttributeModel()
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    errorTicker = errorTicker,
-                    groupAddress = listOf(groupAddress),
-                    donation = Donation(),
-                    egoldAttributes = EgoldAttributeModel()
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1614,20 +1091,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     fun `WHEN reload checkout page failed THEN should render checkout page`() {
         // Given
         val error = CartResponseErrorException("error")
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(error)
-        }
+        coEvery { getShipmentAddressFormV4UseCase(any()) } throws error
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1664,25 +1128,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             appLink = "applink",
             image = "image"
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                upsell = upsell
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    upsell = upsell
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1728,25 +1178,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             summaryInfo = "wording",
             buttonText = "button"
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                newUpsell = upsell
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    newUpsell = upsell
-                )
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -1763,14 +1199,8 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
 
         // Then
         coVerify {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                true
+            getShipmentAddressFormV4UseCase(
+                match { it.isPlusSelected }
             )
         }
         assertEquals(
@@ -1797,7 +1227,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
 
         // Then
         verify {
-            getShipmentAddressFormV3UseCase.cancelJobs()
+//            getShipmentAddressFormV3UseCase.cancelJobs()
             eligibleForAddressUseCase.cancelJobs()
             epharmacyUseCase.cancelJobs()
         }

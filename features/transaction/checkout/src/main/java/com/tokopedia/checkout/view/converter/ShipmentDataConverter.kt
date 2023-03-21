@@ -29,63 +29,61 @@ import javax.inject.Inject
  */
 class ShipmentDataConverter @Inject constructor() {
 
-    fun getRecipientAddressModel(cartShipmentAddressFormData: CartShipmentAddressFormData): RecipientAddressModel? {
-        if (cartShipmentAddressFormData.groupAddress.isNotEmpty()) {
-            var defaultAddress: UserAddress? = null
-            var tradeInDropOffAddress: UserAddress? = null
-            val addressesData = cartShipmentAddressFormData.addressesData
-            val data = addressesData?.data
-            if (data != null) {
-                if (data.defaultAddress?.addressId?.isNotBlankOrZero() == true) {
-                    defaultAddress = data.defaultAddress
-                }
-                if (data.tradeInAddress?.addressId?.isNotBlankOrZero() == true) {
-                    tradeInDropOffAddress = data.tradeInAddress
-                }
+    fun getRecipientAddressModel(cartShipmentAddressFormData: CartShipmentAddressFormData): RecipientAddressModel {
+//        if (cartShipmentAddressFormData.groupAddress.isNotEmpty()) {
+        var defaultAddress: UserAddress? = null
+        var tradeInDropOffAddress: UserAddress? = null
+        val addressesData = cartShipmentAddressFormData.addressesData
+        val data = addressesData?.data
+        if (data != null) {
+            if (data.defaultAddress?.addressId?.isNotBlankOrZero() == true) {
+                defaultAddress = data.defaultAddress
             }
-            var isTradeIn = false
-            if (cartShipmentAddressFormData.groupAddress[0].groupShop.isNotEmpty()) {
-                for (groupShop in cartShipmentAddressFormData.groupAddress[0].groupShop) {
-                    if (groupShop.products.isNotEmpty()) {
-                        var foundData = false
-                        for (product in groupShop.products) {
-                            if (product.tradeInInfoData.isValidTradeIn) {
-                                isTradeIn = true
-                                foundData = true
-                                break
-                            }
-                        }
-                        if (foundData) {
+            if (data.tradeInAddress?.addressId?.isNotBlankOrZero() == true) {
+                tradeInDropOffAddress = data.tradeInAddress
+            }
+        }
+        var isTradeIn = false
+        if (cartShipmentAddressFormData.groupAddress[0].groupShop.isNotEmpty()) {
+            for (groupShop in cartShipmentAddressFormData.groupAddress[0].groupShop) {
+                if (groupShop.products.isNotEmpty()) {
+                    var foundData = false
+                    for (product in groupShop.products) {
+                        if (product.tradeInInfoData.isValidTradeIn) {
+                            isTradeIn = true
+                            foundData = true
                             break
                         }
                     }
+                    if (foundData) {
+                        break
+                    }
                 }
             }
-            val recipientAddressModel =
-                createRecipientAddressModel(defaultAddress, tradeInDropOffAddress, isTradeIn)
+        }
+        val recipientAddressModel =
+            createRecipientAddressModel(defaultAddress, tradeInDropOffAddress, isTradeIn)
+        recipientAddressModel.selectedTabIndex =
+            RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT
+        recipientAddressModel.disabledAddress = addressesData.disableTabs
+        if (addressesData.active.equals(
+                AddressesData.DEFAULT_ADDRESS,
+                ignoreCase = true
+            )
+        ) {
             recipientAddressModel.selectedTabIndex =
                 RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT
-            if (addressesData != null) {
-                recipientAddressModel.disabledAddress = addressesData.disableTabs
-                if (addressesData.active.equals(
-                        AddressesData.DEFAULT_ADDRESS,
-                        ignoreCase = true
-                    )
-                ) {
-                    recipientAddressModel.selectedTabIndex =
-                        RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT
-                } else if (addressesData.active.equals(
-                        AddressesData.TRADE_IN_ADDRESS,
-                        ignoreCase = true
-                    )
-                ) {
-                    recipientAddressModel.selectedTabIndex =
-                        RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN
-                }
-            }
-            return recipientAddressModel
+        } else if (addressesData.active.equals(
+                AddressesData.TRADE_IN_ADDRESS,
+                ignoreCase = true
+            )
+        ) {
+            recipientAddressModel.selectedTabIndex =
+                RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN
         }
-        return null
+        return recipientAddressModel
+//        }
+//        return null
     }
 
     fun getShipmentDonationModel(cartShipmentAddressFormData: CartShipmentAddressFormData): ShipmentDonationModel? {

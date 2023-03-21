@@ -1,37 +1,16 @@
 package com.tokopedia.checkout.view.presenter
 
-import com.google.gson.Gson
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
-import com.tokopedia.checkout.view.ShipmentContract
-import com.tokopedia.checkout.view.ShipmentPresenter
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
-import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.model.UpdateDynamicDataPassingUiModel
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
@@ -44,131 +23,16 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddO
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
 import io.mockk.Runs
 import io.mockk.coEvery
-import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.verify
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
-import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterUpdateDynamicDataTest {
+class ShipmentPresenterUpdateDynamicDataTest : BaseShipmentPresenterTest() {
 
-    @MockK
-    private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var compositeSubscription: CompositeSubscription
-
-    @MockK
-    private lateinit var checkoutUseCase: CheckoutGqlUseCase
-
-    @MockK
-    private lateinit var editAddressUseCase: EditAddressUseCase
-
-    @MockK
-    private lateinit var changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase
-
-    @MockK
-    private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
-
-    @MockK
-    private lateinit var getRatesUseCase: GetRatesUseCase
-
-    @MockK
-    private lateinit var getRatesApiUseCase: GetRatesApiUseCase
-
-    @MockK
-    private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
-
-    @MockK
-    private lateinit var ratesStatesConverter: RatesResponseStateConverter
-
-    @MockK
-    private lateinit var shippingCourierConverter: ShippingCourierConverter
-
-    @MockK(relaxed = true)
-    private lateinit var userSessionInterface: UserSessionInterface
-
-    @MockK(relaxed = true)
-    private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
-
-    @MockK
-    private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
-
-    @MockK
-    private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
-
-    @MockK
-    private lateinit var releaseBookingUseCase: ReleaseBookingUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var view: ShipmentContract.View
-
-    @MockK(relaxed = true)
-    private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
-
-    @MockK(relaxed = true)
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
-    @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
-
-    private var shipmentDataConverter = ShipmentDataConverter()
     private var updateDynamicDataParams = DynamicDataPassingParamRequest()
-
-    private lateinit var presenter: ShipmentPresenter
-
-    private var gson = Gson()
-
-    @Before
-    fun before() {
-        MockKAnnotations.init(this)
-        presenter = ShipmentPresenter(
-            compositeSubscription,
-            checkoutUseCase,
-            getShipmentAddressFormV3UseCase,
-            editAddressUseCase,
-            changeShippingAddressGqlUseCase,
-            saveShipmentStateGqlUseCase,
-            getRatesUseCase,
-            getRatesApiUseCase,
-            clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter,
-            shippingCourierConverter,
-            shipmentAnalyticsActionListener,
-            userSessionInterface,
-            analyticsPurchaseProtection,
-            checkoutAnalytics,
-            shipmentDataConverter,
-            releaseBookingUseCase,
-            prescriptionIdsUseCase,
-            epharmacyUseCase,
-            validateUsePromoRevampUseCase,
-            gson,
-            TestSchedulers,
-            eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
-        )
-        presenter.attachView(view)
-    }
 
     @Test
     fun updateDynamicData_fireAndForget() {
@@ -266,7 +130,6 @@ class ShipmentPresenterUpdateDynamicDataTest {
 
         // Then
         verify {
-            getShipmentAddressFormV3UseCase.cancelJobs()
             eligibleForAddressUseCase.cancelJobs()
             updateDynamicDataPassingUseCase.cancelJobs()
         }
@@ -276,26 +139,12 @@ class ShipmentPresenterUpdateDynamicDataTest {
     fun `WHEN update addOn product level data bottomsheet and is using ddp`() {
         // Given
         val isDdp = true
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                errorCode = 0,
+                groupAddress = emptyList(),
+                isUsingDdp = isDdp
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    errorCode = 0,
-                    groupAddress = emptyList(),
-                    isUsingDdp = isDdp
-                )
-            )
-        }
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel().apply {
@@ -341,26 +190,12 @@ class ShipmentPresenterUpdateDynamicDataTest {
     @Test
     fun `WHEN update addOn product level data bottomsheet and not using ddp`() {
         // Given
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                errorCode = 0,
+                groupAddress = emptyList(),
+                isUsingDdp = true
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    errorCode = 0,
-                    groupAddress = emptyList(),
-                    isUsingDdp = true
-                )
-            )
-        }
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel().apply {
@@ -412,27 +247,13 @@ class ShipmentPresenterUpdateDynamicDataTest {
             userAddress = UserAddress(addressId = "1")
         )
         listGroupAddress.add(groupAddress)
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                errorCode = 0,
+                groupAddress = listGroupAddress,
+                isUsingDdp = isDdp,
+                donation = Donation(isChecked = true)
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    errorCode = 0,
-                    groupAddress = listGroupAddress,
-                    isUsingDdp = isDdp,
-                    donation = Donation(isChecked = true)
-                )
-            )
-        }
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel().apply {
@@ -516,31 +337,17 @@ class ShipmentPresenterUpdateDynamicDataTest {
         )
 
         listGroupAddress.add(groupAddress)
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    errorCode = 0,
-                    groupAddress = listGroupAddress,
-                    isUsingDdp = isDdp,
-                    addOnWording = AddOnWordingData(
-                        packagingAndGreetingCard = "packaging and greeting",
-                        onlyGreetingCard = "only greeting card",
-                        invoiceNotSendToRecipient = "invoice not send"
-                    )
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                errorCode = 0,
+                groupAddress = listGroupAddress,
+                isUsingDdp = isDdp,
+                addOnWording = AddOnWordingData(
+                    packagingAndGreetingCard = "packaging and greeting",
+                    onlyGreetingCard = "only greeting card",
+                    invoiceNotSendToRecipient = "invoice not send"
                 )
             )
-        }
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel(
@@ -642,31 +449,17 @@ class ShipmentPresenterUpdateDynamicDataTest {
         )
 
         listGroupAddress.add(groupAddress)
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    errorCode = 0,
-                    groupAddress = listGroupAddress,
-                    isUsingDdp = isDdp,
-                    addOnWording = AddOnWordingData(
-                        packagingAndGreetingCard = "packaging and greeting",
-                        onlyGreetingCard = "only greeting card",
-                        invoiceNotSendToRecipient = "invoice not send"
-                    )
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                errorCode = 0,
+                groupAddress = listGroupAddress,
+                isUsingDdp = isDdp,
+                addOnWording = AddOnWordingData(
+                    packagingAndGreetingCard = "packaging and greeting",
+                    onlyGreetingCard = "only greeting card",
+                    invoiceNotSendToRecipient = "invoice not send"
                 )
             )
-        }
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel(
@@ -714,26 +507,12 @@ class ShipmentPresenterUpdateDynamicDataTest {
             userAddress = UserAddress(addressId = "1")
         )
         listGroupAddress.add(groupAddress)
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                errorCode = 0,
+                groupAddress = listGroupAddress,
+                isUsingDdp = isDdp
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    errorCode = 0,
-                    groupAddress = listGroupAddress,
-                    isUsingDdp = isDdp
-                )
-            )
-        }
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
         shipmentCartItemModelList.add(
             ShipmentCartItemModel().apply {

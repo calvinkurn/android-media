@@ -1,158 +1,24 @@
 package com.tokopedia.checkout.view.presenter
 
-import com.google.gson.Gson
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
-import com.tokopedia.checkout.domain.usecase.*
-import com.tokopedia.checkout.view.ShipmentContract
-import com.tokopedia.checkout.view.ShipmentPresenter
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
-import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.just
-import io.mockk.verify
-import org.junit.Before
 import org.junit.Test
-import rx.Observable
-import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterUpsellTest {
-
-    @MockK
-    private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var compositeSubscription: CompositeSubscription
-
-    @MockK
-    private lateinit var checkoutUseCase: CheckoutGqlUseCase
-
-    @MockK
-    private lateinit var editAddressUseCase: EditAddressUseCase
-
-    @MockK
-    private lateinit var changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase
-
-    @MockK
-    private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
-
-    @MockK
-    private lateinit var getRatesUseCase: GetRatesUseCase
-
-    @MockK
-    private lateinit var getRatesApiUseCase: GetRatesApiUseCase
-
-    @MockK
-    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
-
-    @MockK
-    private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
-
-    @MockK
-    private lateinit var ratesStatesConverter: RatesResponseStateConverter
-
-    @MockK
-    private lateinit var shippingCourierConverter: ShippingCourierConverter
-
-    @MockK(relaxed = true)
-    private lateinit var userSessionInterface: UserSessionInterface
-
-    @MockK(relaxed = true)
-    private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
-
-    @MockK(relaxed = true)
-    private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
-
-    @MockK(relaxed = true)
-    private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
-
-    @MockK
-    private lateinit var releaseBookingUseCase: ReleaseBookingUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var view: ShipmentContract.View
-
-    @MockK(relaxed = true)
-    private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
-
-    @MockK
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
-    @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK
-    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
-
-    @MockK
-    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
-
-    private var shipmentDataConverter = ShipmentDataConverter()
-
-    private lateinit var presenter: ShipmentPresenter
-
-    private var gson = Gson()
-
-    @Before
-    fun before() {
-        MockKAnnotations.init(this)
-        presenter = ShipmentPresenter(
-            compositeSubscription,
-            checkoutUseCase,
-            getShipmentAddressFormV3UseCase,
-            editAddressUseCase,
-            changeShippingAddressGqlUseCase,
-            saveShipmentStateGqlUseCase,
-            getRatesUseCase,
-            getRatesApiUseCase,
-            clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter,
-            shippingCourierConverter,
-            shipmentAnalyticsActionListener,
-            userSessionInterface,
-            analyticsPurchaseProtection,
-            checkoutAnalytics,
-            shipmentDataConverter,
-            releaseBookingUseCase,
-            prescriptionIdsUseCase,
-            epharmacyUseCase,
-            validateUsePromoRevampUseCase,
-            gson,
-            TestSchedulers,
-            eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
-        )
-        presenter.attachView(view)
-    }
+class ShipmentPresenterUpsellTest : BaseShipmentPresenterTest() {
 
     @Test
     fun `WHEN cancel upsell THEN should try clear all BO`() {
@@ -165,26 +31,13 @@ class ShipmentPresenterUpsellTest {
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
         )
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
                     success = true
                 )
             )
-        )
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns CartShipmentAddressFormData()
         every {
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 any()
@@ -199,10 +52,9 @@ class ShipmentPresenterUpsellTest {
         )
 
         // Then
-        verify {
-            clearCacheAutoApplyStackUseCase.setParams(any())
-            clearCacheAutoApplyStackUseCase.createObservable(any())
-            getShipmentAddressFormV3UseCase.execute(any(), any())
+        coVerify {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+            getShipmentAddressFormV4UseCase(any())
         }
     }
 
@@ -224,25 +76,11 @@ class ShipmentPresenterUpsellTest {
             summaryInfo = "wording",
             buttonText = "button"
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                newUpsell = upsell
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    newUpsell = upsell
-                )
-            )
-        }
 
         presenter.processInitialLoadCheckoutPage(
             true,
@@ -264,26 +102,13 @@ class ShipmentPresenterUpsellTest {
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
         )
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
                     success = true
                 )
             )
-        )
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns CartShipmentAddressFormData()
         every {
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 any()
@@ -294,10 +119,9 @@ class ShipmentPresenterUpsellTest {
         presenter.clearAllBoOnTemporaryUpsell()
 
         // Then
-        verify {
-            clearCacheAutoApplyStackUseCase.setParams(any())
-            clearCacheAutoApplyStackUseCase.createObservable(any())
-            getShipmentAddressFormV3UseCase.execute(any(), any())
+        coVerify {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+            getShipmentAddressFormV4UseCase(any())
         }
     }
 
@@ -319,25 +143,11 @@ class ShipmentPresenterUpsellTest {
             summaryInfo = "wording",
             buttonText = "button"
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                newUpsell = upsell
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    newUpsell = upsell
-                )
-            )
-        }
 
         presenter.processInitialLoadCheckoutPage(
             true,
@@ -358,26 +168,13 @@ class ShipmentPresenterUpsellTest {
                 shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
             }
         )
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
                     success = true
                 )
             )
-        )
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns CartShipmentAddressFormData()
         every {
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 any()
@@ -388,9 +185,8 @@ class ShipmentPresenterUpsellTest {
         presenter.clearAllBoOnTemporaryUpsell()
 
         // Then
-        verify(inverse = true) {
-            clearCacheAutoApplyStackUseCase.setParams(any())
-            clearCacheAutoApplyStackUseCase.createObservable(any())
+        coVerify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
         }
     }
 
@@ -412,25 +208,11 @@ class ShipmentPresenterUpsellTest {
             summaryInfo = "wording",
             buttonText = "button"
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                newUpsell = upsell
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    newUpsell = upsell
-                )
-            )
-        }
 
         presenter.processInitialLoadCheckoutPage(
             true,
@@ -452,26 +234,13 @@ class ShipmentPresenterUpsellTest {
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel()
             }
         )
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
                     success = true
                 )
             )
-        )
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns CartShipmentAddressFormData()
         every {
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 any()
@@ -482,9 +251,8 @@ class ShipmentPresenterUpsellTest {
         presenter.clearAllBoOnTemporaryUpsell()
 
         // Then
-        verify(inverse = true) {
-            clearCacheAutoApplyStackUseCase.setParams(any())
-            clearCacheAutoApplyStackUseCase.createObservable(any())
+        coVerify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
         }
     }
 
@@ -506,25 +274,11 @@ class ShipmentPresenterUpsellTest {
             summaryInfo = "wording",
             buttonText = "button"
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                newUpsell = upsell
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    newUpsell = upsell
-                )
-            )
-        }
 
         presenter.processInitialLoadCheckoutPage(
             true,
@@ -544,26 +298,13 @@ class ShipmentPresenterUpsellTest {
                 cartString = "cartString"
             }
         )
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
                     success = true
                 )
             )
-        )
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns CartShipmentAddressFormData()
         every {
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 any()
@@ -574,9 +315,8 @@ class ShipmentPresenterUpsellTest {
         presenter.clearAllBoOnTemporaryUpsell()
 
         // Then
-        verify(inverse = true) {
-            clearCacheAutoApplyStackUseCase.setParams(any())
-            clearCacheAutoApplyStackUseCase.createObservable(any())
+        coVerify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
         }
     }
 
@@ -598,25 +338,11 @@ class ShipmentPresenterUpsellTest {
             summaryInfo = "wording",
             buttonText = "button"
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                newUpsell = upsell
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    newUpsell = upsell
-                )
-            )
-        }
 
         presenter.processInitialLoadCheckoutPage(
             true,
@@ -638,26 +364,13 @@ class ShipmentPresenterUpsellTest {
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
         )
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
                     success = true
                 )
             )
-        )
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns CartShipmentAddressFormData()
         every {
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 any()
@@ -668,9 +381,8 @@ class ShipmentPresenterUpsellTest {
         presenter.clearAllBoOnTemporaryUpsell()
 
         // Then
-        verify(inverse = true) {
-            clearCacheAutoApplyStackUseCase.setParams(any())
-            clearCacheAutoApplyStackUseCase.createObservable(any())
+        coVerify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
         }
     }
 
@@ -692,25 +404,11 @@ class ShipmentPresenterUpsellTest {
             summaryInfo = "wording",
             buttonText = "button"
         )
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress),
+                newUpsell = upsell
             )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
-                CartShipmentAddressFormData(
-                    groupAddress = listOf(groupAddress),
-                    newUpsell = upsell
-                )
-            )
-        }
 
         presenter.processInitialLoadCheckoutPage(
             true,
@@ -732,26 +430,13 @@ class ShipmentPresenterUpsellTest {
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
             }
         )
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
                     success = true
                 )
             )
-        )
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns CartShipmentAddressFormData()
         every {
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
                 any()
@@ -762,9 +447,8 @@ class ShipmentPresenterUpsellTest {
         presenter.clearAllBoOnTemporaryUpsell()
 
         // Then
-        verify(inverse = true) {
-            clearCacheAutoApplyStackUseCase.setParams(any())
-            clearCacheAutoApplyStackUseCase.createObservable(any())
+        coVerify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
         }
     }
 }

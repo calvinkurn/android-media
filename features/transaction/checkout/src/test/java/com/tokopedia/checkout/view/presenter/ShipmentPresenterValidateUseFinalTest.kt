@@ -1,38 +1,15 @@
 package com.tokopedia.checkout.view.presenter
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
-import com.tokopedia.checkout.view.ShipmentContract
-import com.tokopedia.checkout.view.ShipmentPresenter
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
-import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
-import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel
@@ -46,133 +23,16 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TickerInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.just
+import io.mockk.coEvery
 import io.mockk.verify
 import io.mockk.verifyOrder
 import io.mockk.verifySequence
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
-import rx.Observable
 import rx.observers.TestSubscriber
 import rx.subjects.PublishSubject
-import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterValidateUseFinalTest {
-
-    @MockK
-    private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var compositeSubscription: CompositeSubscription
-
-    @MockK
-    private lateinit var checkoutUseCase: CheckoutGqlUseCase
-
-    @MockK
-    private lateinit var editAddressUseCase: EditAddressUseCase
-
-    @MockK
-    private lateinit var changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase
-
-    @MockK
-    private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
-
-    @MockK
-    private lateinit var getRatesUseCase: GetRatesUseCase
-
-    @MockK
-    private lateinit var getRatesApiUseCase: GetRatesApiUseCase
-
-    @MockK
-    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
-
-    @MockK
-    private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
-
-    @MockK
-    private lateinit var ratesStatesConverter: RatesResponseStateConverter
-
-    @MockK
-    private lateinit var shippingCourierConverter: ShippingCourierConverter
-
-    @MockK(relaxed = true)
-    private lateinit var userSessionInterface: UserSessionInterface
-
-    @MockK(relaxed = true)
-    private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
-
-    @MockK(relaxed = true)
-    private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
-
-    @MockK(relaxed = true)
-    private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
-
-    @MockK
-    private lateinit var releaseBookingUseCase: ReleaseBookingUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var view: ShipmentContract.View
-
-    @MockK(relaxed = true)
-    private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
-
-    @MockK
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
-    @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK
-    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
-
-    @MockK
-    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
-
-    private var shipmentDataConverter = ShipmentDataConverter()
-
-    private lateinit var presenter: ShipmentPresenter
-
-    private var gson = Gson()
-
-    @Before
-    fun before() {
-        MockKAnnotations.init(this)
-        presenter = ShipmentPresenter(
-            compositeSubscription,
-            checkoutUseCase,
-            getShipmentAddressFormV3UseCase,
-            editAddressUseCase,
-            changeShippingAddressGqlUseCase,
-            saveShipmentStateGqlUseCase,
-            getRatesUseCase,
-            getRatesApiUseCase,
-            clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter,
-            shippingCourierConverter,
-            shipmentAnalyticsActionListener,
-            userSessionInterface,
-            analyticsPurchaseProtection,
-            checkoutAnalytics,
-            shipmentDataConverter,
-            releaseBookingUseCase,
-            prescriptionIdsUseCase,
-            epharmacyUseCase,
-            validateUsePromoRevampUseCase,
-            gson,
-            TestSchedulers,
-            eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
-        )
-        presenter.attachView(view)
-    }
+class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
 
     @Test
     fun `WHEN validate use success THEN should update promo button`() {
@@ -185,13 +45,12 @@ class ShipmentPresenterValidateUseFinalTest {
                 )
             )
         )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "OK",
                 errorCode = "200",
                 promoUiModel = promoUiModel
             )
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -219,13 +78,12 @@ class ShipmentPresenterValidateUseFinalTest {
                 )
             )
         )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "OK",
                 errorCode = "200",
                 promoUiModel = promoUiModel
             )
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -257,13 +115,12 @@ class ShipmentPresenterValidateUseFinalTest {
                 )
             )
         )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "OK",
                 errorCode = "200",
                 promoUiModel = promoUiModel
             )
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -295,13 +152,12 @@ class ShipmentPresenterValidateUseFinalTest {
                 )
             )
         )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "OK",
                 errorCode = "200",
                 promoUiModel = promoUiModel
             )
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -332,13 +188,12 @@ class ShipmentPresenterValidateUseFinalTest {
                 message = tickerMessage
             )
         )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "OK",
                 errorCode = "200",
                 promoUiModel = promoUiModel
             )
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -372,13 +227,12 @@ class ShipmentPresenterValidateUseFinalTest {
                 message = tickerMessage
             )
         )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "OK",
                 errorCode = "200",
                 promoUiModel = promoUiModel
             )
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -415,13 +269,12 @@ class ShipmentPresenterValidateUseFinalTest {
                 }
             )
         )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "OK",
                 errorCode = "200",
                 promoUiModel = promoUiModel
             )
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(
@@ -459,12 +312,11 @@ class ShipmentPresenterValidateUseFinalTest {
                 }
             )
         )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "OK",
                 promoUiModel = promoUiModel
             )
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(
@@ -503,17 +355,14 @@ class ShipmentPresenterValidateUseFinalTest {
                 }
             )
         )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "OK",
                 errorCode = "200",
                 promoUiModel = promoUiModel
             )
-        )
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel()
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -533,13 +382,12 @@ class ShipmentPresenterValidateUseFinalTest {
     fun `WHEN validate use status get error THEN should render error and reset promo benefit`() {
         // Given
         val message = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "ERROR",
                 message = listOf(message),
                 promoUiModel = PromoUiModel()
             )
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -555,13 +403,12 @@ class ShipmentPresenterValidateUseFinalTest {
     @Test
     fun `WHEN validate use status get error but no error message THEN should show toaster with default error message`() {
         // Given
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "ERROR",
                 message = emptyList(),
                 promoUiModel = PromoUiModel()
             )
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -578,9 +425,8 @@ class ShipmentPresenterValidateUseFinalTest {
     fun `WHEN validate use status get exception THEN should render error`() {
         // Given
         val message = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } throws
             ResponseErrorException()
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
@@ -605,13 +451,10 @@ class ShipmentPresenterValidateUseFinalTest {
         }
         presenter.setLatValidateUseRequest(validateUsePromoRequest)
         val message = "error"
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } throws
             AkamaiErrorException(message)
-        )
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
             ClearPromoUiModel()
-        )
 
         // When
         presenter.checkPromoCheckoutFinalShipment(validateUsePromoRequest, 0, "")
@@ -638,13 +481,12 @@ class ShipmentPresenterValidateUseFinalTest {
                 PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
             )
         )
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             ValidateUsePromoRevampUiModel(
                 status = "OK",
                 errorCode = "200",
                 promoUiModel = promoUiModel
             )
-        )
         val testSubscriber = TestSubscriber.create<Boolean>()
         val donePublisher = PublishSubject.create<Boolean>()
         donePublisher.subscribe(testSubscriber)

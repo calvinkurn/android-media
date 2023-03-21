@@ -1,158 +1,25 @@
 package com.tokopedia.checkout.view.presenter
 
 import android.app.Activity
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
-import com.tokopedia.checkout.view.ShipmentContract
-import com.tokopedia.checkout.view.ShipmentPresenter
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
-import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.verify
 import io.mockk.verifySequence
-import org.junit.Before
 import org.junit.Test
-import rx.Observable
-import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterValidateUseCourierPromoTest {
-
-    @MockK
-    private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var compositeSubscription: CompositeSubscription
-
-    @MockK
-    private lateinit var checkoutUseCase: CheckoutGqlUseCase
-
-    @MockK
-    private lateinit var editAddressUseCase: EditAddressUseCase
-
-    @MockK
-    private lateinit var changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase
-
-    @MockK
-    private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
-
-    @MockK
-    private lateinit var getRatesUseCase: GetRatesUseCase
-
-    @MockK
-    private lateinit var getRatesApiUseCase: GetRatesApiUseCase
-
-    @MockK
-    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
-
-    @MockK
-    private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
-
-    @MockK
-    private lateinit var ratesStatesConverter: RatesResponseStateConverter
-
-    @MockK
-    private lateinit var shippingCourierConverter: ShippingCourierConverter
-
-    @MockK(relaxed = true)
-    private lateinit var userSessionInterface: UserSessionInterface
-
-    @MockK(relaxed = true)
-    private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
-
-    @MockK(relaxed = true)
-    private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
-
-    @MockK(relaxed = true)
-    private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
-
-    @MockK
-    private lateinit var releaseBookingUseCase: ReleaseBookingUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var view: ShipmentContract.View
-
-    @MockK(relaxed = true)
-    private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
-
-    @MockK
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
-    @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK
-    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
-
-    @MockK
-    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
-
-    private var shipmentDataConverter = ShipmentDataConverter()
-
-    private lateinit var presenter: ShipmentPresenter
-
-    private var gson = Gson()
-
-    @Before
-    fun before() {
-        MockKAnnotations.init(this)
-        presenter = ShipmentPresenter(
-            compositeSubscription,
-            checkoutUseCase,
-            getShipmentAddressFormV3UseCase,
-            editAddressUseCase,
-            changeShippingAddressGqlUseCase,
-            saveShipmentStateGqlUseCase,
-            getRatesUseCase,
-            getRatesApiUseCase,
-            clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter,
-            shippingCourierConverter,
-            shipmentAnalyticsActionListener,
-            userSessionInterface,
-            analyticsPurchaseProtection,
-            checkoutAnalytics,
-            shipmentDataConverter,
-            releaseBookingUseCase,
-            prescriptionIdsUseCase,
-            epharmacyUseCase,
-            validateUsePromoRevampUseCase,
-            gson,
-            TestSchedulers,
-            eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
-        )
-        presenter.attachView(view)
-    }
+class ShipmentPresenterValidateUseCourierPromoTest : BaseShipmentPresenterTest() {
 
     @Test
     fun `WHEN validate use success THEN should render promo from courier`() {
@@ -172,9 +39,7 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         )
         val position = 0
         val noToast = true
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
-            validateUseModel
-        )
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns validateUseModel
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -211,9 +76,8 @@ class ShipmentPresenterValidateUseCourierPromoTest {
             this.cartString = cartString
         }
         presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             validateUseModel
-        )
         every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
 
         // When
@@ -239,9 +103,8 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         )
         val position = 0
         val noToast = true
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             validateUseModel
-        )
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -261,9 +124,8 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         )
         val position = 0
         val noToast = true
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
             validateUseModel
-        )
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -286,9 +148,8 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         mockkObject(ErrorHandler.Companion)
         every { view.activityContext } returns mockContext
         every { ErrorHandler.Companion.getErrorMessage(any(), any(), any()) } returns errorMessage
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } throws
             exception
-        )
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
@@ -307,9 +168,8 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         val noToast = true
 
         val exception = AkamaiErrorException(errorMessage)
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } throws
             exception
-        )
         every { view.generateValidateUsePromoRequest() } returns ValidateUsePromoRequest()
 
         // When

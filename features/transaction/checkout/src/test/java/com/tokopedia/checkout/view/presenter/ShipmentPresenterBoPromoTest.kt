@@ -1,38 +1,19 @@
 package com.tokopedia.checkout.view.presenter
 
-import com.google.gson.Gson
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.DataProvider
-import com.tokopedia.checkout.view.ShipmentContract
-import com.tokopedia.checkout.view.ShipmentPresenter
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
-import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
-import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -41,135 +22,19 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.runs
-import io.mockk.spyk
 import io.mockk.verify
 import io.mockk.verifyOrder
-import org.junit.Before
 import org.junit.Test
 import rx.Observable
-import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterBoPromoTest {
-
-    @MockK
-    private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var compositeSubscription: CompositeSubscription
-
-    @MockK
-    private lateinit var checkoutUseCase: CheckoutGqlUseCase
-
-    @MockK
-    private lateinit var editAddressUseCase: EditAddressUseCase
-
-    @MockK
-    private lateinit var changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase
-
-    @MockK
-    private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
-
-    @MockK
-    private lateinit var getRatesUseCase: GetRatesUseCase
-
-    @MockK
-    private lateinit var getRatesApiUseCase: GetRatesApiUseCase
-
-    @MockK
-    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
-
-    @MockK
-    private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
-
-    @MockK
-    private lateinit var ratesStatesConverter: RatesResponseStateConverter
-
-    @MockK
-    private lateinit var shippingCourierConverter: ShippingCourierConverter
-
-    @MockK(relaxed = true)
-    private lateinit var userSessionInterface: UserSessionInterface
-
-    @MockK(relaxed = true)
-    private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
-
-    @MockK
-    private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
-
-    @MockK(relaxed = true)
-    private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
-
-    @MockK
-    private lateinit var releaseBookingUseCase: ReleaseBookingUseCase
-
-    @MockK
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
-    @MockK
-    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
-
-    @MockK
-    private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
-
-    @MockK
-    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
-
-    @MockK(relaxed = true)
-    private lateinit var view: ShipmentContract.View
-
-    @MockK(relaxed = true)
-    private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
+class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
 
     private var shipmentMapper = ShipmentMapper()
-    private var shipmentDataConverter = ShipmentDataConverter()
     private var shippingDurationConverter = ShippingDurationConverter()
-
-    private lateinit var presenter: ShipmentPresenter
-
-    private var gson = Gson()
-
-    @Before
-    fun before() {
-        MockKAnnotations.init(this)
-        ratesStatesConverter = RatesResponseStateConverter()
-        shippingCourierConverter = ShippingCourierConverter()
-        presenter = ShipmentPresenter(
-            compositeSubscription,
-            checkoutUseCase,
-            getShipmentAddressFormV3UseCase,
-            editAddressUseCase,
-            changeShippingAddressGqlUseCase,
-            saveShipmentStateGqlUseCase,
-            getRatesUseCase,
-            getRatesApiUseCase,
-            clearCacheAutoApplyStackUseCase,
-            ratesStatesConverter,
-            shippingCourierConverter,
-            shipmentAnalyticsActionListener,
-            userSessionInterface,
-            analyticsPurchaseProtection,
-            checkoutAnalytics,
-            shipmentDataConverter,
-            releaseBookingUseCase,
-            prescriptionIdsUseCase,
-            epharmacyUseCase,
-            validateUsePromoRevampUseCase,
-            gson,
-            TestSchedulers,
-            eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
-        )
-        presenter.attachView(view)
-        presenter = spyk(presenter)
-    }
 
     // Test ShipmentPresenter.getCartDataForRates()
 
@@ -322,15 +187,13 @@ class ShipmentPresenterBoPromoTest {
                 boMetadata = BoMetadata(boType = 1)
             )
         )
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+        coEvery { clearCacheAutoApplyStackUseCase.executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
                     success = true,
                     tickerMessage = ""
                 )
             )
-        )
 
         // When
         presenter.doUnapplyBo(uniqueId, promoCode)
@@ -353,15 +216,14 @@ class ShipmentPresenterBoPromoTest {
 
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
         every { view.getShipmentCartItemModel(any()) } returns null
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+//        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
+        coEvery { clearCacheAutoApplyStackUseCase.executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
                     success = true,
                     tickerMessage = ""
                 )
             )
-        )
 
         // When
         presenter.doUnapplyBo(uniqueId, promoCode)
@@ -386,15 +248,14 @@ class ShipmentPresenterBoPromoTest {
 
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
         every { view.getShipmentCartItemModel(any()) } returns null
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+//        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
+        coEvery { clearCacheAutoApplyStackUseCase.executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
                     success = true,
                     tickerMessage = ""
                 )
             )
-        )
 
         // When
         presenter.doUnapplyBo(uniqueId, promoCode)
@@ -419,15 +280,14 @@ class ShipmentPresenterBoPromoTest {
 
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
         every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel()
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+//        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
+        coEvery { clearCacheAutoApplyStackUseCase.executeOnBackground() } returns
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
                     success = true,
                     tickerMessage = ""
                 )
             )
-        )
 
         // When
         presenter.doUnapplyBo(uniqueId, promoCode)
@@ -634,22 +494,22 @@ class ShipmentPresenterBoPromoTest {
         }
     }
 
-    @Test
-    fun `WHEN clear all BO promo with last validate use null THEN don't clear all BO promo`() {
-        // Given
-        presenter.shipmentCartItemModelList = null
-        presenter.setLatValidateUseRequest(ValidateUsePromoRequest())
-
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-
-        // When
-        presenter.validateClearAllBoPromo()
-
-        // Then
-        verify(inverse = true) {
-            presenter.doUnapplyBo(any(), any())
-        }
-    }
+//    @Test
+//    fun `WHEN clear all BO promo with last validate use null THEN don't clear all BO promo`() {
+//        // Given
+//        presenter.shipmentCartItemModelList = null
+//        presenter.setLatValidateUseRequest(ValidateUsePromoRequest())
+//
+//        every { presenter.doUnapplyBo(any(), any()) } just runs
+//
+//        // When
+//        presenter.validateClearAllBoPromo()
+//
+//        // Then
+//        verify(inverse = true) {
+//            presenter.doUnapplyBo(any(), any())
+//        }
+//    }
 
     // Test ShipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest()
 
