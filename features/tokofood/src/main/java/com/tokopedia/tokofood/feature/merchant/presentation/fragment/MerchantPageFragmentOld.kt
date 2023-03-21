@@ -1532,7 +1532,7 @@ class MerchantPageFragmentOld : BaseMultiFragment(),
             variantTracker
         )
 
-        val orderCustomizationFragment = OrderCustomizationFragment.createInstance(
+        val orderCustomizationFragment = OrderCustomizationFragmentOld.createInstance(
             productUiModel = productListItem.productUiModel,
             cartId = cartId,
             merchantId = merchantId,

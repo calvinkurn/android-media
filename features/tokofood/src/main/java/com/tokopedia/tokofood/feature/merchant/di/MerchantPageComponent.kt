@@ -7,6 +7,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.fragment.ManageLocat
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragment
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragmentOld
 import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragmentOld
 import dagger.Component
 
 @TokoFoodScope
@@ -15,5 +16,6 @@ interface MerchantPageComponent {
     fun inject(fragment: MerchantPageFragment)
     fun inject(fragment: MerchantPageFragmentOld)
     fun inject(fragment: OrderCustomizationFragment)
+    fun inject(fragment: OrderCustomizationFragmentOld)
     fun inject(fragment: ManageLocationFragment)
 }

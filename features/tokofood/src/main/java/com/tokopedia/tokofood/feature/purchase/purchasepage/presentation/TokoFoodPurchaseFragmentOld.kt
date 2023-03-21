@@ -58,9 +58,8 @@ import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPairOld
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
-import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragmentOld
-import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragment
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.OrderCustomizationFragmentOld
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.purchase.analytics.TokoFoodPurchaseAnalyticsOld
 import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragmentOld
@@ -465,7 +464,7 @@ class TokoFoodPurchaseFragmentOld :
                 }
                 PurchaseUiEvent.EVENT_GO_TO_ORDER_CUSTOMIZATION -> {
                     (it.data as? ProductUiModel)?.let { productUiModel ->
-                        val orderCustomizationFragment = OrderCustomizationFragment.createInstance(
+                        val orderCustomizationFragment = OrderCustomizationFragmentOld.createInstance(
                             productUiModel = productUiModel,
                             cartId = productUiModel.cartId,
                             merchantId = shopId,
