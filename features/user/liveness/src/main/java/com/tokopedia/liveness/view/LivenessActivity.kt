@@ -62,6 +62,7 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         livenessSdk.initOffLine(application)
         livenessSdk.letSDKHandleCameraPermission()
         livenessSdk.setDeviceType(DeviceType.RealPhone)
+        livenessSdk.setResultPictureSize(600)
         livenessSdk.setActionSequence(
             isRandomDetection(),
             Detector.DetectionType.MOUTH,
