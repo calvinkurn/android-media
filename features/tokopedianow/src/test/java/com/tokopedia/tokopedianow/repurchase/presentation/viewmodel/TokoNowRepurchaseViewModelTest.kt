@@ -2,9 +2,6 @@ package com.tokopedia.tokopedianow.repurchase.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.data.model.response.Header
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
-import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
@@ -27,20 +24,18 @@ import com.tokopedia.tokopedianow.data.createRepurchaseLoadingLayout
 import com.tokopedia.tokopedianow.data.createRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.data.createSortFilterLayout
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
-import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAddToCartTracker
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_FILTER
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_SEARCH
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_RESULT
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.ERROR_STATE_FAILED_TO_FETCH_DATA
-import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_REPURCHASE
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.GetRepurchaseProductListResponse
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.GetRepurchaseProductMetaResponse
 import com.tokopedia.tokopedianow.repurchase.domain.param.GetRepurchaseProductListParam
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
-import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedSortFilter
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
@@ -175,7 +170,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 0
+                    isAdult = 0,
+                    color = "#FFFFFF"
                 ),
                 CategoryResponse(
                     id = "4",
@@ -185,7 +181,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 1
+                    isAdult = 1,
+                    color = "#FFFFFF"
                 )
             )
         )
@@ -230,7 +227,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 0
+                    isAdult = 0,
+                    color = "#FFFFFF"
                 ),
                 CategoryResponse(
                     id = "4",
@@ -240,7 +238,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 1
+                    isAdult = 1,
+                    color = "#FFFFFF"
                 )
             )
         )
@@ -272,7 +271,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 0
+                    isAdult = 0,
+                    color = "#FFFFFF"
                 ),
                 CategoryResponse(
                     id = "4",
@@ -282,7 +282,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     imageUrl = "tokopedia://",
                     parentId = "5",
                     childList = listOf(),
-                    isAdult = 1
+                    isAdult = 1,
+                    color = "#FFFFFF"
                 )
             )
         )
@@ -578,7 +579,20 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
     }
 
     @Test
-    fun `when setProductAddToCartQuantity throw exception should do nothing`() {
+    fun `when setProductAddToCartQuantity _getLayout has value should do nothing`() {
+        onGetRepurchaseProductList_thenReturn(
+            GetRepurchaseProductListResponse(
+                meta = GetRepurchaseProductMetaResponse(
+                    page = 1,
+                    hasNext = false,
+                    totalScan = 1,
+                ),
+                products = listOf(RepurchaseProduct())
+            )
+        )
+
+        viewModel.getLayoutData()
+
         onGetLayoutList_thenReturnNull()
 
         viewModel.setProductAddToCartQuantity(MiniCartSimplifiedData())
@@ -588,376 +602,11 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
     }
 
     @Test
-    fun `given mini cart item is null when onClickAddToCart should set miniCartAdd success`() {
-        val productId = "1"
-        val quantity = 5
-        val shopId = "5"
-        val type = ""
+    fun `when setProductAddToCartQuantity throw exception should do nothing`() {
+        viewModel.setProductAddToCartQuantity(MiniCartSimplifiedData())
 
-        val productListResponse = GetRepurchaseProductListResponse(
-            meta = GetRepurchaseProductMetaResponse(
-                page = 1,
-                hasNext = false,
-                totalScan = 1,
-            ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
-        )
-        val addToCartResponse = AddToCartDataModel()
-
-        onGetRepurchaseProductList_thenReturn(productListResponse)
-        onAddToCart_thenReturn(addToCartResponse)
-
-        viewModel.getLayoutData()
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
-
-        verifyAddToCartUseCaseCalled()
-
-        viewModel.miniCartAdd
-            .verifySuccessEquals(Success(AddToCartDataModel()))
-
-        viewModel.updateToolbarNotification
-            .verifyValueEquals(true)
-    }
-
-    @Test
-    fun `given mini cart item is null when addToCart error should set miniCartAdd fail`() {
-        val productId = "1"
-        val quantity = 5
-        val shopId = "5"
-        val type = ""
-
-        val addToCartError = NullPointerException()
-        val productListResponse = GetRepurchaseProductListResponse(
-            meta = GetRepurchaseProductMetaResponse(
-                page = 1,
-                hasNext = false,
-                totalScan = 1,
-            ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
-        )
-
-        onGetRepurchaseProductList_thenReturn(productListResponse)
-        onAddToCart_thenReturn(addToCartError)
-
-        viewModel.getLayoutData()
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
-
-        verifyAddToCartUseCaseCalled()
-
-        viewModel.miniCartAdd
-            .verifyErrorEquals(Fail(addToCartError))
-    }
-
-    @Test
-    fun `given mini cart item is null when onClickAddToCart should hit add to cart tracker`() {
-        val productId1 = "1"
-        val productId2 = "2"
-        val quantity = 5
-        val shopId = "5"
-        val type = PRODUCT_REPURCHASE
-
-        val productListResponse = GetRepurchaseProductListResponse(
-            meta = GetRepurchaseProductMetaResponse(
-                page = 1,
-                hasNext = false,
-                totalScan = 1,
-            ),
-            products = listOf(RepurchaseProduct(
-                id = productId1,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ), RepurchaseProduct(
-                id = productId2,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
-        )
-        val addToCartResponse = AddToCartDataModel()
-
-        onGetRepurchaseProductList_thenReturn(productListResponse)
-        onAddToCart_thenReturn(addToCartResponse)
-
-        viewModel.getLayoutData()
-        viewModel.onClickAddToCart(productId2, quantity, type, shopId)
-
-        verifyAddToCartUseCaseCalled()
-
-        viewModel.repurchaseAddToCartTracker
-            .verifyValueEquals(
-                RepurchaseAddToCartTracker(
-                    cartId = "",
-                    quantity = quantity,
-                    data =  RepurchaseProductUiModel(
-                        shopId = "5",
-                        category = "",
-                        categoryId = "",
-                        parentId = "",
-                        productCardModel = TokoNowProductCardViewUiModel(
-                            productId = "2",
-                            isSimilarProductShown = true,
-                            isWishlistShown = true,
-                            needToShowQuantityEditor = true
-                        ),
-                        position = 2
-                    )
-                )
-            )
-    }
-
-    @Test
-    fun `given mini cart item is null when onClickAddToCart should not hit add to cart tracker`() {
-        val productId1 = "1"
-        val productId2 = "2"
-        val productId3 = "3"
-        val quantity = 5
-        val shopId = "5"
-        val type = PRODUCT_REPURCHASE
-
-        val productListResponse = GetRepurchaseProductListResponse(
-            meta = GetRepurchaseProductMetaResponse(
-                page = 1,
-                hasNext = false,
-                totalScan = 1,
-            ),
-            products = listOf(RepurchaseProduct(
-                id = productId1,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ), RepurchaseProduct(
-                id = productId2,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
-        )
-        val addToCartResponse = AddToCartDataModel()
-
-        onGetRepurchaseProductList_thenReturn(productListResponse)
-        onAddToCart_thenReturn(addToCartResponse)
-
-        viewModel.getLayoutData()
-        viewModel.onClickAddToCart(productId3, quantity, type, shopId)
-
-        verifyAddToCartUseCaseCalled()
-
-        viewModel.repurchaseAddToCartTracker
+        viewModel.atcQuantity
             .verifyValueEquals(null)
-    }
-
-
-    @Test
-    fun `given quantity is 0 when onClickAddToCart should set miniCartRemove success`() {
-        val warehouseId = "1"
-        val productId = "1"
-        val quantity = 0
-        val shopId = "5"
-        val type = ""
-
-        val productListResponse = GetRepurchaseProductListResponse(
-            meta = GetRepurchaseProductMetaResponse(
-                page = 1,
-                hasNext = false,
-                totalScan = 1,
-            ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
-        )
-
-        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1))
-        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
-
-        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
-        onGetRepurchaseProductList_thenReturn(productListResponse)
-        onRemoveItemCart_thenReturn(RemoveFromCartData())
-        onGetMiniCart_thenReturn(miniCartResponse)
-
-        viewModel.getLayoutData()
-        viewModel.getMiniCart(listOf(shopId), warehouseId)
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
-
-        verifyGetMiniCartUseCaseCalled()
-        verifyDeleteCartUseCaseCalled()
-
-        viewModel.miniCartRemove
-            .verifySuccessEquals(Success(Pair(productId, "")))
-
-        viewModel.updateToolbarNotification
-            .verifyValueEquals(true)
-    }
-
-    @Test
-    fun `given quantity is 0 when remove cart item error should set miniCartRemove fail`() {
-        val warehouseId = "1"
-        val productId = "1"
-        val quantity = 0
-        val shopId = "5"
-        val type = ""
-
-        val removeItemCartError = NullPointerException()
-        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1))
-        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
-
-        val productListResponse = GetRepurchaseProductListResponse(
-            meta = GetRepurchaseProductMetaResponse(
-                page = 1,
-                hasNext = false,
-                totalScan = 1,
-            ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
-        )
-
-        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
-        onGetRepurchaseProductList_thenReturn(productListResponse)
-        onRemoveItemCart_thenReturn(removeItemCartError)
-        onGetMiniCart_thenReturn(miniCartResponse)
-
-        viewModel.getLayoutData()
-        viewModel.getMiniCart(listOf(shopId), warehouseId)
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
-
-        verifyGetMiniCartUseCaseCalled()
-        verifyDeleteCartUseCaseCalled()
-
-        viewModel.miniCartRemove
-            .verifyErrorEquals(Fail(removeItemCartError))
-    }
-
-    @Test
-    fun `given mini cart item is NOT null when onClickAddToCart should set miniCartUpdate success`() {
-        val warehouseId = "1"
-        val productId = "1"
-        val quantity = 5
-        val shopId = "5"
-        val type = ""
-
-        val productListResponse = GetRepurchaseProductListResponse(
-            meta = GetRepurchaseProductMetaResponse(
-                page = 1,
-                hasNext = false,
-                totalScan = 1,
-            ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
-        )
-
-        val updateCartResponse = UpdateCartV2Data()
-        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1))
-        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
-
-        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
-        onGetRepurchaseProductList_thenReturn(productListResponse)
-        onUpdateItemCart_thenReturn(updateCartResponse)
-        onGetMiniCart_thenReturn(miniCartResponse)
-
-        viewModel.getLayoutData()
-        viewModel.getMiniCart(listOf(shopId), warehouseId)
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
-
-        verifyGetMiniCartUseCaseCalled()
-        verifyUpdateCartUseCaseCalled()
-
-        viewModel.miniCartUpdate
-            .verifySuccessEquals(Success(updateCartResponse))
-
-        viewModel.updateToolbarNotification
-            .verifyValueEquals(true)
-    }
-
-    @Test
-    fun `given mini cart item is NOT null when update cart item error should set miniCartUpdate fail`() {
-        val warehouseId = "1"
-        val productId = "1"
-        val quantity = 5
-        val shopId = "5"
-        val type = ""
-
-        val updateCartError = NullPointerException()
-        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1))
-        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
-
-        val productListResponse = GetRepurchaseProductListResponse(
-            meta = GetRepurchaseProductMetaResponse(
-                page = 1,
-                hasNext = false,
-                totalScan = 1,
-            ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
-        )
-
-        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
-        onGetRepurchaseProductList_thenReturn(productListResponse)
-        onUpdateItemCart_thenReturn(updateCartError)
-        onGetMiniCart_thenReturn(miniCartResponse)
-
-        viewModel.getLayoutData()
-        viewModel.getMiniCart(listOf(shopId), warehouseId)
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
-
-        verifyGetMiniCartUseCaseCalled()
-        verifyUpdateCartUseCaseCalled()
-
-        viewModel.miniCartUpdate
-            .verifyErrorEquals(Fail(updateCartError))
-    }
-
-    @Test
-    fun `given product not found in miniCartItems when onClickAddToCart should do nothing`() {
-        val warehouseId = "1"
-        val productId = "1"
-        val quantity = 0
-        val shopId = "5"
-        val type = ""
-
-        val productListResponse = GetRepurchaseProductListResponse(
-            meta = GetRepurchaseProductMetaResponse(
-                page = 1,
-                hasNext = false,
-                totalScan = 1,
-            ),
-            products = listOf(RepurchaseProduct(
-                id = productId,
-                stock = 0,
-                shop = RepurchaseProduct.Shop(id = shopId)
-            ))
-        )
-
-        val addToCartResponse = AddToCartDataModel()
-        val miniCartItems = mapOf(MiniCartItemKey("5") to MiniCartItem.MiniCartItemProduct(productId = "5", quantity = 1))
-        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
-
-        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
-        onGetRepurchaseProductList_thenReturn(productListResponse)
-        onAddToCart_thenReturn(addToCartResponse)
-        onGetMiniCart_thenReturn(miniCartResponse)
-
-        viewModel.getLayoutData()
-        viewModel.getMiniCart(listOf(shopId), warehouseId)
-        viewModel.onClickAddToCart(productId, quantity, type, shopId)
-
-        verifyGetMiniCartUseCaseCalled()
-
-        viewModel.miniCartAdd.verifyValueEquals(null)
     }
 
     @Test
@@ -1199,15 +848,31 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             shop_id = "1001"
         )
 
+        val productListResponse = GetRepurchaseProductListResponse(
+            meta = GetRepurchaseProductMetaResponse(
+                page = 1,
+                hasNext = false,
+                totalScan = 1,
+            ),
+            products = listOf(RepurchaseProduct(
+                id = "111",
+                stock = 0,
+                shop = RepurchaseProduct.Shop(id = "222")
+            ))
+        )
+
+
         onGetMiniCart_thenReturn(miniCartResponse)
         onGetUserLoggedIn_thenReturn(isLoggedIn = true)
+        onGetRepurchaseProductList_thenReturn(productListResponse)
 
+        viewModel.getLayoutData()
         viewModel.setLocalCacheModel(localCacheModel)
         viewModel.getAddToCartQuantity()
 
         val expectedResult = Success(
             RepurchaseLayoutUiModel(
-                layoutList = emptyList(),
+                layoutList = productListResponse.products.mapToProductListUiModel(),
                 state = TokoNowLayoutState.UPDATE
             )
         )

@@ -71,7 +71,7 @@ class PlayBroadcastSummaryViewModelTest {
             getChannelUseCase = mockGetChannelUseCase,
             getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
             getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase,
-            hydraConfigStore = hydraConfigStore,
+            hydraConfigStore = hydraConfigStore
         )
 
         robot.use {
@@ -80,7 +80,7 @@ class PlayBroadcastSummaryViewModelTest {
             with(state) {
                 liveReport.trafficMetricsResult.assertEqualTo(
                     NetworkResult.Success(
-                        playBroadcastMapper.mapToLiveTrafficUiMetrics(TYPE_SHOP, mockLiveStats.channel.metrics)
+                        playBroadcastMapper.mapToLiveTrafficUiMetrics(TYPE_SHOP, mockLiveStats)
                     )
                 )
                 channelSummary.date.assertEqualTo(mockPublishedAtFormatted)
@@ -92,15 +92,14 @@ class PlayBroadcastSummaryViewModelTest {
 
     @Test
     fun `when get traffic summary is success & theres a leaderboard, then it should return success with additional metrics`() {
-
         val mockTotalInteractiveParticipant = "0"
         val mockMetricList = mutableListOf(
             TrafficMetricUiModel(
                 type = TrafficMetricType.GameParticipants,
-                count = mockTotalInteractiveParticipant,
+                count = mockTotalInteractiveParticipant
             )
         ).apply {
-            addAll(playBroadcastMapper.mapToLiveTrafficUiMetrics(TYPE_SHOP, mockLiveStats.channel.metrics))
+            addAll(playBroadcastMapper.mapToLiveTrafficUiMetrics(TYPE_SHOP, mockLiveStats))
         }
 
         val mockSlotResponse = mockSlotResponse.copy(
@@ -118,7 +117,7 @@ class PlayBroadcastSummaryViewModelTest {
             getChannelUseCase = mockGetChannelUseCase,
             getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
             getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase,
-                hydraConfigStore = hydraConfigStore,
+            hydraConfigStore = hydraConfigStore
         )
 
         robot.use {
@@ -143,7 +142,7 @@ class PlayBroadcastSummaryViewModelTest {
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,
             getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
-            getChannelUseCase = mockGetChannelUseCase,
+            getChannelUseCase = mockGetChannelUseCase
         )
 
         robot.use {

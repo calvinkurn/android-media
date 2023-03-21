@@ -7,7 +7,8 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperDetailVisit
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorDetailsAdapter
 import com.tokopedia.unifyprinciples.Typography
 
-class ServiceDetailsViewHolder(itemView: View): ShippingEditorDetailsAdapter.BaseViewHolder<ShipperDetailVisitable>(itemView) {
+class ServiceDetailsViewHolder(itemView: View) :
+    ShippingEditorDetailsAdapter.BaseViewHolder<ShipperDetailVisitable>(itemView) {
 
     private val tvServiceHeader = itemView.findViewById<Typography>(R.id.tv_service_name)
     private val tvServiceDesc = itemView.findViewById<Typography>(R.id.tv_service_desc)

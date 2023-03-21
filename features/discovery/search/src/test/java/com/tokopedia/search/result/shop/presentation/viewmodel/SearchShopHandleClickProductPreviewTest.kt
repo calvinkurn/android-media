@@ -10,7 +10,7 @@ internal class SearchShopHandleClickProductPreviewTest: SearchShopDataViewTestFi
     fun `Click Product Preview`() {
         val shopItemProduct = ShopDataView.ShopItem.ShopItemProduct(
                 name = "Test product preview",
-                id = 12345,
+                id = "12345",
                 price = 10000,
                 applink = "tokopedia://product/12345"
         ).also {
@@ -50,7 +50,7 @@ internal class SearchShopHandleClickProductPreviewTest: SearchShopDataViewTestFi
     fun `Click Product Preview Recommendation`() {
         val shopItemProduct = ShopDataView.ShopItem.ShopItemProduct(
                 name = "Test product preview",
-                id = 12345,
+                id = "12345",
                 price = 10000,
                 applink = "tokopedia://product/12345",
                 isRecommendation = true

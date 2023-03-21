@@ -72,7 +72,9 @@ interface CommonConstant {
             val MEMBERSHIP = WEB_DOMAIN + "rewards/membership"
             val INFO = WEB_DOMAIN + "rewards/intro"
             val DETAIL = WEB_DOMAIN + "rewards/kupon/detail"
-            val USERSAVING = WEB_DOMAIN + "rewards/saving"
+//            val USERSAVING = WEB_DOMAIN + "rewards/saving"
+            val USERSAVING = "tokopedia://webview?need_login=true&url=https://www.tokopedia.com/mysaving?sub_saving_page=tokorewards"
+//            val USERSAVING = "tokopedia://webview?need_login=true&url=https%3A%2F%2Fwww.tokopedia.com%2Fmysaving%3Fsub_saving_page%3Dtokorewards"
         }
     }
 

@@ -11,8 +11,8 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
-import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.ArrayList
 import javax.inject.Inject
@@ -78,7 +78,10 @@ open class DefaultWebsocketPayloadGenerator @Inject constructor(
         localId: String
     ): String {
         return sendablePreview.generateMsgObj(
-            roomMetaData, message, userLocationInfo, localId
+            roomMetaData,
+            message,
+            userLocationInfo,
+            localId
         ).toString()
     }
 
@@ -88,7 +91,8 @@ open class DefaultWebsocketPayloadGenerator @Inject constructor(
         message: String
     ): SendableUiModel {
         return sendablePreview.generatePreviewMessage(
-            roomMetaData, message
+            roomMetaData,
+            message
         )
     }
 
@@ -132,11 +136,15 @@ open class DefaultWebsocketPayloadGenerator @Inject constructor(
 
     override fun generateImageWsPayload(
         roomMetaData: RoomMetaData,
-        uploadId: String,
-        imageUploadUiModel: ImageUploadUiModel
+        filePath: String,
+        imageUploadUiModel: ImageUploadUiModel,
+        isSecure: Boolean
     ): String {
         return TopChatWebSocketParam.generateParamSendImage(
-            roomMetaData.msgId, uploadId, imageUploadUiModel
+            roomMetaData.msgId,
+            filePath,
+            imageUploadUiModel,
+            isSecure
         )
     }
 }

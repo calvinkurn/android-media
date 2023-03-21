@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.domain.usecase
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.helper.FilterSortProduct
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tokopedianow.searchcategory.domain.model.FilterModel
@@ -18,7 +19,7 @@ class GetFilterUseCase(
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(
                 GraphqlRequest(
-                        GQL_QUERY,
+                        FilterSortProduct.GQL_QUERY,
                         FilterModel::class.java,
                         mapOf(KEY_PARAMS to UrlParamUtils.generateUrlParamString(params))
                 )
@@ -30,61 +31,4 @@ class GetFilterUseCase(
                 ?.filterSortProduct ?: DynamicFilterModel()
     }
 
-    companion object {
-        private const val GQL_QUERY = """
-            query FilterSortProduct(${'$'}params: String!) {
-                filter_sort_product(params: ${'$'}params) {
-                      data {
-                        filter {
-                          title
-                          subTitle
-                          search {
-                            searchable
-                            placeholder
-                          }
-                          template_name
-                          options {
-                            name
-                            key
-                            icon
-                            Description
-                            value
-                            inputType
-                            totalData
-                            valMax
-                            valMin
-                            isPopular
-                            isNew
-                            hexColor
-                            child {
-                              key
-                              value
-                              name
-                              icon
-                              inputType
-                              totalData
-                              isPopular
-                              child {
-                                key
-                                value
-                                name
-                                icon
-                                inputType
-                                totalData
-                                isPopular
-                              }
-                            }
-                          }
-                        }
-                        sort {
-                          name
-                          key
-                          value
-                          inputType
-                          applyFilter
-                        }
-                     }
-               }
-            }"""
-    }
 }

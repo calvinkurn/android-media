@@ -35,7 +35,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
     @Test
     fun `WHEN get promo list and get complete expanded data THEN fragment ui model should not be null and state success`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllExpanded()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -43,17 +43,17 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.fragmentUiModel.value)
         assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false)
     }
 
     @Test
     fun `WHEN get promo list and get complete expanded data THEN promoRecommendation ui model should not be null`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllExpanded()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -61,16 +61,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoRecommendationUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and get complete expanded data THEN promo input ui model should not be null`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllExpanded()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -78,16 +78,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoInputUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and get complete expanded data THEN promo list ui model should not be null`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllExpanded()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -95,16 +95,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoListUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and get no selected promo THEN fragment ui model state should be has no promo`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllExpanded()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -112,16 +112,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.fragmentUiModel.value?.uiState?.hasAnyPromoSelected == false)
     }
 
     @Test
     fun `WHEN get promo list and get selected promo THEN fragment ui model state should be has promo`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessWithPreSelectedPromo()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -129,16 +129,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.fragmentUiModel.value?.uiState?.hasAnyPromoSelected == true)
     }
 
     @Test
     fun `WHEN get promo list and all eligible THEN fragment ui model should not be null and state success`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllEligible()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -146,17 +146,17 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.fragmentUiModel.value)
         assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false)
     }
 
     @Test
     fun `WHEN get promo list and all eligible THEN promo input ui model should not be null`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllEligible()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -164,16 +164,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoInputUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and all eligible THEN promo list ui model should not be null`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllEligible()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -181,33 +181,33 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoListUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and all eligible THEN promo recommendation ui model should not be null`() {
-        //given
-        val response =  provideGetPromoListResponseSuccessAllEligible()
+        // given
+        val response = provideGetPromoListResponseSuccessAllEligible()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoRecommendationUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and all ineligible THEN fragment ui model should not be null and state success`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllIneligible()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -215,17 +215,17 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.fragmentUiModel.value)
         assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false)
     }
 
     @Test
     fun `WHEN get promo list and all ineligible THEN promo input ui model should not be null`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllIneligible()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -233,16 +233,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoInputUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and all ineligible THEN promo list ui model should not be null`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllIneligible()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -250,16 +250,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoListUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and all ineligible THEN promo recommendation ui model should be null`() {
-        //given
+        // given
         val response = provideGetPromoListResponseSuccessAllIneligible()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -267,16 +267,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNull(viewModel.promoRecommendationUiModel.value)
     }
 
     @Test
     fun `WHEN reload action has selected expanded global promo THEN should be added to request param`() {
-        //given
+        // given
         viewModel.setPromoListValue(provideCurrentSelectedExpandedGlobalPromoData())
         val promoRequest = provideGetPromoListRequest()
 
@@ -286,16 +286,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
         }
         every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
-        //when
+        // when
         viewModel.getPromoList(promoRequest, "")
 
-        //then
+        // then
         assert(promoRequest.codes.isNotEmpty())
     }
 
     @Test
     fun `WHEN reload action has selected expanded merchant promo THEN should be added to request param`() {
-        //given
+        // given
         viewModel.setPromoListValue(provideCurrentSelectedExpandedMerchantPromoData())
         val promoRequest = provideGetPromoListRequest()
 
@@ -305,13 +305,15 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
         }
         every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
-        //when
+        // when
         viewModel.getPromoList(promoRequest, "")
 
-        //then
-        assert(promoRequest.orders[0].codes.isNotEmpty() ||
+        // then
+        assert(
+            promoRequest.orders[0].codes.isNotEmpty() ||
                 promoRequest.orders[1].codes.isNotEmpty() ||
-                promoRequest.orders[2].codes.isNotEmpty())
+                promoRequest.orders[2].codes.isNotEmpty()
+        )
     }
 
     @Test
@@ -340,7 +342,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
     @Test
     fun `WHEN get promo list and get response error THEN fragment state should be failed to load`() {
-        //given
+        // given
         val response = provideGetPromoListResponseError()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -349,16 +351,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
         }
         every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == true)
     }
 
     @Test
     fun `WHEN get promo list empty and empty state also empty THEN fragment state should be failed to load`() {
-        //given
+        // given
         val response = provideGetPromoListResponseEmptyStateEmpty()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -367,16 +369,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
         }
         every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == true)
     }
 
     @Test
     fun `WHEN get promo list and status is coupon list is empty THEN should show empty state`() {
-        //given
+        // given
         val response = provideGetPromoListResponseEmptyStateCouponListEmpty()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -386,16 +388,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         every { analytics.eventViewAvailablePromoListNoPromo(any()) } just Runs
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoEmptyStateUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and status is coupon list is empty THEN should not show button action`() {
-        //given
+        // given
         val response = provideGetPromoListResponseEmptyStateCouponListEmpty()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -405,16 +407,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         every { analytics.eventViewAvailablePromoListNoPromo(any()) } just Runs
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.promoEmptyStateUiModel.value?.uiState?.isShowButton == false)
     }
 
     @Test
     fun `WHEN get promo list and status is coupon list is empty THEN should show promo input`() {
-        //given
+        // given
         val response = provideGetPromoListResponseEmptyStateCouponListEmpty()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -424,16 +426,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         every { analytics.eventViewAvailablePromoListNoPromo(any()) } just Runs
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoInputUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and status is phone not verified THEN should show empty state`() {
-        //given
+        // given
         val response = provideGetPromoListResponseEmptyStatePhoneVerification()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -443,16 +445,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         every { analytics.eventViewPhoneVerificationMessage(any()) } just Runs
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoEmptyStateUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and status is phone not verified THEN should show button action`() {
-        //given
+        // given
         val response = provideGetPromoListResponseEmptyStatePhoneVerification()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -462,17 +464,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         every { analytics.eventViewPhoneVerificationMessage(any()) } just Runs
 
-
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.promoEmptyStateUiModel.value?.uiState?.isShowButton == true)
     }
 
     @Test
     fun `WHEN get promo list and status is blacklisted THEN should show empty state`() {
-        //given
+        // given
         val response = provideGetPromoListResponseEmptyStateBlacklisted()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -482,16 +483,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         every { analytics.eventViewBlacklistErrorAfterApplyPromo(any()) } just Runs
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoEmptyStateUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and status is blacklisted THEN should not show button action`() {
-        //given
+        // given
         val response = provideGetPromoListResponseEmptyStateBlacklisted()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -501,16 +502,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         every { analytics.eventViewBlacklistErrorAfterApplyPromo(any()) } just Runs
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.promoEmptyStateUiModel.value?.uiState?.isShowButton == false)
     }
 
     @Test
     fun `WHEN get promo list and status is unknown THEN should show empty state`() {
-        //given
+        // given
         val response = provideGetPromoListResponseEmptyStateUnknown()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -518,16 +519,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assertNotNull(viewModel.promoEmptyStateUiModel.value)
     }
 
     @Test
     fun `WHEN get promo list and status is unknown THEN should show button action`() {
-        //given
+        // given
         val response = provideGetPromoListResponseEmptyStateUnknown()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -535,10 +536,10 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.promoEmptyStateUiModel.value?.uiState?.isShowButton == true)
     }
 
@@ -578,7 +579,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
     @Test
     fun `WHEN get promo list and get response error followed with success THEN fragment state should be success`() {
-        //precondition
+        // precondition
         val response = provideGetPromoListResponseError()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -589,7 +590,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         viewModel.getPromoList(PromoRequest(), "")
 
-        //given
+        // given
         val newResponse = provideGetPromoListResponseSuccessAllEligible()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -597,10 +598,10 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(newResponse)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false)
     }
 
@@ -640,7 +641,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
     @Test
     fun `WHEN get promo list with BO info bottom sheet data empty THEN bottom sheet isVisible state should be false`() {
-        //given
+        // given
         val newResponse = provideGetPromoListResponseBoPromoInfoDataEmpty()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -648,10 +649,10 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(newResponse)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.boInfoBottomSheetUiModel.value?.uiState?.isVisible == false)
     }
 
@@ -664,10 +665,10 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == true)
     }
 
@@ -680,10 +681,10 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == false)
     }
 }

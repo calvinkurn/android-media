@@ -2,16 +2,27 @@ package com.tokopedia.topads.dashboard.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.DepositAmount
+import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
+import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsTickerUseCase
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_TOP_UP_CREDIT_NEW_UI
+import com.tokopedia.topads.dashboard.data.model.GetPersonalisedCopyResponse
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
 import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
 import com.tokopedia.topads.dashboard.data.model.beranda.TopadsWidgetSummaryStatisticsModel
 import com.tokopedia.topads.dashboard.data.raw.topAdsHomepageLatestReadingJson
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsWidgetSummaryStatisticsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsRecommendationStatisticsUseCase
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.domain.usecase.TopAdsGetSelectedTopUpTypeUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -36,6 +47,10 @@ class TopAdsDashboardViewModelTest {
     private lateinit var summaryStatisticsUseCase: TopAdsWidgetSummaryStatisticsUseCase
     private lateinit var recommendationStatisticsUseCase: TopadsRecommendationStatisticsUseCase
     private lateinit var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase
+    private lateinit var topadsTickerUseCase: TopAdsTickerUseCase
+    private lateinit var autoTopUpUSeCase: TopAdsAutoTopUpUSeCase
+    private lateinit var topAdsGetSelectedTopUpTypeUseCase: TopAdsGetSelectedTopUpTypeUseCase
+    private lateinit var whiteListedUserUseCase: GetWhiteListedUserUseCase
     private lateinit var viewModel: TopAdsDashboardViewModel
 
     @Before
@@ -43,8 +58,19 @@ class TopAdsDashboardViewModelTest {
         summaryStatisticsUseCase = mockk(relaxed = true)
         recommendationStatisticsUseCase = mockk(relaxed = true)
         topAdsGetShopDepositUseCase = mockk(relaxed = true)
+        topadsTickerUseCase = mockk(relaxed = true)
+        autoTopUpUSeCase = mockk(relaxed = true)
+        topAdsGetSelectedTopUpTypeUseCase = mockk(relaxed = true)
+        whiteListedUserUseCase = mockk(relaxed = true)
+
         viewModel = TopAdsDashboardViewModel(
-            summaryStatisticsUseCase, recommendationStatisticsUseCase, topAdsGetShopDepositUseCase
+            summaryStatisticsUseCase,
+            recommendationStatisticsUseCase,
+            topAdsGetShopDepositUseCase,
+            topadsTickerUseCase,
+            autoTopUpUSeCase,
+            topAdsGetSelectedTopUpTypeUseCase,
+            whiteListedUserUseCase
         )
     }
 
@@ -186,5 +212,129 @@ class TopAdsDashboardViewModelTest {
 
         viewModel.getLatestReadings()
         assert(viewModel.latestReadingLiveData.value is Fail)
+    }
+
+    @Test
+    fun `getAutoTopUpStatus success - response not null and error is empty test, livedata should contain data`() {
+        val mockObject = AutoTopUpData.Response(AutoTopUpData(AutoTopUpStatus()))
+
+        every { autoTopUpUSeCase.execute(captureLambda(), any()) } answers {
+            firstArg<(AutoTopUpData.Response) -> Unit>().invoke(mockObject)
+        }
+
+        viewModel.getAutoTopUpStatus()
+        assertEquals((viewModel.autoTopUpStatusLiveData.value as Success).data,
+            mockObject.response?.data)
+    }
+
+    @Test
+    fun `getAutoTopUpStatus response not null and error not empty test, livedata should be fail`() {
+
+        val actual = AutoTopUpData.Response(AutoTopUpData(errors = listOf(Error())))
+
+        every { autoTopUpUSeCase.execute(captureLambda(), any()) } answers {
+            firstArg<(AutoTopUpData.Response) -> Unit>().invoke(actual)
+        }
+
+        viewModel.getAutoTopUpStatus()
+        assertTrue(viewModel.autoTopUpStatusLiveData.value is Fail)
+    }
+
+    @Test
+    fun `getAutoTopUpStatus on exception occured test`() {
+        val actual = Exception("it")
+
+        every { autoTopUpUSeCase.execute(any(), captureLambda()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(actual)
+        }
+
+        viewModel.getAutoTopUpStatus()
+        assertEquals((viewModel.autoTopUpStatusLiveData.value as Fail).throwable, actual)
+    }
+
+    @Test
+    fun `test success in getSelectedTopUpType when credit performance is topUpFrequently`(){
+        val actual = GetPersonalisedCopyResponse(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENTLY)
+        ))
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+
+        assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, true)
+    }
+
+    @Test
+    fun `test success in getSelectedTopUpType when credit performance is INSUFFICIENT_CREDIT`(){
+        val actual = GetPersonalisedCopyResponse(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData(creditPerformance = TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT)
+        ))
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+
+        assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, true)
+    }
+
+    @Test
+    fun `test success in getSelectedTopUpType when credit performance is not INSUFFICIENT_CREDIT and not TOP_UP_FREQUENTLY`(){
+        val actual = GetPersonalisedCopyResponse(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy(
+            GetPersonalisedCopyResponse.GetPersonalisedCopy.GetPersonalisedCopyData()
+        ))
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(GetPersonalisedCopyResponse) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+
+        assertEquals((viewModel.getAutoTopUpDefaultSate.value as Success).data.isAutoTopUpSelected, false)
+    }
+
+    @Test
+    fun `getSelectedTopUpType on exception ,livedata value should be Fail`() {
+        val actual = Throwable("my exception")
+
+        every { topAdsGetSelectedTopUpTypeUseCase.execute(captureLambda(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(actual)
+        }
+        viewModel.getSelectedTopUpType()
+        assertEquals(
+            (viewModel.getAutoTopUpDefaultSate.value as Fail).throwable.message,
+            actual.message
+        )
+    }
+
+    @Test
+    fun `test success in getWhiteListedUser when credit performance is IS_TOP_UP_CREDIT_NEW_UI`() {
+        val actual = WhiteListUserResponse.TopAdsGetShopWhitelistedFeature(
+            listOf(
+                WhiteListUserResponse.TopAdsGetShopWhitelistedFeature.Data(featureName = IS_TOP_UP_CREDIT_NEW_UI)
+            )
+        )
+        every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            firstArg<(WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit>().invoke(
+                actual
+            )
+        }
+        viewModel.getWhiteListedUser()
+
+        assertTrue((viewModel.isUserWhitelisted.value as Success).data)
+    }
+
+    @Test
+    fun `test Fail in getWhiteListedUser `() {
+        val actual = Throwable("my exception")
+        every { whiteListedUserUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(
+                actual
+            )
+        }
+        viewModel.getWhiteListedUser()
+
+        assertEquals((viewModel.isUserWhitelisted.value as Fail).throwable.message, actual.message)
     }
 }

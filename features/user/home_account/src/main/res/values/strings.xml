@@ -87,7 +87,7 @@
     <string name="menu_account_desc_quality_setting">Atur kualitas gambar yang kamu lihat</string>
     <string name="menu_account_desc_clear_cache">Solusi cepat untuk atasi masalah aplikasi</string>
     <string name="menu_account_desc_screen_recorder">Lampiran video untuk laporan kendala</string>
-    <string name="menu_account_desc_play_widget_autoplay">Putar video Tokopedia Play secara otomatis</string>
+    <string name="menu_account_desc_play_widget_autoplay">Putar video di halaman Tokopedia Play &amp; hasil pencarian secara otomatis</string>
 
     <string name="new_home_account_error_no_internet_connection">Tidak ada koneksi internet</string>
     <string name="home_account_item_error_msg">Refresh untuk tampilkan data</string>

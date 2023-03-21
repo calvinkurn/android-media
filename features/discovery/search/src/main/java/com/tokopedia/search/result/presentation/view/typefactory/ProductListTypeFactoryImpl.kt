@@ -32,6 +32,8 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
+import com.tokopedia.search.result.product.ads.AdsLowOrganicTitleDataView
+import com.tokopedia.search.result.product.ads.AdsLowOrganicTitleViewHolder
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewListener
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchViewHolder
@@ -64,9 +66,9 @@ import com.tokopedia.search.result.product.inspirationwidget.card.BigGridInspira
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.product.inspirationwidget.card.SmallGridInspirationCardViewHolder
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeListener
-import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeViewHolder
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterDataView
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterListener
+import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationFilterViewHolder
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.lastfilter.LastFilterListener
 import com.tokopedia.search.result.product.lastfilter.LastFilterViewHolder
@@ -105,7 +107,7 @@ class ProductListTypeFactoryImpl(
     private val chooseAddressListener: ChooseAddressListener,
     private val bannerListener: BannerListener,
     private val lastFilterListener: LastFilterListener,
-    private val inspirationSizeListener: InspirationSizeListener,
+    private val inspirationFilterListener: InspirationFilterListener,
     private val violationListener: ViolationListener,
     private val videoCarouselListener: InspirationVideoCarouselListener,
     private val inspirationBundleListener: InspirationBundleListener,
@@ -213,8 +215,8 @@ class ProductListTypeFactoryImpl(
     override fun type(lastFilterDataView: LastFilterDataView): Int =
         LastFilterViewHolder.LAYOUT
 
-    override fun type(sizeDataView: InspirationSizeDataView): Int {
-        return InspirationSizeViewHolder.LAYOUT
+    override fun type(sizeDataView: InspirationFilterDataView): Int {
+        return InspirationFilterViewHolder.LAYOUT
     }
 
     override fun type(violationView: ViolationDataView): Int =
@@ -228,6 +230,9 @@ class ProductListTypeFactoryImpl(
 
     override fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int =
         InspirationListAtcViewHolder.LAYOUT
+
+    override fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int =
+        AdsLowOrganicTitleViewHolder.LAYOUT
 
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -281,7 +286,7 @@ class ProductListTypeFactoryImpl(
                 )
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
             LastFilterViewHolder.LAYOUT -> LastFilterViewHolder(view, lastFilterListener)
-            InspirationSizeViewHolder.LAYOUT -> InspirationSizeViewHolder(view, inspirationSizeListener)
+            InspirationFilterViewHolder.LAYOUT -> InspirationFilterViewHolder(view, inspirationFilterListener)
             ViolationViewHolder.LAYOUT -> ViolationViewHolder(view, violationListener)
             SameSessionRecommendationViewHolder.LAYOUT -> SameSessionRecommendationViewHolder(
                 view,
@@ -290,6 +295,8 @@ class ProductListTypeFactoryImpl(
             )
             InspirationListAtcViewHolder.LAYOUT ->
                 InspirationListAtcViewHolder(view, inspirationListAtcListener, recycledViewPool)
+            AdsLowOrganicTitleViewHolder.LAYOUT ->
+                AdsLowOrganicTitleViewHolder(view)
 
             else -> super.createViewHolder(view, type)
         }

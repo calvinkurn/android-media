@@ -14,7 +14,6 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
-
 class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private var tvTitle: Typography = itemView.findViewById(R.id.tv_title)
@@ -32,9 +31,9 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         const val ESTIMASI_TIDAK_TERSEDIA = "Estimasi tidak tersedia"
     }
 
-    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?, isOcc: Boolean = false) {
+    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?) {
         val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingItemTitle).spannedString
-        
+
         tvTitle.text = formattedTitle
         tvTitle.visibility = View.VISIBLE
         tvTitleExtra.visibility = View.GONE
@@ -97,5 +96,4 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             imgCheck.visibility = View.GONE
         }
     }
-
 }

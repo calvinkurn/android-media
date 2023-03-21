@@ -42,12 +42,11 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
-import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
+import com.tokopedia.tokofood.common.util.TokofoodAddressExt.updateLocalChosenAddressPinpoint
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -479,7 +478,7 @@ class SearchResultFragment :
                         onSuccessLoadDetailFilter(event.data)
                     }
                     TokofoodSearchUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
-                        refreshAddressData()
+                        updateLocalAddressData(event.data)
                     }
                     TokofoodSearchUiEvent.EVENT_FAILED_LOAD_DETAIL_FILTER -> {
                         onFailedLoadDetailFilter(event.throwable)
@@ -518,6 +517,17 @@ class SearchResultFragment :
                         showPinpointErrorMessage(event.throwable)
                         refreshAddressData()
                     }
+                }
+            }
+        }
+    }
+
+    private fun updateLocalAddressData(data: Any?) {
+        (data as? Pair<*, *>)?.let { (latitude, longitude) ->
+            if (latitude is String && longitude is String) {
+                context?.run {
+                    updateLocalChosenAddressPinpoint(latitude, longitude)
+                    refreshAddressData()
                 }
             }
         }
@@ -769,21 +779,17 @@ class SearchResultFragment :
     }
 
     private fun navigateToSetPinpoint() {
-        view?.let {
-            MapsAvailabilityHelper.onMapsAvailableState(it) {
-                val locationPass = LocationPass().apply {
-                    latitude = TOTO_LATITUDE
-                    longitude = TOTO_LONGITUDE
-                }
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-                val bundle = Bundle().apply {
-                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-                }
-                intent.putExtras(bundle)
-                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
-            }
+        val locationPass = LocationPass().apply {
+            latitude = TOTO_LATITUDE
+            longitude = TOTO_LONGITUDE
         }
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+        val bundle = Bundle().apply {
+            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+        }
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun navigateToChangeAddress() {

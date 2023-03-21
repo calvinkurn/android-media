@@ -257,4 +257,94 @@ class SettingFingerprintViewModelTest {
         assert(viewModel.removeFingerprintResult.value is Fail)
     }
 
+    @Test
+    fun `on key pair manager createAndStoreNewKey null during register`() {
+        coEvery {
+            keyPairManager.get()?.createAndStoreNewKey()
+        } returns null
+
+        viewModel.registerFingerprint()
+
+        /* Then */
+        coVerify {
+            keyPairManager.get()?.removeKeys()
+        }
+    }
+
+    @Test
+    fun `on key pair manager null during register`() {
+        coEvery {
+            keyPairManager.get()
+        } returns null
+
+        viewModel.registerFingerprint()
+    }
+
+    @Test
+    fun `removeFingerprint - isSuccess false & error is not empty`() {
+        val data = RemoveFingerprintData(isSuccess = true, error = "error")
+        val response = RemoveFingerprintPojo(data)
+
+        coEvery { removeFingerprintUseCase.invoke(Unit) } returns response
+        every { keyPairManager.get()?.removeKeys() } returns Unit
+
+        viewModel.removeFingerprint()
+
+        /* Then */
+        assert(viewModel.removeFingerprintResult.value is Fail)
+    }
+
+    @Test
+    fun `on Success Check Fingerprint but success == true and error message is not empty`() {
+        /* When */
+        val data = CheckFingerprintResult(isSuccess = true, errorMessage = "Gagal")
+        val response = CheckFingerprintPojo(data)
+
+        coEvery { checkFingerprintToggleStatusUseCase.invoke(any()) } returns response
+
+        viewModel.getFingerprintStatus()
+
+        /* Then */
+        verify { checkFingerprintObserver.onChanged(any<Fail>()) }
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
+    }
+
+    @Test
+    fun `on Error Register Fingerprint - public key is not empty && signature model == null`() {
+        /* When */
+
+        coEvery {
+            keyPairManager.get()?.generateFingerprintSignature(any(), any())
+        } returns null
+
+        coEvery {
+            keyPairManager.get()?.createAndStoreNewKey()
+        } returns "new_key_testing"
+
+        viewModel.registerFingerprint()
+
+        /* Then */
+        verify {
+            keyPairManager.get()?.removeKeys()
+        }
+    }
+
+    @Test
+    fun `on Has Errors Remove Fingerprint - KEYPAIR NULL`() {
+        /* When */
+        val data = RemoveFingerprintData(isSuccess = true, error = "")
+        val response = RemoveFingerprintPojo(data)
+
+        coEvery { removeFingerprintUseCase.invoke(Unit) } returns response
+
+        coEvery { keyPairManager.get() } returns null
+
+        viewModel.removeFingerprint()
+
+        /* Then */
+        verify {
+            fingerprintPreferenceManager.removeUniqueId()
+            removeFingerprintObserver.onChanged(Success(response.data))
+        }
+    }
 }

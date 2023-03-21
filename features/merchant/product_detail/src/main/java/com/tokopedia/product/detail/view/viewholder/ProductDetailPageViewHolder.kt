@@ -10,8 +10,8 @@ abstract class ProductDetailPageViewHolder<T : DynamicPdpDataModel>(
 ) : AbstractViewHolder<T>(itemView) {
 
     protected fun getComponentTrackData(element: T) = ComponentTrackDataModel(
-        element.type(),
-        element.name(),
-        adapterPosition + 1
+        componentType = element.type(),
+        componentName = element.name(),
+        adapterPosition = bindingAdapterPosition + 1
     )
 }

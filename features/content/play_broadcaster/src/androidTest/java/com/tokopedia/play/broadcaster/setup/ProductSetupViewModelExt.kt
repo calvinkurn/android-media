@@ -20,20 +20,22 @@ import io.mockk.mockk
  * Created by kenny.hadisaputra on 02/03/22
  */
 fun productSetupViewModel(
+    creationId: String = "123",
+    maxProduct: Int = 30,
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     handle: SavedStateHandle = SavedStateHandle(),
     isEligibleForPin: Boolean = false,
     repo: PlayBroadcastRepository = mockk(relaxed = true),
-    configStore: HydraConfigStore = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     dispatchers: CoroutineDispatchers = CoroutineDispatchersProvider,
 ): PlayBroProductSetupViewModel {
     return PlayBroProductSetupViewModel(
+        creationId = creationId,
+        maxProduct = maxProduct,
         productSectionList = productSectionList,
         savedStateHandle = handle,
         isEligibleForPin = isEligibleForPin,
         repo = repo,
-        configStore = configStore,
         userSession = userSession,
         dispatchers = dispatchers,
     )

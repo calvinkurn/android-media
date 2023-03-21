@@ -2,22 +2,33 @@ package com.tokopedia.checkout.view.helper
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.*
-import androidx.core.view.*
+import android.view.MotionEvent
+import android.view.VelocityTracker
+import android.view.View
+import android.view.ViewConfiguration
+import android.view.ViewParent
+import androidx.core.view.MotionEventCompat
+import androidx.core.view.NestedScrollingChild
+import androidx.core.view.NestedScrollingChildHelper
+import androidx.core.view.VelocityTrackerCompat
+import androidx.core.view.ViewCompat
 import androidx.core.widget.ScrollerCompat
 import com.tokopedia.webview.TkpdWebView
 
 class NestedScrollWebview : TkpdWebView, NestedScrollingChild {
+
+    companion object {
+        /**
+         * Sentinel value for no current active pointer.
+         * Used by [.mActivePointerId].
+         */
+        const val INVALID_POINTER = -1
+    }
+
     var mLastY = 0
     val mScrollOffset = IntArray(2)
     val mScrollConsumed = IntArray(2)
     var mNestedOffsetY = 0
-
-    /**
-     * Sentinel value for no current active pointer.
-     * Used by [.mActivePointerId].
-     */
-    val INVALID_POINTER = -1
 
     var mChildHelper: NestedScrollingChildHelper? = null
 
@@ -115,12 +126,21 @@ class NestedScrollWebview : TkpdWebView, NestedScrollingChild {
                 if (mIsBeingDragged) {
                     val velocityTracker = mVelocityTracker
                     velocityTracker?.computeCurrentVelocity(1000, mMaximumVelocity.toFloat())
-                    val initialVelocity = VelocityTrackerCompat.getYVelocity(velocityTracker,
-                            mActivePointerId).toInt()
+                    val initialVelocity = VelocityTrackerCompat.getYVelocity(
+                        velocityTracker,
+                        mActivePointerId
+                    ).toInt()
                     if (Math.abs(initialVelocity) > mMinimumVelocity) {
                         flingWithNestedDispatch(-initialVelocity)
-                    } else if (mScroller?.springBack(scrollX, scrollY, 0, 0, 0,
-                                    getScrollRange()) == true) {
+                    } else if (mScroller?.springBack(
+                            scrollX,
+                            scrollY,
+                            0,
+                            0,
+                            0,
+                            getScrollRange()
+                        ) == true
+                    ) {
                         ViewCompat.postInvalidateOnAnimation(this)
                     }
                 }
@@ -163,10 +183,15 @@ class NestedScrollWebview : TkpdWebView, NestedScrollingChild {
         return mChildHelper?.hasNestedScrollingParent() ?: false
     }
 
-    override fun dispatchNestedScroll(dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int,
-                                      offsetInWindow: IntArray?): Boolean {
+    override fun dispatchNestedScroll(
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        offsetInWindow: IntArray?
+    ): Boolean {
         return mChildHelper?.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow)
-                ?: false
+            ?: false
     }
 
     override fun dispatchNestedPreScroll(dx: Int, dy: Int, consumed: IntArray?, offsetInWindow: IntArray?): Boolean {
@@ -205,8 +230,10 @@ class NestedScrollWebview : TkpdWebView, NestedScrollingChild {
         if (childCount > 0) {
             val height: Int = height - paddingBottom - paddingTop
             val bottom: Int = getChildAt(0).height
-            mScroller?.fling(scrollX, scrollY, 0, velocityY, 0, 0, 0,
-                    Math.max(0, bottom - height), 0, height / 2)
+            mScroller?.fling(
+                scrollX, scrollY, 0, velocityY, 0, 0, 0,
+                Math.max(0, bottom - height), 0, height / 2
+            )
             ViewCompat.postInvalidateOnAnimation(this)
         }
     }
@@ -214,7 +241,7 @@ class NestedScrollWebview : TkpdWebView, NestedScrollingChild {
     private fun flingWithNestedDispatch(velocityY: Int) {
         val scrollY: Int = scrollY
         val canFling = (scrollY > 0 || velocityY > 0) &&
-                (scrollY < getScrollRange() || velocityY < 0)
+            (scrollY < getScrollRange() || velocityY < 0)
         if (!dispatchNestedPreFling(0f, velocityY.toFloat())) {
             dispatchNestedFling(0f, velocityY.toFloat(), canFling)
             if (canFling) {
@@ -233,8 +260,10 @@ class NestedScrollWebview : TkpdWebView, NestedScrollingChild {
         var scrollRange = 0
         if (childCount > 0) {
             val child: View = getChildAt(0)
-            scrollRange = Math.max(0,
-                    child.height - (height - paddingBottom - paddingTop))
+            scrollRange = Math.max(
+                0,
+                child.height - (height - paddingBottom - paddingTop)
+            )
         }
         return scrollRange
     }

@@ -1,0 +1,36 @@
+{
+  "productrevGetBadRatingCategory": {
+    "list": [
+      {
+        "badRatingCategoryID": "1",
+        "description": "Kualitas barang bermasalah",
+        "isTextFocused": false
+      },
+      {
+        "badRatingCategoryID": "2",
+        "description": "Tidak lengkap/salah kirim",
+        "isTextFocused": false
+      },
+      {
+        "badRatingCategoryID": "3",
+        "description": "Pelayanan penjual kurang",
+        "isTextFocused": false
+      },
+      {
+        "badRatingCategoryID": "4",
+        "description": "Kemasan tidak aman",
+        "isTextFocused": false
+      },
+      {
+        "badRatingCategoryID": "5",
+        "description": "Pengiriman lama",
+        "isTextFocused": false
+      },
+      {
+        "badRatingCategoryID": "6",
+        "description": "Lainnya",
+        "isTextFocused": true
+      }
+    ]
+  }
+}

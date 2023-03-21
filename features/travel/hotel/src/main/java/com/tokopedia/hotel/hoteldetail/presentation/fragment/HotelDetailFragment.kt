@@ -27,6 +27,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelStringUtils
+import com.tokopedia.hotel.common.util.HotelUtils.Companion.getImageUrl
 import com.tokopedia.hotel.common.util.QueryHotelNearbyLandmarks
 import com.tokopedia.hotel.common.util.QueryHotelPropertyDetail
 import com.tokopedia.hotel.common.util.QueryHotelPropertyReview
@@ -71,6 +72,8 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toString
@@ -79,6 +82,7 @@ import kotlinx.android.synthetic.main.item_network_error_view.*
 import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.round
@@ -108,6 +112,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var hotelName: String = ""
     private var hotelId: String = "0"
     private var roomPrice: String = "0"
+    private var hotelImage: String = ""
     private var roomPriceAmount: String = ""
     private var isDirectPayment: Boolean = true
     private var source: String = HotelSourceEnum.SEARCHRESULT.value
@@ -128,6 +133,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var isTickerValid = false
     private var isScrolled = false
     private lateinit var hotelShare: HotelShare
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(requireContext())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,8 +145,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             detailViewModel = viewModelProvider.get(HotelDetailViewModel::class.java)
-            val ctx = WeakReference<Activity>(this)
-            hotelShare = HotelShare(ctx)
         }
 
         arguments?.let {
@@ -172,6 +178,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initializeShare(view)
 
         if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_SEARCH_PARAMETER)) {
             hotelHomepageModel = savedInstanceState.getParcelable(SAVED_SEARCH_PARAMETER)
@@ -236,6 +243,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                         setupLayout(it.data)
                         hotelName = it.data.property.name
                         hotelId = it.data.property.id
+                        hotelImage = it.data.property.locationImageStatic
                     }
                     is Fail -> {
                         isHotelDetailSuccess = false
@@ -375,6 +383,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
+    private fun initializeShare(view: View) {
+        if (context != null) {
+            activity?.run {
+                val ctx = WeakReference<Activity>(this)
+                hotelShare = HotelShare(ctx, requireContext(), view, trackingHotelUtil)
+            }
+        }
+    }
+
     private fun showErrorView(error: Throwable) {
         if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
             stopTrace()
@@ -509,15 +526,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun setupShareLink(propertyDetailData: PropertyDetailData) {
         binding?.hotelShareButton?.setOnClickListener {
-            trackingHotelUtil.clickShareUrl(requireContext(), PDP_SCREEN_NAME, hotelId, roomPriceAmount)
+            trackingHotelUtil.clickShareUrl(requireContext(), hotelId)
             if (::hotelShare.isInitialized) {
-                hotelShare.shareEvent(
-                    propertyDetailData,
-                    isPromo,
-                    { showProgressDialog() },
-                    { hideProgressDialog() },
-                    requireContext()
-                )
+                if (fragmentManager != null && context != null && view != null) {
+                    hotelShare.showUniversalBottomSheet(fragmentManager!!, propertyDetailData, isPromo, userSession.userId, ArrayList(imageList))
+                }
             }
         }
     }
@@ -556,14 +569,14 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         for ((imageIndex, item) in images.withIndex()) {
             imageList.add(item.urlOriginal)
-            thumbnailImageList.add(item.urlMax300)
+            thumbnailImageList.add(getImageUrl(context, item.urlOriginal, item.urlMax300))
 
             when (imageCounter) {
                 IMAGE_COUNTER_ZERO -> {
                     // do nothing, preventing break if mainPhoto not in the first item
                 }
                 IMAGE_COUNTER_FIRST -> {
-                    binding?.ivFirstPhotoPreview?.loadImage(item.urlMax300) {
+                    binding?.ivFirstPhotoPreview?.loadImage(getImageUrl(context, item.urlOriginal, item.urlMax300)) {
                         setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     }
                     binding?.ivFirstPhotoPreview?.setOnClickListener {
@@ -573,7 +586,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 IMAGE_COUNTER_SECOND -> {
-                    binding?.ivSecondPhotoPreview?.loadImage(item.urlMax300) {
+                    binding?.ivSecondPhotoPreview?.loadImage(getImageUrl(context, item.urlOriginal, item.urlMax300)) {
                         setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     }
                     binding?.ivSecondPhotoPreview?.setOnClickListener {
@@ -583,7 +596,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 IMAGE_COUNTER_THIRD -> {
-                    binding?.ivThirdPhotoPreview?.loadImage(item.urlMax300) {
+                    binding?.ivThirdPhotoPreview?.loadImage(getImageUrl(context, item.urlOriginal, item.urlMax300)) {
                         setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     }
                     binding?.ivThirdPhotoPreview?.setOnClickListener {
@@ -594,7 +607,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
             }
             if (item.mainPhoto) {
-                binding?.ivMainPhotoPreview?.loadImage(item.urlMax300) {
+                binding?.ivMainPhotoPreview?.loadImage(getImageUrl(context, item.urlOriginal, item.urlMax300)) {
                     setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                 }
                 binding?.ivMainPhotoPreview?.setOnClickListener {

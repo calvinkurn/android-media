@@ -8,11 +8,15 @@ import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChannelInfoModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
+import com.tokopedia.play.util.assertInstanceOf
 import com.tokopedia.play.util.assertTrue
+import com.tokopedia.play.util.assertType
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
 import com.tokopedia.play.view.uimodel.action.OpenKebabAction
 import com.tokopedia.play.view.uimodel.action.OpenUserReport
+import com.tokopedia.play.view.uimodel.action.SelectReason
 import com.tokopedia.play.view.uimodel.event.OpenKebabEvent
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.event.OpenUserReportEvent
@@ -48,6 +52,8 @@ class PlayUserReportTest {
             )
         )
     )
+
+    private val mockException = Exception("Something went wrong.")
 
     @Test
     fun `when click kebab button hit analytic`(){
@@ -123,7 +129,7 @@ class PlayUserReportTest {
     @Test
     fun `when submit user report return success`(){
         val expectedResult = ResultState.Success
-        coEvery { mockRepo.submitReport(any(), any(), any(), any(), any(), any()) } returns true
+        coEvery { mockRepo.submitReport(any(), any(), any(), any(), any(), any(), any()) } returns true
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -131,15 +137,15 @@ class PlayUserReportTest {
         )
 
         robot.use {
-            it.viewModel.submitUserReport(1L, "http://", 3L, 2, 5000L, "OKOKOKOKOK")
+            it.viewModel.submitUserReport(mediaUrl = "http://play", reasonId = 1, timestamp = 90L, reportDesc = "hihi")
             val actualValue = it.viewModel.userReportSubmission.value
-            actualValue.assertEqualTo(expectedResult)
+            actualValue.state.assertEqualTo(expectedResult)
         }
     }
 
     @Test
     fun `when submit user report return failed`(){
-        coEvery { mockRepo.submitReport(any(), any(), any(), any(), any(), any()) } returns false
+        coEvery { mockRepo.submitReport(any(), any(), any(), any(), any(), any(), any()) } returns false
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -147,8 +153,8 @@ class PlayUserReportTest {
         )
 
         robot.use {
-            it.viewModel.submitUserReport(1L, "http://", 3L, 2, 5000L, "OKOKOKOKOK")
-            val actualValue = it.viewModel.userReportSubmission.value.isFail
+            it.viewModel.submitUserReport(mediaUrl = "http://play", reasonId = 1, timestamp = 90L, reportDesc = "hihi")
+            val actualValue = it.viewModel.userReportSubmission.value.state.isFail
             actualValue.assertTrue()
         }
     }
@@ -168,6 +174,47 @@ class PlayUserReportTest {
             val actualValue = it.viewModel.userReportItems.value
             actualValue.resultState.assertEqualTo(ResultState.Success)
             actualValue.reasoningList.assertEqualTo(expectedResult)
+        }
+    }
+
+    @Test
+    fun `when get reasoning list is error`(){
+        coEvery { mockRepo.getReasoningList() } throws mockException
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            repo = mockRepo
+        )
+
+        robot.use {
+            it.viewModel.getUserReportList()
+            val actualValue = it.viewModel.userReportItems.value
+            actualValue.resultState.assertInstanceOf<ResultState.Fail>()
+            actualValue.reasoningList.assertEqualTo(emptyList())
+        }
+    }
+
+    @Test
+    fun `when user click item report select from reasoning list`(){
+        val expectedResult = modelBuilder.buildUserReportList().reasoningList
+        coEvery { mockRepo.getReasoningList() } returns expectedResult
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            repo = mockRepo
+        )
+
+        val reasonId = 1
+
+        robot.use {
+            it.viewModel.getUserReportList()
+            val actualValue = it.viewModel.userReportItems.value
+            actualValue.resultState.assertEqualTo(ResultState.Success)
+            actualValue.reasoningList.assertEqualTo(expectedResult)
+
+            it.viewModel.submitAction(SelectReason(reasonId))
+            val filtered = expectedResult.filterIsInstance<PlayUserReportReasoningUiModel.Reasoning>().find {  it.reasoningId == reasonId }
+            it.viewModel.userReportSubmission.value.selectedReasoning.assertEqualTo(filtered)
         }
     }
 }
