@@ -119,7 +119,7 @@ class ProductReportViewModel @Inject constructor(
                     it.parentLabel = parent.strLabel
                 }
             } else {
-                parent
+                reason
             }
 
             _uiEvent.emit(ProductReportUiEvent.OnGoToForm(fieldReason))
