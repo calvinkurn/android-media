@@ -291,9 +291,13 @@ class SummaryFragment :
             }
         }
         viewModel.errorUpload.observe(viewLifecycleOwner) {
-            showErrorUploadDialog(ErrorHandler.getErrorMessagePair(
-                context, it, ErrorHandler.Builder()
-            ).first.orEmpty())
+            showErrorUploadDialog(
+                ErrorHandler.getErrorMessagePair(
+                    context,
+                    it,
+                    ErrorHandler.Builder()
+                ).first.orEmpty()
+            )
         }
         viewModel.isInputValid.observe(viewLifecycleOwner) {
             binding?.layoutSubmission?.btnSubmit?.isEnabled = it
@@ -506,9 +510,11 @@ class SummaryFragment :
         }
         cardPreview.setOnClickListener {
             DisplayVoucherBottomSheet
-                .newInstance(configuration.copy(
-                    productIds = parentProductIds
-                ))
+                .newInstance(
+                    configuration.copy(
+                        productIds = parentProductIds
+                    )
+                )
                 .show(childFragmentManager, "")
         }
         viewModel.previewImage(
@@ -573,6 +579,7 @@ class SummaryFragment :
         val selectedProducts = viewModel.products.value.orEmpty()
         redirectionHelper.redirectToVoucherTypePage(this, configuration, selectedProducts, isAdding)
         tracker.sendClickUbahEvent(configuration.voucherId.toString(), sectionName)
+        activity?.finish()
     }
 
     private fun onInformationCouponBtnChangeClicked(configuration: VoucherConfiguration) {
