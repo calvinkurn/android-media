@@ -71,9 +71,8 @@ class ListBottomSheet(private val title: String, private val itemList: List<Item
             getString(R.string.topads_ads_performance_all_placements_filter_title) -> (activity as SeePerformanceTopadsActivity).getProductStatistics(1)
             getString(R.string.topads_ads_performance_in_search_filter_title) -> (activity as SeePerformanceTopadsActivity).getProductStatistics(2)
             getString(R.string.topads_ads_performance_in_recommendation_filter_title) -> (activity as SeePerformanceTopadsActivity).getProductStatistics(3)
+            else -> (activity as SeePerformanceTopadsActivity).updateDateFilter(title)
         }
         this.dismiss()
-//        (activity as SeePerformanceTopadsActivity).updateStatusIklan()
-//        (activity as SeePerformanceTopadsActivity).openCalendar()
     }
 }

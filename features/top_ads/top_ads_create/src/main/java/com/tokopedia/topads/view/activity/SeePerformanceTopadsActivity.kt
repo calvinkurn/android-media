@@ -19,6 +19,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DATE_FORMAT_DD_MMM_YYYY
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.REQUEST_DATE_FORMAT
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.STATUS_IKLAN_ACTION_ACTIVATE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.STATUS_IKLAN_ACTION_DEACTIVATE
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
@@ -53,8 +55,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     private lateinit var seePerformanceTopadsBottomSheet: BottomSheetUnify
     private var selectedDateFrom: Date = Date()
     private var selectedDateTo: Date = Date()
-    private var customDate: String = ""
     private var productId: String = ""
+    private var dateFilterType: Int = 1
 
     private lateinit var mainBottomSheetBinding: TopadsCreateBottomsheetSeePerformanceBinding
 
@@ -77,8 +79,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         productId = intent.data?.getQueryParameter(MpTopadsConst.PRODUCT_ID_PARAM).orEmpty()
         openMainBottomSheet()
         firstFetch()
-//        showChooseDateBottomSheet()
-//        openCalendar()
     }
 
     private fun initInjector() {
@@ -101,7 +101,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             isFullpage = false
             setTitle(this@SeePerformanceTopadsActivity.getString(R.string.your_product_ad_performance))
         }
-        seePerformanceTopadsBottomSheet.show(supportFragmentManager, "tagFragment")
+        seePerformanceTopadsBottomSheet.show(supportFragmentManager, "mainBottomSheet")
 
         seePerformanceTopadsBottomSheet.setOnDismissListener {
             finish()
@@ -209,9 +209,10 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             if (it != null && it.response?.errors.isNullOrEmpty()) {
                 mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.VISIBLE
 
-                var adPerformance = 100 *
-                    it.response?.data?.get(0)?.statTotalTopSlotImpression.toDoubleOrZero() /
-                    it.response?.data?.get(0)?.statTotalImpression.toDoubleOrZero()
+                var adPerformance =
+                    100 * it.response?.data?.get(0)?.statTotalTopSlotImpression.toDoubleOrZero() / it.response?.data?.get(
+                        0
+                    )?.statTotalImpression.toDoubleOrZero()
                 mainBottomSheetBinding.includePerformaTampil.adPerformance.text = when {
                     adPerformance > 20 -> {
                         setGreenCondition()
@@ -300,7 +301,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             firstFetch()
         }
 
-        mainBottomSheetBinding.dateFilter.setOnClickListener{
+        mainBottomSheetBinding.dateFilter.setOnClickListener {
             showChooseDateBottomSheet()
         }
 
@@ -337,11 +338,12 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         }
 
         mainBottomSheetBinding.includePerformaTampil.adPerformanceInfo.setOnClickListener {
-            val adPerformanceCount = (
-                100 *
-                    seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.statTotalTopSlotImpression.toDoubleOrZero() /
-                    seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(0)?.statTotalImpression.toDoubleOrZero()
-                ).toInt()
+            val adPerformanceCount =
+                (100 * seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
+                    0
+                )?.statTotalTopSlotImpression.toDoubleOrZero() / seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
+                    0
+                )?.statTotalImpression.toDoubleOrZero()).toInt()
             when {
                 adPerformanceCount > 20 -> {
                     showDescriptionBottomSheet(
@@ -467,8 +469,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
         mainBottomSheetBinding.includeAdGroupAutomatic.automaticBtnSubmit.setOnClickListener {
             val intent = RouteManager.getIntent(
-                this,
-                ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS
+                this, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS
             )
             startActivity(intent)
             finish()
@@ -531,29 +532,69 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     }
 
     private fun getColoredSpanned(
-        text: String,
-        color: String,
-        multiply: String,
-        other: String
+        text: String, color: String, multiply: String, other: String
     ): Spanned {
         return MethodChecker.fromHtml("<strong><b><big><big><font color=$color>$text </font></big> <font color=#212121><big>teratas</font></big></big></b></strong> <br>${multiply}x teratas dari $other total tampil")
     }
 
-    fun getProductStatistics(goalId: Int) {
+    fun getProductStatistics(goalId: Int, startDate: String = "", endDate: String = "") {
 
         mainBottomSheetBinding.includeCardStatistics.productStatisticsGroup.visibility =
             View.INVISIBLE
         mainBottomSheetBinding.includeCardStatistics.productStatisticsLoaderGroup.visibility =
             View.VISIBLE
 
-        var startDate = "2023-01-01"
-        var endDate = "2023-03-14"
         seePerformanceTopAdsViewModel?.getTopAdsProductStatistics(
             this.resources,
-            startDate ?: "",
-            endDate ?: "",
+            startDate,
+            endDate,
             goalId
         )
+    }
+
+    /**
+     * title is used as key to check for date filter option user has opted for
+     */
+    fun updateDateFilter(title: String) {
+        var startDate: String = ""
+        var endDate: String = ""
+        when (title) {
+            getString(R.string.topads_common_date_today) -> {
+                startDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
+                dateFilterType = 1
+            }
+            getString(R.string.topads_common_date_yesterday) -> {
+                startDate = getDaysAgo(1, REQUEST_DATE_FORMAT)
+                dateFilterType = 2
+            }
+            String.format(getString(R.string.topads_common_date_x_last_days), 3) -> {
+                startDate = getDaysAgo(3, REQUEST_DATE_FORMAT)
+                dateFilterType = 3
+            }
+            String.format(getString(R.string.topads_common_date_x_last_days), 7) -> {
+                startDate = getDaysAgo(7, REQUEST_DATE_FORMAT)
+                dateFilterType = 4
+            }
+            String.format(getString(R.string.topads_common_date_x_last_days), 30) -> {
+                startDate = getDaysAgo(30, REQUEST_DATE_FORMAT)
+                dateFilterType = 5
+            }
+            getString(R.string.topads_common_date_this_month) -> {
+                startDate = getFirstDateOfMonth(REQUEST_DATE_FORMAT)
+                dateFilterType = 6
+            }
+        }
+        if (!startDate.isEmpty()) {
+            endDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
+            mainBottomSheetBinding.dateFilter.chipText = title
+            getProductStatistics(
+                seePerformanceTopAdsViewModel?.goalId?.value ?: 1,
+                startDate,
+                endDate
+            )
+        } else {
+            openCalendar()
+        }
     }
 
     private fun setProductStatistics(dataItem: WithoutGroupDataItem) {
@@ -658,8 +699,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             binding.heading1.setTextColor(
                 ColorStateList.valueOf(
                     ContextCompat.getColor(
-                        this,
-                        heading1Color
+                        this, heading1Color
                     )
                 )
             )
@@ -668,8 +708,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             binding.heading2.setTextColor(
                 ColorStateList.valueOf(
                     ContextCompat.getColor(
-                        this,
-                        heading2Color
+                        this, heading2Color
                     )
                 )
             )
@@ -692,8 +731,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 isSelected = seePerformanceTopAdsViewModel?.topAdsPromoInfo?.value?.topAdsGetPromo?.data?.get(
                     0
                 )?.status != "3"
-            ),
-            ItemListUiModel(
+            ), ItemListUiModel(
                 title = getString(R.string.topads_non_active),
                 isSelected = seePerformanceTopAdsViewModel?.topAdsPromoInfo?.value?.topAdsGetPromo?.data?.get(
                     0
@@ -701,9 +739,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             )
         )
         ListBottomSheet.show(
-            supportFragmentManager,
-            getString(R.string.topads_ad_status),
-            list
+            supportFragmentManager, getString(R.string.topads_ad_status), list
         )
     }
 
@@ -727,13 +763,11 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 getString(R.string.topads_ads_performance_all_placements_filter_title),
                 getString(R.string.topads_ads_performance_all_placements_filter_desc),
                 isSelected = seePerformanceTopAdsViewModel?.goalId?.value == 1
-            ),
-            ItemListUiModel(
+            ), ItemListUiModel(
                 getString(R.string.topads_ads_performance_in_search_filter_title),
                 getString(R.string.topads_ads_performance_in_search_filter_desc),
                 isSelected = seePerformanceTopAdsViewModel?.goalId?.value == 2
-            ),
-            ItemListUiModel(
+            ), ItemListUiModel(
                 getString(R.string.topads_ads_performance_in_recommendation_filter_title),
                 getString(R.string.topads_ads_performance_in_recommendation_filter_desc),
                 isSelected = seePerformanceTopAdsViewModel?.goalId?.value == 3
@@ -747,44 +781,59 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
     }
 
     private fun showChooseDateBottomSheet() {
-        val today = getDaysAgo(0)
-        val yesterday = getDaysAgo(1)
-        val daysAgo3 = getDaysAgo(3)
-        val daysAgo7 = getDaysAgo(7)
-        val daysAgo30 = getDaysAgo(30)
-        val firstDateOfMonth = getFirstDateOfMonth()
+        val today = getDaysAgo(0, DATE_FORMAT_DD_MMM_YYYY)
+        val yesterday = getDaysAgo(1, DATE_FORMAT_DD_MMM_YYYY)
+        val daysAgo3 = getDaysAgo(3, DATE_FORMAT_DD_MMM_YYYY)
+        val daysAgo7 = getDaysAgo(7, DATE_FORMAT_DD_MMM_YYYY)
+        val daysAgo30 = getDaysAgo(30, DATE_FORMAT_DD_MMM_YYYY)
+        val firstDateOfMonth = getFirstDateOfMonth(DATE_FORMAT_DD_MMM_YYYY)
 
         val dateFilterList = arrayListOf(
-            ItemListUiModel(getString(R.string.topads_common_date_today), today),
-            ItemListUiModel(getString(R.string.topads_common_date_yesterday), yesterday),
-            ItemListUiModel(String.format(getString(R.string.topads_common_date_x_last_days),3), "$daysAgo3 - $today"),
-            ItemListUiModel(String.format(getString(R.string.topads_common_date_x_last_days),7), "$daysAgo7 - $today"),
-            ItemListUiModel(String.format(getString(R.string.topads_common_date_x_last_days),30), "$daysAgo30 - $today"),
-            ItemListUiModel(getString(R.string.topads_common_date_this_month), "$firstDateOfMonth - $today"),
-            ItemListUiModel(getString(R.string.topads_common_custom), getRangeCustomDate())
+            ItemListUiModel(getString(R.string.topads_common_date_today), today, dateFilterType == 1),
+            ItemListUiModel(getString(R.string.topads_common_date_yesterday), yesterday, dateFilterType == 2),
+            ItemListUiModel(
+                String.format(getString(R.string.topads_common_date_x_last_days), 3),
+                "$daysAgo3 - $today",
+                dateFilterType == 3
+            ),
+            ItemListUiModel(
+                String.format(getString(R.string.topads_common_date_x_last_days), 7),
+                "$daysAgo7 - $today",
+                dateFilterType == 4
+            ),
+            ItemListUiModel(
+                String.format(getString(R.string.topads_common_date_x_last_days), 30),
+                "$daysAgo30 - $today",
+                dateFilterType == 5
+            ),
+            ItemListUiModel(
+                getString(R.string.topads_common_date_this_month), "$firstDateOfMonth - $today", dateFilterType == 6
+            ),
+            ItemListUiModel(
+                getString(R.string.topads_common_custom),
+                getString(R.string.topads_common_select_date),
+                dateFilterType == 7
+            )
         )
-        ListBottomSheet.show(supportFragmentManager, getString(R.string.topads_ads_performance_choose_time_range), dateFilterList)
-    }
-
-    private fun getRangeCustomDate(): String {
-        if (customDate.isBlank()) {
-            return DEFAULT_CUSTOM_DATE_PLACEHOLDER
-        }
-        return "custom"
+        ListBottomSheet.show(
+            supportFragmentManager,
+            getString(R.string.topads_ads_performance_choose_time_range),
+            dateFilterList
+        )
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun getDaysAgo(daysAgo: Int): String {
+    private fun getDaysAgo(daysAgo: Int, dateFormat: String): String {
         val cal = Calendar.getInstance()
-        val dateFormat: DateFormat = SimpleDateFormat("dd MMM yyyy")
+        val dateFormat: DateFormat = SimpleDateFormat(dateFormat)
         cal.add(Calendar.DATE, -daysAgo)
         return dateFormat.format(cal.time)
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun getFirstDateOfMonth(): String {
+    private fun getFirstDateOfMonth(dateFormat: String): String {
         val cal = Calendar.getInstance()
-        val dateFormat: DateFormat = SimpleDateFormat("dd MMM yyyy")
+        val dateFormat: DateFormat = SimpleDateFormat(dateFormat)
         val days = cal.getActualMinimum(Calendar.DAY_OF_MONTH)
         cal.set(Calendar.DAY_OF_MONTH, days)
         return dateFormat.format(cal.time)
@@ -792,14 +841,8 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
     fun openCalendar() {
         AdsPerformanceDateRangePickerBottomSheet.getInstanceRange(
-            selectedDateFrom,
-            selectedDateTo,
-            AdsPerformanceDateRangePickerBottomSheet.MAX_RANGE_90
-        ).show(supportFragmentManager, "TAG")
-    }
-
-    companion object {
-        var DEFAULT_CUSTOM_DATE_PLACEHOLDER = "Pilih tanggal"
+            selectedDateFrom, selectedDateTo, AdsPerformanceDateRangePickerBottomSheet.MAX_RANGE_90
+        ).show(supportFragmentManager, "calendar")
     }
 
     override fun getComponent(): CreateAdsComponent {

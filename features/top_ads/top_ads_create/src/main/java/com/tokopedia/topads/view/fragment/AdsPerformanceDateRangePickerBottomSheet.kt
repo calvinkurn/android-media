@@ -10,18 +10,20 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.create.databinding.AdsPerformanceBottomsheetChooseDateBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.date.DateUtil
 import java.text.SimpleDateFormat
-import java.util.*
+import com.tokopedia.topads.create.R
+import java.util.Date
+import java.util.Calendar
 
 class AdsPerformanceDateRangePickerBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val MAX_RANGE_90 = 90L
-        const val TAG = "AdsPerformanceDateRangePickerBottomSheet"
 
         private const val MAX_RANGE = 30L
         private const val ARG_DATE_FROM = "ARG_DATE_FROM"
@@ -29,7 +31,7 @@ class AdsPerformanceDateRangePickerBottomSheet : BottomSheetUnify() {
         private const val ARG_MAX_RANGE = "ARG_MAX_RANGE"
         private const val BOTTOM_SHEET_HEIGHT_3 = 3
         private const val BOTTOM_SHEET_HEIGHT_2 = 2
-        private const val DATE_PATTERN = "dd MMMM yyyy"
+        private const val DATE_PATTERN = TopAdsCommonConstant.DATE_FORMAT_DD_MMM_YYYY
         private const val JUNE_6_2020_IN_MILLIS = 1591012800000L
         private const val TOASTER_BOTTOM_MARGIN = 64
 
@@ -95,7 +97,7 @@ class AdsPerformanceDateRangePickerBottomSheet : BottomSheetUnify() {
         binding?.tvSahCommissionStartDate?.isEnabled = false
         binding?.tvSahCommissionEndDate?.isEnabled = false
 
-        this.setAction("Terapkan"){
+        this.setAction(getString(R.string.ad_group_filter_bottomsheet_cta)){
 //            val selectedStartDate = newSelectedDateFrom
 //            val selectedEndDate = newSelectedDateTo
 //

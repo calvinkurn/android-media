@@ -60,8 +60,7 @@
                 app:chipSize="medium"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:chipText="3 hari terakhir"
-                tools:chipText="3 hari terakhir" />
+                app:chipText="@string/topads_common_date_today" />
 
             <com.tokopedia.unifycomponents.ChipsUnify
                 android:id="@+id/ad_placement_filter"

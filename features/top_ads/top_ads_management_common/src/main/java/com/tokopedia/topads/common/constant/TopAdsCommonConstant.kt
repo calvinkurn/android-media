@@ -14,6 +14,7 @@ object TopAdsCommonConstant {
     const val PARAM_SHOP_ID = "shop_id"
     const val DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
     const val REQUEST_DATE_FORMAT = "yyyy-MM-dd"
+    const val DATE_FORMAT_DD_MMM_YYYY = "dd MMM yyyy"
     const val ISO8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
     const val TOPADS_MOVE_TO_DASHBOARD = "move_to_dashboard"
     const val TOPADS_AUTOADS_BUDGET_UPDATED = "budget_updated"

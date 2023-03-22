@@ -53,6 +53,7 @@
     <string name="topads_common_date_x_last_days">%d hari terakhir</string>
     <string name="topads_common_date_this_month">Bulan ini</string>
     <string name="topads_common_custom">Custom</string>
+    <string name="topads_common_select_date">Pilih Tanggal</string>
     <string name="topads_common_produk_terjual">Produk Terjual</string>
     <string name="topads_common_persentase_klik">Persentase Klik</string>
     <string name="topads_common_total_sold">Total Terjual</string>
