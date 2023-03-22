@@ -7,20 +7,33 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SELLER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_HEADER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE_SLOT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENT_SITE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECT_CONTENT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_AFFILIATE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NOT_AFFILIATE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_NAME_ON_HEADER_AS_BUYER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SHOP_NAME_ON_HEADER_AS_SELLER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_SHOP_PAGE_OPEN_SCREEN
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.data.model.ShopAffiliateData
@@ -509,33 +522,31 @@ open class ShopPageTracking(
             eventLabel = shopId.toString()
         }
 
-        val eventMap = createMap(
-            event = SELECT_CONTENT,
-            category = eventCategory,
-            action = CLICK_SHOP_HEADER,
-            label = eventLabel,
-            customDimensionShopPage = customDimensionShopPage
-        )
-        eventMap[ShopPageTrackingConstant.BUSINESS_UNIT] = ShopPageTrackingConstant.PHYSICAL_GOODS
-        eventMap[ShopPageTrackingConstant.CURRENT_SITE] = ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
-        eventMap[ShopPageTrackingConstant.USER_ID] = userId.orEmpty()
-        eventMap[TRACKER_ID] = trackerId
-        eventMap[PAGE_TYPE] = SHOPPAGE
-        val headerTrackerType = getShopHeaderTrackerType(headerType)
-        eventMap[ShopPageTrackingConstant.PROMOTIONS] = DataLayer.mapOf(
-            ShopPageTrackingConstant.PROMOTIONS,
-            DataLayer.listOf(
-                createShopHeaderPromotionMap(
-                    valueDisplayed,
-                    componentId,
-                    componentName,
-                    headerId,
-                    headerTrackerType,
-                    componentPosition
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, CLICK_SHOP_HEADER)
+            putString(EVENT_CATEGORY, eventCategory)
+            putString(EVENT_LABEL, eventLabel)
+            putString(TRACKER_ID, trackerId)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(PAGE_TYPE, SHOPPAGE)
+            putString(SHOP_ID, shopId.orEmpty())
+            putString(SHOP_TYPE, customDimensionShopPage?.shopType.orEmpty())
+            putString(USER_ID, userId.orEmpty())
+            putParcelableArrayList(
+                PROMOTIONS,
+                arrayListOf(
+                    createShopPromotionsData(
+                        widgetName = valueDisplayed,
+                        widgetId = componentId,
+                        position = componentPosition,
+                        itemName = joinDash(componentName, headerId, getShopHeaderTrackerType(headerType))
+                    )
                 )
             )
-        )
-        sendDataLayerEvent(eventMap)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PROMO_CLICK, eventBundle)
     }
 
     fun impressionShopHeaderComponent(
@@ -628,6 +639,20 @@ open class ShopPageTracking(
         eventMap[ShopPageTrackingConstant.NAME] = joinDash(componentName, headerId, headerTrackerType)
         eventMap[ShopPageTrackingConstant.POSITION] = componentPosition
         return eventMap
+    }
+
+    private fun createShopPromotionsData(
+        widgetName: String,
+        widgetId: String,
+        position: Int,
+        itemName: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(CREATIVE_NAME, widgetName)
+            putInt(CREATIVE_SLOT, position)
+            putString(ITEM_ID, widgetId)
+            putString(ITEM_NAME, itemName)
+        }
     }
 
     fun sendImpressionShopTab(shopId: String, tabTitle: String) {
