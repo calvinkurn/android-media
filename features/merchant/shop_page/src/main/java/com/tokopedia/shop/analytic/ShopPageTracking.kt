@@ -609,22 +609,6 @@ open class ShopPageTracking(
         }
     }
 
-    private fun createShopHeaderPromotionMap(
-        valueDisplayed: String,
-        componentId: String,
-        componentName: String,
-        headerId: String,
-        headerTrackerType: String,
-        componentPosition: Int
-    ): Map<String, Any> {
-        val eventMap = HashMap<String, Any>()
-        eventMap[CREATIVE_NAME] = valueDisplayed
-        eventMap[ITEM_ID] = componentId
-        eventMap[ITEM_NAME] = joinDash(componentName, headerId, headerTrackerType)
-        eventMap[CREATIVE_SLOT] = componentPosition
-        return eventMap
-    }
-
     private fun createShopHeaderPromotionItemMap(
         valueDisplayed: String,
         componentId: String,
