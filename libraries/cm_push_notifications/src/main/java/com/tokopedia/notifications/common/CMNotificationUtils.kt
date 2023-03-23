@@ -317,8 +317,8 @@ object CMNotificationUtils {
     private fun createReminderPromptFreqRecord(context: Context, pageName: String){
         val reminderPromptAppDataObj = ReminderPromptAppDataObj()
         reminderPromptAppDataObj.firstShown = currentLocalTimeStamp
-        reminderPromptAppDataObj.lastShown = currentLocalTimeStamp
-        writeReminderPromptObjToSharedPref(context, pageName, reminderPromptAppDataObj)
+        reminderPromptAppDataObj.lastShown = 0L
+        writeReminderPromptObjToSharedPref(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA, reminderPromptAppDataObj)
     }
 
     private fun writeReminderPromptObjToSharedPref(context: Context,
@@ -339,10 +339,12 @@ object CMNotificationUtils {
         return gson.fromJson(pageReminderPromptFreqRecordStr, ReminderPromptAppDataObj::class.java)
     }
 
-    private fun updateReminderPromptFreqRecord(context: Context, pageName: String): Boolean{
+    private fun updateReminderPromptFreqRecord(context: Context,
+                                               pageName: String,
+                                               reminderPromptFreqRemoteConfObj: ReminderPromptFreqRemoteConfObj?): Boolean{
         val reminderPromptAppDataObj = readReminderPromptFreqRecord(context,
             pageName+SUFFIX_REMINDER_PROMPT_PAGE_DATA)
-        val reminderPromptFreqRemoteConfObj = getRemoteConfigReminderPromptFreqCapping(context, pageName)
+//        val reminderPromptFreqRemoteConfObj = getRemoteConfigReminderPromptFreqCapping(context, pageName)
         //check if reset
         if(reminderPromptFreqRemoteConfObj?.reset == true){
             deleteReminderPromptFreqRecord(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA)
@@ -365,7 +367,7 @@ object CMNotificationUtils {
         }
         reminderPromptAppDataObj.currentCount += 1
         reminderPromptAppDataObj.lastShown = currentLocalTimeStamp
-        writeReminderPromptObjToSharedPref(context, pageName, reminderPromptAppDataObj)
+        writeReminderPromptObjToSharedPref(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA, reminderPromptAppDataObj)
         return true
     }
 
@@ -382,11 +384,14 @@ object CMNotificationUtils {
 
     fun validateReminderPromptDisplay(context: Context, pageName: String): Boolean{
         //create record if does not exist
+        val reminderPromptFreqRemoteConfObj =
+            getRemoteConfigReminderPromptFreqCapping(context, pageName)
+                ?: return false
         initReminderPromptSharedPref(context)
         if(sharedPreference?.contains(pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA) == false){
-            createReminderPromptFreqRecord(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA)
+            createReminderPromptFreqRecord(context, pageName)
         }
-        return updateReminderPromptFreqRecord(context, pageName)
+        return updateReminderPromptFreqRecord(context, pageName, reminderPromptFreqRemoteConfObj)
     }
 
     private fun initReminderPromptSharedPref(context: Context){
