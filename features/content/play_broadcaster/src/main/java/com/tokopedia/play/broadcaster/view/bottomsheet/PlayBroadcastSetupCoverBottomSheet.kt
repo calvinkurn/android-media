@@ -97,8 +97,10 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
     }
 
     private fun setupView() = with(binding) {
+        mListener?.onOpenCoverForm()
         setTitle(getString(R.string.play_bro_setup_cover_title))
         setCloseClickListener {
+            mListener?.onCloseCoverForm()
             analytic.clickCloseCoverBottomSheet(mDataSource?.getEntryPoint().orEmpty())
             dismiss()
         }
@@ -228,6 +230,9 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
     }
 
     interface Listener {
+        fun onOpenCoverForm() {}
+        fun onCloseCoverForm() {}
+        fun onClickSelectCoverOnCoverForm() {}
         fun dismissSetupCover(source: Int)
         fun setupCoverProductClicked() {}
         fun onUploadCoverSuccess() {}

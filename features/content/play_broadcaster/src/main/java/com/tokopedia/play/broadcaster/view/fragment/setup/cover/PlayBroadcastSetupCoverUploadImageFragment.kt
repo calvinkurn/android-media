@@ -102,6 +102,7 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
         clCoverFormPreview.setAuthorName(viewModel.contentAccount.name)
         clCoverFormPreview.setTitle(viewModel.channelTitle)
         clCoverFormPreview.setOnClickListener {
+            mListener?.onClickSelectCoverOnCoverForm()
             if (clCoverFormPreview.isCoverAvailable) analytic.clickEditCover()
             else analytic.clickAddNewCover()
             openCoverSetupFragment()

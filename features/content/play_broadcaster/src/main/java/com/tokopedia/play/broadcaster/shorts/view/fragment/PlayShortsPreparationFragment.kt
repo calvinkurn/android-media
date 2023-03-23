@@ -605,6 +605,18 @@ class PlayShortsPreparationFragment @Inject constructor(
         viewModel.submitAction(PlayShortsAction.UpdateCover)
     }
 
+    override fun onOpenCoverForm() {
+        analytic.openScreenCoverForm(viewModel.selectedAccount)
+    }
+
+    override fun onCloseCoverForm() {
+        analytic.clickCloseOnCoverForm(viewModel.selectedAccount)
+    }
+
+    override fun onClickSelectCoverOnCoverForm() {
+        analytic.clickSelectCoverOnCoverForm(viewModel.selectedAccount)
+    }
+
     override fun dismissSetupCover(source: Int) {
         if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
 
