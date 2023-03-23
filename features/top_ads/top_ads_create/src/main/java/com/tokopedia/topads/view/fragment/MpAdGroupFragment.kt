@@ -25,8 +25,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.common.data.response.Deposit
-import com.tokopedia.topads.common.data.response.TopadsManageGroupAdsResponse
-import com.tokopedia.topads.constants.MpTopadsConst
+import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.constants.MpTopadsConst.AUTO_BID_CONST
 import com.tokopedia.topads.constants.MpTopadsConst.CONST_2
 import com.tokopedia.topads.constants.MpTopadsConst.IDR_CONST
@@ -67,7 +66,7 @@ class MpAdGroupFragment :
         fun newInstance(productId: String = ""): MpAdGroupFragment {
             return MpAdGroupFragment().apply {
                 arguments = Bundle().apply {
-                    putString(PRODUCT_ID_PARAM , productId)
+                    putString(PRODUCT_ID_PARAM, productId)
                 }
             }
         }
@@ -85,7 +84,6 @@ class MpAdGroupFragment :
     @JvmField @Inject
     var userSession: UserSessionInterface? = null
 
-
     private var productId = ""
 
     private val adGroupAdapter: AdGroupListAdapter by lazy {
@@ -96,11 +94,14 @@ class MpAdGroupFragment :
     private var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
 
     @JvmField @Inject
-    var viewModelFactory: ViewModelFactory?=null
+    var viewModelFactory: ViewModelFactory? = null
 
     private val adGroupViewModel: MpAdsGroupsViewModel? by lazy {
-        if(viewModelFactory==null) null
-        else ViewModelProvider(this, viewModelFactory!!).get(MpAdsGroupsViewModel::class.java)
+        if (viewModelFactory == null) {
+            null
+        } else {
+            ViewModelProvider(this, viewModelFactory!!).get(MpAdsGroupsViewModel::class.java)
+        }
     }
 
     private val mHandler = Handler(Looper.getMainLooper())
@@ -234,12 +235,12 @@ class MpAdGroupFragment :
         endlessScrollListener?.setHasNextPage(hasNext)
     }
 
-    private fun onTopadsCreditCheck(result: Result<Pair<TopadsManageGroupAdsResponse, Deposit>>) {
+    private fun onTopadsCreditCheck(result: Result<Pair<FinalAdResponse, Deposit>>) {
         when (result) {
             is Success -> {
                 val depositAmount = result.data.second.topadsDashboardDeposits.data.amount
                 if (depositAmount > 0) {
-                    val groupId = result.data.first.topAdsManageGroupAds.groupResponse.data.id
+                    val groupId = result.data.first.topadsManageGroupAds.groupResponse.data.id
                     openSuccessDialog(groupId.toString())
                 } else {
                     openInsufficientCreditsDialog(depositAmount)
