@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.notifications.common.CMConstant.GtmTrackerEvents
@@ -127,7 +128,6 @@ class NotificationSettingsGtmEvents constructor(
             context,
             pagePath
         )
-        sendAppPushPermissionStatusEvent(context)
     }
 
     fun sendAppPushPermissionStatusEvent(context: Context) {
@@ -135,10 +135,14 @@ class NotificationSettingsGtmEvents constructor(
             val dataMap = mutableMapOf<String, Any>()
             if (GlobalConfig.isSellerApp()) {
                 dataMap[GtmTrackerEvents.KEY_EVENT_NAME] =
-                    GtmTrackerEvents.KEY_SELLER_APP_PUSH_PERMISSION_STATUS;
+                    GtmTrackerEvents.KEY_SELLER_APP_PUSH_PERMISSION_STATUS
+                dataMap[GtmTrackerEvents.KEY_EVENT_GA] =
+                    GtmTrackerEvents.KEY_SELLER_APP_PUSH_PERMISSION_STATUS
             } else {
                 dataMap[GtmTrackerEvents.KEY_EVENT_NAME] =
-                    GtmTrackerEvents.KEY_MAIN_APP_PUSH_PERMISSION_STATUS;
+                    GtmTrackerEvents.KEY_MAIN_APP_PUSH_PERMISSION_STATUS
+                dataMap[GtmTrackerEvents.KEY_EVENT_GA] =
+                    GtmTrackerEvents.KEY_MAIN_APP_PUSH_PERMISSION_STATUS
             }
             val userId = if (userSession.userId.isEmpty() || userSession.userId.isBlank()) {
                 ZERO
@@ -151,7 +155,7 @@ class NotificationSettingsGtmEvents constructor(
             val diffTimeInterval = currentTimeStamp - lastShownTimeStamp
             dataMap[GtmTrackerEvents.KEY_USER_ID_NEW] = userId
             dataMap[GtmTrackerEvents.KEY_SHOP_ID_NEW] = userSession.shopId
-            dataMap[GtmTrackerEvents.KEY_DEVICE_ID_NEW] = userSession.adsId
+            dataMap[GtmTrackerEvents.KEY_DEVICE_ID_NEW] = DeviceInfo.getAdsId(context)
             dataMap[GtmTrackerEvents.KEY_TRAFFIC_SOURCE_NAME] = JOURNEY
             dataMap[GtmTrackerEvents.KEY_TRAFFIC_SOURCE_ID] = ZERO
             dataMap[GtmTrackerEvents.KEY_EVENT_REFRESH_SOURCE] = HOMEPAGE
@@ -165,13 +169,14 @@ class NotificationSettingsGtmEvents constructor(
             dataMap[GtmTrackerEvents.KEY_OS_NAME] = Build.VERSION.CODENAME
             dataMap[GtmTrackerEvents.KEY_APP_VERSION] = GlobalConfig.VERSION_NAME
             dataMap[GtmTrackerEvents.KEY_DEVICE_MANUFACTURER] = Build.MANUFACTURER
-            dataMap[GtmTrackerEvents.KEY_PROMO_APP_PUSHPERMISSION_LATESTSTATUS] =  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            dataMap[GtmTrackerEvents.KEY_PROMO_APP_PUSHPERMISSION_LATESTSTATUS] = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 ActivityCompat.checkSelfPermission(
                     context,
                     Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_DENIED
-            else
+                ) == PackageManager.PERMISSION_GRANTED
+            } else {
                 false
+            }
             dataMap[GtmTrackerEvents.KEY_DEVICE_PUSHPERMISSION_LATESTSTATUS] = FALSE
             IrisAnalytics.getInstance(context).saveEvent(dataMap)
         } catch (e: Exception) {
@@ -213,15 +218,17 @@ class NotificationSettingsGtmEvents constructor(
         } else {
             sharedPreference.getInt(FREQ_KEY_GENERAL_PROMPT, 0)
         }
+
+        val adsId = DeviceInfo.getAdsId(context)
         val eventLabel =
-            "$frequency - $userId - ${userSession.adsId} - ${IrisSession(context).getSessionId()}"
+            "$frequency - $userId - $adsId - ${IrisSession(context).getSessionId()}"
         val map = TrackAppUtils.gtmData(
             event,
             eventCategory,
             eventAction,
             eventLabel
         )
-        map[GtmTrackerEvents.KEY_DEVICE_ID] = userSession.adsId
+        map[GtmTrackerEvents.KEY_DEVICE_ID] = adsId
         map[GtmTrackerEvents.KEY_TRACKER_ID] = trackerId
         map[GtmTrackerEvents.KEY_BUSINESS_UNIT] = GtmTrackerEvents.VALUE_BUSINESS_UNIT
         map[GtmTrackerEvents.KEY_CURRENT_SITE] = GtmTrackerEvents.VALUE_CURRENT_SITE

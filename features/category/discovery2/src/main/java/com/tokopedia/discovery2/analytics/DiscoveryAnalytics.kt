@@ -4,10 +4,8 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils.Companion.getParentPosition
-import com.tokopedia.discovery2.data.AdditionalInfo
-import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.data.Level
+import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -1002,12 +1000,12 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {
         if (componentsItems.isNotEmpty()) {
-            val list = ArrayList<Map<String, Any>>()
             val parentComp =
                 getComponent(componentsItems[0].parentComponentId, componentsItems[0].pageEndPoint)
+            val list = ArrayList<Map<String, Any>>()
             componentsItems.forEachIndexed { index, coupon ->
-                val data: ArrayList<DataItem> = ArrayList()
-                coupon.data?.let {
+                val data: ArrayList<CatalogWithCouponList> = ArrayList()
+                coupon.claimCouponList?.let {
                     data.addAll(it)
                 }
                 val map = HashMap<String, Any>()
@@ -1034,11 +1032,11 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 eventAction = ACTION_VIEW_COUPON_BANNER,
                 shouldSendSourceAsDestination = true
             )
-            map[TRACKER_ID] = "2725"
             map[PAGE_TYPE] = pageType
-            map[PAGE_PATH] = removedDashPageIdentifier
-            map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+            map[TRACKER_ID] = CLAIM_COUPON_TRACKER_ID
             map[BUSINESS_UNIT] = HOME_BROWSE
+            map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+            map[PAGE_PATH] = removedDashPageIdentifier
             map[KEY_E_COMMERCE] = eCommerce
             map[USER_ID] = userSession.userId
             trackingQueue.putEETracking(map as HashMap<String, Any>)
@@ -1060,15 +1058,15 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun trackEventClickCoupon(coupon: DataItem?, position: Int, isDouble: Boolean) {
+    override fun trackEventClickCoupon(coupon: CatalogWithCouponList?, position: Int, isDouble: Boolean) {
         val list = ArrayList<Map<String, Any>>()
         coupon?.let {
             list.add(mapOf(
                     KEY_ID to it.id.toString(),
-                    KEY_CREATIVE_URL to if (isDouble) it.smallImageUrlMobile
-                            ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER,
+                    KEY_CREATIVE_URL to if (isDouble) it.smallImageURLMobile
+                            ?: NONE_OTHER else it.imageURLMobile ?: NONE_OTHER,
                     KEY_POSITION to (position + 1).toString(),
-                    KEY_PROMO_ID to it.promoId.toString(),
+                    KEY_PROMO_ID to it.promoID.toString(),
                     KEY_PROMO_CODE to it.slug.toString(),
                     KEY_NAME to CLAIM_COUPON_ITEM_NAME
             ))
@@ -1076,7 +1074,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val promotions: Map<String, ArrayList<Map<String, Any>>> = mapOf(
                 KEY_PROMOTIONS to list)
         val map = createGeneralEvent(eventName = EVENT_CLICK_COUPON, eventAction = CLAIM_COUPON_CLICK,
-                eventLabel = "${coupon?.name} - ${coupon?.couponCode}")
+                eventLabel = "${coupon?.title} - ${coupon?.couponCode}")
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = promotions
@@ -1152,14 +1150,14 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean,campaignId: String,variantId: String,shopID: String) {
+    override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean, paramsForOpenScreen: ParamsForOpenScreen) {
         if (screenName.isNotEmpty()) {
-            val map = getTrackingMapOpenScreen(screenName, additionalInfo, userLoggedIn,campaignId, variantId,shopID)
+            val map = getTrackingMapOpenScreen(screenName, additionalInfo, userLoggedIn, paramsForOpenScreen)
             TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, map)
         }
     }
 
-    private fun getTrackingMapOpenScreen(pageIdentifier: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean,campaignId: String,variantId: String,shopID: String): MutableMap<String, String> {
+    private fun getTrackingMapOpenScreen(pageIdentifier: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean, paramsForOpenScreen: ParamsForOpenScreen): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
         map[KEY_EVENT] = OPEN_SCREEN
         map[EVENT_NAME] = OPEN_SCREEN
@@ -1174,9 +1172,12 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[CATEGORY_ID] = EMPTY_STRING
         map[SUB_CATEGORY] = EMPTY_STRING
         map[SUB_CATEGORY_ID] = EMPTY_STRING
-        map[CAMPAIGN_ID] = campaignId
-        map[VARIANT_ID] = variantId
-        map[SHOP_ID] = shopID
+        map[CAMPAIGN_ID] = paramsForOpenScreen.campaignId
+        map[VARIANT_ID] = paramsForOpenScreen.variantId
+        map[SHOP_ID] = paramsForOpenScreen.shopID
+        if (paramsForOpenScreen.affiliateChannelID.isNotEmpty()) {
+            map[CHANNEL_ID] = paramsForOpenScreen.affiliateChannelID
+        }
         map[TRACKER_ID] = TRACKER_ID_VALUE
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier

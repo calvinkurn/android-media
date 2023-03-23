@@ -174,13 +174,17 @@ public interface ShipmentContract {
 
         void logOnErrorLoadCheckoutPage(Throwable throwable);
 
-        void logOnErrorLoadCourier(Throwable throwable, int itemPosition);
+        void logOnErrorLoadCourier(Throwable throwable, int itemPosition, String boPromoCode);
+
+        void logOnErrorApplyBo(Throwable throwable, int itemPosition, String boPromoCode);
+
+        void logOnErrorApplyBo(Throwable throwable, ShipmentCartItemModel shipmentCartItemModel, String boPromoCode);
 
         void logOnErrorCheckout(Throwable throwable, String request);
 
         void showPopUp(PopUpData popUpData);
 
-        void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
+        void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier, String cartString);
 
         void onNeedUpdateViewItem(int position);
 

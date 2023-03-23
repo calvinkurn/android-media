@@ -137,6 +137,7 @@ class Option(@SerializedName("name")
         const val KEY_PRICE_MAX = "pmax"
         const val KEY_PRICE_MIN_MAX_RANGE = "pmin-pmax"
         const val KEY_PRICE_WHOLESALE = "wholesale"
+        const val KEY_PRICE_RANGE = "price_range_"
         const val KEY_PRICE_RANGE_1 = "price_range_1"
         const val KEY_PRICE_RANGE_2 = "price_range_2"
         const val KEY_PRICE_RANGE_3 = "price_range_3"

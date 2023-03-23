@@ -3,10 +3,8 @@ package com.tokopedia.product.viewmodel
 import com.tokopedia.product.estimasiongkir.data.model.DeliveryService
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.data.model.ScheduledDeliveryRatesModel
-import com.tokopedia.product.estimasiongkir.data.model.shipping.Product
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingServiceDataModel
-import com.tokopedia.product.estimasiongkir.data.model.shipping.Service
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.estimasiongkir.data.model.v3.ServiceModel
@@ -410,7 +408,6 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertTrue((viewModel.ratesVisitableResult.value as Success).data.size == 1)
     }
 
-
     @Test
     fun `on scheduled delivery success`() {
         viewModel.ratesVisitableResult.observeForever { }
@@ -423,7 +420,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             scheduledDeliveryUseCase.execute(any(), any(), true)
         } returns scheduledDeliveryResponse
 
-        viewModel.setRatesRequest(RatesEstimateRequest())
+        viewModel.setRatesRequest(RatesEstimateRequest(isScheduled = true))
 
         coVerify {
             ratesUseCase.executeOnBackground(any(), any())
@@ -447,7 +444,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             scheduledDeliveryUseCase.execute(any(), any(), true)
         } returns scheduledDeliveryResponse
 
-        viewModel.setRatesRequest(RatesEstimateRequest())
+        viewModel.setRatesRequest(RatesEstimateRequest(isScheduled = true))
 
         coVerify {
             ratesUseCase.executeOnBackground(any(), any())
@@ -455,6 +452,4 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
 
         Assert.assertNotNull(viewModel.ratesVisitableResult.value is Fail)
     }
-
-
 }
