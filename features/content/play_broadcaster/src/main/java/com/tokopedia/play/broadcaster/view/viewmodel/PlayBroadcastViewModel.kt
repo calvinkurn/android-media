@@ -311,7 +311,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _onboarding,
         _quizBottomSheetUiState,
         _selectedAccount,
-        _accountStateInfo,
+        _accountStateInfo
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -760,6 +760,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun setSelectedProduct(productSectionList: List<ProductTagSectionUiModel>) {
+        getCurrentSetupDataStore().setProductTag(productSectionList)
         _productSectionList.value = productSectionList
     }
 

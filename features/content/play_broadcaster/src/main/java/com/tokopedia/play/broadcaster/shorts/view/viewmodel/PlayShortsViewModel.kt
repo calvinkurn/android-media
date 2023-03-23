@@ -140,7 +140,7 @@ class PlayShortsViewModel @Inject constructor(
         _coverForm,
         _productSectionList,
         _tags,
-        _uploadState,
+        _uploadState
     ) { globalLoader, config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, productSectionList, tags, uploadState ->
         PlayShortsUiState(
             globalLoader = globalLoader,
@@ -280,6 +280,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleSetProduct(productSectionList: List<ProductTagSectionUiModel>) {
+        mDataStore.getSetupDataStore().setProductTag(productSectionList)
         _productSectionList.update { productSectionList }
     }
 
