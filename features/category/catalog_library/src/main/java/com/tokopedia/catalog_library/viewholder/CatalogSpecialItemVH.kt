@@ -6,7 +6,10 @@ import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogSpecialDM
 import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
+import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.CatalogAnalyticsHomePage
+import com.tokopedia.catalog_library.util.EventKeys
+import com.tokopedia.catalog_library.util.TrackerId
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -63,11 +66,14 @@ class CatalogSpecialItemVH(
 
     override fun onViewAttachedToWindow() {
         dataModel?.specialDataListItem?.let {
-            catalogLibraryListener.specialCategoryImpression(
+            catalogLibraryListener.categoryHorizontalCarouselImpression(
+                EventKeys.CREATIVE_NAME_SPECIAL_VALUE,
                 layoutPosition + 1,
                 dataModel?.specialDataListItem?.id.toString(),
                 dataModel?.specialDataListItem?.name ?: "",
-                UserSession(itemView.context).userId
+                UserSession(itemView.context).userId,
+                TrackerId.IMPRESSION_ON_SPECIAL_CATEGORIES,
+                ActionKeys.IMPRESSION_ON_SPECIAL_CATEGORIES
             )
         }
     }

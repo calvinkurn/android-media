@@ -18,6 +18,9 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.util.CatalogAnalyticsBrandPage
+import com.tokopedia.catalog_library.util.CatalogAnalyticsHomePage
+import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_CONTAINER_POPULAR_BRANDS_WITH_CATALOGS
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.viewmodels.CatalogPopularBrandsVM
@@ -25,8 +28,10 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -41,6 +46,9 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
             return CatalogPopularBrandsFragment()
         }
     }
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     @JvmField
     @Inject
@@ -166,8 +174,22 @@ class CatalogPopularBrandsFragment : BaseDaggerFragment(), CatalogLibraryListene
         }
     }
 
-    override fun onPopularBrandsClick(applink: String) {
-        super.onPopularBrandsClick(applink)
-        RouteManager.route(context,applink)
+    override fun onPopularBrandsLihatSemuaClick(brandName: String, brandId: String, position: String, eventAction: String, trackerId: String) {
+        super.onPopularBrandsLihatSemuaClick(brandName, brandId, position, eventAction, trackerId)
+        RouteManager.route(context,"${CatalogLibraryConstant.APP_LINK_BRANDS}$brandId")
+        CatalogAnalyticsBrandPage.sendClickOnLihatButtonEvent(
+            trackerId,eventAction, "$brandName - $brandId - $position", userSessionInterface.userId
+        )
+    }
+
+    override fun onPopularBrandsClick(brandName: String, brandId: String, position: String,
+                                      catalogName: String, catalogId: String, appLink : String) {
+        super.onPopularBrandsClick(brandName, brandId, position, catalogName, catalogId,appLink)
+        RouteManager.route(context,appLink)
+        CatalogAnalyticsBrandPage.sendClickOnCatalogEvent(
+            "$brandName - $brandId - $position ; destination catalog: $catalogName - $catalogId",
+            catalogId,
+            userSessionInterface.userId
+        )
     }
 }

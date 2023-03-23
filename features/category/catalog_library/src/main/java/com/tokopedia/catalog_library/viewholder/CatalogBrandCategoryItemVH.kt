@@ -23,10 +23,16 @@ class CatalogBrandCategoryItemVH(
 ) : AbstractViewHolder<CatalogBrandCategoryDM>(view) {
 
     var dataModel: CatalogBrandCategoryDM? = null
+    private val semua = CatalogLibraryResponse.CategoryListLibraryPage.CategoryData.ChildCategoryList(
+     "","Semua"
+    )
     private var categoryItems = ArrayList<CatalogLibraryResponse.CategoryListLibraryPage.CategoryData.ChildCategoryList>()
+
     private val tabs: TabsUnify? by lazy(NONE) {
         itemView.findViewById(R.id.catalog_brand_tabs)
     }
+
+    var tabSelectedListener: TabLayout.OnTabSelectedListener? = null
 
     companion object {
         val LAYOUT = R.layout.item_catalog_brand_category_item
@@ -34,29 +40,37 @@ class CatalogBrandCategoryItemVH(
 
     override fun bind(element: CatalogBrandCategoryDM?) {
         dataModel = element
+        tabSelectedListener?.let {
+            tabs?.tabLayout?.removeAllTabs()
+            tabs?.tabLayout?.removeOnTabSelectedListener(tabSelectedListener)
+        }
         tabs?.hasRightArrow = true
-        categoryItems = ArrayList()
-        tabs?.removeAllViews()
-        element?.catalogLibraryDataList?.forEach { category ->
+        categoryItems = arrayListOf(semua)
+        tabs?.addNewTab(semua.categoryName ?: "",dataModel?.selectedCategoryId == semua.categoryId)
+        dataModel?.catalogLibraryDataList?.forEach { category ->
             category.childCategoryList?.forEach { childCategory ->
                 categoryItems.add(childCategory)
                 tabs?.addNewTab(childCategory.categoryName ?: "",
-                    (element.selectedCategoryId == childCategory.categoryId))
+                    (dataModel?.selectedCategoryId == childCategory.categoryId))
             }
         }
 
-        tabs?.getUnifyTabLayout()?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        tabSelectedListener = object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                catalogLibraryListener.onBrandCategoryTabSelected(
-                    categoryItems[tab?.position ?: 0].categoryName ?: "",
-                    categoryItems[tab?.position ?: 0].categoryId ?: "",
-                )
+                if(categoryItems.size > tab?.position ?: 0 && dataModel?.selectedCategoryId != categoryItems[tab?.position ?: 0].categoryId){
+                    catalogLibraryListener.onBrandCategoryTabSelected(
+                        categoryItems[tab?.position ?: 0].categoryName ?: "",
+                        categoryItems[tab?.position ?: 0].categoryId ?: "",
+                    )
+                }
             }
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {
             }
-        })
+        }
+
+        tabs?.getUnifyTabLayout()?.addOnTabSelectedListener(tabSelectedListener)
 
         tabs?.arrowView?.setOnClickListener {
             catalogLibraryListener.onBrandCategoryArrowClick()

@@ -47,18 +47,21 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     var order = CatalogLibraryConstant.ASCENDING_ORDER_STR
     private var isOriginBrand = false
     private var categoryId = ""
+    private var brandId = ""
 
     companion object {
         const val DEFAULT_ASC_SORT_ORDER = "0"
         const val DESC_SORT_ORDER = "1"
         private const val ARG_IS_ORIGIN_BRAND = "ARG_IS_ORIGIN_BRAND"
         private const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
+        private const val ARG_BRAND_ID = "ARG_BRAND_ID"
         fun newInstance(isOriginBrand : Boolean = false,
-                        categoryId : String = ""): CatalogLihatSemuaPageFragment {
+                        categoryId : String = "",brandId : String = ""): CatalogLihatSemuaPageFragment {
             return CatalogLihatSemuaPageFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(ARG_IS_ORIGIN_BRAND, isOriginBrand)
                     putString(ARG_CATEGORY_ID, categoryId)
+                    putString(ARG_BRAND_ID, brandId)
                 }
             }
         }
@@ -120,11 +123,12 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
     private fun extractArguments() {
         isOriginBrand = arguments?.getBoolean(ARG_IS_ORIGIN_BRAND) ?: false
         categoryId = arguments?.getString(ARG_CATEGORY_ID) ?: ""
+        brandId = arguments?.getString(ARG_BRAND_ID) ?: ""
     }
 
     private fun initData() {
         if(isOriginBrand){
-            lihatViewModel?.getLihatSemuaByBrandData(categoryId)
+            lihatViewModel?.getLihatSemuaByBrandData(categoryId,brandId)
         }else {
             lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
         }
@@ -156,7 +160,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             sortAsc?.chipType = ChipsUnify.TYPE_SELECTED
             sortDesc?.chipType = ChipsUnify.TYPE_NORMAL
             if(isOriginBrand){
-                lihatViewModel?.getLihatSemuaByBrandData(categoryId)
+                lihatViewModel?.getLihatSemuaByBrandData(categoryId,brandId)
             }else {
                 lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
             }
@@ -172,7 +176,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             sortDesc?.chipType = ChipsUnify.TYPE_SELECTED
 
             if(isOriginBrand){
-                lihatViewModel?.getLihatSemuaByBrandData(categoryId)
+                lihatViewModel?.getLihatSemuaByBrandData(categoryId,brandId)
             }else {
                 lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER)
             }
@@ -241,7 +245,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             catalogLihatPageRecyclerView?.show()
             globalError?.hide()
             if(isOriginBrand){
-                lihatViewModel?.getLihatSemuaByBrandData(categoryId)
+                lihatViewModel?.getLihatSemuaByBrandData(categoryId,brandId)
             }else {
                 lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
             }

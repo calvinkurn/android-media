@@ -7,6 +7,9 @@ import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatListItemDM
 import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -22,6 +25,10 @@ class CatalogLihatListItemVH(
 
     private val lihatItemIcon: ImageUnify? by lazy(NONE) {
         itemView.findViewById(R.id.lihat_item_icon)
+    }
+
+    private val lihatItemIconCheck: IconUnify? by lazy(NONE) {
+        itemView.findViewById(R.id.lihat_item_icon_checked)
     }
 
     private val lihatItemTitle: Typography? by lazy(NONE) {
@@ -41,6 +48,11 @@ class CatalogLihatListItemVH(
         val childDataItem = element?.catalogLibraryChildDataListItem
         childDataItem?.categoryIconUrl?.let {
             lihatItemIcon?.loadImage(it)
+        }
+        if(dataModel?.activeCategoryId == dataModel?.catalogLibraryChildDataListItem?.categoryId){
+            lihatItemIconCheck?.show()
+        }else {
+            lihatItemIconCheck?.hide()
         }
         lihatItemTitle?.text = childDataItem?.categoryName ?: ""
         lihatExpandedItemLayout?.setOnClickListener {

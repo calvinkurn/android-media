@@ -51,13 +51,13 @@ class CatalogLihatVH(
                 element.catalogLibraryDataList?.accordionExpandedState = isExpanded
             }
         }
-        getAccordionData(element.catalogLibraryDataList, element.isAsc, element.isTypeList)
+        getAccordionData(element.catalogLibraryDataList, element.isAsc, element.isTypeList, element.activeCategoryId)
     }
 
-    private fun getAccordionData(catalogLibraryData: CategoryData?, isAsc: Boolean, isTypeList : Boolean) {
+    private fun getAccordionData(catalogLibraryData: CategoryData?, isAsc: Boolean, isTypeList : Boolean, activeCategoryId :String) {
         accordionView.apply {
             addGroup(
-                setExpandableChildView(catalogLibraryData, isAsc, isTypeList)
+                setExpandableChildView(catalogLibraryData, isAsc, isTypeList, activeCategoryId)
             )
         }
     }
@@ -65,7 +65,8 @@ class CatalogLihatVH(
     private fun setExpandableChildView(
         catalogLibraryData: CategoryData?,
         isAsc: Boolean,
-        isTypeList : Boolean
+        isTypeList : Boolean,
+        activeCategoryId : String,
     ): AccordionDataUnify {
         val listAdapter = CatalogLibraryAdapter(
             AsyncDifferConfig.Builder(CatalogLibraryDiffUtil()).build(),
@@ -89,7 +90,8 @@ class CatalogLihatVH(
                 catalogLibraryData?.childCategoryList,
                 catalogLibraryData?.rootCategoryName,
                 catalogLibraryData?.rootCategoryId,
-                isAsc,isTypeList
+                isAsc,isTypeList,
+                activeCategoryId
             )
         )
         return AccordionDataUnify(
@@ -104,7 +106,8 @@ class CatalogLihatVH(
         rootCategoryName: String?,
         rootCategoryId: String?,
         isAsc: Boolean,
-        isTypeList: Boolean
+        isTypeList: Boolean,
+        activeCategoryId : String,
     ): MutableList<BaseCatalogLibraryDM> {
         val visitableList = arrayListOf<BaseCatalogLibraryDM>()
         childCategoryList?.forEach {
@@ -117,7 +120,8 @@ class CatalogLihatVH(
                         rootCategoryId ?: "",
                         rootCategoryName ?: "",
                         false,
-                        isAsc
+                        isAsc,
+                        activeCategoryId
                     )
                 )
             }else {

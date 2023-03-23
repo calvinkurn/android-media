@@ -204,7 +204,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
     }
 
     private fun getDataFromViewModel() {
-        brandLandingPageViewModel.getLihatSemuaByBrandData(brandIdStr,false)
+        brandLandingPageViewModel.getLihatSemuaByBrandData(categoryIdIdStr,brandIdStr,false)
     }
 
     private fun addShimmer() {
@@ -251,27 +251,20 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
 
     override fun onChangeCategory(categoryId: String) {
         super.onChangeCategory(categoryId)
-        val categoryModel = catalogLibraryUiUpdater.mapOfData[CATALOG_CONTAINER_CATEGORY_HEADER]
+        categoryIdIdStr = categoryId
+        val categoryModel = catalogLibraryUiUpdater.mapOfData[CATALOG_CONTAINER_CATEGORY_HEADER] as? CatalogBrandCategoryDM
         catalogLibraryUiUpdater.clearAll()
-        categoryModel?.let { cm ->
+        categoryModel?.copy()?.let { cm ->
+            cm.selectedCategoryId = categoryId
             catalogLibraryUiUpdater.updateModel(cm)
         }
-        categoryIdIdStr = categoryId
-        refreshHeaderComponent(categoryId)
         setCategory(categoryId)
         getProducts()
     }
 
-    private fun refreshHeaderComponent(categoryId: String) {
-        val component = (catalogLibraryUiUpdater.mapOfData[CATALOG_CONTAINER_CATEGORY_HEADER] as? CatalogBrandCategoryDM)?.copy()
-        component?.selectedCategoryId = categoryId
-        component?.let {
-            catalogLibraryUiUpdater.updateModel(component)
-        }
-    }
-
     private fun openBottomSheet(brandIdStr: String) {
         val catalogComparisonBottomSheet = CatalogLibraryComponentBottomSheet.newInstance(
+            categoryIdIdStr,
             brandIdStr
         )
         catalogComparisonBottomSheet.show(childFragmentManager, CatalogLibraryComponentBottomSheet::class.java.name)

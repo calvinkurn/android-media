@@ -6,7 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogRelevantDM
+import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.CatalogAnalyticsHomePage
+import com.tokopedia.catalog_library.util.EventKeys
+import com.tokopedia.catalog_library.util.TrackerId
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -52,11 +55,14 @@ class CatalogRelevantItemVH(val view: View, private val catalogLibraryListener: 
 
     override fun onViewAttachedToWindow() {
         dataModel?.relevantDataList?.let {
-            catalogLibraryListener.relevantCategoryImpression(
+            catalogLibraryListener.categoryHorizontalCarouselImpression(
+                EventKeys.CREATIVE_NAME_RELEVANT_VALUE,
                 layoutPosition + 1,
                 dataModel?.relevantDataList?.id.toString(),
                 dataModel?.relevantDataList?.name ?: "",
-                UserSession(itemView.context).userId
+                UserSession(itemView.context).userId,
+                TrackerId.IMPRESSION_ON_RELEVANT_CATALOGS,
+                ActionKeys.IMPRESSION_ON_RELEVANT_CATALOGS
             )
         }
     }

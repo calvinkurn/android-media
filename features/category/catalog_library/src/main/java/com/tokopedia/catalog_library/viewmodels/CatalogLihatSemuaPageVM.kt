@@ -29,6 +29,7 @@ class CatalogLihatSemuaPageVM @Inject constructor(private val catalogLibraryUseC
 
     private var isAsc = true
     private var isTypeList = false
+    private var categoryIdStr = ""
 
     fun getLihatSemuaPageData(sortOrder: String) {
         isAsc = sortOrder == "0"
@@ -40,8 +41,9 @@ class CatalogLihatSemuaPageVM @Inject constructor(private val catalogLibraryUseC
         )
     }
 
-    fun getLihatSemuaByBrandData(brandId : String, isOfTypeList : Boolean = true) {
+    fun getLihatSemuaByBrandData(categoryId : String, brandId : String, isOfTypeList : Boolean = true) {
         isTypeList = isOfTypeList
+        categoryIdStr = categoryId
         catalogLibraryBrandCategoryUseCase.cancelJobs()
         catalogLibraryBrandCategoryUseCase.getBrandCategories(
             ::onAvailableBrandCategoryData,
@@ -83,7 +85,7 @@ class CatalogLihatSemuaPageVM @Inject constructor(private val catalogLibraryUseC
                 CatalogLibraryConstant.CATALOG_LIHAT_SEMUA,
                 "${CatalogLibraryConstant.CATALOG_LIHAT_SEMUA}_$index",
                 categoryData,
-                isAsc , isTypeList
+                isAsc , isTypeList,categoryIdStr
             ))
         }
         return CatalogLibraryDataModel(listOfComponents)

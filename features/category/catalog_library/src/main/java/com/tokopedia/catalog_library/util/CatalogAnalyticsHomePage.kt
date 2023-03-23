@@ -34,7 +34,10 @@ object CatalogAnalyticsHomePage {
         return TrackApp.getInstance().gtm
     }
 
-    fun sendImpressionOnSpecialCategoriesEvent(
+    fun sendImpressionOnCatalogsEvent(
+        trackerId : String,
+        eventAction : String,
+        creativeName : String,
         trackingQueue: TrackingQueue,
         creativeSlot: Int,
         itemId: String,
@@ -45,22 +48,22 @@ object CatalogAnalyticsHomePage {
         val promotionMap = HashMap<String, Any>()
 
         promotionMap[ITEM_ID] = itemId
-        promotionMap[CREATIVE_NAME] = CREATIVE_NAME_SPECIAL_VALUE
+        promotionMap[CREATIVE_NAME] = creativeName
         promotionMap[CREATIVE_SLOT] = (creativeSlot).toString()
         promotionMap[ITEM_NAME] = itemName
         list.add(promotionMap)
         val eventModel = EventModel(
             PROMO_VIEW,
             CategoryKeys.CATALOG_LIBRARY_LANDING_PAGE,
-            ActionKeys.IMPRESSION_ON_SPECIAL_CATEGORIES,
+            eventAction,
             ""
         )
-        eventModel.key = "${ActionKeys.IMPRESSION_ON_SPECIAL_CATEGORIES}-$creativeSlot"
+        eventModel.key = "${eventAction}-$creativeSlot"
         val customDimensionMap = HashMap<String, Any>()
         customDimensionMap[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         customDimensionMap[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
         customDimensionMap[EventKeys.KEY_USER_ID] = userId
-        customDimensionMap[EventKeys.TRACKER_ID] = TrackerId.IMPRESSION_ON_SPECIAL_CATEGORIES
+        customDimensionMap[EventKeys.TRACKER_ID] = trackerId
         customDimensionMap[EventKeys.PAGE_PATH] = CatalogLibraryConstant.APP_LINK_HOME
         customDimensionMap[EventKeys.SESSION_IRIS] = getIrisSessionId()
 
@@ -75,68 +78,6 @@ object CatalogAnalyticsHomePage {
             ),
             customDimensionMap
         )
-    }
-
-    fun sendImpressionOnRelevantCatalogsEvent(
-        trackingQueue: TrackingQueue,
-        creativeSlot: Int,
-        itemId: String,
-        itemName: String,
-        userId: String
-    ) {
-        val list = ArrayList<Map<String, Any>>()
-        val promotionMap = HashMap<String, Any>()
-
-        promotionMap[ITEM_ID] = itemId
-        promotionMap[CREATIVE_NAME] = CREATIVE_NAME_RELEVANT_VALUE
-        promotionMap[CREATIVE_SLOT] = (creativeSlot).toString()
-        promotionMap[ITEM_NAME] = itemName
-        list.add(promotionMap)
-        val eventModel = EventModel(
-            PROMO_VIEW,
-            CategoryKeys.CATALOG_LIBRARY_LANDING_PAGE,
-            ActionKeys.IMPRESSION_ON_RELEVANT_CATALOGS,
-            ""
-        )
-        eventModel.key = "${ActionKeys.IMPRESSION_ON_RELEVANT_CATALOGS}-$creativeSlot"
-        val customDimensionMap = HashMap<String, Any>()
-        customDimensionMap[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
-        customDimensionMap[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
-        customDimensionMap[EventKeys.KEY_USER_ID] = userId
-        customDimensionMap[EventKeys.TRACKER_ID] = TrackerId.IMPRESSION_ON_RELEVANT_CATALOGS
-        customDimensionMap[EventKeys.PAGE_PATH] = CatalogLibraryConstant.APP_LINK_HOME
-        customDimensionMap[EventKeys.SESSION_IRIS] = getIrisSessionId()
-
-        trackingQueue.putEETracking(
-            eventModel,
-            hashMapOf(
-                KEY_ECOMMERCE to hashMapOf(
-                    PROMO_VIEW to hashMapOf(
-                        PROMOTIONS to list
-                    )
-                )
-            ),
-            customDimensionMap
-        )
-    }
-
-    fun sendImpressionOnPopularBrandsEvent(
-        userId: String
-    ) {
-        Tracker.Builder()
-            .setEvent(EventKeys.VIEW_ITEM)
-            .setEventAction(ActionKeys.IMPRESSION_ON_POPULAR_BRANDS)
-            .setEventCategory(CategoryKeys.CATALOG_LIBRARY_LANDING_PAGE)
-            .setEventLabel("")
-            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.IMPRESSION_ON_POPULAR_BRANDS)
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .setCustomProperty(EventKeys.PAGE_PATH, CatalogLibraryConstant.APP_LINK_HOME)
-//            .setCustomProperty(EventKeys.PROMOTIONS, promotions)
-            .setCustomProperty(EventKeys.SESSION_IRIS, getIrisSessionId())
-            .setUserId(userId)
-            .build()
-            .send()
     }
 
     fun sendImpressionOnCatalogListEvent(

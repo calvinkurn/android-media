@@ -11,6 +11,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class CatalogLibraryComponentBottomSheet : BottomSheetUnify(), CatalogLibraryListener {
 
     private var categoryId: String = ""
+    private var brandId: String = ""
 
     init {
         isFullpage = true
@@ -33,11 +34,12 @@ class CatalogLibraryComponentBottomSheet : BottomSheetUnify(), CatalogLibraryLis
         super.onViewCreated(view, savedInstanceState)
         if (arguments != null) {
             categoryId = requireArguments().getString(ARG_EXTRA_CATEGORY_ID, "")
+            brandId = requireArguments().getString(ARG_EXTRA_BRAND_ID, "")
         }
         setTitle("Kategori")
         if(savedInstanceState == null) {
             childFragmentManager.beginTransaction().replace(R.id.frame_content,
-                CatalogLihatSemuaPageFragment.newInstance(true,categoryId)).commit()
+                CatalogLihatSemuaPageFragment.newInstance(true,categoryId,brandId)).commit()
         }
     }
 
@@ -53,10 +55,12 @@ class CatalogLibraryComponentBottomSheet : BottomSheetUnify(), CatalogLibraryLis
 
     companion object {
         private const val ARG_EXTRA_CATEGORY_ID = "ARG_EXTRA_CATEGORY_ID"
-        fun newInstance(categoryId : String): CatalogLibraryComponentBottomSheet {
+        private const val ARG_EXTRA_BRAND_ID = "ARG_EXTRA_BRAND_ID"
+        fun newInstance(categoryId : String,brandId : String): CatalogLibraryComponentBottomSheet {
             return CatalogLibraryComponentBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(ARG_EXTRA_CATEGORY_ID, categoryId)
+                    putString(ARG_EXTRA_BRAND_ID, brandId)
                 }
             }
         }

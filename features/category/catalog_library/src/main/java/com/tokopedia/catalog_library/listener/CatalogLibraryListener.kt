@@ -7,25 +7,24 @@ interface CatalogLibraryListener {
     fun onLihatSemuaTextClick(applink: String) {}
     fun onProductCardClicked(applink: String?) {}
     fun onCategoryItemClicked(categoryIdentifier: String?) {}
-    fun onPopularBrandsLihatSemuaClick(applink: String){}
-    fun onPopularBrandsClick(applink: String){}
+    fun onPopularBrandsHomeClick(brandName: String, brandId: String, position : String){}
+    fun onPopularBrandsLihatSemuaClick(brandName: String, brandId: String, position : String,
+                                       eventAction : String, trackerId : String){}
+    fun onPopularBrandsClick(brandName: String, brandId: String, position : String,
+                             catalogName :String, catalogId: String, applink: String){}
     fun onBrandCategoryTabSelected(categoryName : String, categoryId : String){}
     fun onChangeCategory(categoryId : String){}
     fun onBrandCategoryArrowClick(){}
 
-    fun specialCategoryImpression(
-        creativeSlot: Int,
-        itemId: String,
-        itemName: String,
-        userId: String
-    ) {
-    }
 
-    fun relevantCategoryImpression(
+    fun categoryHorizontalCarouselImpression(
+        creativeName : String,
         creativeSlot: Int,
         itemId: String,
         itemName: String,
-        userId: String
+        userId: String,
+        trackerId : String,
+        eventAction : String
     ) {
     }
 
