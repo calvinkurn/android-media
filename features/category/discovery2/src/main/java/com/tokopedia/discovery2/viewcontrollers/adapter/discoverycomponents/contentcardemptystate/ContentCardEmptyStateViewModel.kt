@@ -9,9 +9,9 @@ class ContentCardEmptyStateViewModel(val application: Application, val component
     fun getToastMessage(discoItemCount: Int?): Pair<String, String> {
         if (discoItemCount != null) {
             if (position == discoItemCount - 1) {
-                return Pair(application.getString(R.string.content_card_empty_text_last_component), application.getString(R.string.content_card_empty_toast_last_component))
+                return Pair(application.getString(R.string.card_empty_text_lc), application.getString(R.string.card_empty_toast_lc))
             }
         }
-        return Pair(application.getString(R.string.content_card_empty_text_not_last_component), application.getString(R.string.content_card_empty_toast_not_last_component))
+        return Pair(application.getString(R.string.card_empty_text_nlc), application.getString(R.string.card_empty_toast_nlc))
     }
 }

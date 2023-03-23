@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/unify_space_8"
-    app:cardElevation="6dp">
+    app:cardElevation="@dimen/anchor_tab_card_padding">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
