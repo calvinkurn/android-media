@@ -177,9 +177,13 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.SwitchAccount -> handleSwitchAccount()
 
             /** Title Form */
+            is PlayShortsAction.OpenTitleForm -> handleOpenTitleForm()
+            is PlayShortsAction.CloseTitleForm -> handlecloseTitleForm()
             is PlayShortsAction.UploadTitle -> handleUploadTitle(action.title)
 
             /** Cover Form */
+            is PlayShortsAction.OpenCoverForm -> handleOpenCoverForm()
+            is PlayShortsAction.CloseCoverForm -> handleCloseCoverForm()
             is PlayShortsAction.UpdateCover -> handleUpdateCover()
 
             /** Product */
@@ -196,6 +200,18 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.SetNotFirstSwitchAccount -> handleSetNotFirstSwitchAccount()
             is PlayShortsAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
             is PlayShortsAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(action.source)
+        }
+    }
+
+    private fun handleCloseCoverForm() {
+        _coverForm.update {
+            it.copy(state = PlayShortsCoverFormUiState.State.Unknown)
+        }
+    }
+
+    private fun handleOpenCoverForm() {
+        _coverForm.update {
+            it.copy(state = PlayShortsCoverFormUiState.State.Editing)
         }
     }
 
@@ -236,6 +252,10 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleOpenTitleForm() {
         _titleForm.update { it.copy(state = PlayShortsTitleFormUiState.State.Editing) }
+    }
+
+    private fun handlecloseTitleForm() {
+        _titleForm.update { it.copy(state = PlayShortsTitleFormUiState.State.Unknown) }
     }
 
     private fun handleUploadTitle(title: String) {

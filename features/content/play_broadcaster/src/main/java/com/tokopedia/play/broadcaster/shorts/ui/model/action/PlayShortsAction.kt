@@ -20,11 +20,15 @@ sealed interface PlayShortsAction {
     object SwitchAccount : PlayShortsAction
 
     /** Title Form */
+    object OpenTitleForm: PlayShortsAction
+    object CloseTitleForm: PlayShortsAction
     data class UploadTitle(
         val title: String
     ) : PlayShortsAction
 
     /** Cover Form */
+    object OpenCoverForm: PlayShortsAction
+    object CloseCoverForm: PlayShortsAction
     object UpdateCover: PlayShortsAction
 
     /** Product */

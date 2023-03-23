@@ -268,6 +268,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
                 when (it.menuId) {
                     DynamicPreparationMenu.TITLE -> {
+                        viewModel.submitAction(PlayShortsAction.OpenTitleForm)
                         analytic.clickMenuTitle(viewModel.selectedAccount)
                         openSetupTitleBottomSheet()
                     }
@@ -276,6 +277,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                         openProductPicker()
                     }
                     DynamicPreparationMenu.COVER -> {
+                        viewModel.submitAction(PlayShortsAction.OpenCoverForm)
                         analytic.clickMenuCover(viewModel.selectedAccount)
                         openSetupCoverBottomSheet()
                     }

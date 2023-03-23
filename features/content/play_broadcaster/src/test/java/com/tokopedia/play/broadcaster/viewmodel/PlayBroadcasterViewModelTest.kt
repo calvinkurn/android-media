@@ -630,7 +630,6 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             val state = robot.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                getViewModel().submitAction(PlayBroadcastAction.SetCover(mockCover))
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
             it.getViewModel().contentAccountList.assertEqualTo(accountMock)
@@ -662,7 +661,6 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             it.recordState {
                 getAccountConfiguration(TYPE_SHOP)
-                getViewModel().submitAction(PlayBroadcastAction.SetCover(mockCover))
             }
             it.getViewModel().channelId.assertEqualTo("123")
             it.getViewModel().channelTitle.assertEqualTo("Title 1")
