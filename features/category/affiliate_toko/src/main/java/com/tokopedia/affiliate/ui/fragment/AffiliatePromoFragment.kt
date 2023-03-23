@@ -19,6 +19,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.AFFILIATE_DISCO_PROMO
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_VISIBILITY
@@ -57,6 +58,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -167,7 +169,13 @@ class AffiliatePromoFragment :
         setupViewPager()
         showDefaultState()
         affiliatePromoViewModel.getAffiliateValidateUser()
-        affiliatePromoViewModel.getDiscoBanners(page = 0, limit = 7)
+        if (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AFFILIATE_DISCO_PROMO,
+                ""
+            ) == AFFILIATE_DISCO_PROMO
+        ) {
+            affiliatePromoViewModel.getDiscoBanners(page = 0, limit = 7)
+        }
     }
 
     private fun sendClickEvent() {

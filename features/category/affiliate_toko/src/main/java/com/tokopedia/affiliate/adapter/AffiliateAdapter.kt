@@ -105,7 +105,7 @@ class AffiliateAdapter(
     ) {
         when (holder) {
             is AffiliatePromotionShopItemVH -> {
-                if (!itemImpressionSet.add(holder.bindingAdapterPosition)) {
+                if (itemImpressionSet.add(holder.bindingAdapterPosition)) {
                     val item = list[holder.bindingAdapterPosition] as? AffiliatePromotionShopModel
                     sendPromoShopImpression(
                         item?.promotionItem,
@@ -114,7 +114,7 @@ class AffiliateAdapter(
                 }
             }
             is AffiliatePromotionCardItemVH -> {
-                if (!itemImpressionSet.add(holder.bindingAdapterPosition)) {
+                if (itemImpressionSet.add(holder.bindingAdapterPosition)) {
                     val item = list[holder.bindingAdapterPosition] as? AffiliatePromotionCardModel
                     sendPromoProductImpression(
                         item?.promotionItem,
@@ -123,8 +123,8 @@ class AffiliateAdapter(
                 }
             }
             is AffiliateDiscoBannerVH -> {
-                if (!itemImpressionSet.add(holder.bindingAdapterPosition)) {
-                    val item = list[holder.bindingAdapterPosition] as? AffiliateDiscoBannerUiModel
+                val item = list[holder.bindingAdapterPosition] as? AffiliateDiscoBannerUiModel
+                if (itemImpressionSet.add(item.hashCode())) {
                     sendPromoDiscoImpression(item?.article, holder.bindingAdapterPosition)
                 }
             }
@@ -136,7 +136,7 @@ class AffiliateAdapter(
     ) {
         when (holder) {
             is AffiliateSSAShopItemVH -> {
-                if (!itemImpressionSet.add(holder.bindingAdapterPosition)) {
+                if (itemImpressionSet.add(holder.bindingAdapterPosition)) {
                     val item = list[holder.bindingAdapterPosition] as? AffiliateSSAShopUiModel
                     sendSSAShopImpression(
                         item?.ssaShop,
@@ -151,7 +151,7 @@ class AffiliateAdapter(
         holder: AbstractViewHolder<*>
     ) {
         if (holder is AffiliatePerformaSharedProductCardsItemVH) {
-            if (!itemImpressionSet.add(holder.bindingAdapterPosition)) {
+            if (itemImpressionSet.add(holder.bindingAdapterPosition)) {
                 val item =
                     list[holder.bindingAdapterPosition] as? AffiliatePerformaSharedProductCardsModel
                 if (item?.product?.itemType == PRODUCT_TYPE) {
@@ -168,7 +168,7 @@ class AffiliateAdapter(
     ) {
         when (holder) {
             is AffiliateDiscoBannerListVH -> {
-                if (!itemImpressionSet.add(holder.bindingAdapterPosition)) {
+                if (itemImpressionSet.add(holder.bindingAdapterPosition)) {
                     val item = list[holder.bindingAdapterPosition] as? AffiliateDiscoBannerListUiModel
                     sendDiscoBannerListImpression(
                         item?.article,

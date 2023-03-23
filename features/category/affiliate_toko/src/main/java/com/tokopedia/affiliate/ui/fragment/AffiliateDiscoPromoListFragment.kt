@@ -211,7 +211,7 @@ class AffiliateDiscoPromoListFragment :
                 commission = commison,
                 type = type,
                 isLinkGenerationEnabled = true,
-                origin = AffiliatePromotionBottomSheet.ORIGIN_PROMO_DISCO_BANNER,
+                origin = AffiliatePromotionBottomSheet.ORIGIN_PROMO_DISCO_BANNER_LIST,
                 ssaInfo = ssaInfo
             ),
             AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
