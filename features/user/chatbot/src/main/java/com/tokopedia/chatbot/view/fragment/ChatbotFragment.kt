@@ -120,12 +120,12 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
+import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
 import com.tokopedia.chatbot.util.SmoothScroller
 import com.tokopedia.chatbot.util.VideoUploadData
 import com.tokopedia.chatbot.util.VideoUtil
 import com.tokopedia.chatbot.util.convertMessageIdToLong
-import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
@@ -166,6 +166,7 @@ import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.chatbot.view.util.OnboardingReplayDismissListener
 import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
 import com.tokopedia.chatbot.view.util.showToaster
+import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -192,7 +193,6 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
-import java.lang.NumberFormatException
 import java.util.*
 import javax.inject.Inject
 
@@ -314,7 +314,7 @@ class ChatbotFragment :
     private var csatRemoteConfig: Boolean = false
     private var replyBubbleBottomSheet: ChatbotReplyBottomSheet? = null
 
-    private var pageSource: String= ""
+    private var pageSource: String = ""
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -1046,10 +1046,10 @@ class ChatbotFragment :
         }
     }
 
-    private fun handlingForMessageIdValidity(messageId : String){
-        try{
+    private fun handlingForMessageIdValidity(messageId: String) {
+        try {
             val id = messageId.toLong()
-            if(id == 0L){
+            if (id == 0L) {
                 throw NumberFormatException()
             }
         } catch (e: NumberFormatException) {
@@ -1342,7 +1342,7 @@ class ChatbotFragment :
         getBindingView().smallReplyBox.getAddAttachmentMenu()?.showWithCondition(
             showAddAttachmentMenu
         )
-        if(showAddAttachmentMenu) {
+        if (showAddAttachmentMenu) {
             getBindingView().smallReplyBox.getMessageView()?.apply {
                 if (!isConnectedToAgent) {
                     setImageUploadDataInReplyBox()
@@ -1706,7 +1706,7 @@ class ChatbotFragment :
                 list.add(ChatbotImageMenu())
                 addChatbotImageAttachmentMenu()
             }
-            if(showUploadVideoButton) {
+            if (showUploadVideoButton) {
                 list.add(VideoMenu())
                 addVideoAttachmentMenu()
             }
@@ -2458,6 +2458,7 @@ class ChatbotFragment :
         replyBubbleEnabled = state
         if (state) {
             checkCoachMarkStatus()
+            handleAddAttachmentButtonViewState(showAddAttachmentMenu)
         }
     }
 
