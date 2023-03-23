@@ -74,10 +74,6 @@ class EditorViewModel @Inject constructor(
         return _editStateList[urlKey]
     }
 
-    fun cleanImageCache() {
-        saveImageRepository.clearEditorCache()
-    }
-
     fun undoState(activeImageUrl: String): EditorUiModel? {
         getEditState(activeImageUrl)?.let {
             val imageEditStateCount = it.editList.size
@@ -99,7 +95,10 @@ class EditorViewModel @Inject constructor(
         return null
     }
 
-    fun saveToGallery(dataList: List<EditorUiModel>, onFinish: (result: List<String>) -> Unit) {
+    fun saveToGallery(
+        dataList: List<EditorUiModel>,
+        onFinish: (result: List<String>?, exception: Exception?) -> Unit
+    ) {
         // store list image of camera picker that need to be saved
         val cameraImageList = mutableListOf<String>()
         val pickerCameraCacheDir = getTokopediaCacheDir()
@@ -128,13 +127,13 @@ class EditorViewModel @Inject constructor(
 
         // save camera image that didn't have edit state
         if (cameraImageList.size != 0) {
-            saveImageRepository.saveToGallery(cameraImageList) {}
+            saveImageRepository.saveToGallery(cameraImageList) { _, _ -> }
         }
 
         saveImageRepository.saveToGallery(
             filteredData
-        ) {
-            onFinish(it)
+        ) { listData, exception ->
+            onFinish(listData, exception)
         }
     }
 

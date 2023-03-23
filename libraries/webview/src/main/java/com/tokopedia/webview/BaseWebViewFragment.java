@@ -836,7 +836,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             e.printStackTrace();
         }
 
-        if (url.endsWith(".pdf") && url.startsWith("http")) {
+        if (uri.getPath().endsWith(".pdf") && url.startsWith("http")) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse(decode(uri.toString().replace(GOOGLE_DOCS_PDF_URL, "")))
                     , "application/pdf");
