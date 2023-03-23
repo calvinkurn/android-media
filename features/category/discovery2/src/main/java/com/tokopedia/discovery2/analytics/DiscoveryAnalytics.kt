@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.analytics
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
-import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.Utils.Companion.getParentPosition
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -1004,40 +1003,60 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {
         if (componentsItems.isNotEmpty()) {
             val list = ArrayList<Map<String, Any>>()
-            for (coupon in componentsItems) {
+            val parentComp =
+                getComponent(componentsItems[0].parentComponentId, componentsItems[0].pageEndPoint)
+            componentsItems.forEachIndexed { index, coupon ->
                 val data: ArrayList<DataItem> = ArrayList()
                 coupon.data?.let {
                     data.addAll(it)
                 }
                 val map = HashMap<String, Any>()
                 data[0].let {
-                    map[KEY_ID] = it.id.toString()
-                    map[KEY_CREATIVE_URL] = if (coupon.properties?.columns?.equals(DOUBLE_COLUMNS) == true)
-                        it.smallImageUrlMobile
-                                ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER
-                    map[KEY_POSITION] = componentsItems.indexOf(coupon) + 1
-                    map[KEY_PROMO_ID] = it.promoId.toString()
-                    map[KEY_PROMO_CODE] = it.slug.toString()
-                    map[KEY_NAME] = CLAIM_COUPON_ITEM_NAME
+                    map[KEY_ID] = "${it.id.toString()} - ${it.basecode.toString()}"
+                    map[KEY_POSITION] = index + 1
+                    map[KEY_CREATIVE] = "${it.slug.toString()} - ${it.basecode.toString()}"
+                    map[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - $pageType - ${
+                        getParentPosition(
+                            coupon
+                        ) + 1
+                    } - - ${parentComp?.parentSectionId ?: ""}- ${ComponentNames.ClaimCoupon}"
                 }
                 list.add(map)
             }
 
             val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-                    EVENT_PROMO_VIEW to mapOf(
-                            KEY_PROMOTIONS to list))
-            val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW, eventAction = CLAIM_COUPON_IMPRESSION)
+                EVENT_PROMO_VIEW to mapOf(
+                    KEY_PROMOTIONS to list
+                )
+            )
+            val map = createGeneralEvent(
+                eventName = EVENT_PROMO_VIEW,
+                eventAction = ACTION_VIEW_COUPON_BANNER,
+                shouldSendSourceAsDestination = true
+            )
+            map[TRACKER_ID] = "2725"
             map[PAGE_TYPE] = pageType
             map[PAGE_PATH] = removedDashPageIdentifier
+            map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+            map[BUSINESS_UNIT] = HOME_BROWSE
             map[KEY_E_COMMERCE] = eCommerce
+            map[USER_ID] = userSession.userId
             trackingQueue.putEETracking(map as HashMap<String, Any>)
         }
     }
 
-    override fun trackClickClaimCoupon(couponName: String?, promoCode: String?) {
-        val map = createGeneralEvent(eventAction = CLICK_BUTTON_CLAIM_COUPON_ACTION, eventLabel = "$couponName - $promoCode")
+    override fun trackClickClaimCoupon(couponName: String?, baseCode: String?) {
+        val map = createGeneralEvent(
+            eventName = CLICK_HOMEPAGE_EVENT,
+            eventAction = CLICK_BUTTON_CLAIM_COUPON_ACTION,
+            eventLabel = "claim coupon - click - $baseCode",
+            shouldSendSourceAsDestination = true
+        )
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
+        map[TRACKER_ID] = "2726"
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
         getTracker().sendGeneralEvent(map)
     }
 

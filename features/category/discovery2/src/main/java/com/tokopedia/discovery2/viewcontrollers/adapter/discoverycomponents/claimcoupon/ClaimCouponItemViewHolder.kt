@@ -78,7 +78,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
                     e.printStackTrace()
                 }
             })
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickClaimCoupon(dataItem?.title, dataItem?.slug)
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickClaimCoupon(dataItem?.title, dataItem?.basecode)
         }
     }
 
