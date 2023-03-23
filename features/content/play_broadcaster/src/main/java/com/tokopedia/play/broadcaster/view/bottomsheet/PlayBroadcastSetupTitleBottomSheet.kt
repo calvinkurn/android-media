@@ -52,7 +52,12 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
     }
 
     private fun setupView() = with(binding) {
+        mListener?.onTitleFormOpen()
         setTitle(getString(R.string.play_bro_title_label_bottom_sheet))
+        setOnDismissListener {
+            mListener?.onBackPressedTitleForm()
+            dismiss()
+        }
 
         tvSetupTitleField.apply {
             setCounter(mMaxCharacter)
@@ -81,6 +86,14 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
             editText.setOnEditorActionListener { _, _, _ ->
                 hideSetupTitleKeyboard()
                 return@setOnEditorActionListener false
+            }
+            editText.setOnClickListener {
+                mListener?.onTextFieldTitleFormClicked()
+            }
+            clearIconView.setOnClickListener {
+                mListener?.onTextFieldTitleFormCleared()
+                editText.text.clear()
+                btnSetupTitle.isEnabled = false
             }
         }
         btnSetupTitle.setOnClickListener {
@@ -147,6 +160,10 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
     }
 
     interface Listener {
+        fun onTitleFormOpen() {}
+        fun onBackPressedTitleForm() {}
+        fun onTextFieldTitleFormClicked() {}
+        fun onTextFieldTitleFormCleared() {}
         fun submitTitle(title: String)
     }
 

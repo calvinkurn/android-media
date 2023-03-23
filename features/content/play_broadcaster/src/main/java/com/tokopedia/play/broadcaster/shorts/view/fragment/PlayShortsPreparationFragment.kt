@@ -581,8 +581,24 @@ class PlayShortsPreparationFragment @Inject constructor(
         .getFragment(childFragmentManager, requireActivity().classLoader)
 
     override fun submitTitle(title: String) {
-//        analytic.clickSubmitTitle()
+        analytic.clickSaveOnTitleForm(viewModel.selectedAccount)
         viewModel.submitAction(PlayShortsAction.UploadTitle(title))
+    }
+
+    override fun onTitleFormOpen() {
+        analytic.openScreenTitleForm(viewModel.selectedAccount)
+    }
+
+    override fun onBackPressedTitleForm() {
+        analytic.clickBackOnTitleForm(viewModel.selectedAccount)
+    }
+
+    override fun onTextFieldTitleFormClicked() {
+        analytic.clickTextFieldOnTitleForm(viewModel.selectedAccount)
+    }
+
+    override fun onTextFieldTitleFormCleared() {
+        analytic.clickClearTextBoxOnTitleForm(viewModel.selectedAccount)
     }
 
     override fun onUploadCoverSuccess() {
