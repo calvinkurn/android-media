@@ -102,7 +102,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 (fragment as DiscoveryFragment).activity?.let {
                     val view = NotificationGeneralPromptLifecycleCallbacks()
                         .notificationGeneralPromptView(it, pageName)
-                    NotificationReminderPrompt(view).showReminderPrompt(it)
+                    NotificationReminderPrompt(view).showReminderPrompt(it, pageName)
                 }
             }
         }
