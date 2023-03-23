@@ -9,7 +9,8 @@ data class CatalogLihatDM(
     val type: String = "",
     val catalogLibraryDataList: CatalogLibraryResponse.CategoryListLibraryPage.CategoryData?,
     val isAsc: Boolean,
-    val isTypeList : Boolean = false
+    val isTypeList : Boolean = false,
+    val activeCategoryId : String = ""
 ) : BaseCatalogLibraryDM {
 
     override fun type() = type

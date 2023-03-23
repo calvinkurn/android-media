@@ -9,8 +9,8 @@ interface CatalogLibraryListener {
     fun onCategoryItemClicked(categoryIdentifier: String?) {}
     fun onPopularBrandsLihatSemuaClick(applink: String){}
     fun onPopularBrandsClick(applink: String){}
-    fun onBrandCategoryTabSelected(categoryName : String, categoryIdentifier : String){}
-    fun onChangeCategory(categoryIdentifier : String){}
+    fun onBrandCategoryTabSelected(categoryName : String, categoryId : String){}
+    fun onChangeCategory(categoryId : String){}
     fun onBrandCategoryArrowClick(){}
 
     fun specialCategoryImpression(

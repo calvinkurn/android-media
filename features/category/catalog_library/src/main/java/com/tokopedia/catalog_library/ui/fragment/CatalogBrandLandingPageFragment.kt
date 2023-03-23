@@ -16,6 +16,7 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.model.datamodel.CatalogBrandCategoryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogProductLoadMoreDM
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 import com.tokopedia.catalog_library.ui.bottomsheet.CatalogLibraryComponentBottomSheet
@@ -41,6 +42,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
 
     private var globalError: GlobalError? = null
     private var brandIdStr = ""
+    private var categoryIdIdStr = ""
     private var catalogLandingRecyclerView: RecyclerView? = null
 
     @Inject
@@ -146,6 +148,7 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
             when (it) {
                 is Success -> {
                     it.data.listOfComponents.forEach { component ->
+                        (component as? CatalogBrandCategoryDM)?.selectedCategoryId = categoryIdIdStr
                         catalogLibraryUiUpdater.updateModel(component)
                     }
                     updateUi()
@@ -241,20 +244,30 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
         openBottomSheet(brandIdStr)
     }
 
-    override fun onBrandCategoryTabSelected(categoryName: String, categoryIdentifier : String) {
-        super.onBrandCategoryTabSelected(categoryName, categoryIdentifier)
-        onChangeCategory(categoryIdentifier)
+    override fun onBrandCategoryTabSelected(categoryName: String, categoryId : String) {
+        super.onBrandCategoryTabSelected(categoryName, categoryId)
+        onChangeCategory(categoryId)
     }
 
-    override fun onChangeCategory(categoryIdentifier: String) {
-        super.onChangeCategory(categoryIdentifier)
+    override fun onChangeCategory(categoryId: String) {
+        super.onChangeCategory(categoryId)
         val categoryModel = catalogLibraryUiUpdater.mapOfData[CATALOG_CONTAINER_CATEGORY_HEADER]
         catalogLibraryUiUpdater.clearAll()
         categoryModel?.let { cm ->
             catalogLibraryUiUpdater.updateModel(cm)
         }
-        setCategory(categoryIdentifier)
+        categoryIdIdStr = categoryId
+        refreshHeaderComponent(categoryId)
+        setCategory(categoryId)
         getProducts()
+    }
+
+    private fun refreshHeaderComponent(categoryId: String) {
+        val component = (catalogLibraryUiUpdater.mapOfData[CATALOG_CONTAINER_CATEGORY_HEADER] as? CatalogBrandCategoryDM)?.copy()
+        component?.selectedCategoryId = categoryId
+        component?.let {
+            catalogLibraryUiUpdater.updateModel(component)
+        }
     }
 
     private fun openBottomSheet(brandIdStr: String) {

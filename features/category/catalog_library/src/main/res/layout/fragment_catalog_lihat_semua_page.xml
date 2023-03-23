@@ -61,10 +61,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/catalog_lihat_semua_rv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="106dp"
-        app:layout_constraintTop_toBottomOf="@id/chip_sort_asc" />
+        app:layout_constraintTop_toBottomOf="@id/chip_sort_asc"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

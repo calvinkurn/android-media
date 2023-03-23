@@ -7,6 +7,7 @@ import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogBrandCategoryDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDM
+import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse
 import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
@@ -22,7 +23,7 @@ class CatalogBrandCategoryItemVH(
 ) : AbstractViewHolder<CatalogBrandCategoryDM>(view) {
 
     var dataModel: CatalogBrandCategoryDM? = null
-
+    private var categoryItems = ArrayList<CatalogLibraryResponse.CategoryListLibraryPage.CategoryData.ChildCategoryList>()
     private val tabs: TabsUnify? by lazy(NONE) {
         itemView.findViewById(R.id.catalog_brand_tabs)
     }
@@ -34,15 +35,21 @@ class CatalogBrandCategoryItemVH(
     override fun bind(element: CatalogBrandCategoryDM?) {
         dataModel = element
         tabs?.hasRightArrow = true
-        element?.catalogLibraryDataList?.forEach {
-            tabs?.addNewTab(it?.rootCategoryName ?: "")
+        categoryItems = ArrayList()
+        tabs?.removeAllViews()
+        element?.catalogLibraryDataList?.forEach { category ->
+            category.childCategoryList?.forEach { childCategory ->
+                categoryItems.add(childCategory)
+                tabs?.addNewTab(childCategory.categoryName ?: "",
+                    (element.selectedCategoryId == childCategory.categoryId))
+            }
         }
 
         tabs?.getUnifyTabLayout()?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 catalogLibraryListener.onBrandCategoryTabSelected(
-                    element?.catalogLibraryDataList?.get(tab?.position ?: 0)?.rootCategoryName ?: "",
-                    element?.catalogLibraryDataList?.get(tab?.position ?: 0)?.rootCategoryId ?: ""
+                    categoryItems[tab?.position ?: 0].categoryName ?: "",
+                    categoryItems[tab?.position ?: 0].categoryId ?: "",
                 )
             }
             override fun onTabReselected(tab: TabLayout.Tab?) {

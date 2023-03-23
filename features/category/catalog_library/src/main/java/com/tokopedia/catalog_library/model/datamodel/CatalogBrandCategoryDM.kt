@@ -7,7 +7,8 @@ import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse
 data class CatalogBrandCategoryDM(
     val name: String = "",
     val type: String = "",
-    val catalogLibraryDataList: ArrayList<CatalogLibraryResponse.CategoryListLibraryPage.CategoryData>?
+    val catalogLibraryDataList: ArrayList<CatalogLibraryResponse.CategoryListLibraryPage.CategoryData>?,
+    var selectedCategoryId : String = ""
 ) : BaseCatalogLibraryDM {
 
     override fun type() = type

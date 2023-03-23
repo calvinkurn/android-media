@@ -45,15 +45,14 @@ class CatalogLibraryComponentBottomSheet : BottomSheetUnify(), CatalogLibraryLis
         this.dismiss()
     }
 
-    override fun onChangeCategory(categoryIdentifier: String) {
-        super.onChangeCategory(categoryIdentifier)
-        (parentFragment as? CatalogBrandLandingPageFragment)?.onChangeCategory(categoryIdentifier)
+    override fun onChangeCategory(categoryId: String) {
+        super.onChangeCategory(categoryId)
+        (parentFragment as? CatalogBrandLandingPageFragment)?.onChangeCategory(categoryId)
         dismissCatalogComponentBottomSheet()
     }
 
     companion object {
         private const val ARG_EXTRA_CATEGORY_ID = "ARG_EXTRA_CATEGORY_ID"
-        private const val ARG_EXTRA_CATEGORY_IDENTIFIER = "ARG_EXTRA_CATEGORY_IDENTIFIER"
         fun newInstance(categoryId : String): CatalogLibraryComponentBottomSheet {
             return CatalogLibraryComponentBottomSheet().apply {
                 arguments = Bundle().apply {
