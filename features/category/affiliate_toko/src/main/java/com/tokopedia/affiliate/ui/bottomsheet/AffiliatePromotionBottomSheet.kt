@@ -238,9 +238,10 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                         } else {
                             Html.fromHtml(params.ssaInfo.message)
                         }
-                    findViewById<Label>(R.id.ssa_label).isVisible =
-                        params.ssaInfo.label.labelText.isNotBlank()
-                    findViewById<Label>(R.id.ssa_label).text = params.ssaInfo.label.labelText
+                    findViewById<Label>(R.id.ssa_label).apply {
+                        isVisible = params.ssaInfo.label.labelText.isNotBlank()
+                        text = params.ssaInfo.label.labelText
+                    }
                     findViewById<Typography>(R.id.ssa_expiry_date).text = params.ssaInfo.ssaMessage
                 }
                 productId =
