@@ -108,6 +108,18 @@
         app:layout_constraintTop_toBottomOf="@id/daily_budget2"
         app:typographyType="small" />
 
+<!--    <com.tokopedia.unifycomponents.ProgressBarUnify-->
+<!--        android:id="@+id/daily_budget_progress_bar"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="10dp"-->
+<!--        app:layout_constraintStart_toStartOf="@id/daily_budget_desc2"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/daily_budget_desc2"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/daily_budget_desc2"-->
+<!--        app:unify_progress_bar_from_color="@color/Unify_N75"-->
+<!--        app:unify_progress_bar_to_color="@color/Unify_G500"-->
+<!--        app:unify_progress_bar_value="100"-->
+<!--        app:unify_progress_bar_height="6" />-->
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/automatic_btn_submit"
         android:layout_width="0dp"

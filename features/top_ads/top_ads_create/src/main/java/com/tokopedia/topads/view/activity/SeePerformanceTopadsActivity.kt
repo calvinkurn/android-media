@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -14,21 +13,21 @@ import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DATE_FORMAT_DD_MMM_YYYY
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.REQUEST_DATE_FORMAT
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.STATUS_IKLAN_ACTION_ACTIVATE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.STATUS_IKLAN_ACTION_DEACTIVATE
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
+import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.constants.MpTopadsConst
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.create.databinding.BottomsheetProductNameSeePerformanceBinding
 import com.tokopedia.topads.create.databinding.TopadsCreateBottomsheetSeePerformanceBinding
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.utils.Utils.convertMoneyToValue
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
@@ -53,10 +52,12 @@ private const val TIPS_VIEW_MORE =
 class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAdsComponent> {
 
     private lateinit var seePerformanceTopadsBottomSheet: BottomSheetUnify
-    private var selectedDateFrom: Date = Date()
-    private var selectedDateTo: Date = Date()
+    private var selectedDateFrom: Date? = null
+    private var selectedDateTo: Date? = null
     private var productId: String = ""
     private var dateFilterType: Int = 1
+    private var startDate: String = ""
+    private var endDate: String = ""
 
     private lateinit var mainBottomSheetBinding: TopadsCreateBottomsheetSeePerformanceBinding
 
@@ -133,8 +134,10 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         View.VISIBLE
                     mainBottomSheetBinding.includeTambahKredit.btnRefreshCredits.visibility =
                         View.VISIBLE
-                    mainBottomSheetBinding.includeTambahKredit.creditAmount.text =
-                        String.format("Rp %d", it.data.topadsDashboardDeposits.data.amount)
+                    mainBottomSheetBinding.includeTambahKredit.creditAmount.text = HtmlCompat.fromHtml(
+                        it.data.topadsDashboardDeposits.data.amountHtml,
+                        HtmlCompat.FROM_HTML_MODE_LEGACY
+                    )
                 }
                 else -> {}
             }
@@ -209,10 +212,16 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
             if (it != null && it.response?.errors.isNullOrEmpty()) {
                 mainBottomSheetBinding.includeAdGroupManual.root.visibility = View.VISIBLE
 
-                var adPerformance =
-                    100 * it.response?.data?.get(0)?.statTotalTopSlotImpression.toDoubleOrZero() / it.response?.data?.get(
-                        0
-                    )?.statTotalImpression.toDoubleOrZero()
+                val adPerformance =
+                    if (it.response?.data?.get(0)?.statTotalImpression == "0") 0 else {
+                        100 * convertMoneyToValue(
+                            it.response?.data?.get(0)?.statTotalTopSlotImpression ?: ""
+                        ) / convertMoneyToValue(
+                            it.response?.data?.get(
+                                0
+                            )?.statTotalImpression ?: ""
+                        )
+                    }
                 mainBottomSheetBinding.includePerformaTampil.adPerformance.text = when {
                     adPerformance > 20 -> {
                         setGreenCondition()
@@ -239,25 +248,41 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 mainBottomSheetBinding.includeAdGroupManual.keywordsCount.text =
                     it.response?.data?.get(0)?.totalKeyword.toString()
                 mainBottomSheetBinding.includeAdGroupManual.adCostSearch.text =
-                    it.response?.data?.get(0)?.groupBidSetting?.productSearch.toString()
+                    String.format(
+                        "Rp%s",
+                        convertToCurrency(
+                            it.response?.data?.get(0)?.groupBidSetting?.productSearch?.toLong() ?: 0
+                        )
+                    )
                 mainBottomSheetBinding.includeAdGroupManual.adCostRecommend.text =
-                    it.response?.data?.get(0)?.groupBidSetting?.productBrowse.toString()
+                    String.format(
+                        "Rp%s",
+                        convertToCurrency(
+                            it.response?.data?.get(0)?.groupBidSetting?.productBrowse?.toLong() ?: 0
+                        )
+                    )
                 mainBottomSheetBinding.includeAdGroupManual.dailyBudget.text =
                     if (it.response?.data?.get(0)?.groupPriceDaily == 0f) {
                         getString(R.string.tidak_dibatasi)
                     } else {
                         "Rp ${
-                            it.response?.data?.get(
-                                0
-                            )?.groupPriceDaily
+                            convertToCurrency(
+                                it.response?.data?.get(
+                                    0
+                                )?.groupPriceDaily?.toLong() ?: 0
+                            )
                         }"
                     }
                 if (it.response?.data?.get(0)?.groupPriceDaily != 0f) {
                     mainBottomSheetBinding.includeAdGroupManual.dailyBudgetDesc.text =
                         String.format(
-                            "Rp %s dari %f",
+                            "%s dari %s",
                             it.response?.data?.get(0)?.groupPriceDailySpentFmt,
-                            it.response?.data?.get(0)?.groupPriceDaily
+                            convertToCurrency(
+                                it.response?.data?.get(
+                                    0
+                                )?.groupPriceDaily?.toLong() ?: 0
+                            )
                         )
                 }
             } else {
@@ -279,9 +304,13 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                         else -> ""
                     }
                 mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudget2.text =
-                    String.format("Rp %d", it.data.dailyBudget)
+                    String.format("Rp %s", convertToCurrency(it.data.dailyBudget.toLong()))
                 mainBottomSheetBinding.includeAdGroupAutomatic.dailyBudgetDesc2.text =
-                    String.format("Rp %d dari ", it.data.dailyUsage, it.data.dailyBudget)
+                    String.format(
+                        "Rp %s dari %s",
+                        convertToCurrency(it.data.dailyUsage.toLong()),
+                        convertToCurrency(it.data.dailyBudget.toLong())
+                    )
             }
         }
 
@@ -339,11 +368,20 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
 
         mainBottomSheetBinding.includePerformaTampil.adPerformanceInfo.setOnClickListener {
             val adPerformanceCount =
-                (100 * seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
-                    0
-                )?.statTotalTopSlotImpression.toDoubleOrZero() / seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
-                    0
-                )?.statTotalImpression.toDoubleOrZero()).toInt()
+                if (seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
+                        0
+                    )?.statTotalImpression == "0"
+                ) 0 else {
+                    100 * convertMoneyToValue(
+                        seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
+                            0
+                        )?.statTotalTopSlotImpression ?: ""
+                    ) / convertMoneyToValue(
+                        seePerformanceTopAdsViewModel?.topAdsGetGroupInfo?.value?.response?.data?.get(
+                            0
+                        )?.statTotalImpression ?: ""
+                    )
+                }
             when {
                 adPerformanceCount > 20 -> {
                     showDescriptionBottomSheet(
@@ -531,13 +569,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         mainBottomSheetBinding.includeTips.root.visibility = View.VISIBLE
     }
 
-    private fun getColoredSpanned(
-        text: String, color: String, multiply: String, other: String
-    ): Spanned {
-        return MethodChecker.fromHtml("<strong><b><big><big><font color=$color>$text </font></big> <font color=#212121><big>teratas</font></big></big></b></strong> <br>${multiply}x teratas dari $other total tampil")
-    }
-
-    fun getProductStatistics(goalId: Int, startDate: String = "", endDate: String = "") {
+    fun getProductStatistics(goalId: Int) {
 
         mainBottomSheetBinding.includeCardStatistics.productStatisticsGroup.visibility =
             View.INVISIBLE
@@ -556,8 +588,6 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
      * title is used as key to check for date filter option user has opted for
      */
     fun updateDateFilter(title: String) {
-        var startDate: String = ""
-        var endDate: String = ""
         when (title) {
             getString(R.string.topads_common_date_today) -> {
                 startDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
@@ -583,18 +613,30 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 startDate = getFirstDateOfMonth(REQUEST_DATE_FORMAT)
                 dateFilterType = 6
             }
+            else -> openCalendar()
         }
-        if (!startDate.isEmpty()) {
+        if (title != getString(R.string.topads_common_custom)) {
             endDate = getDaysAgo(0, REQUEST_DATE_FORMAT)
             mainBottomSheetBinding.dateFilter.chipText = title
             getProductStatistics(
-                seePerformanceTopAdsViewModel?.goalId?.value ?: 1,
-                startDate,
-                endDate
+                seePerformanceTopAdsViewModel?.goalId?.value ?: 1
             )
-        } else {
-            openCalendar()
+            selectedDateFrom = null
+            selectedDateTo = null
         }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun updateCustomDates(dateFrom: Date, dateTo: Date) {
+        selectedDateFrom = dateFrom
+        selectedDateTo = dateTo
+        startDate = SimpleDateFormat(REQUEST_DATE_FORMAT).format(dateFrom)
+        endDate = SimpleDateFormat(REQUEST_DATE_FORMAT).format(dateTo)
+        dateFilterType = 7
+        mainBottomSheetBinding.dateFilter.chipText = getString(R.string.topads_common_custom)
+        getProductStatistics(
+            seePerformanceTopAdsViewModel?.goalId?.value ?: 1
+        )
     }
 
     private fun setProductStatistics(dataItem: WithoutGroupDataItem) {
@@ -780,6 +822,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         )
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun showChooseDateBottomSheet() {
         val today = getDaysAgo(0, DATE_FORMAT_DD_MMM_YYYY)
         val yesterday = getDaysAgo(1, DATE_FORMAT_DD_MMM_YYYY)
@@ -789,8 +832,16 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
         val firstDateOfMonth = getFirstDateOfMonth(DATE_FORMAT_DD_MMM_YYYY)
 
         val dateFilterList = arrayListOf(
-            ItemListUiModel(getString(R.string.topads_common_date_today), today, dateFilterType == 1),
-            ItemListUiModel(getString(R.string.topads_common_date_yesterday), yesterday, dateFilterType == 2),
+            ItemListUiModel(
+                getString(R.string.topads_common_date_today),
+                today,
+                dateFilterType == 1
+            ),
+            ItemListUiModel(
+                getString(R.string.topads_common_date_yesterday),
+                yesterday,
+                dateFilterType == 2
+            ),
             ItemListUiModel(
                 String.format(getString(R.string.topads_common_date_x_last_days), 3),
                 "$daysAgo3 - $today",
@@ -807,11 +858,19 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                 dateFilterType == 5
             ),
             ItemListUiModel(
-                getString(R.string.topads_common_date_this_month), "$firstDateOfMonth - $today", dateFilterType == 6
+                getString(R.string.topads_common_date_this_month),
+                "$firstDateOfMonth - $today",
+                dateFilterType == 6
             ),
             ItemListUiModel(
                 getString(R.string.topads_common_custom),
-                getString(R.string.topads_common_select_date),
+                if (dateFilterType == 7) "${
+                    SimpleDateFormat(DATE_FORMAT_DD_MMM_YYYY).format(
+                        selectedDateFrom
+                    )
+                } - ${SimpleDateFormat(DATE_FORMAT_DD_MMM_YYYY).format(selectedDateTo)}" else getString(
+                    R.string.topads_common_select_date
+                ),
                 dateFilterType == 7
             )
         )

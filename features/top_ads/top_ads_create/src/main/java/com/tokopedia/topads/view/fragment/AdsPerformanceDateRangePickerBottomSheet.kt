@@ -17,6 +17,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.date.DateUtil
 import java.text.SimpleDateFormat
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.view.activity.SeePerformanceTopadsActivity
 import java.util.Date
 import java.util.Calendar
 
@@ -98,24 +99,22 @@ class AdsPerformanceDateRangePickerBottomSheet : BottomSheetUnify() {
         binding?.tvSahCommissionEndDate?.isEnabled = false
 
         this.setAction(getString(R.string.ad_group_filter_bottomsheet_cta)){
-//            val selectedStartDate = newSelectedDateFrom
-//            val selectedEndDate = newSelectedDateTo
-//
-//            val isNewSelectedStartDateSame = areTheDatesSame(
-//                selectedStartDate, defaultDateFrom
-//            )
-//            val isNewSelectedEndDateSame = areTheDatesSame(
-//                selectedEndDate, defaultDateTo
-//            )
-//            if (selectedStartDate != null && selectedEndDate != null &&
-//                !(isNewSelectedStartDateSame && isNewSelectedEndDateSame)
-//            ) {
-//                (parentFragment as? OnDateRangeSelectListener)?.onDateRangeSelected(
-//                    selectedStartDate,
-//                    selectedEndDate
-//                )
-//            }
-//            dismissAllowingStateLoss()
+            val selectedStartDate = newSelectedDateFrom
+            val selectedEndDate = newSelectedDateTo
+
+            val isNewSelectedStartDateSame = areTheDatesSame(
+                selectedStartDate, defaultDateFrom
+            )
+            val isNewSelectedEndDateSame = areTheDatesSame(
+                selectedEndDate, defaultDateTo
+            )
+            if (selectedStartDate != null && selectedEndDate != null &&
+                !(isNewSelectedStartDateSame && isNewSelectedEndDateSame)
+            ) {
+
+                (activity as? SeePerformanceTopadsActivity)?.updateCustomDates(selectedStartDate,selectedEndDate)
+            }
+            dismissAllowingStateLoss()
         }
     }
 
