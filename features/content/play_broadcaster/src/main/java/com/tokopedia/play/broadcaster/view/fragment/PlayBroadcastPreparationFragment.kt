@@ -319,10 +319,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         return PAGE_NAME
                     }
 
-                    override fun getProductList(): List<ProductTagSectionUiModel> {
-                        return parentViewModel.productSectionList
-                    }
-
                     override fun getContentAccount(): ContentAccountUiModel {
                         return parentViewModel.selectedAccount
                     }

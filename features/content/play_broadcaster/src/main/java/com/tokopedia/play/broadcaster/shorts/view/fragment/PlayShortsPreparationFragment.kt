@@ -180,10 +180,6 @@ class PlayShortsPreparationFragment @Inject constructor(
                         return PAGE_NAME
                     }
 
-                    override fun getProductList(): List<ProductTagSectionUiModel> {
-                        return viewModel.productSectionList
-                    }
-
                     override fun getContentAccount(): ContentAccountUiModel {
                         return viewModel.selectedAccount
                     }

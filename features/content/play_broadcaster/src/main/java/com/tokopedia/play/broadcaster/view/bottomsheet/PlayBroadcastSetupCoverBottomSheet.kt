@@ -198,7 +198,6 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
                     playBroSetupCoverViewModelFactory.create(
                         channelTitle = mDataSource?.getChannelTitle().orEmpty(),
                         channelId = mDataSource?.getChannelId().orEmpty(),
-                        productSectionList = mDataSource?.getProductList() ?: emptyList(),
                         contentAccount = mDataSource?.getContentAccount() ?: ContentAccountUiModel.Empty,
                         dataStore = dataStore,
                     )
@@ -236,7 +235,6 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
 
     interface DataSource {
         fun getEntryPoint(): String
-        fun getProductList(): List<ProductTagSectionUiModel>
         fun getContentAccount(): ContentAccountUiModel
         fun getChannelId(): String
         fun getChannelTitle(): String
