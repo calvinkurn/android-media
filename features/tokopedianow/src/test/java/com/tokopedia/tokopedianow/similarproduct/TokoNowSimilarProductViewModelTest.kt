@@ -11,6 +11,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse
@@ -43,6 +44,7 @@ class TokoNowSimilarProductViewModelTest {
     private lateinit var addressData: TokoNowLocalAddress
     private lateinit var userSession: UserSessionInterface
     private lateinit var getSimilarProductUseCase: GetSimilarProductUseCase
+    private lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
     private lateinit var chooseAddressWrapper: ChooseAddressWrapper
     private lateinit var chooseAddressData: LocalCacheModel
 
@@ -59,6 +61,7 @@ class TokoNowSimilarProductViewModelTest {
         getSimilarProductUseCase = mockk(relaxed = true)
         chooseAddressWrapper = mockk(relaxed = true)
         chooseAddressData = mockk(relaxed = true)
+        getTargetedTickerUseCase = mockk(relaxed = true)
 
         viewModel = TokoNowSimilarProductViewModel(
             getSimilarProductUseCase,
@@ -68,6 +71,7 @@ class TokoNowSimilarProductViewModelTest {
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartUseCase,
+            getTargetedTickerUseCase,
             addressData,
             CoroutineTestDispatchers
         )

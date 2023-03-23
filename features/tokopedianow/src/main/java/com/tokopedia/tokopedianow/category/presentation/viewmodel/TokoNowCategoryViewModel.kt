@@ -76,8 +76,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     private val getCategoryListUseCase: GetCategoryListUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
     chooseAddressWrapper: ChooseAddressWrapper,
-    userSession: UserSessionInterface,
-    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
+    userSession: UserSessionInterface
 ): BaseSearchCategoryViewModel(
     baseDispatcher,
     queryParamMap,

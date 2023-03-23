@@ -22,6 +22,7 @@ import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.Ca
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
@@ -223,20 +224,33 @@ fun createEmptyState(id: String, serviceType: String): HomeLayoutListUiModel {
     )
 }
 
-fun createTicker(): TickerResponse {
-    return  TickerResponse(
-            ticker = Tickers(
-                    tickerList = listOf(
-                            Ticker(
-                                    id = "10",
-                                    title = "Welcome to Tokonow",
-                                    message = "Tokonow is one of the best feature",
-                                    color = "#FFF",
-                                    layout = "default"
+fun createTicker(): GetTargetedTickerResponse {
+    return GetTargetedTickerResponse(
+        getTargetedTicker = GetTargetedTickerResponse.GetTargetedTicker(
+            tickers = listOf(
+                GetTargetedTickerResponse.GetTargetedTicker.TickerResponse(
+                    action = GetTargetedTickerResponse.GetTargetedTicker.TickerResponse.Action(
+                        appURL = "",
+                        label = "",
+                        type = "",
+                        webURL = ""
+                    ),
+                    content = "Maaf, kamu baru bisa belanja setelah kami kembali beroperasi.",
+                    iD = "",
+                    metadata = listOf(
+                        GetTargetedTickerResponse.GetTargetedTicker.TickerResponse.Metadata(
+                            type = "blockAddToCart",
+                            values = listOf(
+                                "true"
                             )
-
-                    )
+                        )
+                    ),
+                    priority = 1,
+                    title = "Tokopedia NOW! sedang tidak beroperasi",
+                    type = ""
+                )
             )
+        )
     )
 }
 

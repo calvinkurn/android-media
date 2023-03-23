@@ -6,6 +6,7 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
@@ -26,6 +27,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
@@ -37,6 +39,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemSeeAllUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
@@ -73,7 +76,9 @@ import com.tokopedia.tokopedianow.data.createTicker
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponDataModel
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.Grid
@@ -96,7 +101,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIM
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_CLAIMED
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
@@ -123,17 +127,31 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when getting homeLayout should run and give the success result`() {
-        onGetTicker_thenReturn(createTicker())
-        onGetHomeLayoutData_thenReturn(createHomeLayoutList())
-        onGetCategoryList_thenReturn(createCategoryList(emptyList()))
+        val tickerResponse = createTicker()
+        val homeLayoutListResponse = createHomeLayoutList()
+        val categoryListResponse = createCategoryList(emptyList())
+        val tickerList = TickerMapper.mapTickerData(tickerResponse).second
 
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        onGetTicker_thenReturn(tickerResponse)
+        onGetHomeLayoutData_thenReturn(homeLayoutListResponse)
+        onGetCategoryList_thenReturn(categoryListResponse)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = LocalCacheModel()
+        )
 
         val expectedResponse = HomeLayoutListUiModel(
             items = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
-                createHomeTickerDataModel(),
+                TokoNowChooseAddressWidgetUiModel(
+                    id = CHOOSE_ADDRESS_WIDGET_ID),
+                TokoNowTickerUiModel(
+                    id = TICKER_WIDGET_ID,
+                    tickers = tickerList
+                ),
                 createDynamicLegoBannerDataModel(
                     "34923",
                     "",
@@ -804,7 +822,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     warehouseId = "1"
                 )
             ),
-            state = TokoNowLayoutState.UPDATE
+            state = TokoNowLayoutState.SHOW
         )
         val expectedResult = Success(data)
 
@@ -870,40 +888,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.homeLayoutList
             .verifyValueEquals(null)
-    }
-
-    @Test
-    fun `when removeTickerWidget should remove ticker from home layout list`() {
-        onGetHomeLayoutData_thenReturn(createHomeLayoutList())
-
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.removeTickerWidget("1")
-
-        val expectedResult = HomeLayoutListUiModel(
-            items = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
-                createDynamicLegoBannerDataModel(
-                    "34923",
-                    "",
-                    "Lego Banner"
-                ),
-                createCategoryGridDataModel(
-                    "11111",
-                    "Category Tokonow",
-                    null,
-                    TokoNowLayoutState.HIDE
-                ),
-                createSliderBannerDataModel(
-                    "2222",
-                    "",
-                    "Banner Tokonow"
-                )
-            ),
-            state = TokoNowLayoutState.UPDATE
-        )
-
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
     }
 
     @Test
@@ -1216,7 +1200,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val expectedResult = Success(
             HomeLayoutListUiModel(
                 items = homeLayoutItems,
-                state = TokoNowLayoutState.UPDATE
+                state = TokoNowLayoutState.SHOW
             )
         )
 
@@ -1413,7 +1397,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = HomeLayoutListUiModel(
             items = items,
-            state = TokoNowLayoutState.UPDATE
+            state = TokoNowLayoutState.SHOW
         )
 
         verifyGetHomeLayoutDataUseCaseCalled()
@@ -1507,16 +1491,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when removeTickerWidget throw exception should not set homeLayoutList value`() {
-        onGetHomeLayoutItemList_returnNull()
-
-        viewModel.removeTickerWidget("1")
-
-        viewModel.homeLayoutList
-            .verifyValueEquals(null)
-    }
-
-    @Test
     fun `when removeSharingEducationWidget throw exception should not set homeLayoutList value`() {
         onGetHomeLayoutItemList_returnNull()
 
@@ -1560,52 +1534,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.homeLayoutList
             .verifyValueEquals(expected)
-    }
-
-    @Test
-    fun `given null layout when removeTickerWidget should filter null layout from list`() {
-        val nullLayout = HomeLayoutItemUiModel(
-            layout = null,
-            state = HomeLayoutItemState.NOT_LOADED
-        )
-
-        onGetTicker_thenReturn(createTicker())
-        onGetHomeLayoutData_thenReturn(createHomeLayoutList())
-
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        addHomeLayoutItem(nullLayout)
-
-        viewModel.removeTickerWidget(id = "1")
-
-        val expectedResult = Success(HomeLayoutListUiModel(
-            items = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
-                createDynamicLegoBannerDataModel(
-                    "34923",
-                    "",
-                    "Lego Banner"
-                ),
-                createCategoryGridDataModel(
-                    "11111",
-                    "Category Tokonow",
-                    null,
-                    TokoNowLayoutState.HIDE
-                ),
-                createSliderBannerDataModel(
-                    "2222",
-                    "",
-                    "Banner Tokonow"
-                )
-            ),
-            state = TokoNowLayoutState.UPDATE
-        ))
-
-        verifyGetHomeLayoutDataUseCaseCalled()
-
-        viewModel.homeLayoutList
-            .verifySuccessEquals(expectedResult)
     }
 
     @Test
@@ -2058,7 +1986,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = Success(HomeLayoutListUiModel(
             items = layoutList,
-            state = TokoNowLayoutState.UPDATE
+            state = TokoNowLayoutState.SHOW
         ))
 
         verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
@@ -2104,7 +2032,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = Success(HomeLayoutListUiModel(
             items = layoutList,
-            state = TokoNowLayoutState.UPDATE
+            state = TokoNowLayoutState.SHOW
         ))
 
         verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
@@ -2153,7 +2081,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = Success(HomeLayoutListUiModel(
             items = layoutList,
-            state = TokoNowLayoutState.UPDATE
+            state = TokoNowLayoutState.SHOW
         ))
 
         verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
@@ -2199,7 +2127,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = Success(HomeLayoutListUiModel(
             items = layoutList,
-            state = TokoNowLayoutState.UPDATE
+            state = TokoNowLayoutState.SHOW
         ))
 
         verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
@@ -2242,7 +2170,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = Success(HomeLayoutListUiModel(
             items = layoutList,
-            state = TokoNowLayoutState.UPDATE
+            state = TokoNowLayoutState.SHOW
         ))
 
         verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
@@ -2292,7 +2220,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = Success(HomeLayoutListUiModel(
             items = layoutList,
-            state = TokoNowLayoutState.UPDATE
+            state = TokoNowLayoutState.SHOW
         ))
 
         verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
@@ -2757,7 +2685,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val homeLayoutItems = listOf(
             TokoNowChooseAddressWidgetUiModel(id = "0"),
-            HomeTickerUiModel(id = "1", tickers = emptyList()),
             homePlayWidgetUiModel
         )
 
@@ -2889,8 +2816,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.autoRefreshPlayWidget(widget)
 
         val homeLayoutItems = listOf(
-            TokoNowChooseAddressWidgetUiModel(id = "0"),
-            HomeTickerUiModel(id = "1", tickers = emptyList())
+            TokoNowChooseAddressWidgetUiModel(id = "0")
         )
 
         val expectedResult = Success(HomeLayoutListUiModel(

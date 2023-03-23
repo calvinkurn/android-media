@@ -10,6 +10,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,6 +38,7 @@ open class BaseTokoNowViewModelTestFixture {
     private lateinit var updateCartUseCase: UpdateCartUseCase
     private lateinit var deleteCartUseCase: DeleteCartUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
+    private lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
     private lateinit var addressData: TokoNowLocalAddress
     private lateinit var userSession: UserSessionInterface
 
@@ -46,6 +48,7 @@ open class BaseTokoNowViewModelTestFixture {
         updateCartUseCase = mockk(relaxed = true)
         deleteCartUseCase = mockk(relaxed = true)
         getMiniCartUseCase = mockk(relaxed = true)
+        getTargetedTickerUseCase = mockk(relaxed = true)
         addressData = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
@@ -54,6 +57,7 @@ open class BaseTokoNowViewModelTestFixture {
             updateCartUseCase,
             deleteCartUseCase,
             getMiniCartUseCase,
+            getTargetedTickerUseCase,
             addressData,
             userSession,
             coroutineTestRule.dispatchers

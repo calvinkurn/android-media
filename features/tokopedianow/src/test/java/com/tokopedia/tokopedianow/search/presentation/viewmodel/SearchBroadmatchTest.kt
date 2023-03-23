@@ -60,7 +60,9 @@ class SearchBroadmatchTest: SearchTestFixtures() {
         this as BroadMatchDataView
 
         val actualBroadMatch = SearchBroadMatchMapper.createBroadMatchDataView(
-            otherRelated, cartService
+            otherRelated = otherRelated,
+            cartService = cartService,
+            hasBlockedAddToCart = false
         )
 
         assertEquals(this, actualBroadMatch)

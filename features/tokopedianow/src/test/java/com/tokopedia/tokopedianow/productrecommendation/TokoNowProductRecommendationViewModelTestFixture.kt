@@ -14,6 +14,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
@@ -56,6 +57,9 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var deleteCartUseCase: DeleteCartUseCase
+
+    @RelaxedMockK
+    lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
 
     @RelaxedMockK
     lateinit var addressData: TokoNowLocalAddress
@@ -233,6 +237,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             addToCartUseCase = addToCartUseCase,
             updateCartUseCase = updateCartUseCase,
             deleteCartUseCase = deleteCartUseCase,
+            getTargetedTickerUseCase = getTargetedTickerUseCase,
             userSession = userSession,
             addressData = addressData,
             dispatchers = coroutineTestRule.dispatchers
