@@ -27,7 +27,7 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest;
-import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestMapper;
+//import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestMapper;
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel;
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;

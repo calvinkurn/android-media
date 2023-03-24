@@ -113,6 +113,7 @@ import com.tokopedia.network.authentication.AuthHelper.Companion.generateParamsN
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler.Companion.getErrorMessage
 import com.tokopedia.network.utils.TKPDMapParam
+import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eventCheckoutViewPromoMessage
@@ -147,11 +148,14 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
@@ -259,7 +263,7 @@ class ShipmentPresenter @Inject constructor(
     override var cartDataForRates = ""
         private set
 
-    override var lastApplyData: LastApplyUiModel? = null
+    override var lastApplyData: CheckoutMutableLiveData<LastApplyUiModel> = CheckoutMutableLiveData(LastApplyUiModel())
 
     override var uploadPrescriptionUiModel: UploadPrescriptionUiModel = UploadPrescriptionUiModel()
         private set
@@ -321,6 +325,56 @@ class ShipmentPresenter @Inject constructor(
 //    override fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>) {
 //        this.dataCheckoutRequestList = dataCheckoutRequestList
 //    }
+
+    private fun hasSetAllCourier(): Boolean {
+        for (itemData in shipmentCartItemModelList) {
+            if (itemData.selectedShipmentDetailData == null && !itemData.isError) {
+                return false
+            }
+        }
+        return true
+    }
+
+    fun setPromoBenefit(summariesUiModels: List<SummariesItemUiModel>) {
+        val shipmentCost = shipmentCostModel.value
+        for (benefitSummary in summariesUiModels) {
+            if (benefitSummary.type == SummariesUiModel.TYPE_DISCOUNT) {
+                if (benefitSummary.details.isNotEmpty()) {
+                    shipmentCost.isHasDiscountDetails = true
+                    for (detail in benefitSummary.details) {
+                        if (detail.type == SummariesUiModel.TYPE_SHIPPING_DISCOUNT) {
+                            shipmentCost.shippingDiscountAmount = detail.amount
+                            shipmentCost.shippingDiscountLabel = detail.description
+                        } else if (detail.type == SummariesUiModel.TYPE_PRODUCT_DISCOUNT) {
+                            shipmentCost.productDiscountAmount = detail.amount
+                            shipmentCost.productDiscountLabel = detail.description
+                        }
+                    }
+                } else if (hasSetAllCourier()) {
+                    shipmentCost.isHasDiscountDetails = false
+                    shipmentCost.discountAmount = benefitSummary.amount
+                    shipmentCost.discountLabel = benefitSummary.description
+                }
+            } else if (benefitSummary.type == SummariesUiModel.TYPE_CASHBACK) {
+                shipmentCost.cashbackAmount = benefitSummary.amount
+                shipmentCost.cashbackLabel = benefitSummary.description
+            }
+        }
+        shipmentCostModel.value = shipmentCost
+    }
+
+    fun resetPromoBenefit() {
+        val shipmentCost = shipmentCostModel.value
+        shipmentCost.isHasDiscountDetails = false
+        shipmentCost.discountAmount = 0
+        shipmentCost.discountLabel = ""
+        shipmentCost.shippingDiscountAmount = 0
+        shipmentCost.shippingDiscountLabel = ""
+        shipmentCost.productDiscountAmount = 0
+        shipmentCost.productDiscountLabel = ""
+        shipmentCost.cashbackAmount = 0
+        shipmentCost.cashbackLabel = ""
+    }
 
     fun updateShipmentCostModel() {
         var totalWeight = 0.0
@@ -604,7 +658,7 @@ class ShipmentPresenter @Inject constructor(
 
     private fun getPromoFlag(step: String): Boolean {
         return if (step == EnhancedECommerceActionField.STEP_2) {
-            lastApplyData?.additionalInfo?.pomlAutoApplied ?: false
+            lastApplyData.value?.additionalInfo?.pomlAutoApplied ?: false
         } else {
             validateUsePromoRevampUiModel?.promoUiModel?.additionalInfoUiModel?.pomlAutoApplied
                 ?: false
@@ -919,7 +973,7 @@ class ShipmentPresenter @Inject constructor(
         } else {
             setListShipmentCrossSellModel(null)
         }
-        lastApplyData = cartShipmentAddressFormData.lastApplyData
+        lastApplyData.value = cartShipmentAddressFormData.lastApplyData
         isBoUnstackEnabled =
             cartShipmentAddressFormData.lastApplyData.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
         shipmentCartItemModelList = shipmentDataConverter.getShipmentItems(
@@ -2300,23 +2354,6 @@ class ShipmentPresenter @Inject constructor(
             }
         }
         if (hasPromo) {
-//            clearCacheAutoApplyStackUseCase.setParams(
-//                ClearPromoRequest(
-//                    OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-//                    false,
-//                    ClearPromoOrderData(globalPromoCodes, clearOrders)
-//                )
-//            )
-//            compositeSubscription.add(
-//                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-//                    .subscribe(
-//                        ClearNotEligiblePromoSubscriber(
-//                            view,
-//                            this,
-//                            notEligiblePromoHolderdataArrayList
-//                        )
-//                    )
-//            )
             viewModelScope.launch {
                 try {
                     val response = clearCacheAutoApplyStackUseCase.setParams(
@@ -2389,18 +2426,6 @@ class ShipmentPresenter @Inject constructor(
         couponStateChanged = true
         view?.showLoading()
         view?.setHasRunningApiCall(true)
-//        clearCacheAutoApplyStackUseCase.setParams(
-//            ClearPromoRequest(
-//                OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-//                false,
-//                ClearPromoOrderData(globalPromoCode, clearOrders)
-//            )
-//        )
-//        compositeSubscription.add(
-//            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(
-//                ClearShipmentCacheAutoApplyAfterClashSubscriber(view, this)
-//            )
-//        )
         viewModelScope.launch {
             try {
                 clearCacheAutoApplyStackUseCase.setParams(
@@ -2713,8 +2738,8 @@ class ShipmentPresenter @Inject constructor(
         if (validateUsePromoRevampUiModel != null) {
             promoSpIdUiModels =
                 validateUsePromoRevampUiModel!!.promoUiModel.additionalInfoUiModel.promoSpIds
-        } else if (lastApplyData != null) {
-            promoSpIdUiModels = lastApplyData!!.additionalInfo.promoSpIds
+        } else {
+            promoSpIdUiModels = lastApplyData.value.additionalInfo.promoSpIds
         }
         if (promoSpIdUiModels.isNotEmpty()) {
             for ((uniqueId, mvcShippingBenefits) in promoSpIdUiModels) {
@@ -3420,16 +3445,16 @@ class ShipmentPresenter @Inject constructor(
                 }
             }
         }
-        if (lastApplyData != null) {
-            val voucherOrders = lastApplyData!!.voucherOrders.toMutableList()
-            for (voucherOrder in voucherOrders) {
-                if (voucherOrder.uniqueId == uniqueId && voucherOrder.code == promoCode) {
-                    voucherOrders.remove(voucherOrder)
-                    break
-                }
+        val lastApplyUiModel = lastApplyData.value
+        val voucherOrders = lastApplyUiModel.voucherOrders.toMutableList()
+        for (voucherOrder in voucherOrders) {
+            if (voucherOrder.uniqueId == uniqueId && voucherOrder.code == promoCode) {
+                voucherOrders.remove(voucherOrder)
+                break
             }
-            lastApplyData!!.voucherOrders = voucherOrders
         }
+        lastApplyUiModel.voucherOrders = voucherOrders
+        lastApplyData.value = lastApplyUiModel
     }
 
     override fun doApplyBo(voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel) {
@@ -3652,6 +3677,16 @@ class ShipmentPresenter @Inject constructor(
                 }
             }
         }
+    }
+
+    fun resetPromoCheckoutData() {
+        lastApplyData.value = LastApplyUiModel()
+    }
+
+    fun updatePromoCheckoutData(promoUiModel: PromoUiModel) {
+        lastApplyData.value = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(
+            promoUiModel
+        )
     }
 
     override fun validatePrescriptionOnBackPressed(): Boolean {

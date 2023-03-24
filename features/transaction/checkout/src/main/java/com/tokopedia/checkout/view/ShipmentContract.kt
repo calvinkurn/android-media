@@ -397,7 +397,7 @@ interface ShipmentContract {
         fun fetchEpharmacyData()
         fun setPrescriptionIds(prescriptionIds: ArrayList<String>)
         fun setMiniConsultationResult(results: ArrayList<EPharmacyMiniConsultationResult>?)
-        var lastApplyData: LastApplyUiModel?
+        var lastApplyData: CheckoutMutableLiveData<LastApplyUiModel>
         var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?
         fun setLatValidateUseRequest(latValidateUseRequest: ValidateUsePromoRequest?)
         val lastValidateUseRequest: ValidateUsePromoRequest?

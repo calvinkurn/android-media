@@ -161,7 +161,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         return product
     }
 
-    fun mapGiftingAddOn(addOnsData: AddOnsDataModel): List<CheckoutGiftingAddOn> {
+    private fun mapGiftingAddOn(addOnsData: AddOnsDataModel): List<CheckoutGiftingAddOn> {
         val listCheckoutGiftingAddOn = arrayListOf<CheckoutGiftingAddOn>()
         if (addOnsData.status == 1) {
             for (addOnItem in addOnsData.addOnsDataItemModelList) {

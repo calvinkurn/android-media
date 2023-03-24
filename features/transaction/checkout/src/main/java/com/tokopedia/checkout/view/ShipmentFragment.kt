@@ -431,6 +431,11 @@ class ShipmentFragment :
                 }
             }
         }
+        shipmentPresenter.lastApplyData.observe(viewLifecycleOwner) {
+            if (shipmentAdapter.updateLastApplyUiModel(it)) {
+                onNeedUpdateViewItem(shipmentAdapter.promoCheckoutPosition)
+            }
+        }
         shipmentPresenter.shipmentCostModel.observe(viewLifecycleOwner) {
             if (shipmentAdapter.updateShipmentCostModel(it)) {
                 onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
@@ -509,7 +514,7 @@ class ShipmentFragment :
         shipmentCartItemModelList: List<ShipmentCartItemModel>,
         shipmentDonationModel: ShipmentDonationModel?,
         shipmentCrossSellModelList: List<ShipmentCrossSellModel>,
-        lastApplyUiModel: LastApplyUiModel?,
+        lastApplyUiModel: LastApplyUiModel,
         shipmentCostModel: ShipmentCostModel,
         egoldAttributeModel: EgoldAttributeModel?,
         shipmentButtonPaymentModel: ShipmentButtonPaymentModel,
@@ -578,7 +583,7 @@ class ShipmentFragment :
                 }
             }
             if (errorShopCount == 0 || errorShopCount < shipmentCartItemModelList.size) {
-                if (lastApplyUiModel != null && lastApplyUiModel.additionalInfo.errorDetail.message.isNotEmpty()) {
+                if (lastApplyUiModel.additionalInfo.errorDetail.message.isNotEmpty()) {
                     eventCartViewPromoMessage(lastApplyUiModel.additionalInfo.errorDetail.message)
                 }
                 shipmentAdapter.addLastApplyUiDataModel(lastApplyUiModel)
@@ -708,29 +713,6 @@ class ShipmentFragment :
     }
 
     private fun sendEEStep2() {
-//        val shipmentCartItemModelList = shipmentAdapter.shipmentCartItemModelList!!
-//        for (shipmentCartItemModel in shipmentCartItemModelList) {
-//            val dataCheckoutRequests: List<DataCheckoutRequest> = if (shipmentCartItemModel.isSaveStateFlag) {
-//                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-//                    shipmentCartItemModel.cartString,
-//                    "",
-//                    "",
-//                    ""
-//                )
-//            } else {
-//                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-//                    shipmentCartItemModel.cartString,
-//                    "",
-//                    "",
-//                    shipmentCartItemModel.spId.toString()
-//                )
-//            }
-//            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests)
-//        }
-//        val dataCheckoutRequests =
-//            shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(
-//                shipmentCartItemModelList
-//            )
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
             null,
             null,
@@ -920,10 +902,10 @@ class ShipmentFragment :
             shipmentPresenter.recipientAddressModel,
             shipmentPresenter.shipmentUpsellModel,
             shipmentPresenter.shipmentNewUpsellModel,
-            shipmentPresenter.shipmentCartItemModelList!!,
+            shipmentPresenter.shipmentCartItemModelList,
             shipmentPresenter.shipmentDonationModel,
             shipmentPresenter.getListShipmentCrossSellModel(),
-            shipmentPresenter.lastApplyData,
+            shipmentPresenter.lastApplyData.value,
             shipmentPresenter.shipmentCostModel.value,
             shipmentPresenter.egoldAttributeModel.value,
             shipmentPresenter.shipmentButtonPayment.value,
@@ -945,27 +927,6 @@ class ShipmentFragment :
         val emptyMap: Map<String, Any> = HashMap()
         stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap)
     }
-
-//    override fun renderDataChanged() {
-//        initRecyclerViewData(
-//            shipmentPresenter.shipmentTickerErrorModel,
-//            shipmentPresenter.tickerAnnouncementHolderData,
-//            shipmentPresenter.recipientAddressModel,
-//            shipmentPresenter.shipmentUpsellModel,
-//            shipmentPresenter.shipmentNewUpsellModel,
-//            shipmentPresenter.shipmentCartItemModelList!!,
-//            shipmentPresenter.shipmentDonationModel,
-//            shipmentPresenter.getListShipmentCrossSellModel(),
-//            shipmentPresenter.lastApplyData,
-//            shipmentPresenter.shipmentCostModel.value,
-//            shipmentPresenter.egoldAttributeModel,
-//            shipmentPresenter.shipmentButtonPayment.value,
-//            shipmentPresenter.uploadPrescriptionUiModel,
-//            false,
-//            false,
-//            true
-//        )
-//    }
 
     override fun renderCheckoutPageNoAddress(
         shipmentAddressFormData: CartShipmentAddressFormData?,
@@ -1844,7 +1805,7 @@ class ShipmentFragment :
                 }
             }
         } else {
-            val lastApplyUiModel = shipmentPresenter.lastApplyData
+            val lastApplyUiModel = shipmentPresenter.lastApplyData.value
             if (lastApplyUiModel != null) {
                 if (lastApplyUiModel.codes.isNotEmpty()) {
                     stillHasPromo = true
@@ -2957,7 +2918,7 @@ class ShipmentFragment :
             validateUsePromoRequest = ValidateUsePromoRequest()
             val listOrderItem = ArrayList<OrdersItem>()
             val shipmentCartItemModelList = shipmentAdapter.shipmentCartItemModelList
-            val lastApplyUiModel = shipmentPresenter.lastApplyData
+            val lastApplyUiModel = shipmentPresenter.lastApplyData.value
             if (shipmentCartItemModelList != null) {
                 for (shipmentCartItemModel in shipmentCartItemModelList) {
                     val ordersItem = OrdersItem()
@@ -3235,7 +3196,7 @@ class ShipmentFragment :
             promoRequest.isTradeIn = 1
             promoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0
         }
-        val lastApplyUiModel = shipmentPresenter.lastApplyData
+        val lastApplyUiModel = shipmentPresenter.lastApplyData.value
         if (lastApplyUiModel != null) {
             val globalPromoCodes = ArrayList<String>()
             if (lastApplyUiModel.codes.isNotEmpty()) {
@@ -3405,13 +3366,13 @@ class ShipmentFragment :
     }
 
     override fun setPromoBenefit(summariesUiModels: List<SummariesItemUiModel>) {
-        shipmentAdapter.setPromoBenefit(summariesUiModels)
-        onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
+        shipmentPresenter.setPromoBenefit(summariesUiModels)
+//        onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
     }
 
     override fun resetPromoBenefit() {
-        shipmentAdapter.resetPromoBenefit()
-        onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
+        shipmentPresenter.resetPromoBenefit()
+//        onNeedUpdateViewItem(shipmentAdapter.shipmentCostPosition)
         shipmentPresenter.updateShipmentCostModel()
     }
 
@@ -3629,10 +3590,8 @@ class ShipmentFragment :
             if (shipmentPresenter.validateUsePromoRevampUiModel!!.promoUiModel.additionalInfoUiModel.promoSpIds.isNotEmpty()) {
                 promoMvcLockCourierFlow = true
             }
-        } else if (shipmentPresenter.lastApplyData != null) {
-            if (shipmentPresenter.lastApplyData!!.additionalInfo.promoSpIds.isNotEmpty()) {
-                promoMvcLockCourierFlow = true
-            }
+        } else if (shipmentPresenter.lastApplyData.value.additionalInfo.promoSpIds.isNotEmpty()) {
+            promoMvcLockCourierFlow = true
         }
         intent.putExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, promoMvcLockCourierFlow)
     }
@@ -3669,13 +3628,13 @@ class ShipmentFragment :
     }
 
     private fun doUpdateButtonPromoCheckout(promoUiModel: PromoUiModel) {
-        shipmentAdapter.updatePromoCheckoutData(promoUiModel)
-        onNeedUpdateViewItem(shipmentAdapter.promoCheckoutPosition)
+        shipmentPresenter.updatePromoCheckoutData(promoUiModel)
+//        onNeedUpdateViewItem(shipmentAdapter.promoCheckoutPosition)
     }
 
     override fun doResetButtonPromoCheckout() {
-        shipmentAdapter.resetPromoCheckoutData()
-        onNeedUpdateViewItem(shipmentAdapter.promoCheckoutPosition)
+        shipmentPresenter.resetPromoCheckoutData()
+//        onNeedUpdateViewItem(shipmentAdapter.promoCheckoutPosition)
         resetPromoBenefit()
         clearPromoTrackingData()
     }

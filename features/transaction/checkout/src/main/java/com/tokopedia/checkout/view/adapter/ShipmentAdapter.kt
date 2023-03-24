@@ -4,7 +4,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -41,18 +40,11 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel.CREATOR.TYPE_CASHBACK
-import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel.CREATOR.TYPE_DISCOUNT
-import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel.CREATOR.TYPE_PRODUCT_DISCOUNT
-import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel.CREATOR.TYPE_SHIPPING_DISCOUNT
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder.Companion.ITEM_VIEW_UPLOAD
-import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -73,7 +65,6 @@ class ShipmentAdapter @Inject constructor(
 
     private val shipmentDataList: ArrayList<Any> = ArrayList()
     private var tickerAnnouncementHolderData: TickerAnnouncementHolderData? = null
-    private var lastApplyUiModel: LastApplyUiModel? = null
     private var uploadPrescriptionUiModel: UploadPrescriptionUiModel? = null
     var shipmentCartItemModelList: List<ShipmentCartItemModel>? = null
         private set
@@ -241,7 +232,7 @@ class ShipmentAdapter @Inject constructor(
                 )
             }
             ITEM_VIEW_PROMO_CHECKOUT -> {
-                (holder as PromoCheckoutViewHolder).bindViewHolder(lastApplyUiModel!!)
+                (holder as PromoCheckoutViewHolder).bindViewHolder(data as LastApplyUiModel)
             }
             ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST -> {
                 (holder as ShipmentCostViewHolder).bindViewHolder((data as ShipmentCostModel?)!!)
@@ -317,7 +308,6 @@ class ShipmentAdapter @Inject constructor(
         shipmentSellerCashbackModel = null
         shipmentDonationModel = null
         egoldAttributeModel = null
-        lastApplyUiModel = null
         shippingCompletionTickerModel = null
         shipmentUpsellModel = null
         shipmentNewUpsellModel = null
@@ -360,11 +350,8 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    fun addLastApplyUiDataModel(lastApplyUiModel: LastApplyUiModel?) {
-        if (lastApplyUiModel != null) {
-            this.lastApplyUiModel = lastApplyUiModel
-            shipmentDataList.add(lastApplyUiModel)
-        }
+    fun addLastApplyUiDataModel(lastApplyUiModel: LastApplyUiModel) {
+        shipmentDataList.add(lastApplyUiModel)
     }
 
     fun addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
@@ -407,6 +394,15 @@ class ShipmentAdapter @Inject constructor(
         if (item is ShipmentButtonPaymentModel) {
             shipmentDataList.removeLast()
             shipmentDataList.add(shipmentButtonPaymentModel)
+            return true
+        }
+        return false
+    }
+
+    fun updateLastApplyUiModel(lastApplyUiModel: LastApplyUiModel): Boolean {
+        val item = shipmentDataList.getOrNull(promoCheckoutPosition)
+        if (item is LastApplyUiModel) {
+            shipmentDataList[promoCheckoutPosition] = lastApplyUiModel
             return true
         }
         return false
@@ -1018,52 +1014,11 @@ class ShipmentAdapter @Inject constructor(
                     return i
                 }
             }
-            return 0
+            return -1
         }
 
     fun updateItemAndTotalCost(position: Int) {
-//        notifyItemChanged(shipmentCostPosition)
         notifyItemChanged(position)
-    }
-
-    fun setPromoBenefit(benefitSummaries: List<SummariesItemUiModel>) {
-        if (shipmentCostModel != null) {
-            for (benefitSummary in benefitSummaries) {
-                if (benefitSummary.type == TYPE_DISCOUNT) {
-                    if (benefitSummary.details.isNotEmpty()) {
-                        shipmentCostModel!!.isHasDiscountDetails = true
-                        for (detail in benefitSummary.details) {
-                            if (detail.type == TYPE_SHIPPING_DISCOUNT) {
-                                shipmentCostModel!!.shippingDiscountAmount = detail.amount
-                                shipmentCostModel!!.shippingDiscountLabel = detail.description
-                            } else if (detail.type == TYPE_PRODUCT_DISCOUNT) {
-                                shipmentCostModel!!.productDiscountAmount = detail.amount
-                                shipmentCostModel!!.productDiscountLabel = detail.description
-                            }
-                        }
-                    } else if (hasSetAllCourier()) {
-                        shipmentCostModel!!.isHasDiscountDetails = false
-                        shipmentCostModel!!.discountAmount = benefitSummary.amount
-                        shipmentCostModel!!.discountLabel = benefitSummary.description
-                    }
-                } else if (benefitSummary.type == TYPE_CASHBACK) {
-                    shipmentCostModel!!.cashbackAmount = benefitSummary.amount
-                    shipmentCostModel!!.cashbackLabel = benefitSummary.description
-                }
-            }
-        }
-    }
-
-    fun resetPromoBenefit() {
-        shipmentCostModel?.isHasDiscountDetails = false
-        shipmentCostModel?.discountAmount = 0
-        shipmentCostModel?.discountLabel = ""
-        shipmentCostModel?.shippingDiscountAmount = 0
-        shipmentCostModel?.shippingDiscountLabel = ""
-        shipmentCostModel?.productDiscountAmount = 0
-        shipmentCostModel?.productDiscountLabel = ""
-        shipmentCostModel?.cashbackAmount = 0
-        shipmentCostModel?.cashbackLabel = ""
     }
 
     fun resetCourierPromoState() {
@@ -1109,23 +1064,6 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-//    fun getRequestData(
-//        recipientAddressModel: RecipientAddressModel?,
-//        shipmentCartItemModelList: List<ShipmentCartItemModel>?,
-//        isAnalyticsPurpose: Boolean
-//    ): RequestData {
-//        val addressModel: RecipientAddressModel? = recipientAddressModel ?: addressShipmentData
-//        if (shipmentCartItemModelList != null) {
-//            this.shipmentCartItemModelList = shipmentCartItemModelList
-//        }
-//        return shipmentDataRequestConverter.generateRequestData(
-//            this.shipmentCartItemModelList,
-//            addressModel,
-//            isAnalyticsPurpose,
-//            shipmentAdapterActionListener.isTradeInByDropOff
-//        )
-//    }
-
     fun getShipmentCartItemModelByIndex(index: Int): ShipmentCartItemModel? {
         return if (shipmentDataList.isNotEmpty() && index < shipmentDataList.size) {
             if (shipmentDataList[index] is ShipmentCartItemModel) shipmentDataList[index] as ShipmentCartItemModel? else null
@@ -1134,28 +1072,13 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    class RequestData {
-        var checkoutRequestData: List<DataCheckoutRequest> = ArrayList()
-    }
-
     fun getShipmentCartItemModelPosition(shipmentCartItemModel: ShipmentCartItemModel): Int {
         return shipmentDataList.indexOf(shipmentCartItemModel)
-    }
-
-    fun updatePromoCheckoutData(promoUiModel: PromoUiModel) {
-        lastApplyUiModel = mapValidateUsePromoUiModelToLastApplyUiModel(
-            promoUiModel
-        )
-    }
-
-    fun resetPromoCheckoutData() {
-        lastApplyUiModel = LastApplyUiModel()
     }
 
     companion object {
         const val DEFAULT_ERROR_POSITION = -1
         const val HEADER_POSITION = 0
         const val SECOND_HEADER_POSITION = 1
-        private const val LAST_THREE_DIGIT_MODULUS: Long = 1000
     }
 }
