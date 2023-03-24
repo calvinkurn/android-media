@@ -24,7 +24,7 @@ repositories {
 project.ext {
     artifactId = 'tokopedia_applink_annotation_processor'
     groupId = 'com.tokopedia.tokopedia_applink_annotation_processor'
-    versionName = "0.0.24"
+    versionName = "0.0.25"
     artifactName = "tokopedia_applink_annotation_processor"
 }
 
