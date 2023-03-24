@@ -25,7 +25,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 222
+        const val SIZE_MAPPER = 221
     }
 
     override fun setup() {
@@ -1633,13 +1633,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check contact us appLink then should return empty in customerapp`() {
+    fun `check contact us appLink then should return contact us native applink in customerapp`() {
         assertEqualsDeepLinkMapper(ApplinkConst.CONTACT_US, ApplinkConst.CONTACT_US_NATIVE)
     }
 
     @Test
     fun `check contact us native appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.CONTACT_US_NATIVE, ApplinkConst.CONTACT_US_NATIVE)
+        assertEqualsDeepLinkMapper(ApplinkConst.CONTACT_US_NATIVE, "")
     }
 
     @Test

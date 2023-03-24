@@ -1,11 +1,10 @@
-package com.tokopedia.contactus.home;
-
-import com.tokopedia.url.TokopediaUrl;
+package com.tokopedia.contactus.home
 
 /**
  * Created by nisie on 8/12/16.
  */
-public interface ContactUsConstant {
-
-    String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
+interface ContactUsConstant {
+    companion object {
+        const val EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL"
+    }
 }

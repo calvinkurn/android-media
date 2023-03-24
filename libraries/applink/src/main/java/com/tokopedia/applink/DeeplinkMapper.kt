@@ -364,7 +364,6 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.HOME_EXPLORE) { _, _, deeplink, _ -> getRegisteredExplore(deeplink) },
         DLP.host(ApplinkConst.CHATBOT_HOST) { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) },
         DLP.startWith(ApplinkConst.CONTACT_US) { _, _, deeplink, _ -> getNavigationContactUs(deeplink) },
-        DLP.startWith(ApplinkConst.CONTACT_US_NATIVE) { _, _, deeplink, _ -> getNavigationContactUs(deeplink) },
         DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink, _ -> getRegisteredNavigationCatalog(deeplink) },
         DLP.startWith(ApplinkConst.EPHARMACY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
         DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
