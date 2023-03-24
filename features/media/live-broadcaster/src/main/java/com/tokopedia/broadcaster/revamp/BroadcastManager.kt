@@ -146,6 +146,8 @@ class BroadcastManager @Inject constructor(
         surfaceSize: Broadcaster.Size,
         withByteplus: Boolean,
     ) {
+        if(mStreamer != null) return
+
         val context = mContext
         if (context == null) {
             broadcastInitStateChanged(
@@ -300,7 +302,20 @@ class BroadcastManager @Inject constructor(
             return
         }
 
+        mStreamer = mStreamerGL
+
+        // Streamer build succeeded, can start Video/Audio capture
+        // call startVideoCapture, wait for onVideoCaptureStateChanged callback
+        startVideoCapture()
+        // call startAudioCapture, wait for onAudioCaptureStateChanged callback
+        startAudioCapture()
+
         if(withByteplus) {
+            effectManager.init(
+                surfaceSize.width,
+                surfaceSize.height,
+            )
+
             // initialize surface texture
             mTextureId = effectManager.getExternalOESTextureID()
             mSurfaceTexture = SurfaceTexture(mTextureId)
@@ -367,20 +382,7 @@ class BroadcastManager @Inject constructor(
 
                 mCodecSurface = WindowSurface(mEglCore, mStreamerSurface?.encoderSurface, false)
             }
-
-            effectManager.init(
-                surfaceSize.width,
-                surfaceSize.height,
-            )
         }
-
-        mStreamer = mStreamerGL
-
-        // Streamer build succeeded, can start Video/Audio capture
-        // call startVideoCapture, wait for onVideoCaptureStateChanged callback
-        startVideoCapture()
-        // call startAudioCapture, wait for onAudioCaptureStateChanged callback
-        startAudioCapture()
 
         mAdaptiveBitrate = BroadcasterAdaptiveBitrateImpl(
             BroadcasterAdaptiveBitrate.Builder(
