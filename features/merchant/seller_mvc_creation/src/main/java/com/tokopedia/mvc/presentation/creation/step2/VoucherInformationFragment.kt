@@ -62,6 +62,7 @@ import com.tokopedia.mvc.util.tracker.VoucherInfoTracker
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -129,17 +130,17 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
     private var getSelectedDateStarting: (Calendar) -> Unit = {
         viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherStartDateChanged(it))
-        tracker.sendClickFieldDatePickerMulaiEvent()
+        tracker.sendClickFieldDatePickerMulaiEvent(voucherConfiguration.voucherId)
     }
 
     private var getSelectedDateEnding: (Calendar) -> Unit = {
         viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherEndDateChanged(it))
-        tracker.sendClickFieldDatePickerBerakhirEvent()
+        tracker.sendClickFieldDatePickerBerakhirEvent(voucherConfiguration.voucherId)
     }
 
     private var getSelectedRecurringPeriod: (Int) -> Unit = {
         viewModel.processEvent(VoucherCreationStepTwoEvent.OnVoucherRecurringPeriodSelected(it))
-        tracker.sendClickDropdownEvent(it.toString())
+        tracker.sendClickDropdownEvent(it.toString(), voucherConfiguration.voucherId)
     }
 
     // bottom sheet
@@ -379,7 +380,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             }
             setNavigationOnClickListener {
                 viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton)
-                tracker.sendClickKembaliArrowEvent()
+                tracker.sendClickKembaliArrowEvent(voucherConfiguration.voucherId)
             }
         }
     }
@@ -417,7 +418,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             showChangeTargetConfirmationDialog(isPublic)
         } else {
             viewModel.processEvent(VoucherCreationStepTwoEvent.ChooseVoucherTarget(isPublic))
-            tracker.sendClickTargetKuponEvent(isPublic)
+            tracker.sendClickTargetKuponEvent(isPublic, voucherConfiguration.voucherId)
         }
     }
 
@@ -449,7 +450,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         true
                     )
                 )
-                tracker.sendClickTargetKuponEvent(isPublic)
+                tracker.sendClickTargetKuponEvent(isPublic, voucherConfiguration.voucherId)
                 dismiss()
             }
             setSecondaryCTAClickListener { dismiss() }
@@ -502,7 +503,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         voucherNameSectionBinding?.run {
             tfVoucherName.editText.setOnFocusChangeListener { _, isFocus ->
-                if (isFocus) tracker.sendClickFieldNamaKuponEvent()
+                if (isFocus) tracker.sendClickFieldNamaKuponEvent(voucherConfiguration.voucherId)
             }
             tfVoucherName.editText.textChangesAsFlow()
                 .debounce { DEBOUNCE }
@@ -544,7 +545,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         voucherCodeSectionBinding?.run {
             tfVoucherCode.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldKodeKuponEvent()
+                    if (isFocus) tracker.sendClickFieldKodeKuponEvent(voucherConfiguration.voucherId)
                 }
                 prependText(voucherConfiguration.voucherCodePrefix)
                 editText.setToAllCapsMode()
@@ -607,7 +608,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                         isChecked
                     )
                 )
-                tracker.sendClickCheckBoxEvent()
+                tracker.sendClickCheckBoxEvent(voucherConfiguration.voucherId)
             }
 
             tfRepeat.run {
@@ -953,7 +954,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         buttonSectionBinding?.run {
             btnBack.setOnClickListener {
                 viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton)
-                tracker.sendClickKembaliButtonEvent()
+                tracker.sendClickKembaliButtonEvent(voucherConfiguration.voucherId)
             }
             btnContinue.text = if (pageMode == PageMode.CREATE) {
                 getString(R.string.smvc_continue)
@@ -1090,7 +1091,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
                                 voucherConfiguration
                             )
                         )
-                        tracker.sendClickLanjutEvent()
+                        tracker.sendClickLanjutEvent(voucherConfiguration.voucherId)
                     }
                 }
             }

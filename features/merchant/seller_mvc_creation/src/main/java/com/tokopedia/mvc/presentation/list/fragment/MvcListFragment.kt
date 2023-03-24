@@ -109,6 +109,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
 
@@ -765,7 +766,8 @@ class MvcListFragment :
         filterList.addAll(quickFilterItems)
         addItem(filterList)
         parentListener = {
-            val bottomSheet = FilterVoucherBottomSheet.newInstance(viewModel.filter)
+            val bottomSheet = FilterVoucherBottomSheet.newInstance(viewModel.filter,
+                enableResetButton = !viewModel.isFilterReseted())
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }

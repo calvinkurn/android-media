@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
@@ -39,7 +40,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -60,7 +60,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetShopAnalyticModel
@@ -85,7 +84,6 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.ShopPageHomeTrackingMapper
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.HOME_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -132,7 +130,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
-import com.tokopedia.shop.home.view.bottomsheet.PlayWidgetSellerActionBottomSheet
+import com.tokopedia.play.widget.ui.bottomsheet.PlayWidgetActionMenuBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.listener.*
@@ -214,6 +212,11 @@ open class ShopPageHomeFragment :
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val MIN_BUNDLE_SIZE = 1
+        private const val DEVICE_WIDTH_540 = 540
+        private const val DEVICE_WIDTH_1080 = 1080
+        private const val BG_PATTERN_SIZE_MULTIPLIER_BELOW_540_WIDTH_DEVICE = 0.5f
+        private const val BG_PATTERN_SIZE_MULTIPLIER_BELOW_1080_WIDTH_DEVICE = 0.75f
+        private const val BG_PATTERN_SIZE_MULTIPLIER_DEFAULT_DEVICE = 1f
 
         fun createInstance(
             shopId: String,
@@ -343,7 +346,6 @@ open class ShopPageHomeFragment :
     private val widgetWatchDialogContainer by lazy { PlayWidgetWatchDialogContainer() }
 
     lateinit var playWidgetCoordinator: PlayWidgetCoordinator
-    private lateinit var playWidgetActionBottomSheet: PlayWidgetSellerActionBottomSheet
 
     private val viewJob = SupervisorJob()
 
@@ -601,15 +603,48 @@ open class ShopPageHomeFragment :
                         resource: Bitmap,
                         transition: Transition<in Bitmap?>?
                     ) {
-                        val bitmapDrawable = BitmapDrawable(
-                            it.resources,
-                            resource
-                        )
-                        bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
-                        imageBackgroundPattern?.setImageDrawable(bitmapDrawable)
+                        val sizeMultiplier = getBgPatternSizeMultiplier()
+                        val resizeBgPattern = getResizeBgPattern(sizeMultiplier, resource)
+                        setBgPatternImage(resizeBgPattern)
                     }
                 })
         }
+    }
+
+    private fun setBgPatternImage(resizeBgPattern: Bitmap?) {
+        context?.let {
+            val bitmapDrawable = BitmapDrawable(
+                it.resources,
+                resizeBgPattern
+            )
+            bitmapDrawable.setTileModeXY(
+                Shader.TileMode.REPEAT,
+                Shader.TileMode.REPEAT
+            )
+            imageBackgroundPattern?.setImageDrawable(bitmapDrawable)
+        }
+    }
+
+    private fun getBgPatternSizeMultiplier(): Float {
+        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+        return if (screenWidth <= DEVICE_WIDTH_540) {
+            BG_PATTERN_SIZE_MULTIPLIER_BELOW_540_WIDTH_DEVICE
+        } else if (screenWidth < DEVICE_WIDTH_1080) {
+            BG_PATTERN_SIZE_MULTIPLIER_BELOW_1080_WIDTH_DEVICE
+        } else {
+            BG_PATTERN_SIZE_MULTIPLIER_DEFAULT_DEVICE
+        }
+    }
+
+    private fun getResizeBgPattern(sizeMultiplier: Float, resource: Bitmap): Bitmap? {
+        val resourceWidth = resource.width
+        val resourceHeight = resource.height
+        return Bitmap.createScaledBitmap(
+            resource,
+            (resourceWidth * sizeMultiplier).toInt(),
+            (resourceHeight * sizeMultiplier).toInt(),
+            true
+        )
     }
 
     open fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
@@ -4210,62 +4245,33 @@ open class ShopPageHomeFragment :
         getPlayWidgetActionBottomSheet(channelUiModel).show(childFragmentManager)
     }
 
-    private fun getPlayWidgetActionBottomSheet(channelUiModel: PlayWidgetChannelUiModel): PlayWidgetSellerActionBottomSheet {
-        if (!::playWidgetActionBottomSheet.isInitialized) {
-            playWidgetActionBottomSheet = PlayWidgetSellerActionBottomSheet()
-        }
+    private fun getPlayWidgetActionBottomSheet(channelUiModel: PlayWidgetChannelUiModel): PlayWidgetActionMenuBottomSheet {
 
-        val bottomSheetActionList = mutableListOf<PlayWidgetSellerActionBottomSheet.Action>()
-        if (channelUiModel.share.isShow) {
-            bottomSheetActionList.add(
-                PlayWidgetSellerActionBottomSheet.Action(
-                    com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
-                    MethodChecker.getColor(
-                        requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N400
-                    ),
-                    getString(R.string.shop_page_play_widget_sgc_copy_link)
-                ) {
-                    shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
-                    copyToClipboard(channelUiModel.share.fullShareContent)
-                    showLinkCopiedToaster()
-                    playWidgetActionBottomSheet.dismiss()
-                }
-            )
-        }
-        if (channelUiModel.performanceSummaryLink.isNotBlank() && channelUiModel.performanceSummaryLink.isNotEmpty()) {
-            bottomSheetActionList.add(
-                PlayWidgetSellerActionBottomSheet.Action(
-                    R.drawable.ic_play_widget_sgc_performance,
-                    MethodChecker.getColor(
-                        requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N400
-                    ),
-                    context?.getString(R.string.shop_page_play_widget_sgc_performance).orEmpty()
-                ) {
-                    shopPlayWidgetAnalytic.onClickMoreActionPerformaChannel(channelUiModel.channelId)
-                    RouteManager.route(requireContext(), channelUiModel.performanceSummaryLink)
-                    playWidgetActionBottomSheet.dismiss()
-                }
-            )
-        }
-        bottomSheetActionList.add(
-            PlayWidgetSellerActionBottomSheet.Action(
-                com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
-                MethodChecker.getColor(
-                    requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_N400
-                ),
-                context?.getString(R.string.shop_page_play_widget_sgc_delete_video).orEmpty()
-            ) {
-                shopPlayWidgetAnalytic.onClickMoreActionDeleteChannel(channelUiModel.channelId)
-                showDeleteWidgetConfirmationDialog(channelUiModel.channelId)
-                playWidgetActionBottomSheet.dismiss()
-            }
+        val playWidgetActionMenuBottomSheet = PlayWidgetActionMenuBottomSheet.getFragment(
+            childFragmentManager,
+            requireActivity().classLoader
         )
 
-        playWidgetActionBottomSheet.setActionList(bottomSheetActionList)
-        return playWidgetActionBottomSheet
+        playWidgetActionMenuBottomSheet.setChannel(channelUiModel)
+        playWidgetActionMenuBottomSheet.setListener(object : PlayWidgetActionMenuBottomSheet.Listener {
+            override fun onClickShare(channel: PlayWidgetChannelUiModel) {
+                shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
+                copyToClipboard(channelUiModel.share.fullShareContent)
+                showLinkCopiedToaster()
+            }
+
+            override fun onClickSeePerformance(channel: PlayWidgetChannelUiModel) {
+                shopPlayWidgetAnalytic.onClickMoreActionPerformaChannel(channelUiModel.channelId)
+                RouteManager.route(requireContext(), channelUiModel.performanceSummaryLink)
+            }
+
+            override fun onClickDeleteVideo(channel: PlayWidgetChannelUiModel) {
+                shopPlayWidgetAnalytic.onClickMoreActionDeleteChannel(channelUiModel.channelId)
+                showDeleteWidgetConfirmationDialog(channelUiModel.channelId)
+            }
+        })
+
+        return playWidgetActionMenuBottomSheet
     }
 
     private fun deleteChannel(channelId: String) {

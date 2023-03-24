@@ -72,21 +72,9 @@ internal class InspirationFilterViewHolder(
     private fun getSortedSizeData(
         optionSizeData: List<InspirationFilterOptionDataView>
     ) : List<InspirationFilterOptionDataView> {
-        val sortedSelectedSizeData = optionSizeData
+        val selectedSizeData = optionSizeData
             .filter { inspirationFilterListener.isFilterSelected(it.option) }
-            .sortedByOptionValue()
-        val nonSelectedSizeData = optionSizeData - sortedSelectedSizeData.toSet()
-        val sortedNonSelectedSizeData = nonSelectedSizeData.sortedByOptionValue()
-        return sortedSelectedSizeData + sortedNonSelectedSizeData
-    }
-
-    private fun List<InspirationFilterOptionDataView>.sortedByOptionValue() : List<InspirationFilterOptionDataView> {
-        return sortedBy {
-            try {
-                it.option.value.toInt()
-            } catch (e: Throwable) {
-                0
-            }
-        }
+        val nonSelectedSizeData = optionSizeData - selectedSizeData.toSet()
+        return selectedSizeData + nonSelectedSizeData
     }
 }
