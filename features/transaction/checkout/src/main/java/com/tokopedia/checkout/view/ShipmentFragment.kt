@@ -1062,18 +1062,19 @@ class ShipmentFragment :
     override fun renderEditAddressSuccess(latitude: String, longitude: String) {
         shipmentAdapter.updateShipmentDestinationPinpoint(latitude, longitude)
         val position = shipmentAdapter.lastChooseCourierItemPosition
-        val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position)
-        if (shipmentCartItemModel != null) {
-            shippingCourierBottomsheet = null
-            val recipientAddressModel = shipmentPresenter.recipientAddressModel
-            if (shipmentCartItemModel.isDisableChangeCourier) {
-                // refresh page
-                shipmentPresenter.processInitialLoadCheckoutPage(
-                    isReloadData = true,
-                    skipUpdateOnboardingState = true,
-                    isReloadAfterPriceChangeHinger = false
-                )
-            } else {
+        val hasItemWithDisableChangeCourier = shipmentPresenter.shipmentCartItemModelList.firstOrNull { it.isDisableChangeCourier }
+        if (hasItemWithDisableChangeCourier != null) {
+            // refresh page
+            shipmentPresenter.processInitialLoadCheckoutPage(
+                isReloadData = true,
+                skipUpdateOnboardingState = true,
+                isReloadAfterPriceChangeHinger = false
+            )
+        } else {
+            val shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position)
+            if (shipmentCartItemModel != null) {
+                shippingCourierBottomsheet = null
+                val recipientAddressModel = shipmentPresenter.recipientAddressModel
                 onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position)
             }
         }
@@ -1443,8 +1444,7 @@ class ShipmentFragment :
                         showToastNormal(getString(com.tokopedia.purchase_platform.common.R.string.pp_auto_unapply_bo_toaster_message))
                     }
                     doSetPromoBenefit(
-                        validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.summaries,
-                        true
+                        validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.summaries
                     )
                 }
                 val clearPromoUiModel =
@@ -1764,7 +1764,7 @@ class ShipmentFragment :
 
     override fun onTotalPaymentChange(totalPayment: String, enable: Boolean) {
         shipmentPresenter.updateShipmentButtonPaymentModel(enable, totalPayment, null)
-        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
+//        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
     override fun onFinishChoosingShipment(
@@ -1885,11 +1885,11 @@ class ShipmentFragment :
     }
 
     override fun onDataEnableToCheckout() {
-        shipmentAdapter.updateCheckoutButtonData(null)
+        shipmentPresenter.updateCheckoutButtonData()
     }
 
     override fun onDataDisableToCheckout(message: String?) {
-        shipmentAdapter.updateCheckoutButtonData(null)
+        shipmentPresenter.updateCheckoutButtonData()
     }
 
     override fun onCheckoutValidationResult(
@@ -3523,7 +3523,7 @@ class ShipmentFragment :
         sendEEStep3()
         updateLogisticPromoData(promoUiModel)
         val hasSetAllCourier =
-            doSetPromoBenefit(promoUiModel.benefitSummaryInfoUiModel.summaries, true)
+            doSetPromoBenefit(promoUiModel.benefitSummaryInfoUiModel.summaries)
         if (hasSetAllCourier) {
             // Check if need to hit validate final, if so then hit validate final by checking is all courier have been selected
             if (isNeedToHitValidateFinal) {
@@ -3533,11 +3533,10 @@ class ShipmentFragment :
     }
 
     private fun doSetPromoBenefit(
-        summariesUiModels: List<SummariesItemUiModel>,
-        forceSetPromoBenefit: Boolean
+        summariesUiModels: List<SummariesItemUiModel>
     ): Boolean {
         val hasSetAllCourier = shipmentAdapter.hasSetAllCourier()
-        if (hasSetAllCourier || forceSetPromoBenefit) {
+        if (hasSetAllCourier) {
             resetPromoBenefit()
             setPromoBenefit(summariesUiModels)
             shipmentPresenter.updateShipmentCostModel()
@@ -4124,7 +4123,7 @@ class ShipmentFragment :
 //                    benefitSummaryInfoUiModel = null
                     shipmentAdapter.clearTotalPromoStackAmount()
                     shipmentPresenter.updateShipmentCostModel()
-                    shipmentAdapter.updateCheckoutButtonData(null)
+                    shipmentPresenter.updateCheckoutButtonData()
                 }
                 shipmentAdapter.setSelectedCourier(
                     position,

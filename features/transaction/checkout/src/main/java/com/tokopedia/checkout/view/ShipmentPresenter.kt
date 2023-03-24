@@ -636,6 +636,48 @@ class ShipmentPresenter @Inject constructor(
         this.shipmentButtonPayment.value = shipmentButtonPaymentModel ?: ShipmentButtonPaymentModel()
     }
 
+    private fun validateLoadingItem(shipmentCartItemModel: ShipmentCartItemModel): Boolean {
+        return shipmentCartItemModel.isStateLoadingCourierState
+    }
+
+    fun updateCheckoutButtonData() {
+        var cartItemCounter = 0
+        var cartItemErrorCounter = 0
+        var hasLoadingItem = false
+        for (shipmentCartItemModel in shipmentCartItemModelList) {
+            if (shipmentCartItemModel.selectedShipmentDetailData != null) {
+                if ((shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !isTradeInByDropOff) || (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && isTradeInByDropOff)) {
+                    if (!hasLoadingItem) {
+                        hasLoadingItem = validateLoadingItem(shipmentCartItemModel)
+                    }
+                    cartItemCounter++
+                }
+            }
+            if (shipmentCartItemModel.isError) {
+                cartItemErrorCounter++
+            }
+        }
+        val shipmentCost = shipmentCostModel.value
+        if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList.size) {
+            val priceTotal: Double =
+                if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
+            val priceTotalFormatted =
+                Utils.removeDecimalSuffix(
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        priceTotal,
+                        false
+                    )
+                )
+            updateShipmentButtonPaymentModel(!hasLoadingItem, priceTotalFormatted, null)
+        } else {
+            updateShipmentButtonPaymentModel(
+                cartItemErrorCounter < shipmentCartItemModelList.size,
+                "-",
+                null
+            )
+        }
+    }
+
     override fun updateShipmentButtonPaymentModel(
         enable: Boolean?,
         totalPrice: String?,

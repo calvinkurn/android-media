@@ -426,45 +426,6 @@ class ShipmentAdapter @Inject constructor(
         return -1
     }
 
-    fun validateLoadingItem(shipmentCartItemModel: ShipmentCartItemModel): Boolean {
-        return shipmentCartItemModel.isStateLoadingCourierState
-    }
-
-    fun updateCheckoutButtonData(defaultTotal: String?) {
-        if (shipmentCostModel != null && shipmentCartItemModelList != null) {
-            var cartItemCounter = 0
-            var cartItemErrorCounter = 0
-            var hasLoadingItem = false
-            for (shipmentCartItemModel in shipmentCartItemModelList!!) {
-                if (shipmentCartItemModel.selectedShipmentDetailData != null) {
-                    if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !shipmentAdapterActionListener.isTradeInByDropOff || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff) {
-                        if (!hasLoadingItem) {
-                            hasLoadingItem = validateLoadingItem(shipmentCartItemModel)
-                        }
-                        cartItemCounter++
-                    }
-                }
-                if (shipmentCartItemModel.isError) {
-                    cartItemErrorCounter++
-                }
-            }
-            if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList!!.size) {
-                val priceTotal: Double =
-                    if (shipmentCostModel!!.totalPrice <= 0) 0.0 else shipmentCostModel!!.totalPrice
-                val priceTotalFormatted =
-                    removeDecimalSuffix(convertPriceValueToIdrFormat(priceTotal.toLong(), false))
-                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, !hasLoadingItem)
-            } else {
-                shipmentAdapterActionListener.onTotalPaymentChange(
-                    "-",
-                    cartItemErrorCounter < shipmentCartItemModelList!!.size
-                )
-            }
-        } else if (defaultTotal != null) {
-            shipmentAdapterActionListener.onTotalPaymentChange(defaultTotal, false)
-        }
-    }
-
     fun updateShipmentSellerCashbackVisibility() {
         var cashback = 0.0
         if (shipmentCartItemModelList != null && shipmentCartItemModelList!!.isNotEmpty()) {
