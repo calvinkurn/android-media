@@ -34,8 +34,16 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         private const val PARAM_TRACK_ACTIVITY = "track_activity"
     }
 
-    suspend fun getAutoComplete(keyword: String, latlng: String): AutoCompleteResponse {
-        val param = mapOf("param" to keyword, "latlng" to latlng)
+    suspend fun getAutoComplete(
+        keyword: String,
+        latlng: String,
+        isManageAddressFlow: Boolean = false
+    ): AutoCompleteResponse {
+        val param = mapOf(
+            "param" to keyword,
+            "latlng" to latlng,
+            "is_manage_address_flow" to isManageAddressFlow
+        )
         val request = GraphqlRequest(
             KeroLogisticQuery.autoComplete,
             AutoCompleteResponse::class.java,
@@ -44,8 +52,14 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
-    suspend fun getDistrict(placeId: String): GetDistrictResponse {
-        val param = mapOf("param" to placeId)
+    suspend fun getDistrict(
+        placeId: String,
+        isManageAddressFlow: Boolean = false
+    ): GetDistrictResponse {
+        val param = mapOf(
+            "param" to placeId,
+            "is_manage_address_flow" to isManageAddressFlow
+        )
         val request = GraphqlRequest(
             KeroLogisticQuery.placesGetDistrict,
             GetDistrictResponse::class.java,
@@ -130,8 +144,14 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
-    suspend fun getDistrictGeocode(latlong: String?): AutoFillResponse {
-        val param = mapOf("latlng" to latlong)
+    suspend fun getDistrictGeocode(
+        latlong: String?,
+        isManageAddressFlow: Boolean = false
+    ): AutoFillResponse {
+        val param = mapOf(
+            "latlng" to latlong,
+            "is_manage_address_flow" to isManageAddressFlow
+        )
         val request = GraphqlRequest(
             KeroLogisticQuery.keroMapsAutofill,
             AutoFillResponse::class.java,
@@ -169,7 +189,10 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
-    suspend fun editAddress(model: SaveAddressDataModel, source: String): KeroEditAddressResponse.Data {
+    suspend fun editAddress(
+        model: SaveAddressDataModel,
+        source: String
+    ): KeroEditAddressResponse.Data {
         val param = EditAddressParam(
             addressId = model.id,
             addressName = model.addressName,
@@ -197,7 +220,11 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
     }
 
     suspend fun eligibleForAddressFeature(featureId: Int): KeroAddrIsEligibleForAddressFeatureResponse {
-        val gqlParam = mapOf("feature_id" to featureId, "device" to "android", "device_version" to GlobalConfig.VERSION_NAME)
+        val gqlParam = mapOf(
+            "feature_id" to featureId,
+            "device" to "android",
+            "device_version" to GlobalConfig.VERSION_NAME
+        )
         val request = GraphqlRequest(
             KeroLogisticQuery.eligible_for_address_feature,
             KeroAddrIsEligibleForAddressFeatureResponse::class.java,
@@ -206,8 +233,18 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
-    suspend fun pinpointValidation(districtId: Int, latitude: String, longitude: String, postalCode: String): PinpointValidationResponse {
-        val gqlParam = mapOf("district_id" to districtId, "latitude" to latitude, "longitude" to longitude, "postal_code" to postalCode)
+    suspend fun pinpointValidation(
+        districtId: Int,
+        latitude: String,
+        longitude: String,
+        postalCode: String
+    ): PinpointValidationResponse {
+        val gqlParam = mapOf(
+            "district_id" to districtId,
+            "latitude" to latitude,
+            "longitude" to longitude,
+            "postal_code" to postalCode
+        )
         val request = GraphqlRequest(
             KeroLogisticQuery.pinpoint_validation,
             PinpointValidationResponse::class.java,

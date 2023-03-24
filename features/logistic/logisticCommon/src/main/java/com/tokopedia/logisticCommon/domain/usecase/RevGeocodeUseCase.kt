@@ -21,7 +21,8 @@ class RevGeocodeUseCase @Inject constructor(
     fun execute(latlng: String): Observable<KeroMapsAutofill> {
         val param: Map<String, Any> = mapOf(
             PARAM_LATLNG to latlng,
-            PARAM_ERR to true
+            PARAM_ERR to true,
+            PARAM_IS_MANAGE_ADDRESS_FLOW to false
         )
         val gqlQuery = KeroLogisticQuery.keroMapsAutofill
         val gqlRequest = GraphqlRequest(gqlQuery, AutoFillResponse::class.java, param)
@@ -51,5 +52,6 @@ class RevGeocodeUseCase @Inject constructor(
     companion object {
         const val PARAM_LATLNG = "latlng"
         const val PARAM_ERR = "err"
+        const val PARAM_IS_MANAGE_ADDRESS_FLOW = "is_manage_address_flow"
     }
 }

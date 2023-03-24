@@ -128,7 +128,7 @@ class PinpointWebviewViewModelTest {
         val lat = -6.571004247136069
         val long = 106.76730046907339
         viewModel.setSource("ADD_ADDRESS_POSITIVE")
-        coEvery { repo.getDistrictGeocode(any()) } returns data
+        coEvery { repo.getDistrictGeocode(any(), any()) } returns data
 
         viewModel.saveLatLong(lat, long)
 
@@ -150,7 +150,7 @@ class PinpointWebviewViewModelTest {
         val lat = -6.571004247136069
         val long = 106.76730046907339
         viewModel.setSource("ADD_ADDRESS_NEGATIVE")
-        coEvery { repo.getDistrictGeocode(any()) } returns data
+        coEvery { repo.getDistrictGeocode(any(), any()) } returns data
 
         viewModel.saveLatLong(lat, long)
 
@@ -173,7 +173,7 @@ class PinpointWebviewViewModelTest {
         val lat = -6.571004247136069
         val long = 106.76730046907339
         viewModel.setSource("EDIT_ADDRESS")
-        coEvery { repo.getDistrictGeocode(any()) } returns data
+        coEvery { repo.getDistrictGeocode(any(), any()) } returns data
 
         viewModel.saveLatLong(lat, long)
 
