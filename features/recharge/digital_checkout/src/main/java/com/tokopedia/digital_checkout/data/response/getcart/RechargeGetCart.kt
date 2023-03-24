@@ -128,6 +128,10 @@ data class RechargeGetCart(
         @SerializedName("collection_point_id")
         @Expose
         val collectionPointId: String = "",
+
+        @SerializedName("collection_point_version")
+        @Expose
+        val collectionPointVersion: String = "",
 ) {
     data class Response(
             @SerializedName("rechargeGetCart")
