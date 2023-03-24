@@ -233,7 +233,7 @@ object CheckoutRequestMapper {
             promos = mapPromos(checkoutRequest.promos)
             isDonation = checkoutRequest.isDonation
             egold = mapEgoldData(checkoutRequest.egoldData)
-            data = mapData(checkoutRequest.data)
+//            data = mapData(checkoutRequest.data)
             val tmpCornerData = checkoutRequest.cornerData
             tokopediaCorner =
                 if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
@@ -273,11 +273,11 @@ object CheckoutRequestMapper {
         }
     }
 
-    private fun mapData(
-        dataCheckoutRequestList: List<DataCheckoutRequest>?
+    fun mapData(
+        dataCheckoutRequestList: List<DataCheckoutRequest>
     ): List<Data> {
         val checkoutGqlDataList = mutableListOf<Data>()
-        dataCheckoutRequestList?.forEach {
+        dataCheckoutRequestList.forEach {
             checkoutGqlDataList.add(
                 Data().apply {
                     addressId = it.addressId.toLongOrZero()

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.util.Pair
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.Carts
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
@@ -391,7 +391,7 @@ interface ShipmentContract {
 
 //        fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentCartItemModels: List<ShipmentCartItemModel>): List<DataCheckoutRequest>
         val isIneligiblePromoDialogEnabled: Boolean
-        fun generateCheckoutRequest(): CheckoutRequest
+        fun generateCheckoutRequest(): Carts
 
         fun releaseBooking()
         fun fetchEpharmacyData()

@@ -12,16 +12,18 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest
+import com.tokopedia.checkout.data.model.request.checkout.Carts
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestMapper.map
+import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestMapper
+import com.tokopedia.checkout.data.model.request.checkout.Egold
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_REGULAR_PRODUCT
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_TOKONOW_PRODUCT
+import com.tokopedia.checkout.data.model.request.checkout.Promo
+import com.tokopedia.checkout.data.model.request.checkout.TokopediaCorner
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.EgoldData
 import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.TokopediaCornerData
 import com.tokopedia.checkout.data.model.request.saf.ShipmentAddressFormRequest
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateDropshipData
@@ -974,7 +976,7 @@ class ShipmentPresenter @Inject constructor(
     override fun processCheckout() {
         removeErrorShopProduct()
         val checkoutRequest = generateCheckoutRequest()
-        if (checkoutRequest.data?.isNotEmpty() == true) {
+        if (checkoutRequest.data.isNotEmpty()) {
             // Get additional param for trade in analytics
             var deviceModel = ""
             var devicePrice = 0L
@@ -1007,12 +1009,13 @@ class ShipmentPresenter @Inject constructor(
                             devicePrice,
                             diagnosticId
                         )
-                        if (isPurchaseProtectionPage) {
-                            mTrackerPurchaseProtection.eventClickOnBuy(
-                                userSessionInterface.userId,
-                                checkoutRequest.protectionAnalyticsData
-                            )
-                        }
+                        // todo
+//                        if (isPurchaseProtectionPage) {
+//                            mTrackerPurchaseProtection.eventClickOnBuy(
+//                                userSessionInterface.userId,
+//                                checkoutRequest.protectionAnalyticsData
+//                            )
+//                        }
                         var isCrossSellChecked = false
                         for (shipmentCrossSellModel in listShipmentCrossSellModel) {
                             if (shipmentCrossSellModel.isChecked) isCrossSellChecked = true
@@ -1080,7 +1083,7 @@ class ShipmentPresenter @Inject constructor(
         isTradeIn: Boolean,
         isTradeInDropOff: Boolean,
         deviceId: String,
-        checkoutRequest: com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest,
+        carts: Carts,
         dynamicData: String
     ): CheckoutRequest {
         var publicKey = ""
@@ -1095,7 +1098,7 @@ class ShipmentPresenter @Inject constructor(
             }
         }
         return CheckoutRequest(
-            map(checkoutRequest),
+            carts,
             isOneClickShipment.toString(),
             dynamicData,
             isTradeIn,
@@ -1865,25 +1868,25 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    override fun generateCheckoutRequest(): com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest {
+    override fun generateCheckoutRequest(): Carts {
         // Set promo merchant request data
         if (validateUsePromoRevampUiModel != null) {
             setCheckoutRequestPromoData(dataCheckoutRequestList)
         }
-        var cornerData: TokopediaCornerData? = null
+        var cornerData: TokopediaCorner? = null
         if (recipientAddressModel.isCornerAddress) {
-            cornerData = TokopediaCornerData(
+            cornerData = TokopediaCorner(
                 true,
                 recipientAddressModel.userCornerId,
                 recipientAddressModel.cornerId
                     .toLongOrZero()
             )
         }
-        val egoldData = EgoldData()
+        val egoldData = Egold()
         val egoldAttribute = egoldAttributeModel.value
         if (egoldAttribute != null && egoldAttribute.isEligible) {
             egoldData.isEgold = egoldAttribute.isChecked
-            egoldData.egoldAmount = egoldAttribute.buyEgoldValue
+            egoldData.goldAmount = egoldAttribute.buyEgoldValue
         }
         val crossSellRequest = CrossSellRequest()
         val listCrossSellItemRequest = ArrayList<CrossSellItemRequestModel>()
@@ -1920,12 +1923,14 @@ class ShipmentPresenter @Inject constructor(
         checkoutRequest.isDonation = if (shipmentDonationModel?.isChecked == true) 1 else 0
         checkoutRequest.crossSell = crossSellRequest
         checkoutRequest.data = dataCheckoutRequestList
-        checkoutRequest.egoldData = egoldData
-        setCheckoutFeatureTypeData(checkoutRequest)
-        if (cornerData != null) {
-            checkoutRequest.cornerData = cornerData
-        }
+//        checkoutRequest.egoldData = egoldData
+//        setCheckoutFeatureTypeData(checkoutRequest)
+//        if (cornerData != null) {
+//            checkoutRequest.cornerData = cornerData
+//        }
 
+        val globalPromos = mutableListOf<Promo>()
+        var hasPromoStackingData = false
         // Set promo global request data
         if (validateUsePromoRevampUiModel != null) {
             // Clear data first
@@ -1942,36 +1947,51 @@ class ShipmentPresenter @Inject constructor(
                     val promoRequest = PromoRequest()
                     promoRequest.code = promoCode
                     promoRequest.type = PromoRequest.TYPE_GLOBAL
+                    globalPromos.add(
+                        Promo(
+                            promoCode,
+                            PromoRequest.TYPE_GLOBAL
+                        )
+                    )
                     promoRequests.add(promoRequest)
                 }
                 checkoutRequest.promos = promoRequests
             }
-            checkoutRequest.hasPromoStacking = true
+            hasPromoStackingData = true
         }
         if (checkoutLeasingId.isNotEmpty()) {
             checkoutRequest.leasingId = checkoutLeasingId
                 .toLongOrZero()
         }
-        return checkoutRequest
+        return Carts().apply {
+            promos = globalPromos
+            isDonation = if (shipmentDonationModel?.isChecked == true) 1 else 0
+            egold = egoldData
+            data = CheckoutRequestMapper.mapData(dataCheckoutRequestList)
+            tokopediaCorner = cornerData
+            hasPromoStacking = hasPromoStackingData
+            if (checkoutLeasingId.isNotEmpty()) {
+                leasingId = checkoutLeasingId.toLongOrZero()
+            }
+            featureType = setCheckoutFeatureTypeData(dataCheckoutRequestList)
+            crossSell = checkoutRequest.crossSell
+        }
+//        return checkoutRequest
     }
 
-    private fun setCheckoutFeatureTypeData(checkoutRequest: com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest) {
+    private fun setCheckoutFeatureTypeData(dataCheckoutRequestList: List<DataCheckoutRequest>): Int {
         var hasTokoNowProduct = false
-        val dataCheckoutRequests = checkoutRequest.data
-        if (dataCheckoutRequests != null) {
-            for (dataCheckoutRequest in dataCheckoutRequests) {
-                if (!hasTokoNowProduct && dataCheckoutRequest.shopProducts != null) {
-                    for (shopProduct in dataCheckoutRequest.shopProducts!!) {
-                        if (shopProduct.isTokoNow) {
-                            hasTokoNowProduct = true
-                            break
-                        }
+        for (dataCheckoutRequest in dataCheckoutRequestList) {
+            if (!hasTokoNowProduct && dataCheckoutRequest.shopProducts != null) {
+                for (shopProduct in dataCheckoutRequest.shopProducts!!) {
+                    if (shopProduct.isTokoNow) {
+                        hasTokoNowProduct = true
+                        break
                     }
                 }
             }
-            checkoutRequest.featureType =
-                if (hasTokoNowProduct) FEATURE_TYPE_TOKONOW_PRODUCT else FEATURE_TYPE_REGULAR_PRODUCT
         }
+        return if (hasTokoNowProduct) FEATURE_TYPE_TOKONOW_PRODUCT else FEATURE_TYPE_REGULAR_PRODUCT
     }
 
     private fun setCheckoutRequestPromoData(dataCheckoutRequestList: List<DataCheckoutRequest>) {
