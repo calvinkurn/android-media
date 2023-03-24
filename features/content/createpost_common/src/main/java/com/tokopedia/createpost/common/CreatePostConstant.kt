@@ -10,3 +10,5 @@ const val TYPE_CONTENT = "content"
 const val TYPE_CONTENT_SHOP = "content-shop"
 const val TYPE_CONTENT_USER = "content-user"
 const val TYPE_AFFILIATE = "affiliate"
+
+const val FEED_POST_MEDIA_CACHE_ID = "FEED_POST_MEDIA_CACHE_ID"

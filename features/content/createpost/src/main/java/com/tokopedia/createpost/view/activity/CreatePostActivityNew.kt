@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.webkit.MimeTypeMap
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -19,13 +20,11 @@ import com.tokopedia.createpost.common.SHOP_ID_PARAM
 import com.tokopedia.createpost.common.USER_ID_PARAM
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
-import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
@@ -148,9 +147,11 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     }
 
     private fun initInjector() {
-        DaggerCreatePostComponent.builder()
-            .createPostCommonModule(CreatePostCommonModule(applicationContext))
-            .createPostModule(CreatePostModule(applicationContext)).build()
+        DaggerCreatePostComponent.factory()
+            .create(
+                baseAppComponent = (applicationContext as BaseMainApplication).baseAppComponent,
+                context = this
+            )
             .inject(this)
     }
 

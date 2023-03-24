@@ -566,7 +566,7 @@ class FeedPlusContainerFragment :
                     postProgressUpdateView?.hide()
                     Toaster.build(
                         view = requireView(),
-                        text = getString(R.string.feed_upload_shorts_success),
+                        text = getString(R.string.feed_upload_content_success),
                         duration = Toaster.LENGTH_LONG,
                         type = Toaster.TYPE_NORMAL,
                         actionText = getString(R.string.feed_upload_shorts_see_video),
