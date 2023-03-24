@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class ShopMultilocWhitelistUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
-    dispatcher: CoroutineDispatchers,
+    dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Long, ShopLocationWhitelistResponse>(dispatcher.io) {
     override fun graphqlQuery(): String {
         return ShopLocationQuery.shopLocationWhitelist

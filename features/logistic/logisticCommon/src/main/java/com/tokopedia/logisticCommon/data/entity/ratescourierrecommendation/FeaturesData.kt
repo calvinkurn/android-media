@@ -7,14 +7,14 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class FeaturesData(
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("dynamic_price")
-        val dynamicPricing: DynamicPricing = DynamicPricing()
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("dynamic_price")
+    val dynamicPricing: DynamicPricing = DynamicPricing()
 
 ) : Parcelable
 
 @Parcelize
 data class DynamicPricing(
-        @SerializedName("text_label")
-        val textLabel: String = ""
-): Parcelable
+    @SerializedName("text_label")
+    val textLabel: String = ""
+) : Parcelable

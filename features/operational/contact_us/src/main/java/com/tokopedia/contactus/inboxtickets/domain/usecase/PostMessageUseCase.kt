@@ -1,35 +1,27 @@
 package com.tokopedia.contactus.inboxtickets.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.data.model.TicketReplyResponse
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.contactus.inboxtickets.domain.usecase.param.PostMessageParam
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
-import javax.inject.Named
 
-const val TICKET_ID = "ticketID"
-const val MESSAGE = "message"
-const val IS_IMAGE = "pPhoto"
-const val IMAGE_AS_STRING = "pPhotoAll"
-const val USER_ID = "userID"
-const val AGENT_REPLY = "agentReply"
+const val REPLAY_TICKET = """mutation replyTicket(${'$'}ticketID: String!, ${'$'}userID: String!, ${'$'}message: String!, ${'$'}pPhoto: Int!, ${'$'}pPhotoAll: String!, ${'$'}agentReply:String!) {
+  ticket_reply(ticketID: ${'$'}ticketID, userID: ${'$'}userID, message: ${'$'}message, pPhoto: ${'$'}pPhoto, pPhotoAll: ${'$'}pPhotoAll, agentReply: ${'$'}agentReply) {
+    data {
+      status
+      post_key
+    }
+  }
+}"""
 
 class PostMessageUseCase @Inject constructor(
-    @Named("reply_ticket") val replyTicketQuery: String
-) {
-
-    suspend fun getCreateTicketResult(requestParams: RequestParams): GraphqlResponse {
-        val gql = MultiRequestGraphqlUseCase()
-        gql.addRequest(
-            GraphqlRequest(
-                replyTicketQuery,
-                TicketReplyResponse::class.java,
-                requestParams.parameters
-            )
-        )
-        return gql.executeOnBackground()
-    }
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<PostMessageParam, TicketReplyResponse>(dispatchers.io) {
 
     fun createRequestParams(
         id: String,
@@ -38,14 +30,15 @@ class PostMessageUseCase @Inject constructor(
         photoall: String,
         agentReply: String,
         userId: String
-    ): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putString(TICKET_ID, id)
-        requestParams.putString(MESSAGE, message)
-        requestParams.putString(AGENT_REPLY, agentReply)
-        requestParams.putString(USER_ID, userId)
-        requestParams.putInt(IS_IMAGE, photo)
-        requestParams.putString(IMAGE_AS_STRING, photoall)
-        return requestParams
+    ): PostMessageParam {
+        return PostMessageParam(id, message, photo, photoall, userId, agentReply)
+    }
+
+    override fun graphqlQuery(): String {
+        return REPLAY_TICKET
+    }
+
+    override suspend fun execute(params: PostMessageParam): TicketReplyResponse {
+        return repository.request(graphqlQuery(), params)
     }
 }

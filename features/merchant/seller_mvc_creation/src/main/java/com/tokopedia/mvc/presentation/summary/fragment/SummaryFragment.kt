@@ -512,7 +512,6 @@ class SummaryFragment :
                 .show(childFragmentManager, "")
         }
         viewModel.previewImage(
-            isCreateMode = false,
             voucherConfiguration = configuration,
             parentProductIds = parentProductIds,
             imageRatio = ImageRatio.SQUARE
