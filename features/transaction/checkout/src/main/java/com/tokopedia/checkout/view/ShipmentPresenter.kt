@@ -1892,34 +1892,10 @@ class ShipmentPresenter @Inject constructor(
     }
 
     private fun setCheckoutRequestPromoData(data: List<Data>) {
-        // Clear data first
-//        for (dataCheckoutRequest in data) {
-//            if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts!!.isNotEmpty()) {
-//                for (shopProduct in dataCheckoutRequest.shopProducts!!) {
-//                    if (shopProduct.promoCodes != null) {
-//                        shopProduct.promoCodes?.clear()
-//                    }
-//                    shopProduct.promos?.clear()
-//                }
-//            }
-//        }
-
-        // Then set the data promo merchant & logistic
         for (dataCheckoutRequest in data) {
-//            if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts!!.isNotEmpty()) {
             for (shopProductCheckoutRequest in dataCheckoutRequest.shopOrders) {
                 for (voucherOrder in validateUsePromoRevampUiModel!!.promoUiModel.voucherOrderUiModels) {
                     if (shopProductCheckoutRequest.cartstring == voucherOrder.uniqueId) {
-//                            if (shopProductCheckoutRequest.promoCodes != null && shopProductCheckoutRequest.promoCodes!!.size > 0 &&
-//                                !shopProductCheckoutRequest.promoCodes!!.contains(voucherOrder.code)
-//                            ) {
-//                                // This section logic's seems to be invalid, since promo will always be cleared on previous logic
-//                                shopProductCheckoutRequest.promoCodes!!.add(voucherOrder.code)
-//                            } else {
-//                                val codes = ArrayList<String>()
-//                                codes.add(voucherOrder.code)
-//                                shopProductCheckoutRequest.promoCodes = codes
-//                            }
                         if (voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
                             if (!hasInsertPromo(
                                     shopProductCheckoutRequest.promos,
@@ -1942,7 +1918,6 @@ class ShipmentPresenter @Inject constructor(
                         }
                     }
                 }
-//                }
             }
         }
     }
