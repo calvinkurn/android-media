@@ -246,17 +246,15 @@
                 app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 
-            <com.tokopedia.unifyprinciples.Typography
+            <WebView
                 android:id="@+id/tnc_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                app:typographyType="body_2"
                 android:clickable="true"
                 android:autoLink="all"
-                android:textColor="@color/Unify_N700"
                 app:layout_constraintLeft_toLeftOf="@+id/tnc"
                 app:layout_constraintRight_toRightOf="@+id/tnc"
                 app:layout_constraintTop_toBottomOf="@+id/tnc"

@@ -10,6 +10,7 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
+import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -62,6 +63,10 @@ import rx.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import android.webkit.WebViewClient
+
+
+
 
 class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
@@ -412,8 +417,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             btnAction2?.text = data.buttonStr
             btnAction2?.setBackgroundResource(R.drawable.bg_button_buy_green_tokopoints)
         } else {
-            how_to_use.hide()
-            how_to_use_content.hide()
             gift_section_main_layout.hide()
             tp_bottom_separator.hide()
             if (data.globalPromoCodes?.isNotEmpty() == true) {
@@ -505,22 +508,38 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
         ImageHandler.loadImageFitCenter(imgBanner?.context, imgBanner, data.imageUrlMobile)
         val tvHowToUse: Typography = requireView().findViewById(R.id.how_to_use_content)
-        val tvTnc: Typography = requireView().findViewById(R.id.tnc_content)
-        if (!data.tnc.isNullOrEmpty() && data.tnc != "<br>") {
-            tvTnc.text = HtmlUrlHelper(
-                data.tnc ?: "",
-                tvTnc.context
-            ).spannedString
-            tvTnc.movementMethod = getMovementMethod()
-        } else {
-            view?.findViewById<Typography>(R.id.tnc)?.hide()
-            view?.findViewById<View>(R.id.tp_mid_separator)?.hide()
-            tvTnc.hide()
-        }
+        val webTnc: WebView = requireView().findViewById(R.id.tnc_content)
+        webTnc.setOnLongClickListener { _ -> true }
+        webTnc.isVerticalScrollBarEnabled = false
+
+        data.tnc?.let { webTnc.loadDataWithBaseURL(null, it, "text/html", "utf-8", null) }
+        webTnc.setWebViewClient(object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                if(url.startsWith("tokopedia://")){
+                    RouteManager.route(context, url)
+                }
+                else{
+                    RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url))
+                }
+                return true
+            }
+        })
+//        val tvTnc: Typography = requireView().findViewById(R.id.tnc_content)
+//        if (!data.tnc.isNullOrEmpty() && data.tnc != "<br>") {
+//            tvTnc.text = HtmlUrlHelper(
+//                data.tnc ?: "",
+//                tvTnc.context
+//            ).spannedString
+//            tvTnc.movementMethod = getMovementMethod()
+//        } else {
+//            view?.findViewById<Typography>(R.id.tnc)?.hide()
+//            view?.findViewById<View>(R.id.tp_mid_separator)?.hide()
+//            tvTnc.hide()
+//        }
         if (!data.howToUse.isNullOrEmpty() && data.howToUse != "<br>") {
             tvHowToUse.text = HtmlUrlHelper(
                 data.howToUse ?: "",
-                tvTnc.context
+                tvHowToUse.context
             ).spannedString
             tvHowToUse.movementMethod = getMovementMethod()
         } else {
