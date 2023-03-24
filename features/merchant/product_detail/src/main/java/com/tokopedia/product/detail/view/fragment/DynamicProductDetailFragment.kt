@@ -4461,7 +4461,7 @@ open class DynamicProductDetailFragment :
             viewModel.getDynamicProductInfoP1
         )
         if (GlobalConfig.isSellerApp()) {
-            showTopAdsBottomSheet()
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,productId)
         } else {
             goToPdpSellerApp()
         }

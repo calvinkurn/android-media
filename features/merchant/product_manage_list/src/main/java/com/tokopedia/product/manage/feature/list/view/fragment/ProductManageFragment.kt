@@ -2288,7 +2288,6 @@ open class ProductManageFragment :
     }
 
     private fun onSeeTopAdsClicked(productId: String) {
-//        goToPDP(productId = productId, showTopAdsSheet = true)
         RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,productId)
     }
 
