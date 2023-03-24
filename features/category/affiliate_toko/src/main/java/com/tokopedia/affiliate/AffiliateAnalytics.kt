@@ -336,11 +336,14 @@ object AffiliateAnalytics {
             const val IMPRESSION_SSA_SHOP = "impression - shop - ssa shop list"
             const val IMPRESSION_EVENT_DISCO_BANNER = "impression - event - discovery banner"
             const val IMPRESSION_EVENT_DISCO_BANNER_LIST = "impression - event - discovery banner list"
+            const val IMPRESSION_EVENT_DENGAN_PERFORMA = "impression - event - link dengan performa"
             const val CLICK_EVENT_DISCO_BANNER = "click - event - discovery banner"
             const val CLICK_EVENT_DISCO_BANNER_LIST = "click - event - discovery banner list"
             const val CLICK_SALIN_DISCO_BANNER = "click - salin link - discovery banner"
             const val CLICK_SALIN_DISCO_BANNER_LIST = "click - salin link - discovery banner list"
+            const val CLICK_SALIN_DISCO_HOME = "click - salin link - event - link dengan performa"
             const val CLICK_LIHAT_DISCO_BANNER = "click - lihat semua - discovery banner"
+            const val CLICK_EVENT_LINK_DENGAN_PERFORMA = "click - event - link dengan performa"
         }
     }
 
@@ -379,6 +382,7 @@ object AffiliateAnalytics {
             const val AFFILIATE_SSA_SHOP_CLICK = "/affiliate promosikan page - ssa shop list"
             const val AFFILIATE_PROMOSIKAN_DISCO_BANNER = "/affiliate promosikan page - discovery banner"
             const val AFFILIATE_PROMOSIKAN_DISCO_BANNER_LIST = "/affiliate promosikan page - discovery banner list"
+            const val AFFILAITE_HOME_EVENT_SELECT_CONTENT = "/affiliate home page - link dengan performa - event"
         }
     }
 

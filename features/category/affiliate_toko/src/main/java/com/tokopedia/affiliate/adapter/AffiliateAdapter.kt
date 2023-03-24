@@ -48,6 +48,8 @@ class AffiliateAdapter(
         private const val SHIMMER_ITEM_COUNT = 4
 
         private const val PRODUCT_TYPE = 0
+        private const val SHOP_TYPE = 1
+        private const val CAMPAIGN_TYPE = 3
         private const val PRODUCT_ACTIVE = 1
         const val SOURCE_HOME = "home"
         const val SOURCE_PROMOSIKAN = "promosikan"
@@ -105,8 +107,8 @@ class AffiliateAdapter(
     ) {
         when (holder) {
             is AffiliatePromotionShopItemVH -> {
-                if (itemImpressionSet.add(holder.bindingAdapterPosition)) {
-                    val item = list[holder.bindingAdapterPosition] as? AffiliatePromotionShopModel
+                val item = list[holder.bindingAdapterPosition] as? AffiliatePromotionShopModel
+                if (itemImpressionSet.add(item.hashCode())) {
                     sendPromoShopImpression(
                         item?.promotionItem,
                         holder.bindingAdapterPosition
@@ -114,8 +116,8 @@ class AffiliateAdapter(
                 }
             }
             is AffiliatePromotionCardItemVH -> {
-                if (itemImpressionSet.add(holder.bindingAdapterPosition)) {
-                    val item = list[holder.bindingAdapterPosition] as? AffiliatePromotionCardModel
+                val item = list[holder.bindingAdapterPosition] as? AffiliatePromotionCardModel
+                if (itemImpressionSet.add(item.hashCode())) {
                     sendPromoProductImpression(
                         item?.promotionItem,
                         holder.bindingAdapterPosition
@@ -136,8 +138,8 @@ class AffiliateAdapter(
     ) {
         when (holder) {
             is AffiliateSSAShopItemVH -> {
-                if (itemImpressionSet.add(holder.bindingAdapterPosition)) {
-                    val item = list[holder.bindingAdapterPosition] as? AffiliateSSAShopUiModel
+                val item = list[holder.bindingAdapterPosition] as? AffiliateSSAShopUiModel
+                if (itemImpressionSet.add(item.hashCode())) {
                     sendSSAShopImpression(
                         item?.ssaShop,
                         holder.bindingAdapterPosition
@@ -151,14 +153,10 @@ class AffiliateAdapter(
         holder: AbstractViewHolder<*>
     ) {
         if (holder is AffiliatePerformaSharedProductCardsItemVH) {
-            if (itemImpressionSet.add(holder.bindingAdapterPosition)) {
-                val item =
-                    list[holder.bindingAdapterPosition] as? AffiliatePerformaSharedProductCardsModel
-                if (item?.product?.itemType == PRODUCT_TYPE) {
-                    sendHomeProductImpression(item.product, holder.bindingAdapterPosition)
-                } else {
-                    sendHomeShopImpression(item?.product, holder.bindingAdapterPosition)
-                }
+            val item =
+                list[holder.bindingAdapterPosition] as? AffiliatePerformaSharedProductCardsModel
+            if (itemImpressionSet.add(item.hashCode())) {
+                sendHomeAdpImpression(item?.product, holder.bindingAdapterPosition)
             }
         }
     }
@@ -168,8 +166,9 @@ class AffiliateAdapter(
     ) {
         when (holder) {
             is AffiliateDiscoBannerListVH -> {
-                if (itemImpressionSet.add(holder.bindingAdapterPosition)) {
-                    val item = list[holder.bindingAdapterPosition] as? AffiliateDiscoBannerListUiModel
+                val item =
+                    list[holder.bindingAdapterPosition] as? AffiliateDiscoBannerListUiModel
+                if (itemImpressionSet.add(item.hashCode())) {
                     sendDiscoBannerListImpression(
                         item?.article,
                         holder.bindingAdapterPosition
@@ -179,39 +178,7 @@ class AffiliateAdapter(
         }
     }
 
-    private fun sendHomeProductImpression(
-        item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item,
-        position: Int
-    ) {
-        var label =
-            if (item.status == PRODUCT_ACTIVE) {
-                AffiliateAnalytics.LabelKeys.ACTIVE
-            } else {
-                AffiliateAnalytics.LabelKeys.INACTIVE
-            }
-        if (item.ssaStatus == true) {
-            label += " - komisi extra"
-        }
-        AffiliateAnalytics.trackEventImpression(
-            AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
-            AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUK_YANG_DIPROMOSIKAN,
-            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
-            userId,
-            item.itemID,
-            position,
-            item.itemTitle,
-            "${item.itemID} - ${
-            item.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue
-            } - ${
-            item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue
-            } - ${
-            item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue
-            } - $label",
-            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
-        )
-    }
-
-    private fun sendHomeShopImpression(
+    private fun sendHomeAdpImpression(
         item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item?,
         position: Int
     ) {
@@ -224,9 +191,29 @@ class AffiliateAdapter(
         if (item?.ssaStatus == true) {
             label += " - komisi extra"
         }
+        val eventAction: String
+        val items: String
+        when (item?.itemType) {
+            PRODUCT_TYPE -> {
+                eventAction = AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUK_YANG_DIPROMOSIKAN
+                items = AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
+            }
+            SHOP_TYPE -> {
+                eventAction = AffiliateAnalytics.ActionKeys.IMPRESSION_SHOP_LINK_DENGAN_PERFORMA
+                items = AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
+            }
+            CAMPAIGN_TYPE -> {
+                eventAction = AffiliateAnalytics.ActionKeys.IMPRESSION_EVENT_DENGAN_PERFORMA
+                items = AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_EVENT_SELECT_CONTENT
+            }
+            else -> {
+                eventAction = ""
+                items = ""
+            }
+        }
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
-            AffiliateAnalytics.ActionKeys.IMPRESSION_SHOP_LINK_DENGAN_PERFORMA,
+            eventAction,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             userId,
             item?.itemID,
@@ -239,7 +226,7 @@ class AffiliateAdapter(
             } - ${
             item?.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue
             } - $label",
-            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
+            items
         )
     }
 
