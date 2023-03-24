@@ -1,4 +1,4 @@
-package com.example.tokopedia_deeplink_annotation
+package com.tokopedia.tokopedia_applink_annotation
 
 @Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)

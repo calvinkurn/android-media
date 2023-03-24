@@ -1,4 +1,4 @@
-package com.example.tokopedia_deeplink_annotation
+package com.tokopedia.tokopedia_applink_annotation
 
 import com.google.auto.service.AutoService
 import com.squareup.javapoet.*

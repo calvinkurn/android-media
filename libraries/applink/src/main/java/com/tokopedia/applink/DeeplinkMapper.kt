@@ -2,7 +2,7 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
-import com.example.tokopedia_deeplink_annotation.TokopediaAppLink
+import com.tokopedia.tokopedia_applink_annotation.TokopediaAppLink
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory
