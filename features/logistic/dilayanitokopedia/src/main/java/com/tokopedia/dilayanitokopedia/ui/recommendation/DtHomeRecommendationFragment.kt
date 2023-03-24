@@ -43,7 +43,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import javax.inject.Inject
 
-class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener {
+class DtHomeRecommendationFragment : Fragment(), TopAdsBannerClickListener {
 
     companion object {
         private const val REQUEST_FROM_PDP = 349
@@ -53,8 +53,8 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
-        fun newInstance(): DtHomeRecommendationForYouFragment {
-            return DtHomeRecommendationForYouFragment()
+        fun newInstance(): DtHomeRecommendationFragment {
+            return DtHomeRecommendationFragment()
         }
     }
 
@@ -197,7 +197,7 @@ class DtHomeRecommendationForYouFragment : Fragment(), TopAdsBannerClickListener
                 position: Int
             ) {
                 showProductCardOptions(
-                    this@DtHomeRecommendationForYouFragment,
+                    this@DtHomeRecommendationFragment,
                     createProductCardOptionsModel(homeRecommendationItemDataModel, position)
                 )
             }
