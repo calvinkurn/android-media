@@ -5,7 +5,10 @@ package com.tokopedia.effect
  */
 interface EffectManager {
 
-    fun init()
+    fun init(
+        surfaceWidth: Int,
+        surfaceHeight: Int,
+    )
 
     fun process(
         srcTexture: Int,
@@ -16,5 +19,23 @@ interface EffectManager {
         surfaceHeight: Int
     )
 
+    fun process(
+        textureId: Int,
+        textureWidth: Int,
+        textureHeight: Int,
+        width: Int,
+        height: Int,
+    ): Int
+
+    fun drawFrameBase(
+        textureWidth: Int,
+        textureHeight: Int,
+        surfaceWidth: Int,
+        surfaceHeight: Int,
+        dstTexture: Int,
+    )
+
     fun setCameraPosition(isFront: Boolean)
+
+    fun getExternalOESTextureID(): Int
 }

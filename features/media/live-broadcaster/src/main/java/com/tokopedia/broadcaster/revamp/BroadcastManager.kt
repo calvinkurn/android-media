@@ -1,8 +1,10 @@
 package com.tokopedia.broadcaster.revamp
 
 import android.content.Context
+import android.graphics.SurfaceTexture
 import android.net.Uri
 import android.os.Handler
+import android.os.Looper
 import android.util.Pair
 import android.view.Surface
 import android.view.SurfaceHolder
@@ -19,8 +21,11 @@ import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatistic
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.effect.EffectManager
+import com.tokopedia.effect.util.ImageUtil
 import com.wmspanel.libstream.*
 import com.wmspanel.libstream.Streamer.VERSION_NAME
+import com.wmspanel.libstream.gles.EglCore
+import com.wmspanel.libstream.gles.WindowSurface
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -45,7 +50,29 @@ class BroadcastManager @Inject constructor(
         }
 
     private var mStreamer: Streamer? = null
+
+    /** Joe : mStreamerGL is responsible for  displaying camera to user device */
     private var mStreamerGL: StreamerGL? = null
+
+    /** Joe : mStreamerSurface is responsible for pushing the display to backend */
+    private var mStreamerSurface: StreamerSurface? = null
+
+    /** Joe : mDisplaySurface works with mStreamerGL for display camera */
+    private var mDisplaySurface: WindowSurface? = null
+
+    /** Joe : mCodecSurface works with mStreamerSurface for pushing */
+    private var mCodecSurface: WindowSurface? = null
+
+    // texture
+    private var mTextureId = 0
+    private var mSurfaceTexture: SurfaceTexture? = null
+    private var mTextureWidth = 0
+    private var mTextureHeight = 0
+    private var mGLSurface: Surface? = null
+
+    // thread
+    private var mGLHandler: Handler? = null
+    private var mEglCore: EglCore? = null
 
     private var mConnectionId: Pair<Int, ConnectionConfig>? = null
     private var mConnectionState: Streamer.CONNECTION_STATE? = null
@@ -110,6 +137,8 @@ class BroadcastManager @Inject constructor(
     override fun init(activityContext: Context, handler: Handler?) {
         mContext = activityContext
         mHandler = handler
+
+        initHandler()
     }
 
     override fun create(
@@ -117,8 +146,6 @@ class BroadcastManager @Inject constructor(
         surfaceSize: Broadcaster.Size,
         withByteplus: Boolean,
     ) {
-        if (mStreamer != null) return
-
         val context = mContext
         if (context == null) {
             broadcastInitStateChanged(
@@ -273,11 +300,81 @@ class BroadcastManager @Inject constructor(
             return
         }
 
-        mStreamer = mStreamerGL
-
         if(withByteplus) {
-            effectManager.init()
+            // initialize surface texture
+            mTextureId = effectManager.getExternalOESTextureID()
+            mSurfaceTexture = SurfaceTexture(mTextureId)
+
+            mTextureWidth = surfaceSize.width
+            mTextureHeight = surfaceSize.height
+
+            mSurfaceTexture?.setDefaultBufferSize(mTextureWidth, mTextureHeight)
+
+            val glSurface = Surface(mSurfaceTexture)
+            mGLSurface = glSurface
+
+            mSurfaceTexture?.setOnFrameAvailableListener {
+                mGLHandler?.post {
+                    mSurfaceTexture?.updateTexImage()
+                    val destinationTexture = effectManager.process(
+                        textureId = mTextureId,
+                        textureWidth = mTextureWidth,
+                        textureHeight = mTextureHeight,
+                        width = surfaceSize.width,
+                        height = surfaceSize.height,
+                    )
+
+                    if (mDisplaySurface != null) {
+                        mDisplaySurface?.makeCurrent()
+                        effectManager.drawFrameBase(
+                            textureWidth = mTextureWidth,
+                            textureHeight = mTextureHeight,
+                            surfaceWidth = surfaceSize.width,
+                            surfaceHeight = surfaceSize.height,
+                            dstTexture = destinationTexture,
+                        )
+                        mDisplaySurface?.swapBuffers()
+                    }
+                    if (mCodecSurface != null) {
+                        mStreamerSurface?.drainEncoder()
+                        mCodecSurface?.makeCurrent()
+                        effectManager.drawFrameBase(
+                            textureWidth = mTextureWidth,
+                            textureHeight = mTextureHeight,
+                            surfaceWidth = surfaceSize.width,
+                            surfaceHeight = surfaceSize.height,
+                            dstTexture = destinationTexture,
+                        )
+                        mCodecSurface?.setPresentationTime(System.nanoTime())
+                        mCodecSurface?.swapBuffers()
+                    }
+                }
+            }
+
+            mGLHandler?.post {
+                // todo: what is this?
+                mEglCore = EglCore(null, EglCore.FLAG_RECORDABLE)
+                mDisplaySurface = WindowSurface(mEglCore, holder.surface, false)
+                mDisplaySurface?.makeCurrent() // todo: what?
+                mStreamerSurface = createCodecStreamer(
+                    context,
+                    audioConfig,
+                    videoConfig
+                )
+
+                mStreamerSurface?.startVideoCapture()
+                mStreamerSurface?.startAudioCapture(mAudioCallback)
+
+                mCodecSurface = WindowSurface(mEglCore, mStreamerSurface?.encoderSurface, false)
+            }
+
+            effectManager.init(
+                surfaceSize.width,
+                surfaceSize.height,
+            )
         }
+
+        mStreamer = mStreamerGL
 
         // Streamer build succeeded, can start Video/Audio capture
         // call startVideoCapture, wait for onVideoCaptureStateChanged callback
@@ -304,6 +401,24 @@ class BroadcastManager @Inject constructor(
         )
 
         broadcastInitStateChanged(BroadcastInitState.Initialized)
+    }
+
+    private fun createCodecStreamer(
+        context: Context,
+        audioConfig: AudioConfig,
+        videoConfig: VideoConfig
+    ): StreamerSurface? {
+        val builder = StreamerSurfaceBuilder()
+
+        builder.setContext(context)
+        builder.setListener(this)
+        builder.setUserAgent("Larix/$VERSION_NAME")
+
+        builder.setAudioConfig(audioConfig)
+
+        builder.setVideoConfig(videoConfig)
+
+        return builder.build()
     }
 
     // To get vertical video just swap width and height
@@ -334,6 +449,22 @@ class BroadcastManager @Inject constructor(
         val connectionConfig = BroadcasterUtil.getConnectionConfig(rtmpUrl)
         val success = createConnection(connectionConfig)
         if (success) broadcastStateChanged(BroadcastState.Started)
+    }
+
+    private var mRenderThread: Thread? = null
+
+    private fun initHandler() {
+        mRenderThread = Thread(
+            object : Runnable {
+                override fun run() {
+                    Looper.prepare()
+                    mGLHandler = Handler()
+                    Looper.loop()
+                }
+            },
+            "RenderThread"
+        )
+        mRenderThread?.start()
     }
 
     private fun isStreamerReady(): Boolean {

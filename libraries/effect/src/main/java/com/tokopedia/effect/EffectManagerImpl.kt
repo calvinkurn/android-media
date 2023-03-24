@@ -2,9 +2,12 @@ package com.tokopedia.effect
 
 import android.app.ActivityManager
 import android.content.Context
+import android.graphics.SurfaceTexture
 import android.opengl.GLES20
 import android.util.Log
+import android.view.Surface
 import android.widget.ImageView
+import com.bef.effectsdk.OpenGLUtils
 import com.bytedance.labcv.effectsdk.BytedEffectConstants
 import com.bytedance.labcv.effectsdk.BytedEffectConstants.BytedResultCode
 import com.bytedance.labcv.effectsdk.RenderManager
@@ -34,7 +37,10 @@ class EffectManagerImpl @Inject constructor(
         }
 
 
-    override fun init() {
+    override fun init(
+        surfaceWidth: Int,
+        surfaceHeight: Int,
+    ) {
         if(mRenderManager != null) return
 
         try {
@@ -73,22 +79,23 @@ class EffectManagerImpl @Inject constructor(
     }
 
     override fun process(
-        srcTexture: Int,
-        cameraRotation: Int,
+        textureId: Int,
+        textureWidth: Int,
+        textureHeight: Int,
         width: Int,
         height: Int,
-        surfaceWidth: Int,
-        surfaceHeight: Int
-    ) {
-        GLES20.glClearColor(TEST_R0 / 255.0f, TEST_G0 / 255.0f, TEST_B0 / 255.0f, 1.0f)
+    ): Int {
+        GLES20.glClearColor(
+            TEST_R0 / 255.0f,
+            TEST_G0 / 255.0f,
+            TEST_B0 / 255.0f,
+            1.0f
+        )
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-
-        var dstTexture = srcTexture
-
-        val transition = ImageUtil.Transition().rotate(cameraRotation.toFloat()).flip(false, true).reverse()
-
-        val texture2D = mImageUtil.transferTextureToTexture(
-            dstTexture,
+        var destinationTexture = mImageUtil?.prepareTexture(textureWidth, textureHeight)
+        val transition = ImageUtil.Transition().rotate(Surface.ROTATION_0.toFloat()).flip(false, false).reverse()
+        val texture2D = mImageUtil?.transferTextureToTexture(
+            textureId,
             BytedEffectConstants.TextureFormat.Texture_Oes,
             BytedEffectConstants.TextureFormat.Texure2D,
             width,
@@ -96,34 +103,98 @@ class EffectManagerImpl @Inject constructor(
             transition
         )
 
-        dstTexture = mImageUtil.prepareTexture(width, height)
+        val timestamp = System.nanoTime()
+        val ret = mRenderManager?.processTexture(texture2D, destinationTexture, width, height, BytedEffectConstants.Rotation.CLOCKWISE_ROTATE_0, timestamp)
+//        if (isEffectApplied()) {
+//            mEffectManager?.setCameraPosition(true)
+//            // Conduct special effects operation, output texture is 2D texture with upright face
+//            val ret = mEffectManager?.process(
+//                texture2D.orZero(),
+//                destinationTexture.orZero(),
+//                size.width,
+//                size.height,
+//                Rotation.CLOCKWISE_ROTATE_0,
+//                timestamp
+//            ) ?: false
+//            if (ret == false) {
+//                // revert back to original texture
+//                destinationTexture = texture2D
+//            }
+//        } else {
+//            destinationTexture = texture2D
+//        }
 
-        /** TODO: is it always true? */
-        setCameraPosition(true)
-        val timestamp = System.currentTimeMillis()
+        return destinationTexture
+    }
 
-        val ret = mRenderManager?.processTexture(texture2D, dstTexture, width, height, BytedEffectConstants.Rotation.CLOCKWISE_ROTATE_0, timestamp)
-        if (GlobalConfig.DEBUG) {
-            Log.d(this::class.java.name, "EffectManager: $ret")
-        }
+    override fun process(
+        srcTexture: Int,
+        cameraRotation: Int,
+        width: Int,
+        height: Int,
+        surfaceWidth: Int,
+        surfaceHeight: Int
+    ) {
+//        GLES20.glClearColor(TEST_R0 / 255.0f, TEST_G0 / 255.0f, TEST_B0 / 255.0f, 1.0f)
+//        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+//
+//        var dstTexture = srcTexture
+//
+//        val transition = ImageUtil.Transition().rotate(cameraRotation.toFloat()).flip(false, true).reverse()
+//
+//        val texture2D = mImageUtil.transferTextureToTexture(
+//            dstTexture,
+//            BytedEffectConstants.TextureFormat.Texture_Oes,
+//            BytedEffectConstants.TextureFormat.Texure2D,
+//            width,
+//            height,
+//            transition
+//        )
+//
+//        dstTexture = mImageUtil.prepareTexture(width, height)
+//
+//        /** TODO: is it always true? */
+//        setCameraPosition(true)
+//        val timestamp = System.currentTimeMillis()
+//
+//        val ret = mRenderManager?.processTexture(texture2D, dstTexture, width, height, BytedEffectConstants.Rotation.CLOCKWISE_ROTATE_0, timestamp)
+//        if (GlobalConfig.DEBUG) {
+//            Log.d(this::class.java.name, "EffectManager: $ret")
+//        }
+    }
 
-        // do the same for both display and encoder surface views
-        val drawTransition = ImageUtil.Transition().crop(
-            ImageView.ScaleType.CENTER_CROP,
-            cameraRotation,
-            width, height,
-            surfaceWidth, surfaceHeight
-        )
+    override fun drawFrameBase(
+        textureWidth: Int,
+        textureHeight: Int,
+        surfaceWidth: Int,
+        surfaceHeight: Int,
+        dstTexture: Int,
+    ) {
+        val drawTransition = ImageUtil.Transition()
+            .crop(
+                ImageView.ScaleType.CENTER_CROP,
+                Surface.ROTATION_0,
+                textureWidth,
+                textureHeight,
+                surfaceWidth,
+                surfaceHeight,
+            )
+
         mImageUtil.drawFrameOnScreen(
             dstTexture,
             BytedEffectConstants.TextureFormat.Texure2D,
-            surfaceWidth, surfaceHeight,
+            surfaceWidth,
+            surfaceHeight,
             drawTransition.matrix
         )
     }
 
     override fun setCameraPosition(isFront: Boolean) {
         mRenderManager?.setCameraPostion(isFront)
+    }
+
+    override fun getExternalOESTextureID(): Int {
+        return OpenGLUtils.getExternalOESTextureID()
     }
 
     companion object {
