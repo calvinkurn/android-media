@@ -303,7 +303,7 @@ class ContentCommentViewModel @AssistedInject constructor(
             }) {
                 _event.emit(
                     CommentEvent.ShowErrorToaster(
-                        message = it,
+                        message = MessageErrorException(CommentException.SendCommentFailed.message),
                         onClick = { sendReply(comment, commentType) })
                 )
             }

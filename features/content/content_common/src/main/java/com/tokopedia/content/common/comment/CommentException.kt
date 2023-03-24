@@ -6,5 +6,5 @@ package com.tokopedia.content.common.comment
 enum class CommentException (val message: String) {
     LinkNotAllowed("Oops, kamu tidak bisa memberikan komentar dalam bentuk tautan, ya."),
     FailedDelete("Oops, gagal menghapus komentar."),
-    SpammedComment("Oops, tidak bisa memberi komentar.")
+    SendCommentFailed("Oops, tidak bisa memberi komentar.")
 }
