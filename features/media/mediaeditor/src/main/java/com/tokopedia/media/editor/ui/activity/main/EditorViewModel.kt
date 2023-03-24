@@ -74,10 +74,6 @@ class EditorViewModel @Inject constructor(
         return _editStateList[urlKey]
     }
 
-    fun cleanImageCache() {
-        saveImageRepository.clearEditorCache()
-    }
-
     fun undoState(activeImageUrl: String): EditorUiModel? {
         getEditState(activeImageUrl)?.let {
             val imageEditStateCount = it.editList.size

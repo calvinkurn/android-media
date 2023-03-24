@@ -381,7 +381,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         val totalProductSize = listShopHomeProductUiModel.size
         val layoutManager = GridLayoutManager(itemView.context, totalProductSize)
         productCarouselSingleOrDoubleAdapter?.clearAllElements()
-        productCarouselSingleOrDoubleAdapter?.addElement(element)
+        productCarouselSingleOrDoubleAdapter?.addElement(listShopHomeProductUiModel)
         recyclerViewCarouselSingleOrDoubleProduct?.adapter = productCarouselSingleOrDoubleAdapter
         recyclerViewCarouselSingleOrDoubleProduct?.layoutManager = layoutManager
     }
