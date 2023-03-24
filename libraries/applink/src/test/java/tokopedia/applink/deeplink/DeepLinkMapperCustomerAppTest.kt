@@ -932,7 +932,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check brand list appLink then should return tokopedia internal brand list in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/sos"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/official-store/brand/0/"
         assertEqualsDeepLinkMapper(ApplinkConst.BRAND_LIST, expectedDeepLink)
     }
 
