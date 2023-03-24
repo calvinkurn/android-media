@@ -12,13 +12,13 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.scheduledelivery.analytics.ScheduleDeliveryAnalytics
 import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryBottomSheetMapper
 import com.tokopedia.logisticcart.scheduledelivery.preference.ScheduleDeliveryPreferences
-import com.tokopedia.logisticcart.scheduledelivery.utils.StringFormatterHelper.appendHtmlBoldText
 import com.tokopedia.logisticcart.scheduledelivery.view.bottomsheet.ScheduleSlotBottomSheet
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel
@@ -169,15 +169,15 @@ class ShippingScheduleWidget : ConstraintLayout {
                     ScheduleSlotBottomSheet.show(fragmentManager, bottomsheetUiModel)
                 scheduleSlotBottomSheet?.apply {
                     setListener(object :
-                        ScheduleSlotBottomSheet.ScheduleSlotBottomSheetListener {
-                        override fun onChooseTimeListener(timeId: Long, dateId: String) {
-                            scheduleDeliveryUiModel.setScheduleDateAndTimeslotId(
-                                scheduleDate = dateId,
-                                timeslotId = timeId
-                            )
-                            mListener?.onChangeScheduleDelivery(it)
-                        }
-                    })
+                            ScheduleSlotBottomSheet.ScheduleSlotBottomSheetListener {
+                            override fun onChooseTimeListener(timeId: Long, dateId: String) {
+                                scheduleDeliveryUiModel.setScheduleDateAndTimeslotId(
+                                    scheduleDate = dateId,
+                                    timeslotId = timeId
+                                )
+                                mListener?.onChangeScheduleDelivery(it)
+                            }
+                        })
                     setOnDismissListener {
                         scheduleSlotBottomSheet = null
                     }

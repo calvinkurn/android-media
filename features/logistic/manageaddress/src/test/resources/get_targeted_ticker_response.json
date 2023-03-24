@@ -1,0 +1,90 @@
+{
+  "GetTargetedTicker": {
+    "List": [
+      {
+        "ID": 128,
+        "Title": "Info Pengembangan System AFTER REFACTOR priority 2",
+        "Content": "Notification content baru sedang berkendala, Mohon cek berkala.",
+        "Action": {
+          "Label": "Baca Selengkapnya",
+          "Type": "link",
+          "AppURL": "tokopedia://webview?url=https://www.tokopedia.com",
+          "WebURL": ""
+        },
+        "Type": "info",
+        "Priority": 2,
+        "Metadata": [
+          {
+            "Type": "layout",
+            "Values": [
+              "layout_A"
+            ]
+          }
+        ]
+      },
+      {
+        "ID": 129,
+        "Title": "Info Pengembangan System AFTER REFACTOR priority 1",
+        "Content": "Notification content baru sedang berkendala, Mohon cek berkala.",
+        "Action": {
+          "Label": "Baca Selengkapnya",
+          "Type": "link",
+          "AppURL": "",
+          "WebURL": "https://www.tokopedia.com"
+        },
+        "Type": "danger",
+        "Priority": 1,
+        "Metadata": [
+          {
+            "Type": "layout",
+            "Values": [
+              "layout_A"
+            ]
+          }
+        ]
+      },
+      {
+        "ID": 130,
+        "Title": "Info Pengembangan System AFTER REFACTOR, priority 3",
+        "Content": "Notification content baru sedang berkendala, Mohon cek berkala.",
+        "Action": {
+          "Label": "Baca Selengkapnya",
+          "Type": "link",
+          "AppURL": "tokopedia://webview?url=https://www.tokopedia.com",
+          "WebURL": "https://www.tokopedia.com"
+        },
+        "Type": "warning",
+        "Priority": 3,
+        "Metadata": [
+          {
+            "Type": "layout",
+            "Values": [
+              "layout_A"
+            ]
+          }
+        ]
+      },
+      {
+        "ID": 131,
+        "Title": "Info Pengembangan System AFTER REFACTOR, priority 3",
+        "Content": "Notification content baru sedang berkendala, Mohon cek berkala.",
+        "Action": {
+          "Label": "",
+          "Type": "",
+          "AppURL": "",
+          "WebURL": ""
+        },
+        "Type": "announcement",
+        "Priority": 3,
+        "Metadata": [
+          {
+            "Type": "layout",
+            "Values": [
+              "layout_A"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
