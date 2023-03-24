@@ -73,7 +73,12 @@ abstract class PostUpdateProgressManager(
     }
 
     private fun sendBroadcast(currentProgress: Int, imageUrl: String) {
-        val progressPercentage = currentProgress / maxCount.toDouble() * PERCENTAGE
+
+        val progressPercentage = if(maxCount == 0) {
+            0
+        } else {
+            (currentProgress / maxCount.toDouble() * PERCENTAGE).toInt()
+        }
 
         val intent = Intent(UPLOAD_POST_NEW)
         intent.putExtra(UPLOAD_POST_SUCCESS_NEW, true)
