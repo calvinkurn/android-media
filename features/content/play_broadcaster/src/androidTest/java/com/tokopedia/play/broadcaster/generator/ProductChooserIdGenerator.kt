@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
@@ -74,14 +75,6 @@ class ProductChooserIdGenerator {
             )
         )
     )
-
-//    private val mockProductSections = listOf(
-//        ProductTagSectionUiModel(
-//            name = "Section Test",
-//            campaignStatus = CampaignStatus.Ongoing,
-//            products = mockSelectedProducts,
-//        )
-//    )
 
     private val campaignList = listOf(
         CampaignUiModel(
@@ -138,6 +131,11 @@ class ProductChooserIdGenerator {
         mapOf(
             ProductSetupFragment::class.java to {
                 ProductSetupFragment(mockProductSetupViewModelFactory)
+            },
+            ProductSummaryBottomSheet::class.java to {
+              ProductSummaryBottomSheet(
+                  analytic = mockk(relaxed = true),
+              )
             },
             ProductChooserBottomSheet::class.java to {
                 ProductChooserBottomSheet(
