@@ -190,7 +190,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
@@ -239,8 +238,6 @@ class ShipmentFragment :
     private var shippingCourierBottomsheet: ShippingCourierBottomsheet? = null
     private var shipmentTracePerformance: PerformanceMonitoring? = null
     private var isShipmentTraceStopped = false
-
-    private var promoNotEligibleBottomsheet: PromoNotEligibleBottomSheet? = null
 
     @Inject
     lateinit var shipmentAdapter: ShipmentAdapter
@@ -516,8 +513,7 @@ class ShipmentFragment :
         shipmentButtonPaymentModel: ShipmentButtonPaymentModel,
         uploadPrescriptionUiModel: UploadPrescriptionUiModel,
         isInitialRender: Boolean,
-        isReloadAfterPriceChangeHigher: Boolean,
-        isLocalReload: Boolean
+        isReloadAfterPriceChangeHigher: Boolean
     ) {
         shipmentAdapter.clearData()
         rvShipment?.layoutManager = LinearLayoutManager(activity)
@@ -597,9 +593,7 @@ class ShipmentFragment :
         if (isInitialRender) {
             sendEEStep2()
         }
-        if (!isLocalReload) {
-            sendErrorAnalytics()
-        }
+        sendErrorAnalytics()
         if (isReloadAfterPriceChangeHigher) {
             delayScrollToFirstShop()
         } else if (hasEpharmacyWidget) {
@@ -637,26 +631,28 @@ class ShipmentFragment :
             val uploadPrescriptionPosition = shipmentAdapter.uploadPrescriptionPosition
             rvShipment!!.scrollToPosition(uploadPrescriptionPosition)
             rvShipment!!.post {
-                val viewHolder =
-                    rvShipment!!.findViewHolderForAdapterPosition(uploadPrescriptionPosition)
-                if (viewHolder is UploadPrescriptionViewHolder) {
-                    val item = CoachMark2Item(
-                        viewHolder.itemView,
-                        activityContext!!.getString(R.string.checkout_epharmacy_coachmark_title),
-                        activityContext!!.getString(R.string.checkout_epharmacy_coachmark_description),
-                        CoachMark2.POSITION_TOP
-                    )
-                    val list = ArrayList<CoachMark2Item>()
-                    list.add(item)
-                    val coachMark = CoachMark2(requireContext())
-                    coachMark.showCoachMark(list, null, 0)
-                    setShown(activityContext!!, KEY_PREFERENCE_COACHMARK_EPHARMACY, true)
-                    ePharmacyAnalytics.viewBannerPesananButuhResepInCheckoutPage(
-                        uploadPrescriptionUiModel.epharmacyGroupIds,
-                        uploadPrescriptionUiModel.enablerNames,
-                        uploadPrescriptionUiModel.shopIds,
-                        uploadPrescriptionUiModel.cartIds
-                    )
+                if (activityContext != null) {
+                    val viewHolder =
+                        rvShipment!!.findViewHolderForAdapterPosition(uploadPrescriptionPosition)
+                    if (viewHolder is UploadPrescriptionViewHolder) {
+                        val item = CoachMark2Item(
+                            viewHolder.itemView,
+                            activityContext!!.getString(R.string.checkout_epharmacy_coachmark_title),
+                            activityContext!!.getString(R.string.checkout_epharmacy_coachmark_description),
+                            CoachMark2.POSITION_TOP
+                        )
+                        val list = ArrayList<CoachMark2Item>()
+                        list.add(item)
+                        val coachMark = CoachMark2(requireContext())
+                        coachMark.showCoachMark(list, null, 0)
+                        setShown(activityContext!!, KEY_PREFERENCE_COACHMARK_EPHARMACY, true)
+                        ePharmacyAnalytics.viewBannerPesananButuhResepInCheckoutPage(
+                            uploadPrescriptionUiModel.epharmacyGroupIds,
+                            uploadPrescriptionUiModel.enablerNames,
+                            uploadPrescriptionUiModel.shopIds,
+                            uploadPrescriptionUiModel.cartIds
+                        )
+                    }
                 }
             }
         }
@@ -907,8 +903,7 @@ class ShipmentFragment :
             shipmentPresenter.shipmentButtonPayment.value,
             shipmentPresenter.uploadPrescriptionUiModel,
             isInitialRender,
-            isReloadAfterPriceChangeHigher,
-            false
+            isReloadAfterPriceChangeHigher
         )
     }
 
@@ -1626,18 +1621,18 @@ class ShipmentFragment :
     }
 
     override fun getShipmentDetailData(
-        shipmentCartItemModel: ShipmentCartItemModel?,
-        recipientAddressModel: RecipientAddressModel?
+        shipmentCartItemModel: ShipmentCartItemModel,
+        recipientAddressModel: RecipientAddressModel
     ): ShipmentDetailData {
         var oldShipmentDetailData: ShipmentDetailData? = null
-        if (shipmentCartItemModel!!.selectedShipmentDetailData != null &&
+        if (shipmentCartItemModel.selectedShipmentDetailData != null &&
             shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null
         ) {
             oldShipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
         }
         val shipmentDetailData: ShipmentDetailData = ratesDataConverter.getShipmentDetailData(
             shipmentCartItemModel,
-            recipientAddressModel!!
+            recipientAddressModel
         )
         if (oldShipmentDetailData?.selectedCourier != null) {
             shipmentDetailData.selectedCourier = oldShipmentDetailData.selectedCourier

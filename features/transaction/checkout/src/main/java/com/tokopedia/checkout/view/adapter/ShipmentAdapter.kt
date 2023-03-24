@@ -426,13 +426,21 @@ class ShipmentAdapter @Inject constructor(
         return -1
     }
 
+    fun validateLoadingItem(shipmentCartItemModel: ShipmentCartItemModel): Boolean {
+        return shipmentCartItemModel.isStateLoadingCourierState
+    }
+
     fun updateCheckoutButtonData(defaultTotal: String?) {
         if (shipmentCostModel != null && shipmentCartItemModelList != null) {
             var cartItemCounter = 0
             var cartItemErrorCounter = 0
+            var hasLoadingItem = false
             for (shipmentCartItemModel in shipmentCartItemModelList!!) {
                 if (shipmentCartItemModel.selectedShipmentDetailData != null) {
                     if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !shipmentAdapterActionListener.isTradeInByDropOff || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff) {
+                        if (!hasLoadingItem) {
+                            hasLoadingItem = validateLoadingItem(shipmentCartItemModel)
+                        }
                         cartItemCounter++
                     }
                 }
@@ -445,7 +453,7 @@ class ShipmentAdapter @Inject constructor(
                     if (shipmentCostModel!!.totalPrice <= 0) 0.0 else shipmentCostModel!!.totalPrice
                 val priceTotalFormatted =
                     removeDecimalSuffix(convertPriceValueToIdrFormat(priceTotal.toLong(), false))
-                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, true)
+                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, !hasLoadingItem)
             } else {
                 shipmentAdapterActionListener.onTotalPaymentChange(
                     "-",

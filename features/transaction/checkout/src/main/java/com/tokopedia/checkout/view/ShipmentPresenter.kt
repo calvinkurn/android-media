@@ -319,10 +319,6 @@ class ShipmentPresenter @Inject constructor(
         view = null
     }
 
-//    override fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>) {
-//        this.dataCheckoutRequestList = dataCheckoutRequestList
-//    }
-
     private fun hasSetAllCourier(): Boolean {
         for (itemData in shipmentCartItemModelList) {
             if (itemData.selectedShipmentDetailData == null && !itemData.isError) {
@@ -685,88 +681,6 @@ class ShipmentPresenter @Inject constructor(
             eventLabel
         )
     }
-
-    /*override fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-        cartString: String,
-        shippingDuration: String,
-        shippingPrice: String,
-        courierName: String
-    ): List<DataCheckoutRequest> {
-        var dataCheckoutRequests = dataCheckoutRequestList
-        if (dataCheckoutRequests == null) {
-            dataCheckoutRequests =
-                view!!.generateNewCheckoutRequest(shipmentCartItemModelList, true)
-        }
-        for (dataCheckoutRequest in dataCheckoutRequests) {
-            val shopProducts = dataCheckoutRequest.shopProducts
-            if (shopProducts != null) {
-                var foundItem = false
-                for (shopProductCheckoutRequest in shopProducts) {
-                    val productData = shopProductCheckoutRequest.productData
-                    if (shopProductCheckoutRequest.cartString.equals(
-                            cartString,
-                            ignoreCase = true
-                        ) && productData != null
-                    ) {
-                        for (productDataCheckoutRequest in productData) {
-                            productDataCheckoutRequest.shippingDuration = shippingDuration
-                            productDataCheckoutRequest.shippingPrice = shippingPrice
-                            productDataCheckoutRequest.courier = courierName
-                        }
-                        foundItem = true
-                        break
-                    }
-                }
-                if (foundItem) {
-                    break
-                }
-            }
-        }
-        return dataCheckoutRequests
-    }
-
-    override fun updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentCartItemModels: List<ShipmentCartItemModel>): List<DataCheckoutRequest> {
-        var dataCheckoutRequests = dataCheckoutRequestList
-        if (dataCheckoutRequests == null) {
-            dataCheckoutRequests =
-                view!!.generateNewCheckoutRequest(shipmentCartItemModelList, true)
-        }
-        val promoCodes = StringBuilder()
-        val promoDetails = StringBuilder()
-        if (validateUsePromoRevampUiModel != null) {
-            if (validateUsePromoRevampUiModel!!.promoUiModel.codes.size > 0) {
-                promoCodes.append(validateUsePromoRevampUiModel!!.promoUiModel.codes[0])
-                promoDetails.append(validateUsePromoRevampUiModel!!.promoUiModel.messageUiModel.state)
-            }
-        }
-        for (shipmentCartItemModel in shipmentCartItemModels) {
-            for (dataCheckoutRequest in dataCheckoutRequests) {
-                val shopProducts = dataCheckoutRequest.shopProducts
-                if (shopProducts != null) {
-                    for (shopProductCheckoutRequest in shopProducts) {
-                        val productData = shopProductCheckoutRequest.productData
-                        if (shopProductCheckoutRequest.cartString.equals(
-                                shipmentCartItemModel.cartString,
-                                ignoreCase = true
-                            ) && productData != null
-                        ) {
-                            for (cartItemModel in shipmentCartItemModel.cartItemModels) {
-                                for (productDataCheckoutRequest in productData) {
-                                    if (productDataCheckoutRequest.productId == cartItemModel.productId) {
-                                        productDataCheckoutRequest.promoCode =
-                                            cartItemModel.analyticsProductCheckoutData.promoCode
-                                        productDataCheckoutRequest.promoDetails =
-                                            cartItemModel.analyticsProductCheckoutData.promoDetails
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return dataCheckoutRequests
-    }*/
 
     override fun processInitialLoadCheckoutPage(
         isReloadData: Boolean,
@@ -3438,12 +3352,12 @@ class ShipmentPresenter @Inject constructor(
     override fun processBoPromoCourierRecommendation(
         itemPosition: Int,
         voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel?,
-        shipmentCartItemModel: ShipmentCartItemModel?
+        shipmentCartItemModel: ShipmentCartItemModel
     ) {
         val selectedShipmentDetailData =
             view?.getShipmentDetailData(shipmentCartItemModel, recipientAddressModel)
         val products = getProductForRatesRequest(shipmentCartItemModel)
-        val cartString = shipmentCartItemModel!!.cartString
+        val cartString = shipmentCartItemModel.cartString
         val isTradeInDropOff = view?.isTradeInByDropOff ?: false
         val shippingParam = getShippingParam(
             selectedShipmentDetailData,

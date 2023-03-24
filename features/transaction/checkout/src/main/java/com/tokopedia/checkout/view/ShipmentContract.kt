@@ -185,8 +185,8 @@ interface ShipmentContract {
         fun getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId: String?): Int
         fun getShipmentCartItemModel(position: Int): ShipmentCartItemModel?
         fun getShipmentDetailData(
-            shipmentCartItemModel: ShipmentCartItemModel?,
-            recipientAddressModel: RecipientAddressModel?
+            shipmentCartItemModel: ShipmentCartItemModel,
+            recipientAddressModel: RecipientAddressModel
         ): ShipmentDetailData
 
         fun showPrescriptionReminderDialog(uploadPrescriptionUiModel: UploadPrescriptionUiModel)
@@ -417,7 +417,7 @@ interface ShipmentContract {
         fun processBoPromoCourierRecommendation(
             itemPosition: Int,
             voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel?,
-            shipmentCartItemModel: ShipmentCartItemModel?
+            shipmentCartItemModel: ShipmentCartItemModel
         )
 
         fun doApplyBo(voucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel)
