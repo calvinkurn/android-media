@@ -83,7 +83,19 @@
             app:layout_constraintBottom_toBottomOf="@id/tokochat_layout_image_bubble_container"
             android:layout_marginEnd="8dp"
             app:srcCompat="@drawable/tokochat_ic_image_reload"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/tokochat_icon_image_bubble_error_upload"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:layout_constraintTop_toTopOf="@id/tokochat_layout_image_bubble_container"
+            app:layout_constraintLeft_toLeftOf="@id/tokochat_layout_image_bubble_container"
+            app:layout_constraintRight_toRightOf="@id/tokochat_layout_image_bubble_container"
+            app:layout_constraintBottom_toBottomOf="@id/tokochat_layout_image_bubble_container"
+            android:layout_marginEnd="8dp"
+            app:srcCompat="@drawable/iconunify_error"
+            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

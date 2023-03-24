@@ -51,6 +51,4 @@ class TokoChatSendMessageUseCase @Inject constructor(
             channel, extensionMessage
         )
     }
-
-    // Add transient, upload image, send transient
 }

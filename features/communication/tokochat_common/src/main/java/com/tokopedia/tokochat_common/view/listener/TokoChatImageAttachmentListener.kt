@@ -9,8 +9,6 @@ interface TokoChatImageAttachmentListener {
     fun loadImage(
         imageView: ImageView,
         element: TokoChatImageBubbleUiModel,
-        loader: LoaderUnify?,
-        retryIcon: ImageUnify?,
         isFromRetry: Boolean
     )
     fun onClickImage(element: TokoChatImageBubbleUiModel)

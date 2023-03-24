@@ -1,6 +1,8 @@
 package com.tokopedia.tokochat_common.view.adapter
 
+import android.os.Bundle
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatHeaderDateDelegate
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatImageBubbleDelegate
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatMessageBubbleDelegate
@@ -26,5 +28,22 @@ open class TokoChatBaseAdapter(
         delegatesManager.addDelegate(TokoChatHeaderDateDelegate())
         delegatesManager.addDelegate(TokoChatImageBubbleDelegate(imageAttachmentListener))
         delegatesManager.addDelegate(TokoChatMessageCensorDelegate(messageCensorListener))
+    }
+
+    fun getPositionWithItem(item: Any): Int? {
+        var result: Int? = null
+        for (i in Int.ZERO until itemList.size) {
+            if (itemList[i] == item) {
+                result = i
+                break
+            }
+        }
+        return result
+    }
+
+    fun createPayloads(payloadName: String, value: Boolean): Bundle {
+        return Bundle().apply {
+            putBoolean(payloadName, value)
+        }
     }
 }

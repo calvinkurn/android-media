@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemImageBubbleBinding
@@ -37,14 +38,32 @@ class TokoChatImageBubbleViewHolder(
         bindOnClick(element)
     }
 
+    // Hide retry button, hide loading
+    fun bindWithSuccessLoadPayload(element: TokoChatImageBubbleUiModel) {
+        bindRetryButton(element)
+        bindLoader(false)
+        bindRetryUploadButton(false)
+    }
+
+    // Show retry button, hide loading
+    fun bindWithErrorLoadPayload(element: TokoChatImageBubbleUiModel) {
+        bindRetryButton(element)
+        bindLoader(false)
+        bindRetryUploadButton(false)
+    }
+
+    // Show image locally, add retry upload button
+    fun bindWithErrorUploadPayload(element: TokoChatImageBubbleUiModel) {
+        bindRetryButton(element)
+        bindRetryUploadButton(true)
+    }
+
     private fun bindImage(element: TokoChatImageBubbleUiModel, isFromRetry: Boolean = false) {
         binding?.tokochatIconImageBubbleError?.hide()
         binding?.tokochatImageBubble?.let {
             tokoChatImageAttachmentListener.loadImage(
                 it,
                 element,
-                binding?.tokochatLoaderImageBubble,
-                binding?.tokochatIconImageBubbleError,
                 isFromRetry
             )
         }
@@ -91,6 +110,12 @@ class TokoChatImageBubbleViewHolder(
         }
         binding?.tokochatIconImageBubbleError?.setOnClickListener {
             bindImage(element, isFromRetry = true)
+            bindLoader(true)
+        }
+        binding?.tokochatIconImageBubbleErrorUpload?.setOnClickListener {
+            bindImagePlaceHolder()
+            bindLoader(true)
+            // Resend image
         }
     }
 
@@ -99,8 +124,24 @@ class TokoChatImageBubbleViewHolder(
         binding?.tokochatImageBubbleHour?.text = time
     }
 
+    private fun bindLoader(shouldShow: Boolean) {
+        binding?.tokochatLoaderImageBubble?.showWithCondition(shouldShow)
+    }
+
+    private fun bindRetryUploadButton(shouldShow: Boolean) {
+        binding?.tokochatIconImageBubbleErrorUpload?.showWithCondition(shouldShow)
+    }
+
+    private fun bindImagePlaceHolder() {
+        binding?.tokochatImageBubble?.loadImage(R.drawable.tokochat_bg_image_bubble_gradient)
+    }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.tokochat_item_image_bubble
+
+        const val PAYLOAD_SUCCESS_LOAD = "isSuccessLoad"
+        const val PAYLOAD_ERROR_LOAD = "isErrorLoad"
+        const val PAYLOAD_ERROR_UPLOAD = "isErrorUpload"
     }
 }

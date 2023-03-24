@@ -61,6 +61,7 @@ import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
+import com.tokopedia.tokochat_common.view.adapter.viewholder.chat_history.TokoChatImageBubbleViewHolder
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
 import com.tokopedia.tokochat_common.view.customview.attachment.TokoChatMenuLayout
@@ -955,30 +956,43 @@ open class TokoChatFragment :
     override fun loadImage(
         imageView: ImageView,
         element: TokoChatImageBubbleUiModel,
-        loader: LoaderUnify?,
-        retryIcon: ImageUnify?,
         isFromRetry: Boolean
     ) {
         viewModel.getImageWithId(
             imageId = element.imageId,
             channelId = viewModel.channelId,
             onImageReady = { imageFile ->
-                onImageReadyToLoad(imageView, element, loader, retryIcon, imageFile)
+                onImageReadyToLoad(imageView, element, imageFile)
             },
             onError = {
-                activity?.runOnUiThread {
-                    loader?.hide()
-                    retryIcon?.show()
-                    element.updateShouldRetry(true)
-                }
+                onErrorLoadImage(element)
             },
             onDirectLoad = {
-                onDirectLoadImage(element, loader, retryIcon)
+                onDirectLoadImage(element)
                 impressOnImageAttachment(element, imageView)
             },
             imageView = imageView,
             isFromRetry = isFromRetry
         )
+    }
+
+    // error load image handler
+    private fun onErrorLoadImage(
+        element: TokoChatImageBubbleUiModel
+    ) {
+        activity?.runOnUiThread {
+            // change should retry to true
+            element.updateShouldRetry(true)
+
+            // get item position
+            adapter.getPositionWithItem(element)?.let {
+                // create payload with correct value
+                val payload = adapter.createPayloads(
+                    TokoChatImageBubbleViewHolder.PAYLOAD_ERROR_LOAD, true)
+                // notify
+                adapter.notifyItemChanged(it, payload)
+            }
+        }
     }
 
     override fun onCloseMaskingPhoneNumberBottomSheet() {
@@ -1008,13 +1022,9 @@ open class TokoChatFragment :
     private fun onImageReadyToLoad(
         imageView: ImageView,
         element: TokoChatImageBubbleUiModel,
-        loader: LoaderUnify?,
-        retryIcon: ImageUnify?,
         imageFile: File?
     ) {
         activity?.runOnUiThread {
-            loader?.hide()
-            retryIcon?.hide()
             imageFile?.let { file ->
                 imageView.loadImage(file.absolutePath, properties = {
                     this.setPlaceHolder(
@@ -1025,24 +1035,33 @@ open class TokoChatFragment :
                     )
                     this.listener(onSuccess = { _, _ ->
                         impressOnImageAttachment(element, imageView)
+                        element.updateShouldRetry(false)
+                    }, onError = {
+                        onErrorLoadImage(element)
                     })
                     this.transforms(listOf(CenterCrop(), RoundedCorners(EIGHT_DP.toPx())))
                     this.setRoundedRadius(EIGHT_DP.toFloat())
                 })
                 element.updateImageData(imagePath = file.absolutePath, status = true)
             }
-            element.updateShouldRetry(false)
         }
     }
 
-    private fun onDirectLoadImage(
-        element: TokoChatImageBubbleUiModel,
-        loader: LoaderUnify?,
-        retryIcon: ImageUnify?
-    ) {
-        loader?.hide()
-        retryIcon?.hide()
-        element.updateShouldRetry(false)
+    // Directly load image with glide from byte array
+    private fun onDirectLoadImage(element: TokoChatImageBubbleUiModel) {
+        activity?.runOnUiThread {
+            // change should retry to false
+            element.updateShouldRetry(false)
+
+            // get item position
+            adapter.getPositionWithItem(element)?.let {
+                // create payload with correct value
+                val payload = adapter.createPayloads(
+                    TokoChatImageBubbleViewHolder.PAYLOAD_SUCCESS_LOAD, true)
+                // notify
+                adapter.notifyItemChanged(it, payload)
+            }
+        }
     }
 
     private fun impressOnImageAttachment(
