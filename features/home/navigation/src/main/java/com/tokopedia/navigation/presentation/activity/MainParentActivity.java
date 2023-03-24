@@ -176,11 +176,6 @@ public class MainParentActivity extends BaseActivity implements
     private static final String PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
     private static final String PERFORMANCE_MONITORING_NETWORK_VALUE = "Network";
 
-    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY = "mp_official_store";
-    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS = "official_store_plt_start_page_metrics";
-    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS = "official_store_plt_network_request_page_metrics";
-    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS = "official_store_plt_render_page_metrics";
-
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
 
     private static final String MAIN_PARENT_LOAD_ON_RESUME = "main_parent_load_on_resume";
