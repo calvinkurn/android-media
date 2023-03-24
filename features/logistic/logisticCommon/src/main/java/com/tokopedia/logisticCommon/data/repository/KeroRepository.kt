@@ -82,7 +82,6 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
                 PARAM_SOURCE to source,
                 PARAM_TRACK_ACTIVITY to needToTrack
             )
-            )
         )
         val request = GraphqlRequest(
             KeroLogisticQuery.kero_get_address_detail,
