@@ -1,9 +1,9 @@
 package com.tokopedia.media.picker.data.repository
 
+import android.database.Cursor
 import com.tokopedia.media.picker.data.MediaQueryDataSource
-import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl.Companion.BUCKET_ALL_MEDIA_ID
+import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl
 import com.tokopedia.media.picker.data.entity.Media
-import com.tokopedia.media.picker.utils.isOppoManufacturer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -30,18 +30,35 @@ class MediaFileRepositoryImpl @Inject constructor(
         }
 
         return flow {
-            while (cursor?.moveToPosition(index) == true) {
-                val media = createMedia(cursor) ?: continue
-                if (media.file.exists().not()) continue
+            if (bucketId == MediaQueryDataSourceImpl.BUCKET_ALL_MEDIA_ID && start == 0) {
+                if (cursor?.moveToFirst() == true) {
+                    do {
+                        val media = createMedia(cursor) ?: continue
+                        if (media.file.exists().not()) continue
 
-                if (media.file.isVideo()) {
-                    media.duration = getVideoDuration(media.file)
+                        if (media.file.isVideo()) {
+                            media.duration = getVideoDuration(media.file)
+                        }
+
+                        result.add(media)
+
+                        if (result.size == offset) break
+                    } while (cursor.moveToNext())
                 }
+            } else {
+                while (cursor?.moveToPosition(index) == true) {
+                    val media = createMedia(cursor) ?: continue
+                    if (media.file.exists().not()) continue
 
-                result.add(media)
-                index++
+                    if (media.file.isVideo()) {
+                        media.duration = getVideoDuration(media.file)
+                    }
 
-                if (result.size == offset) break
+                    result.add(media)
+                    index++
+
+                    if (result.size == offset) break
+                }
             }
 
             cursor?.close()
