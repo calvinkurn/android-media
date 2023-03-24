@@ -21,7 +21,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.PageSource
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
-import com.tokopedia.content.common.comment.analytic.IContentCommentAnalytics
 import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -2020,6 +2019,7 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             CommentIconUiComponent.Event.OnCommentClicked -> {
                 playViewModel.submitAction(CommentVisibilityAction(isOpen = true))
+                analytic.clickCommentIcon(playViewModel.partnerId.toString())
             }
         }
     }

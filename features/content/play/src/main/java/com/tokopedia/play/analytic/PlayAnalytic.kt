@@ -811,6 +811,21 @@ class PlayAnalytic(
             .send()
     }
 
+    fun clickCommentIcon(partnerId: String) {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEventAction("click - comment button")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel("$channelId - $partnerId")
+            .setCustomProperty(KEY_TRACKER_ID, "42591")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(VAL_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
     private fun generateSwipeSession(): String {
         val identifier = if (userId.isNotBlank() && userId.isNotEmpty()) userId else "nonlogin"
         return identifier + System.currentTimeMillis()
