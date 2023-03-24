@@ -34,6 +34,7 @@ object TokoChatValueUtil {
     const val MAX_DISPLAYED_OFFSET = 10_000
     const val MAX_DISPLAYED_STRING = "10.000+"
     const val MAX_MESSAGE_IN_BUBBLE = 400
+    const val IMAGE_ATTACHMENT_MSG = "Image Attachment"
 
     /**
      * TokoChatPrefManager
@@ -46,4 +47,9 @@ object TokoChatValueUtil {
     const val MAX_PERCENTAGE = 100
     const val DEFAULT_CENSOR_PERCENTAGE = 40
     const val CENSOR_TEXT = "*"
+
+    /**
+     * Tokochat Attachment Menu
+     */
+    const val ATTACHMENT_IMAGE = "Gambar"
 }

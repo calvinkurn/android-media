@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
@@ -17,13 +18,15 @@ import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_OFFSET
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ELEVEN_DP
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.FORTY_EIGHT_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ONE_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TEN_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWENTY_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ZERO_DP
+import com.tokopedia.tokochat_common.view.listener.TokoChatReplyAreaListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
-import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import java.text.NumberFormat
 import java.util.*
@@ -32,6 +35,7 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
 
     var composeArea: EditText? = null
     private var errorComposeMsg: Typography? = null
+    private var attachmentButton: IconUnify? = null
 
     private var textWatcher: TokoChatMessageTextWatcher? = null
     private var sendButtonTextWatcher: TokoChatReplyButtonWatcher? = null
@@ -47,13 +51,6 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
         defStyleAttr
     )
 
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
-
     init {
         initViewLayout()
         initViewBind()
@@ -66,6 +63,7 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
     private fun initViewBind() {
         composeArea = findViewById(R.id.tokochat_tf_new_comment)
         errorComposeMsg = findViewById(R.id.tokochat_tv_error_message)
+        attachmentButton = findViewById(R.id.tokochat_icon_chat_menu)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -76,11 +74,13 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
 
     fun initLayout(
         typingListener: TokoChatTypingListener?,
-        replyTextListener: TokoChatReplyTextListener?
+        replyTextListener: TokoChatReplyTextListener?,
+        replyAreaListener: TokoChatReplyAreaListener?
     ) {
         initComposeMsgListener(typingListener, replyTextListener)
         initComposeBackground()
         setDefaultComposeBackground()
+        initReplyAreaListener(replyAreaListener)
     }
 
     fun onSendMessage() {
@@ -92,8 +92,9 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
     }
 
     private fun setDefaultComposeBackground() {
-        val paddingTop = ELEVEN_DP.toDp()
-        val paddingBottom = TEN_DP.toDp()
+        val paddingTop = ELEVEN_DP.toPx()
+        val paddingBottom = TEN_DP.toPx()
+        val paddingEnd = FORTY_EIGHT_DP.toPx()
         composeArea?.background = bgComposeArea
         composeArea?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }
@@ -147,6 +148,17 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
                 }
             )
             composeArea?.addTextChangedListener(sendButtonTextWatcher)
+        }
+        composeArea?.onFocusChangeListener = OnFocusChangeListener { _, isFocused ->
+            replyTextListener?.onReplyAreaFocusChanged(isFocused)
+        }
+    }
+
+    private fun initReplyAreaListener(
+        replyAreaListener: TokoChatReplyAreaListener?
+    ) {
+        attachmentButton?.setOnClickListener {
+            replyAreaListener?.onClickAttachmentButton()
         }
     }
 

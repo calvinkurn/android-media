@@ -1,10 +1,12 @@
 package com.tokopedia.tokochat.view.chatroom
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -31,9 +33,14 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
@@ -56,12 +63,15 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
+import com.tokopedia.tokochat_common.view.customview.attachment.TokoChatMenuLayout
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatGuideChatBottomSheet
 import com.tokopedia.tokochat_common.view.customview.bottomsheet.TokoChatLongTextBottomSheet
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
+import com.tokopedia.tokochat_common.view.listener.TokoChatAttachmentMenuListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatMessageBubbleListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatMessageCensorListener
+import com.tokopedia.tokochat_common.view.listener.TokoChatReplyAreaListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
@@ -92,6 +102,8 @@ open class TokoChatFragment :
     TokoChatImageAttachmentListener,
     TokoChatMessageBubbleListener,
     TokoChatMessageCensorListener,
+    TokoChatReplyAreaListener,
+    TokoChatAttachmentMenuListener,
     MaskingPhoneNumberBottomSheet.AnalyticsListener {
 
     @Inject
@@ -126,11 +138,43 @@ open class TokoChatFragment :
         getComponent(TokoChatComponent::class.java).inject(this)
     }
 
+    override fun onAttachmentShowed() {
+        // TODO: tracker
+    }
+
+    override fun onAttachmentMenuHidden() {
+        // TODO: tracker
+    }
+
+    override fun onClickAttachmentButton() {
+        baseBinding?.tokochatLayoutMenu?.toggleAttachmentMenu(
+            TokoChatMenuLayout.ChatMenuType.ATTACHMENT_MENU,
+            baseBinding?.tokochatReplyBox?.composeArea
+        )
+        baseBinding?.tokochatReplyBox?.composeArea?.clearFocus()
+    }
+
+    override fun onReplyAreaFocusChanged(isFocused: Boolean) {
+        val isAttachmentMenuShown = baseBinding?.tokochatLayoutMenu?.attachmentMenu?.isShown ?: false
+        // If focused, keyboard is shown
+        // If attachment is shown when focused, hide the attachment menu with toggle
+        if (isFocused && isAttachmentMenuShown) {
+            onClickAttachmentButton()
+        }
+    }
+
     override fun initViews(view: View, savedInstanceState: Bundle?) {
         super.initViews(view, savedInstanceState)
         setupBackground()
         setupTrackers()
+        setupAttachmentMenu()
         initializeChatRoom(savedInstanceState)
+        setupExtensionProvider()
+        setupLifeCycleObserver()
+    }
+
+    private fun setupLifeCycleObserver() {
+        this.lifecycle.addObserver(viewModel)
     }
 
     protected open fun initializeChatRoom(savedInstanceState: Bundle?) {
@@ -229,6 +273,13 @@ open class TokoChatFragment :
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(it)
         }
+    }
+
+    private fun setupAttachmentMenu() {
+        baseBinding?.tokochatLayoutMenu?.updateAttachmentMenu(
+            listener = this,
+            showImageAttachment = true
+        )
     }
 
     override fun initObservers() {
@@ -710,7 +761,11 @@ open class TokoChatFragment :
     private fun setupReplySection(isShowReplySection: Boolean, expiredMessage: String = "") {
         baseBinding?.tokochatReplyBox?.run {
             shouldShowWithAction(isShowReplySection) {
-                this.initLayout(this@TokoChatFragment, this@TokoChatFragment)
+                this.initLayout(
+                    typingListener = this@TokoChatFragment,
+                    replyTextListener = this@TokoChatFragment,
+                    replyAreaListener = this@TokoChatFragment
+                )
             }
         }
         baseBinding?.tokochatExpiredInfo?.shouldShowWithAction(!isShowReplySection) {
@@ -1099,10 +1154,44 @@ open class TokoChatFragment :
         })
     }
 
-
     override fun onClickCheckGuide() {
         view?.hideKeyboard()
         TokoChatGuideChatBottomSheet().show(childFragmentManager)
+    }
+
+    override fun onClickImageAttachment() {
+        context?.let {
+            val intent = MediaPicker.intent(it) {
+                pageSource(PageSource.TokoChat)
+                modeType(ModeType.IMAGE_ONLY)
+                singleSelectionMode()
+            }
+            mediaPickerResultLauncher.launch(intent)
+        }
+    }
+
+    /**
+     * Result launcher section
+     */
+    private val mediaPickerResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode != Activity.RESULT_OK || result.data == null) return@registerForActivityResult
+        val imageData = MediaPicker.result(result.data)
+        processImagePathToUpload(imageData.originalPaths)
+    }
+
+    private fun processImagePathToUpload(imagePathList: List<String>): String? {
+        imagePathList.firstOrNull()?.let { imagePath ->
+            if (imagePath.isNotEmpty() && context != null) {
+                viewModel.uploadImage(filePath = imagePath)
+            }
+        }
+        return null
+    }
+
+    private fun setupExtensionProvider() {
+
     }
 
     companion object {

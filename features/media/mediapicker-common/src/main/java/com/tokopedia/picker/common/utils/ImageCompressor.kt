@@ -1,4 +1,5 @@
 @file:Suppress("SameParameterValue")
+
 package com.tokopedia.picker.common.utils
 
 import android.content.Context
@@ -7,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import androidx.exifinterface.media.ExifInterface
+import com.tokopedia.utils.image.ImageProcessingUtil.DEFAULT_DIRECTORY
 import com.tokopedia.utils.image.ImageProcessingUtil.getCompressFormat
 import com.tokopedia.utils.image.ImageProcessingUtil.writeImageToTkpdPath
 import java.io.File
@@ -27,7 +29,11 @@ object ImageCompressor {
 
     private const val QUALITY = 80 // in percent
 
-    fun compress(context: Context, imagePath: String): Uri? {
+    fun compress(
+        context: Context,
+        imagePath: String,
+        customSubDirectory: String? = null
+    ): Uri? {
         val file = File(imagePath)
         val fileAsUri = Uri.fromFile(file)
         val compressFormat = file.absolutePath.getCompressFormat()
@@ -42,7 +48,8 @@ object ImageCompressor {
             useMaxScale,
             QUALITY,
             MIN_WIDTH,
-            MIN_HEIGHT
+            MIN_HEIGHT,
+            customSubDirectory
         )
     }
 
@@ -55,34 +62,52 @@ object ImageCompressor {
         useMaxScale: Boolean,
         quality: Int,
         minWidth: Int,
-        minHeight: Int
+        minHeight: Int,
+        customSubDirectory: String?
     ): Uri? {
         val bmOptions = decodeBitmapFromUri(context, imageUri)
 
         val scaleDownFactor = calculateScaleDownFactor(
-            bmOptions, useMaxScale, maxWidth, maxHeight
+            bmOptions,
+            useMaxScale,
+            maxWidth,
+            maxHeight
         )
 
         setNearestInSampleSize(bmOptions, scaleDownFactor)
 
         val matrix = calculateImageMatrix(
-            context, imageUri, scaleDownFactor, bmOptions
+            context,
+            imageUri,
+            scaleDownFactor,
+            bmOptions
         ) ?: return null
 
         val newBitmap = generateNewBitmap(
-            context, imageUri, bmOptions, matrix
+            context,
+            imageUri,
+            bmOptions,
+            matrix
         ) ?: return null
 
         val newBitmapWidth = newBitmap.width
         val newBitmapHeight = newBitmap.height
 
         val shouldScaleUp = shouldScaleUp(
-            newBitmapWidth, newBitmapHeight, minWidth, minHeight
+            newBitmapWidth,
+            newBitmapHeight,
+            minWidth,
+            minHeight
         )
 
         val scaleUpFactor = calculateScaleUpFactor(
-            newBitmapWidth.toFloat(), newBitmapHeight.toFloat(), maxWidth, maxHeight,
-            minWidth, minHeight, shouldScaleUp
+            newBitmapWidth.toFloat(),
+            newBitmapHeight.toFloat(),
+            maxWidth,
+            maxHeight,
+            minWidth,
+            minHeight,
+            shouldScaleUp
         )
 
         val finalWidth = finalWidth(newBitmapWidth.toFloat(), scaleUpFactor)
@@ -90,9 +115,16 @@ object ImageCompressor {
 
         val finalBitmap = scaleUpBitmapIfNeeded(newBitmap, finalWidth, finalHeight, scaleUpFactor, shouldScaleUp)
 
+        val directoryDef = if (customSubDirectory != null) {
+            "${DEFAULT_DIRECTORY}$customSubDirectory"
+        } else {
+            DEFAULT_DIRECTORY
+        }
+
         val imageFilePath = writeImageToTkpdPath(
             bitmap = finalBitmap,
             compressFormat = compressFormat,
+            directoryDef = directoryDef,
             quality = quality
         ) ?: return null
 
@@ -199,7 +231,13 @@ object ImageCompressor {
             bitmap = BitmapFactory.decodeStream(inputStream, null, bmOptions)
             if (bitmap != null) {
                 val matrixScaledBitmap: Bitmap = Bitmap.createBitmap(
-                    bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
+                    bitmap,
+                    0,
+                    0,
+                    bitmap.width,
+                    bitmap.height,
+                    matrix,
+                    true
                 )
                 if (matrixScaledBitmap != bitmap) {
                     bitmap.recycle()
@@ -273,5 +311,4 @@ object ImageCompressor {
 
         return scaledBitmap
     }
-
 }

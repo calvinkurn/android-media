@@ -8,6 +8,8 @@ object TokoChatValueUtil {
     const val PICTURE = "gochat.picture"
     const val STICKER = "gochat.sticker"
 
+    const val IMAGE_EXTENSION = "jpeg"
+
     /**
      * Error values
      */
