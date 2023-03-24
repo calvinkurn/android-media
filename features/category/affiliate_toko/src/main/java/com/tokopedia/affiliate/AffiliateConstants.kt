@@ -18,6 +18,8 @@ const val AFFILIATE_APP_LINK = "tokopedia://affiliate"
 const val PAGE_ZERO = 0
 const val PAGE_SEGMENT_HELP = "help"
 const val PAGE_SEGMENT_TRANSACTION_HISTORY = "transaction-history"
+const val PAGE_SEGMENT_SSA_SHOP_LIST = "shoplist-dipromosikan-affiliate"
+const val PAGE_SEGMENT_EDU_PAGE = "edu-page"
 const val PAGE_SEGMENT_ONBOARDING = "onboarding"
 const val KYC_DONE = 1
 
@@ -183,8 +185,8 @@ const val PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY = 3
 
 const val AFFILIATE_SSA_SHOP = "aff_ssa_portal"
 
-const val  AFFILIATE_GAMIFICATION_VISIBILITY = "affil_banner_gami"
-const val  AFFILIATE_GAMIFICATION_REDIRECTION = "affil_gami_disco"
+const val AFFILIATE_GAMIFICATION_VISIBILITY = "affil_banner_gami"
+const val AFFILIATE_GAMIFICATION_REDIRECTION = "affil_gami_disco"
 const val AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK = "tokopedia://discovery/tantangan-hadiah-ramadan"
 
 const val PAGE_TYPE_PDP = "pdp"
