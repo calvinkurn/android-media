@@ -76,30 +76,15 @@ class AffiliateActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        intent?.data?.pathSegments?.let { path ->
-            when {
-                path.contains(PAGE_SEGMENT_ONBOARDING) -> {
-                    if (intent?.data?.queryParameterNames.isNullOrEmpty()) {
-                        showLoginPortal()
-                    } else {
-                        showLoginPortal(
-                            intent?.data?.getQueryParameter(
-                                intent?.data?.queryParameterNames?.firstOrNull().orEmpty()
-                            )
-                        )
-                    }
+        intent?.data?.let { data ->
+            if (data.pathSegments?.contains(PAGE_SEGMENT_ONBOARDING) == true) {
+                if (data.queryParameterNames.isNotEmpty()) {
+                    showLoginPortal(intent?.data?.getQueryParameter(data.queryParameterNames.first()))
+                } else {
+                    showLoginPortal()
                 }
-                path.contains(PAGE_SEGMENT_SSA_SHOP_LIST) -> {
-                    startActivity(Intent(this, AffiliateSSAShopListActivity::class.java))
-                }
-                path.contains(PAGE_SEGMENT_EDU_PAGE) || path.contains(PAGE_SEGMENT_HELP) -> {
-                    fromAppLink = path.contains(PAGE_SEGMENT_EDU_PAGE)
-                    fromHelpAppLink = path.contains(PAGE_SEGMENT_HELP)
-                    selectItem(EDUKASI_MENU, R.id.menu_edukasi_affiliate, true)
-                }
-                else -> {
-                    afterViewCreated()
-                }
+            } else {
+                afterViewCreated()
             }
         }
     }
