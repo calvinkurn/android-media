@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.generator
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
@@ -39,7 +38,6 @@ import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
@@ -130,7 +128,31 @@ class ProductChooserIdGenerator {
     private val fragmentFactory = PlayBroTestFragmentFactory(
         mapOf(
             ProductSetupFragment::class.java to {
-                ProductSetupFragment(mockProductSetupViewModelFactory)
+                ProductSetupFragment(mockProductSetupViewModelFactory).apply {
+                    setDataSource(object : ProductSetupFragment.DataSource {
+                        override fun getProductSectionList(): List<ProductTagSectionUiModel> {
+                            return emptyList()
+                        }
+
+                        override fun isEligibleForPin(): Boolean {
+                            return true
+                        }
+
+                        override fun getSelectedAccount(): ContentAccountUiModel {
+                            return ContentAccountUiModel.Empty.copy(
+                                type = ContentCommonUserType.TYPE_SHOP,
+                            )
+                        }
+
+                        override fun creationId(): String {
+                            return ""
+                        }
+
+                        override fun maxProduct(): Int {
+                            return 30
+                        }
+                    })
+                }
             },
             ProductSummaryBottomSheet::class.java to {
               ProductSummaryBottomSheet(
@@ -155,6 +177,16 @@ class ProductChooserIdGenerator {
                         mockk(relaxed = true),
                         CoroutineDispatchersProvider,
                     ),
+                )
+            },
+            ProductSummaryBottomSheet::class.java to {
+                ProductSummaryBottomSheet(
+                    mockk(relaxed = true)
+                )
+            },
+            ProductSortBottomSheet::class.java to {
+                ProductSortBottomSheet(
+                    mockk(relaxed = true)
                 )
             }
         )
@@ -251,6 +283,7 @@ class ProductChooserIdGenerator {
 
         onView(isRoot()).perform(waitFor(500))
         onView(withId(R.id.chips_etalase)).perform(click())
+        onView(isRoot()).perform(waitFor(500))
 
         scenario.onFragment {
             val bottomSheet = EtalaseListBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
