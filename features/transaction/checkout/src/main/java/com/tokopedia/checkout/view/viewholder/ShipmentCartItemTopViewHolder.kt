@@ -140,10 +140,10 @@ class ShipmentCartItemTopViewHolder(
 
     private fun renderErrorAndWarning(shipmentCartItemModel: ShipmentCartItemModel) {
         if (shipmentCartItemModel.isError) {
-            binding.llHeaderContainer.alpha = VIEW_ALPHA_DISABLED
+            binding.containerSellerInfo.root.alpha = VIEW_ALPHA_DISABLED
             binding.containerWarningAndError.root.visible()
         } else {
-            binding.llHeaderContainer.alpha = VIEW_ALPHA_ENABLED
+            binding.containerSellerInfo.root.alpha = VIEW_ALPHA_ENABLED
             binding.containerWarningAndError.root.gone()
         }
         renderError(shipmentCartItemModel)
@@ -171,9 +171,7 @@ class ShipmentCartItemTopViewHolder(
                     } else {
                         if (shipmentCartItemModel.isCustomEpharmacyError) {
                             tickerError.setHtmlDescription(
-                                "$errorTitle " + itemView.context.getString(
-                                    R.string.checkout_ticker_lihat_cta_suffix
-                                )
+                                "$errorTitle ${itemView.context.getString(R.string.checkout_ticker_lihat_cta_suffix)}"
                             )
                             tickerError.setDescriptionClickEvent(object : TickerCallback {
                                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -214,13 +212,16 @@ class ShipmentCartItemTopViewHolder(
                     tickerError.tickerShape = Ticker.SHAPE_LOOSE
                     tickerError.closeButtonVisibility = View.GONE
                     tickerError.visible()
+                    layoutError.visible()
                 } else {
                     tickerError.gone()
+                    layoutError.gone()
                 }
             } else {
-                layoutError.gone()
                 tickerError.gone()
+                layoutError.gone()
             }
+            layoutWarning.gone()
         }
     }
 

@@ -61,11 +61,13 @@ class ShipmentCartItemViewHolder(
 
     private fun renderError(cartItem: CartItemModel) {
         if (cartItem.isError) {
-            binding.llItemProductContainer.alpha = VIEW_ALPHA_DISABLED
+            binding.productBundlingInfo.alpha = VIEW_ALPHA_DISABLED
+            binding.llFrameItemProductContainer.alpha = VIEW_ALPHA_DISABLED
             binding.checkboxPpp.isEnabled = false
             binding.iconTooltip.isClickable = false
         } else {
-            binding.llItemProductContainer.alpha = VIEW_ALPHA_ENABLED
+            binding.productBundlingInfo.alpha = VIEW_ALPHA_ENABLED
+            binding.llFrameItemProductContainer.alpha = VIEW_ALPHA_ENABLED
             binding.checkboxPpp.isEnabled = true
             binding.iconTooltip.isClickable = true
         }
