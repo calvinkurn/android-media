@@ -15,10 +15,13 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import kotlin.math.roundToInt
 import com.tokopedia.content.common.R as contentCommonR
 
 /**
@@ -54,6 +57,10 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
     private val mFeedMenuItemList = mutableListOf<FeedMenuItem>()
     private var mListener: Listener? = null
     private var mAnalytic: FeedAccountTypeAnalytic? = null
+
+    private val maxSheetHeight by lazyThreadSafetyNone {
+        (getScreenHeight() * HEIGHT_PERCENTAGE).roundToInt()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,8 +177,14 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
     }
 
     fun setFinalView() {
-        binding.reportLayout.layout1.gone()
+        binding.reportLayout.viewReportGroup.gone()
         binding.reportLayout.reportFinalLayout.root.visible()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        binding.root.maxHeight = maxSheetHeight
     }
 
     private fun getReason() {
@@ -263,6 +276,8 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
         private const val TYPE4 = 4
         private const val TYPE5 = 5
         private const val TYPE6 = 6
+
+        private const val HEIGHT_PERCENTAGE = 0.4
 
         fun getFragment(
             fragmentManager: FragmentManager,
