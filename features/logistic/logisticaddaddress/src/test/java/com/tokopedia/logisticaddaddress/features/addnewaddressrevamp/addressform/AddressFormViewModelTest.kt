@@ -68,14 +68,14 @@ class AddressFormViewModelTest {
 
     @Test
     fun `Get Default Address Success`() {
-        coEvery { repo.getDefaultAddress(any()) } returns GetDefaultAddressResponse()
+        coEvery { repo.getDefaultAddress(any(), true) } returns GetDefaultAddressResponse()
         addressFormViewModel.getDefaultAddress("address")
         verify { defaultAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Default Address Fail`() {
-        coEvery { repo.getDefaultAddress(any()) } throws defaultThrowable
+        coEvery { repo.getDefaultAddress(any(), true) } throws defaultThrowable
         addressFormViewModel.getDefaultAddress("address")
         verify { defaultAddressObserver.onChanged(match { it is Fail }) }
     }
@@ -129,7 +129,7 @@ class AddressFormViewModelTest {
     @Test
     fun `Get Address Detail Data Success`() {
         // Given
-        coEvery { repo.getAddressDetail(any(), any()) } returns KeroGetAddressResponse.Data(
+        coEvery { repo.getAddressDetail(any(), any(), true) } returns KeroGetAddressResponse.Data(
             keroGetAddress = KeroGetAddressResponse.Data.KeroGetAddress(
                 data = arrayListOf(spyk())
             )
@@ -159,7 +159,7 @@ class AddressFormViewModelTest {
     @Test
     fun `Get Address Detail Data Fail`() {
         // Given
-        coEvery { repo.getAddressDetail(any(), any()) } throws defaultThrowable
+        coEvery { repo.getAddressDetail(any(), any(), true) } throws defaultThrowable
 
         // When
         addressFormViewModel.addressId = addressId

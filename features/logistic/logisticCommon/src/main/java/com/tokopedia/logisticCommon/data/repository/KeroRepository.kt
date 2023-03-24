@@ -31,6 +31,7 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         private const val PARAM_ADDR_IDS = "addr_ids"
         private const val PARAM_EXTRACT_ADDRESS_DETAIL = "extract_address_detail"
         private const val PARAM_SOURCE = "source"
+        private const val PARAM_TRACK_ACTIVITY = "track_activity"
     }
 
     suspend fun getAutoComplete(keyword: String, latlng: String): AutoCompleteResponse {
@@ -53,8 +54,8 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
-    suspend fun getDefaultAddress(source: String): GetDefaultAddressResponse {
-        val param = mapOf("source" to source)
+    suspend fun getDefaultAddress(source: String, needToTrack: Boolean = false): GetDefaultAddressResponse {
+        val param = mapOf(PARAM_SOURCE to source, PARAM_TRACK_ACTIVITY to needToTrack)
         val request = GraphqlRequest(
             KeroLogisticQuery.kero_addr_get_default,
             GetDefaultAddressResponse::class.java,
@@ -73,12 +74,14 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
-    suspend fun getAddressDetail(addressId: String, source: String): KeroGetAddressResponse.Data {
+    suspend fun getAddressDetail(addressId: String, source: String, needToTrack: Boolean = false): KeroGetAddressResponse.Data {
         val param = mapOf(
             "input" to mapOf(
                 PARAM_ADDR_IDS to addressId,
                 PARAM_EXTRACT_ADDRESS_DETAIL to true,
-                PARAM_SOURCE to source
+                PARAM_SOURCE to source,
+                PARAM_TRACK_ACTIVITY to needToTrack
+            )
             )
         )
         val request = GraphqlRequest(
