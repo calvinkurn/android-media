@@ -85,7 +85,10 @@
 
     <!-- Shop Score -->
     <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
-    
+
+    <!-- Shop Score -->
+    <string name="title_campaign_list">Daftar Campaign Aktif</string>
+
     <!--Product Add Edit-->
     <string name="title_product_add_edit">Product Add Edit</string>
 
