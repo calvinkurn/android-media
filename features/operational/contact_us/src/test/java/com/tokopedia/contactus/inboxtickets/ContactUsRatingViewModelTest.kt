@@ -1,4 +1,4 @@
-package com.tokopedia.contactus.inboxtickets.viewmodel
+package com.tokopedia.contactus.inboxtickets
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.contactus.inboxtickets.view.viewModel.ContactUsRatingViewModel

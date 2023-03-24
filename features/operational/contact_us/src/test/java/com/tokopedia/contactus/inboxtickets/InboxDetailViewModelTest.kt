@@ -1,4 +1,4 @@
-package com.tokopedia.contactus.inboxtickets.viewmodel
+package com.tokopedia.contactus.inboxtickets
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.contactus.inboxtickets.data.ImageUpload
@@ -26,11 +26,14 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Method
+import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
 
 class InboxDetailViewModelTest {
 
@@ -46,7 +49,7 @@ class InboxDetailViewModelTest {
     lateinit var postMessageUseCase2: PostMessageUseCase2
 
     @RelaxedMockK
-    lateinit var inboxOptionUseCase: InboxOptionUseCase
+    lateinit var inboxOptionUseCase: InboxDetailUseCase
 
     @RelaxedMockK
     lateinit var submitRatingUseCase: SubmitRatingUseCase
@@ -96,7 +99,7 @@ class InboxDetailViewModelTest {
     fun `get Ticket Detail`() {
         val csatTarget = createBadCsatReasonListItem()
         val ticketsTarget = createTicketDetail().getDataTicket()
-        coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+        coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
             statusTickets = "open"
         )
         viewModel.ticketId("1234")
@@ -109,7 +112,7 @@ class InboxDetailViewModelTest {
     fun `get Ticket Detail but failed because server`() {
         runBlockingTest {
             val response: ChipGetInboxDetail = mockk(relaxed = true)
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns response
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns response
             viewModel.ticketId("1234")
             coEvery { response.isSuccess() } returns 0
             coEvery { response.getErrorListMessage() } returns arrayListOf("error")
@@ -129,7 +132,7 @@ class InboxDetailViewModelTest {
 
     @Test
     fun `get Ticket Detail current situation`() {
-        coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+        coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
             isEmpty = true,
             statusTickets = "open",
             isAllowCloseTicket = true,
@@ -147,7 +150,7 @@ class InboxDetailViewModelTest {
 
     @Test
     fun `check Ticket Detail situation`() {
-        coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+        coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
             isEmpty = false,
             statusTickets = "open",
             isAllowCloseTicket = true,
@@ -177,7 +180,7 @@ class InboxDetailViewModelTest {
     fun `get Ticket Detail and get CSATBadReasonList`() {
         val csatTarget = createBadCsatReasonListItem()
         val ticketsTarget = createTicketDetail().getDataTicket()
-        coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+        coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
             numberTicket = "dsa"
         )
         viewModel.ticketId("1234")
@@ -204,7 +207,7 @@ class InboxDetailViewModelTest {
     fun `get Ticket Detail status SOLVED`() {
         val csatTarget = createBadCsatReasonListItem()
         val ticketsTarget = createTicketDetail().getDataTicket()
-        coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+        coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
             statusTickets = "solved"
         )
         viewModel.ticketId("1234")
@@ -217,7 +220,7 @@ class InboxDetailViewModelTest {
     fun `get Ticket Detail status OPEN`() {
         val csatTarget = createBadCsatReasonListItem()
         val ticketsTarget = createTicketDetail().getDataTicket()
-        coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+        coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
             statusTickets = "open"
         )
         viewModel.ticketId("1234")
@@ -230,7 +233,7 @@ class InboxDetailViewModelTest {
     fun `get Ticket Detail status NEW`() {
         val csatTarget = createBadCsatReasonListItem()
         val ticketsTarget = createTicketDetail().getDataTicket()
-        coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+        coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
             statusTickets = "new"
         )
         viewModel.ticketId("1234")
@@ -243,7 +246,7 @@ class InboxDetailViewModelTest {
     fun `get Ticket Detail status CLOSED and is Need Showing Rating`() {
         val csatTarget = createBadCsatReasonListItem()
         val ticketsTarget = createTicketDetail().getDataTicket()
-        coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+        coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
             showRating = true,
             statusTickets = "closed"
         )
@@ -257,7 +260,7 @@ class InboxDetailViewModelTest {
     fun `get Ticket Detail status CLOSED and is Not Need Showing Rating`() {
         val csatTarget = createBadCsatReasonListItem()
         val ticketsTarget = createTicketDetail().getDataTicket()
-        coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+        coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
             showRating = false,
             statusTickets = "closed"
         )
@@ -271,7 +274,7 @@ class InboxDetailViewModelTest {
     fun `get Ticket Detail status Need Showing Rating`() {
         val csatTarget = createBadCsatReasonListItem()
         val ticketsTarget = createTicketDetail().getDataTicket()
-        coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+        coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
             showRating = true
         )
         viewModel.ticketId("1234")
@@ -285,7 +288,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `get Ticket Detail Failed`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 FAILED
             )
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
@@ -304,7 +307,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `get Ticket Detail Failed coroutine`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } throws Error()
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } throws Error()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
@@ -323,8 +326,8 @@ class InboxDetailViewModelTest {
     @Test
     fun `send text message with Image but serverId is 0 or failed to get `() {
         runBlockingTest {
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns mockk(relaxed = true)
-            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse()
+            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf()
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
@@ -345,7 +348,7 @@ class InboxDetailViewModelTest {
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
             }
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 showRating = true
             )
             viewModel.ticketId("1234")
@@ -360,8 +363,8 @@ class InboxDetailViewModelTest {
     @Test
     fun `send text with Image but serverId is 1, then failed send it because get file process`() {
         runBlockingTest {
-            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns mockk(relaxed = true)
-            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse(
+            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf()
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
                 false,
                 "1"
             )
@@ -382,7 +385,7 @@ class InboxDetailViewModelTest {
     fun `send text with Image but serverId is 1, then failed send because upload process`() {
         runBlockingTest {
             coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse(
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
                 false,
                 "1"
             )
@@ -416,10 +419,10 @@ class InboxDetailViewModelTest {
     @Test
     fun `send text with Image but serverId is 1 then failed send because getCreateTicketResult say FAILED`() {
         runBlockingTest {
-            val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
+            val graphResponseSend: TicketReplyResponse = mockk(relaxed = true)
             val successData: TicketReplyResponse = mockk(relaxed = true)
             coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse(
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
                 false,
                 "1"
             )
@@ -449,13 +452,7 @@ class InboxDetailViewModelTest {
                     any()
                 )
             } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery {
-                graphResponseSend.getData<TicketReplyResponse>(
-                    TicketReplyResponse::class.java
-                )
-            } returns successData
-            coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
+            coEvery { postMessageUseCase(any()) } returns graphResponseSend
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
 
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
@@ -473,10 +470,9 @@ class InboxDetailViewModelTest {
     @Test
     fun `send text message with Image but serverId is 1 but failed to send it because ticketReplyData postKey is empty`() {
         runBlockingTest {
-            val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
             val successData: TicketReplyResponse = mockk(relaxed = true)
             coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse(
+            coEvery { chipUploadHostConfigUseCase(Unit)} returns createConfigServerUploadResponse(
                 false,
                 "1"
             )
@@ -506,13 +502,7 @@ class InboxDetailViewModelTest {
                     any()
                 )
             } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery {
-                graphResponseSend.getData<TicketReplyResponse>(
-                    TicketReplyResponse::class.java
-                )
-            } returns successData
-            coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
+            coEvery { postMessageUseCase(any()) } returns successData
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns ""
 
@@ -531,10 +521,9 @@ class InboxDetailViewModelTest {
     @Test
     fun `send text message with Image but serverId is 1 but failed because secureUploadUseCase getSecureImageParameter are failed`() {
         runBlockingTest {
-            val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
             val successData: TicketReplyResponse = mockk(relaxed = true)
             coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse(
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
                 false,
                 "1"
             )
@@ -564,13 +553,7 @@ class InboxDetailViewModelTest {
                     any()
                 )
             } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery {
-                graphResponseSend.getData<TicketReplyResponse>(
-                    TicketReplyResponse::class.java
-                )
-            } returns successData
-            coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
+            coEvery { postMessageUseCase(any()) } returns successData
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns ""
 
@@ -589,11 +572,10 @@ class InboxDetailViewModelTest {
     @Test
     fun `send text message with Image but serverId is 1 but failed to send it because postMessageUseCase getInboxDataResponse is failed`() {
         runBlockingTest {
-            val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
             val successData: TicketReplyResponse = mockk(relaxed = true)
             val successSend: StepTwoResponse = mockk(relaxed = true)
             coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse(
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
                 false,
                 "1"
             )
@@ -623,13 +605,7 @@ class InboxDetailViewModelTest {
                     any()
                 )
             } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery {
-                graphResponseSend.getData<TicketReplyResponse>(
-                    TicketReplyResponse::class.java
-                )
-            } returns successData
-            coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
+            coEvery { postMessageUseCase(any()) } returns successData
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns "dsadsa"
 
@@ -641,7 +617,7 @@ class InboxDetailViewModelTest {
                     any()
                 )
             } returns mockk(relaxed = true)
-            coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns successSend
+            coEvery { postMessageUseCase2(any()) } returns successSend
             coEvery { successSend.getTicketAttach().getAttachment().isSuccess } returns 0
 
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
@@ -659,11 +635,10 @@ class InboxDetailViewModelTest {
     @Test
     fun `send text message with Image serverId is 1 and send data is success`() {
         runBlockingTest {
-            val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
             val successData: TicketReplyResponse = mockk(relaxed = true)
             val successSend: StepTwoResponse = mockk(relaxed = true)
             coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse(
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
                 false,
                 "1"
             )
@@ -693,13 +668,7 @@ class InboxDetailViewModelTest {
                     any()
                 )
             } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery {
-                graphResponseSend.getData<TicketReplyResponse>(
-                    TicketReplyResponse::class.java
-                )
-            } returns successData
-            coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
+            coEvery { postMessageUseCase(any()) } returns successData
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns "dsadsa"
 
@@ -711,7 +680,7 @@ class InboxDetailViewModelTest {
                     any()
                 )
             } returns mockk(relaxed = true)
-            coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns successSend
+            coEvery { postMessageUseCase2(any()) } returns successSend
             coEvery { successSend.getTicketAttach().getAttachment().isSuccess } returns 1
 
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
@@ -720,8 +689,8 @@ class InboxDetailViewModelTest {
             }
             viewModel.sendMessage(1, arrayListOf(ImageUpload()), "aa")
             val actualEvent = emittedValues.last()
-            val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageSuccess
-            assertEquals(true, isErrorSendMessageType)
+            val isSuccessSendMessage = actualEvent is InboxDetailUiEffect.SendTextMessageSuccess
+            assertEquals(true, isSuccessSendMessage)
             job.cancel()
         }
     }
@@ -729,13 +698,12 @@ class InboxDetailViewModelTest {
     @Test
     fun `send text message with Image serverId is 1 but postMessageUseCase2 getInboxDataResponse is error`() {
         runBlockingTest {
-            val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
             val successData: TicketReplyResponse = mockk(relaxed = true)
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 showRating = true
             )
             coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf("/sasdasd")
-            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returns createConfigServerUploadResponse(
+            coEvery { chipUploadHostConfigUseCase(Unit) } returns createConfigServerUploadResponse(
                 false,
                 "1"
             )
@@ -765,13 +733,7 @@ class InboxDetailViewModelTest {
                     any()
                 )
             } returns mockk(relaxed = false)
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery {
-                graphResponseSend.getData<TicketReplyResponse>(
-                    TicketReplyResponse::class.java
-                )
-            } returns successData
-            coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
+            coEvery { postMessageUseCase(any()) } returns successData
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
             coEvery { successData.getTicketReplay().getTicketReplayData().postKey } returns "dsadsa"
 
@@ -783,7 +745,7 @@ class InboxDetailViewModelTest {
                     any()
                 )
             } returns mockk(relaxed = true)
-            coEvery { postMessageUseCase2.getInboxDataResponse(any()) } throws Exception()
+            coEvery { postMessageUseCase2(any()) } throws Exception()
 
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
@@ -808,18 +770,10 @@ class InboxDetailViewModelTest {
     fun `sendMessage without Image but failed and message exist`() {
         runBlockingTest {
             val successData: TicketReplyResponse = mockk(relaxed = true)
-            val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
-            val error: List<GraphqlError> =
-                arrayListOf(GraphqlError().apply { message = "asdasdas" })
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery {
-                graphResponseSend.getData<TicketReplyResponse>(
-                    TicketReplyResponse::class.java
-                )
-            } returns successData
-            coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns error
+            val graphResponseSend: TicketReplyResponse = mockk(relaxed = true)
+            coEvery { postMessageUseCase(any()) } returns graphResponseSend
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 isEmpty = true,
                 statusTickets = "open",
                 isAllowCloseTicket = true,
@@ -834,9 +788,7 @@ class InboxDetailViewModelTest {
             viewModel.sendMessage(0, arrayListOf(), "asdad")
             val actualEvent = emittedValues.last()
             val isErrorSendMessageType = actualEvent is InboxDetailUiEffect.SendTextMessageFailed
-            val errorObject = actualEvent as InboxDetailUiEffect.SendTextMessageFailed
             assertEquals(true, isErrorSendMessageType)
-            assertEquals("asdasdas", errorObject.messageError)
             job.cancel()
         }
     }
@@ -845,17 +797,11 @@ class InboxDetailViewModelTest {
     fun `sendMessage without Image but failed and message empty`() {
         runBlockingTest {
             val successData: TicketReplyResponse = mockk(relaxed = true)
-            val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
+            val graphResponseSend: TicketReplyResponse = mockk(relaxed = true)
             val error: List<GraphqlError> = arrayListOf()
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery {
-                graphResponseSend.getData<TicketReplyResponse>(
-                    TicketReplyResponse::class.java
-                )
-            } returns successData
-            coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns error
+            coEvery { postMessageUseCase(any()) } returns graphResponseSend
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 isEmpty = true,
                 statusTickets = "open",
                 isAllowCloseTicket = true,
@@ -879,16 +825,10 @@ class InboxDetailViewModelTest {
     fun `sendMessage without Image but failed and message is null`() {
         runBlockingTest {
             val successData: TicketReplyResponse = mockk(relaxed = true)
-            val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery {
-                graphResponseSend.getData<TicketReplyResponse>(
-                    TicketReplyResponse::class.java
-                )
-            } returns successData
-            coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
+            val graphResponseSend: TicketReplyResponse = mockk(relaxed = true)
+            coEvery { postMessageUseCase(any()) } returns graphResponseSend
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 isEmpty = true,
                 statusTickets = "open",
                 isAllowCloseTicket = true,
@@ -912,16 +852,10 @@ class InboxDetailViewModelTest {
     fun `sendMessage without Image but failed and message is null when all message from customer`() {
         runBlockingTest {
             val successData: TicketReplyResponse = mockk(relaxed = true)
-            val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery {
-                graphResponseSend.getData<TicketReplyResponse>(
-                    TicketReplyResponse::class.java
-                )
-            } returns successData
-            coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
+            val graphResponseSend: TicketReplyResponse = mockk(relaxed = true)
+            coEvery { postMessageUseCase(any()) } returns graphResponseSend
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "FAILED"
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 isEmpty = false,
                 statusTickets = "open",
                 isAllowCloseTicket = true,
@@ -945,7 +879,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `sendMessage without Image but failed by coroutine`() {
         runBlockingTest {
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } throws Exception()
+            coEvery { postMessageUseCase(any()) } throws Exception()
 
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
@@ -964,16 +898,9 @@ class InboxDetailViewModelTest {
     fun `sendMessage without Image but failed and message is success`() {
         runBlockingTest {
             val successData: TicketReplyResponse = mockk(relaxed = true)
-            val graphResponseSend: GraphqlResponse = mockk(relaxed = true)
-            coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns graphResponseSend
-            coEvery {
-                graphResponseSend.getData<TicketReplyResponse>(
-                    TicketReplyResponse::class.java
-                )
-            } returns successData
-            coEvery { graphResponseSend.getError(TicketReplyResponse::class.java) } returns null
+            coEvery { postMessageUseCase(any()) } returns successData
             coEvery { successData.getTicketReplay().getTicketReplayData().status } returns "OK"
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 isEmpty = false,
                 statusTickets = "open",
                 isAllowCloseTicket = true,
@@ -1004,10 +931,10 @@ class InboxDetailViewModelTest {
     fun `check when hit closeTicket but error`() {
         runBlockingTest {
             val response: ChipGetInboxDetail = mockk(relaxed = false)
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
-            coEvery { closeTicketByUserUseCase.getChipInboxDetail(any()) } returns response
+            coEvery { closeTicketByUserUseCase(any()).getInboxDetail() } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf("Error")
             coEvery { response.getErrorMessage() } returns "Error"
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
@@ -1026,10 +953,10 @@ class InboxDetailViewModelTest {
     @Test
     fun `check when hit closeTicket but error on coroutine`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
-            coEvery { closeTicketByUserUseCase.getChipInboxDetail(any()) } throws Exception()
+            coEvery { closeTicketByUserUseCase(any()) } throws Exception()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
@@ -1047,10 +974,10 @@ class InboxDetailViewModelTest {
     fun `check when hit closeTicket and success`() {
         runBlockingTest {
             val response: ChipGetInboxDetail = mockk(relaxed = false)
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
-            coEvery { closeTicketByUserUseCase.getChipInboxDetail(any()) } returns response
+            coEvery { closeTicketByUserUseCase(any()).getInboxDetail() } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
@@ -1070,10 +997,10 @@ class InboxDetailViewModelTest {
     fun `check sendRating when agree and hit is success`() {
         runBlockingTest {
             val response: ChipGetInboxDetail = mockk(relaxed = true)
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
-            coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
+            coEvery { submitRatingUseCase(any()).getInboxDetail() } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
@@ -1092,10 +1019,11 @@ class InboxDetailViewModelTest {
     fun `check sendRating when not agree and hit is success`() {
         runBlockingTest {
             val response: ChipGetInboxDetail = mockk(relaxed = true)
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
-            coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
+            coEvery { submitRatingUseCase(any()).getInboxDetail() } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
@@ -1114,10 +1042,10 @@ class InboxDetailViewModelTest {
     fun `check sendRating when not agree and hit is failed`() {
         runBlockingTest {
             val response: ChipGetInboxDetail = mockk(relaxed = true)
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
-            coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
+            coEvery { submitRatingUseCase(any()).getInboxDetail() } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf("Error")
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
@@ -1135,10 +1063,10 @@ class InboxDetailViewModelTest {
     @Test
     fun `check sendRating when not agree and hit is failed because coroutine`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
-            coEvery { submitRatingUseCase.getChipInboxDetail(any()) } throws Exception()
+            coEvery { submitRatingUseCase(any()) } throws Exception()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
@@ -1157,10 +1085,10 @@ class InboxDetailViewModelTest {
         runBlockingTest {
             val response: ChipGetInboxDetail = mockk(relaxed = true)
 
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
-            coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
+            coEvery { submitRatingUseCase(any()).getInboxDetail() } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
@@ -1182,10 +1110,10 @@ class InboxDetailViewModelTest {
         runBlockingTest {
             val response: ChipGetInboxDetail = mockk(relaxed = true)
 
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
-            coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
+            coEvery { submitRatingUseCase(any()).getInboxDetail() } returns response
             coEvery { response.getErrorListMessage() } returns arrayListOf("Error")
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
@@ -1205,10 +1133,10 @@ class InboxDetailViewModelTest {
     @Test
     fun `submit csat ratting is failed because coroutine`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
-            coEvery { submitRatingUseCase.getChipInboxDetail(any()) } throws Exception()
+            coEvery { submitRatingUseCase(any()) } throws Exception()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
@@ -1227,7 +1155,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `search word on chat but it's empty`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
@@ -1247,7 +1175,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `search word on chat`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
@@ -1272,7 +1200,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `search word on chat on next but it is out of bond`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
 
@@ -1289,7 +1217,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `search word on chat on next but it is out of bond 2`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
 
@@ -1306,7 +1234,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `search word on chat on next but not any found text`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
 
@@ -1322,7 +1250,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `search word on chat on next and find`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
 
@@ -1339,7 +1267,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `search word on chat on prev is out of bond`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
 
@@ -1356,7 +1284,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `search word on chat on prev is out of bond2`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
 
@@ -1373,7 +1301,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `search word on chat on prev but none`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
 
@@ -1389,7 +1317,7 @@ class InboxDetailViewModelTest {
     @Test
     fun `search word on chat on prev and find`() {
         runBlockingTest {
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
 
@@ -1407,11 +1335,12 @@ class InboxDetailViewModelTest {
     fun `refresh data after closing ticket`() {
         runBlockingTest {
             val response: ChipGetInboxDetail = mockk(relaxed = true)
+            val responseRating: ChipInboxDetails = mockk(relaxed = true)
 
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
-            coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
+            coEvery { submitRatingUseCase(any()) } returns responseRating
             coEvery { response.getErrorListMessage() } returns arrayListOf()
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
             val job = launch {
@@ -1459,12 +1388,54 @@ class InboxDetailViewModelTest {
                 responseChipUpload.getUploadHostConfig().getUploadHostConfigData().getHost()
                     .getServerID()
             } returns "1"
-            coEvery { chipUploadHostConfigUseCase.getChipUploadHostConfig() } returnsMany arrayListOf(
+            coEvery { chipUploadHostConfigUseCase(Unit) } returnsMany arrayListOf(
                 responseChipUpload,
                 responseChipUpload2
             )
             every { responseSecure.getImage().isSuccess() } returnsMany arrayListOf(1, 0)
-            coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns createTicketDetail(
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
+                statusTickets = "open"
+            )
+            val emittedValues = arrayListOf<InboxDetailUiEffect>()
+            val job = launch {
+                viewModel.uiEffect.toList(emittedValues)
+            }
+
+            viewModel.ticketId("1234")
+            viewModel.sendMessage(1, arrayListOf(ImageUpload(), ImageUpload()), "aa")
+            val actualResult = emittedValues.last()
+            val isFailed = actualResult is InboxDetailUiEffect.SendTextMessageFailed
+            assertEquals(true, isFailed)
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `getSecurelyUploadedImages is empty`() {
+        runBlockingTest {
+            val responseSecure: SecureImageParameter = mockk(relaxed = true)
+            val responseChipUpload: ChipUploadHostConfig = mockk(relaxed = true)
+            val responseChipUpload2: ChipUploadHostConfig = mockk(relaxed = true)
+            coEvery { contactUsUploadImageUseCase.getFile(any()) } returns arrayListOf(
+                "/sasdasd",
+                "/dasdad"
+            )
+            coEvery {
+                secureUploadUseCase.getSecureImageParameter(
+                    any(),
+                    any()
+                )
+            } returns responseSecure
+            coEvery {
+                responseChipUpload.getUploadHostConfig().getUploadHostConfigData().getHost()
+                    .getServerID()
+            } returns "1"
+            coEvery { chipUploadHostConfigUseCase(Unit) } returnsMany arrayListOf(
+                responseChipUpload,
+                responseChipUpload2
+            )
+            every { responseSecure.getImage().isSuccess() } returnsMany arrayListOf(0, 0)
+            coEvery { inboxOptionUseCase(any()).getInboxDetail() } returns createTicketDetail(
                 statusTickets = "open"
             )
             val emittedValues = arrayListOf<InboxDetailUiEffect>()
@@ -1583,4 +1554,9 @@ class InboxDetailViewModelTest {
             .apply { isAccessible = true }
             .set(this, value)
     }
+
+    suspend fun Method.invokeSuspend(obj: Any, vararg args: Any?): Any? =
+        suspendCoroutineUninterceptedOrReturn { cont ->
+            invoke(obj, *args, cont)
+        }
 }

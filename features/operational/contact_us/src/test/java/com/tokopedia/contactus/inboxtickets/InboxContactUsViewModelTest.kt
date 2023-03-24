@@ -1,4 +1,4 @@
-package com.tokopedia.contactus.inboxtickets.viewmodel
+package com.tokopedia.contactus.inboxtickets
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.contactus.inboxtickets.data.model.ChipTopBotStatusResponse
@@ -13,10 +13,13 @@ import com.tokopedia.contactus.inboxtickets.view.inbox.InboxContactUsViewModel.C
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelection
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
@@ -25,19 +28,20 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class InboxContactUsViewModelTest {
 
-    @RelaxedMockK
-    lateinit var chipTopUsecase: ChipTopBotStatusUseCase
+    var chipTopUsecase: ChipTopBotStatusUseCase =  mockk(relaxed = true)
 
-    @RelaxedMockK
-    lateinit var getTicketUsecase: GetTicketListUseCase
+    var getTicketUsecase: GetTicketListUseCase = mockk(relaxed = true)
 
-    @RelaxedMockK
-    lateinit var userSession: UserSessionInterface
+    var userSession: UserSessionInterface = mockk(relaxed = true)
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     private lateinit var viewModel: InboxContactUsViewModel
 
@@ -114,15 +118,19 @@ class InboxContactUsViewModelTest {
 
     @Test
     fun `check getTopBotStatus if error`() {
-        coEvery { chipTopUsecase.getChipTopBotStatus() } throws Exception()
-        viewModel.getTopBotStatus()
-        val actual = viewModel.uiState.value.showChatBotWidget
-        assertEquals(false, actual)
+        runBlockingTest {
+            coEvery {
+                chipTopUsecase.invoke(Unit)
+            } throws Exception()
+            viewModel.getTopBotStatus()
+            val actual = viewModel.uiState.value.showChatBotWidget
+            assertEquals(false, actual)
+        }
     }
 
     @Test
     fun `check when getTopBotStatus if success but not active`() {
-        coEvery { chipTopUsecase.getChipTopBotStatus() } returns createTopBotResponse(
+        coEvery { chipTopUsecase.invoke(Unit) } returns createTopBotResponse(
             SUCCESS,
             false
         )
@@ -133,7 +141,7 @@ class InboxContactUsViewModelTest {
 
     @Test
     fun `check when getTopBotStatus if failed but active`() {
-        coEvery { chipTopUsecase.getChipTopBotStatus() } returns createTopBotResponse(FAILED, false)
+        coEvery { chipTopUsecase.invoke(Unit) } returns createTopBotResponse(FAILED, false)
         viewModel.getTopBotStatus()
         val actual = viewModel.uiState.value.showChatBotWidget
         assertEquals(false, actual)
@@ -141,7 +149,7 @@ class InboxContactUsViewModelTest {
 
     @Test
     fun `check when getTopBotStatus if failed and not active`() {
-        coEvery { chipTopUsecase.getChipTopBotStatus() } returns createTopBotResponse(FAILED, false)
+        coEvery { chipTopUsecase.invoke(Unit) } returns createTopBotResponse(FAILED, false)
         viewModel.getTopBotStatus()
         val actual = viewModel.uiState.value.showChatBotWidget
         assertEquals(false, actual)
@@ -149,7 +157,7 @@ class InboxContactUsViewModelTest {
 
     @Test
     fun `check when getTopBotStatus if success and active also unreadNotif = false`() {
-        coEvery { chipTopUsecase.getChipTopBotStatus() } returns createTopBotResponse(
+        coEvery { chipTopUsecase.invoke(Unit) } returns createTopBotResponse(
             SUCCESS,
             true,
             "Silahkan Masuk"
@@ -164,7 +172,7 @@ class InboxContactUsViewModelTest {
 
     @Test
     fun `check when getTopBotStatus if success and active also unreadNotif = true`() {
-        coEvery { chipTopUsecase.getChipTopBotStatus() } returns createTopBotResponse(
+        coEvery { chipTopUsecase.invoke(Unit) } returns createTopBotResponse(
             SUCCESS,
             true,
             "Silahkan Masuk",
@@ -179,6 +187,15 @@ class InboxContactUsViewModelTest {
     }
 
     @Test
+    fun `check when getTopBotStatus but throw to exception`() {
+        coEvery { chipTopUsecase.invoke(Unit) } throws Exception()
+        viewModel.getTopBotStatus()
+        val actual = viewModel.uiState.value
+        val isChatbotWidgetShown = actual.showChatBotWidget
+        assertEquals(false, isChatbotWidgetShown)
+    }
+
+    @Test
     fun `get Ticket List but it is error`() {
         runBlockingTest {
             val optionsSelected = listOf(
@@ -188,7 +205,7 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", false)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } throws Error()
+            coEvery { getTicketUsecase.invoke(any()) } throws Error()
             val emittedValues = arrayListOf<InboxUiEffect>()
             val job = launch {
                 viewModel.uiEffect.toList(emittedValues)
@@ -211,7 +228,7 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", false)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(true)
+            coEvery { getTicketUsecase.invoke(any()) } returns createListTicket(true)
             val emittedValues = arrayListOf<InboxUiEffect>()
 
             val job = launch {
@@ -237,7 +254,7 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", false)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(
+            coEvery { getTicketUsecase.invoke(any()) } returns createListTicket(
                 false,
                 statusTicket = ALL
             )
@@ -257,7 +274,7 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", false)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(
+            coEvery { getTicketUsecase.invoke(any()) } returns createListTicket(
                 false,
                 statusTicket = IN_PROGRESS
             )
@@ -277,7 +294,7 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", false)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(
+            coEvery { getTicketUsecase.invoke(any()) } returns createListTicket(
                 false,
                 statusTicket = NEED_RATING
             )
@@ -297,7 +314,7 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", true)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicket(
+            coEvery { getTicketUsecase.invoke(any()) } returns createListTicket(
                 false,
                 statusTicket = CLOSED
             )
@@ -317,7 +334,7 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", true)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns createListTicketHasNextAndPref(
+            coEvery { getTicketUsecase.invoke(any()) } returns createListTicketHasNextAndPref(
                 false,
                 statusTicket = CLOSED
             )
@@ -339,7 +356,7 @@ class InboxContactUsViewModelTest {
                 InboxFilterSelection(CLOSED, "Closed", true)
             )
             viewModel.setOptionsFilter(optionsSelected)
-            coEvery { getTicketUsecase.getTicketListResponse(any()) } returns listResponse
+            coEvery { getTicketUsecase.invoke(any()) } returns listResponse
             viewModel.getTicketItems()
             val ticketItem = viewModel.getItemTicketOnPosition(0)
             assertEquals(target, ticketItem)
