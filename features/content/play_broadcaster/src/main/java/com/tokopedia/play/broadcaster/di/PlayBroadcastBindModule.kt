@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.di
 
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.effect.EffectManager
+import com.tokopedia.effect.EffectManagerImpl
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
@@ -165,4 +167,8 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @ActivityRetainedScope
     abstract fun bindAssetManager(assetManager: AssetManagerImpl): AssetManager
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindEffectManager(effectManager: EffectManagerImpl): EffectManager
 }

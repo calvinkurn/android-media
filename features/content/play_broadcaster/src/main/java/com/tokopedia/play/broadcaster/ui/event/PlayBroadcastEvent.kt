@@ -5,7 +5,10 @@ import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 
 sealed interface PlayBroadcastEvent {
 
-    data class InitializeBroadcaster(val data: BroadcastingConfigUiModel): PlayBroadcastEvent
+    data class InitializeBroadcaster(
+        val data: BroadcastingConfigUiModel,
+        val withByteplus: Boolean,
+    ): PlayBroadcastEvent
 
     object ShowLoading : PlayBroadcastEvent
     object ShowResumeLiveDialog : PlayBroadcastEvent

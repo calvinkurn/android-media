@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.revamp.BroadcastManager
 import com.tokopedia.broadcaster.revamp.Broadcaster
+import com.tokopedia.effect.EffectManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
@@ -66,8 +67,8 @@ class PlayBroadcastModule(
 
     @ActivityRetainedScope
     @Provides
-    fun provideBroadcaster(): Broadcaster {
-        return BroadcastManager()
+    fun provideBroadcaster(effectManager: EffectManager): Broadcaster {
+        return BroadcastManager(effectManager)
     }
 
     @Provides

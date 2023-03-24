@@ -575,7 +575,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private suspend fun getBroadcastingConfig() {
         val request = repo.getBroadcastingConfig(authorId, authorType)
         hydraConfigStore.saveBroadcastingConfig(request)
-        _uiEvent.emit(PlayBroadcastEvent.InitializeBroadcaster(hydraConfigStore.getBroadcastingConfig()))
     }
 
     private fun getBroadcasterAuthorConfig(selectedAccount: ContentAccountUiModel) {
@@ -641,6 +640,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             updateSelectedAccount(selectedAccount)
 
             setBeautificationConfig(configUiModel.beautificationConfig)
+
+            _uiEvent.emit(
+                PlayBroadcastEvent.InitializeBroadcaster(
+                    data = hydraConfigStore.getBroadcastingConfig(),
+                    withByteplus = !configUiModel.beautificationConfig.isUnknown,
+                )
+            )
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {

@@ -29,6 +29,14 @@ class AssetPathHelper @Inject constructor(
     val presetDir: String = composeMakeupDir
         .appendPath(COMPOSE_PRESET_MAKEUP_DIR)
 
+    val licenseFilePath: String
+        get() {
+            val licenseFolder = File(licenseDir)
+            val licenseName = licenseFolder.listFiles()?.firstOrNull()?.name ?: return ""
+
+            return licenseDir.appendPath(licenseName)
+        }
+
     fun getPresetFilePath(presetName: String) = presetDir.appendPath(presetName)
 
     private fun String.appendPath(path: String): String {

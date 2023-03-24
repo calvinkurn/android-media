@@ -18,16 +18,20 @@ import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatistic
 import com.tokopedia.device.info.DeviceConnectionInfo
+import com.tokopedia.effect.EffectManager
 import com.wmspanel.libstream.*
 import com.wmspanel.libstream.Streamer.VERSION_NAME
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
+import javax.inject.Inject
 
 /**
  * Created by meyta.taliti on 01/03/22.
  */
-class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitrate.Listener, BroadcasterStatistic.Listener {
+class BroadcastManager @Inject constructor(
+    private val effectManager: EffectManager,
+): Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitrate.Listener, BroadcasterStatistic.Listener {
 
     override val broadcastState: BroadcastState
         get() = mState
@@ -108,7 +112,11 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         mHandler = handler
     }
 
-    override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
+    override fun create(
+        holder: SurfaceHolder,
+        surfaceSize: Broadcaster.Size,
+        withByteplus: Boolean,
+    ) {
         if (mStreamer != null) return
 
         val context = mContext
@@ -266,6 +274,10 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         }
 
         mStreamer = mStreamerGL
+
+        if(withByteplus) {
+            effectManager.init()
+        }
 
         // Streamer build succeeded, can start Video/Audio capture
         // call startVideoCapture, wait for onVideoCaptureStateChanged callback

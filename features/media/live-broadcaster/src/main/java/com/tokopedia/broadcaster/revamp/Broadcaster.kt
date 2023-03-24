@@ -20,7 +20,11 @@ interface Broadcaster {
 
     fun init(activityContext: Context, handler: Handler?)
 
-    fun create(holder: SurfaceHolder, surfaceSize: Size)
+    fun create(
+        holder: SurfaceHolder,
+        surfaceSize: Size,
+        withByteplus: Boolean
+    )
 
     fun updateSurfaceSize(surfaceSize: Size)
 

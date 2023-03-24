@@ -228,7 +228,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-            if (isRequiredPermissionGranted()) createBroadcaster()
+            if (isRequiredPermissionGranted()) createBroadcaster(false)
             return
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -286,7 +286,7 @@ class PlayBroadcastActivity : BaseActivity(),
         }
         surfaceHolder = holder
         if (!::broadcaster.isInitialized) return
-        createBroadcaster()
+        createBroadcaster(false)
     }
 
     override fun surfaceChanged(
@@ -330,7 +330,7 @@ class PlayBroadcastActivity : BaseActivity(),
                 when (event) {
                     is PlayBroadcastEvent.InitializeBroadcaster -> {
                         initBroadcaster(event.data)
-                        createBroadcaster()
+                        createBroadcaster(event.withByteplus)
                     }
                     is PlayBroadcastEvent.BeautificationDownloadAssetFail -> {
                         analytic.viewFailDownloadPreset(
@@ -360,7 +360,7 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun initBroadcaster(config: BroadcastingConfigUiModel) {
+    private fun initBroadcaster(config: BroadcastingConfigUiModel, ) {
         val handler = Handler(Looper.getMainLooper())
         broadcaster = broadcasterFactory.create(
             activityContext = this,
@@ -713,21 +713,22 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun createBroadcaster() {
+    private fun createBroadcaster(withByteplus: Boolean) {
         if (isRequiredPermissionGranted()) {
             val holder = surfaceHolder ?: return
             val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
-            initBroadcasterWithDelay(holder, surfaceSize)
+            initBroadcasterWithDelay(holder, surfaceSize, withByteplus)
         } else showPermissionPage()
     }
 
     private fun initBroadcasterWithDelay(
         holder: SurfaceHolder,
         surfaceSize: Broadcaster.Size,
+        withByteplus: Boolean,
     ) {
         lifecycleScope.launch(dispatcher.main) {
             delay(INIT_BROADCASTER_DELAY)
-            broadcaster.create(holder, surfaceSize)
+            broadcaster.create(holder, surfaceSize, withByteplus)
         }
     }
 

@@ -7,6 +7,7 @@ import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.effect.EffectManager
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
@@ -37,7 +38,14 @@ class PlayBroadcaster(
             remoteConfig: RemoteConfig,
             broadcastingConfigUiModel: BroadcastingConfigUiModel,
         ): PlayBroadcaster {
-            return PlayBroadcaster(activityContext, handler, broadcaster, callback, remoteConfig, broadcastingConfigUiModel)
+            return PlayBroadcaster(
+                activityContext,
+                handler,
+                broadcaster,
+                callback,
+                remoteConfig,
+                broadcastingConfigUiModel,
+            )
         }
     }
 
@@ -89,8 +97,12 @@ class PlayBroadcaster(
         isStartedBefore = true
     }
 
-    override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
-        broadcaster.create(holder, surfaceSize)
+    override fun create(
+        holder: SurfaceHolder,
+        surfaceSize: Broadcaster.Size,
+        withByteplus: Boolean
+    ) {
+        broadcaster.create(holder, surfaceSize, withByteplus)
         updateAspectFrameSize()
     }
 
