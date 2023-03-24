@@ -53,6 +53,7 @@ object CMNotificationUtils {
     var sharedPreference: SharedPreferences? = null
     val sdkVersion: Int
         get() = Build.VERSION.SDK_INT
+    var sessionIdMarker : Long = 0L
 
     private fun tokenUpdateRequired(newToken: String, cacheHandler: CMNotificationCacheHandler): Boolean {
         val oldToken = cacheHandler.getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY)
@@ -344,7 +345,6 @@ object CMNotificationUtils {
                                                reminderPromptFreqRemoteConfObj: ReminderPromptFreqRemoteConfObj?): Boolean{
         val reminderPromptAppDataObj = readReminderPromptFreqRecord(context,
             pageName+SUFFIX_REMINDER_PROMPT_PAGE_DATA)
-//        val reminderPromptFreqRemoteConfObj = getRemoteConfigReminderPromptFreqCapping(context, pageName)
         //check if reset
         if(reminderPromptFreqRemoteConfObj?.reset == true){
             deleteReminderPromptFreqRecord(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA)
@@ -356,17 +356,27 @@ object CMNotificationUtils {
             deleteReminderPromptFreqRecord(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA)
             return false
         }
-        //validate cool off duration
-        if((currentLocalTimeStamp - reminderPromptAppDataObj.lastShown)
-            < convertDaysToMilliSecs(reminderPromptFreqRemoteConfObj?.coolOffDuration ?: 0f)){
+        //validate time cool off duration
+        if(reminderPromptFreqRemoteConfObj?.boundToSession == false && ((currentLocalTimeStamp - reminderPromptAppDataObj.lastShown)
+            < convertDaysToMilliSecs(reminderPromptFreqRemoteConfObj.coolOffDuration))){
             return false
         }
         //validate frequency
         if(reminderPromptAppDataObj.currentCount >= (reminderPromptFreqRemoteConfObj?.freq ?: 0)){
             return false
         }
+        //validate session cool off
+        var lastShownTimeStampHolder = currentLocalTimeStamp
+        if(reminderPromptFreqRemoteConfObj?.boundToSession == true){
+            if(reminderPromptAppDataObj.lastShown == getCurrentSessionMarker()) {
+                return false
+            }else{
+                lastShownTimeStampHolder = getCurrentSessionMarker()
+            }
+        }
+
         reminderPromptAppDataObj.currentCount += 1
-        reminderPromptAppDataObj.lastShown = currentLocalTimeStamp
+        reminderPromptAppDataObj.lastShown = lastShownTimeStampHolder
         writeReminderPromptObjToSharedPref(context, pageName+ SUFFIX_REMINDER_PROMPT_PAGE_DATA, reminderPromptAppDataObj)
         return true
     }
@@ -401,6 +411,13 @@ object CMNotificationUtils {
                 Context.MODE_PRIVATE
             )
         }
+    }
+
+    private fun getCurrentSessionMarker(): Long{
+        if(sessionIdMarker == 0L){
+            sessionIdMarker = currentLocalTimeStamp
+        }
+        return sessionIdMarker
     }
 
 }

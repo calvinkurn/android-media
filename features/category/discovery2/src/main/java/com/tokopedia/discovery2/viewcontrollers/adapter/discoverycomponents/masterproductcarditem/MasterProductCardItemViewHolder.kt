@@ -28,7 +28,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 
 class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
-    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener{
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener {
 
     private lateinit var masterProductCardItemViewModel: MasterProductCardItemViewModel
     private var masterProductCardGridView: ProductCardGridView? = null
@@ -114,40 +114,64 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             ""
         )
         masterProductCardItemViewModel.getProductDataItem()?.let { dataItem ->
-            (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId?:"")
+            (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId ?: "")
         }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         productCardName = masterProductCardItemViewModel.getComponentName()
-        lifecycleOwner?.let {lifecycle ->
-            masterProductCardItemViewModel.getDataItemValue().observe(lifecycle, Observer { data ->
-                dataItem = data
-            })
-            masterProductCardItemViewModel.getProductModelValue().observe(lifecycle, Observer { data ->
-                populateData(data)
-            })
-            masterProductCardItemViewModel.getComponentPosition().observe(lifecycle, Observer { position ->
-                componentPosition = position
-            })
-            masterProductCardItemViewModel.getShowLoginData().observe(lifecycle, Observer {
-                if (it == true) {
-                    componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
+        lifecycleOwner?.let { lifecycle ->
+            masterProductCardItemViewModel.getDataItemValue().observe(
+                lifecycle,
+                Observer { data ->
+                    dataItem = data
                 }
-            })
-            masterProductCardItemViewModel.notifyMeCurrentStatus().observe(lifecycle, Observer {
-                updateNotifyMeState(it)
-            })
-            masterProductCardItemViewModel.showNotifyToastMessage().observe(lifecycle, Observer {
-                showNotifyResultToast(it)
-            })
-            masterProductCardItemViewModel.getComponentPosition().observe(lifecycle, Observer {
-                componentPosition = it
-            })
-            masterProductCardItemViewModel.getSyncPageLiveData().observe(lifecycle, Observer {
-                if (it) (fragment as DiscoveryFragment).reSync()
-            })
+            )
+            masterProductCardItemViewModel.getProductModelValue().observe(
+                lifecycle,
+                Observer { data ->
+                    populateData(data)
+                }
+            )
+            masterProductCardItemViewModel.getComponentPosition().observe(
+                lifecycle,
+                Observer { position ->
+                    componentPosition = position
+                }
+            )
+            masterProductCardItemViewModel.getShowLoginData().observe(
+                lifecycle,
+                Observer {
+                    if (it == true) {
+                        componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
+                    }
+                }
+            )
+            masterProductCardItemViewModel.notifyMeCurrentStatus().observe(
+                lifecycle,
+                Observer {
+                    updateNotifyMeState(it)
+                }
+            )
+            masterProductCardItemViewModel.showNotifyToastMessage().observe(
+                lifecycle,
+                Observer {
+                    showNotifyResultToast(it)
+                }
+            )
+            masterProductCardItemViewModel.getComponentPosition().observe(
+                lifecycle,
+                Observer {
+                    componentPosition = it
+                }
+            )
+            masterProductCardItemViewModel.getSyncPageLiveData().observe(
+                lifecycle,
+                Observer {
+                    if (it) (fragment as DiscoveryFragment).reSync()
+                }
+            )
             masterProductCardItemViewModel.getScrollSimilarProductComponentID().observe(lifecycle, {
                 (fragment as DiscoveryFragment).scrollToComponentWithID(it)
             })
@@ -170,9 +194,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun populateData(productCardModel: ProductCardModel) {
-        if (productCardName == ComponentNames.ProductCardCarouselItem.componentName
-                || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName
-            || productCardName == ComponentNames.ProductCardCarouselItemList.componentName) {
+        if (productCardName == ComponentNames.ProductCardCarouselItem.componentName ||
+            productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
+            productCardName == ComponentNames.ProductCardCarouselItemList.componentName
+        ) {
             masterProductCardGridView?.let {
                 productCardView.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
                 it.applyCarousel()
@@ -198,21 +223,23 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun setSimilarProductWishlist(dataItem: DataItem?) {
-        if(dataItem?.hasSimilarProductWishlist == true)
+        if (dataItem?.hasSimilarProductWishlist == true) {
             masterProductCardListView?.setSeeSimilarProductWishlistOnClickListener {
                 masterProductCardItemViewModel.scrollToTargetSimilarProducts()
             }
+        }
     }
 
     private fun set3DotsWishlistWithAtc(dataItem: DataItem?) {
-        if (dataItem?.hasThreeDotsWishlist == true)
+        if (dataItem?.hasThreeDotsWishlist == true) {
             masterProductCardListView?.setThreeDotsWishlistOnClickListener {
-                    masterProductCardItemViewModel.saveProductCardComponent()
-                    showProductCardOptions(
-                        fragment,
-                        masterProductCardItemViewModel.getThreeDotsWishlistOptionsModel()
-                    )
+                masterProductCardItemViewModel.saveProductCardComponent()
+                showProductCardOptions(
+                    fragment,
+                    masterProductCardItemViewModel.getThreeDotsWishlistOptionsModel()
+                )
             }
+        }
     }
 
     private fun setWishlist() {
@@ -263,9 +290,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             productCardView -> {
                 masterProductCardItemViewModel.sendTopAdsClick()
                 var applink = dataItem?.applinks ?: ""
-                if ((fragment as DiscoveryFragment).isAffiliateInitialized)
+                if ((fragment as DiscoveryFragment).isAffiliateInitialized) {
                     applink =
                         fragment.createAffiliateLink(applink)
+                }
                 masterProductCardItemViewModel.navigate(fragment.context, applink)
                 sendClickEvent()
             }
@@ -274,16 +302,20 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun sendClickEvent() {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                .trackProductCardClick(masterProductCardItemViewModel.components,
-                        masterProductCardItemViewModel.isUserLoggedIn())
+            .trackProductCardClick(
+                masterProductCardItemViewModel.components,
+                masterProductCardItemViewModel.isUserLoggedIn()
+            )
     }
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
         masterProductCardItemViewModel.sendTopAdsView()
         (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                .viewProductsList(masterProductCardItemViewModel.components,
-                        masterProductCardItemViewModel.isUserLoggedIn())
+            .viewProductsList(
+                masterProductCardItemViewModel.components,
+                masterProductCardItemViewModel.isUserLoggedIn()
+            )
     }
 
     private fun showNotifyResultToast(toastData: Pair<Boolean, String?>) {
@@ -301,11 +333,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun sentNotifyButtonEvent() {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(masterProductCardItemViewModel.components, masterProductCardItemViewModel.isUserLoggedIn(),masterProductCardItemViewModel.getUserID())
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(masterProductCardItemViewModel.components, masterProductCardItemViewModel.isUserLoggedIn(), masterProductCardItemViewModel.getUserID())
     }
 
     override fun onQuantityChanged(quantity: Int) {
-        handleATC(quantity,false)
+        handleATC(quantity, false)
     }
 
     private fun handleATC(quantity: Int, isGeneralCartATC: Boolean) {

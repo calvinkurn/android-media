@@ -18,5 +18,8 @@ data class ReminderPromptFreqRemoteConfObj (
     val coolOffDuration: Float = 0f,
     @Expose
     @SerializedName("reset")
-    val reset: Boolean = false
+    val reset: Boolean = false,
+    @Expose
+    @SerializedName("bound_to_session")
+    val boundToSession: Boolean = false
 )
