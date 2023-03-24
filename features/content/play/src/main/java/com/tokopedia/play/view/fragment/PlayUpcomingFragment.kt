@@ -341,7 +341,7 @@ class PlayUpcomingFragment @Inject constructor(
                     activity?.let {
                         val view = NotificationGeneralPromptLifecycleCallbacks()
                             .notificationGeneralPromptView(it, LIVE_SHOPPING)
-                        NotificationReminderPrompt(view).showReminderPrompt(it)
+                        NotificationReminderPrompt(view).showReminderPrompt(it, LIVE_SHOPPING)
                     }
                 }
             }

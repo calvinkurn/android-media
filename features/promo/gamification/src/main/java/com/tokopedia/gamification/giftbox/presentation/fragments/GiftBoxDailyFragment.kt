@@ -604,7 +604,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         activity?.let {
             val view = NotificationGeneralPromptLifecycleCallbacks()
                 .notificationGeneralPromptView(it, pageName)
-            NotificationReminderPrompt(view).showReminderPrompt(it)
+            NotificationReminderPrompt(view).showReminderPrompt(it, pageName)
         }
     }
 
