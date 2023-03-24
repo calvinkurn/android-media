@@ -21,6 +21,14 @@ class MediaFileRepositoryImpl @Inject constructor(
         val result = mutableListOf<Media>()
         var index = start
 
+        val cursorCount = cursor?.count ?: 0
+
+        val offset = if (cursorCount < LIMIT_MEDIA_OFFSET) {
+            cursorCount
+        } else {
+            LIMIT_MEDIA_OFFSET
+        }
+
         return flow {
             while (cursor?.moveToPosition(index) == true) {
                 val media = createMedia(cursor) ?: continue
@@ -33,17 +41,7 @@ class MediaFileRepositoryImpl @Inject constructor(
                 result.add(media)
                 index++
 
-                if (result.size == LIMIT_MEDIA_OFFSET) break
-
-                /**
-                 * if the device only contains under 100 item of medias in all-media's bucket id.
-                 * This validation needs to fix infinite loop on OPPO and VIVO devices.
-                 */
-                if (cursor.count < LIMIT_MEDIA_OFFSET
-                    && cursor.isAfterLast.not()
-                    && bucketId == BUCKET_ALL_MEDIA_ID
-                    && isOppoManufacturer()
-                ) break
+                if (result.size == offset) break
             }
 
             cursor?.close()
