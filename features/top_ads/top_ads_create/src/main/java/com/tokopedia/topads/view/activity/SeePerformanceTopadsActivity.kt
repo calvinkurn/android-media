@@ -137,7 +137,7 @@ class SeePerformanceTopadsActivity : AppCompatActivity(), HasComponent<CreateAds
                     mainBottomSheetBinding.includeTambahKredit.creditAmount.text = HtmlCompat.fromHtml(
                         it.data.topadsDashboardDeposits.data.amountHtml,
                         HtmlCompat.FROM_HTML_MODE_LEGACY
-                    )
+                    ).trim()
                 }
                 else -> {}
             }
