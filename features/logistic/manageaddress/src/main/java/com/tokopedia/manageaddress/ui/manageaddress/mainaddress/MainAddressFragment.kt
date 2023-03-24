@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -522,8 +523,9 @@ class MainAddressFragment :
                     super.onScrolled(recyclerView, dx, dy)
                     val adapter = recyclerView.adapter
                     val totalItemCount = adapter?.itemCount
-                    val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
-                        .findLastVisibleItemPosition()
+                    val lastVisibleItemPosition =
+                        (recyclerView.layoutManager as LinearLayoutManager)
+                            .findLastVisibleItemPosition()
 
                     if (maxItemPosition < lastVisibleItemPosition) {
                         maxItemPosition = lastVisibleItemPosition
@@ -674,9 +676,8 @@ class MainAddressFragment :
                         bottomSheetLainnya?.dismiss()
                     }
                     btnHapusAlamat.setOnClickListener {
-                        viewModel.deletePeopleAddress(data.id)
                         bottomSheetLainnya?.dismiss()
-                        isFromDeleteAddress = true
+                        showDeleteAddressDialog(data.id)
                     }
                     btnAlamatUtamaChoose.setOnClickListener {
                         isStayOnPageState = false
@@ -826,7 +827,10 @@ class MainAddressFragment :
                     addressDataModel.toChosenAddressModel()
                 )
             }
-            activity?.setResult(CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS, resultIntent)
+            activity?.setResult(
+                CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS,
+                resultIntent
+            )
             activity?.finish()
         } else {
             performSearch("", addressDataModel)
@@ -959,6 +963,24 @@ class MainAddressFragment :
     private fun showToaster(message: String, toastType: Int = Toaster.TYPE_NORMAL) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, toastType).show()
+        }
+    }
+
+    private fun showDeleteAddressDialog(addressId: String) {
+        context?.apply {
+            DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.title_delete_address_dialog))
+                setSecondaryCTAText(getString(R.string.action_cancel_delete_address))
+                setPrimaryCTAText(getString(R.string.btn_delete))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    viewModel.deletePeopleAddress(addressId)
+                    isFromDeleteAddress = true
+                }
+            }.show()
         }
     }
 
