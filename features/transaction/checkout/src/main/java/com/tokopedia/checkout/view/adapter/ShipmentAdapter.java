@@ -1108,13 +1108,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return 0;
     }
 
-    public int getAddOnOrderLevelPosition() {
+    public int getAddOnOrderLevelPosition(String cartString) {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
-                    if (!shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
-                        return i;
+                if (shipmentCartItemModel.getCartString() != null && shipmentCartItemModel.getCartString().equals(cartString)) {
+                    if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+                        if (!shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
+                            return i;
+                        }
                     }
                 }
             }
@@ -1122,15 +1124,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return 0;
     }
 
-    public int getAddOnProductLevelPosition() {
+    public int getAddOnProductLevelPosition(String cartString) {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                if (!shipmentCartItemModel.getCartItemModels().isEmpty()) {
-                    for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
-                        if (shipmentCartItemModel.getCartItemModels().get(j) != null) {
-                            if (!shipmentCartItemModel.getCartItemModels().get(j).getAddOnProductLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
-                                return i;
+                if (shipmentCartItemModel.getCartString() != null && shipmentCartItemModel.getCartString().equals(cartString)) {
+                    if (!shipmentCartItemModel.getCartItemModels().isEmpty()) {
+                        for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
+                            if (shipmentCartItemModel.getCartItemModels().get(j) != null) {
+                                if (!shipmentCartItemModel.getCartItemModels().get(j).getAddOnProductLevelModel().getAddOnsButtonModel().getTitle().isEmpty()) {
+                                    return i;
+                                }
                             }
                         }
                     }
