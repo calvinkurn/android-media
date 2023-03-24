@@ -148,7 +148,7 @@ open class BaseTokoNowViewModel(
             )
             TickerMapper.mapTickerData(tickerList)
         }) {
-            Pair(false, emptyList())
+            null
         }
     }
 

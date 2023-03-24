@@ -176,6 +176,16 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertNull(actualResponse)
     }
 
+    protected fun verifyBlockAddToCartNotNull() {
+        val actualResponse = viewModel.blockAddToCart.value
+        Assert.assertTrue(actualResponse != null)
+    }
+
+    protected fun verifyBlockAddToCartNull() {
+        val actualResponse = viewModel.blockAddToCart.value
+        Assert.assertTrue(actualResponse == null)
+    }
+
     protected fun verifyTrackOpeningScreen() {
         val actualResponse = viewModel.openScreenTracker.value
         Assert.assertEquals(HOMEPAGE_TOKONOW, actualResponse)
