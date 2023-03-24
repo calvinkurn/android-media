@@ -737,6 +737,8 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun onShowProductSheet(estimatedProductSheetHeight: Int) {
+        updateCartCount()
+
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
         insetsMap[BottomInsetsType.ProductSheet] =
