@@ -54,3 +54,9 @@ sealed class PlayProductUiModel {
 
     object Placeholder : PlayProductUiModel()
 }
+
+val PlayProductUiModel.Product.isShowRating: Boolean
+    get() = this.rating.isNotBlank()
+
+val PlayProductUiModel.Product.isShowSoldQuantity: Boolean
+    get() = this.soldQuantity.isNotBlank()

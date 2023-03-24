@@ -109,3 +109,6 @@ sealed class ProductSectionUiModel {
 
     object Placeholder : ProductSectionUiModel()
 }
+
+val ProductSectionType.isUpcoming: Boolean
+    get() = this == ProductSectionType.Upcoming

@@ -15,7 +15,10 @@ import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ViewProductBottomSheetCardBinding
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.isShowRating
+import com.tokopedia.play.view.uimodel.isShowSoldQuantity
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.isUpcoming
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.CardUnify
 
@@ -124,11 +127,11 @@ class ProductBottomSheetCardView(
         binding.btnProductSecond.generateButton(lastButton.color)
 
         //Social Proof
-        val isSocialProofAvailable = (item.rating.isNotBlank() || item.soldQuantity.isNotBlank()) && section.config.type != ProductSectionType.Upcoming
-        binding.ivPlayProductStars.showWithCondition(item.rating.isNotBlank() && section.config.type != ProductSectionType.Upcoming)
+        val isSocialProofAvailable = (item.isShowRating || item.isShowSoldQuantity) && !section.config.type.isUpcoming
+        binding.ivPlayProductStars.showWithCondition(item.isShowRating && !section.config.type.isUpcoming)
         binding.tvPlayProductSocialProof.showWithCondition(isSocialProofAvailable)
         binding.tvPlayProductSocialProof.text = buildString {
-            item.rating + if (item.soldQuantity.isNotBlank()) "|" else "" +item.soldQuantity
+            item.rating + if (item.isShowSoldQuantity) "|" else "" + item.soldQuantity
         }
     }
 
