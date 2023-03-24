@@ -38,10 +38,6 @@ class FeedMainViewModel @Inject constructor(
     private val userSession: UserSessionInterface
 ) : ViewModel(), OnboardingPreferences by onboardingPreferences {
 
-    private val _isInClearView = MutableLiveData<Boolean>(false)
-    val isInClearView: LiveData<Boolean>
-        get() = _isInClearView
-
     private val _feedTabs = MutableLiveData<Result<List<FeedDataModel>>>()
     val feedTabs: LiveData<Result<List<FeedDataModel>>>
         get() = _feedTabs
@@ -155,10 +151,6 @@ class FeedMainViewModel @Inject constructor(
         }) {
             _reportResponse.value = Fail(it)
         }
-    }
-
-    fun toggleClearView(clearView: Boolean) {
-        _isInClearView.value = clearView
     }
 
     /**

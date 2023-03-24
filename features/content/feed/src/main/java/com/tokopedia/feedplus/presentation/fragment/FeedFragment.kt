@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -34,8 +32,8 @@ import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.adapter.viewholder.FeedPostImageViewHolder
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -89,7 +87,6 @@ class FeedFragment :
     private var layoutManager: LinearLayoutManager? = null
     private var dissmisByGreyArea = true
     private var shareData: LinkerData? = null
-    private var isInClearViewMode: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -99,8 +96,6 @@ class FeedFragment :
 
     private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
-
-    private lateinit var feedMenuSheet: ContentThreeDotsMenuBottomSheet
 
     private val reportPostLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -142,7 +137,7 @@ class FeedFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFeedImmersiveBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -157,29 +152,11 @@ class FeedFragment :
         )
 
         initView()
-        observeClearViewData()
         observePostData()
         observeAddToCart()
         observeReport()
         observeFollow()
         observeLikeContent()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
-        feedMainViewModel.run {
-            reportResponse.observe(lifecycleOwner) {
-                when (it) {
-                    is Success -> {
-                        if (::feedMenuSheet.isInitialized) {
-                            feedMenuSheet.setFinalView()
-                        }
-                    }
-                    is Fail -> Toast.makeText(context, "Laporkan fail", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
     }
 
     override fun onDestroyView() {
@@ -221,20 +198,16 @@ class FeedFragment :
             }
 
             FeedMenuIdentifier.MODE_NONTON -> {
-                feedMainViewModel.toggleClearView(true)
+                adapter?.showClearView(layoutManager?.findFirstVisibleItemPosition() ?: 0)
             }
+
+            else -> {}
         }
     }
 
     override fun onReportPost(feedReportRequestParamModel: FeedReportRequestParamModel) {
         feedMainViewModel.reportContent(feedReportRequestParamModel)
     }
-
-    override fun disableClearView() {
-        feedMainViewModel.toggleClearView(false)
-    }
-
-    override fun inClearViewMode(): Boolean = isInClearViewMode
 
     override fun onSharePostClicked(
         id: String,
@@ -519,13 +492,6 @@ class FeedFragment :
         }
     }
 
-    private fun observeClearViewData() {
-        feedMainViewModel.isInClearView.observe(viewLifecycleOwner) {
-            isInClearViewMode = it
-            adapter?.onToggleClearView()
-        }
-    }
-
     private fun observePostData() {
         feedPostViewModel.feedHome.observe(viewLifecycleOwner) {
             binding.swipeRefreshFeedLayout.isRefreshing = false
@@ -612,12 +578,9 @@ class FeedFragment :
         if ((newList?.size ?: 0) > data.rowNumber) {
             val item = newList?.get(rowNumber)
             if (item is FeedCardImageContentModel) {
-//                val like = (item as FeedCardImageContentModel).like
-//                like.isLiked = !like.isLiked
                 if (!item.like.isLiked) {
                     try {
                         val likeValue = Integer.valueOf(item.like.countFmt) + 1
-//                        like.countFmt = likeValue.toString()
                         adapter?.updateLikeUnlikeData(
                             rowNumber,
                             like = item.like.copy(
@@ -629,12 +592,9 @@ class FeedFragment :
                     } catch (ignored: NumberFormatException) {
                         Timber.e(ignored)
                     }
-
-//                    like.count = like.count + 1
                 } else {
                     try {
                         val likeValue = Integer.valueOf(item.like.countFmt) - 1
-//                        like.countFmt = likeValue.toString()
                         adapter?.updateLikeUnlikeData(
                             rowNumber,
                             like = item.like.copy(
@@ -649,7 +609,7 @@ class FeedFragment :
                 }
                 adapter?.notifyItemChanged(
                     rowNumber,
-                    FeedPostImageViewHolder.IMAGE_POST_LIKED_UNLIKED
+                    FEED_POST_LIKED_UNLIKED
                 )
             }
         }

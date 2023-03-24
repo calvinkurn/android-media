@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedPostImageAdapter
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_CLEAR_MODE
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
@@ -101,6 +103,7 @@ class FeedPostImageViewHolder(
                 bindLike(data)
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
+                hideClearView()
 
                 menuButton.setOnClickListener { _ ->
                     listener.onMenuClicked(data.id)
@@ -119,14 +122,6 @@ class FeedPostImageViewHolder(
                 }
 
                 btnDisableClearMode.setOnClickListener {
-                    if (listener.inClearViewMode()) {
-                        listener.disableClearView()
-                    }
-                }
-
-                if (listener.inClearViewMode()) {
-                    showClearView()
-                } else {
                     hideClearView()
                 }
 
@@ -135,6 +130,19 @@ class FeedPostImageViewHolder(
                     true
                 }
             }
+        }
+    }
+
+    override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        if (element == null) {
+            return
+        }
+        if (payloads.contains(FEED_POST_LIKED_UNLIKED)) {
+            setLikeUnlike(element.like)
+        }
+        if (payloads.contains(FEED_POST_CLEAR_MODE)) {
+            showClearView()
         }
     }
 
@@ -162,16 +170,6 @@ class FeedPostImageViewHolder(
             smallLikeAnimationView.playLikeAnimation()
         } else {
             smallLikeAnimationView.playUnLikeAnimation()
-        }
-    }
-
-    override fun bind(element: FeedCardImageContentModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        if (element == null) {
-            return
-        }
-        if (payloads.contains(IMAGE_POST_LIKED_UNLIKED)) {
-            setLikeUnlike(element.like)
         }
     }
 
@@ -278,7 +276,6 @@ class FeedPostImageViewHolder(
     companion object {
         const val PRODUCT_COUNT_ZERO = 0
         const val PRODUCT_COUNT_ONE = 1
-        const val IMAGE_POST_LIKED_UNLIKED = 1011
 
         @LayoutRes
         val LAYOUT = R.layout.item_feed_post

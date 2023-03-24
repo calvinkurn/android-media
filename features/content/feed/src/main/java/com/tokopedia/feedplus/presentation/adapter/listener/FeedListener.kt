@@ -7,8 +7,6 @@ import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 
 interface FeedListener {
     fun onMenuClicked(id: String)
-    fun disableClearView()
-    fun inClearViewMode(): Boolean
     fun onFollowClicked(id: String, encryptedId: String, isShop: Boolean)
     fun changeTab(type: String)
     fun reload()
