@@ -203,46 +203,52 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     }
 
     private fun setupFilterCategory() {
-        val action = {
-            val categoryData = viewModel.categoryAllList.value.orEmpty()
-            val selectedData = viewModel.filterCategory.map { it.toString() }
-            categoryFilterBottomSheet = commonBottomSheetInitializer.initFilterCategoryBottomSheet(selectedData, categoryData)
-            categoryFilterBottomSheet?.apply {
-                setOnApplyButtonClick {
-                    viewModel.filterCategory = getAllSelectedItems().map { it.id.toLongOrZero() }
-                    filterCategory.selectedItem = if (getAllSelectedItems().isEmpty()) {
-                        arrayListOf(getString(R.string.stfs_all_category))
-                    } else {
-                        arrayListOf(getString(
-                            R.string.stfs_placeholder_selected_category_count,
-                            getAllSelectedItems().size)
-                        )
+        context?.let { context ->
+            val action = {
+                val categoryData = viewModel.categoryAllList.value.orEmpty()
+                val selectedData = viewModel.filterCategory.map { it.toString() }
+                categoryFilterBottomSheet = commonBottomSheetInitializer.initFilterCategoryBottomSheet(context, selectedData, categoryData)
+                categoryFilterBottomSheet?.apply {
+                    setOnApplyButtonClick {
+                        viewModel.filterCategory = getAllSelectedItems().map { it.id.toLongOrZero() }
+                        filterCategory.selectedItem = if (getAllSelectedItems().isEmpty()) {
+                            arrayListOf(getString(R.string.stfs_all_category))
+                        } else {
+                            arrayListOf(getString(
+                                R.string.stfs_placeholder_selected_category_count,
+                                getAllSelectedItems().size)
+                            )
+                        }
+                        filterCategory.refreshHighlight()
+                        loadInitialData()
                     }
-                    filterCategory.refreshHighlight()
-                    loadInitialData()
                 }
+                categoryFilterBottomSheet?.show(childFragmentManager, "")
             }
-            categoryFilterBottomSheet?.show(childFragmentManager, "")
+            filterCategory.listener = { action() }
+            filterCategory.refChipUnify.setChevronClickListener { action() }
         }
-        filterCategory.listener = { action() }
-        filterCategory.refChipUnify.setChevronClickListener { action() }
+
     }
 
     private fun setupFilterCriteria() {
-        val action = {
-            criteriaFilterBottomSheet = commonBottomSheetInitializer.initCategoryFilterBottomSheet(viewModel.filterCriteria)
-            criteriaFilterBottomSheet?.apply {
-                setOnApplyButtonClick {
-                    viewModel.filterCriteria = getSelectedItem()?.id.orEmpty()
-                    filterCriteria.selectedItem = arrayListOf(getSelectedItem()?.name.orEmpty())
-                    filterCriteria.refreshHighlight()
-                    loadInitialData()
+        context?.let { context ->
+            val action = {
+                criteriaFilterBottomSheet = commonBottomSheetInitializer.initCategoryFilterBottomSheet(context, viewModel.filterCriteria)
+                criteriaFilterBottomSheet?.apply {
+                    setOnApplyButtonClick {
+                        viewModel.filterCriteria = getSelectedItem()?.id.orEmpty()
+                        filterCriteria.selectedItem = arrayListOf(getSelectedItem()?.name.orEmpty())
+                        filterCriteria.refreshHighlight()
+                        loadInitialData()
+                    }
                 }
+                criteriaFilterBottomSheet?.show(childFragmentManager, "")
             }
-            criteriaFilterBottomSheet?.show(childFragmentManager, "")
+            filterCriteria.listener = { action() }
+            filterCriteria.refChipUnify.setChevronClickListener { action() }
+
         }
-        filterCriteria.listener = { action() }
-        filterCriteria.refChipUnify.setChevronClickListener { action() }
     }
 
     private fun setupCategorySelection() {
@@ -279,7 +285,9 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
             criteriaSelectionAdapter.setDataList(it)
         }
         viewModel.categoryAllList.observe(viewLifecycleOwner) {
-            categoryFilterBottomSheet = commonBottomSheetInitializer.initFilterCategoryBottomSheet(emptyList(), it)
+            context?.let { context ->
+                categoryFilterBottomSheet = commonBottomSheetInitializer.initFilterCategoryBottomSheet(context, emptyList(), it)
+            }
         }
         viewModel.isCriteriaEmpty.observe(viewLifecycleOwner) {
             if (it) {
