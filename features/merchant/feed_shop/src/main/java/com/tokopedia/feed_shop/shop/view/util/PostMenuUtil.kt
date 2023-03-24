@@ -1,9 +1,9 @@
-package com.tokopedia.kolcommon.util
+package com.tokopedia.feed_shop.shop.view.util
 
 import android.content.Context
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kolcommon.R
 import java.util.*
+import com.tokopedia.feed_shop.R
 
 /**
  * @author by milhamj on 13/11/18.
@@ -18,7 +18,7 @@ fun createBottomMenu(context: Context,
     if (isDeletable) {
         menuList.add(
                 Menus.ItemMenus(
-                        context.getString(R.string.kol_delete_post),
+                        context.getString(R.string.feed_shop_delete_post),
                         -1
                 )
         )
@@ -26,7 +26,7 @@ fun createBottomMenu(context: Context,
     if (isReportable) {
         menuList.add(
                 Menus.ItemMenus(
-                        context.getString(R.string.kol_report),
+                        context.getString(R.string.feed_shop_report),
                         -1
                 )
         )
@@ -34,7 +34,7 @@ fun createBottomMenu(context: Context,
     if (isEditable) {
         menuList.add(
                 Menus.ItemMenus(
-                        context.getString(R.string.kol_edit_post),
+                        context.getString(R.string.feed_shop_edit_post),
                         -1
                 )
         )
@@ -44,9 +44,9 @@ fun createBottomMenu(context: Context,
     menus.setOnActionClickListener { menus.dismiss() }
     menus.setOnItemMenuClickListener { itemMenus, _ ->
         when (itemMenus.title) {
-            context.getString(R.string.kol_delete_post) -> listener?.onDeleteClicked()
-            context.getString(R.string.kol_report) -> listener?.onReportClick()
-            context.getString(R.string.kol_edit_post) -> listener?.onEditClick()
+            context.getString(R.string.feed_shop_delete_post) -> listener?.onDeleteClicked()
+            context.getString(R.string.feed_shop_report) -> listener?.onReportClick()
+            context.getString(R.string.feed_shop_edit_post) -> listener?.onEditClick()
         }
         menus.dismiss()
     }
