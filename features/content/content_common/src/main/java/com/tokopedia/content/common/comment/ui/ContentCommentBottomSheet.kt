@@ -122,7 +122,7 @@ class ContentCommentBottomSheet @Inject constructor(
                 if (p0.length > MAX_CHAR) {
                     Toaster.showError(
                         requireView().rootView,
-                        getString(R.string.content_comment_error_max),
+                        CommentException.SendCommentFailed.message,
                         Toaster.LENGTH_SHORT
                     )
                 }
@@ -475,7 +475,7 @@ class ContentCommentBottomSheet @Inject constructor(
         if (binding.newComment.length() >= MAX_CHAR) {
             Toaster.showError(
                 requireView().rootView,
-                getString(R.string.content_comment_error_max),
+                CommentException.SendCommentFailed.message,
                 Toaster.LENGTH_SHORT
             )
         } else {
