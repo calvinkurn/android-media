@@ -77,6 +77,8 @@ class AffiliateActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         intent?.data?.let { data ->
+            fromAppLink = data.pathSegments.contains(PAGE_SEGMENT_EDU_PAGE)
+            fromHelpAppLink = data.pathSegments.contains(PAGE_SEGMENT_HELP)
             if (data.pathSegments?.contains(PAGE_SEGMENT_ONBOARDING) == true) {
                 if (data.queryParameterNames.isNotEmpty()) {
                     showLoginPortal(intent?.data?.getQueryParameter(data.queryParameterNames.first()))
@@ -278,6 +280,8 @@ class AffiliateActivity :
                 it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY) -> {
                     selectedTab = INCOME_MENU
                 }
+                it.contains(PAGE_SEGMENT_SSA_SHOP_LIST) ->
+                    startActivity(Intent(this, AffiliateSSAShopListActivity::class.java))
             }
         }
         affiliateBottomNavigation = AffiliateBottomNavbar(
