@@ -33,7 +33,6 @@ interface ShipmentAdapterActionListener {
     )
 
     fun onChangeAddress()
-    fun onTotalPaymentChange(totalPayment: String, enable: Boolean)
     fun onFinishChoosingShipment(
         lastSelectedCourierOrder: Int,
         lastSelectedCourierOrdercartString: String?,

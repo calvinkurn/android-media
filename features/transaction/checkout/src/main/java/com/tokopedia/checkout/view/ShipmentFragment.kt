@@ -1762,11 +1762,6 @@ class ShipmentFragment :
         checkoutAnalyticsCourierSelection.eventViewPromoAfterAdjustItem(msg!!)
     }
 
-    override fun onTotalPaymentChange(totalPayment: String, enable: Boolean) {
-        shipmentPresenter.updateShipmentButtonPaymentModel(enable, totalPayment, null)
-//        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
-    }
-
     override fun onFinishChoosingShipment(
         lastSelectedCourierOrder: Int,
         lastSelectedCourierOrderCartString: String?,
