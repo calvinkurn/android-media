@@ -28,6 +28,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.TopchatUploadImageUseCase
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
 import com.tokopedia.topchat.common.websocket.TopchatWebSocket
@@ -317,7 +318,8 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
                 roomMetaData = roomMetaData,
                 message = message,
                 userLocationInfo = userLocationInfo,
-                localId = previewMsg.localId
+                localId = previewMsg.localId,
+                sourceReply = getSourceReply()
             )
             showPreviewMsg(previewMsg)
             sendWsPayload(wsPayload)
@@ -344,7 +346,8 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
             previewMsg = previewMsg,
             attachments = products ?: attachmentsPreview,
             userLocationInfo = userLocationInfo,
-            referredMsg = referredMsg
+            referredMsg = referredMsg,
+            sourceReply = getSourceReply()
         )
         showPreviewMsg(previewMsg)
         sendWsPayload(wsPayload)
@@ -362,7 +365,8 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
             roomMetaData = roomMetaData,
             attachments = attachmentsPreview,
             localId = previewMsg.localId,
-            referredMsg = referredMsg
+            referredMsg = referredMsg,
+            sourceReply = getSourceReply()
         )
         showPreviewMsg(previewMsg)
         sendWsPayload(wsPayload)
@@ -417,7 +421,8 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
             roomMetaData,
             uploadId,
             imageUploadUiModel,
-            isSecure
+            isSecure,
+            getSourceReply()
         )
         sendWsPayload(wsPayload)
     }
@@ -515,6 +520,14 @@ open class TopChatRoomWebSocketViewModel @Inject constructor(
         return PROBLEMATIC_DEVICE.contains(
             DeviceInfo.getModelName().lowercase(Locale.getDefault())
         )
+    }
+
+    fun getSourceReply(): String {
+        return if (isFromBubble) {
+            "${TopChatAnalyticsKt.SOURCE_INBOX} ${TopChatAnalyticsKt.SOURCE_SEPARATOR} ${TopChatAnalyticsKt.SOURCE_BUBBLES}"
+        } else {
+            TopChatAnalyticsKt.SOURCE_INBOX
+        }
     }
 
     companion object {

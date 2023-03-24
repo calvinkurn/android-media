@@ -24,7 +24,50 @@ class WebsocketSendTest : BaseTopChatViewModelTest() {
             payloadGenerator.generatePreviewMsg(any(), any(), any(), any())
         } returns preview
         every {
-            payloadGenerator.generateWsPayload(any(), any(), any(), any(), any(), any(), any())
+            payloadGenerator.generateWsPayload(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns payload
+
+        // When
+        webSocketViewModel.sendMessage("", null, null)
+        webSocketViewModel.sendMessage("", null, null, listOf())
+
+        // Then
+        assertEquals(webSocketViewModel.previewMsg.value, preview)
+        verify {
+            chatWebSocket.sendPayload(payload)
+        }
+        verifySendStopTyping()
+    }
+
+    @Test
+    fun should_send_msg_to_ws_from_notif_bubbles() {
+        // Given
+        val preview = MessageUiModel.Builder().build()
+        val payload = ""
+        webSocketViewModel.isFromBubble = true
+        every {
+            payloadGenerator.generatePreviewMsg(any(), any(), any(), any())
+        } returns preview
+        every {
+            payloadGenerator.generateWsPayload(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } returns payload
 
         // When

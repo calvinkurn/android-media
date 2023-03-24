@@ -16,7 +16,6 @@ import com.tokopedia.user.session.UserSessionInterface
 object TopChatAnalyticsKt {
 
     var sourcePage = ""
-    const val PUSH_NOTIF = "push_notif"
 
     fun eventClickOCCButton(
         element: ProductAttachmentUiModel,
@@ -1321,4 +1320,10 @@ object TopChatAnalyticsKt {
     private const val TRACKER_ID = "trackerId"
     private const val SHOPID = "shopId"
     private const val INDEX = "index"
+
+    // Chat Source
+    const val SOURCE_SEPARATOR = "|"
+    const val SOURCE_PUSH_NOTIF = "push_notif"
+    const val SOURCE_INBOX = "inbox"
+    const val SOURCE_BUBBLES = "bubble_notif"
 }

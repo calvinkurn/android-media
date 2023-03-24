@@ -25,7 +25,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatGQLUseCase
-import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.PUSH_NOTIF
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.SOURCE_PUSH_NOTIF
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventClickReplyChatFromNotif
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -73,14 +73,14 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
     override fun onCreate() {
         super.onCreate()
         DaggerChatComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .chatRoomContextModule(ChatRoomContextModule(this))
-                .build()
-                .inject(this)
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .chatRoomContextModule(ChatRoomContextModule(this))
+            .build()
+            .inject(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             jobScheduler = applicationContext.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
-                    ?: return
+                ?: return
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(this)
@@ -91,7 +91,6 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
     }
 
     private fun executeReplyChat(intent: Intent) {
-
         val remoteInput = RemoteInput.getResultsFromIntent(intent)
 
         val message = if (intent.getStringExtra(REPLY_KEY).isNullOrEmpty()) {
@@ -109,7 +108,7 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
                 val param = ReplyChatGQLUseCase.Param(
                     msgId = messageId,
                     msg = message,
-                    source = PUSH_NOTIF
+                    source = SOURCE_PUSH_NOTIF
                 )
                 replyChatGQLUseCase(param)
                 eventClickReplyChatFromNotif()
@@ -120,27 +119,31 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
                 }
             }
         }, onError = {
-            if (!DeviceConnectionInfo.isInternetAvailable(applicationContext,
-                    checkWifi = true,
-                    checkCellular = true,
-                    checkEthernet = true)) {
-                jobScheduler?.cancelAll()
-                if (isEnableReplyChatNotification()) {
-                    setRetryJob(messageId, message, notificationId, if (userId.isNullOrBlank()) "0" else userId)
+                if (!DeviceConnectionInfo.isInternetAvailable(
+                        applicationContext,
+                        checkWifi = true,
+                        checkCellular = true,
+                        checkEthernet = true
+                    )
+                ) {
+                    jobScheduler?.cancelAll()
+                    if (isEnableReplyChatNotification()) {
+                        setRetryJob(messageId, message, notificationId, if (userId.isNullOrBlank()) "0" else userId)
+                    }
+                } else {
+                    jobScheduler?.cancelAll()
+                    ServerLogger.log(Priority.P2, "PUSH_NOTIF_REPLY_CHAT", mapOf("type" to "ErrorReplyChat", "error" to it.message.orEmpty()))
                 }
-            } else {
-                jobScheduler?.cancelAll()
-                ServerLogger.log(Priority.P2, "PUSH_NOTIF_REPLY_CHAT", mapOf("type" to "ErrorReplyChat", "error" to it.message.orEmpty()))
-            }
-        })
+            })
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun setRetryJob(messageId: String,
-                            message: String,
-                            notificationId: Int,
-                            userId: String) {
-
+    private fun setRetryJob(
+        messageId: String,
+        message: String,
+        notificationId: Int,
+        userId: String
+    ) {
         val bundle = PersistableBundle()
         bundle.putString(MESSAGE_ID, messageId)
         bundle.putString(REPLY_KEY, message)
@@ -150,13 +153,16 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
         val maxDelay = TimeUnit.MINUTES.toMillis(MAX_DELAY)
 
         jobScheduler?.schedule(
-                JobInfo.Builder(JOB_ID_RETRY,
-                        ComponentName(applicationContext, NotificationChatJobService::class.java))
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setMinimumLatency(minDelay)
-                        .setOverrideDeadline(maxDelay)
-                        .setExtras(bundle)
-                        .build())
+            JobInfo.Builder(
+                JOB_ID_RETRY,
+                ComponentName(applicationContext, NotificationChatJobService::class.java)
+            )
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setMinimumLatency(minDelay)
+                .setOverrideDeadline(maxDelay)
+                .setExtras(bundle)
+                .build()
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
