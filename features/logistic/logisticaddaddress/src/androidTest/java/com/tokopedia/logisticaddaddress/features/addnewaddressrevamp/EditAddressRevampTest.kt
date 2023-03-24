@@ -45,7 +45,7 @@ class EditAddressRevampTest {
         AddAddressInterceptor.setupGraphqlMockResponse(context)
         logisticInterceptor.autoCompleteResponsePath = getRawString(context, R.raw.autocomplete_tokopedia_tower)
         logisticInterceptor.getDistrictResponsePath = getRawString(context, R.raw.get_district_tokopedia_tower)
-        logisticInterceptor.getAddressResponsePath = getRawString(context, R.raw.address_detail)
+        logisticInterceptor.getAddressResponsePath = getRawString(context, R.raw.address_detail_tokopedia_tower)
         logisticInterceptor.pinPointValidationResponsePath = getRawString(context, R.raw.pinpoint_validation)
         logisticInterceptor.editAddressResponsePath = getRawString(context, R.raw.editaddress_success_response)
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)

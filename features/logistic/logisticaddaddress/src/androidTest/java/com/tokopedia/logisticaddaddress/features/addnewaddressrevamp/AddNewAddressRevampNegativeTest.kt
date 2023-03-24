@@ -58,6 +58,7 @@ class AddNewAddressRevampNegativeTest {
         addAddressRevamp {
             launchWithParam(mActivityTestRule, screenName)
             clickManualForm()
+            fillAddressNegative(ADDRESS)
             fillReceiver(RECEIVER)
             fillPhoneNumber(PHONE)
             clickKotaKecamatan()
@@ -66,7 +67,6 @@ class AddNewAddressRevampNegativeTest {
             clickPostalCode()
             clickPostalCodeItem()
             clickChoosePostalCode()
-            fillAddressNegative(ADDRESS)
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
@@ -79,6 +79,7 @@ class AddNewAddressRevampNegativeTest {
         addAddressRevamp {
             launchWithParam(mActivityTestRule, screenName)
             clickManualForm()
+            fillAddressNegative(ADDRESS)
             fillReceiver(RECEIVER)
             fillPhoneNumber(PHONE)
             clickKotaKecamatan()
@@ -87,7 +88,6 @@ class AddNewAddressRevampNegativeTest {
             clickPostalCode()
             clickPostalCodeItem()
             clickChoosePostalCode()
-            fillAddressNegative(ADDRESS)
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
@@ -100,6 +100,7 @@ class AddNewAddressRevampNegativeTest {
         addAddressRevamp {
             launchWithParam(mActivityTestRule, screenName)
             clickManualForm()
+            fillAddressNegative(ADDRESS)
             fillReceiver(RECEIVER)
             fillPhoneNumber(PHONE)
             clickKotaKecamatan()
@@ -108,7 +109,6 @@ class AddNewAddressRevampNegativeTest {
             clickPostalCode()
             clickPostalCodeItem()
             clickChoosePostalCode()
-            fillAddressNegative(ADDRESS)
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }

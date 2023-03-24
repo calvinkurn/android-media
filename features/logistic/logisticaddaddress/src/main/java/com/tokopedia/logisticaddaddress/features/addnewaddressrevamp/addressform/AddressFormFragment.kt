@@ -343,7 +343,11 @@ class AddressFormFragment :
             binding?.loaderAddressForm?.visibility = View.GONE
             when (it) {
                 is Success -> {
-                    if (it.data.result.not()) {
+                    if (it.data.result) {
+                        viewModel.saveDataModel?.let { addressData ->
+                            checkLocation(addressData)
+                        }
+                    } else {
                         showToaster(
                             message = getString(R.string.error_district_pinpoint_mismatch),
                             toasterType = Toaster.TYPE_ERROR
@@ -1087,7 +1091,7 @@ class AddressFormFragment :
                 binding?.loaderAddressForm?.visibility = View.VISIBLE
                 viewModel.validatePinpoint(it)
             } else {
-                viewModel.saveEditAddress(it)
+                checkLocation(it)
             }
         }
     }
@@ -1189,6 +1193,36 @@ class AddressFormFragment :
                     }
                     show()
                 }
+            }
+        }
+    }
+
+    private fun checkLocation(addressData: SaveAddressDataModel) {
+        if (viewModel.isDifferentLocation(
+                address1 = addressData.address1,
+                address2 = addressData.address2
+            )
+        ) {
+            showDifferentLocationDialog(addressData)
+        } else {
+            viewModel.saveEditAddress(addressData)
+        }
+    }
+    private fun showDifferentLocationDialog(
+        addressData: SaveAddressDataModel
+    ) {
+        activity?.apply {
+            DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.title_edit_address_confirmation_dialog))
+                setDescription(getString(R.string.description_edit_address_confirmation_dialog))
+                setPrimaryCTAText(getString(R.string.btn_simpan))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    viewModel.saveEditAddress(addressData)
+                }
+                setSecondaryCTAText(getString(R.string.btn_back))
+                setSecondaryCTAClickListener { dismiss() }
+                show()
             }
         }
     }

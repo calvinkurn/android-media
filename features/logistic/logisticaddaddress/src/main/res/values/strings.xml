@@ -235,4 +235,7 @@
     <string name="error_notes_exceed_max_char">Catatan melebihi batas karakter. Cek lagi, ya.</string>
     <string name="editaddress_back_dialog_secondary_cta">Batal</string>
     <string name="btn_choose_this_location">Pilih Lokasi Ini</string>
+    <string name="title_edit_address_confirmation_dialog">Simpan perubahan alamat?</string>
+    <string name="description_edit_address_confirmation_dialog">Pastikan Alamat Lengkap dan Pinpoint sudah sesuai, ya.</string>
+    <string name="btn_back">Kembali</string>
 </resources>

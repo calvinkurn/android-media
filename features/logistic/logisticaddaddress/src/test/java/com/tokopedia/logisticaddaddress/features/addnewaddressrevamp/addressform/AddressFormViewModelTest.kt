@@ -1025,4 +1025,124 @@ class AddressFormViewModelTest {
         assert((addressFormViewModel.addressDetail.value as Success).data.phone == saveDataModel.phone)
         assert(addressFormViewModel.saveDataModel?.phone == saveDataModel.phone)
     }
+
+    @Test
+    fun `verify is not different location is correct`() {
+        val address = "Monas Jakarta"
+        val latitude = "-6.175392"
+        val longitude = "106.827153"
+
+        addressFormViewModel.setCurrentLocation(
+            address = address,
+            currentLat = latitude,
+            currentLong = longitude
+        )
+
+        Assert.assertFalse(
+            addressFormViewModel.isDifferentLocation(
+                address1 = address,
+                address2 = "$latitude,$longitude"
+            )
+        )
+    }
+
+    @Test
+    fun `verify is different location when address 1 not match is correct`() {
+        val address = "Monas Jakarta"
+        val latitude = "-6.175392"
+        val longitude = "106.827153"
+
+        addressFormViewModel.setCurrentLocation(
+            address = address,
+            currentLat = latitude,
+            currentLong = longitude
+        )
+
+        Assert.assertTrue(
+            addressFormViewModel.isDifferentLocation(
+                address1 = "",
+                address2 = "$latitude,$longitude"
+            )
+        )
+    }
+
+    @Test
+    fun `verify is different location when address 2 not match is correct`() {
+        val address = "Monas Jakarta"
+        val latitude = "-6.175392"
+        val longitude = "106.827153"
+
+        addressFormViewModel.setCurrentLocation(
+            address = address,
+            currentLat = latitude,
+            currentLong = longitude
+        )
+
+        Assert.assertTrue(
+            addressFormViewModel.isDifferentLocation(
+                address1 = address,
+                address2 = "0.0,0.0"
+            )
+        )
+    }
+
+    @Test
+    fun `verify is different location empty lat long is correct`() {
+        val address = "Monas Jakarta"
+        val latitude = "-6.175392"
+        val longitude = "106.827153"
+
+        addressFormViewModel.setCurrentLocation(
+            address = address,
+            currentLat = "",
+            currentLong = ""
+        )
+
+        Assert.assertTrue(
+            addressFormViewModel.isDifferentLocation(
+                address1 = address,
+                address2 = "$latitude,$longitude"
+            )
+        )
+    }
+
+    @Test
+    fun `verify is different location empty lat is correct`() {
+        val address = "Monas Jakarta"
+        val latitude = "-6.175392"
+        val longitude = "106.827153"
+
+        addressFormViewModel.setCurrentLocation(
+            address = address,
+            currentLat = "",
+            currentLong = longitude
+        )
+
+        Assert.assertTrue(
+            addressFormViewModel.isDifferentLocation(
+                address1 = address,
+                address2 = "$latitude,$longitude"
+            )
+        )
+    }
+
+    @Test
+    fun `verify is different location empty long is correct`() {
+        val address = "Monas Jakarta"
+        val latitude = "-6.175392"
+        val longitude = "106.827153"
+
+        addressFormViewModel.setCurrentLocation(
+            address = address,
+            currentLat = latitude,
+            currentLong = ""
+        )
+
+        Assert.assertTrue(
+            addressFormViewModel.isDifferentLocation(
+                address1 = address,
+                address2 = "$latitude,$longitude"
+            )
+        )
+    }
 }
