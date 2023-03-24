@@ -77,6 +77,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest;
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
@@ -4168,6 +4169,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 break;
             }
         }
+    }
+
+    @Override
+    public void checkPlatformFee() {
+        PlatformFeeRequest platformFeeRequest = new PlatformFeeRequest();
+        platformFeeRequest.setGatewayCode("CREDITCARD");
+        platformFeeRequest.setProfileCode("TKPD_APPS");
+        platformFeeRequest.setTransactionAmount(111400.0);
+        shipmentPresenter.getDynamicPlatformFee(platformFeeRequest);
     }
 
     @Override

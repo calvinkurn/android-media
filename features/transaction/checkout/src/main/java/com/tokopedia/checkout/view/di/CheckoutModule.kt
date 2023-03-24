@@ -11,6 +11,7 @@ import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase.Companion.CHANGE_SHIPPING_ADDRESS_MUTATION
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase.Companion.CHECKOUT_MUTATION
+import com.tokopedia.checkout.domain.usecase.DynamicPlatformFeeUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -115,7 +116,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
         validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
         gson: Gson,
         executorSchedulers: ExecutorSchedulers,
-        eligibleForAddressUseCase: EligibleForAddressUseCase
+        eligibleForAddressUseCase: EligibleForAddressUseCase,
+        dynamicPlatformFeeUseCase: DynamicPlatformFeeUseCase
     ): ShipmentContract.Presenter {
         return ShipmentPresenter(
             compositeSubscription,
@@ -128,7 +130,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
             analyticsPurchaseProtection, checkoutAnalytics,
             shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
             epharmacyUseCase, validateUsePromoRevampUseCase, gson,
-            executorSchedulers, eligibleForAddressUseCase, ratesWithScheduleUseCase
+            executorSchedulers, eligibleForAddressUseCase,
+            ratesWithScheduleUseCase, dynamicPlatformFeeUseCase
         )
     }
 

@@ -889,7 +889,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 // check flag for dynamic platform fee
                 // hit new platform fee API
-
+                // sini
             }
         }
         return false;

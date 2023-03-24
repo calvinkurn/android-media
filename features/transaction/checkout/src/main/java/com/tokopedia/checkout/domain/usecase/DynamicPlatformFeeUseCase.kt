@@ -1,12 +1,11 @@
 package com.tokopedia.checkout.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.checkout.domain.model.platformfee.PlatformFeeRequest
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
@@ -24,19 +23,42 @@ class DynamicPlatformFeeUseCase @Inject constructor(
             PAYMENT_AMOUNT_PARAM to request.transactionAmount
         )
     }
+
     @GqlQuery(QUERY_GET_PLATFORM_FEE, QUERY)
     override suspend fun executeOnBackground(): PaymentFeeGqlResponse {
         if (params == null) {
             throw RuntimeException("Parameter is null!")
         }
 
-        val response = graphqlRepository.response(listOf(
+        /*val response = graphqlRepository.response(listOf(
                 GraphqlRequest(
                         GetPlatformFeeQuery(),
                         PaymentFeeGqlResponse::class.java,
                         params
                 )
-        )).getSuccessData<PaymentFeeGqlResponse>()
+        )).getSuccessData<PaymentFeeGqlResponse>()*/
+
+        val jsonRaw = """
+            {
+              "getPaymentFee": {
+                "success": true,
+                "errors": [],
+                "data": [
+                  {
+                    "code": "platform_fee",
+                    "title": "Biaya Jasa Aplikasi",
+                    "fee": 1000,
+                    "tooltip_info": "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu. Jumlah biaya jasa aplikasi disesuaikan dengan total tagihan dan metode pembayaran kamu.",
+                    "show_tooltip": true,
+                    "show_slashed": false,
+                    "slashed_fee": 0
+                  }
+                ]
+              }
+            }
+        """.trimIndent()
+        val gson = Gson()
+        val response = gson.fromJson(jsonRaw, PaymentFeeGqlResponse::class.java)
 
         if (response.response.success) {
             return response

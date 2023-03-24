@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.domain.model.platformfee
 
 class PlatformFeeRequest(
-    val profileCode: String = "",
-    val gatewayCode: String = "",
-    val transactionAmount: Double = 0.0
+    var profileCode: String = "",
+    var gatewayCode: String = "",
+    var transactionAmount: Double = 0.0
 )
