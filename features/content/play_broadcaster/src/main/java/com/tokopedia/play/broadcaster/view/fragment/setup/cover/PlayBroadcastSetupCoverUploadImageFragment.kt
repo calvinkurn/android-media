@@ -6,37 +6,38 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentSetupCoverUploadImageBinding
-import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.setup.cover.PlayBroSetupCoverAction
+import com.tokopedia.play.broadcaster.setup.cover.PlayBroSetupCoverViewModel
+import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_UPLOAD_IMAGE
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import javax.inject.Inject
 
 /**
  * Created by fachrizalmrsln on 11/01/23
  */
 class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
-    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
 ) : PlayBaseBroadcastFragment() {
+
+    private val viewModel: PlayBroSetupCoverViewModel by viewModels(
+        ownerProducer = { requireParentFragment() }) {
+        (parentFragment as ViewModelFactoryProvider).getFactory()
+    }
 
     private var _binding: FragmentSetupCoverUploadImageBinding? = null
     private val binding: FragmentSetupCoverUploadImageBinding
         get() = _binding!!
-
-    private val parentViewModel by activityViewModels<PlayBroadcastViewModel> {
-        parentViewModelFactoryCreator.create(requireActivity())
-    }
 
     private var mListener: PlayBroadcastSetupCoverBottomSheet.Listener? = null
 
@@ -69,22 +70,20 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
             is PlayBroadcastSetupBottomSheet -> {
                 childFragment.setListener(object : PlayBroadcastSetupBottomSheet.Listener {
                     override fun onCoverChanged(cover: PlayCoverUiModel) {
-                        parentViewModel.submitAction(
-                            PlayBroadcastAction.SetCover(cover)
-                        )
+                        viewModel.submitAction(PlayBroSetupCoverAction.SetUploadImageCover(cover))
                     }
                 })
                 childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
                     override fun getProductList(): List<ProductUiModel> {
-                        return parentViewModel.productSectionList.flatMap { it.products }
+                        return viewModel.productSectionList.flatMap { it.products }
                     }
 
                     override fun getSelectedAccount(): ContentAccountUiModel {
-                        return parentViewModel.selectedAccount
+                        return viewModel.contentAccount
                     }
 
                     override fun getChannelId(): String {
-                        return parentViewModel.channelId
+                        return viewModel.channelId
                     }
 
                     override fun getPageSource(): PlayBroPageSource {
@@ -95,25 +94,26 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
         }
     }
 
-    fun setupListener(listener: PlayBroadcastSetupCoverBottomSheet.Listener?) {
+    fun setupData(listener: PlayBroadcastSetupCoverBottomSheet.Listener?) {
         mListener = listener
     }
 
     private fun setupView() = with(binding) {
-        clCoverFormPreview.setAuthorName(parentViewModel.authorName)
-        clCoverFormPreview.setTitle(parentViewModel.channelTitle)
+        clCoverFormPreview.setAuthorName(viewModel.contentAccount.name)
+        clCoverFormPreview.setTitle(viewModel.channelTitle)
         clCoverFormPreview.setOnClickListener {
+            mListener?.onClickSelectCoverOnCoverForm()
             if (clCoverFormPreview.isCoverAvailable) analytic.clickEditCover()
             else analytic.clickAddNewCover()
             openCoverSetupFragment()
         }
         btnSetupCoverUploadImage.setOnClickListener {
-            if (btnSetupCoverUploadImage.isEnabled) mListener?.dismissSetupCover()
+            if (btnSetupCoverUploadImage.isEnabled) mListener?.dismissSetupCover(TAB_UPLOAD_IMAGE)
         }
     }
 
     private fun observeCover() {
-        parentViewModel.observableCover.observe(viewLifecycleOwner) {
+        viewModel.observableCover.observe(viewLifecycleOwner) {
             when (val croppedCover = it.croppedCover) {
                 is CoverSetupState.Cropped.Uploaded -> {
                     if (croppedCover.coverImage.toString().isNotEmpty() &&
@@ -123,6 +123,7 @@ class PlayBroadcastSetupCoverUploadImageFragment @Inject constructor(
                     } else if (!croppedCover.localImage?.toString().isNullOrEmpty()) {
                         binding.clCoverFormPreview.setCover(croppedCover.localImage.toString())
                         binding.btnSetupCoverUploadImage.isEnabled = true
+                        mListener?.onUploadCoverSuccess()
                     } else {
                         binding.clCoverFormPreview.setInitialCover()
                         binding.btnSetupCoverUploadImage.isEnabled = false

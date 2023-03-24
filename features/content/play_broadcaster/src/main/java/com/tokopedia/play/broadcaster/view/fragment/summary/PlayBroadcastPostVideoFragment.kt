@@ -20,8 +20,10 @@ import androidx.transition.TransitionSet
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
@@ -33,6 +35,9 @@ import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_AUTO_GENERATED
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_UPLOAD_IMAGE
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -118,11 +123,33 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when(childFragment) {
             is PlayBroadcastSetupCoverBottomSheet -> {
-                childFragment.setupListener(this)
+                childFragment.setupListener(listener = this)
+                childFragment.setupDataSource(dataSource = object : DataSource {
+                    override fun getEntryPoint(): String {
+                        return PAGE_NAME
+                    }
 
-                val isShowCoachMark = prepareViewModel.isShowSetupCoverCoachMark
+                    override fun getContentAccount(): ContentAccountUiModel {
+                        return parentViewModel.selectedAccount
+                    }
+
+                    override fun getChannelId(): String {
+                        return parentViewModel.channelId
+                    }
+
+                    override fun getChannelTitle(): String {
+                        return parentViewModel.channelTitle
+                    }
+
+                    override fun getDataStore(): PlayBroadcastDataStore {
+                        return parentViewModel.mDataStore
+                    }
+
+                })
+
+                val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
-                if (isShowCoachMark) prepareViewModel.setShowSetupCoverCoachMark()
+                if (isShowCoachMark) parentViewModel.submitAction(PlayBroadcastAction.SetShowSetupCoverCoachMark)
             }
             is ProductSetupFragment -> {
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
@@ -328,10 +355,18 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
 
     companion object {
         private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
+        private const val PAGE_NAME = "report page"
     }
 
-    override fun dismissSetupCover() {
+    override fun dismissSetupCover(source: Int) {
         if (getSetupCoverBottomSheet()?.isAdded == true) getSetupCoverBottomSheet()?.dismiss()
+
+        if (parentViewModel.uploadedCoverSource == TAB_AUTO_GENERATED && source != TAB_AUTO_GENERATED) {
+            showToast(R.string.play_setup_cover_upload_image_toaster)
+        } else if (parentViewModel.uploadedCoverSource == TAB_UPLOAD_IMAGE && source != TAB_UPLOAD_IMAGE) {
+            showToast(R.string.play_setup_cover_auto_generated_toaster)
+        }
+        parentViewModel.submitAction(PlayBroadcastAction.SetCoverUploadedSource(source))
     }
 
     override fun setupCoverProductClicked() {
