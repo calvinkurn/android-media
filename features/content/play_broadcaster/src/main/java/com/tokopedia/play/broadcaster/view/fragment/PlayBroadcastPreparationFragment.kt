@@ -37,6 +37,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
@@ -44,7 +45,6 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
@@ -54,6 +54,7 @@ import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticMa
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_AUTO_GENERATED
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_UPLOAD_IMAGE
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
@@ -312,11 +313,33 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setMaxCharacter(viewModel.maxTitleChars)
             }
             is PlayBroadcastSetupCoverBottomSheet -> {
-                childFragment.setupData(this, PAGE_NAME)
+                childFragment.setupListener(listener = this)
+                childFragment.setupDataSource(dataSource = object : DataSource {
+                    override fun getEntryPoint(): String {
+                        return PAGE_NAME
+                    }
+
+                    override fun getContentAccount(): ContentAccountUiModel {
+                        return parentViewModel.selectedAccount
+                    }
+
+                    override fun getChannelId(): String {
+                        return parentViewModel.channelId
+                    }
+
+                    override fun getChannelTitle(): String {
+                        return parentViewModel.channelTitle
+                    }
+
+                    override fun getDataStore(): PlayBroadcastDataStore {
+                        return parentViewModel.mDataStore
+                    }
+
+                })
 
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
-                if (isShowCoachMark) parentViewModel.setShowSetupCoverCoachMark()
+                if (isShowCoachMark) parentViewModel.submitAction(PlayBroadcastAction.SetShowSetupCoverCoachMark)
             }
         }
     }
@@ -882,7 +905,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         } else if (parentViewModel.uploadedCoverSource == TAB_UPLOAD_IMAGE && source != TAB_UPLOAD_IMAGE) {
             showToast(R.string.play_setup_cover_auto_generated_toaster)
         }
-        parentViewModel.setCoverUploadedSource(source)
+        parentViewModel.submitAction(PlayBroadcastAction.SetCoverUploadedSource(source))
     }
 
     /** Others */
@@ -1100,10 +1123,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun startBroadcast(ingestUrl: String) {
         broadcaster.start(ingestUrl)
-    }
-
-    override fun uploadSetupCover(cover: PlayCoverUiModel) {
-        parentViewModel.submitAction(PlayBroadcastAction.SetCover(cover))
     }
 
     companion object {

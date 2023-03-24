@@ -11,11 +11,12 @@ import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSetupTitleBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import javax.inject.Inject
 
 /**
  * Created by fachrizalmrsln on 10/01/23
  */
-class PlayBroadcastSetupTitleBottomSheet: BottomSheetUnify() {
+class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify() {
 
     private var _binding: BottomSheetPlayBroSetupTitleBinding? = null
     private val binding: BottomSheetPlayBroSetupTitleBinding
@@ -51,7 +52,12 @@ class PlayBroadcastSetupTitleBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupView() = with(binding) {
+        mListener?.onTitleFormOpen()
         setTitle(getString(R.string.play_bro_title_label_bottom_sheet))
+        setOnDismissListener {
+            mListener?.onBackPressedTitleForm()
+            dismiss()
+        }
 
         tvSetupTitleField.apply {
             setCounter(mMaxCharacter)
@@ -80,6 +86,14 @@ class PlayBroadcastSetupTitleBottomSheet: BottomSheetUnify() {
             editText.setOnEditorActionListener { _, _, _ ->
                 hideSetupTitleKeyboard()
                 return@setOnEditorActionListener false
+            }
+            editText.setOnClickListener {
+                mListener?.onTextFieldTitleFormClicked()
+            }
+            clearIconView.setOnClickListener {
+                mListener?.onTextFieldTitleFormCleared()
+                editText.text.clear()
+                btnSetupTitle.isEnabled = false
             }
         }
         btnSetupTitle.setOnClickListener {
@@ -146,6 +160,10 @@ class PlayBroadcastSetupTitleBottomSheet: BottomSheetUnify() {
     }
 
     interface Listener {
+        fun onTitleFormOpen() {}
+        fun onBackPressedTitleForm() {}
+        fun onTextFieldTitleFormClicked() {}
+        fun onTextFieldTitleFormCleared() {}
         fun submitTitle(title: String)
     }
 
