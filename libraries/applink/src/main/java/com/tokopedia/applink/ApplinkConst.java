@@ -110,6 +110,7 @@ public interface ApplinkConst {
     String RECHARGE = "tokopedia://recharge";
     String TRAIN_HOMEPAGE = "tokopedia://kereta";
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
+    String DISCOVERY_PAGE_SOS = "tokopedia://discovery/sos";
     String REACT_DISCOVERY_PAGE = "tokopedia://reactDiscovery/{page_id}";
     String DISCOVERY_NEW_USER = "tokopedia://discovery/pengguna-baru";
     String HOME_EXPLORE = "tokopedia://jump";

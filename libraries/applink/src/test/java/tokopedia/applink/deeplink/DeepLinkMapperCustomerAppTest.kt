@@ -844,21 +844,21 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check official stores appLink then should return tokopedia internal official stores in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=2"
-        assertEqualsDeepLinkMapper(ApplinkConstInternalDiscovery.SOS, expectedDeepLink)
+            "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/sos"
+        assertEqualsDeepLinkMapper(ApplinkConst.OFFICIAL_STORES, expectedDeepLink)
     }
 
     @Test
     fun `check official store appLink then should return tokopedia internal official store in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=2"
-        assertEqualsDeepLinkMapper(ApplinkConstInternalDiscovery.SOS, expectedDeepLink)
+            "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/sos"
+        assertEqualsDeepLinkMapper(ApplinkConst.OFFICIAL_STORE, expectedDeepLink)
     }
 
     @Test
     fun `check official store category appLink then should return tokopedia internal official store category in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?key_category=21&TAB_POSITION=2"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/sos"
         val appLink = UriUtil.buildUri(ApplinkConst.OFFICIAL_STORE_CATEGORY, "21")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
@@ -939,7 +939,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check brand list with slash appLink then should return tokopedia internal brand list with slash in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/discovery/sos"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/official-store/brand/0/"
         assertEqualsDeepLinkMapper(ApplinkConst.BRAND_LIST, expectedDeepLink)
     }
 
