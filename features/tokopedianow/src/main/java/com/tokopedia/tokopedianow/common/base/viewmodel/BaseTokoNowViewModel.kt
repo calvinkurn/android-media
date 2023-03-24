@@ -7,13 +7,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.minicart.common.domain.data.MiniCartItem.MiniCartItemProduct
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -54,98 +54,77 @@ open class BaseTokoNowViewModel(
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
 
-    var miniCartData: MiniCartSimplifiedData? = null
+    protected var miniCartData: MiniCartSimplifiedData? = null
         private set
 
     private val _addItemToCart = MutableLiveData<Result<AddToCartDataModel>>()
     private val _removeCartItem = MutableLiveData<Result<Pair<String, String>>>()
     private val _updateCartItem = MutableLiveData<Result<Triple<String, UpdateCartV2Data, Int>>>()
-    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
+    protected val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
     private var changeQuantityJob: Job? = null
     private var getMiniCartJob: Job? = null
 
-    open fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
-        this.miniCartData = miniCartData
+    var miniCartSource: MiniCartSource? = null
+
+    open fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        setMiniCartData(miniCartData)
     }
 
-    fun onQuantityChanged(
+    fun onCartQuantityChanged(
         productId: String,
         shopId: String,
         quantity: Int,
         stock: Int,
-        isVariant: Boolean
+        isVariant: Boolean,
+        onSuccessAddToCart: (AddToCartDataModel) -> Unit = {},
+        onSuccessUpdateCart: (MiniCartItemProduct, UpdateCartV2Data) -> Unit = { _, _ -> },
+        onSuccessDeleteCart: (MiniCartItemProduct, RemoveFromCartData) -> Unit = { _, _ -> },
+        onError: (Throwable) -> Unit = {}
     ) {
         changeQuantityJob?.cancel()
-        launchWithDelay(block = {
-            val miniCartItem = getMiniCartItem(productId)
-            val cartQuantity = miniCartItem?.quantity
-            if (cartQuantity == quantity) return@launchWithDelay
 
+        val miniCartItem = getMiniCartItem(productId)
+        val cartQuantity = miniCartItem.quantity
+        if (cartQuantity == quantity) return
+
+        launchWithDelay(block = {
+            miniCartItem.quantity = quantity
             when {
-                miniCartItem == null && quantity.isMoreThanZero() -> {
-                    addItemToCart(productId, shopId, quantity, stock, isVariant)
-                }
-                miniCartItem != null && quantity.isMoreThanZero() -> {
-                    updateCartItem(miniCartItem, quantity, stock, isVariant)
-                }
-                miniCartItem != null -> {
-                    val cartId = miniCartItem.cartId
-                    deleteCartItem(productId, cartId)
-                }
+                cartQuantity.isZero() -> addItemToCart(
+                    productId,
+                    shopId,
+                    quantity,
+                    stock,
+                    isVariant,
+                    onSuccessAddToCart,
+                    onError
+                )
+                quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
+                else -> updateCartItem(miniCartItem, quantity, stock, isVariant, onSuccessUpdateCart, onError)
             }
         }, delay = CHANGE_QUANTITY_DELAY).let {
             changeQuantityJob = it
         }
     }
 
-    fun addItemToCart(
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        stock: Int,
-        isVariant: Boolean
-    ) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-            productId = productId,
-            shopId = shopId,
-            quantity = quantity
-        )
-        addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute({
-            checkAtcAffiliateCookie(productId, stock, isVariant, quantity)
-            _addItemToCart.postValue(Success(it))
-        }, {
-            _addItemToCart.postValue(Fail(it))
-        })
-    }
-
-    fun deleteCartItem(productId: String, cartId: String) {
-        deleteCartUseCase.setParams(cartIdList = listOf(cartId))
-        deleteCartUseCase.execute({
-            val message = it.data.message.joinToString(separator = ", ")
-            val data = Pair(productId, message)
-            _removeCartItem.postValue(Success(data))
-        }, {
-            _removeCartItem.postValue(Fail(it))
-        })
-    }
-
     fun getMiniCart() {
+        getMiniCartJob?.cancel()
+
+        val source = miniCartSource ?: return
         val shopId = getShopId()
 
         if (shouldGetMiniCart(shopId)) {
-            getMiniCartJob?.cancel()
             launchCatchError(block = {
                 val shopIds = listOf(shopId.toString())
-                getMiniCartUseCase.setParams(shopIds, MiniCartSource.TokonowRecipe)
+                getMiniCartUseCase.setParams(shopIds, source)
 
                 val miniCartData = getMiniCartUseCase.executeOnBackground()
                 val showMiniCart = miniCartData.isShowMiniCartWidget
                 val outOfCoverage = addressData.isOutOfCoverage()
                 val data = miniCartData.copy(isShowMiniCartWidget = showMiniCart && !outOfCoverage)
 
-                setMiniCartData(miniCartData)
+                onSuccessGetMiniCartData(miniCartData)
                 _miniCart.postValue(Success(data))
             }) {
                 _miniCart.postValue(Fail(it))
@@ -155,12 +134,18 @@ open class BaseTokoNowViewModel(
         }
     }
 
-    fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
+    fun getMiniCartItem(productId: String): MiniCartItemProduct {
         val items = miniCartData?.miniCartItems.orEmpty()
-        return items.getMiniCartItemProduct(productId)
+        return items.getMiniCartItemProduct(productId) ?: MiniCartItemProduct()
+    }
+
+    fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        this.miniCartData = miniCartData
     }
 
     fun getShopId(): Long = addressData.getShopId()
+
+    fun updateAddressData() = addressData.updateLocalData()
 
     fun createAffiliateLink(url: String) = affiliateService.createAffiliateLink(url)
 
@@ -183,7 +168,7 @@ open class BaseTokoNowViewModel(
         quantity: Int
     ) {
         val miniCartItem = getMiniCartItem(productId)
-        val currentQuantity = miniCartItem?.quantity.orZero()
+        val currentQuantity = miniCartItem?.quantity
         val data = NowAffiliateAtcData(productId, stock, isVariant, quantity, currentQuantity)
 
         launchCatchError(block = {
@@ -193,17 +178,44 @@ open class BaseTokoNowViewModel(
     }
 
     protected fun updateMiniCartItemQuantity(
-        miniCartItem: MiniCartItem.MiniCartItemProduct,
+        miniCartItem: MiniCartItemProduct,
         quantity: Int
     ) {
         miniCartItem.quantity = quantity
     }
 
-    private fun updateCartItem(
-        miniCartItem: MiniCartItem.MiniCartItemProduct,
+    private fun addItemToCart(
+        productId: String,
+        shopId: String,
         quantity: Int,
         stock: Int,
-        isVariant: Boolean
+        isVariant: Boolean,
+        onSuccessAddToCart: (AddToCartDataModel) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity
+        )
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+            checkAtcAffiliateCookie(productId, stock, isVariant, quantity)
+            onSuccessAddToCart.invoke(it)
+            _addItemToCart.postValue(Success(it))
+        }, {
+            onError.invoke(it)
+            _addItemToCart.postValue(Fail(it))
+        })
+    }
+
+    private fun updateCartItem(
+        miniCartItem: MiniCartItemProduct,
+        quantity: Int,
+        stock: Int,
+        isVariant: Boolean,
+        onSuccessUpdateCart: (MiniCartItemProduct, UpdateCartV2Data) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         val productId = miniCartItem.productId
         val cartId = miniCartItem.cartId
@@ -221,9 +233,30 @@ open class BaseTokoNowViewModel(
             val data = Triple(productId, it, quantity)
             checkAtcAffiliateCookie(productId, stock, isVariant, quantity)
             updateMiniCartItemQuantity(miniCartItem, quantity)
+            onSuccessUpdateCart.invoke(miniCartItem, it)
             _updateCartItem.postValue(Success(data))
         }, {
+            onError.invoke(it)
             _updateCartItem.postValue(Fail(it))
+        })
+    }
+
+    private fun deleteCartItem(
+        miniCartItem: MiniCartItemProduct,
+        onSuccessDeleteCart: (MiniCartItemProduct, RemoveFromCartData) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        val cartId = miniCartItem.cartId
+        val productId = miniCartItem.productId
+        deleteCartUseCase.setParams(cartIdList = listOf(cartId))
+        deleteCartUseCase.execute({
+            val message = it.data.message.joinToString(separator = ", ")
+            val data = Pair(productId, message)
+            onSuccessDeleteCart.invoke(miniCartItem, it)
+            _removeCartItem.postValue(Success(data))
+        }, {
+            onError.invoke(it)
+            _removeCartItem.postValue(Fail(it))
         })
     }
 

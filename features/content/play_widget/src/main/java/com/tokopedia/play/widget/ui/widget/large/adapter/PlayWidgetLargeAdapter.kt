@@ -10,12 +10,14 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 class PlayWidgetLargeAdapter(
     cardChannelListener: PlayWidgetLargeViewHolder.Channel.Listener,
     cardBannerListener: PlayWidgetLargeViewHolder.Banner.Listener,
+    cardTranscodeListener: PlayWidgetLargeViewHolder.Transcode.Listener,
 ) : BaseDiffUtilAdapter<PlayWidgetItemUiModel>() {
 
     init {
         delegatesManager
             .addDelegate(PlayWidgetLargeAdapterDelegate.Banner(cardBannerListener))
             .addDelegate(PlayWidgetLargeAdapterDelegate.Channel(cardChannelListener))
+            .addDelegate(PlayWidgetLargeAdapterDelegate.Transcode(cardTranscodeListener))
     }
 
     override fun areItemsTheSame(

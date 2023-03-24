@@ -89,13 +89,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         }
     }
 
-    override fun deleteCartItem(productId: String) {
-        val miniCartItem = viewModel.getMiniCartItem(productId)
-        val cartId = miniCartItem?.cartId.orEmpty()
-        viewModel.deleteCartItem(productId, cartId)
-    }
-
-    override fun onQuantityChanged(
+    override fun onCartQuantityChanged(
         productId: String,
         shopId: String,
         quantity: Int,
@@ -103,21 +97,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         isVariant: Boolean
     ) {
         if(viewModel.isLoggedIn) {
-            viewModel.onQuantityChanged(productId, shopId, quantity, stock, isVariant)
-        } else {
-            goToLoginPage()
-        }
-    }
-
-    override fun addItemToCart(
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        stock: Int,
-        isVariant: Boolean
-    ) {
-        if(viewModel.isLoggedIn) {
-            viewModel.addItemToCart(productId, shopId, quantity, stock, isVariant)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
         } else {
             goToLoginPage()
         }

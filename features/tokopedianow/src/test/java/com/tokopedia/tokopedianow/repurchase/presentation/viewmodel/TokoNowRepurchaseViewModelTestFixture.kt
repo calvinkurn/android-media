@@ -36,7 +36,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayo
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateMethod
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,12 +46,14 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
-import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert.assertTrue
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import java.lang.reflect.Field
 
+@ExperimentalCoroutinesApi
 abstract class TokoNowRepurchaseViewModelTestFixture {
 
     @RelaxedMockK
@@ -90,6 +92,9 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     protected lateinit var viewModel: TokoNowRepurchaseViewModel
 
     protected lateinit var privateLocalCacheModel: Field
@@ -101,15 +106,15 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
             getRepurchaseProductListUseCase,
             getMiniCartUseCase,
             getCategoryListUseCase,
+            getChooseAddressWarehouseLocUseCase,
+            setUserPreferenceUseCase,
+            userSession,
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
-            getChooseAddressWarehouseLocUseCase,
-            setUserPreferenceUseCase,
             affiliateService,
             addressData,
-            userSession,
-            CoroutineTestDispatchersProvider
+            coroutineTestRule.dispatchers
         )
 
         privateLocalCacheModel = viewModel::class.java.getDeclaredField("localCacheModel").apply {

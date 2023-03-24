@@ -5,13 +5,14 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class TokoNowProductRecommendationViewModelAffiliate : TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `given product when add to cart should call check atc affiliate cookie`() {
-        val position = 6
         val quantity = 2
         val isVariant = true
 
@@ -41,7 +42,7 @@ class TokoNowProductRecommendationViewModelAffiliate : TokoNowProductRecommendat
 
         onAddToCart_thenReturn(response)
 
-        viewModel.addProductToCart(position, quantity, shopId)
+        viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
 
         val expectedAffiliateData = NowAffiliateAtcData(
             productId = productId,
@@ -57,7 +58,6 @@ class TokoNowProductRecommendationViewModelAffiliate : TokoNowProductRecommendat
 
     @Test
     fun `given product when update cart should call check atc affiliate cookie`() {
-        val position = 6
         val quantity = 2
         val currentQuantity = 3
         val isVariant = true
@@ -93,7 +93,7 @@ class TokoNowProductRecommendationViewModelAffiliate : TokoNowProductRecommendat
 
         onUpdateItemCart_thenReturn(response)
 
-        viewModel.addProductToCart(position, quantity, shopId)
+        viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
 
         val expectedAffiliateData = NowAffiliateAtcData(
             productId = productId,
@@ -108,7 +108,6 @@ class TokoNowProductRecommendationViewModelAffiliate : TokoNowProductRecommendat
 
     @Test
     fun `given check atc affiliate cookie throws error when add to cart should do nothing`() {
-        val position = 6
         val quantity = 2
         val isVariant = true
 
@@ -128,13 +127,15 @@ class TokoNowProductRecommendationViewModelAffiliate : TokoNowProductRecommendat
         )
         productModels.add(product)
 
+        val productId = product.getProductId()
         val shopId = product.shopId
+        val stock = product.productCardModel.availableStock
         val response = AddToCartDataModel()
 
         mockProductModels()
         onAddToCart_thenReturn(response)
         onCheckAtcAffiliateCookie_thenReturn(error = NullPointerException())
 
-        viewModel.addProductToCart(position, quantity, shopId)
+        viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
     }
 }

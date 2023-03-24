@@ -91,13 +91,7 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
         }
     }
 
-    override fun deleteCartItem(productId: String) {
-        val miniCartItem = viewModel.getMiniCartItem(productId)
-        val cartId = miniCartItem?.cartId.orEmpty()
-        viewModel.deleteCartItem(productId, cartId)
-    }
-
-    override fun onQuantityChanged(
+    override fun onCartQuantityChanged(
         productId: String,
         shopId: String,
         quantity: Int,
@@ -105,21 +99,7 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
         isVariant: Boolean
     ) {
         if(userSession.isLoggedIn) {
-            viewModel.onQuantityChanged(productId, shopId, quantity, stock, isVariant)
-        } else {
-            goToLoginPage()
-        }
-    }
-
-    override fun addItemToCart(
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        stock: Int,
-        isVariant: Boolean
-    ) {
-        if(userSession.isLoggedIn) {
-            viewModel.addItemToCart(productId, shopId, quantity, stock, isVariant)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
         } else {
             goToLoginPage()
         }

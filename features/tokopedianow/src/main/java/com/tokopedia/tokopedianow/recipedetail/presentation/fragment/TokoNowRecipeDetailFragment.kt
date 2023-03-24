@@ -148,10 +148,10 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        viewModel.getMiniCart()
+        getMiniCart()
     }
 
-    override fun onQuantityChanged(
+    override fun onCartQuantityChanged(
         productId: String,
         shopId: String,
         quantity: Int,
@@ -159,30 +159,10 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         isVariant: Boolean
     ) {
         if(userSession.isLoggedIn) {
-            viewModel.onQuantityChanged(productId, shopId, quantity, stock, isVariant)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
         } else {
             goToLoginPage()
         }
-    }
-
-    override fun addItemToCart(
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        stock: Int,
-        isVariant: Boolean
-    ) {
-        if(userSession.isLoggedIn) {
-            viewModel.addItemToCart(productId, shopId, quantity, stock, isVariant)
-        } else {
-            goToLoginPage()
-        }
-    }
-
-    override fun deleteCartItem(productId: String) {
-        val miniCartItem = viewModel.getMiniCartItem(productId)
-        val cartId = miniCartItem?.cartId.orEmpty()
-        viewModel.deleteCartItem(productId, cartId)
     }
 
     override fun createAffiliateLink(url: String): String {

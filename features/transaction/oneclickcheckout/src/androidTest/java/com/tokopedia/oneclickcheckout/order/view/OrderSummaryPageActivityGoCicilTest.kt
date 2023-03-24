@@ -70,26 +70,26 @@ class OrderSummaryPageActivityGoCicilTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp2.000.000",
-                        shippingPrice = "Rp15.000",
-                        totalPrice = "Rp2.016.500",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1500.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp2.000.000",
+                    shippingPrice = "Rp15.000",
+                    totalPrice = "Rp2.016.500",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1500.0,
+                            showTooltip = true
                         )
+                    )
                 )
 
                 assertInstallmentSummary(
-                        installmentFee = "Rp0",
-                        installmentTerm = "3 Bulan",
-                        installmentPerPeriod = "Rp673.867",
-                        installmentFirstDate = "28 Februari 2022",
-                        installmentLastDate = "28 Mei 2022"
+                    installmentFee = "Rp0",
+                    installmentTerm = "3 Bulan",
+                    installmentPerPeriod = "Rp673.867",
+                    installmentFirstDate = "28 Februari 2022",
+                    installmentLastDate = "28 Mei 2022"
                 )
             }
         }
@@ -118,26 +118,26 @@ class OrderSummaryPageActivityGoCicilTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp2.000.000",
-                        shippingPrice = "Rp15.000",
-                        totalPrice = "Rp2.127.606",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1500.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp2.000.000",
+                    shippingPrice = "Rp15.000",
+                    totalPrice = "Rp2.127.606",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1500.0,
+                            showTooltip = true
                         )
+                    )
                 )
 
                 assertInstallmentSummary(
-                        installmentFee = "Rp111.106",
-                        installmentTerm = "2 Bulan",
-                        installmentPerPeriod = "Rp1.066.353",
-                        installmentFirstDate = "28 Februari 2022",
-                        installmentLastDate = "28 April 2022"
+                    installmentFee = "Rp111.106",
+                    installmentTerm = "2 Bulan",
+                    installmentPerPeriod = "Rp1.066.353",
+                    installmentFirstDate = "28 Februari 2022",
+                    installmentLastDate = "28 April 2022"
                 )
             }
         }
@@ -175,26 +175,26 @@ class OrderSummaryPageActivityGoCicilTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp4.000.000",
-                        shippingPrice = "Rp15.000",
-                        totalPrice = "Rp4.127.606",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1500.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp4.000.000",
+                    shippingPrice = "Rp15.000",
+                    totalPrice = "Rp4.127.606",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1500.0,
+                            showTooltip = true
                         )
+                    )
                 )
 
                 assertInstallmentSummary(
-                        installmentFee = "Rp111.106",
-                        installmentTerm = "2 Bulan",
-                        installmentPerPeriod = "Rp2.066.353",
-                        installmentFirstDate = "28 Februari 2022",
-                        installmentLastDate = "28 April 2022"
+                    installmentFee = "Rp111.106",
+                    installmentTerm = "2 Bulan",
+                    installmentPerPeriod = "Rp2.066.353",
+                    installmentFirstDate = "28 Februari 2022",
+                    installmentLastDate = "28 April 2022"
                 )
             }
         }
@@ -218,26 +218,26 @@ class OrderSummaryPageActivityGoCicilTest {
             clickAddProductQuantity()
 
             assertInstallmentErrorRevamp(
-                    errorMessage = "Oops periode cicilan yang kamu pilih sebelumnya tidak tersedia. Pilih periode yang lain, ya.",
-                    errorAction = null
+                errorMessage = "Oops periode cicilan yang kamu pilih sebelumnya tidak tersedia. Pilih periode yang lain, ya.",
+                errorAction = null
             )
 
             assertPaymentButtonEnable(false)
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp4.000.000",
-                        shippingPrice = "Rp15.000",
-                        totalPrice = "Rp4.015.000",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 0.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp4.000.000",
+                    shippingPrice = "Rp15.000",
+                    totalPrice = "Rp4.015.000",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 0.0,
+                            showTooltip = true
                         )
+                    )
                 )
                 closeBottomSheet()
             }
@@ -252,26 +252,26 @@ class OrderSummaryPageActivityGoCicilTest {
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp4.000.000",
-                        shippingPrice = "Rp15.000",
-                        totalPrice = "Rp4.127.606",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1500.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp4.000.000",
+                    shippingPrice = "Rp15.000",
+                    totalPrice = "Rp4.127.606",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1500.0,
+                            showTooltip = true
                         )
+                    )
                 )
 
                 assertInstallmentSummary(
-                        installmentFee = "Rp111.106",
-                        installmentTerm = "2 Bulan",
-                        installmentPerPeriod = "Rp1.066.353",
-                        installmentFirstDate = "28 Februari 2022",
-                        installmentLastDate = "28 April 2022"
+                    installmentFee = "Rp111.106",
+                    installmentTerm = "2 Bulan",
+                    installmentPerPeriod = "Rp1.066.353",
+                    installmentFirstDate = "28 Februari 2022",
+                    installmentLastDate = "28 April 2022"
                 )
             }
         }
@@ -293,26 +293,26 @@ class OrderSummaryPageActivityGoCicilTest {
             clickAddProductQuantity(times = 2)
 
             assertProfilePaymentErrorRevamp(
-                    message = "Oops, limit nggak cukup. Coba metode bayar lain, ya.",
-                    buttonText = null
+                message = "Oops, limit nggak cukup. Coba metode bayar lain, ya.",
+                buttonText = null
             )
 
             assertPayment("Rp6.016.500", "Ganti Metode Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp6.000.000",
-                        shippingPrice = "Rp15.000",
-                        totalPrice = "Rp6.016.500",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1500.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp6.000.000",
+                    shippingPrice = "Rp15.000",
+                    totalPrice = "Rp6.016.500",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1500.0,
+                            showTooltip = true
                         )
+                    )
                 )
             }
         }
@@ -334,26 +334,26 @@ class OrderSummaryPageActivityGoCicilTest {
             clickAddProductQuantity(times = 2)
 
             assertProfilePaymentErrorRevamp(
-                    message = "Belanjaanmu melebihi limit transaksi GoPayLaterCicil.",
-                    buttonText = "Ubah"
+                message = "Belanjaanmu melebihi limit transaksi GoPayLaterCicil.",
+                buttonText = "Ubah"
             )
 
             assertPayment("Rp6.016.500", "Ganti Metode Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp6.000.000",
-                        shippingPrice = "Rp15.000",
-                        totalPrice = "Rp6.016.500",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 1500.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp6.000.000",
+                    shippingPrice = "Rp15.000",
+                    totalPrice = "Rp6.016.500",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 1500.0,
+                            showTooltip = true
                         )
+                    )
                 )
             }
         }
@@ -370,26 +370,26 @@ class OrderSummaryPageActivityGoCicilTest {
 
         orderSummaryPage {
             assertProfilePaymentErrorRevamp(
-                    message = "Oops, metode pembayaran ini nggak tersedia. Coba pilih yang lain, ya.",
-                    buttonText = null
+                message = "Oops, metode pembayaran ini nggak tersedia. Coba pilih yang lain, ya.",
+                buttonText = null
             )
 
             assertPayment("Rp2.015.000", "Ganti Metode Bayar")
 
             clickButtonOrderDetail {
                 assertSummary(
-                        productPrice = "Rp2.000.000",
-                        shippingPrice = "Rp15.000",
-                        totalPrice = "Rp2.015.000",
-                        isInstallment = true,
-                        paymentFeeDetails = listOf(
-                            OrderPaymentFee(
-                                title = "Biaya Layanan",
-                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
-                                fee = 0.0,
-                                showTooltip = true
-                            )
+                    productPrice = "Rp2.000.000",
+                    shippingPrice = "Rp15.000",
+                    totalPrice = "Rp2.015.000",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 0.0,
+                            showTooltip = true
                         )
+                    )
                 )
             }
         }

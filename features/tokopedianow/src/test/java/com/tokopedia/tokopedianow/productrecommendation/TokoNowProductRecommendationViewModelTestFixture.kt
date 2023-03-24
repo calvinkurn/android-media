@@ -11,34 +11,45 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 abstract class TokoNowProductRecommendationViewModelTestFixture {
 
-    @get: Rule
+    @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var getRecommendationUseCase: GetRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
 
     @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
@@ -53,13 +64,16 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
     lateinit var affiliateService: NowAffiliateService
 
     @RelaxedMockK
+    lateinit var addressData: TokoNowLocalAddress
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     protected lateinit var viewModel: TokoNowProductRecommendationViewModel
 
     protected val privateFieldProductModels = "productModels"
 
-    protected val privateFieldMiniCartSimplifiedData = "mMiniCartSimplifiedData"
+    protected val privateFieldMiniCartSimplifiedData = "miniCartData"
 
     protected val productModels = mutableListOf<Visitable<*>>(
         TokoNowProductCardCarouselItemUiModel(
@@ -206,7 +220,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
     }
 
     protected fun mockMiniCartSimplifiedData(productId: String, quantity: Int = 0) {
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldMiniCartSimplifiedData,
             value = MiniCartSimplifiedData(
                 miniCartItems = mapOf(
@@ -229,12 +243,14 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = TokoNowProductRecommendationViewModel(
             getRecommendationUseCase = getRecommendationUseCase,
+            getMiniCartUseCase = getMiniCartUseCase,
             addToCartUseCase = addToCartUseCase,
             updateCartUseCase = updateCartUseCase,
             deleteCartUseCase = deleteCartUseCase,
             affiliateService = affiliateService,
             userSession = userSession,
-            dispatchers = CoroutineTestDispatchers
+            addressData = addressData,
+            dispatchers = coroutineTestRule.dispatchers
         )
     }
 

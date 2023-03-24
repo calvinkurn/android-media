@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.extension.enable
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.*
@@ -24,6 +25,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeDiscountInputSe
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreeFreeShippingInputSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepThreePromoTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.RemoteTicker
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -42,6 +44,11 @@ import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.tracker.VoucherSettingTracker
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -202,7 +209,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         renderSpendingEstimation(state.spendingEstimation)
         renderButtonValidation(state.voucherConfiguration, state.isInputValid())
         renderPromoTypeChips(state.voucherConfiguration, state.isDiscountPromoTypeEnabled)
-        renderTicker(state.isDiscountPromoTypeEnabled, state.discountPromoTypeDisabledReason)
+        renderTicker(state.isDiscountPromoTypeEnabled, state.tickers)
     }
 
     private fun renderPromoTypeChips(
@@ -324,6 +331,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     state.isMinimumBuyError,
                     state.minimumBuyErrorMsg
                 )
+                renderDiscountNominalInputValidation(state.isNominalError, state.nominalErrorMsg)
             }
             VoucherCreationStepThreeFieldValidation.QUOTA -> {
                 renderDiscountQuotaInputValidation(state.isQuotaError, state.quotaErrorMsg)
@@ -410,11 +418,76 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             }
             setupHeader()
             setupPromoTypeSection()
+
+            setupCashbackNominalSection()
+            setupCashbackPercentageSection()
+            setupDiscountNominalSection()
+            setupDiscountPercentageSection()
+
             setupTargetBuyerSection()
             setupSpendingEstimationSection()
             setupButtonSection()
-            presetValue()
             hideTextFieldLabel()
+
+            setFreeShippingNominalInput()
+            setFreeShippingMinimumBuyInput()
+            setFreeShippingQuotaInput()
+
+            setCashbackMaxDeductionInput()
+            setCashbackMinimumBuyInput()
+            setCashbackQuotaInput()
+
+            setDiscountMaxDeductionInput()
+            setDiscountMinimumBuyInput()
+            setDiscountQuotaInput()
+
+            registerCashbackPromoTypeSwitchListener()
+            registerDiscountPromoTypeSwitchListener()
+            presetValue()
+        }
+    }
+
+    private fun registerDiscountPromoTypeSwitchListener() {
+        discountInputSectionBinding?.switchPriceDiscount?.setOnCheckedChangeListener { _, isOn ->
+            if (isOn) {
+                setDiscountPercentageInput()
+                viewModel.processEvent(
+                    VoucherCreationStepThreeEvent.ChooseBenefitType(
+                        BenefitType.PERCENTAGE
+                    )
+                )
+                tracker.sendClickTipePotonganEvent(BenefitType.PERCENTAGE, voucherConfiguration.voucherId)
+            } else {
+                setDiscountNominalInput()
+                viewModel.processEvent(
+                    VoucherCreationStepThreeEvent.ChooseBenefitType(
+                        BenefitType.NOMINAL
+                    )
+                )
+                tracker.sendClickTipePotonganEvent(BenefitType.NOMINAL, voucherConfiguration.voucherId)
+            }
+        }
+    }
+
+    private fun registerCashbackPromoTypeSwitchListener() {
+        cashbackInputSectionBinding?.switchPriceCashback?.setOnCheckedChangeListener { _, isOn ->
+            if (isOn) {
+                setCashbackPercentageInput()
+                viewModel.processEvent(
+                    VoucherCreationStepThreeEvent.ChooseBenefitType(
+                        BenefitType.PERCENTAGE
+                    )
+                )
+                tracker.sendClickTipePotonganEvent(BenefitType.PERCENTAGE, voucherConfiguration.voucherId)
+            } else {
+                setCashbackNominalInput()
+                viewModel.processEvent(
+                    VoucherCreationStepThreeEvent.ChooseBenefitType(
+                        BenefitType.NOMINAL
+                    )
+                )
+                tracker.sendClickTipePotonganEvent(BenefitType.NOMINAL, voucherConfiguration.voucherId)
+            }
         }
     }
 
@@ -498,7 +571,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
             }
             setNavigationOnClickListener {
                 viewModel.processEvent(VoucherCreationStepThreeEvent.TapBackButton)
-                tracker.sendClickKembaliArrowEvent()
+                tracker.sendClickKembaliArrowEvent(voucherConfiguration.voucherId)
             }
         }
     }
@@ -546,7 +619,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     private fun setPromoType(promoType: PromoType) {
         viewModel.processEvent(VoucherCreationStepThreeEvent.ChoosePromoType(promoType))
-        tracker.sendClickPromoTypeEvent(promoType)
+        tracker.sendClickPromoTypeEvent(promoType, voucherConfiguration.voucherId)
     }
 
     // Free shipping input region
@@ -564,9 +637,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         cashbackInputSectionBinding?.parentCashback?.gone()
         discountInputSectionBinding?.parentDiscount?.gone()
 
-        setFreeShippingNominalInput()
-        setFreeShippingMinimumBuyInput()
-        setFreeShippingQuotaInput()
         viewModel.processEvent(
             VoucherCreationStepThreeEvent.ChooseBenefitType(
                 BenefitType.NOMINAL
@@ -580,16 +650,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) {
                         tracker.sendClickFieldNominalCashbackEvent(
-                            FREE_SHIPPING_EVENT_LABEL
+                            FREE_SHIPPING_EVENT_LABEL,
+                            voucherConfiguration.voucherId
                         )
                     }
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputNominalChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
@@ -611,16 +675,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) {
                         tracker.sendClickFieldMinimumCashbackEvent(
-                            FREE_SHIPPING_EVENT_LABEL
+                            FREE_SHIPPING_EVENT_LABEL,
+                            voucherConfiguration.voucherId
                         )
                     }
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
@@ -640,14 +698,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         freeShippingInputSectionBinding?.run {
             tfFreeShippingQuota.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(FREE_SHIPPING_EVENT_LABEL)
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
+                    if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(FREE_SHIPPING_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
                 editText.setModeToNumberDelimitedInput(QUOTA_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
@@ -713,9 +764,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         discountInputSectionBinding?.parentDiscount?.gone()
 
         setCashbackSwitchPriceInput(currentVoucherConfiguration)
-        setCashbackMaxDeductionInput()
-        setCashbackMinimumBuyInput()
-        setCashbackQuotaInput()
     }
 
     private fun setCashbackSwitchPriceInput(currentVoucherConfiguration: VoucherConfiguration) {
@@ -727,44 +775,22 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 setCashbackNominalInput()
             }
             switchPriceCashback.isChecked = isChecked
-            switchPriceCashback.setOnCheckedChangeListener { _, isOn ->
-                if (isOn) {
-                    setCashbackPercentageInput()
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.ChooseBenefitType(
-                            BenefitType.PERCENTAGE
-                        )
-                    )
-                    tracker.sendClickTipePotonganEvent(BenefitType.PERCENTAGE)
-                } else {
-                    setCashbackNominalInput()
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.ChooseBenefitType(
-                            BenefitType.NOMINAL
-                        )
-                    )
-                    tracker.sendClickTipePotonganEvent(BenefitType.NOMINAL)
-                }
-            }
         }
     }
 
     private fun setCashbackNominalInput() {
+        cashbackInputSectionBinding?.tfCashbackNominal?.visible()
+        cashbackInputSectionBinding?.tpgCashbackMaxDeductionLabel?.gone()
+        cashbackInputSectionBinding?.tfCahsbackMaxDeduction?.gone()
+        cashbackInputSectionBinding?.tfCashbackPercentage?.invisible()
+    }
+
+    private fun setupCashbackNominalSection() {
         cashbackInputSectionBinding?.run {
             tfCashbackNominal.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldNominalCashbackEvent(CASHBACK_EVENT_LABEL)
+                    if (isFocus) tracker.sendClickFieldNominalCashbackEvent(CASHBACK_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputNominalChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
-                visible()
-                tpgCashbackMaxDeductionLabel.gone()
-                tfCahsbackMaxDeduction.gone()
                 appendText("")
                 prependText(getString(R.string.smvc_rupiah_label))
                 labelText.text = getString(R.string.smvc_nominal_cashback_label)
@@ -779,29 +805,18 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
-            tfCashbackPercentage.invisible()
         }
     }
 
-    private fun setCashbackPercentageInput() {
+    private fun setupCashbackPercentageSection() {
         cashbackInputSectionBinding?.run {
             tfCashbackPercentage.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(CASHBACK_EVENT_LABEL)
+                    if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(CASHBACK_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(CASHBACK_EVENT_LABEL)
+                    if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(CASHBACK_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputPercentageChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
-                visible()
-                tpgCashbackMaxDeductionLabel.visible()
-                tfCahsbackMaxDeduction.visible()
                 appendText(getString(R.string.smvc_percent_symbol))
                 prependText("")
                 labelText.text = getString(R.string.smvc_percentage_label)
@@ -816,22 +831,21 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
-            tfCashbackNominal.invisible()
         }
+    }
+
+    private fun setCashbackPercentageInput() {
+        cashbackInputSectionBinding?.tfCashbackPercentage?.visible()
+        cashbackInputSectionBinding?.tfCashbackNominal?.invisible()
+        cashbackInputSectionBinding?.tpgCashbackMaxDeductionLabel?.visible()
+        cashbackInputSectionBinding?.tfCahsbackMaxDeduction?.visible()
     }
 
     private fun setCashbackMaxDeductionInput() {
         cashbackInputSectionBinding?.run {
             tfCahsbackMaxDeduction.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldMaximumCashbackEvent(CASHBACK_EVENT_LABEL)
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
+                    if (isFocus) tracker.sendClickFieldMaximumCashbackEvent(CASHBACK_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
@@ -851,14 +865,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         cashbackInputSectionBinding?.run {
             tfCashbackMinimumBuy.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(CASHBACK_EVENT_LABEL)
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
+                    if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(CASHBACK_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
@@ -878,14 +885,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         cashbackInputSectionBinding?.run {
             tfCashbackQuota.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(CASHBACK_EVENT_LABEL)
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
+                    if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(CASHBACK_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
                 editText.setModeToNumberDelimitedInput(QUOTA_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
@@ -956,8 +956,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
 
     // Discount input region
     private fun setDiscountSelected() {
-        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-
         promoTypeSectionBinding?.run {
             chipDiscount.setSelected()
             chipFreeShipping.setNormal()
@@ -968,10 +966,8 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         cashbackInputSectionBinding?.parentCashback?.gone()
         discountInputSectionBinding?.parentDiscount?.visible()
 
+        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
         setDiscountSwitchPriceInput(currentVoucherConfiguration)
-        setDiscountMaxDeductionInput()
-        setDiscountMinimumBuyInput()
-        setDiscountQuotaInput()
     }
 
     private fun setDiscountSwitchPriceInput(currentVoucherConfiguration: VoucherConfiguration) {
@@ -983,44 +979,22 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                 setDiscountNominalInput()
             }
             switchPriceDiscount.isChecked = isChecked
-            switchPriceDiscount.setOnCheckedChangeListener { _, isOn ->
-                if (isOn) {
-                    setDiscountPercentageInput()
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.ChooseBenefitType(
-                            BenefitType.PERCENTAGE
-                        )
-                    )
-                    tracker.sendClickTipePotonganEvent(BenefitType.PERCENTAGE)
-                } else {
-                    setDiscountNominalInput()
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.ChooseBenefitType(
-                            BenefitType.NOMINAL
-                        )
-                    )
-                    tracker.sendClickTipePotonganEvent(BenefitType.NOMINAL)
-                }
-            }
         }
     }
 
     private fun setDiscountNominalInput() {
+        discountInputSectionBinding?.tfDiscountNominal?.visible()
+        discountInputSectionBinding?.tfDiscountPercentage?.invisible()
+        discountInputSectionBinding?.tpgDiscountMaxDeductionLabel?.gone()
+        discountInputSectionBinding?.tfDiscountMaxDeduction?.gone()
+    }
+
+    private fun setupDiscountNominalSection() {
         discountInputSectionBinding?.run {
             tfDiscountNominal.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldNominalCashbackEvent(DISCOUNT_EVENT_LABEL)
+                    if (isFocus) tracker.sendClickFieldNominalCashbackEvent(DISCOUNT_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputNominalChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
-                visible()
-                tpgDiscountMaxDeductionLabel.gone()
-                tfDiscountMaxDeduction.gone()
                 appendText("")
                 prependText(getString(R.string.smvc_rupiah_label))
                 labelText.text = getString(R.string.smvc_nominal_discount_label)
@@ -1035,26 +1009,23 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
-            tfDiscountPercentage.invisible()
         }
     }
 
     private fun setDiscountPercentageInput() {
+        discountInputSectionBinding?.tfDiscountPercentage?.visible()
+        discountInputSectionBinding?.tfDiscountNominal?.invisible()
+
+        discountInputSectionBinding?.tpgDiscountMaxDeductionLabel?.visible()
+        discountInputSectionBinding?.tfDiscountMaxDeduction?.visible()
+    }
+
+    private fun setupDiscountPercentageSection() {
         discountInputSectionBinding?.run {
             tfDiscountPercentage.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(DISCOUNT_EVENT_LABEL)
+                    if (isFocus) tracker.sendClickFieldPersentaseCashbackEvent(DISCOUNT_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputPercentageChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
-                }
-                visible()
-                tpgDiscountMaxDeductionLabel.visible()
-                tfDiscountMaxDeduction.visible()
                 appendText(getString(R.string.smvc_percent_symbol))
                 prependText("")
                 labelText.text = getString(R.string.smvc_percentage_label)
@@ -1069,7 +1040,6 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     }
                     .launchIn(lifecycleScope)
             }
-            tfDiscountNominal.invisible()
         }
     }
 
@@ -1077,14 +1047,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         discountInputSectionBinding?.run {
             tfDiscountMaxDeduction.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldMaximumCashbackEvent(DISCOUNT_EVENT_LABEL)
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMaxDeductionChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
+                    if (isFocus) tracker.sendClickFieldMaximumCashbackEvent(DISCOUNT_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
@@ -1104,14 +1067,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         discountInputSectionBinding?.run {
             tfDiscountMinimumBuy.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(DISCOUNT_EVENT_LABEL)
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputMinimumBuyChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
+                    if (isFocus) tracker.sendClickFieldMinimumCashbackEvent(DISCOUNT_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
                 editText.setModeToNumberDelimitedInput(NOMINAL_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
@@ -1131,14 +1087,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         discountInputSectionBinding?.run {
             tfDiscountQuota.apply {
                 editText.setOnFocusChangeListener { _, isFocus ->
-                    if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(DISCOUNT_EVENT_LABEL)
-                }
-                if (editText.text.isNotEmpty()) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.OnInputQuotaChanged(
-                            editText.text.toString().digitsOnly()
-                        )
-                    )
+                    if (isFocus) tracker.sendClickFieldQuotaCashbackEvent(DISCOUNT_EVENT_LABEL, voucherConfiguration.voucherId)
                 }
                 editText.setModeToNumberDelimitedInput(QUOTA_INPUT_MAX_LENGTH)
                 editText.textChangesAsFlow()
@@ -1230,21 +1179,10 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                     viewModel.processEvent(VoucherCreationStepThreeEvent.ChooseTargetBuyer(target))
                     tracker.sendClickTargetPembeliEvent(
                         target,
-                        currentVoucherConfiguration.promoType
+                        currentVoucherConfiguration.promoType,
+                        voucherConfiguration.voucherId
                     )
                 }
-            }
-            setTargetBuyerRadioButton()
-        }
-    }
-
-    private fun setTargetBuyerRadioButton() {
-        val currentVoucherConfiguration = viewModel.getCurrentVoucherConfiguration()
-        buyerTargetSectionBinding?.run {
-            if (currentVoucherConfiguration.targetBuyer == VoucherTargetBuyer.ALL_BUYER) {
-                radioAllBuyer.isChecked = true
-            } else {
-                radioNewFollower.isChecked = true
             }
         }
     }
@@ -1256,19 +1194,27 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         buyerTargetSectionBinding?.run {
             radioAllBuyer.disable()
             radioNewFollower.disable()
+
             if (pageMode == PageMode.CREATE) {
-                for (id in availableTargetBuyer) {
-                    rgBuyerTarget.getChildAt(id.id).enable()
-                }
-                if (availableTargetBuyer.size <= Int.ONE) {
-                    viewModel.processEvent(
-                        VoucherCreationStepThreeEvent.ChooseTargetBuyer(
-                            VoucherTargetBuyer.ALL_BUYER
-                        )
-                    )
+                for (targetBuyer in availableTargetBuyer) {
+                    rgBuyerTarget.getChildAt(targetBuyer.id).enable()
                 }
             }
-            setTargetBuyerRadioButton()
+
+            when (voucherConfiguration.targetBuyer) {
+                VoucherTargetBuyer.ALL_BUYER -> {
+                    if (pageMode == PageMode.CREATE) radioAllBuyer.enable()
+                    radioAllBuyer.isChecked = true
+                }
+                VoucherTargetBuyer.NEW_FOLLOWER -> {
+                    if (pageMode == PageMode.CREATE) radioNewFollower.enable()
+                    radioNewFollower.isChecked = true
+                }
+                else -> {
+                    if (pageMode == PageMode.CREATE) radioAllBuyer.enable()
+                    radioAllBuyer.isChecked = true
+                }
+            }
         }
     }
 
@@ -1303,7 +1249,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         buttonSectionBinding?.run {
             btnBack.setOnClickListener {
                 viewModel.processEvent(VoucherCreationStepThreeEvent.TapBackButton)
-                tracker.sendClickKembaliButtonEvent()
+                tracker.sendClickKembaliButtonEvent(voucherConfiguration.voucherId)
             }
             btnContinue.text = if (pageMode == PageMode.CREATE) {
                 getString(R.string.smvc_continue)
@@ -1382,7 +1328,7 @@ class VoucherSettingFragment : BaseDaggerFragment() {
                             voucherConfiguration
                         )
                     )
-                    tracker.sendClickLanjutEvent()
+                    tracker.sendClickLanjutEvent(voucherConfiguration.voucherId)
                 }
             }
         }
@@ -1411,11 +1357,41 @@ class VoucherSettingFragment : BaseDaggerFragment() {
         chip_image_icon.setColorFilter(color)
     }
 
-    private fun renderTicker(isDiscountPromoTypeEnabled: Boolean, remoteTickerMessage: String) {
-        if (!isDiscountPromoTypeEnabled && remoteTickerMessage.isNotEmpty()) {
-            binding?.ticker?.visible()
-            binding?.ticker?.setTextDescription(remoteTickerMessage)
+    private fun renderTicker(isDiscountPromoTypeEnabled: Boolean, tickers: List<RemoteTicker>) {
+        if (!isDiscountPromoTypeEnabled && tickers.isNotEmpty()) {
+            showTickers(tickers)
         }
     }
 
+    private fun showTickers(tickers: List<RemoteTicker>) {
+        binding?.run {
+            ticker.visible()
+
+            val remoteTickers = tickers.map { remoteTicker ->
+                TickerData(
+                    title = remoteTicker.title,
+                    description = remoteTicker.description,
+                    isFromHtml = true,
+                    type = Ticker.TYPE_ANNOUNCEMENT
+                )
+            }
+
+            val tickerAdapter = TickerPagerAdapter(activity ?: return, remoteTickers)
+            tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    routeToUrl(linkUrl.toString())
+                }
+            })
+
+            ticker.addPagerView(tickerAdapter, remoteTickers)
+            ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    routeToUrl(linkUrl.toString())
+                }
+
+                override fun onDismiss() {
+                }
+            })
+        }
+    }
 }

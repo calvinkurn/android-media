@@ -4,27 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
-import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
-import com.tokopedia.tokopedianow.common.constant.ConstantKey
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.ServiceType
@@ -90,16 +85,16 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private val getRepurchaseProductListUseCase: GetRepurchaseProductListUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val getCategoryListUseCase: GetCategoryListUseCase,
-    private val addToCartUseCase: AddToCartUseCase,
-    private val updateCartUseCase: UpdateCartUseCase,
-    private val deleteCartUseCase: DeleteCartUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    private val userSession: UserSessionInterface,
+    addToCartUseCase: AddToCartUseCase,
+    updateCartUseCase: UpdateCartUseCase,
+    deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
     addressData: TokoNowLocalAddress,
-    private val userSession: UserSessionInterface,
-    dispatcher: CoroutineDispatchers
-) : BaseTokoNowViewModel(
+    dispatchers: CoroutineDispatchers
+): BaseTokoNowViewModel(
     addToCartUseCase,
     updateCartUseCase,
     deleteCartUseCase,
@@ -107,7 +102,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     affiliateService,
     addressData,
     userSession,
-    dispatcher
+    dispatchers
 ) {
 
     companion object {
@@ -123,14 +118,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         get() = _getLayout
     val loadMore: LiveData<Result<RepurchaseLayoutUiModel>>
         get() = _loadMore
-    val getMiniCart: LiveData<Result<MiniCartSimplifiedData>>
-        get() = _miniCart
-    val miniCartAdd: LiveData<Result<AddToCartDataModel>>
-        get() = _miniCartAdd
-    val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
-        get() = _miniCartUpdate
-    val miniCartRemove: LiveData<Result<Pair<String, String>>>
-        get() = _miniCartRemove
     val atcQuantity: LiveData<Result<RepurchaseLayoutUiModel>>
         get() = _atcQuantity
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
@@ -146,10 +133,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     private val _getLayout = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _loadMore = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
-    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
-    private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
-    private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
-    private val _miniCartRemove = MutableLiveData<Result<Pair<String, String>>>()
     private val _atcQuantity = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     private val _repurchaseAddToCartTracker = MutableLiveData<RepurchaseAddToCartTracker>()
@@ -289,7 +272,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }) {}
     }
 
-    fun onClickAddToCart(
+    fun onCartQuantityChanged(
         productId: String,
         quantity: Int,
         type: String,
@@ -297,19 +280,26 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         stock: Int,
         isVariant: Boolean
     ) {
-        val miniCartItem = getMiniCartItem(productId)
-        val cartQuantity = miniCartItem?.quantity
-        if (cartQuantity == quantity) return
-
-        when {
-            miniCartItem == null && quantity.isMoreThanZero() -> {
-                addItemToCart(productId, quantity, shopId, stock, isVariant, type)
+        onCartQuantityChanged(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity,
+            stock = stock,
+            isVariant = isVariant,
+            onSuccessAddToCart = {
+                trackProductAddToCart(productId, quantity, type, it.data.cartId)
+                updateAddToCartQuantity(productId, quantity)
+                updateToolbarNotification()
+            },
+            onSuccessUpdateCart = { _, _ ->
+                updateAddToCartQuantity(productId, quantity)
+                updateToolbarNotification()
+            },
+            onSuccessDeleteCart = { _, _ ->
+                updateAddToCartQuantity(productId, DEFAULT_QUANTITY)
+                updateToolbarNotification()
             }
-            miniCartItem != null && quantity.isMoreThanZero() -> {
-                updateItemCart(miniCartItem, quantity, stock, isVariant)
-            }
-            miniCartItem != null -> removeItemFromCart(miniCartItem)
-        }
+        )
     }
 
     fun updateToolbarNotification() {
@@ -603,31 +593,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }
     }
 
-    private fun addItemToCart(
-        productId: String,
-        quantity: Int,
-        shopId: String,
-        stock: Int,
-        isVariant: Boolean,
-        type: String
-    ) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-            productId = productId,
-            shopId = shopId,
-            quantity = quantity
-        )
-        addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute({
-            checkAtcAffiliateCookie(productId, stock, isVariant, quantity)
-            trackProductAddToCart(productId, quantity, type, it.data.cartId)
-            updateAddToCartQuantity(productId, quantity)
-            updateToolbarNotification()
-            _miniCartAdd.postValue(Success(it))
-        }, {
-            _miniCartAdd.postValue(Fail(it))
-        })
-    }
-
     private fun trackProductAddToCart(
         productId: String,
         quantity: Int,
@@ -647,48 +612,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             val data = RepurchaseAddToCartTracker(quantity, cartId, it)
             _repurchaseAddToCartTracker.postValue(data)
         }
-    }
-
-    private fun removeItemFromCart(miniCartItem: MiniCartItem.MiniCartItemProduct) {
-        deleteCartUseCase.setParams(
-            cartIdList = listOf(miniCartItem.cartId)
-        )
-        deleteCartUseCase.execute({
-            val productId = miniCartItem.productId
-            val data = Pair(productId, it.data.message.joinToString(separator = ", "))
-            updateToolbarNotification()
-            updateAddToCartQuantity(productId, ConstantKey.DEFAULT_QUANTITY)
-            _miniCartRemove.postValue(Success(data))
-        }, {
-            _miniCartRemove.postValue(Fail(it))
-        })
-    }
-
-    private fun updateItemCart(
-        miniCartItem: MiniCartItem.MiniCartItemProduct,
-        quantity: Int,
-        stock: Int,
-        isVariant: Boolean
-    ) {
-        val productId = miniCartItem.productId
-        val updateCartRequest = UpdateCartRequest(
-            cartId = miniCartItem.cartId,
-            quantity = quantity,
-            notes = miniCartItem.notes
-        )
-        updateCartUseCase.setParams(
-            updateCartRequestList = listOf(updateCartRequest),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
-        )
-        updateCartUseCase.execute({
-            checkAtcAffiliateCookie(productId, stock, isVariant, quantity)
-            updateAddToCartQuantity(miniCartItem.productId, quantity)
-            updateMiniCartItemQuantity(miniCartItem, quantity)
-            updateToolbarNotification()
-            _miniCartUpdate.value = Success(it)
-        }, {
-            _miniCartUpdate.postValue(Fail(it))
-        })
     }
 
     private fun updateAddToCartQuantity(

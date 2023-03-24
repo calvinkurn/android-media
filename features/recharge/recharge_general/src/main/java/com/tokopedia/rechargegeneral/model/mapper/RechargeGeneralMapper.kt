@@ -2,9 +2,12 @@ package com.tokopedia.rechargegeneral.model.mapper
 
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.rechargegeneral.model.RechargeGeneralDppoConsent
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicField
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductItemData
+import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralDppoConsentUiModel
 import javax.inject.Inject
 
 class RechargeGeneralMapper @Inject constructor() {
@@ -143,5 +146,11 @@ class RechargeGeneralMapper @Inject constructor() {
         productInput.dataCollections = listDataCollection
 
         return productInput
+    }
+
+    fun mapDppoConsentToUiModel(data: RechargeGeneralDppoConsent): RechargeGeneralDppoConsentUiModel {
+        return RechargeGeneralDppoConsentUiModel(
+            description = data.persoData.items.getOrNull(Int.ZERO)?.title ?: ""
+        )
     }
 }

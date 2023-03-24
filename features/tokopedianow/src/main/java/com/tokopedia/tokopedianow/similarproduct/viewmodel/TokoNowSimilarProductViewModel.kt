@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -62,15 +63,19 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     var warehouseId: String = ""
         private set
 
-    override fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
-        super.setMiniCartData(miniCartData)
+    init {
+        miniCartSource = MiniCartSource.TokonowHome
+    }
+
+    override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        super.onSuccessGetMiniCartData(miniCartData)
         updateProductQuantity(miniCartData)
     }
 
     fun onViewCreated(productList: List<SimilarProductUiModel>) {
         initAffiliateCookie()
         addVisitableItems(productList)
-        setMiniCartData()
+        updateProductQuantity()
     }
 
     private fun updateProductQuantity(miniCartData: MiniCartSimplifiedData) {
@@ -118,9 +123,9 @@ class TokoNowSimilarProductViewModel @Inject constructor(
         _visitableItems.postValue(layoutItemList)
     }
 
-    private fun setMiniCartData() {
+    private fun updateProductQuantity() {
         miniCartData?.let {
-            setMiniCartData(it)
+            updateProductQuantity(it)
         }
     }
 }

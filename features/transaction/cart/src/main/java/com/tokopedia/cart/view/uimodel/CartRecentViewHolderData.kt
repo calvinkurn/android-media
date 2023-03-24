@@ -5,7 +5,7 @@ package com.tokopedia.cart.view.uimodel
  */
 
 data class CartRecentViewHolderData(
-        var hasSentImpressionAnalytics: Boolean = false,
-        var lastFocussPosition: Int = 0,
-        var recentViewList: List<CartRecentViewItemHolderData> = arrayListOf()
+    var hasSentImpressionAnalytics: Boolean = false,
+    var lastFocussPosition: Int = 0,
+    var recentViewList: List<CartRecentViewItemHolderData> = arrayListOf()
 )

@@ -520,7 +520,7 @@ class TokoNowRepurchaseFragment:
             addScrollListeners()
         }
 
-        observe(viewModel.getMiniCart) {
+        observe(viewModel.miniCart) {
             if(it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data.isShowMiniCartWidget)
@@ -540,7 +540,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.miniCartAdd) {
+        observe(viewModel.addItemToCart) {
             when(it) {
                 is Success -> {
                     getMiniCart()
@@ -562,7 +562,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.miniCartUpdate) {
+        observe(viewModel.updateCartItem) {
             when(it) {
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
@@ -577,7 +577,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(viewModel.miniCartRemove) {
+        observe(viewModel.removeCartItem) {
             when(it) {
                 is Success -> {
                     getMiniCart()
@@ -624,7 +624,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.miniCartAdd) { result ->
+        observe(productRecommendationViewModel.addItemToCart) { result ->
             when (result) {
                 is Success -> {
                     getMiniCart()
@@ -646,7 +646,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.miniCartUpdate) { result ->
+        observe(productRecommendationViewModel.updateCartItem) { result ->
             when (result) {
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
@@ -661,7 +661,7 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        observe(productRecommendationViewModel.miniCartRemove) { result ->
+        observe(productRecommendationViewModel.removeCartItem) { result ->
             when (result) {
                 is Success -> {
                     getMiniCart()

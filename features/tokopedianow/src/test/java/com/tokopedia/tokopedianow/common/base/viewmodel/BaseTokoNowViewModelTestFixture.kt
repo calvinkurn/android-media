@@ -10,6 +10,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -65,7 +66,9 @@ open class BaseTokoNowViewModelTestFixture {
             addressData,
             userSession,
             coroutineTestRule.dispatchers
-        )
+        ).apply {
+            miniCartSource = MiniCartSource.TokonowHome
+        }
 
         onGetIsOutOfCoverage_thenReturn(outOfCoverage = false)
     }

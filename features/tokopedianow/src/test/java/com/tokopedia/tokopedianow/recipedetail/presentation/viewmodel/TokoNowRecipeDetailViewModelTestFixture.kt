@@ -6,6 +6,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -113,6 +114,14 @@ open class TokoNowRecipeDetailViewModelTestFixture {
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
+    }
+
+    protected fun onGetMiniCart_thenReturn(response: MiniCartSimplifiedData) {
+        coEvery { getMiniCartUseCase.executeOnBackground() } returns response
+    }
+
+    protected fun onGetIsLoggedIn_thenReturn(isLoggedIn: Boolean) {
+        every { userSession.isLoggedIn } returns isLoggedIn
     }
 
     protected fun onGetRecipe_thenReturn(response: RecipeResponse) {

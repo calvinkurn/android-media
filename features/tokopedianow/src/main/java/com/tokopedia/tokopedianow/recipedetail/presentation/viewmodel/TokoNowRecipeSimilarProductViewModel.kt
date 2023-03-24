@@ -10,6 +10,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -46,8 +47,12 @@ class TokoNowRecipeSimilarProductViewModel @Inject constructor(
 
     private val layoutItemList = mutableListOf<Visitable<*>>()
 
-    override fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
-        super.setMiniCartData(miniCartData)
+    init {
+        miniCartSource = MiniCartSource.TokonowRecipe
+    }
+
+    override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        super.onSuccessGetMiniCartData(miniCartData)
         updateProductQuantity(miniCartData)
     }
 
@@ -59,7 +64,7 @@ class TokoNowRecipeSimilarProductViewModel @Inject constructor(
 
     private fun setMiniCartData() {
         miniCartData?.let {
-            setMiniCartData(it)
+            updateProductQuantity(it)
         }
     }
 

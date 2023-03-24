@@ -7,15 +7,7 @@ import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeProductAnalytics
 interface RecipeDetailView {
 
     fun showChooseAddressBottomSheet()
-    fun deleteCartItem(productId: String)
-    fun onQuantityChanged(
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        stock: Int,
-        isVariant: Boolean
-    )
-    fun addItemToCart(
+    fun onCartQuantityChanged(
         productId: String,
         shopId: String,
         quantity: Int,

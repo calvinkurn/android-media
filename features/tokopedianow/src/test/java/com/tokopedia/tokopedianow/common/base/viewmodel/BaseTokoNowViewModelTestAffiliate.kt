@@ -52,7 +52,7 @@ class BaseTokoNowViewModelTestAffiliate : BaseTokoNowViewModelTestFixture() {
 
             viewModel.initAffiliateCookie(affiliateUuid, affiliateChannel)
             viewModel.getMiniCart()
-            viewModel.onQuantityChanged(productId, shopId, quantity, stock, isVariant)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyInitAffiliateCookieCalled(affiliateUuid, affiliateChannel)
@@ -91,7 +91,7 @@ class BaseTokoNowViewModelTestAffiliate : BaseTokoNowViewModelTestFixture() {
 
             viewModel.initAffiliateCookie(affiliateUuid, affiliateChannel)
             viewModel.getMiniCart()
-            viewModel.onQuantityChanged(productId, shopId, quantity, stock, isVariant)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyInitAffiliateCookieCalled(affiliateUuid, affiliateChannel)
@@ -129,7 +129,7 @@ class BaseTokoNowViewModelTestAffiliate : BaseTokoNowViewModelTestFixture() {
             onGetMiniCart_thenReturn(miniCartResponse)
 
             viewModel.getMiniCart()
-            viewModel.onQuantityChanged(productId, shopId, newQuantity, stock, isVariant)
+            viewModel.onCartQuantityChanged(productId, shopId, newQuantity, stock, isVariant)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             verifyInitAffiliateCookieNotCalled(affiliateUuid, affiliateChannel)
@@ -168,7 +168,7 @@ class BaseTokoNowViewModelTestAffiliate : BaseTokoNowViewModelTestFixture() {
 
             viewModel.initAffiliateCookie(affiliateUuid, affiliateChannel)
             viewModel.getMiniCart()
-            viewModel.onQuantityChanged(productId, shopId, quantity, stock, isVariant)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, isVariant)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
         }
     }

@@ -103,8 +103,10 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         onGetWarehouseId_thenReturn(warehouseId)
         onGetIsOutOfCoverage_thenReturn(outOfCoverage)
         onGetRecipe_thenReturn(response = recipeResponse)
+        onGetIsLoggedIn_thenReturn(isLoggedIn = true)
+        onGetMiniCart_thenReturn(miniCartData)
 
-        viewModel.setMiniCartData(miniCartData)
+        viewModel.getMiniCart()
         viewModel.setRecipeData(recipeId, slug)
         viewModel.onViewCreated()
 
@@ -236,6 +238,163 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
     }
 
     @Test
+    fun `given mini cart data when refresh page should map quantity to product list`() {
+        val shopId = 3L
+        val warehouseId = "3"
+        val isBookmarked = true
+        val outOfCoverage = false
+        val instruction = "\u003cp\u003etest 123\u003c/p\u003e\n"
+
+        val recipeId = "2"
+        val slug = "recipe-3"
+        val title = "Test Create Recipe UAM"
+
+        val getRecipeResponse = "recipedetail/get_recipe_response.json"
+            .jsonToObject<TokoNowGetRecipe>()
+        val recipeResponse = getRecipeResponse.response.data
+
+        val miniCartKey = MiniCartItemKey(id = "2148241523")
+        val miniCart = MiniCartItem.MiniCartItemProduct(productId = "2148241523", quantity = 5)
+        val miniCartData = MiniCartSimplifiedData(miniCartItems = mapOf(miniCartKey to miniCart))
+
+        onGetShopId_thenReturn(shopId)
+        onGetWarehouseId_thenReturn(warehouseId)
+        onGetIsOutOfCoverage_thenReturn(outOfCoverage)
+        onGetRecipe_thenReturn(response = recipeResponse)
+        onGetIsLoggedIn_thenReturn(isLoggedIn = true)
+        onGetMiniCart_thenReturn(miniCartData)
+
+        viewModel.setRecipeData(recipeId, slug)
+        viewModel.refreshPage()
+
+        val mediaItems = listOf(
+            MediaItemUiModel(
+                url = "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=3be5201de4ef417087f8aaf7d15bfa7b",
+                thumbnailUrl = "https://vod-staging.tokopedia.com/view/adaptive.m3u8?id=3be5201de4ef417087f8aaf7d15bfa7b",
+                type = MediaType.VIDEO,
+                position = 1
+            ),
+            MediaItemUiModel(
+                url = "https://images-staging.tokopedia.net/img/DqYeeh/2022/8/25/31ee9868-090d-46e9-848d-40486c639198.png",
+                thumbnailUrl = "https://images-staging.tokopedia.net/img/DqYeeh/2022/8/25/31ee9868-090d-46e9-848d-40486c639198.png",
+                type = MediaType.IMAGE,
+                position = 2
+            )
+        )
+
+        val mediaSlider = MediaSliderUiModel(mediaItems)
+
+        val tags = listOf(
+            TagUiModel(
+                tag = "Test Create Tag 3",
+                shouldFormatTag = false,
+                shouldUseStaticBackgroundColor = false
+            ),
+            TagUiModel(
+                tag = "Test Create Tag 2",
+                shouldFormatTag = false,
+                shouldUseStaticBackgroundColor = false
+            ),
+            TagUiModel(
+                tag = "Test Create Tag 1",
+                shouldFormatTag = false,
+                shouldUseStaticBackgroundColor = false
+            ),
+            TagUiModel(
+                tag = "1",
+                shouldFormatTag = true,
+                shouldUseStaticBackgroundColor = false
+            )
+        )
+
+        val imageUrls = listOf(
+            "https://images-staging.tokopedia.net/img/DqYeeh/2022/8/25/31ee9868-090d-46e9-848d-40486c639198.png"
+        )
+
+        val recipeInfo = RecipeInfoUiModel(
+            id = "20",
+            title = title,
+            portion = 32,
+            duration = 13,
+            tags = tags,
+            thumbnail = "https://images-staging.tokopedia.net/img/DqYeeh/2022/8/25/31ee9868-090d-46e9-848d-40486c639198.png",
+            imageUrls = imageUrls,
+            shareUrl = "https://www.tokopedia.com/now/recipe/recipe-3"
+        )
+
+        val productList = listOf(
+            RecipeProductUiModel(
+                id = "2148241523",
+                shopId = "480552",
+                name = "kaos testing 112",
+                quantity = 5,
+                stock = 7,
+                minOrder = 1,
+                maxOrder = 7,
+                priceFmt = "Rp150",
+                imageUrl = "https://images.tokopedia.net/img/cache/250-square/hDjmkQ/2022/1/17/4524771c-4b31-4eb1-9491-0adb581431b1.jpg",
+                slashedPrice = "Rp200",
+                discountPercentage = "20",
+                similarProducts = emptyList(),
+                categoryId = "983",
+                categoryName = "Dapur",
+                position = 1,
+                isVariant = false
+            )
+        )
+
+        val ingredientTabUiModel = IngredientTabUiModel(productList)
+
+        val ingredients = listOf(
+            IngredientUiModel(
+                name = "Test Create Ingredient 6",
+                quantity = "12",
+                unit = "kg",
+                isLastItem = true
+            )
+        )
+
+        val instructionUiModel = InstructionUiModel(instruction)
+
+        val instructionTabItems = mutableListOf<Visitable<*>>().apply {
+            add(IngredientSectionTitle)
+            addAll(ingredients)
+            add(InstructionSectionTitle)
+            add(instructionUiModel)
+        }
+
+        val instructionTabUiModel = InstructionTabUiModel(instructionTabItems)
+
+        val recipeTabUiModel = RecipeTabUiModel(
+            1,
+            ingredientTabUiModel,
+            instructionTabUiModel
+        )
+
+        val expectedLayoutList = listOf(
+            mediaSlider,
+            recipeInfo,
+            recipeTabUiModel
+        )
+
+        verifyGetAddressDataUseCaseNotCalled()
+        verifyGetRecipeUseCaseCalled(
+            recipeId = recipeId,
+            slug = slug,
+            warehouseId = warehouseId
+        )
+
+        viewModel.isBookmarked
+            .verifyValueEquals(isBookmarked)
+
+        viewModel.recipeInfo
+            .verifyValueEquals(recipeInfo)
+
+        viewModel.layoutList
+            .verifyValueEquals(expectedLayoutList)
+    }
+
+    @Test
     fun `given out of coverage when checkAddressData should add out of coverage item to layout list`() {
         val shopId = 3L
         val warehouseId = "3"
@@ -258,6 +417,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         onGetIsOutOfCoverage_thenReturn(outOfCoverage)
         onGetRecipe_thenReturn(response = recipeResponse)
 
+        viewModel.getMiniCart()
         viewModel.setRecipeData(recipeId, slug)
         viewModel.onViewCreated()
 
