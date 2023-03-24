@@ -3,6 +3,7 @@ package com.tokopedia.media.picker.data.repository
 import com.tokopedia.media.picker.data.MediaQueryDataSource
 import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl.Companion.BUCKET_ALL_MEDIA_ID
 import com.tokopedia.media.picker.data.entity.Media
+import com.tokopedia.media.picker.utils.isOppoManufacturer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -38,7 +39,11 @@ class MediaFileRepositoryImpl @Inject constructor(
                  * if the device only contains under 100 item of medias in all-media's bucket id.
                  * This validation needs to fix infinite loop on OPPO and VIVO devices.
                  */
-                if (cursor.count < LIMIT_MEDIA_OFFSET && cursor.isAfterLast.not() && bucketId == BUCKET_ALL_MEDIA_ID) break
+                if (cursor.count < LIMIT_MEDIA_OFFSET
+                    && cursor.isAfterLast.not()
+                    && bucketId == BUCKET_ALL_MEDIA_ID
+                    && isOppoManufacturer()
+                ) break
             }
 
             cursor?.close()
