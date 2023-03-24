@@ -28,7 +28,6 @@ interface SaveImageRepository {
         sourcePath: String
     ): File?
 
-    fun clearEditorCache()
     fun saveToGallery(
         imageList: List<String>,
         onFinish: (result: List<String>?, error: Exception?) -> Unit
@@ -48,12 +47,6 @@ class SaveImageRepositoryImpl @Inject constructor(
             bitmapParam,
             if (isPng) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG,
             getEditorSaveFolderPath()
-        )
-    }
-
-    override fun clearEditorCache() {
-        FileUtil.deleteFolder(
-            FileUtil.getTokopediaInternalDirectory(getEditorSaveFolderPath()).absolutePath
         )
     }
 
