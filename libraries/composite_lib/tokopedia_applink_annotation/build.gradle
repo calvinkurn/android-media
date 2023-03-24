@@ -5,14 +5,7 @@ apply plugin: 'kotlin-kapt'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation rootProject.ext.miscDependencies.autoService
-    implementation rootProject.ext.miscDependencies.javaPoet
-
-    compileOnly rootProject.ext.miscDependencies.incap
-    kapt rootProject.ext.miscDependencies.incapProcessor
-    kapt rootProject.ext.miscDependencies.autoService
-
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 }
 
 buildscript {
@@ -28,7 +21,7 @@ repositories {
 project.ext {
     artifactId = 'tokopedia_applink_annotation'
     groupId = 'com.tokopedia.tokopedia_applink_annotation'
-    versionName = "0.0.24"
+    versionName = "0.0.25"
     artifactName = "tokopedia_applink_annotation"
 }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedia_applink_annotation
+package com.tokopedia.tokopedia_applink_annotation_processor
 
 import com.google.auto.service.AutoService
 import com.squareup.javapoet.*
@@ -9,6 +9,8 @@ import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
+import com.tokopedia.tokopedia_applink_annotation.TokopediaAppLink
+import com.tokopedia.tokopedia_applink_annotation.TokopediaAppLinks
 
 @AutoService(Processor::class)
 class TokopediaAppLinkAnnotationProcessor : AbstractProcessor() {
