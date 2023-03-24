@@ -13,9 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -57,6 +55,7 @@ import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceW
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DeviceUtil.generateATokenRechargeCheckout
+import com.tokopedia.digital_checkout.utils.DigitalCheckoutUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
@@ -694,11 +693,6 @@ class DigitalCartFragment :
         myBillsAdapter.setItems(subscriptions, fintechProducts)
     }
 
-    private fun renderConsentWidget(fintechProduct: FintechProduct) {
-        val collectionPointData = getCollectionPointData(fintechProduct)
-        setCrossSellConsent(collectionPointData)
-    }
-
     override fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean) {
         digitalAnalytics.eventClickSubscription(
             isChecked,
@@ -709,9 +703,12 @@ class DigitalCartFragment :
 
         binding?.run {
             if (isChecked) {
-                checkoutBottomViewWidget.isCheckoutButtonEnabled = false
-                renderConsentWidget(fintechProduct)
-                checkoutBottomViewWidget.showCrossSellConsentIfAvailable()
+                val collectionPointMetadata = getCollectionPointData(fintechProduct)
+                if (collectionPointMetadata.collectionPointId.isNotEmpty()) {
+                    checkoutBottomViewWidget.isCheckoutButtonEnabled = false
+                    renderConsentWidget(collectionPointMetadata)
+                    checkoutBottomViewWidget.showCrossSellConsentIfAvailable()
+                }
             } else {
                 renderConsentJob?.cancel()
                 checkoutBottomViewWidget.isCheckoutButtonEnabled = true
@@ -734,28 +731,26 @@ class DigitalCartFragment :
                     return metadata
                 }
             }
-        } catch (e: JsonSyntaxException) {
-            FirebaseCrashlytics.getInstance().recordException(e)
+        } catch (e: Exception) {
+            DigitalCheckoutUtil.logExceptionToCrashlytics(e)
         }
 
         return CollectionPointMetadata()
     }
 
-    private fun setCrossSellConsent(collectionPointData: CollectionPointMetadata) {
+    private fun renderConsentWidget(collectionPointData: CollectionPointMetadata) {
         binding?.run {
-            if (collectionPointData.collectionPointId.isNotEmpty()) {
-                renderConsentJob?.cancel()
-                renderConsentJob = lifecycleScope.launch {
-                    val consentParam = ConsentCollectionParam(
-                        collectionPointData.collectionPointId,
-                        collectionPointData.collectionPointVersion
-                    )
-                    checkoutBottomViewWidget.setUserConsentWidget(
-                        viewLifecycleOwner,
-                        this@DigitalCartFragment,
-                        consentParam
-                    )
-                }
+            renderConsentJob?.cancel()
+            renderConsentJob = lifecycleScope.launch {
+                val consentParam = ConsentCollectionParam(
+                    collectionPointData.collectionPointId,
+                    collectionPointData.collectionPointVersion
+                )
+                checkoutBottomViewWidget.setUserConsentWidget(
+                    viewLifecycleOwner,
+                    this@DigitalCartFragment,
+                    consentParam
+                )
             }
         }
     }
