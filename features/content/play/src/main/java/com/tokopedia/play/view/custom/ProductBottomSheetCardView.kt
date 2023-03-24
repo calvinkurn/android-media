@@ -131,7 +131,9 @@ class ProductBottomSheetCardView(
         binding.ivPlayProductStars.showWithCondition(item.isShowRating && !section.config.type.isUpcoming)
         binding.tvPlayProductSocialProof.showWithCondition(isSocialProofAvailable)
         binding.tvPlayProductSocialProof.text = buildString {
-            item.rating + if (item.isShowSoldQuantity) "|" else "" + item.soldQuantity
+            append(item.rating)
+            append(if (item.isShowSoldQuantity && item.isShowRating) " | " else "")
+            append(context.resources.getString(R.string.play_social_proof_sold, item.soldQuantity))
         }
     }
 

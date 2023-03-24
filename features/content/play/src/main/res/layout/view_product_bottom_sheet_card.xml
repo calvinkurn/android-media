@@ -263,6 +263,7 @@
             android:id="@+id/tv_play_product_social_proof"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintStart_toEndOf="@id/iv_play_product_stars"
             app:layout_constraintEnd_toEndOf="parent"

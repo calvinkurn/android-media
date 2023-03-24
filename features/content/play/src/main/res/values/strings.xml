@@ -139,4 +139,6 @@
 
     <!--Vertical Swipe-->
     <string name="play_check_next_video">Cek video berikutnya</string>
+
+    <string name="play_social_proof_sold">Terjual %s</string>
 </resources>
