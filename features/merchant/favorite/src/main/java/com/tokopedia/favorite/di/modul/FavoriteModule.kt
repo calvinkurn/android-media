@@ -46,24 +46,9 @@ class FavoriteModule {
 
     @FavoriteScope
     @Provides
-    fun provideFavoriteShopUsecase(favoriteRepository: FavoriteRepository): GetFavoriteShopUsecase {
-        return GetFavoriteShopUsecase(favoriteRepository)
-    }
-
-    @FavoriteScope
-    @Provides
     fun provideFavoriteShopUseCaseWithCoroutine(
             favoriteRepository: FavoriteRepository): GetFavoriteShopUseCaseWithCoroutine {
         return GetFavoriteShopUseCaseWithCoroutine(favoriteRepository);
-    }
-
-    @FavoriteScope
-    @Provides
-    fun provideAllDataFavoriteUsecase(@ApplicationContext context: Context,
-                                      favUseCase: GetFavoriteShopUsecase,
-                                      topAdsShopUseCase: GetTopAdsShopUseCase,
-                                      topAdsAddressHelper: TopAdsAddressHelper): GetAllDataFavoriteUseCase {
-        return GetAllDataFavoriteUseCase(context, favUseCase, topAdsShopUseCase, topAdsAddressHelper)
     }
 
     @FavoriteScope
@@ -79,28 +64,8 @@ class FavoriteModule {
 
     @FavoriteScope
     @Provides
-    fun provideGetTopAdsShopUsecase(favoriteRepository: FavoriteRepository): GetTopAdsShopUseCase {
-        return GetTopAdsShopUseCase(favoriteRepository)
-    }
-
-    @FavoriteScope
-    @Provides
     fun provideGetTopAdsShopUseCaseWithCoroutine(favoriteRepository: FavoriteRepository, topAdsAddressHelper: TopAdsAddressHelper): GetTopAdsShopUseCaseWithCoroutine {
         return GetTopAdsShopUseCaseWithCoroutine(favoriteRepository)
-    }
-
-    @FavoriteScope
-    @Provides
-    fun provideFavoriteWishlitUsecase(
-            @ApplicationContext context: Context,
-            getFavoriteShopUsecase: GetFavoriteShopUsecase,
-            getTopAdsShopUseCase: GetTopAdsShopUseCase,
-            topAdsAddressHelper: TopAdsAddressHelper): GetInitialDataPageUsecase {
-        return GetInitialDataPageUsecase(
-                context,
-                getFavoriteShopUsecase,
-                getTopAdsShopUseCase,
-                topAdsAddressHelper)
     }
 
     @FavoriteScope
