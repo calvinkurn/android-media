@@ -2,23 +2,8 @@ package com.tokopedia.checkout.data.model.request.checkout
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
-import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.MINI_CONSULTATION_META_DATA_KEY
-import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.SCHEDULE_DELIVERY_META_DATA_KEY
-import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.UPLOAD_PRESCRIPTION_META_DATA_KEY
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.EgoldData
-import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.TokopediaCornerData
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
@@ -71,7 +56,31 @@ data class Carts(
 
     @SerializedName("data")
     var data: List<Data> = emptyList()
-)
+) {
+    val protectionAnalyticsData: ArrayList<String>
+        get() {
+            val pppLabelList = arrayListOf<String>()
+            data.forEach { data ->
+                data.shopOrders.forEach { shopOrders ->
+                    shopOrders.bundle.forEach { bundle ->
+                        bundle.productData.forEach { product ->
+                            if (product.isProtectionAvailable) {
+                                val eventLabel = if (product.isPpp) {
+                                    ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP
+                                } else {
+                                    ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP
+                                }
+                                pppLabelList.add(
+                                    "${product.protectionTitle} - $eventLabel - ${product.productCategoryId} - ${product.protectionPricePerProduct} - ${product.cartId}"
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            return pppLabelList
+        }
+}
 
 data class Data(
     @SuppressLint("Invalid Data Type")
@@ -105,7 +114,9 @@ data class ShopOrder(
     @SerializedName("items")
     var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList(),
     @SerializedName("order_metadata")
-    var orderMetadata: List<OrderMetadata> = emptyList()
+    var orderMetadata: List<OrderMetadata> = emptyList(),
+    @Transient
+    var isTokoNow: Boolean = false
 )
 
 data class Bundle(
@@ -121,7 +132,17 @@ data class Product(
     @SerializedName("product_id")
     var productId: String = "",
     @SerializedName("items")
-    var checkoutGiftingProductLevel: List<CheckoutGiftingAddOn> = emptyList()
+    var checkoutGiftingProductLevel: List<CheckoutGiftingAddOn> = emptyList(),
+    @Transient
+    var cartId: String = "",
+    @Transient
+    var productCategoryId: String = "",
+    @Transient
+    var protectionPricePerProduct: Int = 0,
+    @Transient
+    var protectionTitle: String = "",
+    @Transient
+    var isProtectionAvailable: Boolean = false
 )
 
 data class CheckoutGiftingAddOn(
@@ -223,226 +244,5 @@ data class OrderMetadata(
         const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
         const val MINI_CONSULTATION_META_DATA_KEY = "epharm_consultation"
         const val SCHEDULE_DELIVERY_META_DATA_KEY = "shipping_validation_metadata"
-    }
-}
-
-object CheckoutRequestMapper {
-
-    fun map(checkoutRequest: CheckoutRequest): Carts {
-        return Carts().apply {
-            promos = mapPromos(checkoutRequest.promos)
-            isDonation = checkoutRequest.isDonation
-            egold = mapEgoldData(checkoutRequest.egoldData)
-//            data = mapData(checkoutRequest.data)
-            val tmpCornerData = checkoutRequest.cornerData
-            tokopediaCorner =
-                if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
-            hasPromoStacking = checkoutRequest.hasPromoStacking
-            leasingId = checkoutRequest.leasingId
-            featureType = checkoutRequest.featureType
-            crossSell = checkoutRequest.crossSell
-        }
-    }
-
-    private fun mapPromos(promos: List<PromoRequest>?): List<Promo> {
-        val promosGqlData = mutableListOf<Promo>()
-        promos?.forEach {
-            promosGqlData.add(
-                Promo().apply {
-                    type = it.type
-                    code = it.code
-                }
-            )
-        }
-
-        return promosGqlData
-    }
-
-    private fun mapEgoldData(egoldData: EgoldData?): Egold {
-        return Egold().apply {
-            isEgold = egoldData?.isEgold ?: false
-            goldAmount = egoldData?.egoldAmount ?: 0
-        }
-    }
-
-    private fun mapTokopediaCornerData(tokopediaCornerData: TokopediaCornerData): TokopediaCorner {
-        return TokopediaCorner().apply {
-            isTokopediaCorner = tokopediaCornerData.isTokopediaCorner
-            userCornerId = tokopediaCornerData.userCornerId ?: "0"
-            cornerId = tokopediaCornerData.cornerId
-        }
-    }
-
-    fun mapData(
-        dataCheckoutRequestList: List<DataCheckoutRequest>
-    ): List<Data> {
-        val checkoutGqlDataList = mutableListOf<Data>()
-        dataCheckoutRequestList.forEach {
-            checkoutGqlDataList.add(
-                Data().apply {
-                    addressId = it.addressId.toLongOrZero()
-                    shopOrders = mapShopProduct(it.shopProducts)
-                }
-            )
-        }
-
-        return checkoutGqlDataList
-    }
-
-    private fun mapShopProduct(
-        shopProductCheckoutRequests: List<ShopProductCheckoutRequest>?
-    ): List<ShopOrder> {
-        val shopProductList = mutableListOf<ShopOrder>()
-        shopProductCheckoutRequests?.forEach {
-            shopProductList.add(
-                ShopOrder().apply {
-                    cartstring = it.cartString ?: ""
-                    shopId = it.shopId
-                    warehouseId = it.warehouseId
-                    isPreorder = it.isPreorder
-                    orderFeature = OrderFeature().apply {
-                        isOrderPriority = it.isOrderPriority
-                    }
-                    shippingInfo = mapShippingInfo(it.shippingInfo, it.finsurance)
-                    dropship = mapDropshipData(it.dropshipData, it.isDropship)
-                    promos = mapPromos(it.promos)
-                    bundle = mapBundle(it.productData)
-                    checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
-                    orderMetadata = mapOrderMetadata(it, it.promos)
-                }
-            )
-        }
-
-        return shopProductList
-    }
-
-    private fun mapBundle(productDataList: List<ProductDataCheckoutRequest>?): List<Bundle> {
-        val bundleList = mutableListOf<Bundle>()
-
-        val bundleIdProductsMap = mutableMapOf<String, MutableList<Product>>()
-        val bundleIdGroupIdMap = mutableMapOf<String, String>()
-        productDataList?.forEach {
-            if (!bundleIdProductsMap.containsKey(it.bundleId)) {
-                val product = mapProduct(it)
-                bundleIdProductsMap[it.bundleId] = mutableListOf(product)
-                bundleIdGroupIdMap[it.bundleId] = it.bundleGroupId
-            } else {
-                val products = bundleIdProductsMap[it.bundleId]
-                val product = mapProduct(it)
-                products?.add(product)
-            }
-        }
-
-        bundleIdProductsMap.forEach {
-            val bundle = Bundle().apply {
-                bundleInfo = BundleInfo().apply {
-                    if (it.key.isNotBlankOrZero()) {
-                        bundleId = it.key.toLongOrZero()
-                        bundleGroupId = bundleIdGroupIdMap[it.key] ?: ""
-                    }
-                }
-                productData = it.value
-            }
-            bundleList.add(bundle)
-        }
-
-        return bundleList
-    }
-
-    private fun mapProduct(it: ProductDataCheckoutRequest): Product {
-        val product = Product().apply {
-            productId = it.productId.toString()
-            isPpp = it.isPurchaseProtection
-            checkoutGiftingProductLevel = mapGiftingAddOn(it.addOnGiftingProductLevelRequest)
-        }
-        return product
-    }
-
-    private fun mapShippingInfo(
-        shippingInfo: ShippingInfoCheckoutRequest?,
-        finsurance: Int
-    ): ShippingInfo {
-        return ShippingInfo().apply {
-            this.finsurance = finsurance
-            shippingId = shippingInfo?.shippingId?.toLong() ?: 0
-            spId = shippingInfo?.spId?.toLong() ?: 0
-            ratesId = shippingInfo?.ratesId ?: ""
-            ut = shippingInfo?.ut ?: ""
-            checksum = shippingInfo?.checksum ?: ""
-            val tmpRatesFeature = shippingInfo?.ratesFeature
-            ratesFeature = mapRatesFeature(tmpRatesFeature)
-        }
-    }
-
-    private fun mapRatesFeature(
-        ratesFeature: com.tokopedia.checkout.data.model.request.common.RatesFeature?
-    ): RatesFeature {
-        return RatesFeature().apply {
-            ontimeDeliveryGuarantee = OntimeDeliveryGuarantee().apply {
-                available = ratesFeature?.ontimeDeliveryGuarantee?.available ?: false
-                duration = ratesFeature?.ontimeDeliveryGuarantee?.duration ?: 0
-            }
-        }
-    }
-
-    private fun mapDropshipData(
-        dropshipData: DropshipDataCheckoutRequest?,
-        isDropship: Int
-    ): Dropship {
-        return Dropship().apply {
-            this.isDropship = isDropship
-            name = dropshipData?.name ?: ""
-            telpNo = dropshipData?.telpNo ?: ""
-        }
-    }
-
-    private fun mapGiftingAddOn(listAddOnRequest: ArrayList<AddOnGiftingRequest>?): List<CheckoutGiftingAddOn> {
-        val listCheckoutGiftingAddOn = arrayListOf<CheckoutGiftingAddOn>()
-        listAddOnRequest?.forEach {
-            val addOnRequest = CheckoutGiftingAddOn().apply {
-                itemType = it.itemType
-                itemId = it.itemId
-                itemQty = it.itemQty
-                itemMetadata = it.itemMetadata
-            }
-            listCheckoutGiftingAddOn.add(addOnRequest)
-        }
-        return listCheckoutGiftingAddOn.toList()
-    }
-
-    private fun mapOrderMetadata(
-        shopProductCheckoutRequest: ShopProductCheckoutRequest,
-        promos: List<PromoRequest>?
-    ): List<OrderMetadata> {
-        val orderMetadata = arrayListOf<OrderMetadata>()
-        if (shopProductCheckoutRequest.freeShippingMetadata.isNotBlank() &&
-            promos?.firstOrNull { it.type == PromoRequest.TYPE_LOGISTIC } != null
-        ) {
-            // only add free shipping metadata if the order contains at least 1 promo logistic
-            orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, shopProductCheckoutRequest.freeShippingMetadata))
-        }
-        if (shopProductCheckoutRequest.needPrescription &&
-            shopProductCheckoutRequest.prescriptionIds.isNotEmpty()
-        ) {
-            orderMetadata.add(
-                OrderMetadata(
-                    UPLOAD_PRESCRIPTION_META_DATA_KEY,
-                    shopProductCheckoutRequest.prescriptionIds.toString()
-                )
-            )
-        } else if (shopProductCheckoutRequest.needPrescription &&
-            shopProductCheckoutRequest.consultationDataString.isNotBlank()
-        ) {
-            orderMetadata.add(
-                OrderMetadata(
-                    MINI_CONSULTATION_META_DATA_KEY,
-                    shopProductCheckoutRequest.consultationDataString
-                )
-            )
-        }
-        if (shopProductCheckoutRequest.needToSendValidationMetadata) {
-            orderMetadata.add(OrderMetadata(SCHEDULE_DELIVERY_META_DATA_KEY, shopProductCheckoutRequest.validationMetadata))
-        }
-        return orderMetadata
     }
 }

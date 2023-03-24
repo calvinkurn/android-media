@@ -897,7 +897,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
                                                       CheckoutRequest checkoutRequest,
                                                       String dynamicData) {
         Map<String, Object> params = new HashMap<>();
-        params.put(CheckoutGqlUseCase.PARAM_CARTS, CheckoutRequestMapper.INSTANCE.map(checkoutRequest));
+//        params.put(CheckoutGqlUseCase.PARAM_CARTS, CheckoutRequestMapper.INSTANCE.map(checkoutRequest));
         params.put(CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
         params.put(CheckoutGqlUseCase.PARAM_DYNAMIC_DATA, dynamicData);
         if (isTradeIn) {

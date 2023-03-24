@@ -1,22 +1,28 @@
 package com.tokopedia.checkout.view.converter
 
 import com.google.gson.Gson
-import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.Bundle
+import com.tokopedia.checkout.data.model.request.checkout.BundleInfo
+import com.tokopedia.checkout.data.model.request.checkout.CheckoutGiftingAddOn
+import com.tokopedia.checkout.data.model.request.checkout.Data
+import com.tokopedia.checkout.data.model.request.checkout.Dropship
+import com.tokopedia.checkout.data.model.request.checkout.OrderFeature
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata
+import com.tokopedia.checkout.data.model.request.checkout.Product
+import com.tokopedia.checkout.data.model.request.checkout.Promo
+import com.tokopedia.checkout.data.model.request.checkout.ShippingInfo
+import com.tokopedia.checkout.data.model.request.checkout.ShopOrder
 import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
 import com.tokopedia.checkout.data.model.request.common.OntimeDeliveryGuarantee
 import com.tokopedia.checkout.data.model.request.common.RatesFeature
-import com.tokopedia.checkout.view.adapter.ShipmentAdapter
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.SelectedShipperModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
 
 /**
@@ -25,292 +31,189 @@ import javax.inject.Inject
  */
 class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) {
 
-    fun generateRequestData(
-        shipmentCartItemModels: List<ShipmentCartItemModel>?,
-        recipientAddress: RecipientAddressModel?,
-        isAnalyticsPurpose: Boolean,
+    fun createCheckoutRequestDataNew(
+        shipmentCartItemModels: List<ShipmentCartItemModel>,
+        recipientAddress: RecipientAddressModel,
         isTradeInPickup: Boolean
-    ): ShipmentAdapter.RequestData {
-        val requestData = ShipmentAdapter.RequestData()
-        if (shipmentCartItemModels != null && shipmentCartItemModels.isNotEmpty()) {
-            val shopProductCheckoutRequestList: MutableList<ShopProductCheckoutRequest> =
-                ArrayList()
-            if (recipientAddress != null) {
-                for (shipmentCartItemModel in shipmentCartItemModels) {
-                    if (shipmentCartItemModel.selectedShipmentDetailData != null) {
-                        val element = getProductCheckoutRequest(
-                            shipmentCartItemModel,
-                            isTradeInPickup
-                        )
-                        if (element != null) {
-                            shopProductCheckoutRequestList.add(
-                                element
-                            )
-                        }
-                    } else if (isAnalyticsPurpose) {
-                        shopProductCheckoutRequestList.add(
-                            getProductCheckoutRequestForAnalytics(
-                                shipmentCartItemModel
-                            )
-                        )
-                    }
-                }
-                requestData.checkoutRequestData =
-                    createCheckoutRequestData(shopProductCheckoutRequestList, recipientAddress)
-            }
-        }
-        return requestData
-    }
-
-    private fun getProductCheckoutRequestForAnalytics(shipmentCartItemModel: ShipmentCartItemModel): ShopProductCheckoutRequest {
-        // Create shop product model for shipment
-        val shippingInfoCheckoutRequest = ShippingInfoCheckoutRequest()
-        shippingInfoCheckoutRequest.shippingId = 0
-        shippingInfoCheckoutRequest.spId = 0
-        shippingInfoCheckoutRequest.ratesId = ""
-        shippingInfoCheckoutRequest.checksum = ""
-        shippingInfoCheckoutRequest.ut = ""
-        shippingInfoCheckoutRequest.analyticsDataShippingCourierPrice = ""
-        val shopProductCheckout = ShopProductCheckoutRequest()
-        shopProductCheckout.shippingInfo = shippingInfoCheckoutRequest
-        shopProductCheckout.fcancelPartial = 0
-        shopProductCheckout.finsurance = 0
-        shopProductCheckout.isOrderPriority = 0
-        shopProductCheckout.isPreorder = if (shipmentCartItemModel.isProductIsPreorder) 1 else 0
-        shopProductCheckout.shopId = shipmentCartItemModel.shopId
-        shopProductCheckout.warehouseId = shipmentCartItemModel.fulfillmentId
-        shopProductCheckout.cartString = shipmentCartItemModel.cartString
-        shopProductCheckout.productData = convertToProductDataCheckout(shipmentCartItemModel)
-        shopProductCheckout.isTokoNow = shipmentCartItemModel.isTokoNow
-        shopProductCheckout.needToSendValidationMetadata = false
-        shopProductCheckout.validationMetadata = ""
-        val addOnsOrderLevelModel = shipmentCartItemModel.addOnsOrderLevelModel
-        if (addOnsOrderLevelModel != null) {
-            shopProductCheckout.giftingAddOnOrderLevel =
-                convertGiftingAddOnModelRequest(addOnsOrderLevelModel)
-        }
-        return shopProductCheckout
-    }
-
-    private fun getProductCheckoutRequest(
-        shipmentCartItemModel: ShipmentCartItemModel,
-        isTradeInPickup: Boolean
-    ): ShopProductCheckoutRequest? {
-        val shipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
-        if (shipmentDetailData != null && (
-            shipmentDetailData.selectedCourier != null ||
-                shipmentDetailData.selectedCourierTradeInDropOff != null
-            )
-        ) {
-            var courierItemData: CourierItemData? = null
-            if (isTradeInPickup && shipmentDetailData.selectedCourierTradeInDropOff != null) {
-                courierItemData = shipmentDetailData.selectedCourierTradeInDropOff
-            } else if (!isTradeInPickup && shipmentDetailData.selectedCourier != null) {
-                courierItemData = shipmentDetailData.selectedCourier
-            }
-            if (courierItemData != null) {
-                val ratesFeature = generateRatesFeature(courierItemData)
-                val selectedShipper = courierItemData.selectedShipper
-
-                // Create shop product model for shipment
-                val shippingInfoCheckoutRequest = ShippingInfoCheckoutRequest()
-                shippingInfoCheckoutRequest.shippingId = selectedShipper.shipperId
-                shippingInfoCheckoutRequest.spId = selectedShipper.shipperProductId
-                val scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel
-                if (scheduleDeliveryUiModel?.isSelected == true) {
-                    shippingInfoCheckoutRequest.ratesId =
-                        if (scheduleDeliveryUiModel.ratesId != 0L) {
-                            scheduleDeliveryUiModel.ratesId.toString()
-                        } else {
-                            ""
-                        }
-                } else {
-                    shippingInfoCheckoutRequest.ratesId =
-                        shipmentDetailData.shippingCourierViewModels?.first()?.ratesId ?: ""
-                }
-                shippingInfoCheckoutRequest.checksum = selectedShipper.checksum
-                shippingInfoCheckoutRequest.ut = selectedShipper.ut
-                shippingInfoCheckoutRequest.analyticsDataShippingCourierPrice =
-                    selectedShipper.shipperPrice.toString()
-                shippingInfoCheckoutRequest.ratesFeature = ratesFeature
-                val shopProductCheckout = ShopProductCheckoutRequest()
-                shopProductCheckout.shippingInfo = shippingInfoCheckoutRequest
-                shopProductCheckout.fcancelPartial =
-                    if (shipmentDetailData.usePartialOrder) 1 else 0
-                shopProductCheckout.finsurance =
-                    if (shipmentDetailData.useInsurance == true) 1 else 0
-                shopProductCheckout.isOrderPriority =
-                    if (shipmentDetailData.isOrderPriority == true) 1 else 0
-                shopProductCheckout.isPreorder =
-                    if (shipmentCartItemModel.isProductIsPreorder) 1 else 0
-                shopProductCheckout.shopId = shipmentCartItemModel.shopId
-                shopProductCheckout.warehouseId = shipmentCartItemModel.fulfillmentId
-                shopProductCheckout.cartString = shipmentCartItemModel.cartString
-                shopProductCheckout.productData =
-                    convertToProductDataCheckout(shipmentCartItemModel)
-                shopProductCheckout.isTokoNow = shipmentCartItemModel.isTokoNow
-                shopProductCheckout.needToSendValidationMetadata =
-                    (selectedShipper.scheduleDate != "" && selectedShipper.timeslotId != 0L && shipmentCartItemModel.validationMetadata != "")
-                shopProductCheckout.validationMetadata = shipmentCartItemModel.validationMetadata
-                val promoCodes = ArrayList<String>()
-                val promoRequests: ArrayList<PromoRequest> = ArrayList()
-                val voucherLogisticItemUiModel = shipmentCartItemModel.voucherLogisticItemUiModel
-                if (voucherLogisticItemUiModel != null) {
-                    promoCodes.add(voucherLogisticItemUiModel.code)
-                    val promoRequest = PromoRequest()
-                    promoRequest.code = voucherLogisticItemUiModel.code
-                    promoRequest.type = PromoRequest.TYPE_LOGISTIC
-                    promoRequests.add(promoRequest)
-                    shopProductCheckout.freeShippingMetadata = selectedShipper.freeShippingMetadata
-                }
-                shopProductCheckout.promos = promoRequests
-                if (promoCodes.size > 0) {
-                    shopProductCheckout.promoCodes = promoCodes
-                }
-                if (shipmentDetailData.useDropshipper == true) {
-                    val dropshipDataCheckoutRequest = DropshipDataCheckoutRequest()
-                    dropshipDataCheckoutRequest.name = shipmentDetailData.dropshipperName
-                    dropshipDataCheckoutRequest.telpNo = shipmentDetailData.dropshipperPhone
-                    shopProductCheckout.isDropship = 1
-                    shopProductCheckout.dropshipData = dropshipDataCheckoutRequest
-                } else {
-                    shopProductCheckout.isDropship = 0
-                }
-                val addOnsOrderLevelModel = shipmentCartItemModel.addOnsOrderLevelModel
-                if (addOnsOrderLevelModel != null) {
-                    shopProductCheckout.giftingAddOnOrderLevel =
-                        convertGiftingAddOnModelRequest(addOnsOrderLevelModel)
-                }
-                if (shipmentCartItemModel.hasEthicalProducts) {
-                    for (cartItemModel in shipmentCartItemModel.cartItemModels) {
-                        if (!cartItemModel.isError && cartItemModel.ethicalDrugDataModel.needPrescription) {
-                            shopProductCheckout.needPrescription = true
-                            shopProductCheckout.prescriptionIds =
-                                shipmentCartItemModel.prescriptionIds
-                            shopProductCheckout.consultationDataString =
-                                shipmentCartItemModel.consultationDataString
-                            break
-                        }
-                    }
-                }
-                return shopProductCheckout
-            }
-            return null
-        }
-        return null
-    }
-
-    private fun convertToProductDataCheckout(shipmentCartItemModel: ShipmentCartItemModel): ArrayList<ProductDataCheckoutRequest> {
-        val productDataList = ArrayList<ProductDataCheckoutRequest>()
-        for (cartItem in shipmentCartItemModel.cartItemModels) {
-            productDataList.add(
-                convertToProductDataCheckout(
-                    cartItem,
-                    shipmentCartItemModel.selectedShipmentDetailData
+    ): List<Data> {
+        val addressId = getSelectedAddressId(recipientAddress)
+        val data = Data()
+        data.addressId = addressId.toLongOrZero()
+        data.shopOrders = shipmentCartItemModels.mapNotNull { shipmentCartItemModel ->
+            var shopOrder: ShopOrder? = null
+            val shipmentDetailData = shipmentCartItemModel.selectedShipmentDetailData
+            if (shipmentDetailData != null && (
+                shipmentDetailData.selectedCourier != null ||
+                    shipmentDetailData.selectedCourierTradeInDropOff != null
                 )
-            )
+            ) {
+                var courierItemData: CourierItemData? = null
+                if (isTradeInPickup && shipmentDetailData.selectedCourierTradeInDropOff != null) {
+                    courierItemData = shipmentDetailData.selectedCourierTradeInDropOff
+                } else if (!isTradeInPickup && shipmentDetailData.selectedCourier != null) {
+                    courierItemData = shipmentDetailData.selectedCourier
+                }
+                if (courierItemData != null) {
+                    val ratesFeature = generateRatesFeatureNew(courierItemData)
+                    val selectedShipper = courierItemData.selectedShipper
+
+                    // Create shop product model for shipment
+                    val shippingInfoCheckoutRequest = ShippingInfo()
+                    shippingInfoCheckoutRequest.shippingId = selectedShipper.shipperId.toLong()
+                    shippingInfoCheckoutRequest.spId = selectedShipper.shipperProductId.toLong()
+                    val scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel
+                    if (scheduleDeliveryUiModel?.isSelected == true) {
+                        shippingInfoCheckoutRequest.ratesId =
+                            if (scheduleDeliveryUiModel.ratesId != 0L) {
+                                scheduleDeliveryUiModel.ratesId.toString()
+                            } else {
+                                ""
+                            }
+                    } else {
+                        shippingInfoCheckoutRequest.ratesId =
+                            shipmentDetailData.shippingCourierViewModels?.first()?.ratesId ?: ""
+                    }
+                    shippingInfoCheckoutRequest.checksum = selectedShipper.checksum ?: ""
+                    shippingInfoCheckoutRequest.ut = selectedShipper.ut ?: ""
+                    shippingInfoCheckoutRequest.ratesFeature = ratesFeature
+                    shippingInfoCheckoutRequest.finsurance = if (shipmentDetailData.useInsurance == true) 1 else 0
+                    val promoCodes = ArrayList<String>()
+                    val promoRequests: ArrayList<Promo> = ArrayList()
+                    val voucherLogisticItemUiModel = shipmentCartItemModel.voucherLogisticItemUiModel
+                    if (voucherLogisticItemUiModel != null) {
+                        promoCodes.add(voucherLogisticItemUiModel.code)
+                        val promoRequest = Promo()
+                        promoRequest.code = voucherLogisticItemUiModel.code
+                        promoRequest.type = PromoRequest.TYPE_LOGISTIC
+                        promoRequests.add(promoRequest)
+                    }
+                    shopOrder = ShopOrder(
+                        cartstring = shipmentCartItemModel.cartString,
+                        shopId = shipmentCartItemModel.shopId,
+                        warehouseId = shipmentCartItemModel.fulfillmentId,
+                        isPreorder = if (shipmentCartItemModel.isProductIsPreorder) 1 else 0,
+                        orderFeature = OrderFeature(
+                            isOrderPriority = if (shipmentDetailData.isOrderPriority == true) 1 else 0
+                        ),
+                        shippingInfo = shippingInfoCheckoutRequest,
+                        dropship = Dropship(
+                            isDropship = if (shipmentDetailData.useDropshipper == true) 1 else 0,
+                            name = shipmentDetailData.dropshipperName ?: "",
+                            telpNo = shipmentDetailData.dropshipperPhone ?: ""
+                        ),
+                        promos = promoRequests,
+                        bundle = mapBundle(shipmentCartItemModel),
+                        checkoutGiftingOrderLevel = mapGiftingAddOn(shipmentCartItemModel.addOnsOrderLevelModel ?: AddOnsDataModel()),
+                        orderMetadata = mapOrderMetadata(shipmentCartItemModel, selectedShipper, promoRequests),
+                        isTokoNow = shipmentCartItemModel.isTokoNow
+                    )
+                }
+            }
+            shopOrder
         }
-        return productDataList
+        return listOf(data)
     }
 
-    private fun convertToProductDataCheckout(
-        cartItem: CartItemModel,
-        shipmentDetailData: ShipmentDetailData?
-    ): ProductDataCheckoutRequest {
-        var courierId = ""
-        var serviceId = ""
-        var shippingPrice = ""
-        val selectedCourier = shipmentDetailData?.selectedCourier
-        if (selectedCourier != null) {
-            courierId =
-                selectedCourier.selectedShipper.shipperProductId.toString()
-            serviceId = selectedCourier.selectedShipper.serviceId.toString()
-            shippingPrice =
-                selectedCourier.selectedShipper.shipperPrice.toString()
+    private fun mapBundle(shipmentCartItemModel: ShipmentCartItemModel): List<Bundle> {
+        val bundleList = mutableListOf<Bundle>()
+
+        val bundleIdProductsMap = mutableMapOf<String, MutableList<Product>>()
+        val bundleIdGroupIdMap = mutableMapOf<String, String>()
+        shipmentCartItemModel.cartItemModels.forEach {
+            if (!bundleIdProductsMap.containsKey(it.bundleId)) {
+                val product = mapProduct(it)
+                bundleIdProductsMap[it.bundleId] = mutableListOf(product)
+                bundleIdGroupIdMap[it.bundleId] = it.bundleGroupId
+            } else {
+                val products = bundleIdProductsMap[it.bundleId]
+                val product = mapProduct(it)
+                products?.add(product)
+            }
         }
-        val productDataCheckoutRequest = ProductDataCheckoutRequest()
-        productDataCheckoutRequest.productId = cartItem.productId
-        productDataCheckoutRequest.bundleId = cartItem.bundleId
-        productDataCheckoutRequest.bundleGroupId = cartItem.bundleGroupId
-        productDataCheckoutRequest.bundleType = cartItem.bundleType
-        productDataCheckoutRequest.isPurchaseProtection = cartItem.isProtectionOptIn
-        productDataCheckoutRequest.productName = cartItem.analyticsProductCheckoutData.productName
-        productDataCheckoutRequest.productPrice = cartItem.analyticsProductCheckoutData.productPrice
-        productDataCheckoutRequest.productBrand = cartItem.analyticsProductCheckoutData.productBrand
-        productDataCheckoutRequest.productCategory =
-            cartItem.analyticsProductCheckoutData.productCategory
-        productDataCheckoutRequest.productVariant =
-            cartItem.analyticsProductCheckoutData.productVariant
-        productDataCheckoutRequest.productQuantity =
-            cartItem.analyticsProductCheckoutData.productQuantity
-        productDataCheckoutRequest.productShopId =
-            cartItem.analyticsProductCheckoutData.productShopId
-        productDataCheckoutRequest.productShopType =
-            cartItem.analyticsProductCheckoutData.productShopType
-        productDataCheckoutRequest.productShopName =
-            cartItem.analyticsProductCheckoutData.productShopName
-        productDataCheckoutRequest.productCategoryId =
-            cartItem.analyticsProductCheckoutData.productCategoryId
-        productDataCheckoutRequest.productListName =
-            cartItem.analyticsProductCheckoutData.productListName
-        productDataCheckoutRequest.productAttribution =
-            cartItem.analyticsProductCheckoutData.productAttribution
-        productDataCheckoutRequest.cartId = cartItem.cartId
-        productDataCheckoutRequest.warehouseId = cartItem.analyticsProductCheckoutData.warehouseId
-        productDataCheckoutRequest.productWeight =
-            cartItem.analyticsProductCheckoutData.productWeight
-        productDataCheckoutRequest.promoCode = cartItem.analyticsProductCheckoutData.promoCode
-        productDataCheckoutRequest.promoDetails = cartItem.analyticsProductCheckoutData.promoDetails
-        productDataCheckoutRequest.buyerAddressId =
-            cartItem.analyticsProductCheckoutData.buyerAddressId
-        productDataCheckoutRequest.shippingDuration = serviceId
-        productDataCheckoutRequest.courier = courierId
-        productDataCheckoutRequest.shippingPrice = shippingPrice
-        productDataCheckoutRequest.codFlag = cartItem.analyticsProductCheckoutData.codFlag
-        productDataCheckoutRequest.tokopediaCornerFlag =
-            cartItem.analyticsProductCheckoutData.tokopediaCornerFlag
-        productDataCheckoutRequest.isFulfillment =
-            cartItem.analyticsProductCheckoutData.isFulfillment
-        productDataCheckoutRequest.isDiscountedPrice =
-            cartItem.analyticsProductCheckoutData.isDiscountedPrice
-        productDataCheckoutRequest.isFreeShipping = cartItem.isFreeShipping
-        productDataCheckoutRequest.isFreeShippingExtra = cartItem.isFreeShippingExtra
-        productDataCheckoutRequest.freeShippingName = cartItem.freeShippingName
-        productDataCheckoutRequest.campaignId = cartItem.analyticsProductCheckoutData.campaignId
-        productDataCheckoutRequest.protectionPricePerProduct = cartItem.protectionPricePerProduct
-        productDataCheckoutRequest.protectionTitle = cartItem.protectionTitle
-        productDataCheckoutRequest.isProtectionAvailable = cartItem.isProtectionAvailable
-        productDataCheckoutRequest.addOnGiftingProductLevelRequest =
-            convertGiftingAddOnModelRequest(cartItem.addOnProductLevelModel)
-        return productDataCheckoutRequest
+
+        bundleIdProductsMap.forEach {
+            val bundle = Bundle().apply {
+                bundleInfo = BundleInfo().apply {
+                    if (it.key.isNotBlankOrZero()) {
+                        bundleId = it.key.toLongOrZero()
+                        bundleGroupId = bundleIdGroupIdMap[it.key] ?: ""
+                    }
+                }
+                productData = it.value
+            }
+            bundleList.add(bundle)
+        }
+
+        return bundleList
     }
 
-    private fun convertGiftingAddOnModelRequest(addOnsDataModel: AddOnsDataModel): ArrayList<AddOnGiftingRequest> {
-        val listAddOnProductRequest = ArrayList<AddOnGiftingRequest>()
-        if (addOnsDataModel.status == 1) {
-            for (addOnItem in addOnsDataModel.addOnsDataItemModelList) {
-                val addOnGiftingRequest = AddOnGiftingRequest()
+    private fun mapProduct(it: CartItemModel): Product {
+        val product = Product().apply {
+            productId = it.productId.toString()
+            isPpp = it.isProtectionOptIn
+            checkoutGiftingProductLevel = mapGiftingAddOn(it.addOnProductLevelModel)
+            cartId = it.cartId.toString()
+            productCategoryId = it.analyticsProductCheckoutData.productCategoryId
+            protectionPricePerProduct = it.protectionPricePerProduct
+            protectionTitle = it.protectionTitle
+            isProtectionAvailable = it.isProtectionAvailable
+        }
+        return product
+    }
+
+    fun mapGiftingAddOn(addOnsData: AddOnsDataModel): List<CheckoutGiftingAddOn> {
+        val listCheckoutGiftingAddOn = arrayListOf<CheckoutGiftingAddOn>()
+        if (addOnsData.status == 1) {
+            for (addOnItem in addOnsData.addOnsDataItemModelList) {
+                val addOnGiftingRequest = CheckoutGiftingAddOn()
                 addOnGiftingRequest.itemId = addOnItem.addOnId
                 addOnGiftingRequest.itemType = "add_ons"
                 addOnGiftingRequest.itemQty = addOnItem.addOnQty.toInt()
                 addOnGiftingRequest.itemMetadata = _gson.toJson(addOnItem.addOnMetadata)
-                listAddOnProductRequest.add(addOnGiftingRequest)
+                listCheckoutGiftingAddOn.add(addOnGiftingRequest)
             }
         }
-        return listAddOnProductRequest
+        return listCheckoutGiftingAddOn
     }
 
-    private fun createCheckoutRequestData(
-        shopProducts: List<ShopProductCheckoutRequest>,
-        recipientAddress: RecipientAddressModel
-    ): List<DataCheckoutRequest> {
-        val addressId = getSelectedAddressId(recipientAddress)
-        val checkoutRequestData: MutableList<DataCheckoutRequest> = ArrayList()
-        val dataCheckoutRequest = DataCheckoutRequest()
-        dataCheckoutRequest.addressId = addressId
-        dataCheckoutRequest.shopProducts = shopProducts
-        checkoutRequestData.add(dataCheckoutRequest)
-        return checkoutRequestData
+    private fun mapOrderMetadata(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        selectedShipper: SelectedShipperModel,
+        promos: List<Promo>
+    ): List<OrderMetadata> {
+        val orderMetadata = arrayListOf<OrderMetadata>()
+        if (selectedShipper.freeShippingMetadata.isNotBlank() &&
+            promos.firstOrNull { it.type == PromoRequest.TYPE_LOGISTIC } != null
+        ) {
+            // only add free shipping metadata if the order contains at least 1 promo logistic
+            orderMetadata.add(OrderMetadata(OrderMetadata.FREE_SHIPPING_METADATA, selectedShipper.freeShippingMetadata))
+        }
+        if (shipmentCartItemModel.hasEthicalProducts) {
+            for (cartItemModel in shipmentCartItemModel.cartItemModels) {
+                if (!cartItemModel.isError && cartItemModel.ethicalDrugDataModel.needPrescription) {
+                    if (shipmentCartItemModel.prescriptionIds.isNotEmpty()) {
+                        orderMetadata.add(
+                            OrderMetadata(
+                                OrderMetadata.UPLOAD_PRESCRIPTION_META_DATA_KEY,
+                                shipmentCartItemModel.prescriptionIds.toString()
+                            )
+                        )
+                    } else if (shipmentCartItemModel.consultationDataString.isNotEmpty()) {
+                        orderMetadata.add(
+                            OrderMetadata(
+                                OrderMetadata.MINI_CONSULTATION_META_DATA_KEY,
+                                shipmentCartItemModel.consultationDataString
+                            )
+                        )
+                    }
+                    break
+                }
+            }
+        }
+        if (selectedShipper.scheduleDate.isNotEmpty() && selectedShipper.timeslotId != 0L && shipmentCartItemModel.validationMetadata.isNotEmpty()) {
+            orderMetadata.add(OrderMetadata(OrderMetadata.SCHEDULE_DELIVERY_META_DATA_KEY, shipmentCartItemModel.validationMetadata))
+        }
+        return orderMetadata
     }
 
     private fun getSelectedAddressId(recipientAddress: RecipientAddressModel?): String {
@@ -323,6 +226,18 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         } else {
             "0"
         }
+    }
+
+    private fun generateRatesFeatureNew(courierItemData: CourierItemData): com.tokopedia.checkout.data.model.request.checkout.RatesFeature {
+        val result = com.tokopedia.checkout.data.model.request.checkout.RatesFeature()
+        val otdg = com.tokopedia.checkout.data.model.request.checkout.OntimeDeliveryGuarantee()
+        val ontimeDelivery = courierItemData.selectedShipper.ontimeDelivery
+        if (ontimeDelivery != null) {
+            otdg.available = ontimeDelivery.available
+            otdg.duration = ontimeDelivery.value
+        }
+        result.ontimeDeliveryGuarantee = otdg
+        return result
     }
 
     companion object {

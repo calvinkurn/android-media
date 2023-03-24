@@ -3491,7 +3491,9 @@ class ShipmentFragment :
         if (data != null) {
             val saveAddOnStateResult =
                 data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
-            shipmentPresenter.updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult)
+            if (saveAddOnStateResult != null) {
+                shipmentPresenter.updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult)
+            }
         }
     }
 
@@ -3499,7 +3501,9 @@ class ShipmentFragment :
         if (data != null) {
             val saveAddOnStateResult =
                 data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
-            shipmentPresenter.updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult)
+            if (saveAddOnStateResult != null) {
+                shipmentPresenter.updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult)
+            }
         }
     }
 
@@ -4169,11 +4173,9 @@ class ShipmentFragment :
     override fun onClickCancelNewUpsellCard(shipmentUpsellModel: ShipmentNewUpsellModel?) {
         shipmentPresenter.isPlusSelected = false
         shipmentPresenter.cancelUpsell(
-            true, /*isOneClickShipment, isTradeIn,*/
             true,
-            false,
-            null/*, deviceId, checkoutLeasingId,
-            isPlusSelected()*/
+            true,
+            false
         )
         checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel!!.isSelected)
     }

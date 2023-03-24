@@ -318,7 +318,7 @@ interface ShipmentContract {
 
         var recipientAddressModel: RecipientAddressModel
         var shipmentCartItemModelList: List<ShipmentCartItemModel>
-        fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>)
+//        fun setDataCheckoutRequestList(dataCheckoutRequestList: List<DataCheckoutRequest>)
 
 //        fun getShipmentCostModel(): ShipmentCostModel
 //        fun setShipmentCostModel(shipmentCostModel: ShipmentCostModel?)
@@ -405,14 +405,14 @@ interface ShipmentContract {
         val uploadPrescriptionUiModel: UploadPrescriptionUiModel
         fun generateRatesMvcParam(cartString: String?): String
         val cartDataForRates: String?
-        fun updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult?)
-        fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult?)
+        fun updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult)
+        fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult)
         val shipmentUpsellModel: ShipmentUpsellModel
         val shipmentNewUpsellModel: ShipmentNewUpsellModel
         fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<ArrayList<String>, ArrayList<String>>
         fun clearOrderPromoCodeFromLastValidateUseRequest(uniqueId: String?, promoCode: String?)
         fun validateClearAllBoPromo()
-        fun doUnapplyBo(uniqueId: String?, promoCode: String)
+        fun doUnapplyBo(uniqueId: String, promoCode: String)
         fun getProductForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): List<Product>
         fun processBoPromoCourierRecommendation(
             itemPosition: Int,
@@ -424,14 +424,8 @@ interface ShipmentContract {
         fun hitClearAllBo()
         fun cancelUpsell(
             isReloadData: Boolean,
-//            isOneClickShipment: Boolean,
-//            isTradeIn: Boolean,
             skipUpdateOnboardingState: Boolean,
-            isReloadAfterPriceChangeHinger: Boolean,
-            cornerId: String?
-//            deviceId: String?,
-//            leasingId: String?,
-//            isPlusSelected: Boolean
+            isReloadAfterPriceChangeHinger: Boolean
         )
 
         fun clearAllBoOnTemporaryUpsell()
