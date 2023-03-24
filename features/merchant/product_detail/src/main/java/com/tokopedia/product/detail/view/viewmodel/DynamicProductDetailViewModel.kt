@@ -65,7 +65,6 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generat
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
@@ -88,6 +87,8 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
+import com.tokopedia.product.detail.view.viewmodel.slicing.ProductRecommendationSlice
+import com.tokopedia.product.detail.view.viewmodel.slicing.impl.ProductRecommendationSliceImpl
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -158,8 +159,9 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val playWidgetTools: PlayWidgetTools,
     private val remoteConfig: RemoteConfig,
     val userSessionInterface: UserSessionInterface,
-    private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>
-) : BaseViewModel(dispatcher.main) {
+    private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
+    private val productRecommendationSlice: Lazy<ProductRecommendationSliceImpl>
+) : BaseViewModel(dispatcher.main), ProductRecommendationSlice by productRecommendationSlice.get() {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
@@ -272,13 +274,6 @@ open class DynamicProductDetailViewModel @Inject constructor(
     private val _playWidgetReminderSwitch = MutableLiveData<Result<PlayWidgetReminderType>>()
     val playWidgetReminderSwitch: LiveData<Result<PlayWidgetReminderType>> =
         _playWidgetReminderSwitch
-
-    private val _verticalRecommendation = MutableLiveData<Result<RecommendationWidget>>()
-    val verticalRecommendation: LiveData<Result<RecommendationWidget>> = _verticalRecommendation
-
-    private val _loadViewToView = MutableLiveData<Result<RecommendationWidget>>()
-    val loadViewToView: LiveData<Result<RecommendationWidget>>
-        get() = _loadViewToView
 
     private val _oneTimeMethod = MutableStateFlow(OneTimeMethodState())
     val oneTimeMethodState: StateFlow<OneTimeMethodState> = _oneTimeMethod
@@ -775,40 +770,6 @@ open class DynamicProductDetailViewModel @Inject constructor(
             _loadTopAdsProduct.value = response.asSuccess()
         }) {
             _loadTopAdsProduct.value = Throwable(pageName).asFail()
-        }
-    }
-
-    fun loadViewToView(
-        pageName: String,
-        productId: String,
-        isTokoNow: Boolean
-    ) {
-        if (GlobalConfig.isSellerApp()) return
-
-        if (!alreadyHitRecom.contains(pageName)) {
-            alreadyHitRecom.add(pageName)
-        } else {
-            return
-        }
-
-        launchCatchError(dispatcher.main, block = {
-            val response = getRecommendationUseCase.get().getData(
-                GetRecommendationRequestParam(
-                    pageNumber = DEFAULT_PAGE_NUMBER,
-                    pageName = pageName,
-                    productIds = arrayListOf(productId),
-                    isTokonow = isTokoNow
-                )
-            )
-
-            _loadViewToView.value = if (response.isNotEmpty()) {
-                Success(response.first())
-            } else {
-                Fail(MessageErrorException())
-            }
-        }) {
-            alreadyHitRecom.remove(pageName)
-            _loadViewToView.value = Throwable(pageName, it).asFail()
         }
     }
 
@@ -1314,31 +1275,6 @@ open class DynamicProductDetailViewModel @Inject constructor(
                 )
                 _playWidgetModel.value = Success(reversedToggleUi)
                 _playWidgetReminderSwitch.value = Fail(it)
-            })
-    }
-
-    fun getVerticalRecommendationData(
-        pageName: String,
-        page: Int? = DEFAULT_PAGE_NUMBER,
-        productId: String?
-    ) {
-        val nonNullPage = page ?: DEFAULT_PAGE_NUMBER
-        val nonNullProductId = productId.orEmpty()
-        launchCatchError(block = {
-            val requestParams = GetRecommendationRequestParam(
-                pageNumber = nonNullPage,
-                pageName = pageName,
-                productIds = arrayListOf(nonNullProductId)
-            )
-            val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
-            val dataResponse = recommendationResponse.firstOrNull()
-            if (dataResponse == null) {
-                _verticalRecommendation.value = Fail(Throwable())
-            } else {
-                _verticalRecommendation.value = dataResponse.asSuccess()
-            }
-        }, onError = {
-                _verticalRecommendation.value = Fail(it)
             })
     }
 
