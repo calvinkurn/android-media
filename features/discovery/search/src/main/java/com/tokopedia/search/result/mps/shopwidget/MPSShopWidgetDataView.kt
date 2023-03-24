@@ -26,7 +26,7 @@ class MPSShopWidgetDataView(
         location.isNotEmpty() && willShowFreeOngkir()
 
     companion object {
-        fun create(shopItem: Shop) = MPSShopWidgetDataView(
+        fun create(shopItem: Shop, keywords: String) = MPSShopWidgetDataView(
             id = shopItem.id,
             name = shopItem.name,
             imageUrl = shopItem.imageUrl,
@@ -37,8 +37,10 @@ class MPSShopWidgetDataView(
             ticker = MPSShopTickerDataView.create(shopItem.ticker),
             badgeList = shopItem.badgeList.map(MPSShopBadgeDataView::create),
             shopFreeOngkir = MPSShopFreeOngkirDataView.create(shopItem.freeOngkir),
-            buttonList = shopItem.buttonList.map(MPSButtonDataView::create),
-            productList = shopItem.productList.map(MPSShopWidgetProductDataView::create),
+            buttonList = shopItem.buttonList
+                .map { MPSButtonDataView.create(it, keywords, shopItem.id, shopItem.name) },
+            productList = shopItem.productList
+                .map { MPSShopWidgetProductDataView.create(shopItem, it, keywords) },
         )
     }
 

@@ -1,18 +1,27 @@
 package com.tokopedia.search.result.mps.shopwidget
 
 import android.content.Context
+import com.tokopedia.discovery.common.utils.UrlParamUtils.keywords
 import com.tokopedia.search.result.mps.MPSViewModel
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
+import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class MPSShopWidgetListenerDelegate(
-    private val context: () -> Context?,
+    private val context: Context?,
     private val mpsViewModel: () -> MPSViewModel?,
+    private val trackingQueue: TrackingQueue,
 ): MPSShopWidgetListener,
     ApplinkOpener by ApplinkOpenerDelegate {
 
+    private val keywords
+        get() = mpsViewModel()?.stateFlow?.value?.parameter?.keywords() ?: ""
+
     override fun onSeeShopClicked(mpsShopWidgetDataView: MPSShopWidgetDataView) {
-        openApplink(context(), mpsShopWidgetDataView.applink)
+        mpsShopWidgetDataView.buttonList.first().click(TrackApp.getInstance().gtm)
+
+        openApplink(context, mpsShopWidgetDataView.applink)
     }
 
     override fun onSeeAllCardClicked(mpsShopWidgetDataView: MPSShopWidgetDataView) {
@@ -23,7 +32,14 @@ class MPSShopWidgetListenerDelegate(
         mpsShopWidgetDataView: MPSShopWidgetDataView,
         mpsShopWidgetProductDataView: MPSShopWidgetProductDataView?
     ) {
+        mpsShopWidgetProductDataView ?: return
 
+        MPSShopWidgetTracking.impressionShopWidgetProduct(
+            trackingQueue,
+            arrayListOf(mpsShopWidgetProductDataView.asObjectDataLayer()),
+            keywords,
+            mpsShopWidgetDataView.id,
+        )
     }
 
     override fun onProductItemClicked(
@@ -32,7 +48,14 @@ class MPSShopWidgetListenerDelegate(
     ) {
         mpsShopWidgetProductDataView ?: return
 
-        openApplink(context(), mpsShopWidgetProductDataView.applink)
+        MPSShopWidgetTracking.clickShopWidgetProduct(
+            mpsShopWidgetProductDataView.asObjectDataLayer(),
+            mpsShopWidgetDataView.componentId,
+            keywords,
+            mpsShopWidgetDataView.id,
+        )
+
+        openApplink(context, mpsShopWidgetProductDataView.applink)
     }
 
     override fun onProductItemAddToCart(
@@ -49,7 +72,8 @@ class MPSShopWidgetListenerDelegate(
         mpsShopWidgetProductDataView: MPSShopWidgetProductDataView?
     ) {
         val seeOtherProductButton = mpsShopWidgetProductDataView?.secondaryButton() ?: return
+        seeOtherProductButton.click(TrackApp.getInstance().gtm)
 
-        openApplink(context(), seeOtherProductButton.applink)
+        openApplink(context, seeOtherProductButton.applink)
     }
 }

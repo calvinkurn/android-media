@@ -3,6 +3,7 @@ package com.tokopedia.search.result.mps
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.State
+import com.tokopedia.discovery.common.utils.UrlParamUtils.keywords
 import com.tokopedia.filter.common.FilterState
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.mps.domain.model.MPSModel
@@ -55,7 +56,9 @@ data class MPSState(
         }
 
     private fun mpsShopWidgetList(mpsModel: MPSModel) =
-        mpsModel.shopList.map(MPSShopWidgetDataView::create)
+        mpsModel.shopList.map {
+            MPSShopWidgetDataView.create(it, parameter.keywords())
+        }
 
     private fun quickFilterData(mpsModel: MPSModel): List<QuickFilterDataView> {
         return if (mpsModel.shopList.isEmpty() && !filterState.isFilterActive) listOf()

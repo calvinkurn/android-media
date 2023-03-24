@@ -100,4 +100,12 @@ object UrlParamUtils {
 
         return get(key)?.toString() ?: ""
     }
+
+    fun Map<String, String>.keywords(): String {
+        return listOf(
+            this[SearchApiConst.Q1] ?: "",
+            this[SearchApiConst.Q2] ?: "",
+            this[SearchApiConst.Q3] ?: "",
+        ).filter(String::isNotEmpty).joinToString(" ^ ")
+    }
 }

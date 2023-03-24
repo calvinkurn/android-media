@@ -1,6 +1,8 @@
 package com.tokopedia.search.result.mps.shopwidget
 
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.search.result.mps.domain.model.MPSModel
+import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop
 import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop.Product
 
 data class MPSShopWidgetProductDataView(
@@ -27,8 +29,14 @@ data class MPSShopWidgetProductDataView(
 
     fun secondaryButton(): MPSButtonDataView? = buttonList.find(MPSButtonDataView::isSecondary)
 
+    fun asObjectDataLayer(): Any = mapOf<String, String>()
+
     companion object {
-        fun create(product: Product) = MPSShopWidgetProductDataView(
+        fun create(
+            shop: Shop,
+            product: Product,
+            keywords: String,
+        ) = MPSShopWidgetProductDataView(
             id = product.id,
             imageUrl = product.imageUrl,
             name = product.name,
@@ -43,7 +51,10 @@ data class MPSShopWidgetProductDataView(
             minOrder = product.minOrder,
             componentId = product.componentId,
             trackingOption = product.trackingOption,
-            buttonList = product.buttonList.map(MPSButtonDataView::create),
+            buttonList = product.buttonList
+                .map {
+                    MPSButtonDataView.create(it, keywords, shop.id, "")
+                 },
             labelGroupList = product.labelGroupList.map(MPSProductLabelGroupDataView::create),
         )
     }

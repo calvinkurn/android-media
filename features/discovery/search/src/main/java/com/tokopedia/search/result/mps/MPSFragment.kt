@@ -10,21 +10,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.Error
 import com.tokopedia.discovery.common.State.Success
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchMpsFragmentLayoutBinding
 import com.tokopedia.search.result.mps.addtocart.AddToCartView
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
@@ -34,8 +27,7 @@ import com.tokopedia.search.result.presentation.view.activity.SearchComponent
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.mvvm.SearchView
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener as EndlessScrollListener
@@ -52,16 +44,14 @@ class MPSFragment:
     @Suppress("LateinitUsage")
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    @Suppress("LateinitUsage")
+    lateinit var trackingQueue: TrackingQueue
+
     private val viewModel: MPSViewModel? by viewModels { viewModelFactory }
     private var binding: SearchMpsFragmentLayoutBinding? by autoClearedNullable()
     private val recycledViewPool = RecycledViewPool()
-    private val mpsTypeFactory = MPSTypeFactoryImpl(
-        recycledViewPool = recycledViewPool,
-        fragmentProvider = this,
-        chooseAddressListener = this,
-        shopWidgetListener = MPSShopWidgetListenerDelegate({ context }, ::viewModel)
-    )
-    private val mpsListAdapter = MPSListAdapter(mpsTypeFactory, this)
+    private var mpsListAdapter: MPSListAdapter? = null
     private val quickFilterView = QuickFilterView(::viewModel)
     private val addToCartView = AddToCartView({ context }, ::viewModel)
     private var endlessScrollListener: EndlessScrollListener? = null
@@ -89,11 +79,28 @@ class MPSFragment:
     private fun initViews() {
         val context = context ?: return
 
+        initAdapter()
+
         binding?.mpsRecyclerView?.apply {
             adapter = mpsListAdapter
             layoutManager = LinearLayoutManager(context)
             endlessScrollListener = endlessScrollListener(layoutManager).also(::addOnScrollListener)
         }
+    }
+
+    private fun initAdapter() {
+        val mpsTypeFactory = MPSTypeFactoryImpl(
+            recycledViewPool = recycledViewPool,
+            fragmentProvider = this,
+            chooseAddressListener = this,
+            shopWidgetListener = MPSShopWidgetListenerDelegate(
+                context,
+                ::viewModel,
+                trackingQueue,
+            )
+        )
+
+        mpsListAdapter = MPSListAdapter(mpsTypeFactory, this)
     }
 
     private fun endlessScrollListener(layoutManager: LayoutManager?): EndlessScrollListener =
@@ -110,7 +117,7 @@ class MPSFragment:
 
         if (it.loadMoreThrowable != null) showNetworkErrorLoadMore(it.loadMoreThrowable)
 
-        mpsListAdapter.submitList(it.result.data)
+        mpsListAdapter?.submitList(it.result.data)
 
         quickFilterView.refreshQuickFilter(binding?.mpsSortFilter, it)
 
@@ -134,6 +141,12 @@ class MPSFragment:
         NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
             viewModel?.onViewLoadMore()
         }.showRetrySnackbar()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        trackingQueue.sendAll()
     }
 
     override fun onResume() {

@@ -3,6 +3,7 @@ package com.tokopedia.search.result.mps
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.utils.UrlParamUtils.keywords
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 import com.tokopedia.search.result.mps.domain.model.MPSModel.SearchShopMPS.Shop
@@ -90,20 +91,28 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
             assertThat(mpsShopBadgeDataView.isShow, `is`(shopItemModel.badgeList[index].isShow))
         }
 
-        assertButtonDataViewList(mpsShopWidgetDataView.buttonList, shopItemModel.buttonList)
+        assertButtonDataViewList(
+            mpsShopWidgetDataView.buttonList,
+            shopItemModel.buttonList,
+            shopItemModel.id,
+            shopItemModel.name,
+        )
 
         assertThat(mpsShopWidgetDataView.productList.size, `is`(shopItemModel.productList.size))
         mpsShopWidgetDataView.productList.forEachIndexed { index, mpsShopWidgetProductDataView ->
             assertMPSShopWidgetProductDataView(
                 mpsShopWidgetProductDataView,
-                shopItemModel.productList[index]
+                shopItemModel,
+                shopItemModel.productList[index],
             )
         }
     }
 
     private fun assertButtonDataViewList(
         buttonDataViewList: List<MPSButtonDataView>,
-        buttonList: List<Shop.Button>
+        buttonList: List<Shop.Button>,
+        componentValueId: String,
+        componentValueName: String,
     ) {
         assertThat(buttonDataViewList.size, `is`(buttonList.size))
         buttonDataViewList.forEachIndexed { index, mpsButtonDataView ->
@@ -112,11 +121,15 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
             assertThat(mpsButtonDataView.applink, `is`(buttonList[index].applink))
             assertThat(mpsButtonDataView.componentId, `is`(buttonList[index].componentId))
             assertThat(mpsButtonDataView.trackingOption, `is`(buttonList[index].trackingOption))
+            assertThat(mpsButtonDataView.keywords, `is`(parameter.keywords()))
+            assertThat(mpsButtonDataView.componentValueId, `is`(componentValueId))
+            assertThat(mpsButtonDataView.componentValueName, `is`(componentValueName))
         }
     }
 
     private fun assertMPSShopWidgetProductDataView(
         mpsShopWidgetProductDataView: MPSShopWidgetProductDataView,
+        shopItem: Shop,
         shopItemProduct: Shop.Product,
     ) {
         assertThat(mpsShopWidgetProductDataView.id, `is`(shopItemProduct.id))
@@ -134,7 +147,12 @@ internal class MultiProductSearchShopWidgetTest: MultiProductSearchTestFixtures(
         assertThat(mpsShopWidgetProductDataView.componentId, `is`(shopItemProduct.componentId))
         assertThat(mpsShopWidgetProductDataView.trackingOption, `is`(shopItemProduct.trackingOption))
 
-        assertButtonDataViewList(mpsShopWidgetProductDataView.buttonList, shopItemProduct.buttonList)
+        assertButtonDataViewList(
+            mpsShopWidgetProductDataView.buttonList,
+            shopItemProduct.buttonList,
+            shopItem.id,
+            "",
+        )
 
         assertThat(mpsShopWidgetProductDataView.labelGroupList.size, `is`(shopItemProduct.labelGroupList.size))
         mpsShopWidgetProductDataView.labelGroupList.forEachIndexed { index, mpsProductLabelGroupDataView ->
