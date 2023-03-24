@@ -1,5 +1,6 @@
 package com.tokopedia.catalog_library.util
 
+import com.tokopedia.catalog_library.util.CategoryKeys.Companion.CATALOG_LIBRARY_POPULAR_BRAND_PAGE
 import com.tokopedia.track.builder.Tracker
 
 object CatalogAnalyticsBrandPage {
@@ -8,7 +9,7 @@ object CatalogAnalyticsBrandPage {
         Tracker.Builder()
             .setEvent("viewContentIris")
             .setEventAction("impress on lihat button")
-            .setEventCategory("catalog library - popular brand page")
+            .setEventCategory(CATALOG_LIBRARY_POPULAR_BRAND_PAGE)
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "37368")
             .setBusinessUnit(businessUnit)
@@ -24,7 +25,7 @@ object CatalogAnalyticsBrandPage {
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_CONTENT)
             .setEventAction(eventAction)
-            .setEventCategory("catalog library - popular brand page")
+            .setEventCategory(CATALOG_LIBRARY_POPULAR_BRAND_PAGE)
             .setEventLabel(eventLabel)
             .setCustomProperty(EventKeys.TRACKER_ID, trackerId)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
@@ -39,7 +40,7 @@ object CatalogAnalyticsBrandPage {
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_CONTENT)
             .setEventAction("click on catalog")
-            .setEventCategory("catalog library - popular brand page")
+            .setEventCategory(CATALOG_LIBRARY_POPULAR_BRAND_PAGE)
             .setEventLabel(eventLabel)
             .setCustomProperty(EventKeys.TRACKER_ID, "37372")
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)

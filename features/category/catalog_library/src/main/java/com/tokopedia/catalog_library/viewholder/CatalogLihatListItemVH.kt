@@ -6,7 +6,10 @@ import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatListItemDM
+import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
+import com.tokopedia.catalog_library.util.CategoryKeys
+import com.tokopedia.catalog_library.util.TrackerId
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -73,6 +76,10 @@ class CatalogLihatListItemVH(
     override fun onViewAttachedToWindow() {
         dataModel?.let {
             catalogLibraryListener.categoryListImpression(
+                TrackerId.IMPRESSION_ON_CATEGORY_LIST_BRAND_LANDING,
+                CategoryKeys.CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE,
+                ActionKeys.IMPRESSION_ON_CATEGORY_LIST_BS,
+                "",
                 it.rootCategoryName,
                 it.rootCategoryId,
                 it.catalogLibraryChildDataListItem.categoryName ?: "",

@@ -48,6 +48,7 @@ class CatalogLihatVH(
             accordionData.clear()
             removeAllViews()
             onItemClick = { _, isExpanded ->
+                catalogLibraryListener.onAccordionStateChange(isExpanded, element)
                 element.catalogLibraryDataList?.accordionExpandedState = isExpanded
             }
         }

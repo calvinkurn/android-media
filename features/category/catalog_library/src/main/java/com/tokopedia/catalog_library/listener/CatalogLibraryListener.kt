@@ -1,5 +1,6 @@
 package com.tokopedia.catalog_library.listener
 
+import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDM
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
 
 interface CatalogLibraryListener {
@@ -55,6 +56,10 @@ interface CatalogLibraryListener {
     }
 
     fun categoryListImpression(
+        trackerId: String,
+        eventCategory : String,
+        eventAction : String,
+        eventLabel : String,
         parentCategoryName: String,
         parentCategoryId: String,
         categoryName: String,
@@ -65,4 +70,6 @@ interface CatalogLibraryListener {
         userId: String
     ) {
     }
+
+    fun onAccordionStateChange(expanded: Boolean, element: CatalogLihatDM){}
 }

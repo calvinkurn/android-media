@@ -60,11 +60,14 @@ interface CategoryKeys {
         const val CATALOG_LIBRARY_CATEGORY_PAGE = "catalog library - category page"
         const val CATALOG_LIBRARY_CATEGORY_LIHAT_SEMUHA = "catalog library - category lihat semua"
         const val CATALOG_LIBRARY_LANDING_PAGE = "catalog library - landing page"
+        const val CATALOG_LIBRARY_POPULAR_BRAND_PAGE = "catalog library - popular brand page"
+        const val CATALOG_LIBRARY_POPULAR_BRAND_LANDING_PAGE = "catalog library - brand landing page"
     }
 }
 
 interface ActionKeys {
     companion object {
+        const val CLICK_CATEGORY_ON_BS = "click category on bottom sheet"
         const val IMPRESSION_ON_SPECIAL_CATEGORIES = "impression on special categories"
         const val IMPRESSION_ON_RELEVANT_CATALOGS = "impression on relevant catalogs"
         const val IMPRESSION_ON_POPULAR_BRANDS = "impression on popular brands"
@@ -78,6 +81,7 @@ interface ActionKeys {
         const val CLICK_LIHAT_SEMUA_ON_SPECIAL_CATEGORIES =
             "click lihat semua on special categories"
         const val IMPRESSION_ON_CATEGORY_LIST = "impression on category list"
+        const val IMPRESSION_ON_CATEGORY_LIST_BS = "impress category on bottom sheet"
         const val CLICK_ASCENDING_DESCENDING_SORT = "click ascending descending sort"
         const val CLICK_GRID_LIST_VIEW = "click grid list view"
         const val CLICK_CATEGORY_ON_CATEGORY_LIST = "click category on category list"
@@ -117,6 +121,7 @@ interface TrackerId {
         const val CLICK_ON_CATALOG_LIST_IN_CATEGORY = "33790"
 
         const val IMPRESSION_ON_CATEGORY_LIST = "33791"
+        const val IMPRESSION_ON_CATEGORY_LIST_BRAND_LANDING = "37382"
         const val CLICK_ASCENDING_DESCENDING_SORT = "33792"
         const val CLICK_GRID_LIST_VIEW = "33793"
         const val CLICK_CATEGORY_ON_CATEGORY_LIST = "33794"

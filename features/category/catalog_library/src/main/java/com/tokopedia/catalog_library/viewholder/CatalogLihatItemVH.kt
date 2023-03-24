@@ -5,7 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.CatalogLihatItemDM
+import com.tokopedia.catalog_library.util.ActionKeys
 import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
+import com.tokopedia.catalog_library.util.CategoryKeys
+import com.tokopedia.catalog_library.util.TrackerId
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -68,6 +71,10 @@ class CatalogLihatItemVH(
     override fun onViewAttachedToWindow() {
         dataModel?.let {
             catalogLibraryListener.categoryListImpression(
+                TrackerId.IMPRESSION_ON_CATEGORY_LIST,
+                CategoryKeys.CATALOG_LIBRARY_CATEGORY_LIHAT_SEMUHA,
+                ActionKeys.IMPRESSION_ON_CATEGORY_LIST,
+                "",
                 it.rootCategoryName,
                 it.rootCategoryId,
                 it.catalogLibraryChildDataListItem.categoryName ?: "",

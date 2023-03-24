@@ -18,12 +18,11 @@ import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFacto
 import com.tokopedia.catalog_library.di.DaggerCatalogLibraryComponent
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
+import com.tokopedia.catalog_library.model.datamodel.CatalogLihatDM
 import com.tokopedia.catalog_library.model.datamodel.CatalogShimmerDM
 import com.tokopedia.catalog_library.ui.bottomsheet.CatalogLibraryComponentBottomSheet
-import com.tokopedia.catalog_library.util.ActionKeys
-import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
-import com.tokopedia.catalog_library.util.CatalogLibraryConstant
-import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
+import com.tokopedia.catalog_library.util.*
+import com.tokopedia.catalog_library.util.TrackerId.Companion.IMPRESSION_ON_CATEGORY_LIST_BRAND_LANDING
 import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
@@ -34,6 +33,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -80,6 +80,9 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         }
     }
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     private val catalogLibraryAdapterFactory by lazy(LazyThreadSafetyMode.NONE) {
         CatalogHomepageAdapterFactoryImpl(
             this
@@ -117,7 +120,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         extractArguments()
         initViews(view)
         setObservers()
-        initData()
+        makeApiCall()
     }
 
     private fun extractArguments() {
@@ -126,11 +129,11 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         brandId = arguments?.getString(ARG_BRAND_ID) ?: ""
     }
 
-    private fun initData() {
+    private fun makeApiCall(orderType : String = DEFAULT_ASC_SORT_ORDER) {
         if(isOriginBrand){
             lihatViewModel?.getLihatSemuaByBrandData(categoryId,brandId)
         }else {
-            lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
+            lihatViewModel?.getLihatSemuaPageData(orderType)
         }
     }
 
@@ -159,12 +162,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         sortAsc?.setOnClickListener {
             sortAsc?.chipType = ChipsUnify.TYPE_SELECTED
             sortDesc?.chipType = ChipsUnify.TYPE_NORMAL
-            if(isOriginBrand){
-                lihatViewModel?.getLihatSemuaByBrandData(categoryId,brandId)
-            }else {
-                lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
-            }
-
+            makeApiCall()
             CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.DESCENDING_ORDER_STR}" +
                     " - click sort: ${CatalogLibraryConstant.ASCENDING_ORDER_STR}",
@@ -174,13 +172,7 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         sortDesc?.setOnClickListener {
             sortAsc?.chipType = ChipsUnify.TYPE_NORMAL
             sortDesc?.chipType = ChipsUnify.TYPE_SELECTED
-
-            if(isOriginBrand){
-                lihatViewModel?.getLihatSemuaByBrandData(categoryId,brandId)
-            }else {
-                lihatViewModel?.getLihatSemuaPageData(DESC_SORT_ORDER)
-            }
-
+            makeApiCall(DESC_SORT_ORDER)
             CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.ASCENDING_ORDER_STR}" +
                     " - click sort: ${CatalogLibraryConstant.DESCENDING_ORDER_STR}",
@@ -244,17 +236,18 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         globalError?.errorAction?.setOnClickListener {
             catalogLihatPageRecyclerView?.show()
             globalError?.hide()
-            if(isOriginBrand){
-                lihatViewModel?.getLihatSemuaByBrandData(categoryId,brandId)
-            }else {
-                lihatViewModel?.getLihatSemuaPageData(DEFAULT_ASC_SORT_ORDER)
-            }
+            makeApiCall()
         }
     }
 
     override fun onCategoryItemClicked(categoryIdentifier: String?) {
         super.onCategoryItemClicked(categoryIdentifier)
         if(isOriginBrand){
+            CatalogAnalyticsBrandLandingPage.sendClickCategoryOnBottomSheetEvent(
+                "brand page: {brand-name} - $brandId - category: {category-name} - $categoryIdentifier",
+                categoryIdentifier ?: "",
+                userSessionInterface.userId
+            )
             (parentFragment as? CatalogLibraryComponentBottomSheet)?.onChangeCategory(categoryIdentifier ?: "")
         }else {
             RouteManager.route(
@@ -277,7 +270,16 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         }
     }
 
+    override fun onAccordionStateChange(expanded: Boolean, element: CatalogLihatDM) {
+        super.onAccordionStateChange(expanded, element)
+
+    }
+
     override fun categoryListImpression(
+        trackerId: String,
+        eventCategory : String,
+        eventAction : String,
+        eventLabel : String,
         parentCategoryName: String,
         parentCategoryId: String,
         categoryName: String,
@@ -288,9 +290,11 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
         userId: String
     ) {
         val uniqueTrackingKey =
-            "${ActionKeys.IMPRESSION_ON_CATEGORY_LIST}-$parentCategoryId-$position"
+            "${eventAction}-$parentCategoryId-$position"
         if (!categoryTrackingSet.contains(uniqueTrackingKey)) {
             CatalogAnalyticsLihatSemuaPage.sendImpressionOnCategoryListEvent(
+                trackerId, eventCategory, eventAction,
+                extractEventLabel(eventLabel,trackerId,categoryName,categoryId),
                 trackingQueue,
                 parentCategoryName,
                 parentCategoryId,
@@ -303,6 +307,12 @@ class CatalogLihatSemuaPageFragment : BaseDaggerFragment(), CatalogLibraryListen
             )
             categoryTrackingSet.add(uniqueTrackingKey)
         }
+    }
+
+    private fun extractEventLabel(eventLabel : String, trackerId  : String,categoryName: String ,categoryId: String) : String{
+        return if(trackerId == IMPRESSION_ON_CATEGORY_LIST_BRAND_LANDING)
+            "brand page: {brand-name} - $brandId - category: $categoryName - $categoryId"
+        else eventLabel
     }
 
     override fun onPause() {

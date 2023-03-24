@@ -16,6 +16,10 @@ object CatalogAnalyticsLihatSemuaPage {
     }
 
     fun sendImpressionOnCategoryListEvent(
+        trackerId : String,
+        eventCategory : String,
+        eventAction : String,
+        eventLabel : String,
         trackingQueue: TrackingQueue,
         parentCategoryName: String,
         parentCategoryId: String,
@@ -40,9 +44,9 @@ object CatalogAnalyticsLihatSemuaPage {
         list.add(promotionMap)
         val eventModel = EventModel(
             EventKeys.PROMO_VIEW,
-            CategoryKeys.CATALOG_LIBRARY_CATEGORY_LIHAT_SEMUHA,
-            ActionKeys.IMPRESSION_ON_CATEGORY_LIST,
-            ""
+            eventCategory,
+            eventAction,
+            eventLabel
         )
         eventModel.key = "${ActionKeys.IMPRESSION_ON_CATEGORY_LIST}-$parentCategoryId-$position"
         val customDimensionMap = HashMap<String, Any>()
@@ -51,7 +55,7 @@ object CatalogAnalyticsLihatSemuaPage {
         customDimensionMap[EventKeys.KEY_USER_ID] = userId
         customDimensionMap[EventKeys.KEY_EVENT_LABEL] =
             ("L1 name: $parentCategoryName - L1 ID: $parentCategoryId - sort & filter: $view - $order")
-        customDimensionMap[EventKeys.TRACKER_ID] = TrackerId.IMPRESSION_ON_CATEGORY_LIST
+        customDimensionMap[EventKeys.TRACKER_ID] = trackerId
         customDimensionMap[EventKeys.PAGE_PATH] = CatalogLibraryConstant.APP_LINK_HOME
         customDimensionMap[EventKeys.SESSION_IRIS] = getIrisSessionId()
 
