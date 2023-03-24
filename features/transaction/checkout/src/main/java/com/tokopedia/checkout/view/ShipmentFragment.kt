@@ -130,9 +130,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eventCartViewPromoMessage
-import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eventCheckoutClickPilihPromoLainOnBottomsheetPromoError
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eventCheckoutClickPromoSection
-import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eventCheckoutViewBottomsheetPromoError
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics.eventCheckoutViewPromoAlreadyApplied
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
@@ -192,7 +190,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
@@ -231,7 +228,6 @@ class ShipmentFragment :
     ShipmentAdapterActionListener,
     ShippingDurationBottomsheetListener,
     ShippingCourierBottomsheetListener,
-    PromoNotEligibleActionListener,
     SellerCashbackListener,
     ExpireTimeDialogListener,
     UploadPrescriptionListener {
@@ -632,7 +628,7 @@ class ShipmentFragment :
             })
     }
 
-    override fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
+    override fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
         if (activityContext != null && !hasShown(
                 activityContext!!,
                 KEY_PREFERENCE_COACHMARK_EPHARMACY
@@ -656,7 +652,7 @@ class ShipmentFragment :
                     coachMark.showCoachMark(list, null, 0)
                     setShown(activityContext!!, KEY_PREFERENCE_COACHMARK_EPHARMACY, true)
                     ePharmacyAnalytics.viewBannerPesananButuhResepInCheckoutPage(
-                        uploadPrescriptionUiModel!!.epharmacyGroupIds,
+                        uploadPrescriptionUiModel.epharmacyGroupIds,
                         uploadPrescriptionUiModel.enablerNames,
                         uploadPrescriptionUiModel.shopIds,
                         uploadPrescriptionUiModel.cartIds
@@ -1315,15 +1311,6 @@ class ShipmentFragment :
         onNeedUpdateViewItem(shipmentAdapter.recipientAddressModelPosition)
     }
 
-//    override fun generateNewCheckoutRequest(
-//        shipmentCartItemModelList: List<ShipmentCartItemModel>?,
-//        isAnalyticsPurpose: Boolean
-//    ): List<DataCheckoutRequest> {
-//        val requestData =
-//            shipmentAdapter.getRequestData(null, shipmentCartItemModelList, isAnalyticsPurpose)
-//        return requestData.checkoutRequestData
-//    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         hideLoading()
@@ -1806,16 +1793,14 @@ class ShipmentFragment :
             }
         } else {
             val lastApplyUiModel = shipmentPresenter.lastApplyData.value
-            if (lastApplyUiModel != null) {
-                if (lastApplyUiModel.codes.isNotEmpty()) {
-                    stillHasPromo = true
-                } else {
-                    if (lastApplyUiModel.voucherOrders.isNotEmpty()) {
-                        for (voucherOrder in lastApplyUiModel.voucherOrders) {
-                            if (voucherOrder.code.isNotEmpty()) {
-                                stillHasPromo = true
-                                break
-                            }
+            if (lastApplyUiModel.codes.isNotEmpty()) {
+                stillHasPromo = true
+            } else {
+                if (lastApplyUiModel.voucherOrders.isNotEmpty()) {
+                    for (voucherOrder in lastApplyUiModel.voucherOrders) {
+                        if (voucherOrder.code.isNotEmpty()) {
+                            stillHasPromo = true
+                            break
                         }
                     }
                 }
@@ -2206,7 +2191,7 @@ class ShipmentFragment :
         } else {
             shipmentAdapter.updateCrossSell(checked, crossSellModel)
         }
-        val digitalCategoryName = crossSellModel!!.orderSummary.title
+        val digitalCategoryName = crossSellModel.orderSummary.title
         val digitalProductId = crossSellModel.id
         val eventLabel = "$digitalCategoryName - $digitalProductId"
         val digitalProductName = crossSellModel.info.title
@@ -2623,7 +2608,7 @@ class ShipmentFragment :
         recipientAddressModel: RecipientAddressModel,
         cartPosition: Int
     ) {
-        if (shipmentCartItemModel!!.shopShipmentList == null || shipmentCartItemModel.shopShipmentList!!.isEmpty()) {
+        if (shipmentCartItemModel.shopShipmentList == null || shipmentCartItemModel.shopShipmentList!!.isEmpty()) {
             onNoCourierAvailable(getString(com.tokopedia.logisticcart.R.string.label_no_courier_bottomsheet_message))
         } else {
             val shipmentDetailData =
@@ -2658,7 +2643,7 @@ class ShipmentFragment :
                     shipmentPresenter.generateRatesMvcParam(
                         shipmentCartItemModel.cartString
                     ),
-                    shipmentPresenter.cartDataForRates!!,
+                    shipmentPresenter.cartDataForRates,
                     false,
                     shipmentCartItemModel.fulfillmentId.toString()
                 )
@@ -2939,18 +2924,16 @@ class ShipmentFragment :
                     }
                     ordersItem.productDetails = productDetailsItems
                     val listOrderCodes = ArrayList<String>()
-                    if (lastApplyUiModel != null) {
-                        for (lastApplyVoucherOrdersItemUiModel in lastApplyUiModel.voucherOrders) {
-                            if (shipmentCartItemModel.cartString.equals(
-                                    lastApplyVoucherOrdersItemUiModel.uniqueId,
-                                    ignoreCase = true
-                                )
-                            ) {
-                                if (!listOrderCodes.contains(lastApplyVoucherOrdersItemUiModel.code) && !lastApplyVoucherOrdersItemUiModel.isTypeLogistic()) {
-                                    listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.code)
-                                }
-                                break
+                    for (lastApplyVoucherOrdersItemUiModel in lastApplyUiModel.voucherOrders) {
+                        if (shipmentCartItemModel.cartString.equals(
+                                lastApplyVoucherOrdersItemUiModel.uniqueId,
+                                ignoreCase = true
+                            )
+                        ) {
+                            if (!listOrderCodes.contains(lastApplyVoucherOrdersItemUiModel.code) && !lastApplyVoucherOrdersItemUiModel.isTypeLogistic()) {
+                                listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.code)
                             }
+                            break
                         }
                     }
                     // Add data BBO
@@ -2982,17 +2965,15 @@ class ShipmentFragment :
                 validateUsePromoRequest.isTradeIn = 1
                 validateUsePromoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0
             }
-            if (lastApplyUiModel != null) {
-                val globalPromoCodes = ArrayList<String>()
-                if (lastApplyUiModel.codes.isNotEmpty()) {
-                    for (code in lastApplyUiModel.codes) {
-                        if (code.isNotEmpty() && !globalPromoCodes.contains(code)) {
-                            globalPromoCodes.add(code)
-                        }
+            val globalPromoCodes = ArrayList<String>()
+            if (lastApplyUiModel.codes.isNotEmpty()) {
+                for (code in lastApplyUiModel.codes) {
+                    if (code.isNotEmpty() && !globalPromoCodes.contains(code)) {
+                        globalPromoCodes.add(code)
                     }
                 }
-                validateUsePromoRequest.codes = globalPromoCodes
             }
+            validateUsePromoRequest.codes = globalPromoCodes
             if (isOneClickShipment) {
                 validateUsePromoRequest.cartType = "ocs"
             } else {
@@ -3197,13 +3178,11 @@ class ShipmentFragment :
             promoRequest.isTradeInDropOff = if (isTradeInByDropOff) 1 else 0
         }
         val lastApplyUiModel = shipmentPresenter.lastApplyData.value
-        if (lastApplyUiModel != null) {
-            val globalPromoCodes = ArrayList<String>()
-            if (lastApplyUiModel.codes.isNotEmpty()) {
-                globalPromoCodes.addAll(lastApplyUiModel.codes)
-            }
-            promoRequest.codes = globalPromoCodes
+        val globalPromoCodes = ArrayList<String>()
+        if (lastApplyUiModel.codes.isNotEmpty()) {
+            globalPromoCodes.addAll(lastApplyUiModel.codes)
         }
+        promoRequest.codes = globalPromoCodes
         return promoRequest
     }
 
@@ -3278,62 +3257,6 @@ class ShipmentFragment :
     override fun clearTotalBenefitPromoStacking() {
         shipmentAdapter.clearTotalPromoStackAmount()
         shipmentPresenter.updateShipmentCostModel()
-    }
-
-    // Keep this method
-    private fun showPromoNotEligibleDialog(
-        notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>,
-        requestCode: Int
-    ) {
-        val activity = activity
-        if (activity != null) {
-            if (promoNotEligibleBottomsheet == null) {
-                promoNotEligibleBottomsheet =
-                    PromoNotEligibleBottomSheet(notEligiblePromoHolderdataList, this)
-            }
-            promoNotEligibleBottomsheet!!.dismissListener = {
-                checkoutAnalyticsCourierSelection.eventClickBatalOnErrorPromoConfirmation()
-            }
-            promoNotEligibleBottomsheet!!.notEligiblePromoHolderDataList =
-                notEligiblePromoHolderdataList
-            promoNotEligibleBottomsheet!!.show(activity, parentFragmentManager)
-            checkoutAnalyticsCourierSelection.eventViewPopupErrorPromoConfirmation()
-            eventCheckoutViewBottomsheetPromoError()
-        }
-    }
-
-    override fun onButtonContinueClicked() {
-        if (promoNotEligibleBottomsheet != null) {
-            checkoutAnalyticsCourierSelection.eventClickLanjutkanOnErrorPromoConfirmation()
-            val notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata> =
-                promoNotEligibleBottomsheet!!.notEligiblePromoHolderDataList
-            promoNotEligibleBottomsheet!!.dismiss()
-            shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList)
-        }
-    }
-
-    override fun onButtonChooseOtherPromo() {
-        if (promoNotEligibleBottomsheet != null) {
-            promoNotEligibleBottomsheet!!.dismiss()
-            eventCheckoutClickPilihPromoLainOnBottomsheetPromoError()
-            val validateUseRequestParam = generateValidateUsePromoRequest()
-            val promoRequestParam = generateCouponListRecommendationRequest()
-            val intent = RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
-            )
-            intent.putExtra(ARGS_PAGE_SOURCE, PAGE_CHECKOUT)
-            intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam)
-            intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam)
-            intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboPromoCodes)
-            setChosenAddressForTradeInDropOff(intent)
-            setPromoExtraMvcLockCourierFlow(intent)
-            startActivityForResult(intent, REQUEST_CODE_PROMO)
-        }
-    }
-
-    override fun onShow() {
-        // no op
     }
 
     override fun removeIneligiblePromo(notEligiblePromoHolderdataArrayList: ArrayList<NotEligiblePromoHolderdata>) {
@@ -3532,7 +3455,7 @@ class ShipmentFragment :
     private fun setChosenAddressForTradeInDropOff(intent: Intent) {
         val activity: Activity? = activity
         val recipientAddressModel = shipmentPresenter.recipientAddressModel
-        if (activity != null && isTradeInByDropOff && recipientAddressModel != null) {
+        if (activity != null && isTradeInByDropOff) {
             val lca = getLocalizingAddressData(
                 activity.applicationContext
             )
@@ -3867,7 +3790,7 @@ class ShipmentFragment :
 
     private fun onViewTickerPaymentError(errorMessage: String) {
         val shipmentCartItemModelList = shipmentPresenter.shipmentCartItemModelList
-        for (shipmentCartItemModel in shipmentCartItemModelList!!) {
+        for (shipmentCartItemModel in shipmentCartItemModelList) {
             checkoutAnalyticsCourierSelection.eventViewTickerPaymentLevelErrorInCheckoutPage(
                 shipmentCartItemModel.shopId.toString(),
                 errorMessage
@@ -4068,7 +3991,7 @@ class ShipmentFragment :
             val prescriptions = data.extras!!.getStringArrayList(
                 KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA
             )
-            uploadModel!!.isError = false
+            uploadModel.isError = false
             if (!isApi || (prescriptions != null && prescriptions.isNotEmpty())) {
                 shipmentPresenter.setPrescriptionIds(prescriptions!!)
             }
@@ -4095,7 +4018,7 @@ class ShipmentFragment :
         }
     }
 
-    override fun updateUploadPrescription(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
+    override fun updateUploadPrescription(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
         shipmentAdapter.updateUploadPrescription(uploadPrescriptionUiModel)
     }
 
@@ -4485,8 +4408,8 @@ class ShipmentFragment :
         }
     }
 
-    override fun showPrescriptionReminderDialog(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
-        val epharmacyGroupIds = uploadPrescriptionUiModel!!.epharmacyGroupIds
+    override fun showPrescriptionReminderDialog(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
+        val epharmacyGroupIds = uploadPrescriptionUiModel.epharmacyGroupIds
         val hasAttachedPrescription =
             uploadPrescriptionUiModel.uploadedImageCount > 0 || uploadPrescriptionUiModel.hasInvalidPrescription
         val reminderDialog =

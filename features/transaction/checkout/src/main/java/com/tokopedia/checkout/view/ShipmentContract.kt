@@ -189,9 +189,9 @@ interface ShipmentContract {
             recipientAddressModel: RecipientAddressModel?
         ): ShipmentDetailData
 
-        fun showPrescriptionReminderDialog(uploadPrescriptionUiModel: UploadPrescriptionUiModel?)
-        fun updateUploadPrescription(uploadPrescriptionUiModel: UploadPrescriptionUiModel?)
-        fun showCoachMarkEpharmacy(epharmacyGroupIds: UploadPrescriptionUiModel?)
+        fun showPrescriptionReminderDialog(uploadPrescriptionUiModel: UploadPrescriptionUiModel)
+        fun updateUploadPrescription(uploadPrescriptionUiModel: UploadPrescriptionUiModel)
+        fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel)
     }
 
     interface AnalyticsActionListener {
