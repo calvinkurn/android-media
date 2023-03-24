@@ -1010,9 +1010,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 }
                 val map = HashMap<String, Any>()
                 data[0].let {
-                    map[KEY_ID] = "${it.id.toString()} - ${it.baseCode.toString()}"
+                    map[KEY_ID] = "${it.id} - ${it.baseCode}"
                     map[KEY_POSITION] = index + 1
-                    map[KEY_CREATIVE] = "${it.slug.toString()} - ${it.baseCode.toString()}"
+                    map[KEY_CREATIVE] = "${it.slug} - ${it.baseCode}"
                     map[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - $pageType - ${
                         getParentPosition(
                             coupon
@@ -1065,9 +1065,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         componentsItems.claimCouponList?.firstOrNull()?.let {
             list.add(
                 mapOf(
-                    KEY_ID to "${it.id.toString()} - ${it.baseCode.toString()}",
+                    KEY_ID to "${it.id} - ${it.baseCode}",
                     KEY_POSITION to (position + 1).toString(),
-                    KEY_CREATIVE to "${it.slug.toString()} - ${it.baseCode.toString()}",
+                    KEY_CREATIVE to "${it.slug} - ${it.baseCode}",
                     KEY_NAME to "/discovery/${removedDashPageIdentifier} - $pageType - ${
                         getParentPosition(
                             componentsItems
