@@ -439,7 +439,7 @@ open class DynamicProductDetailFragment :
     private var screenshotDetector: ScreenshotDetector? = null
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[DynamicProductDetailViewModel::class.java]
     }
 
     private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {

@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineScope
  **/
 abstract class ViewModelSlice {
 
-    lateinit var scope: CoroutineScope
+    protected lateinit var scope: CoroutineScope
 
     operator fun invoke(scope: CoroutineScope) {
         this.scope = scope

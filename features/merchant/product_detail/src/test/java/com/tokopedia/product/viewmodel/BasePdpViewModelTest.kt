@@ -23,6 +23,7 @@ import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
 import com.tokopedia.product.detail.usecase.GetProductRecommendationUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
+import com.tokopedia.product.detail.view.viewmodel.slicing.impl.ProductRecommendationSliceImpl
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -168,32 +169,35 @@ abstract class BasePdpViewModelTest {
     }
 
     fun createViewModel(): DynamicProductDetailViewModel {
-        return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider,
-                { getPdpLayoutUseCase },
-                { getProductInfoP2LoginUseCase },
-                { getProductInfoP2OtherUseCase },
-                { getP2DataAndMiniCartUseCase },
-                { toggleFavoriteUseCase },
-                { deleteWishlistV2UseCase },
-                { addToWishlistV2UseCase },
-                { getProductRecommendationUseCase },
-                { getRecommendationUseCase },
-                { trackAffiliateUseCase },
-                { updateCartCounterUseCase },
-                { addToCartUseCase },
-                { addToCartOcsUseCase },
-                { addToCartOccUseCase },
-                { toggleNotifyMeUseCase },
-                { discussionMostHelpfulUseCase },
-                { topAdsImageViewUseCase },
-                { miniCartListSimplifiedUseCase },
-                { updateCartUseCase },
-                { deleteCartUseCase },
-                { getTopadsIsAdsUseCase },
-                playWidgetTools,
-                remoteConfigInstance,
-                userSessionInterface,
-                { affiliateCookieHelper }
+        return DynamicProductDetailViewModel(
+            CoroutineTestDispatchersProvider,
+            { getPdpLayoutUseCase },
+            { getProductInfoP2LoginUseCase },
+            { getProductInfoP2OtherUseCase },
+            { getP2DataAndMiniCartUseCase },
+            { toggleFavoriteUseCase },
+            { deleteWishlistV2UseCase },
+            { addToWishlistV2UseCase },
+            { trackAffiliateUseCase },
+            { updateCartCounterUseCase },
+            { addToCartUseCase },
+            { addToCartOcsUseCase },
+            { addToCartOccUseCase },
+            { toggleNotifyMeUseCase },
+            { discussionMostHelpfulUseCase },
+            { topAdsImageViewUseCase },
+            { miniCartListSimplifiedUseCase },
+            { updateCartUseCase },
+            { deleteCartUseCase },
+            { getTopadsIsAdsUseCase },
+            playWidgetTools,
+            remoteConfigInstance,
+            userSessionInterface,
+            { affiliateCookieHelper },
+            productRecommendationSlice = ProductRecommendationSliceImpl(
+                getRecommendationUseCase = { getRecommendationUseCase },
+                getProductRecommendationUseCase = { getProductRecommendationUseCase }
+            )
         )
     }
 }
