@@ -157,15 +157,6 @@ class ShopPageLabelView : ShopPageBaseCustomView {
         requestLayout()
     }
 
-    fun resetContentText() {
-        content = contentText
-        invalidate()
-        requestLayout()
-    }
-
-    val isContentDefault: Boolean
-        get() = contentTextView?.text == contentText
-
     override fun setEnabled(enabled: Boolean) {
         this.enabled = enabled
         isClickable = enabled
@@ -205,12 +196,6 @@ class ShopPageLabelView : ShopPageBaseCustomView {
         requestLayout()
     }
 
-    fun setTitleContentTypeFace(typeFace: Int) {
-        titleTextView?.setTypeface(null, typeFace)
-        invalidate()
-        requestLayout()
-    }
-
     var content: CharSequence?
         get() = contentTextView?.text.toString()
         set(textValue) {
@@ -219,48 +204,6 @@ class ShopPageLabelView : ShopPageBaseCustomView {
             requestLayout()
         }
 
-    fun setContentTypeface(typefaceType: Int) {
-        contentTextView?.setTypeface(null, typefaceType)
-        invalidate()
-        requestLayout()
-    }
-
-    fun setContentColorValue(@ColorInt colorValue: Int) {
-        contentColorValue = colorValue
-        contentTextView?.setTextColor(colorValue)
-        invalidate()
-        requestLayout()
-    }
-
-    fun showRightArrow(hideArrow: Boolean) {
-        rightArrow?.visibility = if (hideArrow) GONE else VISIBLE
-        invalidate()
-        requestLayout()
-    }
-
-    fun setImageResource(imageResource: Int) {
-        if (imageResource >= 0) {
-            imageDrawable = AppCompatResources.getDrawable(context, imageResource)
-            imageView?.setImageDrawable(imageDrawable)
-            imageView?.visibility = VISIBLE
-            titleTextView?.setPadding(imageMarginRight, 0, 0, 0)
-            subTitleTextView?.setPadding(imageMarginRight, 0, 0, 0)
-        } else {
-            imageView?.visibility = GONE
-            titleTextView?.setPadding(0, 0, 0, 0)
-            subTitleTextView?.setPadding(0, 0, 0, 0)
-        }
-        invalidate()
-        requestLayout()
-    }
-
-    fun setBadgeCounter(badge: Int) {
-        badgeTextView?.text = badgeCounter(badge)
-        badgeTextView?.visibility = if (badge > 0) VISIBLE else GONE
-        invalidate()
-        requestLayout()
-    }
-
     private fun badgeCounter(badge: Int): String {
         var counter = badge.toString()
         if (badge > MAXIMUM_COUNTER) {
@@ -268,23 +211,6 @@ class ShopPageLabelView : ShopPageBaseCustomView {
         }
         return counter
     }
-
-    fun setContentClick(onClickListener: OnClickListener?) {
-        if (onClickListener == null) {
-            contentTextView?.isClickable = false
-        } else {
-            contentTextView?.isClickable = true
-            contentTextView?.setOnClickListener(onClickListener)
-        }
-    }
-
-    fun setSubTitle(subtitle: SpannableString?) {
-        subTitleTextView?.text = subtitle
-        subTitleTextView?.visibility = if (TextUtils.isEmpty(subtitle)) GONE else VISIBLE
-        invalidate()
-        requestLayout()
-    }
-
     companion object {
         private const val MAX_WIDTH_PERCENT_CONTENT = 0.3f
         private const val MAXIMUM_COUNTER = 99

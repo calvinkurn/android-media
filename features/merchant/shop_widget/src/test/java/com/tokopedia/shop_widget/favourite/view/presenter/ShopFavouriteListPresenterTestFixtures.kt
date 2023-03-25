@@ -6,7 +6,6 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop_widget.favourite.domain.interactor.GetShopFollowerListUseCase
 import com.tokopedia.shop_widget.favourite.view.listener.ShopFavouriteListView
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase
-import com.tokopedia.shop_widget.favourite.view.presenter.ShopFavouriteListPresenter
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
