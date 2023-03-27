@@ -24,7 +24,9 @@ import com.tokopedia.affiliate.AFFILIATE_YT_REGEX
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.FACEBOOK_DEFAULT
 import com.tokopedia.affiliate.INSTAGRAM_DEFAULT
+import com.tokopedia.affiliate.PAGE_TYPE_CAMPAIGN
 import com.tokopedia.affiliate.PAGE_TYPE_PDP
+import com.tokopedia.affiliate.PAGE_TYPE_SHOP
 import com.tokopedia.affiliate.TIKTOK_DEFAULT
 import com.tokopedia.affiliate.TWITTER_DEFAULT
 import com.tokopedia.affiliate.WWW
@@ -114,6 +116,8 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         const val ORIGIN_PERNAH_DIBELI_PROMOSIKA = 4
         const val ORIGIN_TERAKHIR_DILIHAT = 5
         const val ORIGIN_HOME_GENERATED = 6
+        const val ORIGIN_PROMO_DISCO_BANNER = 7
+        const val ORIGIN_PROMO_DISCO_BANNER_LIST = 8
 
         const val OTHERS_ID = 0
         const val FACEBOOK_ID = 1
@@ -236,8 +240,10 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                         } else {
                             Html.fromHtml(params.ssaInfo.message)
                         }
-                    findViewById<Label>(R.id.ssa_label).text =
-                        params.ssaInfo.label.labelText
+                    findViewById<Label>(R.id.ssa_label).apply {
+                        isVisible = params.ssaInfo.label.labelText.isNotBlank()
+                        text = params.ssaInfo.label.labelText
+                    }
                     findViewById<Typography>(R.id.ssa_expiry_date).text = params.ssaInfo.ssaMessage
                 }
                 productId =
@@ -399,16 +405,19 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     private fun setObservers(contentView: View) {
         affiliatePromotionBSViewModel.generateLinkData().observe(this) {
             it?.let { data ->
-                if (type == PAGE_TYPE_PDP) {
-                    sendClickPGevent(
+                when (type) {
+                    PAGE_TYPE_PDP -> sendClickEventProduct(
                         data.linkID,
                         AffiliateAnalytics.LabelKeys.SUCCESS
                     )
-                } else {
-                    sendClickPGeventShop(
+                    PAGE_TYPE_SHOP -> sendClickPGeventShop(
                         data.linkID,
                         AffiliateAnalytics.LabelKeys.SUCCESS,
                         status
+                    )
+                    PAGE_TYPE_CAMPAIGN -> sendClickEventCampaign(
+                        data.linkID,
+                        AffiliateAnalytics.LabelKeys.SUCCESS
                     )
                 }
                 val clipboardManager =
@@ -426,10 +435,14 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     Toaster.TYPE_NORMAL
                 ).show()
             } ?: kotlin.run {
-                if (type == PAGE_TYPE_PDP) {
-                    sendClickPGevent("", AffiliateAnalytics.LabelKeys.FAIL)
-                } else {
-                    sendClickPGeventShop("", AffiliateAnalytics.LabelKeys.FAIL, status)
+                when (PAGE_TYPE_PDP) {
+                    PAGE_TYPE_PDP -> sendClickEventProduct("", AffiliateAnalytics.LabelKeys.FAIL)
+                    PAGE_TYPE_SHOP ->
+                        sendClickPGeventShop("", AffiliateAnalytics.LabelKeys.FAIL, status)
+                    PAGE_TYPE_CAMPAIGN -> sendClickEventCampaign(
+                        "",
+                        AffiliateAnalytics.LabelKeys.FAIL
+                    )
                 }
 
                 Toaster.build(
@@ -449,10 +462,17 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
         affiliatePromotionBSViewModel.getErrorMessage().observe(this) { error ->
             if (error != null) {
-                if (type == PAGE_TYPE_PDP) {
-                    sendClickPGevent("", AffiliateAnalytics.LabelKeys.FAIL)
-                } else {
-                    sendClickPGeventShop("", AffiliateAnalytics.LabelKeys.FAIL, status)
+                when (type) {
+                    PAGE_TYPE_PDP -> sendClickEventProduct("", AffiliateAnalytics.LabelKeys.FAIL)
+                    PAGE_TYPE_SHOP -> sendClickPGeventShop(
+                        "",
+                        AffiliateAnalytics.LabelKeys.FAIL,
+                        status
+                    )
+                    PAGE_TYPE_CAMPAIGN -> sendClickEventCampaign(
+                        "",
+                        AffiliateAnalytics.LabelKeys.FAIL
+                    )
                 }
                 Toaster.build(
                     contentView.rootView,
@@ -464,7 +484,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         }
     }
 
-    private fun sendClickPGevent(linkID: String?, state: String) {
+    private fun sendClickEventProduct(linkID: String?, state: String) {
         val params: AffiliatePromotionBottomSheetParams? =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 arguments?.getSerializable(
@@ -566,6 +586,49 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
                 eventLabel = "$linkID - active - $status - komisi extra"
             }
+        }
+        AffiliateAnalytics.sendEvent(
+            event,
+            eventAction,
+            eventCategory,
+            eventLabel,
+            userSessionInterface.userId
+        )
+    }
+
+    private fun sendClickEventCampaign(linkID: String?, status: String) {
+        val params: AffiliatePromotionBottomSheetParams? =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                arguments?.getSerializable(
+                    KEY_PARAMS,
+                    AffiliatePromotionBottomSheetParams::class.java
+                )
+            } else {
+                arguments?.getSerializable(KEY_PARAMS) as? AffiliatePromotionBottomSheetParams
+            }
+        var eventAction = ""
+        var eventCategory = ""
+        var eventLabel = ""
+        val event = AffiliateAnalytics.EventKeys.CLICK_CONTENT
+        when (originScreen) {
+            ORIGIN_HOME -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_DISCO_HOME
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+                eventLabel = "$linkID - $status"
+            }
+            ORIGIN_PROMO_DISCO_BANNER -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_DISCO_BANNER
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+                eventLabel = "$linkID - $status"
+            }
+            ORIGIN_PROMO_DISCO_BANNER_LIST -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_DISCO_BANNER_LIST
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+                eventLabel = "$linkID - $status"
+            }
+        }
+        if (params?.ssaInfo?.ssaStatus == true) {
+            eventLabel += " - komisi extra"
         }
         AffiliateAnalytics.sendEvent(
             event,

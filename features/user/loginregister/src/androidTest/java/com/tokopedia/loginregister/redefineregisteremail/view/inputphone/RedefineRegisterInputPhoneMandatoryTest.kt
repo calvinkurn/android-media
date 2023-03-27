@@ -2,11 +2,17 @@ package com.tokopedia.loginregister.redefineregisteremail.view.inputphone
 
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -21,6 +27,7 @@ import com.tokopedia.loginregister.redefineregisteremail.view.RedefineRegisterEm
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.param.RedefineParamUiModel
 import com.tokopedia.loginregister.utils.respondWithOk
 import com.tokopedia.test.application.annotations.UiTest
+import org.hamcrest.Matcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -141,7 +148,22 @@ class RedefineRegisterInputPhoneMandatoryTest {
         clickSubmit()
         clickPrimaryButtonDialog()
         intended(hasData(ApplinkConstInternalUserPlatform.COTP))
+        delay(1000)
         isGlobalErrorShowing()
+    }
+
+    fun delay(delayInMillis: Long = 500): ViewInteraction {
+        return Espresso.onView(ViewMatchers.isRoot()).perform(waitFor(delayInMillis))
+    }
+
+    fun waitFor(delay: Long): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> = ViewMatchers.isRoot()
+            override fun getDescription(): String = "wait for $delay milliseconds"
+            override fun perform(uiController: UiController, v: View?) {
+                uiController.loopMainThreadForAtLeast(delay)
+            }
+        }
     }
 
 }
