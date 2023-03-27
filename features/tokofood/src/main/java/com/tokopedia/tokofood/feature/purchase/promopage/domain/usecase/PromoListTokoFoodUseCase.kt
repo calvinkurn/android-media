@@ -16,7 +16,7 @@ import com.tokopedia.tokofood.feature.purchase.promopage.domain.param.PromoTokof
 import javax.inject.Inject
 
 private const val QUERY = """
-        mutation PromoListTokofood(${'$'}params: CartGeneralPromoListParams) {
+        query PromoListTokofood(${'$'}params: CartGeneralPromoListParams) {
           cart_general_promo_list(params: ${'$'}params) {
             data {
               message

@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -25,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -39,6 +38,7 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentManageLocationLayoutBinding
@@ -305,7 +305,13 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
     }
 
     private fun navigateToMerchantPage(merchantId: String) {
-        val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
+        val applink =
+            if (activity is BaseTokofoodActivity) {
+                ApplinkConstInternalTokoFood.MERCHANT
+            } else {
+                ApplinkConstInternalTokoFood.MERCHANT_OLD
+            }
+        val merchantPageUri = Uri.parse(applink)
                 .buildUpon()
                 .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
                 .build()

@@ -72,7 +72,7 @@ class BaseTokofoodActivityOld : BaseMultiFragActivity(), HasViewModel<MultipleFr
     }
 
     private fun initPerformanceMonitoring() {
-        if (intent.data != null && intent.data.toString().equals(ApplinkConstInternalTokoFood.HOME)){
+        if (intent.data != null && intent.data.toString().equals(ApplinkConstInternalTokoFood.HOME_OLD)){
             pageLoadTimeMonitoring = TokoFoodHomePageLoadTimeMonitoring()
             pageLoadTimeMonitoring?.initPerformanceMonitoring()
         }

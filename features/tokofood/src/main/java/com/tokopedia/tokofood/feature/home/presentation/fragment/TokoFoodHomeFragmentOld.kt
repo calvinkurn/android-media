@@ -374,7 +374,7 @@ class TokoFoodHomeFragmentOld :
             merchant,
             horizontalPosition
         )
-        val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
+        val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT_OLD)
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchant.id)
             .build()
@@ -538,7 +538,7 @@ class TokoFoodHomeFragmentOld :
     private fun onSearchBarClick() {
         analytics.clickSearchBar(userSession.userId, localCacheModel?.district_id)
         context?.let {
-            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConst.TokoFood.SEARCH)
+            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConstInternalTokoFood.SEARCH_OLD)
         }
     }
 

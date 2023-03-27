@@ -538,7 +538,7 @@ class TokoFoodHomeFragment :
     private fun onSearchBarClick() {
         analytics.clickSearchBar(userSession.userId, localCacheModel?.district_id)
         context?.let {
-            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConst.TokoFood.SEARCH)
+            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConstInternalTokoFood.SEARCH)
         }
     }
 

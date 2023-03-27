@@ -17,9 +17,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunchMode
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.BRAND_UID_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.CUISINE_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.OPTION_PARAM
@@ -253,7 +253,7 @@ class TokoFoodCategoryFragmentOld: BaseMultiFragment(),
 
     override fun onClickMerchant(merchant: Merchant, horizontalPosition: Int) {
         analytics.clickMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
-        val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, "")
+        val merchantApplink = UriUtil.buildUri(ApplinkConstInternalTokoFood.MERCHANT_OLD, merchant.id, "")
         TokofoodRouteManager.routePrioritizeInternal(context, merchantApplink)
     }
 

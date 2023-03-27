@@ -728,11 +728,11 @@ class TokoFoodPurchaseFragmentOld :
     }
 
     private fun navigateToHomePage(isFinishCurrent: Boolean = false) {
-        TokofoodRouteManager.routePrioritizeInternal(context, ApplinkConstInternalTokoFood.HOME, isFinishCurrent)
+        TokofoodRouteManager.routePrioritizeInternal(context, ApplinkConstInternalTokoFood.HOME_OLD, isFinishCurrent)
     }
 
     private fun navigateToMerchantPage(merchantId: String, isFinishCurrent: Boolean = false) {
-        val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
+        val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT_OLD)
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
             .build()

@@ -15,7 +15,7 @@ import com.tokopedia.tokofood.common.domain.response.CartListTokofoodResponse
 import javax.inject.Inject
 
 private const val QUERY = """
-        mutation MiniCartGeneralCartList(${'$'}params: CartGeneralCartListParams) {
+        query MiniCartGeneralCartList(${'$'}params: CartGeneralCartListParams) {
           cart_general_cart_list(params: ${'$'}params) {
             data {
               message
