@@ -539,9 +539,9 @@ open class ShopPageTracking(
                 arrayListOf(
                     createShopPromotionsData(
                         widgetName = valueDisplayed,
-                        widgetId = componentId,
-                        position = componentPosition,
-                        itemName = joinDash(componentName, headerId, getShopHeaderTrackerType(headerType))
+                        position = componentPosition.toString(),
+                        itemName = joinDash(componentName, headerId, getShopHeaderTrackerType(headerType)),
+                        widgetId = null
                     )
                 )
             )
@@ -627,13 +627,13 @@ open class ShopPageTracking(
 
     private fun createShopPromotionsData(
         widgetName: String,
-        widgetId: String,
-        position: Int,
-        itemName: String
+        position: String,
+        itemName: String,
+        widgetId: String?
     ): Bundle {
         return Bundle().apply {
             putString(CREATIVE_NAME, widgetName)
-            putInt(CREATIVE_SLOT, position)
+            putString(CREATIVE_SLOT, position)
             putString(ITEM_ID, widgetId)
             putString(ITEM_NAME, itemName)
         }
