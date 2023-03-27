@@ -94,4 +94,7 @@ data class Properties(
         @SerializedName("category_slug")
         val categorySlug: String? = "",
 
+        @SerializedName("chip_size")
+        val chipSize: String? = ""
+
 )

@@ -108,6 +108,10 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
             it.sortFilterItems.removeAllViews()
             it.addItem(sortFilterItems)
             it.textView?.text = fragment.getString(R.string.filter)
+            if (quickFilterViewModel.components.properties?.chipSize == "large")
+                it.filterSize = SortFilter.SIZE_LARGE
+            else
+                it.filterSize = SortFilter.SIZE_DEFAULT
             it.parentListener = { openBottomSheetFilterRevamp() }
         }
         refreshQuickFilter(filters)
@@ -115,17 +119,27 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
 
     private fun createSortFilterItem(option: Option): SortFilterItem {
         var icon : Drawable? = null
-        if((fragment.activity as DiscoveryActivity).isFromCategory()) {
-            when (option.name) {
-                "Official Store" -> {
-                    icon = getIconUnifyDrawable(itemView.context, IconUnify.BADGE_OS_FILLED)
+        val item =
+            if ((fragment.activity as DiscoveryActivity).isFromCategory()) {
+                when (option.name) {
+                    "Official Store" -> {
+                        icon = getIconUnifyDrawable(itemView.context, IconUnify.BADGE_OS_FILLED)
+                    }
+                    "4 Keatas" -> {
+                        icon = getIconUnifyDrawable(
+                            itemView.context,
+                            IconUnify.STAR_FILLED,
+                            MethodChecker.getColor(itemView.context, R.color.discovery2_dms_5_star)
+                        )
+                    }
                 }
-                "4 Keatas" -> {
-                    icon = getIconUnifyDrawable(itemView.context, IconUnify.STAR_FILLED, MethodChecker.getColor(itemView.context, R.color.discovery2_dms_5_star))
-                }
+                SortFilterItem(option.name, icon)
+            } else {
+                val iconUrl =
+                    if (!option.image.isNullOrEmpty()) option.image!!
+                    else if (option.iconUrl.isNotEmpty()) option.iconUrl else ""
+                SortFilterItem(option.name, iconUrl = iconUrl)
             }
-        }
-        val item = SortFilterItem(option.name, icon)
         item.listener = {
             quickFilterViewModel.onQuickFilterSelected(option)
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickQuickFilter(option.name, componentName, option.value, quickFilterViewModel.isQuickFilterSelected(option))

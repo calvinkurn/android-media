@@ -55,6 +55,10 @@ class Option(@SerializedName("name")
              @Expose
              var isPopular: Boolean = false,
 
+             @SerializedName("image")
+             @Expose
+             var image: String? = "",
+
              @SerializedName(value = "is_new", alternate = ["isNew"])
              @Expose
              var isNew: Boolean = false,
@@ -79,7 +83,8 @@ class Option(@SerializedName("name")
                 description = description,
                 isPopular = isPopular,
                 isNew = isNew,
-                inputState = inputState
+                inputState = inputState,
+                image = image
         )
     }
 
