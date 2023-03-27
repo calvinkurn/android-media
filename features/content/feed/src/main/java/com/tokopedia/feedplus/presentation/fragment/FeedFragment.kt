@@ -413,6 +413,10 @@ class FeedFragment :
 //        TODO("Not yet implemented")
     }
 
+    override fun removeReminder() {
+//        TODO("Not yet implemented")
+    }
+
     override fun onTimerFinishUpcoming() {
 //        TODO("Not yet implemented")
     }

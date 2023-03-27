@@ -12,6 +12,7 @@ interface FeedListener {
     fun reload()
 
     fun setReminder()
+    fun removeReminder()
     fun onTimerFinishUpcoming()
     fun onTimerFinishOnGoing()
 
