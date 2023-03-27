@@ -28,7 +28,7 @@ import java.util.*
 enum class FeedCampaignRibbonType {
     ASGC_GENERAL, ASGC_DISCOUNT,
     ASGC_FLASH_SALE_UPCOMING, ASGC_FLASH_SALE_ONGOING,
-    TITLE_ONLY,
+    TITLE_ONLY
 }
 
 class FeedCampaignRibbonView(
@@ -165,6 +165,8 @@ class FeedCampaignRibbonView(
                     ).show()
                     root.setTransition(root.currentState, R.id.initial_title_with_icon)
                     root.setTransitionDuration(SIX_MILISECOND.toInt())
+                    root.transitionToEnd()
+                    root.progress = 1f
 
                     startDelayProcess(TWO_SECOND) {
                         setBackgroundGradient(ctaModel)
@@ -178,9 +180,6 @@ class FeedCampaignRibbonView(
                 }
                 else -> {}
             }
-
-            root.transitionToEnd()
-            root.progress = 1f
         }
     }
 
