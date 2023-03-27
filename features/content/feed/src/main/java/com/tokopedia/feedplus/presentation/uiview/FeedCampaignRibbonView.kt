@@ -94,7 +94,7 @@ class FeedCampaignRibbonView(
                         cornerRadius = CORNER_RADIUS
                     }
                 }
-                type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING && cta.colorGradient.isNotEmpty() -> {
+                (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING) && cta.colorGradient.isNotEmpty() -> {
                     root.background = GradientDrawable(
                         GradientDrawable.Orientation.LEFT_RIGHT,
                         cta.colorGradient.map {
@@ -104,7 +104,7 @@ class FeedCampaignRibbonView(
                         cornerRadius = CORNER_RADIUS
                     }
                 }
-                type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING && cta.colorGradient.isEmpty() -> {
+                (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING) && cta.colorGradient.isEmpty() -> {
                     root.background = MethodChecker.getDrawable(
                         root.context,
                         R.drawable.bg_feed_campaign_ribbon_flashsale_gradient
