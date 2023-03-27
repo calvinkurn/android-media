@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.topads
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -35,7 +34,7 @@ class ProductDetailTopAdsVerificationTest {
 
         override fun getActivityIntent(): Intent {
             val context = InstrumentationRegistry.getInstrumentation().targetContext
-            return ProductDetailActivity.createIntent(context, "596843822")
+            return ProductDetailActivity.createIntent(context, "7242375720")
         }
     }
 
