@@ -1,5 +1,6 @@
 package com.tokopedia.analytics.performance.perf
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -22,6 +23,7 @@ object PerformanceTraceDebugger {
         }
     }
 
+    @SuppressLint("SwallowedException")
     fun Activity.takeScreenshot(name: String, v1: View) {
         if (DEBUG) {
             val systemCurrentMillis = System.currentTimeMillis()
