@@ -224,6 +224,18 @@ class AffiliateEducationLandingPage :
 
     fun handleBack() {
         if (arguments?.getBoolean(IS_APP_LINK, false) == true) {
+            if (activity?.isTaskRoot == true) {
+                context?.let {
+                    startActivity(
+                        RouteManager.getIntent(
+                            it,
+                            ApplinkConst.HOME
+                        )
+                    ).also {
+                        activity?.finish()
+                    }
+                }
+            }
             activity?.finish()
         } else {
             (activity as? AffiliateActivity)?.handleBackButton(false)
