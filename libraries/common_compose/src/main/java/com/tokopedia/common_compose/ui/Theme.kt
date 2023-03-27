@@ -50,6 +50,8 @@ fun NestTheme(
     val elevation = if (darkTheme) DarkElevation else LightElevation
     val nestColors = if (darkTheme) NestDarkColor() else NestLightColor()
 
+    AdaptiveStatusBarColor(darkTheme = darkTheme, statusBarColor = colors.primary)
+
     CompositionLocalProvider(
         LocalElevations provides elevation,
         LocalNestColor provides nestColors,
