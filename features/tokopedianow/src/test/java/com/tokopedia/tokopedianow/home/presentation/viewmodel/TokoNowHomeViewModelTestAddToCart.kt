@@ -46,7 +46,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given mini cart item is null when addProductToCart should update product quantity`() {
+    fun `given mini cart item is null when onCartQuantityChanged should update product quantity`() {
         coroutineTestRule.runBlockingTest {
             val channelId = "1001"
             val productId = "1"
@@ -70,7 +70,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     RepurchaseProduct(
                         id = productId,
                         stock = 5,
-                        maxOrder = 4,
+                        maxOrder = 10,
                         minOrder = 3
                     )
                 )
@@ -86,7 +86,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onCartQuantityChanged(channelId, productId, quantity, shopId, 1, false, type)
+            viewModel.onCartQuantityChanged(channelId, productId, quantity, shopId, 5, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             val chooseAddressWidget = TokoNowChooseAddressWidgetUiModel(id = "0")
@@ -97,9 +97,10 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     createHomeProductCardUiModel(
                         channelId = channelId,
                         productId = productId,
-                        quantity = 4,
+                        stock = 5,
+                        quantity = 5,
                         product = ProductCardModel(
-                            nonVariant = ProductCardModel.NonVariant(quantity, 3, 4)
+                            nonVariant = ProductCardModel.NonVariant(quantity, 3, 10)
                         ),
                         position = 1,
                         headerName = "Kamu pernah beli"
@@ -136,7 +137,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given quantity is 0 when addProductToCart should update product quantity to 0`() {
+    fun `given quantity is 0 when onCartQuantityChanged should update product quantity to 0`() {
         coroutineTestRule.runBlockingTest {
             val warehouseId = "1"
             val channelId = "1001"
@@ -196,7 +197,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     createHomeProductCardUiModel(
                         channelId = channelId,
                         productId = productId,
-                        quantity = 4,
+                        stock = 5,
+                        quantity = 0,
                         product = ProductCardModel(
                             hasAddToCartButton = true,
                             nonVariant = ProductCardModel.NonVariant(quantity, 3, 4)
@@ -237,7 +239,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given mini cart item is NOT null when addProductToCart should update product quantity`() {
+    fun `given mini cart item is NOT null when onCartQuantityChanged should update product quantity`() {
         coroutineTestRule.runBlockingTest {
             val warehouseId = "1"
             val channelId = "1001"
@@ -960,6 +962,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             val productCardUiModel = createHomeProductCardUiModel(
                 channelId = channelId,
                 productId = "2",
+                stock = 3,
                 quantity = 4,
                 product = ProductCardModel(
                     hasAddToCartButton = true,
@@ -1315,7 +1318,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `given add to cart error when addProductToCart should set miniCartAdd value fail`() {
+    fun `given add to cart error when onCartQuantityChanged should set miniCartAdd value fail`() {
         coroutineTestRule.runBlockingTest {
             val error = NullPointerException()
             val invalidLayoutType = "random layout type"

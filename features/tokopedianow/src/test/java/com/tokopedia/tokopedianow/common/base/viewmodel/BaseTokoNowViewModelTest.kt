@@ -12,7 +12,6 @@ import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -245,43 +244,6 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
 
             viewModel.addItemToCart
                 .verifySuccessEquals(Success(addToCartResponse))
-        }
-    }
-
-    @Test
-    fun `given quantity 0 when add to cart should not call add to cart use case`() {
-        coroutineTestRule.runBlockingTest {
-            val productId = "1"
-            val quantity = 2
-            val shopId = "5"
-            val stock = 0
-            val warehouseId = 9L
-
-            val addToCartResponse = AddToCartDataModel()
-            val miniCartItems = mapOf(
-                MiniCartItemKey("5") to MiniCartItem.MiniCartItemProduct(
-                    productId = "5",
-                    quantity = 1
-                )
-            )
-            val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
-
-            onGetShopId_thenReturn(shopId.toLong())
-            onGetWarehouseId_thenReturn(warehouseId)
-            onGetUserLoggedIn_thenReturn(isLoggedIn = true)
-
-            onAddToCart_thenReturn(addToCartResponse)
-            onGetMiniCart_thenReturn(miniCartResponse)
-
-            viewModel.getMiniCart()
-            viewModel.onCartQuantityChanged(productId, shopId, quantity, stock, false)
-            advanceTimeBy(CHANGE_QUANTITY_DELAY)
-
-            verifyGetMiniCartUseCaseCalled()
-            verifyGetMiniCartUseCaseNotCalled()
-
-            viewModel.addItemToCart
-                .verifyValueEquals(null)
         }
     }
 

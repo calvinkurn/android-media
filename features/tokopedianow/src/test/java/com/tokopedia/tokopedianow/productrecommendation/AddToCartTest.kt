@@ -282,79 +282,88 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `given new quantity same as cart quantity when update cart item should do nothing`() {
-        val position = 0
-        val quantity = 4
-        val cartQuantity = 4
+        coroutineTestRule.runBlockingTest {
+            val position = 0
+            val quantity = 4
+            val cartQuantity = 4
 
-        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
-        val shopId = expectedProduct.shopId
-        val productId = expectedProduct.getProductId()
+            val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+            val shopId = expectedProduct.shopId
+            val productId = expectedProduct.getProductId()
 
-        mockProductModels()
+            mockProductModels()
 
-        mockMiniCartSimplifiedData(
-            productId = productId,
-            quantity = cartQuantity
-        )
+            mockMiniCartSimplifiedData(
+                productId = productId,
+                quantity = cartQuantity
+            )
 
-        val response = UpdateCartV2Data()
+            val response = UpdateCartV2Data()
 
-        onUpdateItemCart_thenReturn(response)
+            onUpdateItemCart_thenReturn(response)
 
-        viewModel.onCartQuantityChanged(productId, shopId, quantity, 1, false)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, 1, false)
+            advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
-        viewModel.addItemToCart.verifyValueEquals(null)
-        viewModel.updateCartItem.verifyValueEquals(null)
-        viewModel.removeCartItem.verifyValueEquals(null)
+            viewModel.addItemToCart.verifyValueEquals(null)
+            viewModel.updateCartItem.verifyValueEquals(null)
+            viewModel.removeCartItem.verifyValueEquals(null)
+        }
     }
 
     @Test
     fun `given new quantity is 0 when update cart item should do nothing`() {
-        val position = 0
-        val quantity = 0
-        val cartQuantity = 4
+        coroutineTestRule.runBlockingTest {
+            val position = 0
+            val quantity = 0
+            val cartQuantity = 4
 
-        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
-        val shopId = expectedProduct.shopId
-        val productId = expectedProduct.getProductId()
+            val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+            val shopId = expectedProduct.shopId
+            val productId = expectedProduct.getProductId()
 
-        mockProductModels()
+            mockProductModels()
 
-        mockMiniCartSimplifiedData(
-            productId = productId,
-            quantity = cartQuantity
-        )
+            mockMiniCartSimplifiedData(
+                productId = productId,
+                quantity = cartQuantity
+            )
 
-        val response = UpdateCartV2Data()
+            val response = UpdateCartV2Data()
 
-        onUpdateItemCart_thenReturn(response)
+            onUpdateItemCart_thenReturn(response)
 
-        viewModel.onCartQuantityChanged(productId, shopId, quantity, 1, false)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, 1, false)
+            advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
-        viewModel.addItemToCart.verifyValueEquals(null)
-        viewModel.updateCartItem.verifyValueEquals(null)
-        viewModel.removeCartItem.verifyValueEquals(null)
+            viewModel.addItemToCart.verifyValueEquals(null)
+            viewModel.updateCartItem.verifyValueEquals(null)
+            viewModel.removeCartItem.verifyValueEquals(null)
+        }
     }
 
     @Test
     fun `given new quantity is 0 when add cart item should do nothing`() {
-        val position = 0
-        val quantity = 0
+        coroutineTestRule.runBlockingTest {
+            val position = 0
+            val quantity = 0
 
-        val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
-        val productId = expectedProduct.getProductId()
-        val shopId = expectedProduct.shopId
+            val expectedProduct = productModels[position] as TokoNowProductCardCarouselItemUiModel
+            val productId = expectedProduct.getProductId()
+            val shopId = expectedProduct.shopId
 
-        mockProductModels()
+            mockProductModels()
 
-        val response = AddToCartDataModel()
+            val response = AddToCartDataModel()
 
-        onAddToCart_thenReturn(response)
+            onAddToCart_thenReturn(response)
 
-        viewModel.onCartQuantityChanged(productId, shopId, quantity, 1, false)
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, 1, false)
+            advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
-        viewModel.addItemToCart.verifyValueEquals(null)
-        viewModel.updateCartItem.verifyValueEquals(null)
-        viewModel.removeCartItem.verifyValueEquals(null)
+            viewModel.addItemToCart.verifyValueEquals(null)
+            viewModel.updateCartItem.verifyValueEquals(null)
+            viewModel.removeCartItem.verifyValueEquals(null)
+        }
     }
 }
