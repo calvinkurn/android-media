@@ -1,5 +1,7 @@
 package com.tokopedia.otp.notif.view.fragment
 
+import com.tokopedia.imageassets.TokopediaImageUrl
+
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
@@ -172,7 +174,7 @@ class SettingNotifFragment : BaseOtpFragment() {
 
         const val PARAM_DEVICE_STATUS = "device_status"
 
-        private const val LINK_IMG_PHONE_OTP_PUSH_NOTIF = "https://images.tokopedia.net/android/user/phone_otp_push_notif.png"
+        private const val LINK_IMG_PHONE_OTP_PUSH_NOTIF = TokopediaImageUrl.LINK_IMG_PHONE_OTP_PUSH_NOTIF
 
         fun createInstance(bundle: Bundle): SettingNotifFragment {
             val fragment = SettingNotifFragment()

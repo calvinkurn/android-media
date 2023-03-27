@@ -38,6 +38,9 @@ class PickerViewModel @Inject constructor(
     private var _medias = MutableLiveData<List<MediaUiModel>>()
     val medias: LiveData<List<MediaUiModel>> get() = _medias
 
+    private var _isOnVideoRecording = MutableLiveData<Boolean>()
+    val isOnVideoRecording: LiveData<Boolean> get() = _isOnVideoRecording
+
     private var _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
@@ -119,6 +122,7 @@ class PickerViewModel @Inject constructor(
                 .flowOn(dispatchers.io)
                 .onStart { _isFetchMediaLoading.value = true }
                 .onCompletion { _isFetchMediaLoading.value = false }
+                .catch { _isFetchMediaLoading.value = false }
                 .collect { data ->
                     _medias.value = mediaToUiModel(data)
 
@@ -131,4 +135,7 @@ class PickerViewModel @Inject constructor(
         }
     }
 
+    fun isOnVideoRecording(isRecord: Boolean) {
+        _isOnVideoRecording.value = isRecord
+    }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.people.data
 
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
-import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.FollowListUiModel
 
 interface UserFollowRepository {
 
@@ -14,12 +14,12 @@ interface UserFollowRepository {
         username: String,
         cursor: String,
         limit: Int,
-    ): Pair<List<ProfileUiModel.PeopleUiModel>, String> // with cursor
+    ): FollowListUiModel.Follower
 
     suspend fun getMyFollowing(
         username: String,
         cursor: String,
         limit: Int,
-    ): Pair<List<ProfileUiModel.PeopleUiModel>, String> // with cursor
+    ): FollowListUiModel.Following
 
 }

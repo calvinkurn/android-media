@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -273,10 +274,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
 
             val imageUrlOrPathList = cleanResult.mapIndexed { index, urlOrPath ->
-                if (!editted[index]) {
-                    val picture =
-                        pictureList.find { pict -> pict.urlOriginal == cleanResult[index] }?.urlThumbnail.toString()
-                    if (picture != "null" && picture.isNotBlank()) {
+                if (!editted.getOrNull(index).orTrue()) {
+                    val picture = pictureList.find {
+                            pict -> pict.urlOriginal == cleanResult.getOrNull(index).orEmpty()
+                    }?.urlThumbnail.orEmpty()
+                    if (picture.isNotBlank()) {
                         return@mapIndexed picture
                     }
                 }

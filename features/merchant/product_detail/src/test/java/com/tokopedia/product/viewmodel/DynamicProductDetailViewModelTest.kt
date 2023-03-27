@@ -43,6 +43,7 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -50,7 +51,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodState
@@ -102,7 +102,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.Matchers.anyInt
 import org.mockito.Matchers.anyString
 import rx.Observable
 import java.util.concurrent.TimeoutException
@@ -657,7 +656,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 productId = "1234",
                 cartId = "111",
                 quantity = 4
-            ), status = "OK"
+            ),
+            status = "OK"
         )
 
         coEvery {
@@ -1219,10 +1219,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         viewModel.loadViewToView("view_to_view", "", false)
         Thread.sleep(500)
-        //hit again with same page name
+        // hit again with same page name
         viewModel.loadViewToView("view_to_view", "", false)
 
-        //make sure it will only called once
+        // make sure it will only called once
         coVerify(exactly = 1) {
             getRecommendationUseCase.getData(any())
         }
@@ -1634,7 +1634,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.TRADE_IN })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.VALUE_PROP })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.VARIANT_OPTIONS })
         // remove unused palugada
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO })
@@ -1730,31 +1729,12 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     // region variant
-    /**
-     *  Variant Section
-     */
-    @Test
-    fun `process initial variant`() {
-        viewModel.processVariant(ProductVariant(), mutableMapOf(), false)
-
-        Assert.assertTrue(viewModel.initialVariantData.value != null)
-    }
-
     @Test
     fun `process initial variant tokonow`() {
         val variantData = ProductDetailTestUtil.getMockVariant()
-        viewModel.processVariant(variantData, mutableMapOf(), true)
+        viewModel.processVariant(variantData, mutableMapOf())
 
-        Assert.assertTrue(viewModel.initialVariantData.value == null)
         Assert.assertTrue(viewModel.singleVariantData.value != null)
-    }
-
-    @Test
-    fun `process initial variant with empty child tokonow`() {
-        viewModel.processVariant(ProductVariant(), mutableMapOf(), true)
-
-        Assert.assertTrue(viewModel.initialVariantData.value == null)
-        Assert.assertTrue(viewModel.singleVariantData.value == null)
     }
 
     @Test
@@ -1770,8 +1750,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
         } returns expectedVariantCategory
 
-        viewModel.processVariant(productVariant, mapOfSelectedOptionIds, true)
-        Assert.assertTrue(viewModel.initialVariantData.value == null)
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
         Assert.assertTrue(viewModel.singleVariantData.value == expectedVariantCategory)
     }
 
@@ -1786,40 +1765,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
         } returns null
 
-        viewModel.processVariant(productVariant, mapOfSelectedOptionIds, true)
-        Assert.assertTrue(viewModel.initialVariantData.value == null)
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
         Assert.assertTrue(viewModel.singleVariantData.value == null)
-    }
-
-    @Test
-    fun `variant clicked not partial`() {
-        val partialySelect = false
-        val imageVariant = "image"
-        viewModel.onVariantClicked(
-            ProductVariant(),
-            mutableMapOf(),
-            partialySelect,
-            anyInt(),
-            imageVariant
-        )
-        Assert.assertTrue(viewModel.onVariantClickedData.value != null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value == null)
-    }
-
-    @Test
-    fun `variant clicked partialy will post clicked variant option id`() {
-        val partialySelect = true
-        val variantOptionId = "1234567890"
-        viewModel.onVariantClicked(
-            ProductVariant(),
-            mutableMapOf(),
-            partialySelect,
-            anyInt(),
-            variantOptionId
-        )
-        Assert.assertTrue(viewModel.onVariantClickedData.value == null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value != null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value?.second == variantOptionId)
     }
 
     @Test
@@ -1830,26 +1777,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 "28323839" to "94748052"
             )
         )
-        `child options id is available when get child of variant selected`(singleVariant, null)
-    }
-
-    @Test
-    fun `child is available when get child of variant selected with options variant only`() {
-        val variantData = VariantDataModel(
-            mapOfSelectedVariant = mutableMapOf(
-                "28323838" to "94748049",
-                "28323839" to "94748052"
-            )
-        )
-        `child options id is available when get child of variant selected`(null, variantData)
+        `child options id is available when get child of variant selected`(singleVariant)
     }
 
     @Test
     fun `child is null when get child of variant selected with single and options variant is null`() {
         `on success get pdp layout mini variants options`()
         val childVariant = viewModel.getChildOfVariantSelected(
-            singleVariant = null,
-            optionalVariant = null
+            singleVariant = null
         )
         Assert.assertTrue(childVariant == null)
     }
@@ -1858,15 +1793,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `child is null when get child of variant selected with single and options variant is empty`() {
         `on success get pdp layout mini variants options`()
         val childVariant = viewModel.getChildOfVariantSelected(
-            singleVariant = ProductSingleVariantDataModel(),
-            optionalVariant = VariantDataModel()
+            singleVariant = ProductSingleVariantDataModel()
         )
         Assert.assertTrue(childVariant == null)
     }
 
     private fun `child options id is available when get child of variant selected`(
-        singleVariant: ProductSingleVariantDataModel?,
-        optionalVariant: VariantDataModel?
+        singleVariant: ProductSingleVariantDataModel?
     ) {
         // given pdp layout data
         `on success get pdp layout mini variants options`()
@@ -1874,8 +1807,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val p1Result = (viewModel.productLayout.value as Success).data
         // then, get child of variant selected
         val childVariant = viewModel.getChildOfVariantSelected(
-            singleVariant = singleVariant,
-            optionalVariant = optionalVariant
+            singleVariant = singleVariant
         )
 
         // assert the expectation
@@ -1896,8 +1828,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.variantData = null
 
         val childVariant = viewModel.getChildOfVariantSelected(
-            singleVariant = singleVariant,
-            optionalVariant = null
+            singleVariant = singleVariant
         )
 
         Assert.assertTrue(viewModel.variantData == null)
@@ -2510,11 +2441,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val errorCode = slot<Int>()
         val isTopAds = slot<Boolean>()
 
-            coEvery {
-                remoteConfigInstance.getLong(any(), any())
-            } returns 5000
+        coEvery {
+            remoteConfigInstance.getLong(any(), any())
+        } returns 5000
 
-            coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns expectedResponse
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns expectedResponse
 
         viewModel.getProductTopadsStatus(productId, paramsTest)
         coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
@@ -2526,11 +2457,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         }
 
-            Assert.assertTrue(expectedResponse.data.status.error_code in 200..300 && expectedResponse.data.productList[0].isCharge)
-            Assert.assertEquals(isSuccess.captured, true)
-            Assert.assertEquals(errorCode.captured, 200)
-            Assert.assertEquals(isTopAds.captured, true)
-        }
+        Assert.assertTrue(expectedResponse.data.status.error_code in 200..300 && expectedResponse.data.productList[0].isCharge)
+        Assert.assertEquals(isSuccess.captured, true)
+        Assert.assertEquals(errorCode.captured, 200)
+        Assert.assertEquals(isTopAds.captured, true)
+    }
 
     /**
      * tokonow recom section
@@ -2544,7 +2475,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 success = 1,
                 cartId = "12345",
                 message = arrayListOf("halo")
-            ), status = "OK"
+            ),
+            status = "OK"
         )
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
@@ -2732,12 +2664,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
     }
 
-    @Test
-    fun `get play widget data success`() {
-        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
-
-        val expectedResponse = PlayWidget()
-        val expectedState = PlayWidgetState(
+    // region play widget
+    private val playWidgetExpectedState by lazy {
+        PlayWidgetState(
             model = PlayWidgetUiModel(
                 "title",
                 "action title",
@@ -2757,6 +2686,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             ),
             isLoading = false
         )
+    }
+
+    @Test
+    fun `get play widget data success`() {
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
+
+        val expectedResponse = PlayWidget()
 
         coEvery {
             playWidgetTools.getWidgetFromNetwork(
@@ -2768,11 +2704,61 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             playWidgetTools.mapWidgetToModel(
                 expectedResponse
             )
-        } returns expectedState
+        } returns playWidgetExpectedState
 
         viewModel.getPlayWidgetData()
 
-        viewModel.playWidgetModel.verifySuccessEquals(Success(expectedState))
+        viewModel.playWidgetModel.verifySuccessEquals(Success(playWidgetExpectedState))
+    }
+
+    @Test
+    fun `get play widget data success with variant data available`() {
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
+        val expectedResponse = PlayWidget()
+        viewModel.variantData = ProductVariant(
+            parentId = "1"
+        )
+        coEvery {
+            playWidgetTools.getWidgetFromNetwork(
+                widgetType = widgetType
+            )
+        } returns expectedResponse
+
+        coEvery {
+            playWidgetTools.mapWidgetToModel(
+                expectedResponse
+            )
+        } returns playWidgetExpectedState
+
+        viewModel.getPlayWidgetData()
+        assert(viewModel.variantData != null)
+    }
+
+    @Test
+    fun `get play widget data success with basic category detail available`() {
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
+        val expectedResponse = PlayWidget()
+        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(
+            basic = BasicInfo(category = Category(detail = listOf(Category.Detail())))
+        )
+        viewModel.variantData = ProductVariant(
+            parentId = "1",
+            children = listOf(VariantChild())
+        )
+        coEvery {
+            playWidgetTools.getWidgetFromNetwork(
+                widgetType = widgetType
+            )
+        } returns expectedResponse
+
+        coEvery {
+            playWidgetTools.mapWidgetToModel(
+                expectedResponse
+            )
+        } returns playWidgetExpectedState
+
+        viewModel.getPlayWidgetData()
+        assert(viewModel.getDynamicProductInfoP1?.basic?.category != null)
     }
 
     @Test
@@ -2987,6 +2973,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.playWidgetReminderSwitch.verifyErrorEquals(Fail(expectedThrowable))
     }
 
+    // endregion playwidget
     @Test
     fun `verify add to wishlistv2 returns success`() {
         val productId = "123"
@@ -3297,7 +3284,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.Empty)
 
         Assert.assertTrue(testResults.first().event is OneTimeMethodEvent.Empty)
-        Assert.assertEquals(testResults.first().hitVariantTracker, false)
         Assert.assertEquals(testResults.first().impressRestriction, false)
 
         job.cancel()
@@ -3311,32 +3297,27 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             viewModel.oneTimeMethodState.toList(testResults)
         }
 
-        //second assignment, because the first one is default value which OneTimeMethodEvent.Empty
-        viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.HitVariantTracker)
-        Assert.assertTrue(testResults[1].event is OneTimeMethodEvent.HitVariantTracker)
-        Assert.assertEquals(testResults[1].hitVariantTracker, true)
-        Assert.assertEquals(testResults[1].impressRestriction, false)
+        // second assignment, because the first one is default value which OneTimeMethodEvent.Empty
+        Assert.assertEquals(testResults[0].impressRestriction, false)
 
-        //re-assign and make sure we dont want to update the data, since we need to run every event exactly once
-        viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.HitVariantTracker)
         /**
          * list size still 2 because we don't assign the same hit variant tracker because of this code
          * if (_oneTimeMethod.value.impressRestriction) return
          * This is like verify in stateflow, we dont want to call update again if we assign the same value
          */
-        Assert.assertTrue(testResults.size == 2)
+        Assert.assertTrue(testResults.size == 1)
 
         val reData = RestrictionData(productId = "123")
-        //third assignment
+        // third assignment
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
-        Assert.assertTrue(testResults[2].event is OneTimeMethodEvent.ImpressRestriction)
-        Assert.assertTrue((testResults[2].event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
-        Assert.assertEquals(testResults[2].impressRestriction, true)
-        Assert.assertEquals(testResults[2].impressRestriction, true)
+        Assert.assertTrue(testResults[1].event is OneTimeMethodEvent.ImpressRestriction)
+        Assert.assertTrue((testResults[1].event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
+        Assert.assertEquals(testResults[1].impressRestriction, true)
+        Assert.assertEquals(testResults[1].impressRestriction, true)
 
-        //re-assign and make sure we dont want to update the data, since we need to run every event exactly once
+        // re-assign and make sure we dont want to update the data, since we need to run every event exactly once
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
-        Assert.assertTrue(testResults.size == 3)
+        Assert.assertTrue(testResults.size == 2)
 
         job.cancel()
     }

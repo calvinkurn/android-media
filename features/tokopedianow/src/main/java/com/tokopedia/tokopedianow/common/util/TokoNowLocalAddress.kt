@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper.mapWarehousesResponseToLocal
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import java.util.*
@@ -16,11 +15,7 @@ class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val co
         private const val OOC_WAREHOUSE_ID = 0L
     }
 
-    private var localAddressData: LocalCacheModel? = null
-
-    init {
-        localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
-    }
+    private var localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
 
     fun updateAddressData(response: GetStateChosenAddressResponse) {
         with(response) {
@@ -44,16 +39,14 @@ class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val co
     }
 
     fun updateLocalData() {
-        localAddressData?.let {
-            if (ChooseAddressUtils.isLocalizingAddressHasUpdated(context, it)) {
-                localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
-            }
+        if (ChooseAddressUtils.isLocalizingAddressHasUpdated(context, localAddressData)) {
+            localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
         }
     }
 
     fun isOutOfCoverage() = getWarehouseId() == OOC_WAREHOUSE_ID
 
-    fun getWarehouseId() = localAddressData?.warehouse_id.toLongOrZero()
+    fun getWarehouseId() = localAddressData.warehouse_id.toLongOrZero()
 
-    fun getShopId() = localAddressData?.shop_id.toLongOrZero()
+    fun getShopId() = localAddressData.shop_id.toLongOrZero()
 }
