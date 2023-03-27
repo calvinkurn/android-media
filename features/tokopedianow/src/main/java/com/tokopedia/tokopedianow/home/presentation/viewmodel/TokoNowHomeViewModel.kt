@@ -1052,10 +1052,6 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.updateLeftCarouselProductQuantity(miniCart)
     }
 
-    private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData) {
-        setMiniCartData(miniCart)
-    }
-
     private fun trackProductAddToCart(
         productId: String,
         quantity: Int,
