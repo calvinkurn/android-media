@@ -20,7 +20,7 @@ import retrofit2.Retrofit
 /**
  * @author Kulomady on 1/20/17.
  */
-@Module(includes = [TopAdsServiceModule::class, FavoriteViewModelModule::class])
+@Module(includes = [TopAdsServiceModule::class])
 class FavoriteModule {
 
     @FavoriteScope
