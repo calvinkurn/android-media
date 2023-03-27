@@ -215,8 +215,11 @@ class ContentCommentBottomSheet @Inject constructor(
             }
             windowInsets
         }
-        binding.newComment.setOnClickListener {
-            analytics?.clickTextBox()
+        binding.newComment.setOnTouchListener { _, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                analytics?.clickTextBox()
+            }
+            false
         }
     }
 
@@ -515,7 +518,7 @@ class ContentCommentBottomSheet @Inject constructor(
                     type
                 )
             )
-            if (type.isParent) analytics?.clickSendParentComment() else analytics?.clickReplyChild()
+            if (type.isParent) analytics?.clickSendParentComment() else analytics?.clickSendChildComment()
         }
     }
 
