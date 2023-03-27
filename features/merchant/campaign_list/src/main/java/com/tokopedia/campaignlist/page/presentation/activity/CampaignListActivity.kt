@@ -84,7 +84,7 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
             NestTheme {
                 val uiState = viewModel.uiState.collectAsState()
 
-                AdaptiveStatusBarColor(statusBarColor = NestNN.light._0)
+                AdaptiveStatusBarColor(statusBarColor = NestTheme.colors.NN._0)
 
                 CampaignListScreen(
                     uiState = uiState.value,
