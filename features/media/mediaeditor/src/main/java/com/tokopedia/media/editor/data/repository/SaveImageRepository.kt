@@ -62,6 +62,11 @@ class SaveImageRepositoryImpl @Inject constructor(
             }
 
             val file = it.asPickerFile()
+            checkFileExist(file) { exception ->
+                onFinish(null, exception)
+            }.apply {
+                if (!this) return
+            }
 
             val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
@@ -153,6 +158,15 @@ class SaveImageRepositoryImpl @Inject constructor(
         while (source.read(buf).also { length = it } > 0) {
             target.write(buf, 0, length)
         }
+    }
+
+    @Throws(IOException::class)
+    private fun checkFileExist(src: File?, failedAction: (e: Exception) -> Unit): Boolean {
+        if (src == null || !src.exists()) {
+            failedAction(IOException("Source file ${src?.absolutePath} not found"))
+            return false
+        }
+        return true
     }
 
     companion object {
