@@ -59,6 +59,7 @@ import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
+import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.TickerListAdapter
@@ -376,7 +377,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     // Variable to set personalized campaign
     private var personalizedMessage = ""
-    private var personalizedCampaignModel: PersonalizedCampaignModel? = null
+    private var personalizedImage = ""
 
     // parent fragment lifecycle observer
     private val parentFragmentLifecycleObserver by lazy {
@@ -1243,7 +1244,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
      */
     fun setPersonalizedCampaign(model: PersonalizedCampaignModel) {
         val context = LinkerManager.getInstance().context
-        personalizedCampaignModel = model
         when (model.getCampaignStatus()) {
             CampaignStatus.UPCOMING -> {
                 if (model.discountPercentage != 0F) {
@@ -1256,10 +1256,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 } else {
                     personalizedMessage = context.getString(
                         R.string.personalized_campaign_message_upcoming_without_discount,
-                        model.getStartDateCampaign(),
+                        model.getStartDateCampaign()
                     )
                 }
-
+                personalizedImage = context.getString(
+                    com.tokopedia.universal_sharing.R.string.start_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(model.startTime)
+                )
             }
             CampaignStatus.ON_GOING -> {
                 if (model.discountPercentage != 0F) {
@@ -1270,12 +1273,16 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                         model.getEndDateCampaign()
                     )
                 } else {
-                    personalizedMessage = context.getString(R.string.personalized_campaign_message_ongoing_without_disc,
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_ongoing_without_disc,
                         model.price,
                         model.getEndDateCampaign()
                     )
                 }
-
+                personalizedImage = context.getString(
+                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(model.endTime)
+                )
             }
             CampaignStatus.END_SOON -> {
                 if (model.discountPercentage != 0F) {
@@ -1292,7 +1299,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                         model.getDiscountString()
                     )
                 }
-
+                personalizedImage = context.getString(
+                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
+                    DateUtil.getDateCampaignInfo(model.endTime)
+                )
             }
             CampaignStatus.NO_CAMPAIGN -> {
                 /* no-op */
@@ -1305,10 +1315,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         (imageGeneratorParam as? PdpParamModel)?.apply {
             this.platform = shareModel.platform
             this.productImageUrl = transformOgImageURL(ogImageUrl)
-            personalizedCampaignModel?.let { personalizedCampaignModel ->
-                val context = LinkerManager.getInstance().context
-                this.campaignInfo = personalizedCampaignModel.getCampaignInfoImage(context.applicationContext)
-            }
+            this.campaignInfo = personalizedImage
         }
 
         lifecycleScope.launchCatchError(block = {
