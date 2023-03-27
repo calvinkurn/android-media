@@ -325,7 +325,7 @@ class ShipmentDataConverter @Inject constructor() {
         }
         shipmentCartItemModel.addOnDefaultTo = receiverName
         val products = groupShop.products
-        val cartItemModels = convertFromProductList(products, groupShop, username, receiverName)
+        val cartItemModels = convertFromProductList(products, groupShop, username, receiverName, shipmentCartItemModel.addOnWordingModel)
 
         // This is something that not well planned
         val fobject = levelUpParametersFromProductToCartSeller(cartItemModels)
@@ -353,20 +353,23 @@ class ShipmentDataConverter @Inject constructor() {
         products: List<Product>,
         groupShop: GroupShop,
         username: String,
-        receiverName: String
+        receiverName: String,
+        addOnOrderLevelModel: AddOnWordingModel
     ): ArrayList<CartItemModel> {
-        val cartItemModels: ArrayList<CartItemModel> = ArrayList()
-        for (product in products) {
-            cartItemModels.add(convertFromProduct(product, groupShop, username, receiverName))
-        }
-        return cartItemModels
+        return ArrayList(
+            products.mapIndexed { index, product ->
+                convertFromProduct(index, product, groupShop, username, receiverName, addOnOrderLevelModel)
+            }
+        )
     }
 
     private fun convertFromProduct(
+        index: Int,
         product: Product,
         groupShop: GroupShop,
         username: String,
-        receiverName: String
+        receiverName: String,
+        addOnWordingModel: AddOnWordingModel
     ): CartItemModel {
         val cartItemModel = CartItemModel()
         cartItemModel.cartId = product.cartId
@@ -447,6 +450,8 @@ class ShipmentDataConverter @Inject constructor() {
         cartItemModel.cartString = groupShop.cartString
         cartItemModel.warehouseId = groupShop.fulfillmentId.toString()
         cartItemModel.isTokoCabang = groupShop.isFulfillment
+        cartItemModel.cartItemPosition = index
+        cartItemModel.addOnOrderLevelModel = addOnWordingModel
         return cartItemModel
     }
 

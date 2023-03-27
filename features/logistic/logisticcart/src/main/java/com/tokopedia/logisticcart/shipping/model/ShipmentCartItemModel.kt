@@ -7,7 +7,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsD
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class ShipmentCartItemModel(
+data class ShipmentCartItemModel(
     var isAllItemError: Boolean = false,
     var isError: Boolean = false,
     var errorTitle: String? = null,
@@ -41,7 +41,7 @@ class ShipmentCartItemModel(
 
     // AddOns
     var addOnsOrderLevelModel: AddOnsDataModel? = null,
-    var addOnWordingModel: AddOnWordingModel? = null,
+    var addOnWordingModel: AddOnWordingModel = AddOnWordingModel(),
     var addOnDefaultFrom: String? = null,
     var addOnDefaultTo: String? = null,
 
