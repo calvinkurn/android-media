@@ -38,7 +38,6 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsD
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel
@@ -128,8 +127,9 @@ interface ShipmentContract {
         fun stopEmbraceTrace()
         fun onSuccessClearPromoLogistic(position: Int, isLastAppliedPromo: Boolean)
         fun resetCourier(position: Int)
-        fun generateValidateUsePromoRequest(): ValidateUsePromoRequest
-        fun generateCouponListRecommendationRequest(): PromoRequest
+
+//        fun generateValidateUsePromoRequest(): ValidateUsePromoRequest
+//        fun generateCouponListRecommendationRequest(): PromoRequest
         fun clearTotalBenefitPromoStacking()
         fun triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(
             transactionId: String,
