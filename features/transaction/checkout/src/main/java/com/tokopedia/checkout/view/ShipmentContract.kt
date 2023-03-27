@@ -5,7 +5,6 @@ import android.util.Pair
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.checkout.data.model.request.checkout.Carts
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
@@ -363,13 +362,11 @@ interface ShipmentContract {
         fun getCampaignTimer(): CampaignTimerUi?
         val isShowOnboarding: Boolean
         fun triggerSendEnhancedEcommerceCheckoutAnalytics(
-            dataCheckoutRequests: List<DataCheckoutRequest>?,
             tradeInCustomDimension: Map<String, String>?,
             step: String,
             eventCategory: String,
             eventAction: String,
             eventLabel: String,
-            leasingId: String?,
             transactionId: String,
             pageSource: String
         )

@@ -12,7 +12,6 @@ import com.tokopedia.checkout.data.model.request.checkout.Product
 import com.tokopedia.checkout.data.model.request.checkout.Promo
 import com.tokopedia.checkout.data.model.request.checkout.ShippingInfo
 import com.tokopedia.checkout.data.model.request.checkout.ShopOrder
-import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest
 import com.tokopedia.checkout.data.model.request.common.OntimeDeliveryGuarantee
 import com.tokopedia.checkout.data.model.request.common.RatesFeature
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -84,7 +83,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
                         promoCodes.add(voucherLogisticItemUiModel.code)
                         val promoRequest = Promo()
                         promoRequest.code = voucherLogisticItemUiModel.code
-                        promoRequest.type = PromoRequest.TYPE_LOGISTIC
+                        promoRequest.type = Promo.TYPE_LOGISTIC
                         promoRequests.add(promoRequest)
                     }
                     shopOrder = ShopOrder(
@@ -183,7 +182,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
     ): List<OrderMetadata> {
         val orderMetadata = arrayListOf<OrderMetadata>()
         if (selectedShipper.freeShippingMetadata.isNotBlank() &&
-            promos.firstOrNull { it.type == PromoRequest.TYPE_LOGISTIC } != null
+            promos.firstOrNull { it.type == Promo.TYPE_LOGISTIC } != null
         ) {
             // only add free shipping metadata if the order contains at least 1 promo logistic
             orderMetadata.add(OrderMetadata(OrderMetadata.FREE_SHIPPING_METADATA, selectedShipper.freeShippingMetadata))

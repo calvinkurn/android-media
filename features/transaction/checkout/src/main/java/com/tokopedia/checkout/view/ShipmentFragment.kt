@@ -701,12 +701,10 @@ class ShipmentFragment :
     private fun sendEEStep2() {
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
             null,
-            null,
             EnhancedECommerceActionField.STEP_2,
             ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
             ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
             ConstantTransactionAnalytics.EventLabel.SUCCESS,
-            checkoutLeasingId,
             "",
             checkoutPageSource
         )
@@ -1828,12 +1826,10 @@ class ShipmentFragment :
         if (!courierHasReseted) {
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 null,
-                null,
                 EnhancedECommerceActionField.STEP_3,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
                 "",
-                checkoutLeasingId,
                 "",
                 checkoutPageSource
             )
@@ -2876,13 +2872,11 @@ class ShipmentFragment :
             }
         }
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-            null,
             tradeInCustomDimension,
             EnhancedECommerceActionField.STEP_4,
             eventCategory,
             eventAction,
             eventLabel,
-            checkoutLeasingId,
             transactionId,
             checkoutPageSource
         )

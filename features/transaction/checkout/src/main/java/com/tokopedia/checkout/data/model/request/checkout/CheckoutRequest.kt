@@ -221,7 +221,13 @@ data class Promo(
     var code: String = "",
     @SerializedName("type")
     var type: String = ""
-)
+) {
+    companion object {
+        const val TYPE_GLOBAL = "global"
+        const val TYPE_MERCHANT = "merchant"
+        const val TYPE_LOGISTIC = "logistic"
+    }
+}
 
 data class TokopediaCorner(
     @SerializedName("is_tokopedia_corner")

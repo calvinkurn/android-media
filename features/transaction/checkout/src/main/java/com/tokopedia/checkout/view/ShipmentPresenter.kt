@@ -22,8 +22,6 @@ import com.tokopedia.checkout.data.model.request.checkout.Promo
 import com.tokopedia.checkout.data.model.request.checkout.TokopediaCorner
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest
 import com.tokopedia.checkout.data.model.request.saf.ShipmentAddressFormRequest
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateDropshipData
@@ -703,13 +701,11 @@ class ShipmentPresenter @Inject constructor(
     }
 
     override fun triggerSendEnhancedEcommerceCheckoutAnalytics(
-        dataCheckoutRequests: List<DataCheckoutRequest>?,
         tradeInCustomDimension: Map<String, String>?,
         step: String,
         eventCategory: String,
         eventAction: String,
         eventLabel: String,
-        leasingId: String?,
         transactionId: String,
         pageSource: String
     ) {
@@ -1857,13 +1853,10 @@ class ShipmentPresenter @Inject constructor(
             val promoModel = validateUsePromoRevampUiModel!!.promoUiModel
             if (promoModel.codes.isNotEmpty() && promoModel.messageUiModel.state != "red") {
                 for (promoCode in promoModel.codes) {
-                    val promoRequest = PromoRequest()
-                    promoRequest.code = promoCode
-                    promoRequest.type = PromoRequest.TYPE_GLOBAL
                     globalPromos.add(
                         Promo(
                             promoCode,
-                            PromoRequest.TYPE_GLOBAL
+                            Promo.TYPE_GLOBAL
                         )
                     )
                 }
@@ -1909,18 +1902,10 @@ class ShipmentPresenter @Inject constructor(
                                     voucherOrder.code
                                 )
                             ) {
-                                // This section logic's seems to be invalid, since promo will always be cleared on previous logic
                                 val promoRequest = Promo()
                                 promoRequest.code = voucherOrder.code
                                 promoRequest.type = voucherOrder.type
                                 shopProductCheckoutRequest.promos = shopProductCheckoutRequest.promos.toMutableList().apply { add(promoRequest) }
-                            } else {
-                                val promoRequest = Promo()
-                                promoRequest.code = voucherOrder.code
-                                promoRequest.type = voucherOrder.type
-                                val promoRequests: ArrayList<Promo> = ArrayList()
-                                promoRequests.add(promoRequest)
-                                shopProductCheckoutRequest.promos = promoRequests
                             }
                         }
                     }
