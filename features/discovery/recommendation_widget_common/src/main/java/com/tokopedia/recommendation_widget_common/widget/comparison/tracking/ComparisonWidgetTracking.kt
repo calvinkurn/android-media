@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget
+package com.tokopedia.recommendation_widget_common.widget.comparison.tracking
 
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem

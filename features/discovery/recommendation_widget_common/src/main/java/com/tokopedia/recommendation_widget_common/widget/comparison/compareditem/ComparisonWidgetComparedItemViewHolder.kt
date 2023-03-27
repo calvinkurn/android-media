@@ -5,19 +5,19 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonComparedWidgetBinding
-import com.tokopedia.recommendation_widget_common.widget.ComparisonWidgetTracking
-import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
+import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
+import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ProductRecommendationTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class ComparisonWidgetComparedItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private var binding: ItemComparisonComparedWidgetBinding? by viewBinding()
 
     companion object {
@@ -34,8 +34,9 @@ class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewH
         userSession: UserSessionInterface,
         comparedProductPosition: Int = -1
     ) {
-        if (comparedProductPosition == 0)
+        if (comparedProductPosition == 0) {
             view.visibility = View.INVISIBLE
+        }
 
         binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
         binding?.productCardView?.setProductModel(comparisonModel.productCardModel)

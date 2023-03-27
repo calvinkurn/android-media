@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget
+package com.tokopedia.recommendation_widget_common.widget.comparison.tracking
 
 import android.os.Bundle
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
