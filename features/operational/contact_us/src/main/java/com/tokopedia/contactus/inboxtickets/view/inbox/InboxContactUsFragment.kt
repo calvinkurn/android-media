@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -18,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
@@ -33,8 +33,6 @@ import com.tokopedia.contactus.inboxtickets.view.customview.ChatWidgetToolTip
 import com.tokopedia.contactus.inboxtickets.view.customview.CustomChatWidgetView
 import com.tokopedia.contactus.inboxtickets.view.fragment.InboxBottomSheetFragment
 import com.tokopedia.contactus.inboxtickets.view.fragment.ServicePrioritiesBottomSheet
-import com.tokopedia.contactus.inboxtickets.view.inbox.delegates.HasPaginatedList
-import com.tokopedia.contactus.inboxtickets.view.inbox.delegates.HasPaginatedListImpl
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxFilterSelection
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiState
 import com.tokopedia.contactus.inboxtickets.view.inbox.uimodel.InboxUiEffect
@@ -58,8 +56,7 @@ import javax.inject.Inject
 
 class InboxContactUsFragment :
     BaseDaggerFragment(),
-    ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet,
-    HasPaginatedList by HasPaginatedListImpl() {
+    ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet {
 
     private var binding by autoClearedNullable<ContactUsFragmentInboxBinding>()
     private var ivNoTicket: DeferredImageView? = null
@@ -76,6 +73,27 @@ class InboxContactUsFragment :
     private var chatWidgetNotification: View? = null
     private var bottomFragment: BottomSheetDialogFragment? = null
     private var servicePrioritiesBottomSheet: ServicePrioritiesBottomSheet? = null
+
+    private val rvOnScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            checkIfToLoad(rvEmailList?.layoutManager as LinearLayoutManager)
+        }
+    }
+
+    private fun checkIfToLoad(layoutManager: LinearLayoutManager) {
+        val visibleItemCount = layoutManager.childCount
+        val totalItemCount = layoutManager.itemCount
+        val isLoading = mAdapter.isLoading()
+        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+        if (!isLoading) {
+            val PAGE_SIZE = 10
+            if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= PAGE_SIZE) {
+                mAdapter.addFooter()
+                viewModel.getTicketItems()
+            }
+        }
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -125,7 +143,6 @@ class InboxContactUsFragment :
     override fun onResume() {
         super.onResume()
         showProgressBar()
-        resetPaging()
         viewModel.restartPageOfList()
         viewModel.getTicketItems()
         viewModel.getTopBotStatus()
@@ -189,18 +206,19 @@ class InboxContactUsFragment :
             }
 
             is InboxUiEffect.LoadNextPageSuccess -> {
+                mAdapter.removeFooter()
                 when {
                     uiEffect.isFirstPage && !uiEffect.isHasNext -> {
                         loadDataIntoRecyclerView(uiEffect)
-                        notifyLoadResult(uiEffect.isHasNext)
                     }
                     uiEffect.isFirstPage -> {
                         loadDataIntoRecyclerView(uiEffect)
-                        notifyLoadResult(uiEffect.isHasNext)
                     }
                     else -> {
-                        notifyLoadResult(uiEffect.isHasNext)
                         mAdapter.addAll(uiEffect.currentPageItems)
+                        if(!uiEffect.isHasNext) {
+                            binding?.rvEmailList?.removeOnScrollListener(rvOnScrollListener)
+                        }
                     }
                 }
             }
@@ -271,15 +289,6 @@ class InboxContactUsFragment :
     }
 
     private fun setupPaging() {
-        val pagingConfig = HasPaginatedList.Config(
-            pageSize = PAGE_SIZE,
-            onLoadNextPage = {
-                mAdapter.addFooter()
-            },
-            onLoadNextPageFinished = {
-                mAdapter.removeFooter()
-            }
-        )
 
         binding?.rvEmailList?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -301,10 +310,10 @@ class InboxContactUsFragment :
                 }
             })
             adapter = mAdapter
-
-            attachPaging(this, pagingConfig) { _, _ ->
+            /*attachPaging(this, pagingConfig) { _, _ ->
                 viewModel.getTicketItems()
-            }
+            }*/
+            addOnScrollListener(rvOnScrollListener)
         }
     }
 
