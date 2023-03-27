@@ -8,6 +8,7 @@ import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_USER
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -18,6 +19,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 14/06/20.
  */
+@GqlQuery(GetConfigurationUseCase.QUERY_NAME, GetConfigurationUseCase.QUERY_BROADCASTER_GET_AUTHOR_CONFIG)
 class GetConfigurationUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers,
@@ -25,7 +27,7 @@ class GetConfigurationUseCase @Inject constructor(
     private val gson: Gson,
 ) : CoroutineUseCase<GetConfigurationUseCase.RequestParam, GetBroadcasterAuthorConfigResponse>(dispatchers.io) {
 
-    override fun graphqlQuery(): String = QUERY_BROADCASTER_GET_AUTHOR_CONFIG
+    override fun graphqlQuery(): String = GetConfigurationUseCaseQuery().getQuery()
 
     override suspend fun execute(params: RequestParam): GetBroadcasterAuthorConfigResponse {
         val param = mapOf(
@@ -87,10 +89,10 @@ class GetConfigurationUseCase @Inject constructor(
 
         private const val VALUE_WITH_CHANNEL_STATE = true
 
-        private const val QUERY_NAME = "GetConfigurationUseCaseQuery"
+        const val QUERY_NAME = "GetConfigurationUseCaseQuery"
         /** TODO: dont forget to add PARAMS_DEVICE_SPECS in this QUERY PARAM */
         /** TODO: dont forget to add beautificationConfig in this QUERY BODY */
-        private const val QUERY_BROADCASTER_GET_AUTHOR_CONFIG = """
+        const val QUERY_BROADCASTER_GET_AUTHOR_CONFIG = """
             query BroadcasterGetAuthorConfig(
                 ${"$$PARAMS_AUTHOR_ID"}: Int64!, 
                 ${"$$PARAMS_AUTHOR_TYPE"}: Int!, 

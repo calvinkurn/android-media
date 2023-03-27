@@ -31,10 +31,12 @@ class PlayBroadcastBeautificationRepositoryImpl @Inject constructor(
         /** TODO: for mocking purpose, delete this soon when GQL is available in prod */
         return@withContext true
 
-        setBeautificationConfigUseCase.execute(
-            authorId = authorId,
-            authorType = authorType,
-            beautificationConfig = beautificationConfig
+        setBeautificationConfigUseCase(
+            SetBeautificationConfigUseCase.RequestParam(
+                authorId = authorId,
+                authorType = authorType,
+                beautificationConfig = beautificationConfig
+            )
         ).wrapper.success
     }
 
