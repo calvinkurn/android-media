@@ -18,7 +18,7 @@ data class DynamicAttachment(
             @SerializedName("html")
             val html: String?,
             @SerializedName("message")
-            val message: String?
+            val fallbackMessage: String?
         )
     }
 }

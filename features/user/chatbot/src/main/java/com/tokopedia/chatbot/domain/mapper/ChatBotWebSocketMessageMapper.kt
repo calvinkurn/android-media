@@ -152,7 +152,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         dynamicAttachment: DynamicAttachment
     ): Visitable<*> {
         var fallbackMessage = ""
-        dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentFallback?.message?.let {
+        dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentFallback?.fallbackMessage?.let {
             fallbackMessage = it
         }
         return FallbackAttachmentUiModel.Builder()
