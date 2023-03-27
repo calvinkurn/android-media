@@ -1,6 +1,5 @@
 package com.tokopedia.universal_sharing.model
 
-import android.content.Context
 import com.tokopedia.universal_sharing.util.DateUtil
 
 /**
@@ -41,26 +40,6 @@ data class PersonalizedCampaignModel(
     fun getStartDateCampaign(): String = DateUtil.getDateCampaign(startTime)
 
     fun getDiscountString(): String = discountPercentage.toInt().toString() + "%%"
-
-    fun getCampaignInfoImage(context: Context): String {
-        return when(getCampaignStatus()) {
-            CampaignStatus.UPCOMING -> {
-                context.getString(
-                    com.tokopedia.universal_sharing.R.string.start_personalized_campaign_info,
-                    DateUtil.getDateCampaignInfo(startTime)
-                )
-            }
-            CampaignStatus.ON_GOING, CampaignStatus.END_SOON -> {
-                context.getString(
-                    com.tokopedia.universal_sharing.R.string.ongoing_personalized_campaign_info,
-                    DateUtil.getDateCampaignInfo(endTime)
-                )
-            }
-            CampaignStatus.NO_CAMPAIGN -> {
-                ""
-            }
-        }
-    }
 
     companion object {
         private const val ZERO_UNIX = 0L
