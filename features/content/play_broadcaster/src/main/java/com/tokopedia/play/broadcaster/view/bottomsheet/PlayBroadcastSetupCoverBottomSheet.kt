@@ -202,6 +202,7 @@ class PlayBroadcastSetupCoverBottomSheet @Inject constructor(
                         channelId = mDataSource?.getChannelId().orEmpty(),
                         contentAccount = mDataSource?.getContentAccount() ?: ContentAccountUiModel.Empty,
                         dataStore = dataStore,
+                        entryPoint = mDataSource?.getEntryPoint().orEmpty(),
                     )
                 } as T
             }

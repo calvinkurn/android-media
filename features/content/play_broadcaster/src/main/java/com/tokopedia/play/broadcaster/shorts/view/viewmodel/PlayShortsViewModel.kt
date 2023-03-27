@@ -85,7 +85,7 @@ class PlayShortsViewModel @Inject constructor(
         get() = sharedPref.isShowSetupCoverCoachMark()
 
     val uploadedCoverSource: Int
-        get() = sharedPref.getUploadedCoverSource()
+        get() = sharedPref.getUploadedCoverSource(selectedAccount.id, SOURCE)
 
     val mDataStore = dataStore
 
@@ -369,7 +369,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleSetCoverUploadedSource(source: Int) {
-        sharedPref.setUploadedCoverSource(source)
+        sharedPref.setUploadedCoverSource(source, selectedAccount.id, SOURCE)
     }
 
     private fun setSelectedAccount(account: ContentAccountUiModel) {
@@ -480,5 +480,9 @@ class PlayShortsViewModel @Inject constructor(
             shortsVideoSourceId = _config.value.shortsVideoSourceId
         )
         playShortsUploader.upload(uploadData)
+    }
+
+    companion object {
+        private const val SOURCE = "shorts"
     }
 }
