@@ -235,8 +235,9 @@ class AffiliateEducationLandingPage :
                         activity?.finish()
                     }
                 }
+            } else {
+                activity?.finish()
             }
-            activity?.finish()
         } else {
             (activity as? AffiliateActivity)?.handleBackButton(false)
         }
