@@ -7,7 +7,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.NowAffiliateData
-import com.tokopedia.tokopedianow.common.util.ShopIdProvider.getShopId
+import com.tokopedia.tokopedianow.common.util.ShopIdProvider
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.PageDetail
@@ -30,8 +30,9 @@ class NowAffiliateService @Inject constructor(
     private var affiliateData = NowAffiliateData()
 
     suspend fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {
-        val source = AffiliateSdkPageSource.Shop(getShopId())
-        val pageDetail = AffiliatePageDetail(getShopId(), source)
+        val shopId = ShopIdProvider.getShopId()
+        val source = AffiliateSdkPageSource.Shop(shopId)
+        val pageDetail = AffiliatePageDetail(shopId, source)
 
         affiliateData = NowAffiliateData(
             affiliateUuid = affiliateUuid,
@@ -50,7 +51,7 @@ class NowAffiliateService @Inject constructor(
         val newQuantity = data.newQuantity
         val currentQuantity = data.currentQuantity
 
-        if(newQuantity > currentQuantity) {
+        if (newQuantity > currentQuantity) {
             val productId = data.productId
             val shopId = data.shopId
             val stock = data.stock
@@ -91,15 +92,16 @@ class NowAffiliateService @Inject constructor(
     }
 
     fun createShareInput(): AffiliatePDPInput {
+        val shopId = ShopIdProvider.getShopId()
         val pageDetail = PageDetail(
-            pageId = getShopId(),
+            pageId = shopId,
             pageType = SHARE_PAGE_TYPE,
             siteId = SHARE_SITE_ID,
             verticalId = SHARE_VERTICAL_ID
         )
 
         val shop = Shop(
-            shopID = getShopId(),
+            shopID = shopId,
             shopStatus = SHOP_STATUS_OPEN,
             isOS = true,
             isPM = false
