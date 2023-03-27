@@ -1,8 +1,12 @@
 package com.tokopedia.tokopedianow.searchcategory
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.CategoryTestFixtures
+import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Callback
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartQty
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Test
@@ -34,10 +38,28 @@ class CategoryAffiliateTest: CategoryTestFixtures(), Callback {
     }
 
     @Test
-    fun `when add to cart should call init affiliate cookie`() {
+    fun `when add to cart should call check atc affiliate cookie`() {
         addToCartTestHelper.`test add to cart success`()
 
-        `assert affiliate cookie called`()
+        val productItemList = tokoNowCategoryViewModel.visitableListLiveData.value!!.getProductItemList()
+        val productItemDataViewToATC = productItemList[0]
+        val productCardModel = productItemDataViewToATC.productCardModel
+
+        val productId = productCardModel.productId
+        val shopId = productItemDataViewToATC.shop.id
+        val stock = productCardModel.availableStock
+        val isVariant = productCardModel.isVariant
+
+        val expectedAffiliateData = NowAffiliateAtcData(
+            productId = productId,
+            shopId = shopId,
+            stock = stock,
+            isVariant = isVariant,
+            newQuantity = addToCartQty,
+            currentQuantity = 0
+        )
+
+        `assert check atc affiliate cookie called`(expectedAffiliateData)
     }
 
     @Test
@@ -56,19 +78,21 @@ class CategoryAffiliateTest: CategoryTestFixtures(), Callback {
         `assert createAffiliateLink called`(url)
     }
 
+    private fun List<Visitable<*>>.getProductItemList() = filterIsInstance<ProductItemDataView>()
+
     private fun `given init affiliate cookie error`() {
-        coEvery { affiliateHelper.initCookie(anyString(), anyString(), any()) } throws NullPointerException()
+        coEvery { affiliateService.initAffiliateCookie(anyString(), anyString()) } throws NullPointerException()
     }
 
     private fun `when create affiliate link`(url: String) {
         tokoNowCategoryViewModel.createAffiliateLink(url)
     }
 
-    private fun `assert affiliate cookie called`() {
-        coVerify { affiliateHelper.initCookie(anyString(), anyString(), any()) }
+    private fun `assert check atc affiliate cookie called`(expectedData: NowAffiliateAtcData) {
+        coVerify { affiliateService.checkAtcAffiliateCookie(expectedData) }
     }
 
     private fun `assert createAffiliateLink called`(url: String) {
-        coVerify { affiliateHelper.createAffiliateLink(url, anyString()) }
+        coVerify { affiliateService.createAffiliateLink(url) }
     }
 }
