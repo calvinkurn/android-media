@@ -13,13 +13,14 @@ import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListen
 import com.tokopedia.tokochat_common.view.listener.TokoChatMessageBubbleListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatMessageCensorListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
 
 open class TokoChatBaseAdapter(
     reminderTickerListener: TokochatReminderTickerListener,
     imageAttachmentListener: TokoChatImageAttachmentListener,
     bubbleMessageBubbleListener: TokoChatMessageBubbleListener,
     messageCensorListener: TokoChatMessageCensorListener
-): BaseCommonAdapter() {
+) : BaseCommonAdapter() {
 
     init {
         delegatesManager.addDelegate(TokoChatShimmerDelegate())
@@ -30,10 +31,11 @@ open class TokoChatBaseAdapter(
         delegatesManager.addDelegate(TokoChatMessageCensorDelegate(messageCensorListener))
     }
 
-    fun getPositionWithItem(item: Any): Int? {
+    fun getImageAttachmentPositionWithId(id: String): Int? {
         var result: Int? = null
         for (i in Int.ZERO until itemList.size) {
-            if (itemList[i] == item) {
+            val item = itemList[i]
+            if (item is TokoChatImageBubbleUiModel && item.imageId == id) {
                 result = i
                 break
             }

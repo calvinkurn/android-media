@@ -17,12 +17,13 @@ import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMess
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder.bindChatReadStatus
 import com.tokopedia.tokochat_common.view.listener.TokoChatImageAttachmentListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatImageBubbleUiModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoChatImageBubbleViewHolder(
     itemView: View,
     private val tokoChatImageAttachmentListener: TokoChatImageAttachmentListener
-): BaseViewHolder(itemView) {
+) : BaseViewHolder(itemView) {
 
     private val binding: TokochatItemImageBubbleBinding? by viewBinding()
 
@@ -39,7 +40,7 @@ class TokoChatImageBubbleViewHolder(
     }
 
     // Hide retry button, hide loading
-    fun bindWithSuccessLoadPayload(element: TokoChatImageBubbleUiModel) {
+    fun bindWithSuccessPayload(element: TokoChatImageBubbleUiModel) {
         bindRetryButton(element)
         bindLoader(false)
         bindRetryUploadButton(false)
@@ -55,6 +56,7 @@ class TokoChatImageBubbleViewHolder(
     // Show image locally, add retry upload button
     fun bindWithErrorUploadPayload(element: TokoChatImageBubbleUiModel) {
         bindRetryButton(element)
+        bindLoader(false)
         bindRetryUploadButton(true)
     }
 
@@ -126,6 +128,9 @@ class TokoChatImageBubbleViewHolder(
 
     private fun bindLoader(shouldShow: Boolean) {
         binding?.tokochatLoaderImageBubble?.showWithCondition(shouldShow)
+        if (shouldShow) {
+            binding?.tokochatLoaderImageBubble?.type = LoaderUnify.TYPE_CIRCULAR
+        }
     }
 
     private fun bindRetryUploadButton(shouldShow: Boolean) {
@@ -139,9 +144,11 @@ class TokoChatImageBubbleViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.tokochat_item_image_bubble
+    }
 
-        const val PAYLOAD_SUCCESS_LOAD = "isSuccessLoad"
-        const val PAYLOAD_ERROR_LOAD = "isErrorLoad"
-        const val PAYLOAD_ERROR_UPLOAD = "isErrorUpload"
+    enum class PAYLOAD(val key: String) {
+        PAYLOAD_SUCCESS("isSuccess"),
+        PAYLOAD_ERROR_LOAD("isErrorLoad"),
+        PAYLOAD_ERROR_UPLOAD("isErrorUpload")
     }
 }

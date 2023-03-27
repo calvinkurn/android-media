@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
-import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -169,13 +168,13 @@ class TokoChatViewUtil @Inject constructor(
         )
     }
 
-    fun renameAndMoveFileToTokoChatDir(originalFileUri: Uri, newFileName: String): Uri? {
+    fun renameAndMoveFileToTokoChatDir(originalFileUri: Uri, newFileName: String): String? {
         FileUtil.getPath(context.contentResolver, originalFileUri)?.let { resultPath ->
             val tempResultFile = File(resultPath)
             val renamedResultFile = getTokoChatPhotoPath(newFileName)
             tempResultFile.renameTo(renamedResultFile)
 
-            return renamedResultFile.toUri()
+            return renamedResultFile.path
         }
         return null
     }

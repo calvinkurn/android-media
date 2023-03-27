@@ -109,6 +109,10 @@ class TokoChatViewModel @Inject constructor(
     val updateOrderTransactionStatus: SharedFlow<Result<TokoChatOrderProgressResponse>> =
         _updateOrderTransactionStatus
 
+    private val _imageUploadStatus = MutableLiveData<Pair<String, Result<Unit>>>()
+    val imageUploadStatus: LiveData<Pair<String, Result<Unit>>>
+        get() = _imageUploadStatus
+
     private val _error = MutableLiveData<Pair<Throwable, String>>()
     val error: LiveData<Pair<Throwable, String>>
         get() = _error
@@ -420,8 +424,8 @@ class TokoChatViewModel @Inject constructor(
     fun uploadImage(filePath: String) {
         viewModelScope.launch {
             withContext(dispatcher.io) {
+                val localUUID = UUID.randomUUID().toString()
                 try {
-                    val localUUID = UUID.randomUUID().toString()
                     // Compress & Rename Image
                     val localImage = preprocessingImage(
                         filePath = filePath,
@@ -434,27 +438,43 @@ class TokoChatViewModel @Inject constructor(
                     )
 
                     // Upload image to BE
-                    val result = uploadImageToServer(filePath)
-                    result.data?.imageId?.let {
-                        // Rename Image to imageId
-                        renameImage(originalFileUri = localImage, newFileName = it)
-                    }
+                    val result = uploadImageToServer(localImage)
 
-                    // send transient message
-                    sendTransientExtensionMessage(
-                        createExtensionMessage(
-                            localUUID = localUUID,
-                            result.data?.imageId
+                    if (!result.error.isNullOrEmpty()) {
+                        _imageUploadStatus.postValue(
+                            Pair(localUUID, Fail(Throwable(result.error?.joinToString())))
                         )
-                    )
+                    } else {
+                        // Rename Image to imageId
+                        renameImage(
+                            originalFileUri = Uri.parse(localImage),
+                            newFileName = result.data?.imageId!! // Expected error when null
+                        )
+
+                        // Send transient message
+                        sendTransientExtensionMessage(
+                            createExtensionMessage(
+                                localUUID = localUUID,
+                                result.data?.imageId
+                            )
+                        )
+
+                        // Update status message
+                        _imageUploadStatus.postValue(
+                            Pair(
+                                result.data?.imageId!!,
+                                Success(Unit)
+                            )
+                        )
+                    }
                 } catch (throwable: Throwable) {
-                    Timber.d(throwable)
+                    _imageUploadStatus.postValue(Pair(localUUID, Fail(throwable)))
                 }
             }
         }
     }
 
-    private fun preprocessingImage(filePath: String, newFileName: String): Uri {
+    private fun preprocessingImage(filePath: String, newFileName: String): String {
         val compressedImage = viewUtil.compressImageToTokoChatPath(originalFilePath = filePath)
             ?: throw MessageErrorException(ERROR_COMPRESSED_IMAGE_NULL)
         return renameImage(originalFileUri = compressedImage, newFileName = newFileName)
@@ -463,7 +483,7 @@ class TokoChatViewModel @Inject constructor(
     private fun renameImage(
         originalFileUri: Uri,
         newFileName: String
-    ): Uri {
+    ): String {
         return viewUtil.renameAndMoveFileToTokoChatDir(
             originalFileUri = originalFileUri,
             newFileName = newFileName

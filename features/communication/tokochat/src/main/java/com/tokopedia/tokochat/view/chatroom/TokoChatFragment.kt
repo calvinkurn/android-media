@@ -27,20 +27,18 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
-import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
@@ -82,7 +80,6 @@ import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatOrderProgressUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -290,6 +287,7 @@ open class TokoChatFragment :
         observeLoadOrderTransactionStatus()
         observeUpdateOrderTransactionStatus()
         observeChatConnection()
+        observeImageAttachmentStatus()
         observeError()
     }
 
@@ -300,6 +298,43 @@ open class TokoChatFragment :
                 TokoChatErrorLogger.ErrorType.ERROR_PAGE,
                 it.second
             )
+        }
+    }
+
+    private fun observeImageAttachmentStatus() {
+        observe(viewModel.imageUploadStatus) { pair ->
+            val imageId = pair.first
+            when (pair.second) {
+                is Success -> {
+                    // Update image attachment state
+                    adapter.getImageAttachmentPositionWithId(imageId)?.let {
+                        val payloads = adapter.createPayloads(
+                            TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_SUCCESS.key,
+                            true
+                        )
+                        adapter.notifyItemChanged(it, payloads)
+                    }
+                }
+                is Fail -> {
+                    // Show toaster and send newrelic with error handler
+                    if (view != null && context != null) {
+                        Toaster.build(
+                            view = view!!,
+                            text = ErrorHandler.getErrorMessage(context, (pair.second as Fail).throwable),
+                            duration = Toaster.LENGTH_LONG,
+                            type = Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                    // Update image attachment state
+                    adapter.getImageAttachmentPositionWithId(imageId)?.let {
+                        val payloads = adapter.createPayloads(
+                            TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_ERROR_UPLOAD.key,
+                            true
+                        )
+                        adapter.notifyItemChanged(it, payloads)
+                    }
+                }
+            }
         }
     }
 
@@ -985,10 +1020,12 @@ open class TokoChatFragment :
             element.updateShouldRetry(true)
 
             // get item position
-            adapter.getPositionWithItem(element)?.let {
+            adapter.getImageAttachmentPositionWithId(element.imageId)?.let {
                 // create payload with correct value
                 val payload = adapter.createPayloads(
-                    TokoChatImageBubbleViewHolder.PAYLOAD_ERROR_LOAD, true)
+                    TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_ERROR_LOAD.key,
+                    true
+                )
                 // notify
                 adapter.notifyItemChanged(it, payload)
             }
@@ -1037,12 +1074,13 @@ open class TokoChatFragment :
                         impressOnImageAttachment(element, imageView)
                         element.updateShouldRetry(false)
                     }, onError = {
-                        onErrorLoadImage(element)
-                    })
+                            onErrorLoadImage(element)
+                        })
                     this.transforms(listOf(CenterCrop(), RoundedCorners(EIGHT_DP.toPx())))
                     this.setRoundedRadius(EIGHT_DP.toFloat())
                 })
                 element.updateImageData(imagePath = file.absolutePath, status = true)
+                onSuccessImageAttachment(element.imageId)
             }
         }
     }
@@ -1052,15 +1090,20 @@ open class TokoChatFragment :
         activity?.runOnUiThread {
             // change should retry to false
             element.updateShouldRetry(false)
+            onSuccessImageAttachment(element.imageId)
+        }
+    }
 
-            // get item position
-            adapter.getPositionWithItem(element)?.let {
-                // create payload with correct value
-                val payload = adapter.createPayloads(
-                    TokoChatImageBubbleViewHolder.PAYLOAD_SUCCESS_LOAD, true)
-                // notify
-                adapter.notifyItemChanged(it, payload)
-            }
+    private fun onSuccessImageAttachment(imageId: String) {
+        // get item position
+        adapter.getImageAttachmentPositionWithId(imageId)?.let {
+            // create payload with correct value
+            val payload = adapter.createPayloads(
+                TokoChatImageBubbleViewHolder.PAYLOAD.PAYLOAD_SUCCESS.key,
+                true
+            )
+            // notify
+            adapter.notifyItemChanged(it, payload)
         }
     }
 
@@ -1210,7 +1253,6 @@ open class TokoChatFragment :
     }
 
     private fun setupExtensionProvider() {
-
     }
 
     companion object {

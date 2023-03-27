@@ -5,6 +5,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.domain.response.upload_image.TokoChatUploadImageResult
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
@@ -21,8 +22,9 @@ class TokoChatUploadImageUseCase @Inject constructor(
     override suspend fun execute(params: Param): TokoChatUploadImageResult {
         val file = File(params.filePath)
         val requestBodyFile = file.asRequestBody(IMAGE)
+        val multiPartFile = MultipartBody.Part.createFormData(FILE_PART, file.name, requestBodyFile)
         val requestBodyChannelId = params.channelId.toRequestBody(TEXT)
-        return repository.uploadImage(requestBodyFile, requestBodyChannelId)
+        return repository.uploadImage(multiPartFile, requestBodyChannelId)
     }
 
     data class Param(
@@ -31,7 +33,8 @@ class TokoChatUploadImageUseCase @Inject constructor(
     )
 
     companion object {
-        val IMAGE = "image/*".toMediaTypeOrNull()
+        private const val FILE_PART = "file"
+        val IMAGE = "image/jpeg".toMediaTypeOrNull()
         val TEXT = "text/plain".toMediaTypeOrNull()
     }
 }
