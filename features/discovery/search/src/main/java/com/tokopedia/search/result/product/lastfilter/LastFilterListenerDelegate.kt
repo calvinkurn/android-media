@@ -41,12 +41,6 @@ class LastFilterListenerDelegate @Inject constructor(
     }
 
     override fun closeLastFilter(lastFilterDataView: LastFilterDataView) {
-        LastFilterTracking.trackEventLastFilterClickClose(
-            queryKey,
-            lastFilterDataView.sortFilterParamsString(),
-            lastFilterDataView.dimension90,
-        )
-
         val searchParameterMap = getSearchParameter()?.getSearchParameterMap() ?: mapOf()
 
         recyclerViewUpdater.productListAdapter?.removeLastFilterWidget()

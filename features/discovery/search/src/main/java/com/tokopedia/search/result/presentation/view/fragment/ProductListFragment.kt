@@ -1284,10 +1284,6 @@ class ProductListFragment: BaseDaggerFragment(),
         reloadData()
     }
 
-    override fun trackEventClickDropdownQuickFilter(filterTitle: String) {
-        SearchTracking.trackEventClickDropdownQuickFilter(filterTitle)
-    }
-
     override fun trackEventApplyDropdownQuickFilter(
         optionList: List<Option>?,
         pageSource: String,

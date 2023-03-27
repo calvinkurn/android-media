@@ -10,8 +10,6 @@ interface InspirationCarouselListener {
 
     fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product)
 
-    fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product)
-
     fun onInspirationCarouselGridProductImpressed(product: InspirationCarouselDataView.Option.Product)
 
     fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product)

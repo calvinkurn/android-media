@@ -1035,7 +1035,6 @@ class ProductListPresenter @Inject constructor(
 
     private fun onDropDownQuickFilterClick(filter: Filter) {
         view.openBottomsheetMultipleOptionsQuickFilter(filter)
-        view.trackEventClickDropdownQuickFilter(filter.title)
     }
 
     override fun onApplyDropdownQuickFilter(optionList: List<Option>?) {

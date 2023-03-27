@@ -182,8 +182,6 @@ internal class ShopListFragment:
         observeTrackingClickShopItem()
         observeTrackingClickNotActiveShop()
         observeTrackingClickShopRecommendation()
-        observeTrackingClickProductItem()
-        observeTrackingClickProductRecommendation()
         observeQuickFilterLiveData()
         observeTrackingClickQuickFilterEvent()
         observeRefreshLayoutVisibility()
@@ -467,28 +465,6 @@ internal class ShopListFragment:
         SearchTracking.trackEventClickShopRecommendation(shopDataItem.getShopRecommendationAsObjectDataLayer(), shopDataItem.id, keyword)
     }
 
-    private fun observeTrackingClickProductItem() {
-        searchShopViewModel?.getClickProductItemTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { shopItemProduct ->
-            trackEventClickProductItem(shopItemProduct)
-        })
-    }
-
-    private fun trackEventClickProductItem(shopDataItemProduct: ShopDataView.ShopItem.ShopItemProduct) {
-        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
-        SearchTracking.eventSearchResultShopProductPreviewClick(shopDataItemProduct.getShopProductPreviewAsObjectDataLayer(), keyword)
-    }
-
-    private fun observeTrackingClickProductRecommendation() {
-        searchShopViewModel?.getClickProductRecommendationItemTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { shopItemProduct ->
-            trackEventClickProductRecommendation(shopItemProduct)
-        })
-    }
-
-    private fun trackEventClickProductRecommendation(shopDataItemProduct: ShopDataView.ShopItem.ShopItemProduct) {
-        val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
-        SearchTracking.trackEventClickShopRecommendationProductPreview(shopDataItemProduct.getShopRecommendationProductPreviewAsObjectDataLayer(), keyword)
-    }
-
     private fun observeQuickFilterLiveData() {
         searchShopViewModel?.getSortFilterItemListLiveData()?.observe(viewLifecycleOwner, Observer {
             showQuickFilterView(it)
@@ -565,7 +541,7 @@ internal class ShopListFragment:
     }
 
     override fun onProductItemClicked(shopDataItemProduct: ShopDataView.ShopItem.ShopItemProduct) {
-        searchShopViewModel?.onViewClickProductPreview(shopDataItemProduct)
+        route(shopDataItemProduct.applink)
     }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
