@@ -287,8 +287,9 @@ open class DynamicProductDetailViewModel @Inject constructor(
 
     val showBottomSheetEdu: LiveData<BottomSheetEduUiModel?> = p2Data.map {
         val edu = it.bottomSheetEdu
+        val showEdu = edu.isShow && edu.appLink.isNotBlank()
 
-        if (edu.isShow && edu.appLink.isNotBlank()) {
+        if (showEdu) {
             edu
         } else {
             null
