@@ -1,4 +1,4 @@
-package com.tokopedia.common_digital.atc.data.response
+package com.tokopedia.common_digital.atc.data.request
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class FintechProduct(
+data class CheckoutFintechProduct(
     @SerializedName("id")
     @Expose
-    val id: String = "",
+    val id: Int = 0,
 
     @SerializedName("transaction_type")
     @Expose
@@ -17,7 +17,7 @@ data class FintechProduct(
 
     @SerializedName("tier_id")
     @Expose
-    var tierId: String = "",
+    var tierId: Int = 0,
 
     @SerializedName("opt_in")
     @Expose
@@ -33,11 +33,11 @@ data class FintechProduct(
 
     @SerializedName("fintech_amount")
     @Expose
-    var fintechAmount: Double = 0.0,
+    var fintechAmount: Int = 0,
 
     @SerializedName("fintech_partner_amount")
     @Expose
-    var fintechPartnerAmount: Double = 0.0,
+    var fintechPartnerAmount: Int = 0,
 
     @SerializedName("info")
     @Expose
