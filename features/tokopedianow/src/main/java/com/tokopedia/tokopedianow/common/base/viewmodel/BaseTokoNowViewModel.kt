@@ -156,13 +156,21 @@ open class BaseTokoNowViewModel(
 
     private fun checkAtcAffiliateCookie(
         productId: String,
+        shopId: String,
         stock: Int,
         isVariant: Boolean,
         quantity: Int
     ) {
         val miniCartItem = getMiniCartItem(productId)
         val currentQuantity = miniCartItem.quantity
-        val data = NowAffiliateAtcData(productId, stock, isVariant, quantity, currentQuantity)
+        val data = NowAffiliateAtcData(
+            productId,
+            shopId,
+            stock,
+            isVariant,
+            quantity,
+            currentQuantity
+        )
 
         launchCatchError(block = {
             affiliateService.checkAtcAffiliateCookie(data)
@@ -192,7 +200,7 @@ open class BaseTokoNowViewModel(
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
-            checkAtcAffiliateCookie(productId, stock, isVariant, quantity)
+            checkAtcAffiliateCookie(productId, shopId, stock, isVariant, quantity)
             onSuccessAddToCart.invoke(it)
             _addItemToCart.postValue(Success(it))
         }, {
@@ -208,6 +216,7 @@ open class BaseTokoNowViewModel(
         onError: (Throwable) -> Unit
     ) {
         val productId = product.id
+        val shopId = product.shopId
         val quantity = product.quantity
         val stock = product.stock
         val isVariant = product.isVariant
@@ -225,7 +234,7 @@ open class BaseTokoNowViewModel(
         )
         updateCartUseCase.execute({
             val data = Triple(productId, it, quantity)
-            checkAtcAffiliateCookie(productId, stock, isVariant, quantity)
+            checkAtcAffiliateCookie(productId, shopId, stock, isVariant, quantity)
             updateMiniCartItemQuantity(miniCartItem, quantity)
             onSuccessUpdateCart.invoke(miniCartItem, it)
             _updateCartItem.postValue(Success(data))

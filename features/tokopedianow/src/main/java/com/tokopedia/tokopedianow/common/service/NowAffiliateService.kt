@@ -47,19 +47,22 @@ class NowAffiliateService @Inject constructor(
     }
 
     suspend fun checkAtcAffiliateCookie(data: NowAffiliateAtcData) {
-        val productId = data.productId
-        val stock = data.stock
-        val isVariant = data.isVariant
         val newQuantity = data.newQuantity
         val currentQuantity = data.currentQuantity
 
         if(newQuantity > currentQuantity) {
-            createAtcAffiliateCookie(productId, stock, isVariant)
+            val productId = data.productId
+            val shopId = data.shopId
+            val stock = data.stock
+            val isVariant = data.isVariant
+
+            createAtcAffiliateCookie(productId, shopId, stock, isVariant)
         }
     }
 
     private suspend fun createAtcAffiliateCookie(
         productId: String,
+        shopId: String,
         stockQty: Int,
         isVariant: Boolean
     ) {
@@ -71,7 +74,7 @@ class NowAffiliateService @Inject constructor(
 
         val source = AffiliateSdkPageSource.DirectATC(
             atcSource = AffiliateAtcSource.SHOP_PAGE,
-            shopId = getShopId(),
+            shopId = shopId,
             productInfo = productInfo
         )
 

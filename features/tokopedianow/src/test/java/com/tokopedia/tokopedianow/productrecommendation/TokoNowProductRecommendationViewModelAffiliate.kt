@@ -52,6 +52,7 @@ class TokoNowProductRecommendationViewModelAffiliate : TokoNowProductRecommendat
 
             val expectedAffiliateData = NowAffiliateAtcData(
                 productId = productId,
+                shopId = shopId,
                 stock = stock,
                 isVariant = isVariant,
                 newQuantity = quantity,
@@ -105,6 +106,7 @@ class TokoNowProductRecommendationViewModelAffiliate : TokoNowProductRecommendat
 
             val expectedAffiliateData = NowAffiliateAtcData(
                 productId = productId,
+                shopId = shopId,
                 stock = stock,
                 isVariant = isVariant,
                 newQuantity = quantity,

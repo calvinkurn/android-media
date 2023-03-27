@@ -1140,14 +1140,14 @@ abstract class BaseSearchCategoryViewModel(
             cartProductItem = CartProductItem(productId, shopId, currentQuantity),
             quantity = quantity,
             onSuccessAddToCart = {
-                checkAtcAffiliateCookie(productId, quantity, stock, isVariant)
+                checkAtcAffiliateCookie(productId, shopId, quantity, stock, isVariant)
                 addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 sendAddToCartTracking(quantity, it.data.cartId, productItem)
                 onAddToCartSuccess(productItem, it.data.quantity)
                 updateToolbarNotification()
             },
             onSuccessUpdateCart = {
-                checkAtcAffiliateCookie(productId, quantity, stock, isVariant)
+                checkAtcAffiliateCookie(productId, shopId, quantity, stock, isVariant)
                 sendTrackingUpdateQuantity(quantity, productItem)
                 onAddToCartSuccess(productItem, quantity)
                 updateToolbarNotification()
@@ -1435,13 +1435,14 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun checkAtcAffiliateCookie(
         productId: String,
+        shopId: String,
         quantity: Int,
         stock: Int,
         isVariant: Boolean
     ) {
         val miniCartItem = cartService.getMiniCartItem(productId)
         val currentQuantity = miniCartItem?.quantity.orZero()
-        val data = NowAffiliateAtcData(productId, stock, isVariant, quantity, currentQuantity)
+        val data = NowAffiliateAtcData(productId, shopId, stock, isVariant, quantity, currentQuantity)
 
         launchCatchError(block = {
             affiliateService.checkAtcAffiliateCookie(data)
