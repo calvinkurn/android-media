@@ -29,7 +29,6 @@ import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.publisher.PickerEventBus
 import com.tokopedia.media.picker.ui.publisher.observe
 import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
-import com.tokopedia.media.picker.utils.isOppoManufacturer
 import com.tokopedia.media.picker.utils.parcelableArrayListExtra
 import com.tokopedia.media.picker.utils.parcelableExtra
 import com.tokopedia.media.picker.utils.permission.hasPermissionRequiredGranted
@@ -129,7 +128,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
 
-        if (isOppoManufacturer()) {
+        if (isSplitInstallEnabled()) {
             SplitCompat.installActivity(this)
         }
     }
@@ -182,6 +181,10 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             LAST_MEDIA_SELECTION,
             medias
         )
+    }
+
+    private fun isSplitInstallEnabled(): Boolean {
+        return true
     }
 
     private fun resetVideoRecordingState() {
