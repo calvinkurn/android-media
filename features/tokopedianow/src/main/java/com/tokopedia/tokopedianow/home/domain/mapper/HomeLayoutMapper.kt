@@ -48,9 +48,9 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMP
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
-import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.CatalogCouponListMapper.mapToClaimCouponWidgetUiModelList
+import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapResponseToLeftCarousel
@@ -576,7 +576,8 @@ object HomeLayoutMapper {
                 }
             }?.let {
                 updateItemById(layout.getVisitableId()) {
-                    productList[index] = productUiModel.copy(product = it)
+                    val newProductUiModel = productUiModel.copy(quantity = quantity)
+                    productList[index] = newProductUiModel.copy(product = it)
                     copy(layout = layoutUiModel.copy(productList = productList))
                 }
             }

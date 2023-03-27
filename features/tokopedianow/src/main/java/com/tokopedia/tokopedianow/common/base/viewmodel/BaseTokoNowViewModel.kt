@@ -19,6 +19,7 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
+import com.tokopedia.tokopedianow.common.model.ProductCartItem
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -89,19 +90,11 @@ open class BaseTokoNowViewModel(
         if (cartQuantity == quantity) return
 
         launchWithDelay(block = {
-            miniCartItem.quantity = quantity
+            val product = ProductCartItem(productId, shopId, quantity, stock, isVariant)
             when {
-                cartQuantity.isZero() -> addItemToCart(
-                    productId,
-                    shopId,
-                    quantity,
-                    stock,
-                    isVariant,
-                    onSuccessAddToCart,
-                    onError
-                )
+                cartQuantity.isZero() -> addItemToCart(product, onSuccessAddToCart, onError)
                 quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
-                else -> updateCartItem(miniCartItem, quantity, stock, isVariant, onSuccessUpdateCart, onError)
+                else -> updateCartItem(product, miniCartItem, onSuccessUpdateCart, onError)
             }
         }, delay = CHANGE_QUANTITY_DELAY).let {
             changeQuantityJob = it
@@ -161,14 +154,14 @@ open class BaseTokoNowViewModel(
         }
     }
 
-    protected fun checkAtcAffiliateCookie(
+    private fun checkAtcAffiliateCookie(
         productId: String,
         stock: Int,
         isVariant: Boolean,
         quantity: Int
     ) {
         val miniCartItem = getMiniCartItem(productId)
-        val currentQuantity = miniCartItem?.quantity
+        val currentQuantity = miniCartItem.quantity
         val data = NowAffiliateAtcData(productId, stock, isVariant, quantity, currentQuantity)
 
         launchCatchError(block = {
@@ -177,22 +170,21 @@ open class BaseTokoNowViewModel(
         }
     }
 
-    protected fun updateMiniCartItemQuantity(
-        miniCartItem: MiniCartItemProduct,
-        quantity: Int
-    ) {
+    private fun updateMiniCartItemQuantity(miniCartItem: MiniCartItemProduct, quantity: Int) {
         miniCartItem.quantity = quantity
     }
 
     private fun addItemToCart(
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        stock: Int,
-        isVariant: Boolean,
+        product: ProductCartItem,
         onSuccessAddToCart: (AddToCartDataModel) -> Unit,
         onError: (Throwable) -> Unit
     ) {
+        val productId = product.id
+        val shopId = product.shopId
+        val quantity = product.quantity
+        val stock = product.stock
+        val isVariant = product.isVariant
+
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
             productId = productId,
             shopId = shopId,
@@ -210,16 +202,18 @@ open class BaseTokoNowViewModel(
     }
 
     private fun updateCartItem(
+        product: ProductCartItem,
         miniCartItem: MiniCartItemProduct,
-        quantity: Int,
-        stock: Int,
-        isVariant: Boolean,
         onSuccessUpdateCart: (MiniCartItemProduct, UpdateCartV2Data) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        val productId = miniCartItem.productId
+        val productId = product.id
+        val quantity = product.quantity
+        val stock = product.stock
+        val isVariant = product.isVariant
         val cartId = miniCartItem.cartId
         val notes = miniCartItem.notes
+
         val updateCartRequest = UpdateCartRequest(
             cartId = cartId,
             quantity = quantity,
