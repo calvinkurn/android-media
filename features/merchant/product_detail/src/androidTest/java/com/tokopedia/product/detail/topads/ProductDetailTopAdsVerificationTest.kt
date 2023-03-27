@@ -26,25 +26,27 @@ class ProductDetailTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
-    var activityRule = object: IntentsTestRule<ProductDetailActivity>(ProductDetailActivity::class.java) {
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            setupTopAdsDetector()
-        }
+    var activityRule =
+        object : IntentsTestRule<ProductDetailActivity>(ProductDetailActivity::class.java) {
+            override fun beforeActivityLaunched() {
+                super.beforeActivityLaunched()
+                setupTopAdsDetector()
+            }
 
-        override fun getActivityIntent(): Intent {
-            val context = InstrumentationRegistry.getInstrumentation().targetContext
-            return ProductDetailActivity.createIntent(context, "7242375720")
+            override fun getActivityIntent(): Intent {
+                val context = InstrumentationRegistry.getInstrumentation().targetContext
+                return ProductDetailActivity.createIntent(context, "8787687640")
+            }
         }
-    }
 
     @Before
     fun doBeforeRun() {
         topAdsAssertion = TopAdsAssertion(
-                activityRule.activity,
-                activityRule.activity.application as TopAdsVerificatorInterface
+            activityRule.activity,
+            activityRule.activity.application as TopAdsVerificatorInterface
         )
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @After
@@ -69,10 +71,18 @@ class ProductDetailTopAdsVerificationTest {
 
     private fun checkTopAdsOnProductRecommendationViewHolder(recyclerView: RecyclerView, i: Int) {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
-        if(viewHolder is ProductRecommendationViewHolder) {
+        if (viewHolder is ProductRecommendationViewHolder) {
             waitForData()
-            if(viewHolder.itemView.findViewById<RecyclerView>(R.id.carouselProductCardRecyclerView) != null) {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
+            val childRecyclerView: RecyclerView? =
+                viewHolder.itemView.findViewById(R.id.carouselProductCardRecyclerView)
+
+            //check if adapter null, means recom widget data is empty from backend
+            if (childRecyclerView != null && childRecyclerView.adapter != null) {
+                clickOnEachItemRecyclerView(
+                    viewHolder.itemView,
+                    com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView,
+                    0
+                )
             }
         }
     }
