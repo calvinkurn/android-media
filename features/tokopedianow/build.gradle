@@ -115,6 +115,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
