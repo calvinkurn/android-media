@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.domain.pojo.dynamicattachment
 
 import com.google.gson.annotations.SerializedName
+
 data class BigReplyBoxAttribute(
     @SerializedName("isActive")
     val isActive: Boolean,
