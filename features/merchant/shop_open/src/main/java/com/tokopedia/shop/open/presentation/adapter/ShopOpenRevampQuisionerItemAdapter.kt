@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
@@ -13,10 +12,10 @@ import com.tokopedia.shop.open.data.model.Choice
 import com.tokopedia.shop.open.listener.SurveyListener
 
 class ShopOpenRevampChoiceItemAdapter(
-        private val choiceListData: List<Choice>,
-        val listener: SurveyListener,
-        private val questionId: Int
-): RecyclerView.Adapter<ShopOpenRevampChoiceItemAdapter.ShopOpenRevampChoiceItemViewHolder>() {
+    private val choiceListData: List<Choice>,
+    val listener: SurveyListener,
+    private val questionId: Int
+) : RecyclerView.Adapter<ShopOpenRevampChoiceItemAdapter.ShopOpenRevampChoiceItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopOpenRevampChoiceItemViewHolder {
         return ShopOpenRevampChoiceItemViewHolder(parent.inflateLayout(R.layout.shop_open_revamp_item_choice))
@@ -28,13 +27,12 @@ class ShopOpenRevampChoiceItemAdapter(
 
     override fun onBindViewHolder(holder: ShopOpenRevampChoiceItemViewHolder, position: Int) {
         holder.bindData(
-                choiceListData[position],
-                position,
-                choiceListData[position].id
+            choiceListData[position],
+            choiceListData[position].id
         )
     }
 
-    inner class ShopOpenRevampChoiceItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ShopOpenRevampChoiceItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val context: Context
         val txtChoice: TextView
         val checkBox: CheckBox
@@ -46,9 +44,9 @@ class ShopOpenRevampChoiceItemAdapter(
             checkBox = itemView.findViewById(R.id.checkbox_choice)
         }
 
-        fun bindData(choice: Choice, position: Int, id: Int) {
+        fun bindData(choice: Choice, id: Int) {
             txtChoice.text = choice.choice
-            checkBox.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener() { buttonView, isChecked ->
+            checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
                     isOnChecked = true
                     checkedCheckbox(id)
@@ -56,7 +54,7 @@ class ShopOpenRevampChoiceItemAdapter(
                     isOnChecked = false
                     uncheckedCheckbox(id)
                 }
-            })
+            }
             txtChoice.setOnClickListener {
                 if (isOnChecked) {
                     isOnChecked = false

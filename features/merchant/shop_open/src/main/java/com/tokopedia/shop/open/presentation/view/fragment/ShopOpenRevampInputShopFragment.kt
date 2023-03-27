@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -51,8 +50,11 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
-        InputShopInterface, HasComponent<ShopOpenRevampComponent>, CoroutineScope{
+class ShopOpenRevampInputShopFragment :
+    BaseDaggerFragment(),
+    InputShopInterface,
+    HasComponent<ShopOpenRevampComponent>,
+    CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -143,7 +145,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            shopOpenRevampTracking = ShopOpenRevampTracking(it)
+            shopOpenRevampTracking = ShopOpenRevampTracking()
         }
     }
 
@@ -156,10 +158,11 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 val imm = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
-            if (domainNameValue.isNotEmpty()
-                    && shopNameValue.isNotEmpty()
-                    && isValidShopName
-                    && isValidDomainName) {
+            if (domainNameValue.isNotEmpty() &&
+                shopNameValue.isNotEmpty() &&
+                isValidShopName &&
+                isValidDomainName
+            ) {
                 EspressoIdlingResource.increment()
                 viewModel.createShop(domainNameValue, shopNameValue)
             }
@@ -173,10 +176,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     override fun getComponent(): ShopOpenRevampComponent {
         return activity.run {
             DaggerShopOpenRevampComponent
-                    .builder()
-                    .shopOpenRevampModule(ShopOpenRevampModule())
-                    .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                    .build()
+                .builder()
+                .shopOpenRevampModule(ShopOpenRevampModule())
+                .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
         }
     }
 
@@ -229,33 +232,34 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     }
 
     private fun observeShopNameValidationData() {
-        viewModel.checkShopNameResponse.observe(viewLifecycleOwner, Observer {
+        viewModel.checkShopNameResponse.observe(viewLifecycleOwner) {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
                         var errorMessage = it.data.validateDomainShopName.error.message
                         if (shopNameValue.length < MINIMUM_SHOP_LENGTH) {
-                            errorMessage = getString(R.string.open_shop_revamp_error_shop_name_too_short)
+                            errorMessage =
+                                getString(R.string.open_shop_revamp_error_shop_name_too_short)
                             validateShopName(
-                                    isError = true,
-                                    hintMessage = errorMessage
+                                isError = true,
+                                hintMessage = errorMessage
                             )
                         } else {
                             validateShopName(
-                                    isError = true,
-                                    hintMessage = errorMessage
+                                isError = true,
+                                hintMessage = errorMessage
                             )
                         }
                         ShopOpenRevampErrorHandler.logMessage(
-                                title = ErrorConstant.ERROR_CHECK_SHOP_NAME,
-                                userId = userSession.userId,
-                                message = errorMessage
+                            title = ErrorConstant.ERROR_CHECK_SHOP_NAME,
+                            userId = userSession.userId,
+                            message = errorMessage
                         )
                     } else {
                         validateShopName(
-                                isError = false,
-                                hintMessage = getString(R.string.open_shop_revamp_default_hint_input_shop)
+                            isError = false,
+                            hintMessage = getString(R.string.open_shop_revamp_default_hint_input_shop)
                         )
                         viewModel.getDomainShopNameSuggestions(shopNameValue)
                         EspressoIdlingResource.increment()
@@ -264,63 +268,63 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                     validateShopName(
-                            isError = true,
-                            hintMessage = errorMessage
+                        isError = true,
+                        hintMessage = errorMessage
                     )
                     ShopOpenRevampErrorHandler.logMessage(
-                            title = ErrorConstant.ERROR_CHECK_SHOP_NAME,
-                            userId = userSession.userId,
-                            message = errorMessage
+                        title = ErrorConstant.ERROR_CHECK_SHOP_NAME,
+                        userId = userSession.userId,
+                        message = errorMessage
                     )
                     ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun observeDomainNameValidationData() {
-        viewModel.checkDomainNameResponse.observe(viewLifecycleOwner, Observer {
+        viewModel.checkDomainNameResponse.observe(this.viewLifecycleOwner) {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
-                        val errorMessage = if(isShopDomainSuggestionShown()) {
+                        val errorMessage = if (isShopDomainSuggestionShown()) {
                             it.data.validateDomainShopName.error.message
                         } else {
                             getString(R.string.open_shop_revamp_error_domain_already_taken)
                         }
                         validateDomainName(
-                                isError = true,
-                                hintMessage = errorMessage
+                            isError = true,
+                            hintMessage = errorMessage
                         )
                         ShopOpenRevampErrorHandler.logMessage(
-                                title = ErrorConstant.ERROR_CHECK_DOMAIN_NAME,
-                                userId = userSession.userId,
-                                message = errorMessage
+                            title = ErrorConstant.ERROR_CHECK_DOMAIN_NAME,
+                            userId = userSession.userId,
+                            message = errorMessage
                         )
                     } else {
                         isValidDomainName = true
                         validateDomainName(
-                                isError = false,
-                                hintMessage = ""
+                            isError = false,
+                            hintMessage = ""
                         )
                     }
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                     validateDomainName(
-                            isError = true,
-                            hintMessage = errorMessage
+                        isError = true,
+                        hintMessage = errorMessage
                     )
                     ShopOpenRevampErrorHandler.logMessage(
-                            title = ErrorConstant.ERROR_CHECK_DOMAIN_NAME,
-                            userId = userSession.userId,
-                            message = errorMessage
+                        title = ErrorConstant.ERROR_CHECK_DOMAIN_NAME,
+                        userId = userSession.userId,
+                        message = errorMessage
                     )
                     ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun isShopDomainSuggestionShown(): Boolean {
@@ -328,30 +332,24 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     }
 
     private fun observeCreateShopData() {
-        viewModel.createShopOpenResponse.observe(viewLifecycleOwner, Observer {
+        viewModel.createShopOpenResponse.observe(viewLifecycleOwner) {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
                     val _shopId = it.data.createShop.createdId
                     val _isSuccess = it.data.createShop.success
                     var _message = it.data.createShop.message
-                    var isSuccess = false
                     if (_shopId.isNotEmpty() && _isSuccess) {
-                        isSuccess = true
                         userSession.shopId = _shopId
                         userSession.shopName = shopNameValue
                         EspressoIdlingResource.increment()
-                        fragmentNavigationInterface?.navigateToNextPage(PageNameConstant.SPLASH_SCREEN_PAGE, FIRST_FRAGMENT_TAG)
-                        shopOpenRevampTracking?.clickCreateShop(
-                                isSuccess = isSuccess,
-                                shopDomainName = shopNameValue
+                        fragmentNavigationInterface?.navigateToNextPage(
+                            PageNameConstant.SPLASH_SCREEN_PAGE,
+                            FIRST_FRAGMENT_TAG
                         )
+                        shopOpenRevampTracking?.clickCreateShop()
                     } else {
-                        isSuccess = false
-                        shopOpenRevampTracking?.clickCreateShop(
-                                isSuccess = isSuccess,
-                                shopDomainName = shopNameValue
-                        )
+                        shopOpenRevampTracking?.clickCreateShop()
                         if (_message.isNotEmpty()) {
                             showErrorResponse(_message)
                         } else {
@@ -360,33 +358,29 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                         }
 
                         ShopOpenRevampErrorHandler.logMessage(
-                                title = ErrorConstant.ERROR_CREATE_SHOP,
-                                userId = userSession.userId,
-                                message = _message
+                            title = ErrorConstant.ERROR_CREATE_SHOP,
+                            userId = userSession.userId,
+                            message = _message
                         )
-
                     }
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                     showErrorNetwork(errorMessage)
-                    shopOpenRevampTracking?.clickCreateShop(
-                            isSuccess = false,
-                            shopDomainName = shopNameValue
-                    )
+                    shopOpenRevampTracking?.clickCreateShop()
                     ShopOpenRevampErrorHandler.logMessage(
-                            title = ErrorConstant.ERROR_CREATE_SHOP,
-                            userId = userSession.userId,
-                            message = errorMessage
+                        title = ErrorConstant.ERROR_CREATE_SHOP,
+                        userId = userSession.userId,
+                        message = errorMessage
                     )
                     ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun observeDomainShopNameSuggestions() {
-        viewModel.domainShopNameSuggestionsResponse.observe(viewLifecycleOwner, Observer {
+        viewModel.domainShopNameSuggestionsResponse.observe(viewLifecycleOwner) {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
@@ -399,22 +393,22 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                     showErrorNetwork(errorMessage)
                     ShopOpenRevampErrorHandler.logMessage(
-                            title = ErrorConstant.ERROR_DOMAIN_NAME_SUGGESTIONS,
-                            userId = userSession.userId,
-                            message = errorMessage
+                        title = ErrorConstant.ERROR_DOMAIN_NAME_SUGGESTIONS,
+                        userId = userSession.userId,
+                        message = errorMessage
                     )
                     ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun showErrorNetwork(errorMessage: String) {
         view?.let {
             Toaster.showError(
-                    it,
-                    errorMessage,
-                    Snackbar.LENGTH_LONG
+                it,
+                errorMessage,
+                Snackbar.LENGTH_LONG
             )
         }
     }
@@ -452,9 +446,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         val shopNameLastCharacter = shopNameValue.get(shopNameValue.length - 1)
         val domainNameLastCharacter = domainNameValue.get(domainNameValue.length - 1)
         if (isValidShopName &&
-                isValidDomainName &&
-                !shopNameLastCharacter.equals(" ") &&
-                !domainNameLastCharacter.equals(" ")) {
+            isValidDomainName &&
+            !shopNameLastCharacter.equals(" ") &&
+            !domainNameLastCharacter.equals(" ")
+        ) {
             btnShopRegistration.isEnabled = true
         }
     }
@@ -471,7 +466,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
             tncTitle = getString(R.string.open_shop_revamp_tnc_webview_title),
             policyTitle = getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title),
             actionTnc = { onClickUrl(URL_TNC, getString(R.string.open_shop_revamp_tnc_webview_title)) },
-            actionPolicy = { onClickUrl(URL_PRIVACY_POLICY, getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title))},
+            actionPolicy = { onClickUrl(URL_PRIVACY_POLICY, getString(R.string.open_shop_revamp_tnc_privacy_policy_webview_title)) },
             colorSpan = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         )
         txtTermsAndConditions.text = tncPolicyText
