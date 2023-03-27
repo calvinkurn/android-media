@@ -60,6 +60,45 @@ internal class SearchBarSelectedKeywordTest : SearchBarViewModelTestFixtures() {
         )
     }
 
+    @Test
+    fun `unselect keyword with edited keyword already in list should fail`() {
+        `Given mps enabled and no coach mark should be displayed`()
+        val query = "samsung"
+        val keyword1 = SearchBarKeyword(
+            position = 0,
+            keyword = "samsung galaxy",
+        )
+        val keyword2 = SearchBarKeyword(
+            position = 1,
+            keyword = query,
+        )
+        val keywords = listOf(
+            keyword1,
+            keyword2,
+        )
+        `Given search bar keyword list already populated`(keywords)
+
+        viewModel.onKeywordSelected(keyword1)
+        viewModel.onQueryUpdated(query)
+        val activeKeyword = keyword1.copy(keyword = query, isSelected = true)
+        viewModel.onKeywordSelected(activeKeyword)
+
+        val expectedKeywords = listOf(activeKeyword, keyword2)
+
+        `Then verify active keyword`(activeKeyword)
+        `Then verify latest keyword`(keyword1.copy(isSelected = true))
+        `Then verify SearchBarKeyword list`(expectedKeywords)
+        `Then verify searchBarKeywordError`(SearchBarKeywordError.Duplicate)
+        `Then verify mps state`(
+            SearchBarState(
+                isMpsEnabled = true,
+                isAddButtonEnabled = false,
+                isKeyboardDismissEnabled = false,
+                shouldDisplayMpsPlaceHolder = true,
+            )
+        )
+    }
+
     private fun `Then verify active keyword`(searchBarKeyword: SearchBarKeyword) {
         viewModel.activeKeyword shouldBe searchBarKeyword
     }

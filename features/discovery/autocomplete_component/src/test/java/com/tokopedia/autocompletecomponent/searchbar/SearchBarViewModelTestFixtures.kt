@@ -81,6 +81,10 @@ internal open class SearchBarViewModelTestFixtures {
         viewModel.searchBarKeywords.value shouldBe expectedKeywords
     }
 
+    protected fun `Then verify active SearchBarKeyword`(expectedKeyword: SearchBarKeyword) {
+        viewModel.activeKeyword shouldBe expectedKeyword
+    }
+
     protected fun `Then verify coach mark local cache is called`() {
         verify {
             coachMarkLocalCache.shouldShowAddedKeywordCoachMark()
@@ -98,4 +102,9 @@ internal open class SearchBarViewModelTestFixtures {
     protected fun `Then verify mps state`(mpsState: SearchBarState) {
         viewModel.searchBarStateLiveData.value shouldBe mpsState
     }
+
+    protected fun `Then verify searchBarKeywordError`(expected: SearchBarKeywordError?) {
+        viewModel.searchBarKeywordErrorEvent.value shouldBe expected
+    }
+
 }

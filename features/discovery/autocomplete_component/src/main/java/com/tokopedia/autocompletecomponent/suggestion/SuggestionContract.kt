@@ -10,6 +10,10 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 interface SuggestionContract {
     interface View : CustomerView {
         fun showSuggestionResult(list: List<Visitable<*>>)
+        fun hideSuggestionResult()
+
+        fun showExceedKeywordLimit()
+        fun hideExceedKeywordLimit()
 
         fun trackEventClickKeyword(
             eventLabel: String,

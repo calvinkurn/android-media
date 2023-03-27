@@ -3,6 +3,7 @@ package com.tokopedia.autocompletecomponent.suggestion
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordConstants
 import com.tokopedia.autocompletecomponent.suggestion.chips.convertToSuggestionChipWidgetDataView
 import com.tokopedia.autocompletecomponent.suggestion.domain.SuggestionRequestUtils
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionItem
@@ -129,12 +130,18 @@ class SuggestionPresenter @Inject constructor(
     ) {
         this.searchParameter = searchParameter.toMutableMap()
         this.activeKeyword = activeKeyword
-
-        getSuggestionUseCase.execute(
-            ::onSuccessReceivedSuggestion,
-            Throwable::printStackTrace,
-            createGetSuggestionParams()
-        )
+        val view = view ?: return
+        if (activeKeyword.position >= SearchBarKeywordConstants.KEYWORD_LIMIT) {
+            view.showExceedKeywordLimit()
+            view.hideSuggestionResult()
+        } else {
+            view.hideExceedKeywordLimit()
+            getSuggestionUseCase.execute(
+                ::onSuccessReceivedSuggestion,
+                Throwable::printStackTrace,
+                createGetSuggestionParams()
+            )
+        }
     }
 
     private fun Map<String, String>.generateMpsSearchParam(keyword: String): Map<String, String> {

@@ -18,6 +18,7 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
         `When keyword is added`(query)
 
         `Then verify SearchBarKeyword list`(keywords)
+        `Then verify searchBarKeywordError`(null)
     }
 
     @Test
@@ -38,6 +39,7 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
         `When keyword is added`(query)
 
         `Then verify SearchBarKeyword list`(keywords)
+        `Then verify searchBarKeywordError`(null)
     }
 
     @Test
@@ -49,6 +51,7 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
         `When keyword is added`(query)
 
         `Then verify SearchBarKeyword list`(emptyList())
+        `Then verify searchBarKeywordError`(SearchBarKeywordError.Empty)
     }
 
     @Test
@@ -66,13 +69,32 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
         `When keyword is added`(query)
 
         `Then verify SearchBarKeyword list`(keywords)
+        `Then verify searchBarKeywordError`(SearchBarKeywordError.Duplicate)
+    }
+
+    @Test
+    fun `add keyword with different case that already in the list, keyword should not be added`() {
+        `Given mps enabled and no coach mark should be displayed`()
+
+        val query = "Samsung"
+        val keyword = SearchBarKeyword(
+            position = 0,
+            keyword = "samsung",
+        )
+        val keywords = listOf(keyword)
+        `Given search bar keyword list already populated`(keywords)
+
+        `When keyword is added`(query)
+
+        `Then verify SearchBarKeyword list`(keywords)
+        `Then verify searchBarKeywordError`(SearchBarKeywordError.Duplicate)
     }
 
     @Test
     fun `add keyword when list already full, keyword should not be added`() {
         `Given mps enabled and no coach mark should be displayed`()
 
-        val query = "samsung"
+        val query = "samsung galaxy"
         val keyword1 = SearchBarKeyword(0, "samsung")
         val keyword2 = SearchBarKeyword(1, "iphone")
         val keyword3 = SearchBarKeyword(2, "asus")
@@ -86,6 +108,7 @@ internal class SearchBarAddKeywordTest : SearchBarViewModelTestFixtures() {
         `When keyword is added`(query)
 
         `Then verify SearchBarKeyword list`(keywords)
+        `Then verify searchBarKeywordError`(null)
     }
 
     private fun `When keyword is added`(

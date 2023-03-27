@@ -18,6 +18,10 @@ internal fun Map<String, String>.hasQuery3(): Boolean {
     return contains(SearchApiConst.Q3) && !get(SearchApiConst.Q3).isNullOrBlank()
 }
 
+internal fun Map<String, String>.hasMpsQuery() : Boolean {
+    return hasQuery1() || hasQuery2() || hasQuery3()
+}
+
 internal fun Map<String, String>.getMpsSearchQueryString(): String {
     return if (contains(SearchApiConst.Q)) {
         get(SearchApiConst.Q)

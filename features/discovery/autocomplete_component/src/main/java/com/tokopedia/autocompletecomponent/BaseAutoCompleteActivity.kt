@@ -1,7 +1,7 @@
 package com.tokopedia.autocompletecomponent
 
-import android.content.Context
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -35,6 +35,7 @@ import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateComponent
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateViewListenerModule
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordAdapter
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordError
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordItemDecoration
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordListener
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarState
@@ -275,11 +276,41 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             it.searchParameterLiveData.observe(this) { searchParameter ->
                 onSearchParameterChange(searchParameter)
             }
+            it.searchBarKeywordErrorEvent.observe(this) { error ->
+                renderSearchBarKeywordError(error)
+            }
+        }
+    }
+
+    private fun renderSearchBarKeywordError(error: SearchBarKeywordError) {
+        when(error) {
+            is SearchBarKeywordError.Empty -> {
+                Toaster.build(
+                    container,
+                    getString(R.string.searchbar_empty_keyword_error_message),
+                )
+                    .show()
+            }
+            is SearchBarKeywordError.Duplicate -> {
+                Toaster.build(
+                    container,
+                    getString(R.string.searchbar_duplicate_keyword_error_message),
+                    type = Toaster.TYPE_ERROR,
+                )
+                    .show()
+            }
         }
     }
 
     private fun renderSearchBarKeywords(searchBarKeywords: List<SearchBarKeyword>) {
-        searchBarKeywordAdapter?.submitList(searchBarKeywords)
+        searchBarKeywordAdapter?.submitList(searchBarKeywords) {
+            // need to invalidate the item decorations after list successfully updated
+            rvSearchBarKeyword?.let {
+                it.handler?.post {
+                    it.invalidateItemDecorations()
+                }
+            }
+        }
         if (searchBarKeywords.isNotEmpty()) {
             rvSearchBarKeyword.visible()
         } else {
@@ -402,13 +433,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         moveToSearchPage(searchResultApplink)
 
         return true
-    }
-
-    private fun getQueryOrHint(searchParameter: SearchParameter): String {
-        val query = searchParameter.getSearchQuery()
-
-        return if (query.isNotEmpty()) query
-        else searchParameter.get(HINT)
     }
 
     private fun getQueryOrHint(searchParameter: Map<String, String>) : String {
@@ -652,15 +676,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
     override fun onAddButtonClicked(editable: Editable?) {
         val keyword = editable?.toString()
-        if (viewModel?.isMpsEnabled == true && keyword.isNullOrBlank()) {
-            Toaster.build(
-                container,
-                getString(R.string.searchbar_empty_keyword_error_message),
-            )
-                .show()
-        } else {
-            viewModel?.onKeywordAdded(keyword)
-        }
+        viewModel?.onKeywordAdded(keyword)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

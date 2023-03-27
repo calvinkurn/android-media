@@ -24,10 +24,10 @@ class SearchBarKeywordItemDecoration(
         if (itemPosition == RecyclerView.NO_POSITION) return
         val size = state.itemCount
         val isLastItem = itemPosition == size - 1
-        if(itemPosition == 0) {
+        if (itemPosition == 0) {
             outRect.left = horizontalEdgeOffset
             outRect.right = horizontalOffset
-        } else if(itemPosition > 0 && isLastItem) {
+        } else if (itemPosition > 0 && isLastItem) {
             outRect.left = 0
             outRect.right = horizontalEdgeOffset
         } else {

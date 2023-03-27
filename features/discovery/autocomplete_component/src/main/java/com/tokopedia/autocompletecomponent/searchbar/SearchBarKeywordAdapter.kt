@@ -52,7 +52,6 @@ class SearchBarKeywordAdapter(
     }
 
 
-
     companion object {
         private val DEFAULT_DIFF_UTIL_CALLBACK =
             object : DiffUtil.ItemCallback<SearchBarKeyword>() {
@@ -90,9 +89,19 @@ class SearchBarKeywordAdapter(
             }
         }
 
+        private fun String.ellipsize(
+            maxLength: Int = KEYWORD_LENGTH_LIMIT
+        ): String {
+            return if (length <= maxLength) {
+                this
+            } else {
+                substring(0, maxLength) + "…"
+            }
+        }
+
         fun bind(data: SearchBarKeyword) {
             val view = binding?.root ?: return
-            view.chipText = data.keyword
+            view.chipText = data.keyword.ellipsize()
             view.chipType = if (data.isSelected) {
                 ChipsUnify.TYPE_DISABLE
             } else {
@@ -113,6 +122,8 @@ class SearchBarKeywordAdapter(
         companion object {
             @LayoutRes
             val LAYOUT = R.layout.layout_autocomplete_keyword_chip
+
+            private const val KEYWORD_LENGTH_LIMIT = 30
         }
     }
 }
