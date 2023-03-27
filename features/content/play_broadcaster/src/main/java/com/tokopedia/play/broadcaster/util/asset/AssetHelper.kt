@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.util.asset
 
 import android.content.Context
+import android.webkit.URLUtil
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import java.io.File
 import javax.inject.Inject
@@ -36,12 +37,16 @@ class AssetHelper @Inject constructor(
     }
 
     fun getFileNameFromLink(link: String): String {
-        return link.substring(link.lastIndexOf(PATH_SEPARATOR) + 1)
+        return if(URLUtil.isValidUrl(link)) link.substring(link.lastIndexOf(PATH_SEPARATOR) + 1)
+        else ""
     }
 
     fun getFileNameFromLinkWithoutExtension(link: String): String {
         val fileName = getFileNameFromLink(link)
-        return fileName.substring(0, fileName.lastIndexOf(EXTENSION_SEPARATOR))
+        val endIdx = fileName.lastIndexOf(EXTENSION_SEPARATOR)
+
+        return if(endIdx == -1) ""
+        else fileName.substring(0, endIdx)
     }
 
     companion object {
