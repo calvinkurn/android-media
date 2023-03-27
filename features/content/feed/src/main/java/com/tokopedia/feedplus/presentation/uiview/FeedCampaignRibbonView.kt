@@ -157,10 +157,14 @@ class FeedCampaignRibbonView(
                     tyFeedCampaignRibbonSubtitle.text = product?.stockWording
                     val value = (((product?.stockSoldPercentage ?: 0.75f) * 100) / 100).roundToInt()
                     pbFeedCampaignRibbon.setValue(value, true)
+
                     startDelayProcess(TWO_SECOND) {
+                        Toast.makeText(root.context, "Change Background to Gradient", Toast.LENGTH_SHORT).show()
                         setBackgroundGradient(ctaModel)
 
                         startDelayProcess(THREE_SECOND) {
+                            Toast.makeText(root.context, "Run Three Seconds", Toast.LENGTH_SHORT).show()
+
                             root.setTransition(root.currentState, R.id.availability_state)
                             root.transitionToEnd()
                         }
