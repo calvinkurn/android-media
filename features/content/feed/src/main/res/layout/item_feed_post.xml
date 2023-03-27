@@ -80,7 +80,7 @@
 
     <include
         android:id="@+id/feed_campaign_ribbon"
-        layout="@layout/layout_feed_campaign_ribbon"
+        layout="@layout/layout_feed_campaign_ribbon_motion"
         android:layout_width="0dp"
         android:layout_height="10dp"
         android:layout_marginTop="8dp"
