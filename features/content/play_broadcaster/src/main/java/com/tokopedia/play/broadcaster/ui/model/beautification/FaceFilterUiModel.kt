@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.ui.model.beautification
 
 import android.os.Parcelable
+import com.tokopedia.content.common.util.toFuzzyPercent
+import com.tokopedia.content.common.util.toPercent
 import com.tokopedia.iconunify.IconUnify
 import kotlinx.android.parcel.Parcelize
 
@@ -28,20 +30,20 @@ data class FaceFilterUiModel(
         get() = Type.getIconUnifyById(id)
 
     val minValueForSlider: Int
-        get() = (minValue * PERCENTAGE_MULTIPLIER).toInt()
+        get() = minValue.toPercent()
 
     val maxValueForSlider: Int
-        get() = (maxValue * PERCENTAGE_MULTIPLIER).toInt()
+        get() = maxValue.toPercent()
 
     val defaultValueForSlider: Int
-        get() = (defaultValue * PERCENTAGE_MULTIPLIER).toInt()
+        get() = defaultValue.toPercent()
 
     val valueForSlider: Int
-        get() = (value * PERCENTAGE_MULTIPLIER).toInt()
+        get() = value.toPercent()
 
     fun copyWithNewValue(newValueFromSlider: Int): FaceFilterUiModel {
         return copy(
-            value = newValueFromSlider / PERCENTAGE_MULTIPLIER.toDouble()
+            value = newValueFromSlider.toFuzzyPercent()
         )
     }
 
@@ -61,7 +63,5 @@ data class FaceFilterUiModel(
 
     companion object {
         private const val UNKNOWN_ICON_UNIFY = -1
-
-        private const val PERCENTAGE_MULTIPLIER = 100
     }
 }
