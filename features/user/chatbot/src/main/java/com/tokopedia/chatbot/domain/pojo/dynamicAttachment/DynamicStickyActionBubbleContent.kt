@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.domain.pojo.dynamicattachment
+package com.tokopedia.chatbot.domain.pojo.dynamicAttachment
 
 data class DynamicStickyActionBubbleContent(
     val action: String,

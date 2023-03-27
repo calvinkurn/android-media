@@ -43,8 +43,8 @@ import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSele
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionPojo
 import com.tokopedia.chatbot.domain.pojo.chatdivider.ChatDividerResponse
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachment
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicStickyButton
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicStickyButton
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.ListInvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes

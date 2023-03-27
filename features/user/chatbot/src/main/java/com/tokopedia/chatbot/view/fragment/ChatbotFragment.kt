@@ -117,7 +117,7 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachment
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
 import com.tokopedia.chatbot.util.ChatbotNewRelicLogger

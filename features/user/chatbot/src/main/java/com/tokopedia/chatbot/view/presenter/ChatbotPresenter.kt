@@ -83,11 +83,11 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.BigReplyBoxAttribute
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachment
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachmentBodyAttributes
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.MediaButtonAttribute
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.SmallReplyBoxAttribute
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.BigReplyBoxAttribute
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachmentBodyAttributes
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.MediaButtonAttribute
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes

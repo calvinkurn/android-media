@@ -11,8 +11,8 @@ import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicButtonAction
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicStickyActionBubbleContent
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicButtonAction
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicStickyActionBubbleContent
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
