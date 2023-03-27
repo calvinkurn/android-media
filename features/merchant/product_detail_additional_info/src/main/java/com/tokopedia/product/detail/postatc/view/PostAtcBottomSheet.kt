@@ -257,27 +257,31 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
     }
 
     override fun onClickRecommendationItem(recommendationItem: RecommendationItem) {
-        val context = context ?: return
         val productId = recommendationItem.productId.toString()
-        TopAdsUrlHitter(context).hitClickUrl(
-            TOPADS_CLASS_NAME,
-            recommendationItem.clickUrl,
-            productId,
-            recommendationItem.name,
-            recommendationItem.imageUrl
-        )
+        if (recommendationItem.isTopAds) {
+            val context = context ?: return
+            TopAdsUrlHitter(context).hitClickUrl(
+                TOPADS_CLASS_NAME,
+                recommendationItem.clickUrl,
+                productId,
+                recommendationItem.name,
+                recommendationItem.imageUrl
+            )
+        }
         goToProduct(productId)
     }
 
     override fun onImpressRecommendationItem(recommendationItem: RecommendationItem) {
-        val context = context ?: return
-        TopAdsUrlHitter(context).hitImpressionUrl(
-            TOPADS_CLASS_NAME,
-            recommendationItem.trackerImageUrl,
-            recommendationItem.productId.toString(),
-            recommendationItem.name,
-            recommendationItem.imageUrl
-        )
+        if (recommendationItem.isTopAds) {
+            val context = context ?: return
+            TopAdsUrlHitter(context).hitImpressionUrl(
+                TOPADS_CLASS_NAME,
+                recommendationItem.trackerImageUrl,
+                recommendationItem.productId.toString(),
+                recommendationItem.name,
+                recommendationItem.imageUrl
+            )
+        }
     }
 
     /**
