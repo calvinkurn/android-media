@@ -192,7 +192,7 @@ class VoucherSettingViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     benefitIdr = nominal.orZero()
                 ),
-                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.NOMINAL)
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.ALL)
             )
         }
         handleVoucherInputValidation()
@@ -206,7 +206,7 @@ class VoucherSettingViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     benefitPercent = percentage.toInt().orZero()
                 ),
-                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.PERCENTAGE)
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.ALL)
             )
         }
         handleVoucherInputValidation()
@@ -220,7 +220,7 @@ class VoucherSettingViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     benefitMax = maxDeduction.orZero()
                 ),
-                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MAX_DEDUCTION)
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.ALL)
             )
         }
         handleVoucherInputValidation()
@@ -234,7 +234,7 @@ class VoucherSettingViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     minPurchase = minimumBuy.orZero()
                 ),
-                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.MINIMUM_BUY)
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.ALL)
             )
         }
         handleVoucherInputValidation()
@@ -247,7 +247,7 @@ class VoucherSettingViewModel @Inject constructor(
                 voucherConfiguration = it.voucherConfiguration.copy(
                     quota = quota.orZero()
                 ),
-                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.QUOTA)
+                fieldValidated = getFieldValidated(VoucherCreationStepThreeFieldValidation.ALL)
             )
         }
         handleVoucherInputValidation()
