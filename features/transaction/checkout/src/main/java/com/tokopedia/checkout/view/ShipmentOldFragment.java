@@ -99,6 +99,7 @@ import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener;
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
+import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
@@ -744,25 +745,27 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
             int uploadPrescriptionPosition = shipmentAdapter.getUploadPrescriptionPosition();
             rvShipment.scrollToPosition(uploadPrescriptionPosition);
             rvShipment.post(() -> {
-                RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(uploadPrescriptionPosition);
-                if (viewHolder instanceof UploadPrescriptionViewHolder) {
-                    CoachMark2Item item = new CoachMark2Item(
-                            viewHolder.itemView,
-                            getActivityContext().getString(R.string.checkout_epharmacy_coachmark_title),
-                            getActivityContext().getString(R.string.checkout_epharmacy_coachmark_description),
-                            CoachMark2.POSITION_TOP
-                    );
-                    ArrayList<CoachMark2Item> list = new ArrayList<>();
-                    list.add(item);
-                    CoachMark2 coachMark = new CoachMark2(requireContext());
-                    coachMark.showCoachMark(list, null, 0);
-                    CoachMarkPreference.INSTANCE.setShown(getActivityContext(), KEY_PREFERENCE_COACHMARK_EPHARMACY, true);
-                    ePharmacyAnalytics.viewBannerPesananButuhResepInCheckoutPage(
-                            uploadPrescriptionUiModel.getEpharmacyGroupIds(),
-                            uploadPrescriptionUiModel.getEnablerNames(),
-                            uploadPrescriptionUiModel.getShopIds(),
-                            uploadPrescriptionUiModel.getCartIds()
-                    );
+                if (getActivityContext() != null) {
+                    RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(uploadPrescriptionPosition);
+                    if (viewHolder instanceof UploadPrescriptionViewHolder) {
+                        CoachMark2Item item = new CoachMark2Item(
+                                viewHolder.itemView,
+                                getActivityContext().getString(R.string.checkout_epharmacy_coachmark_title),
+                                getActivityContext().getString(R.string.checkout_epharmacy_coachmark_description),
+                                CoachMark2.POSITION_TOP
+                        );
+                        ArrayList<CoachMark2Item> list = new ArrayList<>();
+                        list.add(item);
+                        CoachMark2 coachMark = new CoachMark2(requireContext());
+                        coachMark.showCoachMark(list, null, 0);
+                        CoachMarkPreference.INSTANCE.setShown(getActivityContext(), KEY_PREFERENCE_COACHMARK_EPHARMACY, true);
+                        ePharmacyAnalytics.viewBannerPesananButuhResepInCheckoutPage(
+                                uploadPrescriptionUiModel.getEpharmacyGroupIds(),
+                                uploadPrescriptionUiModel.getEnablerNames(),
+                                uploadPrescriptionUiModel.getShopIds(),
+                                uploadPrescriptionUiModel.getCartIds()
+                        );
+                    }
                 }
             });
         }
