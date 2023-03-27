@@ -16,6 +16,7 @@ buildCache {
             username = "${ci_username}"
             password = "${ci_password}"
         }
+        allowInsecureProtocol = true
     }
 }
 
