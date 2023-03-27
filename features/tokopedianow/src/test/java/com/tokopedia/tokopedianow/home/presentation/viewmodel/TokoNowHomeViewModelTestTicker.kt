@@ -93,11 +93,13 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
     fun `given ticker response when calling getTicker after getting getLayoutData then it should add ticker widget on home layout list`() = runBlockingTest {
         val repurchaseChannelId = "1001"
         val repurchaseProductId = "1"
+        val repurchaseProductPosition = 1
         val repurchaseProductTitle = "Kamu pernah beli"
         val repurchaseProductMaxOrder = 4
         val repurchaseProductMinOrder = 3
         val repurchaseProductShopId = "5"
         val repurchaseProductType = TokoNowLayoutType.REPURCHASE_PRODUCT
+        val repurchaseProductQuantityChanged = 10
         val repurchaseLayout = "recent_purchase_tokonow"
 
         val tickerResponse = createTicker()
@@ -140,7 +142,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         viewModel.onCartQuantityChanged(
             channelId = repurchaseChannelId,
             productId = repurchaseProductId,
-            quantity = 10,
+            quantity = repurchaseProductQuantityChanged,
             shopId = repurchaseProductShopId,
             type = repurchaseProductType
         )
@@ -170,7 +172,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
                             ),
                             hasAddToCartButton = true
                         ),
-                        position = 1,
+                        position = repurchaseProductPosition,
                         headerName = repurchaseProductTitle
                     )
                 ),

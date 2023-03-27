@@ -11,7 +11,7 @@ import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductMo
 import com.tokopedia.tokopedianow.searchcategory.domain.model.GetFeedbackFieldModel
 
 data class CategoryModel(
-        @SerializedName("GetTargetedTicker")
+        @SerializedName("get_targeted_ticker")
         @Expose
         val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse(),
 
