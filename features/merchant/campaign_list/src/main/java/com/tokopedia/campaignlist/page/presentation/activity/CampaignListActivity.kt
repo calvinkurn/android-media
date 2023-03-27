@@ -93,6 +93,12 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
                     onTapShareCampaignButton = { campaign ->
                         viewModel.setSelectedActiveCampaign(campaign)
                         viewModel.onEvent(CampaignListViewModel.UiEvent.TapShareButton(campaign.campaignId.toIntOrZero()))
+                        tracker.sendShareButtonClickEvent(
+                            viewModel.getCampaignTypeId(),
+                            campaign.campaignId,
+                            userSession.shopId,
+                            userSession.userId,
+                        )
                     },
                     onClearFilter = { viewModel.onEvent(CampaignListViewModel.UiEvent.ClearFilter) },
                     onSearchBarKeywordSubmit = { searchQuery ->
@@ -107,7 +113,10 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
                     },
                     onSearchbarCleared = { viewModel.getCampaignList() },
                     onTickerDismissed = { viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker) },
-                    onToolbarBackIconPressed = { finish() }
+                    onToolbarBackIconPressed = { finish() },
+                    onCampaignScrolled = { campaign ->
+                        tracker.sendCampaignImpressionEvent(campaign.campaignId, userSession.shopId)
+                    }
                 )
             }
 
@@ -124,6 +133,8 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
     }
 
     private fun showCampaignStatusBottomSheet(campaignStatusSelections: List<CampaignStatusSelection>) {
+        tracker.sendOpenCampaignStatusFilterClickEvent(userSession.shopId)
+
         val bottomSheet = CampaignStatusBottomSheet.createInstance(campaignStatusSelections, object : CampaignStatusBottomSheet.OnApplyButtonClickListener {
             override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
                 viewModel.onEvent(CampaignListViewModel.UiEvent.CampaignStatusFilterApplied(selectedCampaignStatus))
@@ -147,6 +158,8 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
     }
 
     private fun showCampaignTypeBottomSheet(campaignTypeSelection: List<CampaignTypeSelection>) {
+        tracker.sendOpenCampaignTypeFilterClickEvent(userSession.shopId)
+
         val bottomSheet = CampaignTypeBottomSheet.createInstance(campaignTypeSelection, object : CampaignTypeBottomSheet.OnApplyButtonClickListener {
             override fun onApplyCampaignTypeFilter(selectedCampaignType: CampaignTypeSelection) {
                 viewModel.onEvent(CampaignListViewModel.UiEvent.CampaignTypeFilterApplied(selectedCampaignType))
@@ -162,6 +175,13 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
     }
 
     private fun showShareBottomSheet(merchantBannerData: GetMerchantCampaignBannerGeneratorData) {
+        tracker.sendShareBottomSheetDisplayedEvent(
+            viewModel.getCampaignTypeId(),
+            merchantBannerData.campaign.campaignId,
+            userSession.userId,
+            userSession.shopId
+        )
+
         val campaignData = merchantBannerData.campaign
         val productData = campaignData.highlightProducts.Products
         val shopData = merchantBannerData.shopData
@@ -301,10 +321,23 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
             })
         )
 
+        tracker.sendSelectShareChannelClickEvent(
+            shareModel.channel.orEmpty(),
+            viewModel.getCampaignTypeId(),
+            campaignData.campaignId,
+            userSession.userId,
+            userSession.shopId
+        )
+
     }
 
     override fun onCloseOptionClicked() {
-
+        tracker.sendShareBottomSheetDismissClickEvent(
+            viewModel.getCampaignTypeId(),
+            viewModel.getSelectedActiveCampaign()?.campaignId.orEmpty(),
+            userSession.userId,
+            userSession.shopId
+        )
     }
 
 

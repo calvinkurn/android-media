@@ -8,11 +8,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -56,7 +61,8 @@ fun CampaignListScreen(
     onSearchbarCleared: () -> Unit,
     onTickerDismissed: () -> Unit,
     onTapShareCampaignButton : (ActiveCampaign) -> Unit,
-    onToolbarBackIconPressed: () -> Unit
+    onToolbarBackIconPressed: () -> Unit,
+    onCampaignScrolled : (ActiveCampaign) -> Unit
 ) {
 
     Surface(modifier = Modifier
@@ -94,7 +100,8 @@ fun CampaignListScreen(
             List(
                 modifier = Modifier.tag(tag = "List"),
                 campaigns = uiState.campaigns,
-                onTapShareButton = onTapShareCampaignButton
+                onTapShareButton = onTapShareCampaignButton,
+                onCampaignScrolled = onCampaignScrolled
             )
         }
     }
@@ -105,11 +112,14 @@ fun CampaignListScreen(
 fun List(
     modifier: Modifier = Modifier,
     campaigns: List<ActiveCampaign>,
-    onTapShareButton: (ActiveCampaign) -> Unit
+    onTapShareButton: (ActiveCampaign) -> Unit,
+    onCampaignScrolled : (ActiveCampaign) -> Unit
 ) {
-    LazyColumn(modifier = modifier) {
-        items(campaigns, key = { it.campaignId }) {
-            CampaignItem(it, onTapShareButton)
+    val lazyListState = rememberLazyListState()
+    LazyColumn(modifier = modifier, state = lazyListState) {
+        items(campaigns.size, key = { campaigns[it].campaignId.toInt() }) {
+            val campaign = campaigns[it]
+            CampaignItem(lazyListState, campaign, onTapShareButton, onCampaignScrolled)
         }
     }
 }
@@ -186,7 +196,16 @@ private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed : () -> Un
 }
 
 @Composable
-fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -> Unit) {
+fun CampaignItem(
+    state: LazyListState,
+    campaign: ActiveCampaign,
+    onTapShareButton: (ActiveCampaign) -> Unit,
+    onCampaignScrolled: (ActiveCampaign) -> Unit
+) {
+    ItemImpression(key = campaign.campaignId.toInt(), lazyListState = state) {
+        onCampaignScrolled(campaign)
+    }
+
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
@@ -352,6 +371,22 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
 }
 
 @Composable
+fun ItemImpression(key: Int, lazyListState: LazyListState, onItemViewed: () -> Unit) {
+    val isItemWithKeyInView by remember {
+        derivedStateOf {
+            lazyListState.layoutInfo
+                .visibleItemsInfo
+                .any { it.key == key }
+        }
+    }
+
+    if (isItemWithKeyInView) {
+        LaunchedEffect(Unit) {
+            onItemViewed()
+        }
+    }
+}
+@Composable
 fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: Int) {
     val nestLabelType = when (campaignStatusId) {
         ONGOING_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_GREEN
@@ -377,6 +412,6 @@ fun CampaignItemPreview() {
         endTime = "22:00 WIB"
     )
 
-    CampaignItem(campaign, {})
+    CampaignItem(state = LazyListState(), campaign = campaign, onTapShareButton = {}, onCampaignScrolled = {})
 }
 
