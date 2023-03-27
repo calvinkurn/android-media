@@ -61,6 +61,8 @@
     <string name="play_setup_cover_auto_generated_cover_error_load_message">Gagal memuat tamplate cover</string>
     <string name="play_setup_cover_upload_image_toaster">Berhasil ganti cover dari pilih template ke upload gambar!</string>
     <string name="play_setup_cover_auto_generated_toaster">Berhasil ganti cover dari upload gambar ke pilih template!</string>
+    <string name="play_setup_cover_auto_generated_toaster_update_cover_from_product">Ada perubahan di tampilan template cover karena kamu mengubah produk</string>
+    <string name="play_setup_cover_auto_generated_toaster_delete_cover_from_product">Template cover dibatalkan karena kamu menghapus semua produk terpilih</string>
 
     <string name="play_camera_cancel_label">Cancel</string>
     <string name="play_camera_timer_label">Timer</string>
