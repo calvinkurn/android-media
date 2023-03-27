@@ -681,15 +681,6 @@ object DeeplinkDFMapper : CoroutineScope {
 
             //Toko Chat
             add(DFP({ it.startsWithPattern(ApplinkConstInternalCommunication.TOKO_CHAT) }, DF_TOKOCHAT, R.string.title_applink_toko_chat))
-
-            //sellerapp
-            add(
-                DFP(
-                    { it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK) },
-                    DF_SELLER_FEEDBACK,
-                    R.string.title_seller_feedback
-                )
-            )
         }
     }
 
@@ -831,6 +822,14 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(INTERNAL_MEDIA_EDITOR)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_editor))
+
+            add(
+                DFP(
+                    { it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK) },
+                    DF_SELLER_FEEDBACK,
+                    R.string.title_seller_feedback
+                )
+            )
         }
     }
 
