@@ -8,7 +8,7 @@ data class DynamicAttachment(
 ) {
     data class DynamicAttachmentAttribute(
         @SerializedName("attribute")
-        val dynamicAttachmentBodyAttributes: DynamicAttachmentBodyAttributes?,
+        val dynamicAttachmentBodyAttributes: com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachmentBodyAttributes?,
         @SerializedName("fallback")
         val dynamicAttachmentFallback: DynamicAttachmentFallback?,
         @SerializedName("is_log_history")
