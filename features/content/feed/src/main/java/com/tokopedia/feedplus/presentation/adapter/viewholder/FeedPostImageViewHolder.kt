@@ -240,6 +240,7 @@ class FeedPostImageViewHolder(
             model.type,
             model.campaign,
             model.cta,
+            model.products.firstOrNull(),
             model.hasVoucher,
             model.isTypeProductHighlight
         )

@@ -204,7 +204,7 @@ class FeedXProduct(
     @SerializedName("stockWording")
     val stockWording: String = "",
     @SerializedName("stockSoldPercentage")
-    val stockSoldPercentage: String = "",
+    val stockSoldPercentage: Float = 0f,
     @SerializedName("cartable")
     val cartable: Boolean = false,
     @SerializedName("isCashback")

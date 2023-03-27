@@ -12,7 +12,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/ty_feed_campaign_ribbon_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_Static_White"

@@ -13,6 +13,7 @@ import com.tokopedia.feedplus.databinding.LayoutFeedCampaignRibbonMotionBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -21,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.math.roundToInt
 
 /**
  * Created By : Muhammad Furqan on 16/03/23
@@ -43,6 +45,7 @@ class FeedCampaignRibbonView(
         modelType: String,
         campaign: FeedCardCampaignModel,
         ctaModel: FeedCardCtaModel,
+        product: FeedCardProductModel?,
         hasVoucher: Boolean,
         isTypeHighlight: Boolean
     ) {
@@ -54,7 +57,7 @@ class FeedCampaignRibbonView(
             }
 
             type = getRibbonType(modelType, campaign.isOngoing)
-            buildRibbonBasedOnType(campaign, ctaModel)
+            buildRibbonBasedOnType(product, campaign, ctaModel)
         }
     }
 
@@ -112,6 +115,7 @@ class FeedCampaignRibbonView(
     }
 
     private fun buildRibbonBasedOnType(
+        product: FeedCardProductModel?,
         campaign: FeedCardCampaignModel,
         ctaModel: FeedCardCtaModel
     ) {
@@ -137,23 +141,28 @@ class FeedCampaignRibbonView(
                         Toast.LENGTH_SHORT
                     ).show()
                     tyFeedCampaignRibbonTitle.text = ctaModel.text
-//                    renderRibbonByType(campaign.isReminderActive)
-//                    startDelayProcess(TWO_SECOND) {
-//                        setBackgroundGradient(ctaModel)
-//                    }
                 }
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING -> {
+                    root.setTransition(root.currentState, R.id.initial_title_with_timer_and_icon)
+                    root.transitionToEnd()
+                    root.progress = 1f
+
                     Toast.makeText(
                         root.context,
                         "Flash Sale Ongoing",
                         Toast.LENGTH_SHORT
                     ).show()
 
+                    tyFeedCampaignRibbonTitle.text = campaign.shortName
+                    tyFeedCampaignRibbonSubtitle.text = product?.stockWording
+                    val value = (((product?.stockSoldPercentage ?: 0.75f) * 100) / 100).roundToInt()
+                    pbFeedCampaignRibbon.setValue(value, true)
                     startDelayProcess(TWO_SECOND) {
                         setBackgroundGradient(ctaModel)
 
                         startDelayProcess(THREE_SECOND) {
-                            // TODO
+                            root.setTransition(root.currentState, R.id.availability_state)
+                            root.transitionToEnd()
                         }
                     }
                 }
@@ -164,7 +173,6 @@ class FeedCampaignRibbonView(
                         Toast.LENGTH_SHORT
                     ).show()
                     root.setTransition(root.currentState, R.id.initial_title_with_icon)
-                    root.setTransitionDuration(SIX_MILISECOND.toInt())
                     root.transitionToEnd()
                     root.progress = 1f
 
@@ -172,8 +180,7 @@ class FeedCampaignRibbonView(
                         setBackgroundGradient(ctaModel)
 
                         startDelayProcess(THREE_SECOND) {
-                            root.setTransition(R.id.initial_title_with_icon, R.id.start_in_state)
-                            root.setTransitionDuration(SIX_MILISECOND.toInt())
+                            root.setTransition(root.currentState, R.id.start_in_state)
                             root.transitionToEnd()
                         }
                     }
@@ -182,73 +189,6 @@ class FeedCampaignRibbonView(
             }
         }
     }
-
-//    private fun renderRibbonByType(isActiveReminder: Boolean) {
-//        with(binding) {
-//            when (type) {
-//                FeedCampaignRibbonType.ASGC_GENERAL -> {
-//                    tyFeedCampaignRibbonTitle.show()
-//                    tyFeedCampaignRibbonTitleSecond.hide()
-//                    tyFeedCampaignRibbonSmall.hide()
-//                    pbFeedCampaignRibbon.hide()
-//                    timerFeedCampaignRibbon.hide()
-//
-//                    icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
-//                    Toast.makeText(root.context, "ASGC General", Toast.LENGTH_SHORT).show()
-//                }
-//                FeedCampaignRibbonType.ASGC_DISCOUNT -> {
-//                    tyFeedCampaignRibbonTitle.show()
-//                    tyFeedCampaignRibbonTitleSecond.show()
-//                    tyFeedCampaignRibbonSmall.hide()
-//                    pbFeedCampaignRibbon.hide()
-//                    timerFeedCampaignRibbon.hide()
-//
-//                    icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
-//                    Toast.makeText(root.context, "ASGC Discount", Toast.LENGTH_SHORT).show()
-//                }
-//                FeedCampaignRibbonType.TITLE_ONLY -> {
-//                    tyFeedCampaignRibbonTitle.show()
-//                    tyFeedCampaignRibbonSmall.hide()
-//                    pbFeedCampaignRibbon.hide()
-//                    timerFeedCampaignRibbon.hide()
-//
-//                    if (isActiveReminder) {
-//                        icFeedCampaignRibbonIcon.setImage(IconUnify.BELL_FILLED)
-//                    } else {
-//                        icFeedCampaignRibbonIcon.setImage(IconUnify.BELL)
-//                    }
-//                }
-//                FeedCampaignRibbonType.TITLE_WITH_TIMER -> {
-//                    tyFeedCampaignRibbonTitle.show()
-//                    tyFeedCampaignRibbonSmall.hide()
-//                    pbFeedCampaignRibbon.hide()
-//                    timerFeedCampaignRibbon.show()
-//
-//                    icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
-//                }
-//                FeedCampaignRibbonType.START_IN -> {
-//                    tyFeedCampaignRibbonTitle.hide()
-//                    tyFeedCampaignRibbonSmall.show()
-//                    pbFeedCampaignRibbon.hide()
-//                    timerFeedCampaignRibbon.show()
-//
-//                    if (isActiveReminder) {
-//                        icFeedCampaignRibbonIcon.setImage(IconUnify.BELL_FILLED)
-//                    } else {
-//                        icFeedCampaignRibbonIcon.setImage(IconUnify.BELL)
-//                    }
-//                }
-//                FeedCampaignRibbonType.ON_GOING -> {
-//                    tyFeedCampaignRibbonTitle.hide()
-//                    tyFeedCampaignRibbonSmall.show()
-//                    pbFeedCampaignRibbon.show()
-//                    timerFeedCampaignRibbon.show()
-//
-//                    icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
-//                }
-//            }
-//        }
-//    }
 
     private fun setupTimer(timeTarget: String, onFinish: () -> Unit) {
         val targetCalendar = TimeConverter.convertToCalendar(timeTarget)
