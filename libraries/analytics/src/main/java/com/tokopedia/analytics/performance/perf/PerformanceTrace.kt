@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PERFORMANCE_TRACE
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
@@ -84,17 +86,22 @@ class PerformanceTrace(val traceName: String) {
         touchListenerActivity: TouchListenerActivity?,
         onLaunchTimeFinished: (summaryModel: SummaryModel, type: String, view: View) -> Unit,
         ) {
-
-        performanceTraceJob = scope.launchCatchError(
-            Dispatchers.IO, block = {
-                PerformanceTraceDebugger.logTrace(
-                    "Initialize performance trace for: $traceName"
-                )
-                val viewgroup = v as ViewGroup
-                setTTFLInflateTrace(viewgroup, onLaunchTimeFinished)
-                setTTILInflateTrace(v, viewgroup, onLaunchTimeFinished, scope)
-                touchListenerActivity?.addListener { cancelPerformancetrace(STATE_TOUCH) }
-            }) {
+        val remoteConfig = FirebaseRemoteConfigImpl(v.context)
+        val isPerformanceTraceEnabled = remoteConfig.getBoolean(
+            ENABLE_PERFORMANCE_TRACE, true
+        )
+        if (isPerformanceTraceEnabled) {
+            performanceTraceJob = scope.launchCatchError(
+                Dispatchers.IO, block = {
+                    PerformanceTraceDebugger.logTrace(
+                        "Initialize performance trace for: $traceName"
+                    )
+                    val viewgroup = v as ViewGroup
+                    setTTFLInflateTrace(viewgroup, onLaunchTimeFinished)
+                    setTTILInflateTrace(v, viewgroup, onLaunchTimeFinished, scope)
+                    touchListenerActivity?.addListener { cancelPerformancetrace(STATE_TOUCH) }
+                }) {
+            }
         }
     }
 
