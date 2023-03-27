@@ -515,7 +515,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
 
-        productRecommendationViewModel.miniCartAdd.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.addItemToCart.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showSuccessAddToCartMessage(result.data.errorMessage.joinToString(separator = ", "))
@@ -529,7 +529,7 @@ abstract class BaseSearchCategoryFragment:
             }
         }
 
-        productRecommendationViewModel.miniCartUpdate.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.updateCartItem.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     getViewModel().refreshMiniCart()
@@ -542,7 +542,7 @@ abstract class BaseSearchCategoryFragment:
             }
         }
 
-        productRecommendationViewModel.miniCartRemove.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.removeCartItem.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showSuccessRemoveFromCartMessage(result.data.second)
@@ -950,7 +950,7 @@ abstract class BaseSearchCategoryFragment:
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
     }
 
-    override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
+    override fun onCartQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
         getViewModel().onViewATCRepurchaseWidget(data, quantity)
     }
 

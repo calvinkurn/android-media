@@ -15,6 +15,7 @@ object GiftBoxTrackerConstants {
     const val SCREEN_NAME = "screenName"
     const val DAILY_GIFT_BOX = "daily-gift-box"
     const val SHOP_ID = "shopId"
+    const val TRACKER_ID = "trackerId"
 }
 
 object GiftBoxEvent {
@@ -25,6 +26,7 @@ object GiftBoxEvent {
     const val OPEN_SCREEN = "openScreen"
     const val CLICK_BGP = "clickBGP"
     const val VIEW_BGP_IRIS = "viewBGPIris"
+    const val CLICK_LG = "clickLG"
 }
 
 object GiftBoxCategory {
@@ -61,6 +63,7 @@ object GiftBoxAction {
     const val CLICK_CEK_DAFTAR_HADIAH_BUTTON = "click cek daftar hadiah button"
     const val CLICK_KE_HOME_BUTTON = "click ke home button"
     const val VIEW_PRODUCT_RECOM = "view product recommendation"
+    const val CLICK_LG = "click tokopedia seru button"
 }
 
 object GiftBoxLabel {
@@ -73,4 +76,8 @@ object GiftBoxLabel {
     const val CAMPAIGN_OVER = "campaign over"
     const val NO_REWARD = "no reward"
     const val INTERNET_CONN_ERROR = "internet connection error"
+}
+
+object TrackerID{
+    const val SERU_TRACKER_ID = "42745"
 }
