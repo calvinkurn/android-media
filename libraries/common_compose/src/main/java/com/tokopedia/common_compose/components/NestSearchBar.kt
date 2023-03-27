@@ -69,7 +69,7 @@ fun NestSearchBar(
                     tint = searchIconColor
                 )
 
-                    Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier = Modifier.width(6.dp))
 
                 Box(Modifier.weight(1f)) {
                     if (text.isEmpty()) {
