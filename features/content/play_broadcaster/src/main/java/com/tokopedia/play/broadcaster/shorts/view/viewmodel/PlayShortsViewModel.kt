@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormU
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -375,6 +376,7 @@ class PlayShortsViewModel @Inject constructor(
     private fun setSelectedAccount(account: ContentAccountUiModel) {
         _selectedAccount.update { account }
         sharedPref.setLastSelectedAccountType(account.type)
+        resetForm()
     }
 
     private fun setupPreparationMenu() {
@@ -414,7 +416,6 @@ class PlayShortsViewModel @Inject constructor(
 
             _config.update { finalConfig }
             setSelectedAccount(account)
-            resetForm()
         }
     }
 
@@ -422,6 +423,7 @@ class PlayShortsViewModel @Inject constructor(
         _titleForm.update { PlayShortsTitleFormUiState.Empty }
         _productSectionList.update { emptyList() }
         _coverForm.update { PlayShortsCoverFormUiState.Empty }
+        mDataStore.getSetupDataStore().setFullCover(PlayCoverUiModel.empty())
     }
 
     private fun emitEventSellerNotEligible() {
