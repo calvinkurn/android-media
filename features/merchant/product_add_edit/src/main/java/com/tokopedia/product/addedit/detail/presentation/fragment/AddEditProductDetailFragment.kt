@@ -1469,7 +1469,7 @@ class AddEditProductDetailFragment :
         val isAdding = viewModel.isAdding || !isEditing
         val maxProductPhotoCount = viewModel.getMaxProductPhotos()
 
-        if (Rollence.getImagePickerRollence()) {
+        if (RemoteConfig.getImagePickerRemoteConfig(ctx)) {
             val pageSource = if (!isEditing) PageSource.AddProduct else PageSource.EditProduct
             doTracking(isEditing)
             val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(

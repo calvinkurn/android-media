@@ -27,6 +27,7 @@ import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMEN
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_RECEIVE
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
@@ -50,6 +51,7 @@ import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionPojo
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicStickyButton
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes

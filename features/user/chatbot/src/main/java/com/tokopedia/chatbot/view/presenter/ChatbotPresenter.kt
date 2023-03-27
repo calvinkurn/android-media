@@ -73,7 +73,6 @@ import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
-import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
@@ -82,10 +81,10 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.BigReplyBoxAttribute
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachment
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.ReplyBoxAttribute
-import com.tokopedia.chatbot.domain.pojo.dynamicattachment.SmallReplyBoxAttribute
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.BigReplyBoxAttribute
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachmentBodyAttributes
+import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.MediaButtonAttribute
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -96,7 +95,6 @@ import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatRespon
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
-import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
@@ -117,11 +115,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOU
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.view.util.Attachment34RenderType
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
-import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
-import com.tokopedia.chatbot.websocket.ChatbotWebSocket
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
-import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
+import com.tokopedia.chatbot.websocket.*
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -178,7 +172,6 @@ class ChatbotPresenter @Inject constructor(
     private val chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase,
     private val getExistingChatMapper: ChatbotGetExistingChatMapper,
     private val uploaderUseCase: UploaderUseCase,
-    private val chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase,
     private val chatbotWebSocket: ChatbotWebSocket,
     private val chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler,
     private val dispatcher: CoroutineDispatchers
@@ -211,7 +204,8 @@ class ChatbotPresenter @Inject constructor(
     private var mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
     var mediaUploadResults = MutableStateFlow<MediaUploadResultMap>(mapOf())
     private val shouldResetFailedUploadStatus = MutableStateFlow(false)
-    val mediaUris = MutableStateFlow<List<VideoUploadData>>(emptyList())
+    private val mediaUris = MutableStateFlow<List<VideoUploadData>>(emptyList())
+    var pageSourceAccess = ""
 
     init {
         observeMediaUrisForUpload()
@@ -240,7 +234,8 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -315,7 +310,8 @@ class ChatbotPresenter @Inject constructor(
                     Timber.d("Socket Reconnecting")
                 }
                 ChatbotNewRelicLogger.logNewRelicForSocket(
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -332,7 +328,8 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 val attachmentType = chatResponse?.attachment?.type
                 if (attachmentType == SESSION_CHANGE ||
-                    attachmentType == UPDATE_TOOLBAR
+                    attachmentType == UPDATE_TOOLBAR ||
+                    checkForDynamicAttachment(pojo, attachmentType)
                 ) {
                     return
                 }
@@ -343,6 +340,15 @@ class ChatbotPresenter @Inject constructor(
                 sendReadEventWebSocket(messageId)
             }
         }
+    }
+
+    private fun checkForDynamicAttachment(pojo: ChatSocketPojo, attachmentType: String?): Boolean {
+        val dynamicAttachment = GsonBuilder().create().fromJson(
+            pojo.attachment?.attributes,
+            DynamicAttachment::class.java
+        )
+        val contentCode = dynamicAttachment?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
+        return ALLOWED_DYNAMIC_ATTACHMENT_TYPE.contains(contentCode)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -367,7 +373,8 @@ class ChatbotPresenter @Inject constructor(
             }
         } catch (e: JsonSyntaxException) {
             ChatbotNewRelicLogger.logNewRelicForSocket(
-                e
+                e,
+                pageSource = pageSourceAccess
             )
         }
     }
@@ -436,21 +443,24 @@ class ChatbotPresenter @Inject constructor(
         val dynamicAttachmentContents =
             Gson().fromJson(pojo.attachment?.attributes, DynamicAttachment::class.java)
 
-        val replyBoxAttribute =
-            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+        val dynamicAttachmentAttributes =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes
 
-        if (Attachment34RenderType.mapTypeToDeviceType(replyBoxAttribute?.renderTarget)
+        if (Attachment34RenderType.mapTypeToDeviceType(dynamicAttachmentAttributes?.renderTarget)
             == Attachment34RenderType.RenderAttachment34
         ) {
-            when (replyBoxAttribute?.contentCode) {
+            when (dynamicAttachmentAttributes?.contentCode) {
                 TYPE_BIG_REPLY_BOX -> {
-                    convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToBigReplyBoxData(dynamicAttachmentAttributes.dynamicContent)
                 }
                 REPLY_BOX_TOGGLE_VALUE -> {
-                    convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToSmallReplyBoxData(dynamicAttachmentAttributes.dynamicContent)
+                }
+                MEDIA_BUTTON_TOGGLE -> {
+                    convertToMediaButtonToggleData(dynamicAttachmentAttributes.dynamicContent)
                 }
                 else -> {
-                    // need to show fallback message
+                    // To show Fallback if no implementation is provided for this content code
                     mapToVisitable(pojo)
                 }
             }
@@ -479,6 +489,19 @@ class ChatbotPresenter @Inject constructor(
         handleSmallReplyBoxWS(smallReplyBoxContent)
     }
 
+    private fun convertToMediaButtonToggleData(dynamicContent: String?) {
+        if (dynamicContent == null) {
+            return
+        }
+
+        val mediaButtonToggleContent = Gson().fromJson(
+            dynamicContent,
+            MediaButtonAttribute::class.java
+        )
+
+        handleMediaButtonWS(mediaButtonToggleContent)
+    }
+
     private fun handleBigReplyBoxWS(bigReplyBoxContent: BigReplyBoxAttribute) {
         if (bigReplyBoxContent.isActive) {
             view.setBigReplyBoxTitle(bigReplyBoxContent.title, bigReplyBoxContent.placeholder)
@@ -493,19 +516,40 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    fun validateHistoryForAttachment34(replyBoxAttribute: ReplyBoxAttribute?): Boolean {
-        if (replyBoxAttribute == null) {
+    private fun handleMediaButtonWS(mediaButtonToggleContent: MediaButtonAttribute) {
+        if (mediaButtonToggleContent.isMediaButtonEnabled) {
+            view.handleAddAttachmentButtonViewState(true)
+            view.handleImageUploadButtonViewState(
+                mediaButtonToggleContent.buttons?.isUploadImageEnabled ?: false
+            )
+            view.handleVideoUploadButtonViewState(
+                mediaButtonToggleContent.buttons?.isUploadVideoEnabled ?: false
+            )
+        } else {
+            view.handleAddAttachmentButtonViewState(false)
+            view.handleImageUploadButtonViewState(false)
+            view.handleVideoUploadButtonViewState(false)
+        }
+    }
+
+    fun validateHistoryForAttachment34(
+        dynamicAttachmentBodyAttributes: DynamicAttachmentBodyAttributes?
+    ): Boolean {
+        if (dynamicAttachmentBodyAttributes == null) {
             return false
         }
 
-        if (CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute.contentCode)) {
-            when (replyBoxAttribute.contentCode) {
+        if (CheckDynamicAttachmentValidity.checkValidity(
+                dynamicAttachmentBodyAttributes.contentCode
+            )
+        ) {
+            when (dynamicAttachmentBodyAttributes.contentCode) {
                 TYPE_BIG_REPLY_BOX -> {
-                    convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToBigReplyBoxData(dynamicAttachmentBodyAttributes.dynamicContent)
                     return true
                 }
                 REPLY_BOX_TOGGLE_VALUE -> {
-                    convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
+                    convertToSmallReplyBoxData(dynamicAttachmentBodyAttributes.dynamicContent)
                     return true
                 }
             }
@@ -540,7 +584,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SEND_RATING,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -573,6 +618,10 @@ class ChatbotPresenter @Inject constructor(
 
     override fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {
         return chatBotWebSocketMessageMapper.map(pojo)
+    }
+
+    override fun setPageSource(pageSource: String) {
+        pageSourceAccess = pageSource
     }
 
     override fun sendInvoiceAttachment(
@@ -698,7 +747,8 @@ class ChatbotPresenter @Inject constructor(
                         false,
                         messageId,
                         KEY_SECURE_UPLOAD,
-                        e
+                        e,
+                        pageSource = pageSourceAccess
                     )
                     onErrorImageUpload(e, imageUploadViewModel)
                 }
@@ -853,7 +903,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_CSAT_RATING,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -881,7 +932,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -919,7 +971,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_CHAT_CSAT,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -951,7 +1004,8 @@ class ChatbotPresenter @Inject constructor(
                     false,
                     messageId,
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_LINK_FOR_REDIRECTION,
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -968,7 +1022,6 @@ class ChatbotPresenter @Inject constructor(
     override fun detachView() {
         destroyWebSocket()
         job.cancel()
-        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
         super.detachView()
     }
 
@@ -987,7 +1040,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_TICKER,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -1020,7 +1074,8 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_NEW_SESSION,
-            throwable
+            throwable,
+            pageSource = pageSourceAccess
         )
     }
 
@@ -1051,7 +1106,8 @@ class ChatbotPresenter @Inject constructor(
                     false,
                     messageId,
                     KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY,
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
                 view.loadChatHistory()
                 view.enableTyping()
@@ -1181,25 +1237,6 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    override fun checkUploadVideoEligibility(msgId: String) {
-        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
-        chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
-            ::onSuccessVideoUploadEligibility,
-            ::onFailureVideoUploadEligibility,
-            msgId
-        )
-    }
-
-    private fun onSuccessVideoUploadEligibility(response: ChatbotUploadVideoEligibilityResponse) {
-        view.videoUploadEligibilityHandler(
-            response.topbotUploadVideoEligibility.dataVideoEligibility.isEligible
-        )
-    }
-
-    private fun onFailureVideoUploadEligibility(throwable: Throwable) {
-        // Add new Relic Here
-    }
-
     override fun clearGetChatUseCase() {
         getExistingChatUseCase.reset()
     }
@@ -1243,7 +1280,8 @@ class ChatbotPresenter @Inject constructor(
                         false,
                         messageId,
                         ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME,
-                        it
+                        it,
+                        pageSource = pageSourceAccess
                     )
                 }
             )
@@ -1295,7 +1333,8 @@ class ChatbotPresenter @Inject constructor(
                     true,
                     messageId,
                     KEY_CHATBOT_GET_CHATLIST_RATING,
-                    it
+                    it,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -1380,7 +1419,8 @@ class ChatbotPresenter @Inject constructor(
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
                     it,
                     getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime
+                    getExistingChatUseCase.maxReplyTime,
+                    pageSource = pageSourceAccess
                 )
             }
         )
@@ -1421,7 +1461,8 @@ class ChatbotPresenter @Inject constructor(
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM,
                     it,
                     getExistingChatUseCase.minReplyTime,
-                    getExistingChatUseCase.maxReplyTime
+                    getExistingChatUseCase.maxReplyTime,
+                    pageSource = pageSourceAccess
                 )
             }
         )

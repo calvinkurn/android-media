@@ -4,6 +4,8 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
+import com.tokopedia.digital_checkout.utils.analytics.DigitalCheckoutTrackingConst.Misc.AUTO_APPLY_FALSE
+import com.tokopedia.digital_checkout.utils.analytics.DigitalCheckoutTrackingConst.Misc.AUTO_APPLY_TRUE
 import com.tokopedia.digital_checkout.utils.analytics.DigitalCheckoutTrackingConst.Value.CROSSELL_CARD_TYPE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -270,11 +272,12 @@ class DigitalAnalytics {
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName, categoryId))
         val label = String.format(
             Locale.getDefault(),
-            "%s - %s - %s - %s",
+            "%s - %s - %s - %s - %d",
             cartDigitalInfoData.attributes.categoryName.lowercase(Locale.getDefault()),
             cartDigitalInfoData.attributes.operatorName.lowercase(Locale.getDefault()),
             cartDigitalInfoData.channelId,
-            cartDigitalInfoData.attributes.autoApplyVoucher.code
+            cartDigitalInfoData.attributes.autoApplyVoucher.code,
+            getAutoApplyPromoTicker(cartDigitalInfoData.attributes.autoApplyVoucher.isSuccess)
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
@@ -314,11 +317,12 @@ class DigitalAnalytics {
 
         var label = String.format(
             Locale.getDefault(),
-            "%s - %s - %s - %s",
+            "%s - %s - %s - %s - %d",
             cartDataInfo.attributes.categoryName.toLowerCase(),
             cartDataInfo.attributes.operatorName.toLowerCase(),
             cartDataInfo.channelId,
-            voucherCode
+            voucherCode,
+            getAutoApplyPromoTicker(cartDataInfo.attributes.autoApplyVoucher.isSuccess)
         )
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -509,5 +513,13 @@ class DigitalAnalytics {
             DigitalCheckoutTrackingConst.Product.KEY_SHOP_TYPE, DigitalCheckoutTrackingConst.Value.NONE,
             DigitalCheckoutTrackingConst.Product.KEY_VARIANT, fintechProduct.fintechPartnerAmount.toString()
         )
+    }
+
+    private fun getAutoApplyPromoTicker(isAutoApplyPromo: Boolean): Int {
+        return if (isAutoApplyPromo) {
+            AUTO_APPLY_TRUE
+        } else {
+            AUTO_APPLY_FALSE
+        }
     }
 }

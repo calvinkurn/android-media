@@ -313,7 +313,7 @@ object WebViewHelper {
      * https://www.tokopedia.com/events/hiburan&utm_source=7teOvA
      * https://www.tokopedia.com/events/hiburan
      */
-    private fun String.normalizeSymbol(): String {
+    fun String.normalizeSymbol(): String {
         val indexAnd = indexOf("&")
         return if (indexAnd == -1) {
             this

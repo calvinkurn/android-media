@@ -8,11 +8,15 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductDeta
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifyprinciples.Typography
 
-class ShipperDetailsChildAdapter : RecyclerView.Adapter<ShipperDetailsChildAdapter.ShipperDetailsChildViewHolder>() {
+class ShipperDetailsChildAdapter :
+    RecyclerView.Adapter<ShipperDetailsChildAdapter.ShipperDetailsChildViewHolder>() {
 
     private var shipperDetailsChild = mutableListOf<ShipperProductDetailsModel>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShipperDetailsChildViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ShipperDetailsChildViewHolder {
         return ShipperDetailsChildViewHolder(parent.inflateLayout(R.layout.item_shipper_detail_child))
     }
 
@@ -30,17 +34,18 @@ class ShipperDetailsChildAdapter : RecyclerView.Adapter<ShipperDetailsChildAdapt
     }
 
 
-    inner class ShipperDetailsChildViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ShipperDetailsChildViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val tvDetailShipperName = itemView.findViewById<Typography>(R.id.tv_detail_shipper_feature_name)
-        private val tvDetailShipperDesc = itemView.findViewById<Typography>(R.id.tv_shipper_feature_desc)
+        private val tvDetailShipperName =
+            itemView.findViewById<Typography>(R.id.tv_detail_shipper_feature_name)
+        private val tvDetailShipperDesc =
+            itemView.findViewById<Typography>(R.id.tv_shipper_feature_desc)
 
         fun bindData(data: ShipperProductDetailsModel) {
             tvDetailShipperName.text = data.name
             tvDetailShipperDesc.text = data.description
         }
     }
-
 
 
 }
