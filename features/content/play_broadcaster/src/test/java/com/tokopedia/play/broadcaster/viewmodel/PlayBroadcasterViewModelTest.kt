@@ -327,6 +327,36 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
+    fun `when user switch account`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel()
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration()
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+
+            val state1 = robot.recordState {
+                it.getViewModel().submitAction(PlayBroadcastAction.SwitchAccount())
+            }
+
+            state1.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
+    @Test
     fun `when user only have buyer and eligible then selected account is buyer`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel(onlyBuyer = true)
