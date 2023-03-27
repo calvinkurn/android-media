@@ -26,7 +26,6 @@ object MacroIntent {
      * Target package for dynamic feature module is com.tokopedia.tkpd.df_${module_name}
      */
     const val TKPD_PACKAGE_NAME = "com.tokopedia.tkpd"
-    const val TKPD_PACKAGE_SELLER_APP = "com.tokopedia.sellerapp"
 
     /**
      * Please create intent with deeplink URI that DIRECTLY open your page
@@ -197,19 +196,6 @@ object MacroIntent {
         fun getSearchResultIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://discovery/search-result?q=samsung")
-            return intent
-        }
-    }
-
-
-    object CampaignList {
-        const val PACKAGE_NAME = TKPD_PACKAGE_SELLER_APP
-
-        const val RECYCLER_VIEW_WIDGET_CONTENT_DESCRIPTION = "List"
-
-        fun getCampaignListIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://sellerapp/campaign-list")
             return intent
         }
     }
