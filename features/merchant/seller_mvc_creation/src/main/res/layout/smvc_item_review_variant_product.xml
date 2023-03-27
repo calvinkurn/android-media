@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgVariant"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imgVariant" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgVariant"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toEndOf="@+id/checkBox"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgVariantName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:minLines="1"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/iconDelete"
+        app:layout_constraintStart_toEndOf="@+id/imgVariant"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Playstation 5" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgPrice"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/iconDelete"
+        app:layout_constraintStart_toEndOf="@+id/imgVariant"
+        app:layout_constraintTop_toBottomOf="@+id/tpgVariantName"
+        app:typographyType="paragraph_3"
+        tools:text="Rp5.000.000" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgStock"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgVariant"
+        app:layout_constraintTop_toBottomOf="@+id/tpgPrice"
+        app:typographyType="paragraph_3"
+        tools:text="Stok: 5" />
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="1dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/Unify_NN300"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgStock"
+        app:layout_constraintStart_toEndOf="@+id/tpgStock"
+        app:layout_constraintTop_toTopOf="@+id/tpgStock"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgSoldCount"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/separator"
+        android:layout_marginStart="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/tpgPrice"
+        app:typographyType="paragraph_3"
+        tools:text="Total stok: 5" />
+
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconDelete"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        app:icon_enable_state="true"
+        app:icon_name="DELETE"
+        app:layout_constraintBottom_toBottomOf="@+id/separator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tpgVariantName" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,13 +17,12 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 
-
 private val NestThemeLight = lightColors(
     primary = NestGN.light._500,
     onPrimary = NestNN.light._0,
     primaryVariant = NestGN.light._400,
     secondary = NestBN.light._200,
-    surface = NestNN.light._0,
+    surface = NestNN.light._0
 )
 
 private val NestThemeDark = darkColors(
@@ -41,7 +40,6 @@ private val NestShape = Shapes(
     medium = RoundedCornerShape(8.dp), // TBD
     large = RoundedCornerShape(4.dp) // TBD
 )
-
 
 @Composable
 fun NestTheme(
@@ -61,7 +59,7 @@ fun NestTheme(
             colors = colors,
             typography = OpenSauceTypography,
             content = content,
-            shapes = NestShape,
+            shapes = NestShape
         )
     }
 }
@@ -82,7 +80,6 @@ fun AdaptiveStatusBarColor(
     }
 }
 
-
 object NestTheme {
     val colors: NestColor
         @Composable
@@ -93,7 +90,6 @@ object NestTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalTypography.current
-
 
     val shapes: Shapes
         @Composable

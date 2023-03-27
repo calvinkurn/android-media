@@ -32,6 +32,7 @@ import com.tokopedia.media.picker.ui.publisher.PickerEventBus
 import com.tokopedia.media.picker.ui.publisher.observe
 import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
+import com.tokopedia.media.picker.utils.getVideoDuration
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
@@ -163,6 +164,10 @@ open class CameraFragment @Inject constructor(
         return cameraView.isFacingCameraIsFront()
     }
 
+    override fun isCameraOnRecording(): Boolean {
+        return controller.isVideoMode() && cameraView.isTakingVideo()
+    }
+
     override fun onFlashClicked() {
         cameraView.setCameraFlashIndex()
         setCameraFlashState()
@@ -190,6 +195,7 @@ open class CameraFragment @Inject constructor(
 
     override fun onTakeMediaClicked() {
         if (controller.isVideoMode() && cameraView.isTakingVideo()) {
+            pickerViewModel.isOnVideoRecording(false)
             cameraView.stopVideo()
             return
         }
@@ -203,6 +209,7 @@ open class CameraFragment @Inject constructor(
                 controller.onVideoDurationChanged()
                 cameraAnalytics.clickRecord()
                 cameraViewModel.onVideoTaken()
+                pickerViewModel.isOnVideoRecording(true)
             }
         }
     }
@@ -230,6 +237,10 @@ open class CameraFragment @Inject constructor(
         val videoFile = result.file
             .asPickerFile()
             .cameraToUiModel()
+            .apply {
+                videoLength = requireContext()
+                    .getVideoDuration(file)
+            }
 
         if (contract?.isMinVideoDuration(videoFile) == true) {
             contract?.onShowVideoMinDurationToast()
@@ -257,6 +268,10 @@ open class CameraFragment @Inject constructor(
             } else {
                 loaderDialog?.dismiss()
             }
+        }
+
+        pickerViewModel.isOnVideoRecording.observe(viewLifecycleOwner) {
+            controller.setThumbnailVisibility(!it)
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {

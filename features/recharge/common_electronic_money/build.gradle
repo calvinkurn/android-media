@@ -28,6 +28,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation rootProject.ext.firebase.crashlytics
 
@@ -36,6 +37,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.header
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.dagger

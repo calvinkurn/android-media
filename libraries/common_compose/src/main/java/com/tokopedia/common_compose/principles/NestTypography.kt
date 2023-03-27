@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.tokopedia.common_compose.ui.NestTheme
 
-
 @Composable
 fun NestTypography(
     text: String,
