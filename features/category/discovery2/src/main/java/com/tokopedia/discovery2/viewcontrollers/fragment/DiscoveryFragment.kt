@@ -2218,6 +2218,10 @@ open class DiscoveryFragment :
         return discoveryViewModel.createAffiliateLink(applink)
     }
 
+    fun getItemCount(): Int{
+        return discoveryAdapter.itemCount
+    }
+
     fun provideSubComponent(): UIWidgetComponent {
         return if (::discoveryComponent.isInitialized) {
             discoveryComponent.provideSubComponent()
