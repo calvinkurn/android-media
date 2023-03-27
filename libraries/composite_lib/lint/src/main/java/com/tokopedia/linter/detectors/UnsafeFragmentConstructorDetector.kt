@@ -11,7 +11,7 @@ import com.android.tools.lint.detector.api.Severity
 import com.android.tools.lint.detector.api.SourceCodeScanner
 import org.jetbrains.uast.UClass
 
-class UnsafeFragmentConstructorDetector: Detector(), SourceCodeScanner, ClassScanner {
+class UnsafeFragmentConstructorDetector : Detector(), SourceCodeScanner, ClassScanner {
 
     companion object {
         private const val ISSUE_EXPLANATION =
@@ -24,7 +24,7 @@ class UnsafeFragmentConstructorDetector: Detector(), SourceCodeScanner, ClassSca
             explanation = ISSUE_EXPLANATION,
             category = Category.CORRECTNESS,
             priority = 5,
-            severity = Severity.WARNING,
+            severity = Severity.ERROR,
             implementation = Implementation(
                 UnsafeFragmentConstructorDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
