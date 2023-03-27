@@ -1,24 +1,18 @@
 package com.tokopedia.campaignlist.page.presentation.viewmodel
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaignlist.common.data.model.response.Campaign
-import com.tokopedia.campaignlist.common.data.model.response.CampaignDynamicRule
 import com.tokopedia.campaignlist.common.data.model.response.CampaignListV2
 import com.tokopedia.campaignlist.common.data.model.response.CampaignStatus
 import com.tokopedia.campaignlist.common.data.model.response.CampaignTypeData
-import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2
 import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
-import com.tokopedia.campaignlist.common.data.model.response.GetSellerCampaignSellerAppMeta
 import com.tokopedia.campaignlist.common.data.model.response.GetSellerCampaignSellerAppMetaResponse
-import com.tokopedia.campaignlist.common.data.model.response.SellerCampaignInfo
 import com.tokopedia.campaignlist.common.data.model.response.ShopData
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companion.NPL_CAMPAIGN_TYPE
@@ -30,6 +24,7 @@ import com.tokopedia.campaignlist.common.util.ResourceProvider
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -172,15 +167,16 @@ class CampaignListViewModel @Inject constructor(
         statusId: List<Int> = GetCampaignListUseCase.statusId
     ) {
         launchCatchError(block = {
-            val mockedResponseResult = withContext(dispatchers.io) {
-                populateMockedCampaignListResponse(campaignItemNumber = 100)
+            val result = withContext(dispatchers.io) {
+                val params = GetCampaignListUseCase.createParams(campaignName, campaignTypeId, listTypeId, statusId)
+                getCampaignListUseCase.setRequestParams(params = params.parameters)
+                getCampaignListUseCase.executeOnBackground()
             }
 
-
-            getCampaignListResultLiveData.value = Success(mockedResponseResult)
+            getCampaignListResultLiveData.value = Success(result)
 
             _uiState.update {
-                it.copy(campaigns = mapCampaignListDataToActiveCampaignList(mockedResponseResult.getCampaignListV2.campaignList))
+                it.copy(campaigns = mapCampaignListDataToActiveCampaignList(result.getCampaignListV2.campaignList))
             }
         }, onError = {
             getCampaignListResultLiveData.value = Fail(it)
@@ -204,13 +200,14 @@ class CampaignListViewModel @Inject constructor(
 
     fun getSellerMetaData() {
         launchCatchError(block = {
-            val mockedResult = withContext(dispatchers.io) {
-                populateMockedCampaignData()
+            val result = withContext(dispatchers.io) {
+                getSellerMetaDataUseCase.executeOnBackground()
             }
-            getSellerMetaDataResultLiveData.value = Success(mockedResult)
 
-            val campaignType = mapCampaignTypeDataToCampaignTypeSelections(mockedResult.getSellerCampaignSellerAppMeta.campaignTypeData)
-            val campaignStatus = mapCampaignStatusToCampaignStatusSelections(mockedResult.getSellerCampaignSellerAppMeta.campaignStatus)
+            getSellerMetaDataResultLiveData.value = Success(result)
+
+            val campaignType = mapCampaignTypeDataToCampaignTypeSelections(result.getSellerCampaignSellerAppMeta.campaignTypeData)
+            val campaignStatus = mapCampaignStatusToCampaignStatusSelections(result.getSellerCampaignSellerAppMeta.campaignStatus)
             setDefaultCampaignTypeSelection(campaignType)
 
             _uiState.update {
@@ -380,62 +377,5 @@ class CampaignListViewModel @Inject constructor(
                 getCampaignList()
             }
         }
-    }
-
-    private fun populateMockedCampaignListResponse(campaignItemNumber: Int): GetCampaignListV2Response {
-        val campaignList = mutableListOf<CampaignListV2>()
-
-        repeat(campaignItemNumber) { index ->
-            campaignList.add(
-                CampaignListV2(
-                    index.toString(),
-                    "Campaign $index",
-                    "73",
-                    "Rilisan Spesial",
-                    "5",
-                    "Tersedia",
-                    "Selesai 31 Dec 22",
-                    "31-12-2022 12:37",
-                    "31-12-2022 13:07",
-                    "05-10-2022 10:39",
-                    "05-10-2022 10:39",
-                    -1202,
-                    "05-10-2022 10:40",
-                    "31-12-2022 11:17",
-                    "Min. Diskon 100%",
-                    campaignBanner = emptyList(),
-                    campaignDynamicRule = CampaignDynamicRule(),
-                    sellerCampaignInfo = SellerCampaignInfo(AcceptedProduct = 10),
-                    coverImg = "https://images.tokopedia.net/img/AoawBM/2022/10/5/32c161c2-5210-420c-9cb3-5bf3f3b1c121.jpg"
-                )
-            )
-        }
-
-        return GetCampaignListV2Response(
-            getCampaignListV2 = GetCampaignListV2(
-                campaignList,
-                totalCampaign = campaignItemNumber,
-                totalCampaignActive = campaignItemNumber,
-                enableRules = true,
-                totalCampaignFinished = 0,
-                useRestrictionEngine = true
-            )
-        )
-    }
-
-    private fun populateMockedCampaignData() : GetSellerCampaignSellerAppMetaResponse {
-        return GetSellerCampaignSellerAppMetaResponse(
-            GetSellerCampaignSellerAppMeta(
-                campaignStatus = listOf(
-                    CampaignStatus(listOf(7), "Berlangsung"),
-                    CampaignStatus(listOf(5), "Tersedia"),
-                    CampaignStatus(listOf(6, 14), "Mendatang")
-                ),
-                campaignTypeData = listOf(
-                    CampaignTypeData("73", "Rilisan Spesial", 1, ""),
-                    CampaignTypeData("162", "Flash Sale Toko", 1, "Segera Hadir")
-                )
-            )
-        )
     }
 }
