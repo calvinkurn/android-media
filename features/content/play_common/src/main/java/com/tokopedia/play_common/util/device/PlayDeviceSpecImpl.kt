@@ -71,7 +71,7 @@ class PlayDeviceSpecImpl @Inject constructor(
     override val chipset: String
         get() = Build.HARDWARE
 
-    override val manufacture: String
+    override val manufacturer: String
         get() = Build.MANUFACTURER
 
     override val supportedABIs: String

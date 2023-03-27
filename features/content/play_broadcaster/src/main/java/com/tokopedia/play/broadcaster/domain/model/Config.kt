@@ -56,7 +56,7 @@ data class Config(
         )
 
         data class BeautificationConfig(
-            @SerializedName("licence")
+            @SerializedName("license")
             val license: String = "",
             @SerializedName("model")
             val model: String = "",
@@ -78,11 +78,11 @@ data class Config(
                     val id: String = "",
                     @SerializedName("name")
                     val name: String = "",
-                    @SerializedName("minValue")
+                    @SerializedName("min_value")
                     val minValue: Double = 0.0,
-                    @SerializedName("maxValue")
+                    @SerializedName("max_value")
                     val maxValue: Double = 0.0,
-                    @SerializedName("defaultValue")
+                    @SerializedName("default_value")
                     val defaultValue: Double = 0.0,
                     @SerializedName("value")
                     val value: Double = 0.0,
@@ -96,11 +96,11 @@ data class Config(
                 val name: String = "",
                 @SerializedName("active")
                 val active: Boolean = false,
-                @SerializedName("minValue")
+                @SerializedName("min_value")
                 val minValue: Double = 0.0,
-                @SerializedName("maxValue")
+                @SerializedName("max_value")
                 val maxValue: Double = 0.0,
-                @SerializedName("defaultValue")
+                @SerializedName("default_value")
                 val defaultValue: Double = 0.0,
                 @SerializedName("value")
                 val value: Double = 0.0,

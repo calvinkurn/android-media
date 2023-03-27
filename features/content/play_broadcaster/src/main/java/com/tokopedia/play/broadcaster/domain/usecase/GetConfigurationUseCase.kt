@@ -57,7 +57,7 @@ class GetConfigurationUseCase @Inject constructor(
                 apiLevel = deviceSpec.api,
                 totalRam = deviceSpec.totalRam,
                 chipset = deviceSpec.chipset,
-                manufacturer = deviceSpec.manufacture,
+                manufacturer = deviceSpec.manufacturer,
             )
         )
 
