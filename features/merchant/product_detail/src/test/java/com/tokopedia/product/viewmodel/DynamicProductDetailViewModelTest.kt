@@ -63,6 +63,7 @@ import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
 import com.tokopedia.product.util.ProductDetailTestUtil.getMockP2Data
+import com.tokopedia.product.util.ProductDetailTestUtil.getMockPdpLayout
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -1275,12 +1276,12 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
      */
     @Test
     fun `test correct product id parameter pdplayout`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productId = "123"
         val productParams = ProductParams(productId, "", "", "", "", "")
         val userLocation = UserLocationRequest("123")
         val tokoNow = TokoNowParam("456", "789", "now15")
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
 
         coEvery {
             getPdpLayoutUseCase.requestParams
@@ -1320,14 +1321,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `test correct shop domain and shop key parameter pdplayout`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val shopDomain = "shopYehez"
         val productKey = "productYehez"
         val productParams = ProductParams("", shopDomain, productKey, "", "", "")
         val userLocation = UserLocationRequest("123")
         val tokoNow = TokoNowParam("456", "789", "now15")
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(
@@ -1369,13 +1370,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `test extParam key parameter pdplayout`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
         val userLocation = UserLocationRequest("")
         val extParam = anyString()
         val tokoNow = TokoNowParam("123")
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(
@@ -1407,7 +1408,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on success get product info login`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productParams = ProductParams("518076293", "", "", "", "", "")
 
         every {
@@ -1429,7 +1430,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             onError.invoke(Throwable(""))
         }
 
-        `co every p1 success`(dataP1, true)
+        val miniCart = generateMiniCartMock(productId = dataP1.layoutData.basic.productID).toMutableMap()
+        `co every p1 success`(dataP1, getMockP2Data(), miniCart)
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
 
@@ -1485,7 +1487,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     private fun `co every p1 success`(
         dataP1: ProductDetailDataModel,
-        hitMiniCart: Boolean = false
+        dataP2: ProductInfoP2UiData,
+        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null
     ) {
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
@@ -1507,11 +1510,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }.coAnswers {
             val onError = lambda<(Throwable) -> Unit>()
             onError.invoke(Throwable(""))
-            val p2Mock = getMockP2Data()
-            p2Mock.miniCart =
-                if (!hitMiniCart) mutableMapOf() else generateMiniCartMock(dataP1.layoutData.basic.productID).toMutableMap()
-            p2Mock.upcomingCampaigns = generateNotifyMeMock()
-            p2Mock
+            dataP2.miniCart = miniCart ?: mutableMapOf()
+            dataP2.upcomingCampaigns = generateNotifyMeMock()
+            dataP2
         }
 
         coEvery {
@@ -1555,7 +1556,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on success get product info non login`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
 
         every {
@@ -1566,7 +1567,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             viewModel.isUserSessionActive
         } returns false
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
 
         viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
 
@@ -1622,7 +1623,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             viewModel.isUserSessionActive
         } returns false
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
 
         viewModel.getProductP1(
             productParams,
@@ -1649,7 +1650,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on success remove unused component when sellerapp`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
 
         every {
@@ -1672,7 +1673,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             viewModel.isUserSessionActive
         } returns false
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
 
         viewModel.getProductP1(
             productParams,
@@ -1689,7 +1690,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `remove button_ar when customerapp and os under lollipop`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
 
         every {
@@ -1717,7 +1718,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             viewModel.isUserSessionActive
         } returns false
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
 
         viewModel.getProductP1(
             productParams,
@@ -2113,7 +2114,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             onError.invoke(Throwable(""))
         }
 
-        `co every p1 success`(dataP1, true)
+        val miniCart = generateMiniCartMock(dataP1.layoutData.basic.productID).toMutableMap()
+        `co every p1 success`(dataP1, getMockP2Data(), miniCart)
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
 
@@ -3325,6 +3327,70 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     private fun getUserLocationCache(): LocalCacheModel {
         return LocalCacheModel("123", "123", "123", "123")
     }
+
+    // region bottom-sheet edu
+    @Test
+    fun `show bottom-sheet edu normally`() {
+        // given
+        val mockP1 = getMockPdpLayout()
+        val mockP2 = getMockP2Data()
+        `co every p1 success`(
+            dataP1 = mockP1,
+            dataP2 = mockP2.copy(
+                bottomSheetEdu = mockP2.bottomSheetEdu.copy(isShow = true)
+            )
+        )
+
+        // when
+        viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
+
+        // then
+        val showEdu = viewModel.showBottomSheetEdu.getOrAwaitValue()
+        Assert.assertTrue(showEdu != null)
+        Assert.assertTrue(showEdu?.isShow == true)
+        Assert.assertTrue(!showEdu?.appLink.isNullOrBlank())
+    }
+
+    @Test
+    fun `bottom-sheet edu not appear when isShow is false`() {
+        // given
+        val mockP1 = getMockPdpLayout()
+        val mockP2 = getMockP2Data()
+        `co every p1 success`(
+            dataP1 = mockP1,
+            dataP2 = mockP2.copy(
+                bottomSheetEdu = mockP2.bottomSheetEdu.copy(isShow = false)
+            )
+        )
+
+        // when
+        viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
+
+        // then
+        val showEdu = viewModel.showBottomSheetEdu.getOrAwaitValue()
+        Assert.assertTrue(showEdu == null)
+    }
+
+    @Test
+    fun `bottom-sheet edu not appear when isShow is true but applink is empty`() {
+        // given
+        val mockP1 = getMockPdpLayout()
+        val mockP2 = getMockP2Data()
+        `co every p1 success`(
+            dataP1 = mockP1,
+            dataP2 = mockP2.copy(
+                bottomSheetEdu = mockP2.bottomSheetEdu.copy(isShow = true, appLink = "")
+            )
+        )
+
+        // when
+        viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
+
+        // then
+        val showEdu = viewModel.showBottomSheetEdu.getOrAwaitValue()
+        Assert.assertTrue(showEdu == null)
+    }
+    // endregion
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
