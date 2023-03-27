@@ -25,7 +25,9 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatGQLUseCase
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.SOURCE_INBOX
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.SOURCE_PUSH_NOTIF
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.SOURCE_SEPARATOR
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventClickReplyChatFromNotif
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -108,7 +110,7 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
                 val param = ReplyChatGQLUseCase.Param(
                     msgId = messageId,
                     msg = message,
-                    source = SOURCE_PUSH_NOTIF
+                    source = "$SOURCE_INBOX $SOURCE_SEPARATOR $SOURCE_PUSH_NOTIF"
                 )
                 replyChatGQLUseCase(param)
                 eventClickReplyChatFromNotif()
