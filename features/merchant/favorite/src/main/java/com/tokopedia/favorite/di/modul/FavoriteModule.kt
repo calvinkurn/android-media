@@ -48,7 +48,7 @@ class FavoriteModule {
     @Provides
     fun provideFavoriteShopUseCaseWithCoroutine(
             favoriteRepository: FavoriteRepository): GetFavoriteShopUseCaseWithCoroutine {
-        return GetFavoriteShopUseCaseWithCoroutine(favoriteRepository);
+        return GetFavoriteShopUseCaseWithCoroutine(favoriteRepository)
     }
 
     @FavoriteScope
@@ -64,7 +64,7 @@ class FavoriteModule {
 
     @FavoriteScope
     @Provides
-    fun provideGetTopAdsShopUseCaseWithCoroutine(favoriteRepository: FavoriteRepository, topAdsAddressHelper: TopAdsAddressHelper): GetTopAdsShopUseCaseWithCoroutine {
+    fun provideGetTopAdsShopUseCaseWithCoroutine(favoriteRepository: FavoriteRepository): GetTopAdsShopUseCaseWithCoroutine {
         return GetTopAdsShopUseCaseWithCoroutine(favoriteRepository)
     }
 
