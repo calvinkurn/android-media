@@ -3,6 +3,7 @@ package com.tokopedia.media.loader.modelloader
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
@@ -81,7 +82,7 @@ class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitma
                     callback.onDataReady(bitmap)
                 }
             } catch (e: Exception) {
-                Log.e(TAG,"Failed load $masterPlaylistUrl", e)
+                Log.e(TAG, "Failed load $masterPlaylistUrl", e)
                 callback.onLoadFailed(e)
             }
         }
@@ -139,7 +140,11 @@ class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitma
         } catch (t: Throwable) {
             null
         } finally {
-            retriever.close()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                retriever.close()
+            } else {
+                retriever.release()
+            }
         }
     }
 
