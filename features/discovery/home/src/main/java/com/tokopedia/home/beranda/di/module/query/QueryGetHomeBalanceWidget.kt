@@ -11,15 +11,15 @@ import com.tokopedia.home.beranda.di.module.query.QueryGetHomeBalanceWidget.GET_
 internal object QueryGetHomeBalanceWidget {
     const val GET_HOME_BALANCE_WIDGET_QUERY_NAME = "GetHomeBalanceWidgetQuery"
     const val GET_HOME_BALANCE_WIDGET_QUERY: String = "" +
-            "query getHomeBalanceWidget()\n" +
-            "        {\n" +
-            "           getHomeBalanceWidget{\n" +
-            "               error" +
-            "               balances{\n" +
-            "                  title\n" +
-            "                  type\n" +
-            "                  data\n" +
-            "               }\n" +
-            "            }" +
-            "        }"
+        "query getHomeBalanceWidget(\$experiment: String!, \$variant: String!)\n" +
+        "        {\n" +
+        "           getHomeBalanceWidget(experiment: \$experiment, variant: \$variant){\n" +
+        "               error" +
+        "               balances{\n" +
+        "                  title\n" +
+        "                  type\n" +
+        "                  data\n" +
+        "               }\n" +
+        "            }" +
+        "        }"
 }
