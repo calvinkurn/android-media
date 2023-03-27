@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.bottom_sheet_edu.asUiModel
 import com.tokopedia.product.detail.data.model.shop_review.asUiModel
 import com.tokopedia.product.detail.data.model.social_proof.asUiModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
@@ -592,6 +593,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     reviewID
                 }
             }
+            bottomSheetEdu {
+              isShow
+              appLink
+            }
           }
         }
 """.trimIndent()
@@ -675,6 +680,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.customInfoTitle = responseData.customInfoTitle
             p2UiData.socialProof = responseData.socialProof.asUiModel()
             p2UiData.shopReview = responseData.shopReview.asUiModel()
+            p2UiData.bottomSheetEdu = responseData.bottomSheetEdu.asUiModel()
         }
         return p2UiData
     }

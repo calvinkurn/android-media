@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.usp.UniqueSellingPointTokoCabang
 import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouseResponse
+import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduData
 import com.tokopedia.product.detail.data.model.custom_info_title.CustomInfoTitle
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
@@ -172,7 +173,11 @@ data class ProductInfoP2Data(
 
     @SerializedName("reviewList")
     @Expose
-    val shopReview: ShopReviewData = ShopReviewData()
+    val shopReview: ShopReviewData = ShopReviewData(),
+
+    @SerializedName("bottomSheetEdu")
+    @Expose
+    val bottomSheetEdu: BottomSheetEduData = BottomSheetEduData()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
