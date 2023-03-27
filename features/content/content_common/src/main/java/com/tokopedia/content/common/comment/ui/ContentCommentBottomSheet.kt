@@ -121,10 +121,10 @@ class ContentCommentBottomSheet @Inject constructor(
                 if (p0 == null) return
                 binding.newComment.removeTextChangedListener(this)
 
-                if (p0.length > MAX_CHAR) {
+                if (p0.length >= MAX_CHAR.minus(1)) {
                     Toaster.showError(
                         requireView().rootView,
-                        getString(R.string.content_comment_error_max),
+                        CommentException.SendCommentFailed.message,
                         Toaster.LENGTH_SHORT
                     )
                 }
@@ -500,7 +500,7 @@ class ContentCommentBottomSheet @Inject constructor(
         if (binding.newComment.length() >= MAX_CHAR) {
             Toaster.showError(
                 requireView().rootView,
-                getString(R.string.content_comment_error_max),
+                CommentException.SendCommentFailed.message,
                 Toaster.LENGTH_SHORT
             )
         } else {
@@ -562,7 +562,7 @@ class ContentCommentBottomSheet @Inject constructor(
         private const val KEYBOARD_HEIGHT_PERCENT = 0.3
         private const val SHIMMER_VALUE = 6
 
-        private const val MAX_CHAR = 139
+        private const val MAX_CHAR = 140
 
         fun getOrCreate(
             fragmentManager: FragmentManager,

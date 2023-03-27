@@ -60,7 +60,8 @@ class CommentUiModelMapper @Inject constructor() {
     }
 
     fun mapNewComment(comment: PostComment.Parent.NewComment, userType: UserType): CommentUiModel {
-        val username = comment.userInfo.username.ifBlank { comment.userInfo.username }.ifBlank { comment.userInfo.name }
+        val username = comment.userInfo.username.ifBlank { comment.userInfo.username }
+            .ifBlank { comment.userInfo.name }
         return CommentUiModel.Item(
             id = comment.id,
             username = username.parseAsHtml().toString(),
@@ -88,8 +89,10 @@ class CommentUiModelMapper @Inject constructor() {
             val hour = diff.toHours()
             val day = diff.toDays()
 
-            return if (day >= 1) {
+            return if (day in 1..90) {
                 "$day $DAY"
+            } else if (day > 90) {
+                "${convert.month.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() }} ${convert.year}"
             } else if (hour in 1..24) {
                 "$hour $HOUR"
             } else if (minute in 1..60) {

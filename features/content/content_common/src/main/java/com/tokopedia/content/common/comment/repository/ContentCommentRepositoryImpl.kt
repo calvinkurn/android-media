@@ -50,7 +50,7 @@ class ContentCommentRepositoryImpl @Inject constructor(
         comment: String,
         commenterType: UserType
     ): CommentUiModel = withContext(dispatchers.io) {
-        return@withContext if (!isCommentAllowed) throw MessageErrorException(CommentException.SpammedComment.message)
+        return@withContext if (!isCommentAllowed) throw MessageErrorException(CommentException.SendCommentFailed.message)
         else {
             val type =
                 if (commenterType == UserType.Shop) PostCommentUseCase.CommenterType.SHOP else PostCommentUseCase.CommenterType.BUYER

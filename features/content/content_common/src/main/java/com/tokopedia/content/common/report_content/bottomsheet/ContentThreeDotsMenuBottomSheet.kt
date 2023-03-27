@@ -5,32 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.content.common.databinding.BottomSheetFeedThreeDotsMenuBinding
-import com.tokopedia.content.common.databinding.BottomsheetFeedPostReportBinding
+import com.tokopedia.content.common.report_content.adapter.ContentReportAdapter
+import com.tokopedia.content.common.report_content.adapter.ContentReportViewHolder
 import com.tokopedia.content.common.report_content.adapter.FeedMenuAdapter
-import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
+import com.tokopedia.content.common.report_content.model.*
+import com.tokopedia.content.common.report_content.model.listOfCommentReport
 import com.tokopedia.content.common.report_content.viewholder.FeedMenuViewHolder
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
-import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.content.common.R as contentCommonR
+import kotlin.math.roundToInt
 
 /**
  * Created By : Shruti Agarwal on Feb 02, 2023
  */
-class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
+class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHolder.Listener {
 
     private var _binding: BottomSheetFeedThreeDotsMenuBinding? = null
     private val binding: BottomSheetFeedThreeDotsMenuBinding
         get() = _binding!!
 
-    private var isClicked = 0
     private var reasonType: String = ""
     private var reasonDesc: String = ""
     private var contentId: String = ""
@@ -51,9 +49,15 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
         })
     }
 
+    private val reportAdapter: ContentReportAdapter = ContentReportAdapter(this)
+
     private val mFeedMenuItemList = mutableListOf<FeedMenuItem>()
     private var mListener: Listener? = null
     private var mAnalytic: FeedAccountTypeAnalytic? = null
+
+    private val maxSheetHeight by lazyThreadSafetyNone {
+        (getScreenHeight() * HEIGHT_PERCENTAGE).roundToInt()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,80 +89,11 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
     }
     fun showReportLayoutWhenLaporkanClicked() {
         binding.let {
-            setUpReportLayoutView(it.reportLayout)
-            it.reportLayout.root.visible()
+            it.viewReportGroup.visible()
             it.rvFeedMenu.gone()
         }
     }
-    private fun setUpReportLayoutView(binding: BottomsheetFeedPostReportBinding) {
-        binding.let {
-            it.reportSubtext1.setOnClickListener {
-                setSpamCase()
-            }
-            it.reportSubtext1Icon.setOnClickListener {
-                setSpamCase()
-            }
-            it.reportSubtext2.setOnClickListener {
-                setInappropriateCase()
-            }
-            it.reportSubtext2Icon.setOnClickListener {
-                setInappropriateCase()
-            }
-            it.reportSubtext3.setOnClickListener {
-                setInappropriateCase()
-            }
-            it.reportSubtext3Icon.setOnClickListener {
-                setInappropriateCase()
-            }
-            it.reportSubtext4.setOnClickListener {
-                setInappropriateSpeech()
-            }
-            it.reportSubtext4Icon.setOnClickListener {
-                setInappropriateSpeech()
-            }
-            it.reportSubtext5.setOnClickListener {
-                setFraudCase()
-            }
-            it.reportSubtext5Icon.setOnClickListener {
-                setFraudCase()
-            }
-            it.reportSubtext6.setOnClickListener {
-                setIlleagalGoodSaleCase()
-            }
-            it.reportSubtext6Icon.setOnClickListener {
-                setIlleagalGoodSaleCase()
-            }
-        }
-    }
-
-    private fun setSpamCase() {
-        isClicked = SPAM
-        sendReport()
-    }
-
-    private fun setAbuseCase() {
-        isClicked = ABUSE
-        sendReport()
-    }
-
-    private fun setInappropriateCase() {
-        isClicked = INAPPROPRIATE
-        sendReport()
-    }
-    private fun setInappropriateSpeech() {
-        isClicked = INAPPROPRIATE_LANGUAGE
-        sendReport()
-    }
-    private fun setFraudCase() {
-        isClicked = FRAUD
-        sendReport()
-    }
-    private fun setIlleagalGoodSaleCase() {
-        isClicked = ILLEGAL_GOODS
-        sendReport()
-    }
     fun sendReport() {
-        getReason()
         mListener?.onReportPost(
             FeedReportRequestParamModel(
                 reportType = FeedComplaintSubmitReportUseCase.VALUE_REPORT_TYPE_POST,
@@ -170,43 +105,24 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
     }
 
     fun setFinalView() {
-        binding.reportLayout.layout1.gone()
-        binding.reportLayout.reportFinalLayout.root.visible()
+        binding.viewReportGroup.gone()
+        binding.reportFinalLayout.root.visible()
     }
 
-    private fun getReason() {
-        when (isClicked) {
-            TYPE1 -> {
-                reasonType = getString(R.string.feed_common_reason_type_spam)
-                reasonDesc = getString(R.string.feed_common_reason_desc_spam)
-            }
-            TYPE2 -> {
-                reasonType = getString(R.string.feed_common_reason_type_abuse)
-                reasonDesc = getString(R.string.feed_common_reason_desc_abuse)
-            }
-            TYPE3 -> {
-                reasonType = getString(R.string.feed_common_reason_type_inappropriate)
-                reasonDesc = getString(R.string.feed_common_reason_desc_inappropriate)
-            }
-            TYPE4 -> {
-                reasonType = getString(R.string.feed_common_reason_type_others)
-                reasonDesc = getString(R.string.feed_component_report_option_text2)
-            }
-            TYPE5 -> {
-                reasonType = getString(contentCommonR.string.feed_common_reason_type_fraud)
-                reasonDesc = getString(R.string.feed_component_report_option_text3)
-            }
-            TYPE6 -> {
-                reasonType = getString(R.string.feed_common_reason_type_others)
-                reasonDesc = getString(R.string.feed_component_report_option_text4)
-            }
-        }
+    override fun onResume() {
+        super.onResume()
+
+        binding.root.maxHeight = maxSheetHeight
     }
 
     private fun setupView() {
         binding.rvFeedMenu.adapter = adapter
         adapter.updateData(mFeedMenuItemList)
         bottomSheetClose.visible()
+
+        binding.rvReportItem.adapter = reportAdapter
+        reportAdapter.updateList(listOfCommentReport)
+
     }
 
     fun setListener(listener: Listener?) {
@@ -245,24 +161,21 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun setAnalytic(analytic: FeedAccountTypeAnalytic) { //change analytic
+    @Deprecated("Analytic is not valid")
+    fun setAnalytic(analytic: FeedAccountTypeAnalytic) {
         mAnalytic = analytic
+    }
+
+    override fun onClicked(item: ContentReportItemUiModel) {
+        reasonType = item.type.value
+        reasonDesc = getString(item.title)
+        sendReport()
     }
 
     companion object {
         private const val TAG = "FeedAccountTypeBottomSheet"
-        private const val SPAM = 1
-        private const val ABUSE = 2
-        private const val INAPPROPRIATE = 3
-        private const val INAPPROPRIATE_LANGUAGE = 4
-        private const val FRAUD = 5
-        private const val ILLEGAL_GOODS = 6
-        private const val TYPE1 = 1
-        private const val TYPE2 = 2
-        private const val TYPE3 = 3
-        private const val TYPE4 = 4
-        private const val TYPE5 = 5
-        private const val TYPE6 = 6
+
+        private const val HEIGHT_PERCENTAGE = 0.4
 
         fun getFragment(
             fragmentManager: FragmentManager,
