@@ -24,6 +24,8 @@ import com.tokopedia.play.broadcaster.data.config.AccountConfigStore
 import com.tokopedia.play.broadcaster.data.config.AccountConfigStoreImpl
 import com.tokopedia.play.broadcaster.data.config.BroadcastScheduleConfigStore
 import com.tokopedia.play.broadcaster.data.config.BroadcastScheduleConfigStoreImpl
+import com.tokopedia.play.broadcaster.data.config.BroadcastingConfigStore
+import com.tokopedia.play.broadcaster.data.config.BroadcastingConfigStoreImpl
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStoreImpl
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore

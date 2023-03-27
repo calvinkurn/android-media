@@ -455,10 +455,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
-        return dataStore.getSetupDataStore()
-    }
-
     private fun handleGetConfiguration(selectedType: String) {
         viewModelScope.launchCatchError(block = {
             getFeedCheckWhitelist(selectedType)

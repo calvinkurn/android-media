@@ -25,7 +25,6 @@ import com.tokopedia.content.common.navigation.people.UserProfileNavigation
 import com.tokopedia.content.common.navigation.people.UserProfileParam
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
