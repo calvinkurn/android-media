@@ -823,7 +823,6 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(INTERNAL_MEDIA_EDITOR)
             }, DF_FEED_CONTENT_CREATION, R.string.title_image_editor))
 
-            //sellerapp
             add(DFP({
                 it.startsWith(SellerApp.SELLER_PERSONA) || it.startsWith(
                     ApplinkConstInternalSellerapp.SELLER_PERSONA
