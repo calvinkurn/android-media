@@ -27,7 +27,6 @@ import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMEN
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_STICKY_BUTTON_RECEIVE
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_TEXT_SEND
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
@@ -51,7 +50,6 @@ import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionPojo
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicStickyButton
-import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -92,12 +90,12 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                     pojo.attachment?.attributes,
                     DynamicAttachment::class.java
                 )
-                val contentCode = dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
+                val contentCode = dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
                 if (PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(contentCode)) {
-                    when(contentCode) {
+                    when (contentCode) {
                         DYNAMIC_STICKY_BUTTON_RECEIVE -> convertToDynamicAttachmentwithContentCode105(pojo, dynamicAttachment)
                         DYNAMIC_TEXT_SEND -> convertToDynamicAttachment105withContentCode106(pojo, dynamicAttachment)
-                        else ->  convertToDynamicAttachmentFallback(pojo, dynamicAttachment)
+                        else -> convertToDynamicAttachmentFallback(pojo, dynamicAttachment)
                     }
                 } else {
                     convertToDynamicAttachmentFallback(pojo, dynamicAttachment)
@@ -111,7 +109,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         dynamicAttachment: DynamicAttachment
     ): DynamicStickyButtonUiModel {
         val dynamicStickyButton = Gson().fromJson(
-            dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent,
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
             DynamicStickyButton::class.java
         )
         return DynamicStickyButtonUiModel(
@@ -132,7 +130,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         dynamicAttachment: DynamicAttachment
     ): DynamicAttachmentTextUiModel {
         val dynamicStickyButton = Gson().fromJson(
-            dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent,
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
             ChatActionPojo::class.java
         )
         return DynamicAttachmentTextUiModel.Builder()

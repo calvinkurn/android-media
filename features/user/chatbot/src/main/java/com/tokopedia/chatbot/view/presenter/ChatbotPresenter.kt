@@ -48,6 +48,8 @@ import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.MEDIA_BUTTON_TOGGLE
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.REPLY_BOX_TOGGLE_VALUE
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.TYPE_BIG_REPLY_BOX
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
@@ -81,10 +83,11 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
-import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.BigReplyBoxAttribute
-import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
-import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachmentBodyAttributes
-import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.MediaButtonAttribute
+import com.tokopedia.chatbot.domain.pojo.dynamicattachment.BigReplyBoxAttribute
+import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachment
+import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachmentBodyAttributes
+import com.tokopedia.chatbot.domain.pojo.dynamicattachment.MediaButtonAttribute
+import com.tokopedia.chatbot.domain.pojo.dynamicattachment.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -115,7 +118,11 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOU
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.view.util.Attachment34RenderType
 import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
-import com.tokopedia.chatbot.websocket.*
+import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
+import com.tokopedia.chatbot.websocket.ChatbotWebSocket
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -348,7 +355,7 @@ class ChatbotPresenter @Inject constructor(
             DynamicAttachment::class.java
         )
         val contentCode = dynamicAttachment?.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
-        return ALLOWED_DYNAMIC_ATTACHMENT_TYPE.contains(contentCode)
+        return !PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(contentCode)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)

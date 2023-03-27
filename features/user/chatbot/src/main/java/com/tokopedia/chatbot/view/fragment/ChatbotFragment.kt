@@ -118,7 +118,6 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.dynamicattachment.DynamicAttachment
-import com.tokopedia.chatbot.domain.pojo.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
 import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
@@ -167,9 +166,6 @@ import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.chatbot.view.util.OnboardingReplayDismissListener
 import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
-import com.tokopedia.chatbot.view.util.showToaster
-import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
-import com.tokopedia.chatbot.view.util.OnboardingReplayDismissListener
 import com.tokopedia.chatbot.view.util.showToaster
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.imagepreview.ImagePreviewActivity

@@ -83,7 +83,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                     chatItemPojoByDateByTime.attachment.attributes,
                     DynamicAttachment::class.java
                 )
-                val contentCode = dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.contentCode
+                val contentCode = dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
                 if (ChatbotConstant.DynamicAttachment.PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT.contains(
                         contentCode
                     )
@@ -112,7 +112,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         dynamicAttachment: DynamicAttachment
     ): DynamicStickyButtonUiModel {
         val dynamicStickyButton = Gson().fromJson(
-            dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent,
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
             DynamicStickyButton::class.java
         )
         return DynamicStickyButtonUiModel(
@@ -134,7 +134,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         dynamicAttachment: DynamicAttachment
     ): DynamicAttachmentTextUiModel {
         val dynamicStickyButton = Gson().fromJson(
-            dynamicAttachment.dynamicAttachmentAttribute?.replyBoxAttribute?.dynamicContent,
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
             ChatActionPojo::class.java
         )
         return DynamicAttachmentTextUiModel.Builder()
